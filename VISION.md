@@ -20,12 +20,13 @@
 |---|---|---|
 | L1 | 存在单一 canonical SubjectState，其权威在 LLM 之外 | `DESIGN DECISION`（约束 B：state authority 在 LLM 之外） |
 | L2 | SubjectState 跨 session 持久化，且其演化历史可追溯 | `DESIGN DECISION`（修复约束 A 缺口 #3；跨 session 持久价值 = `HYPOTHESIS`，未经实验验证） |
-| L3 | 每个 tick 走完整 canonical causal loop（Observation → … → Future SubjectState），并形成 Action → World → Consequence → Experience 闭环 | `DESIGN DECISION`（修复约束 A 缺口 #1/#4） |
-| L4 | 状态被多通道共享读取（语言/动作/表情/决策/记忆）且互不一致会被检测 | `DESIGN DECISION`；多模态通道的价值 = `HYPOTHESIS`（约束 B 明确 UNPROVEN） |
-| L5 | LLM 只能以"提案 + 被 Core 规则批准/改写"的方式影响状态，不能直接写状态 | `DESIGN DECISION`（约束 B：LLM 是 appraisal/expression/understanding 组件） |
-| L6 | 角色的长期变化（belief/relationship/plasticity）由经历经 Core 规则积累，不由 prompt 直接塑造 | `DESIGN DECISION`（约束 A 缺口 #6/#7 的修复方向） |
+| L3 | SubjectState 拥有 canonical MemoryState（记忆属于主体，不是外部 RAG） | `DESIGN DECISION`（架构修订 P0-1） |
+| L4 | 主体演化由多类 canonical transition 构成（Time / Observation / Cognition-Action / Learning），Action 是 optional，不是每个 tick 强制发生 | `DESIGN DECISION`（架构修订 P0-2/P0-3） |
+| L5 | 状态被多通道共享读取（语言/动作/表情/决策/记忆）且互不一致会被检测 | `DESIGN DECISION`；多模态通道的价值 = `HYPOTHESIS`（约束 B 明确 UNPROVEN） |
+| L6 | LLM 只能以"提案 + 被 Core 规则批准/改写"的方式影响状态，不能直接写状态 | `DESIGN DECISION`（约束 B：LLM 是 appraisal/expression/understanding 组件） |
+| L7 | 角色的长期变化（belief/relationship/plasticity）由经历经 Core 规则积累，不由 prompt 直接塑造 | `DESIGN DECISION`（约束 A 缺口 #6/#7 的修复方向） |
 
-> **诚实声明（必读）**：以上 L1–L6 中，没有任何一条声称"已实现"。本仓库当前**没有**实现长期主体。L2/L4 的独特价值目前是产品假设 + 部分研究支持（Emotion 审计 B 的结论），不是已验证结论。`[VERIFIED — 约束 B]`
+> **诚实声明（必读）**：以上 L1–L7 中，没有任何一条声称"已实现"。本仓库当前**没有**实现长期主体。L2/L5 的独特价值目前是产品假设 + 部分研究支持（Emotion 审计 B 的结论），不是已验证结论。`[VERIFIED — 约束 B]`
 
 ---
 
@@ -39,12 +40,13 @@
                  → Subjective Interpretation → Appraisal → Affective Dynamics → …
 ```
 
-`[VERIFIED — 约束 A 缺口 #1]`：Affect 必须是 Retrieval/Appraisal 之后的产物，而不是事件的第一反应。
+- `[VERIFIED — 约束 A 缺口 #1]`：旧仓库代码实际采用 Event → Emotion → Interpretation 顺序（这是一个**已观察事实**）。
+- `[DESIGN DECISION]`：CharacterOS-Next **选择** Retrieval/Appraisal 先于 Affect（这是架构决策，不是"科学上已验证该顺序正确"）。
 
 ### 3.2 情感主张（继承约束 B 全部结论）
 
 - 情感系统的目标是**持久内部状态**，不是"让单轮回复比 prompt 更有情绪感"。`[VERIFIED — 约束 B]`
-- FAST+EMA 在产品侧 = minimal state persistence implementation；在研究侧 = BASELINE_ONLY。`[VERIFIED — 约束 B]`
+- FAST+EMA 在产品侧 = **V0 reference persistence implementation**；在研究侧 = **BASELINE_ONLY**。它**不是** CharacterOS 的情绪理论，也不是科学上已证明最优的动力学。`[VERIFIED — 约束 B；措辞修正 P0-4]`
 - 纯 Dynamics 研究暂停；任何重启必须命中 8 条产品触发条件之一。`[VERIFIED — 约束 B，触发条件见 RESEARCH_STATE.md]`
 - 不再以"Emotion Dynamics 在语言质量上击败 LLM+Prompt"作为任何目标。`[DESIGN DECISION — 约束 B]`
 
@@ -52,6 +54,7 @@
 
 - 时间尺度必须分层（Identity > Traits > Beliefs > Relationships > Mood > Affect > Working Context），层间不得混用写规则。`[DESIGN DECISION — 修复约束 A 缺口 #7]`
 - Relationship 是一等长期状态。`[DESIGN DECISION — 修复约束 A 缺口 #6]`
+- **SubjectState 拥有 MemoryState**；MemoryRepository 只是持久化/存储设施。`[DESIGN DECISION — 架构修订 P0-1]`
 - 所有状态变更必须经过 Core transition rules（单写入口）。`[DESIGN DECISION — 约束 B：LLM 不可直接写状态]`
 
 ---
@@ -86,7 +89,7 @@
 
 本阶段只交付**定义与承诺**，不交付行为：
 - SubjectState V0 概念模型（`ARCHITECTURE.md` §5）
-- canonical causal loop（`ARCHITECTURE.md` §3）
+- canonical transition system（`ARCHITECTURE.md` §3）
 - LLM boundary（`ARCHITECTURE.md` §6）
 - 迁移计划（`MIGRATION_MAP.md`）
 - 三个下一动作（`NEXT_ACTIONS.md`）
