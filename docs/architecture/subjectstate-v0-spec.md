@@ -140,7 +140,6 @@ SubjectStateV0
 | subject_id | string | required | — | 稳定唯一标识；不变 |
 | display_name | string | required | `""` | 展示名 |
 | origin_metadata | object | required | `{}` | 创建来源/seed 版本等元数据 |
-| created_at | logical_time | required | — | 创建时的 logical time |
 | identity_anchors | array<string> | optional | `[]` | 稳定锚点（canonical role/name refs） |
 | self_schema_seed_refs | array<ref> | optional | `[]` | 指向 seed schema 的引用，不是 schema 本体 |
 
@@ -149,6 +148,7 @@ SubjectStateV0
 - **禁止**把 autobiographical history / episodic memories / current self-narrative 混进 Identity。`[DESIGN DECISION]`
 - Autobiographical history → MemoryState / MemoryRepository。
 - Narrative Identity / Self Model → 未来独立慢变量，V0 不实现。
+- **created_at 唯一源 = `runtime_metadata.created_at`**；Identity 不重复保存 created_at（Action 2 一致性修正）。`[DESIGN DECISION]`
 
 ---
 
@@ -186,6 +186,9 @@ SubjectStateV0
 - `producer = memory package`；`canonical mutator = subject-core`。
 - `recent_retrieval_trace`：canonical + persistent，但**有界**（cap N，ring），不是全量检索历史（全量历史属 audit/repository）。`[DESIGN DECISION]`
 - **禁止**把 MemoryState 变成"把整个 vector DB 搬进 SubjectState"——payload 一律在 MemoryRepository。
+- **MemoryState 子域 partition（Action 2 一致性修正，消除双写）** `[DESIGN DECISION]`：
+  - **content/encoding/consolidation 子域**（`active_episode_refs`、`repository_revision`、`autobiographical_index_revision`、`consolidation_cursor`、`pending_encoding_refs`、`lifecycle_metadata`）→ **LearningTransition** 唯一 owner。
+  - **retrieval 子域**（`working_refs`、`recent_retrieval_trace`、`retrieval_config`、`last_retrieval_at`）→ **ObservationTransition** 唯一 owner。
 
 ---
 
@@ -268,11 +271,12 @@ prepare new MemoryRepository revision Rn
 | 字段 | type | req | default | range/invariant |
 |---|---|---|---|---|
 | baseline | number | required | `0.0` | `[0, clamp]` |
-| reference_profile | enum | required | `"FAST_EMA_V0"` | 见 §18 |
+| generated_under_profile | string | optional | `null` | provenance（由哪个 profile 生成），**不是** active config 权威 |
 | last_update | logical_time | optional | `null` | — |
 
 - **身份裁定（防 overclaim）:** FAST+EMA-derived reference persistence；**NOT canonical affect theory**。`[DESIGN DECISION]`
 - **参数 `tHold=60 / alpha=0.06 / tau=150 / clamp=0.25` = `legacy reference defaults`**（来源 `VERIFIED`：Plasticity Phase 1）；是否作为 CharacterOS-Next 默认 = `DESIGN DECISION`/`HYPOTHESIS`，不是 VERIFIED 科学真值。
+- **profile 权威单一化（Action 2 一致性修正）**：active affect profile 的唯一真值源 = `mechanism_config.affect_profile`；`generated_under_profile` 只是 provenance。`[DESIGN DECISION]`
 - `producer = affect`；`canonical mutator = subject-core`。
 - TimeTransition decay eligibility：mood 属于 TimeTransition 可演化层（decay/settling）。
 
@@ -283,7 +287,7 @@ prepare new MemoryRepository revision Rn
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
 | active_channels | array<AffectChannel> | required | `[]` | 当前活跃情绪通道 |
-| reference_profile | enum | required | `"FAST_EMA_V0"` | 实现侧 profile 标识 |
+| generated_under_profile | string | optional | `null` | provenance（由哪个 profile 生成），**不是** active config 权威 |
 | updated_at | logical_time | optional | `null` | — |
 
 ```text
@@ -342,7 +346,7 @@ AffectChannel {
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| affect_reference_profile | enum | required | `"FAST_EMA_V0"` | 参考持久化 profile |
+| affect_profile | enum | required | `"FAST_EMA_V0"` | **唯一 active affect config 权威**；`timebase="legacy_tick"`（1 canonical_tick == 1 legacy_tick，`DESIGN DECISION`） |
 | legacy_reference_defaults | object | optional | `{}` | `{tHold, alpha, tau, clamp}`（只读参考） |
 | feature_flags | object | optional | `{}` | 特性开关 |
 | thresholds | object | optional | `{}` | 未来可配置阈值（V0 可空） |
@@ -366,6 +370,7 @@ AffectChannel {
 | updated_at | logical_time | required | — | — |
 
 - `schema_version` 只在顶层（envelope），此处不重复。
+- **`created_at` 唯一 source of truth = `runtime_metadata.created_at`**（subject creation logical time）；Identity 已移除 created_at（Action 2 一致性修正）。`[DESIGN DECISION]`
 - **logical time vs wall clock（`DESIGN DECISION`）:** canonical transition 消费**显式 logical time / elapsed time**；wall clock 可记录为 observability metadata，但**绝不**偷偷影响 deterministic transition。`new Date()` 禁止作为 canonical time authority。
 
 ---
@@ -385,6 +390,16 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 ---
 
 ## 21. Trace / Provenance
+
+**术语拆分（Action 2 一致性修正，四概念 + audit_event）`[DESIGN DECISION]`：**
+
+| 概念 | 定义 |
+|---|---|
+| **MutationHistory** | logical authoritative history；append-only |
+| **TraceEntry** | immutable 单条 |
+| **SubjectState.trace_window** | bounded projection / recent cache（**不是**完整历史） |
+| **AuditStore / TraceStore** | 完整 offloaded history（infrastructure） |
+| **audit_event** | failed/rejected proposal 的审计记录（不进 MutationHistory） |
 
 **两个不同对象（`DESIGN DECISION`）：**
 
@@ -463,16 +478,19 @@ stale rejection  : expected != current → STALE_STATE_REVISION（拒绝，audit
 > 完整 Transition Contracts 属 NEXT_ACTIONS #2；本 spec 只定义**状态 mutation 的最小通用 envelope**，不越界定义 Observation/Appraisal 详细 schema。
 
 ```text
-TransitionProposal {
-  proposal_id
+CanonicalTransitionProposal {
+  transition_id
   subject_id
   expected_state_revision     // optimistic concurrency
-  transition_type             // Time/Observation/Cognition-Action/Learning
-  producer                    // 哪个 domain 模块
+  transition_type             // Time/Observation/CognitionAction/Learning
   logical_time
+  elapsed_time?               // Duration{value, unit}
   cause_refs[]
-  delta                       // 领域 delta（MemoryDelta/AffectDelta/RegulationDelta/ContextDelta）
+  domain_deltas[]             // 一个 transition 可有 N 个 domain delta
+  external_refs?
+  metadata?
 }
+// 每个 domain_delta: { producer, domain, delta, expected_domain_revision? }
 
 CanonicalCommitResult {
   accepted
@@ -482,6 +500,8 @@ CanonicalCommitResult {
   rejection_reason?           // 见 §25
 }
 ```
+
+> 本 envelope 是 Action 2 对 §6/§24 的 multi-domain 修正：一个 transition = 一个 proposal = N 个 domain delta = 一个 atomic canonical commit（详见 `transition-contracts.md` §5–§6）。
 
 ---
 

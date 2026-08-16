@@ -204,7 +204,7 @@ SubjectStateV0 {
   affect          : { per_channel FAST_episode, active_channel, intensity }
   regulation      : { energy }           // 占位（支持未来 TimeTransition）
   context         : { scene, task, focus[] }
-  mechanism_config : { affect_reference_profile: FAST_EMA_V0, legacy_reference_defaults }
+  mechanism_config : { affect_profile: FAST_EMA_V0, legacy_reference_defaults }
   trace           : { log[] }            // 强制 provenance
   runtime_metadata: { subject_version, logical_time, last_transition_time, state_revision }
 }
@@ -222,7 +222,7 @@ SubjectStateV0 {
   "affect": { "channels": { "anger": "NEUTRAL", "joy": "NEUTRAL" },
               "active": "joy", "progress": 0.5 },
   "context": { "scene": "work", "task": "review", "focus": ["evt#42"] },
-  "mechanism_config": { "affect_reference_profile": "FAST_EMA_V0",
+  "mechanism_config": { "affect_profile": "FAST_EMA_V0",
                           "legacy_reference_defaults": { "tHold": 60, "alpha": 0.06, "tau": 150, "clamp": 0.25 } },
   "trace":  [ { "transition": "Observation", "layer": "affect", "rule": "appraisal->affect",
                 "cause": "evt#41(anger,0.7)", "from": "NEUTRAL", "to": "HOLD" } ],
@@ -289,16 +289,17 @@ Core 处理:   appraisal_proposal → 校验范围 → Core 规则换算 → 写
 
 | 包 | 责任（未来实现） | 依赖 |
 |---|---|---|
-| subject-core | SubjectState 结构、transition 驱动、cause-trace、写规则引擎 | 无（最底层） |
-| memory | **MemoryState 更新（canonical）+ MemoryRepository 设施（infrastructure）+ 检索/编码/巩固** | subject-core（只读投影） |
-| appraisal | 结构化评价（LLM 提案 + Core 校验） | subject-core、memory |
-| affect | FAST+EMA-derived reference persistence + 写规则实现 | subject-core |
-| belief / personality / relationship / regulation | 对应状态层的 Core 更新规则（V0 之后） | subject-core |
-| behavior | Cognition/Motivation/Policy、动作生成（可调用 LLM deep reasoning） | 全部只读 |
+| subject-core | **唯一 canonical commit authority**；SubjectState 结构、transition 协调、cause-trace、写规则引擎、state_revision 推进 | 无（最底层） |
+| memory | MemoryDelta production + retrieval/encoding/consolidation 逻辑 + MemoryRepository 设施（infrastructure）；**NO canonical mutation** | subject-core（只读投影） |
+| appraisal | InterpretationProposal / AppraisalProposal production（LLM 提案 + Core 校验）；**NO canonical mutation** | subject-core、memory |
+| affect | AffectDelta / MoodDelta production + reference mechanism evaluation；**NO canonical mutation** | subject-core |
+| belief / personality / relationship / regulation | 对应状态层的 delta production（V0 之后）；**NO canonical mutation** | subject-core |
+| behavior | Cognition/Motivation/Policy、动作生成（可调用 LLM deep reasoning）；**NO canonical mutation** | 全部只读 |
 | runtime | Perception、Time 推进、Action/Environment 适配、调度 | behavior、subject-core |
 
 **依赖纪律：** 只允许"上层读下层投影"，不允许反向依赖；subject-core 不依赖任何其他包。`[DESIGN DECISION]`
-**Memory 拆分：** `memory` 包同时承载两件事——canonical MemoryState 更新（属 subject 状态）与 MemoryRepository 存储（infrastructure）。两者边界见 §5.1。`[DESIGN DECISION — P0-1]`
+**Producer != Mutator（P9）：** 上表所有非 subject-core 包都是 **transition producer**（计算 delta），**不直接 mutate** canonical SubjectState；canonical commit 永远由 subject-core 执行。`[DESIGN DECISION — SubjectState V0 spec §5 / transition-contracts §5]`
+**Memory 拆分：** `memory` 包承载三件事——MemoryDelta production（content 子域，LearningTransition owner）+ retrieval 子域 delta（ObservationTransition owner）+ MemoryRepository 存储（infrastructure）。边界见 §5.1 与 transition-contracts §18。`[DESIGN DECISION]`
 
 ---
 

@@ -27,7 +27,9 @@
 
 ---
 
-## 动作 2 — Canonical Transition Contracts（未开始）
+## 动作 2 — Canonical Transition Contracts · COMPLETE
+
+**状态:** ✅ COMPLETE（2026-08-17）——产物 `docs/architecture/transition-contracts.md`。
 
 **优先级理由:** transition system 目前只有四类名称；没有每类的输入/输出/不变量契约，MICL（动作 3）无法开工，后续包边界也会模糊。
 
