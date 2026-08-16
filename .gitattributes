@@ -1,0 +1,7 @@
+# Normalize line endings across platforms.
+# Markdown and config files are stored with LF in the repository.
+* text=auto
+*.md text eol=lf
+.gitattributes text eol=lf
+.gitignore text eol=lf
+.gitkeep text eol=lf

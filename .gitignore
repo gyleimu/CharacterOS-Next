@@ -1,0 +1,21 @@
+# CharacterOS-Next
+
+# dependencies / builds
+node_modules/
+dist/
+build/
+.next/
+
+# runtime artifacts
+tmp/
+*.log
+cerh/
+
+# local secrets / credentials
+.env
+.env.*
+*.credentials*
+
+# os
+Thumbs.db
+.DS_Store
