@@ -4,12 +4,14 @@
 
 ---
 
-## 动作 1 — SubjectState V0 正式规格（spec）
+## 动作 1 — SubjectState V0 正式规格（spec）· COMPLETE
+
+**状态:** ✅ COMPLETE（2026-08-17）——产物 `docs/architecture/subjectstate-v0-spec.md`。
 
 **优先级理由:** 所有包、所有 transition 契约、所有迁移目标都锚定在 SubjectState 上；没有正式 spec，后续一切设计都会漂移。
 
 **产出（设计文档，写入 `docs/architecture/subjectstate-v0-spec.md`）:**
-- 十层状态的 V0 字段清单：每层字段名、类型、值域、缺省值、时间尺度、写入者、读取者（在 `ARCHITECTURE.md` §4/§5 的概念模型上裁定正式版本）
+- 十层状态的 V0 字段清单：每层字段名、类型、值域、缺省值、时间尺度、transition producer、canonical mutator、读取者（在 `ARCHITECTURE.md` §4/§5 的概念模型上裁定正式版本）
 - **MemoryState ownership**：canonical MemoryState 字段（working refs / active episode refs / autobiographical index / store revision / consolidation cursor / retrieval config / recent retrieval trace / lifecycle metadata）与 MemoryRepository（infrastructure）的边界
 - **runtime_metadata**：subject version / logical time / last transition time / state revision 的正式字段与语义
 - **transition 兼容的时间语义**：哪层随 TimeTransition 演化、哪层仅随 Observation/Learning 演化（对应 ARCHITECTURE §3）
@@ -25,7 +27,7 @@
 
 ---
 
-## 动作 2 — Canonical Transition Contracts
+## 动作 2 — Canonical Transition Contracts（未开始）
 
 **优先级理由:** transition system 目前只有四类名称；没有每类的输入/输出/不变量契约，MICL（动作 3）无法开工，后续包边界也会模糊。
 
@@ -46,7 +48,7 @@
 
 ---
 
-## 动作 3 — MICL 设计（Minimal Internal Continuity Loop）
+## 动作 3 — MICL 设计（Minimal Internal Continuity Loop）（未开始）
 
 **优先级理由:** 这是两个审计共同指向的最小增量：约束 A 缺口 #1/#5（Retrieval/Appraisal 先于 Affect + 自传式检索）与约束 B（FAST+EMA reference persistence）的交点。它是 P2（sandbox 实现）的唯一前置。
 

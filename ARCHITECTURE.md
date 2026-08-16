@@ -18,6 +18,7 @@
 | P6 | **Baseline 纪律**：任何新机制必须先证明优于 FAST+EMA、LINEAR-G 与 "Memory+LLM 每轮重算" 三者之一对应的问题形态 | `DESIGN DECISION`（依据 `VERIFIED` 约束 B；第三比较器为审计 B RED_TEAM 新增） |
 | P7 | **不得 overclaim**：Level 2–4 集成、多模态价值、跨 session 持久价值均为 HYPOTHESIS/UNKNOWN，不得写成能力声明 | `DESIGN DECISION`（依据 `VERIFIED` 约束 B） |
 | P8 | **Time 是一等语义**：无外部事件时主体仍可演化（TimeTransition），Appraisal 使用 time-normalized 当前状态 | `DESIGN DECISION`（架构修订 P0-3） |
+| P9 | **Producer != Mutator**：domain 模块只计算 transition proposal/delta；唯一 canonical mutator = subject-core | `DESIGN DECISION`（SubjectState V0 spec §5） |
 
 ---
 
@@ -125,9 +126,9 @@ Previous SubjectState
 
 ## 4. Multi-Timescale State（十层状态）
 
-每层定义：内容、时间尺度、写入者（唯一）、读取者、V0 范围。
+每层定义：内容、时间尺度、transition producer（域模块）、读取者、V0 范围（canonical mutator 恒为 subject-core）。
 
-| 层 | 内容 | 时间尺度 | 写入者（唯一） | 主要读取者 | V0 |
+| 层 | 内容 | 时间尺度 | transition producer（域模块） | 主要读取者 | V0 |
 |---|---|---|---|---|---|
 | **Identity** | 我是谁：subject_id、名字、origin metadata、identity anchors、稳定 self-schema 种子（**不含**自传历史） | 终身（几乎不变） | Core（初始化 + 极罕见生命事件，需高阈值规则） | 全部 | 静态种子（只读） |
 | **Traits / temperament** | 气质与稳定特质 | 年（缓慢漂移） | Core（仅经 LearningTransition 长期更新） | Appraisal、Policy、Expression | 静态种子（只读） |
@@ -138,7 +139,9 @@ Previous SubjectState
 | **Current affect** | 当前情绪 episode（快变量） | 秒–分钟 | affect 包（经 ObservationTransition） | Expression、Policy、Verbalizer | **V0 实现（FAST episode）** |
 | **Regulatory state** | 调节状态（能量/压力/注意力预算） | 分钟–小时 | regulation 包（经 TimeTransition/Cognition） | Policy、Appraisal | 结构定义（标量占位，支持未来 TimeTransition） |
 | **Working context** | 当前任务/场景/焦点 | 秒–小时 | subject-core（经 Observation/Interpretation） | 全部 | **V0 实现（上下文切片）** |
-| **Plasticity parameters** | 学习率/衰减率/阈值等元参数 | 参数（偶尔调整） | Core（配置或长期规则） | Affect、Memory、Belief | **V0 实现（常量配置）** |
+| **Mechanism config（机制配置，原 plasticity）** | 学习率/衰减率/阈值/特性开关等元参数 | 参数（偶尔调整） | Core（配置或长期规则） | Affect、Memory、Belief | **V0 实现（常量配置）** |
+
+> **canonical mutator 恒为 subject-core**：上表 "producer" 列是计算 delta 的域模块；真正的 canonical 提交永远由 subject-core 执行（见 §1 P9 / SubjectState V0 spec §5）。任何域模块不得直接 mutate SubjectState。`[DESIGN DECISION]`
 
 **分层纪律（约束 A 缺口 #7 的修复）：**
 - 慢层绝不与快层同写：一次事件不能直接改 Traits/Beliefs，只能改 Current affect / Working context，并经 LearningTransition 累积为慢层候选变化。`[DESIGN DECISION]`
@@ -182,7 +185,7 @@ MemoryRepository           （infrastructure，不属于 canonical state）
 | Mood baseline / Current affect | **FAST+EMA-derived reference persistence implementation** | `DESIGN DECISION`（采用）；`VERIFIED`（来源：审计 B / Plasticity Phase 1） |
 | Regulatory state | 最小中性标量/结构，**必须支持未来 TimeTransition** | `DESIGN DECISION — P0-3` |
 | Working context | 结构化上下文切片（场景/任务/焦点引用） | `DESIGN DECISION` |
-| Plasticity config | 常量配置表，**不能冒充 learned plasticity** | `DESIGN DECISION` |
+| Mechanism config | 常量配置表，**不能冒充 learned plasticity** | `DESIGN DECISION` |
 | Trace | 强制 provenance | `DESIGN DECISION` |
 | Runtime metadata | subject version、logical time / last transition time、state revision | `DESIGN DECISION — P0-3` |
 
@@ -201,7 +204,7 @@ SubjectStateV0 {
   affect          : { per_channel FAST_episode, active_channel, intensity }
   regulation      : { energy }           // 占位（支持未来 TimeTransition）
   context         : { scene, task, focus[] }
-  plasticity_config : { affect_reference_profile: FAST_EMA_V0, legacy_reference_defaults }
+  mechanism_config : { affect_reference_profile: FAST_EMA_V0, legacy_reference_defaults }
   trace           : { log[] }            // 强制 provenance
   runtime_metadata: { subject_version, logical_time, last_transition_time, state_revision }
 }
@@ -219,7 +222,7 @@ SubjectStateV0 {
   "affect": { "channels": { "anger": "NEUTRAL", "joy": "NEUTRAL" },
               "active": "joy", "progress": 0.5 },
   "context": { "scene": "work", "task": "review", "focus": ["evt#42"] },
-  "plasticity_config": { "affect_reference_profile": "FAST_EMA_V0",
+  "mechanism_config": { "affect_reference_profile": "FAST_EMA_V0",
                           "legacy_reference_defaults": { "tHold": 60, "alpha": 0.06, "tau": 150, "clamp": 0.25 } },
   "trace":  [ { "transition": "Observation", "layer": "affect", "rule": "appraisal->affect",
                 "cause": "evt#41(anger,0.7)", "from": "NEUTRAL", "to": "HOLD" } ],
@@ -241,6 +244,8 @@ SubjectStateV0 {
 | 记忆引用/revision/cursor | memory 包经 Core 规则更新 MemoryState（payload 写 MemoryRepository） |
 | 任何其他层 | V0 禁止写（只读种子/占位） |
 | LLM 直接写任何层 | **禁止**（见 §6） |
+
+> 说明：上表"写入"= 域模块（producer）产出 delta 后，由 **subject-core（canonical mutator）** 校验并提交；域模块不直接 mutate 状态。`[DESIGN DECISION — Producer != Mutator]`
 
 ---
 

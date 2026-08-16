@@ -35,7 +35,7 @@
 | Personality / trust / attachment / fear | 时间尺度混层 | **REWRITE**（分层设计） | packages/personality + 分层规则（Identity 不含自传历史） | 约束 A 缺口 #7；架构修订 P0-7 |
 | **Determinism / replay / trace / audit 基础设施** | 确定性、重放、追溯、审计 | **ADAPT（强）/ KEEP-as-reference** | Subject Runtime 的核心基础设施资产（determinism A1、cause-trace A7） | 约束 A：deterministic kernel；这是新 runtime 的重要资产，不应丢失 |
 | **Homeostasis / Recovery / Life Tick 概念** | 稳态/恢复/生命 tick | **ADAPT（设计概念）+ REWRITE（旧持久化/状态语义）** | TimeTransition（ARCHITECTURE §3.1）的设计参考 | 架构修订 P0-3：time 一等语义 |
-| **WorldModel（若旧资产审计中存在）** | 世界/情境模型 | **ADAPT** | Subjective Interpretation / Appraisal 的前置参考（概念级） | 架构修订 P0；`UNKNOWN`（未逐文件核验其存在与形态） |
+| **WorldModel**（`src/core/worldmodel/worldModel.ts`） | 世界/情境模型：使用 beliefs、personality coordinate、meta state、psychological boundary、time perception，计算 threatBias、trustBias、ambiguity、subjective interpretation、interpretation frame | **ADAPT**（候选，`TO_BE_ASSESSED`） | Subjective Interpretation / Appraisal 的前置参考（概念级） | `VERIFIED`（独立复核确认该 legacy asset 存在）；是否适合迁移 = `TO_BE_ASSESSED / DESIGN REVIEW REQUIRED`（不复制源码） |
 | 产品应用层（UI、render、mindspace 等） | 现有产品实现 | **KEEP**（当前不迁移，继续原地维护） | 不进入本仓库；未来产品决策单独裁定 | 约束 A：旧仓库非废弃；本阶段无产品开发 |
 | tests / 测试资产 | 内核测试与验证资产 | **ADAPT**（作为回归资产引用；迁移需 SHA 记录） | evals/regression（未来） | 约束 A：test/evaluation asset |
 

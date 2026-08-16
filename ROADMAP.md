@@ -8,9 +8,9 @@
 
 | 阶段 | 名称 | 内容 | 状态 |
 |---|---|---|---|
-| **P0** | Architecture Foundation | 骨架、架构宪法、研究状态、迁移地图、SubjectState V0 概念模型、canonical transition system | 进行中 |
-| **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **本阶段** |
-| **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | 未开始 |
+| **P0** | Architecture Foundation | 骨架、架构宪法、研究状态、迁移地图、SubjectState V0 概念模型、canonical transition system | **COMPLETE** |
+| **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **COMPLETE** |
+| **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | **IN PROGRESS（CURRENT）** |
 | **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A10 工程行为契约；不运行科学实验 | 未开始（P2 实现前强制门禁） |
 | **P2** | Minimal Runtime Implementation | 在 product/sandbox 内实现 MICL 的最小可运行版本；无研究实验 | 未授权 |
 | **P3** | Controlled Migration | 按 MIGRATION_MAP 逐项执行（每项独立审批） | 未授权 |
