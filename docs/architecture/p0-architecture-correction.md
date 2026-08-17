@@ -120,7 +120,7 @@ MemoryRepository        ← infrastructure：episodic payload/embedding/索引
 ## 7. Unresolved Items（未决，明确留给后续）
 
 - SubjectState V0 正式字段 schema（已由 `docs/architecture/subjectstate-v0-spec.md` 解决，P1 Action 1）
-- transition 的阶段级输入/输出/失败语义（留给 NEXT_ACTIONS #2）
+- transition 的阶段级输入/输出/失败语义（已由 `docs/architecture/transition-contracts.md` 解决，P1 Action 2）
 - MICL 的检索键最终集与 appraisal 维度集（留给 NEXT_ACTIONS #3）
 - A1–A10 的具体判据与 fixture（留给 ROADMAP P1.5）
 - affect-congruent retrieval 是否启用（= HYPOTHESIS，研究触发前不实验）

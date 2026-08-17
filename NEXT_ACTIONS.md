@@ -27,9 +27,9 @@
 
 ---
 
-## 动作 2 — Canonical Transition Contracts · COMPLETE
+## 动作 2 — Canonical Transition Contracts · COMPLETE（CONSISTENCY CLOSED）
 
-**状态:** ✅ COMPLETE（2026-08-17）——产物 `docs/architecture/transition-contracts.md`。
+**状态:** ✅ COMPLETE / CONSISTENCY CLOSED（2026-08-17）——产物 `docs/architecture/transition-contracts.md`（含 Action 2 Consistency Closure 封口修订）。
 
 **优先级理由:** transition system 目前只有四类名称；没有每类的输入/输出/不变量契约，MICL（动作 3）无法开工，后续包边界也会模糊。
 

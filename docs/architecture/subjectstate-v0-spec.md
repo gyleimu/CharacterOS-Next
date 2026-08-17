@@ -47,7 +47,7 @@ SubjectState(t)
 | I7 | canonical commit 是 all-or-nothing，绝不部分 mutate | 本任务 §25 |
 | I8 | LLM 不能直接写任何 canonical 层，只能 proposal | 约束 B / 本任务 §24 |
 | I9 | 慢层与快层分离；快事件不直改慢层 | P0-7 / ARCHITECTURE §4 |
-| I10 | 同一 canonical 字段（尤其 memory）只有一个 transition owner；双写禁止 | 本任务 §22 |
+| I10 | 同一 canonical 字段只有一个 transition owner（MemoryState 按子域 partition，见 §9）；双写禁止 | 本任务 §22 |
 
 ---
 
@@ -122,7 +122,7 @@ SubjectStateV0
 
   mechanism_config      : MechanismConfig                 // （原 plasticity_config，改名见 §18）
 
-  trace                 : Trace                           // append-only provenance
+  trace_window         : TraceWindow                     // bounded projection（非完整 history；见 §21）
   runtime_metadata      : RuntimeMetadata                 // version / revision / logical time
 }
 ```
@@ -405,7 +405,7 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 
 | 对象 | 归属 | 触发 | 语义 |
 |---|---|---|---|
-| `mutation_trace`（SubjectState.trace） | canonical，append-only，immutable | 每次成功 canonical commit | 状态变更溯源 |
+| `mutation_trace`（SubjectState.trace_window） | canonical，append-only，immutable | 每次成功 canonical commit | 状态变更溯源 |
 | `audit_event` | audit store（infrastructure） | 失败 proposal / 拒绝 / 越权尝试 | 审计，**不是** canonical mutation |
 
 **TraceEntry（mutation_trace）：**
@@ -431,9 +431,10 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 ```
 
 **裁定：**
-- trace append-only + immutable；大状态**不**保存整份 from/to snapshot，用 field delta / hash / references。`[DESIGN DECISION]`
+- **MutationHistory**（authoritative logical history）是 append-only + immutable；**TraceEntry** 是 immutable 单条。大状态**不**保存整份 from/to snapshot，用 field delta / hash / references。`[DESIGN DECISION]`
 - 失败 proposal 写 `audit_event`，**不**写 `mutation_trace`。`[DESIGN DECISION]`
-- 规模：SubjectState.trace 持有**有界最近窗口** + `cursor` 指向 offloaded 旧条目（audit store）。全量历史 = repository/audit。
+- 规模：`SubjectState.trace_window` 持有**有界最近窗口** + `trace_cursor` 指向 offloaded 旧条目（AuditStore/TraceStore）。全量历史 = repository/audit。
+- **从 `trace_window` 移出 entry ≠ 删除历史**：历史仍在 authoritative MutationHistory / TraceStore。
 
 ---
 
@@ -451,7 +452,7 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 | Regulation | yes | yes | no | partial（per TimeTransition） | no | regulation | subject-core |
 | Working Context | yes | **partial**（scene/task/active_entity_refs 持久；focus/current_observation 瞬态） | no | yes（瞬态字段） | no | context | subject-core |
 | MechanismConfig | yes | yes | no | no | no | —（config） | subject-core |
-| Trace | yes（bounded window） | yes（窗口 + cursor） | offload 到 audit | no（append-only） | no | subject-core | subject-core |
+| TraceWindow（trace_window） | yes（bounded window） | yes（窗口 + trace_cursor） | offload 到 AuditStore | no（append-only） | no | subject-core | subject-core |
 | RuntimeMetadata | yes | yes | no | no | no | subject-core | subject-core |
 
 > `Repository-backed` 列：只有 MemoryState 的**引用**指向 MemoryRepository；payload/embedding/index 永远在 repository，不在 canonical state。
@@ -464,7 +465,7 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 SubjectState(t)  = immutable snapshot
 transition        → 产生新的 SubjectState(t+1)（旧 snapshot 不变）
 state_revision    : monotonic（每次 canonical commit +1）
-optimistic concurrency: TransitionProposal.expected_state_revision
+optimistic concurrency: CanonicalTransitionProposal.expected_state_revision
 stale rejection  : expected != current → STALE_STATE_REVISION（拒绝，audit_event）
 ```
 
@@ -475,7 +476,7 @@ stale rejection  : expected != current → STALE_STATE_REVISION（拒绝，audit
 
 ## 24. Generic Transition Proposal Envelope（最小通用 envelope）
 
-> 完整 Transition Contracts 属 NEXT_ACTIONS #2；本 spec 只定义**状态 mutation 的最小通用 envelope**，不越界定义 Observation/Appraisal 详细 schema。
+> 完整 Transition Contracts 见 `docs/architecture/transition-contracts.md`（P1 Action 2，已完成）；本 spec 只定义**状态 mutation 的最小通用 envelope**，不越界定义 Observation/Appraisal 详细 schema。
 
 ```text
 CanonicalTransitionProposal {
@@ -542,24 +543,30 @@ COMMIT_CONFLICT
 
 ## 27. MICL Ownership Constraints
 
-**唯一 ownership（`DESIGN DECISION`）：**
+**Transition ownership（`DESIGN DECISION`，Action 2 后最终定义）：**
 
 ```text
 ObservationTransition:
-  产生 subjective processing result + affect proposal/result
-  不写 memory（不直接 mutate MemoryState）
+  可能产出:
+    AffectDelta
+    MoodDelta
+    ContextDelta
+    MemoryRetrievalMetadataDelta（retrieval 子域）
 
 LearningTransition（V0）:
-  消费 observation/internal experience result
-  → Experience Encoding
-  → MemoryRepository prepare
-  → MemoryState proposal
-  → canonical commit（subject-core）
+  可能产出:
+    MemoryContentDelta（content 子域）
 
+Memory subdomains: non-overlapping（见 §9）
+Canonical mutator: always subject-core
 （未来扩展 LearningTransition → Belief / Relationship / Plasticity）
 ```
 
-**不变量:** **DOUBLE MEMORY WRITE FORBIDDEN** —— Experience Encoding / MemoryState canonical mutation 只有一个 transition owner = LearningTransition。精确阶段级契约由 NEXT_ACTIONS #2 最终裁定，但双写禁止无论何时都成立。
+**精确表述（不得再用绝对句）：**
+- ObservationTransition **不写 memory CONTENT**（不写 episodic content / Experience Encoding），但 **owns retrieval metadata 子域**（working_refs / recent_retrieval_trace / retrieval_config / last_retrieval_at）。
+- LearningTransition **owns content / encoding / consolidation 子域**（active_episode_refs / repository_revision / autobiographical_index_revision / consolidation_cursor / pending_encoding_refs / lifecycle_metadata）。
+
+**不变量:** **DOUBLE MEMORY WRITE FORBIDDEN** —— 两子域字段互不相交，无重叠写。transition ownership 是"谁产 delta"；**canonical write authority 始终是 subject-core**。
 
 ---
 
@@ -590,10 +597,10 @@ LearningTransition（V0）:
 
 | # | 未决 | 留给 |
 |---|---|---|
-| D1 | transition 阶段级输入/输出/失败/rollback 契约 | NEXT_ACTIONS #2 |
+| D1 | ~~transition 阶段级输入/输出/失败/rollback 契约~~ **RESOLVED by Action 2** → `docs/architecture/transition-contracts.md` | — |
 | D2 | MICL 检索键最终集（affect-congruence 是否启用 = HYPOTHESIS） | NEXT_ACTIONS #3 |
 | D3 | A1–A10 具体判据与 fixture | ROADMAP P1.5 |
-| D4 | Experience Encoding 的精确阶段归属（当前裁定=LearningTransition，精确契约待 #2 确认） | NEXT_ACTIONS #2 |
+| D4 | ~~Experience Encoding 精确阶段归属~~ **RESOLVED**：memory content mutation owner = LearningTransition（transition-contracts §18） | — |
 | D5 | trace 窗口大小 N / offload 策略 / before_hash-after_hash 是否 V0 必选 | 实现前（P1.5 可加） |
 | D6 | trust/fear/attachment 等旧字段的归层 | `DEFERRED`（不硬塞 traits） |
 | D7 | WorldModel 迁移适配评估 | `TO_BE_ASSESSED`（迁移 P3 前） |
@@ -621,4 +628,4 @@ LearningTransition（V0）:
 1. `canonical_mutator = subject-core only`（Producer != Mutator）→ ARCHITECTURE §1 新增 P9。
 2. `plasticity_config` → `mechanism_config` 改名 → ARCHITECTURE §5 同步。
 3. WorldModel existence = `VERIFIED` legacy asset；migration = `TO_BE_ASSESSED` → MIGRATION_MAP 已同步。
-4. MICL memory 单 owner = LearningTransition；DOUBLE MEMORY WRITE FORBIDDEN。
+4. MICL memory ownership = partitioned（Observation→retrieval 子域；Learning→content 子域）；DOUBLE MEMORY WRITE FORBIDDEN。

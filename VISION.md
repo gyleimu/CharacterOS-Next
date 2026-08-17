@@ -1,6 +1,6 @@
 # VISION.md — CharacterOS-Next 愿景
 
-**状态:** 骨架阶段文档。全部结论带标签（VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN）。
+**状态:** 设计文档（Formal Design）。全部结论带标签（VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN）。
 
 ---
 

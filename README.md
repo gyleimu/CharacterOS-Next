@@ -75,7 +75,9 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 
 ## 4. 本阶段边界（硬性禁止）
 
-本阶段（骨架阶段）**只做**：仓库骨架、架构宪法、研究状态、迁移地图。
+**当前阶段 = P1 Formal Design。**
+
+允许：formal architecture specification、state contracts、transition contracts、MICL design（下一步）。
 
 - ❌ NO DEV_004（以及任何新实验编号）
 - ❌ NO new dynamics experiment
@@ -83,7 +85,7 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 - ❌ NO product feature development
 - ❌ NO claim that CharacterOS-Next already achieves long-lived agency（本仓库当前**没有**实现长期主体，只有定义与计划）
 - ❌ 禁止修改以下任何旧仓库：`CharacterOS`、`CharacterOS emotion`、`CharacterOS-CERH-DEV-001/002/003`、外部审计 workspace
-- ❌ 禁止实现代码（`packages/*` 当前为空骨架，仅 `.gitkeep`）
+- ❌ NO implementation（`packages/*` 当前为空骨架，仅 `.gitkeep`）
 
 ---
 

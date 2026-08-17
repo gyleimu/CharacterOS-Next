@@ -66,11 +66,31 @@ ONE state_revision increment（at most one）
 ```
 
 **规则：**
-- 多个 domain producer 可参与一个 logical transition（如 TimeTransition = RegulationDelta + AffectDelta + MoodDelta + memory maintenance eligibility delta）。
+- 多个 domain producer 可参与一个 logical transition（如 TimeTransition = RegulationDelta + AffectDelta + MoodDelta；memory maintenance eligibility 是 **derived signal，非 canonical delta**，见 §13）。
 - subject-core 必须：collect all deltas → validate all → **reject all if any invalid** → apply all to candidate next state → validate whole-state invariants → commit **once** → increment revision **once**。
 - **禁止** partial domain commit；**禁止** domain-by-domain canonical commit inside one logical transition。
 
 > 反例（禁止）：regulation commit rev 101、affect commit rev 102、mood commit rev 103 —— 这会产生"半个 TimeTransition 被提交"。
+
+**Orchestration vs Canonical Mutation（`DESIGN DECISION`，防循环依赖）：**
+
+```text
+runtime / orchestrator
+  → read SubjectState projection
+  → invoke allowed domain producers
+  → collect DomainDeltas
+  → construct CanonicalTransitionProposal
+
+subject-core（generic canonical commit engine）
+  → generic validation
+  → field ownership validation
+  → revision validation
+  → candidate state construction
+  → atomic canonical commit
+```
+
+- subject-core **MAY** validate delta envelope + field authority；**MUST NOT** depend on / import domain implementations（不调用 memory/affect/regulation）。
+- producer orchestration 属于 runtime / transition orchestrator，不属于 subject-core。
 
 ---
 
@@ -129,7 +149,7 @@ CanonicalTransitionProposal {
 | mechanism_config | —（config/init） | init | subject-core | NO | persistent | readonly（V0） |
 | memory_state（content 子域） | memory | Learning | subject-core | NO | refs only | conflict→reject |
 | memory_state（retrieval 子域） | memory | Observation | subject-core | NO | refs only | conflict→reject |
-| trace | subject-core | all commits | subject-core | NO | window+cursor | append-only |
+| trace_window | subject-core | all commits | subject-core | NO | window+cursor | append-only |
 | runtime_metadata | subject-core | all commits | subject-core | NO | persistent | monotonic |
 
 **MemoryState 子域（见 §18）：**
@@ -215,46 +235,97 @@ trace_cursor: points to full history / offload boundary
 - 因此 V0 下 `tHold = 60 ticks`、`tau = 150 ticks`；`exp(-elapsed_ticks / tau_ticks)` 维度一致。
 - 未来若引入真实秒级时间，必须经显式 `timebase` + 确定性 adapter（`elapsed_runtime → mechanism_elapsed_units`），不得隐式换算。
 
+**时间值三源（`DESIGN DECISION`，消除双源）：**
+
+| 值 | 来源 |
+|---|---|
+| `logical_time_before` | **read from** `SubjectState.runtime_metadata.logical_time`（调用方**不可覆盖**） |
+| `elapsed_time` | **supplied input**（显式 `Duration{value, unit}`；仅 TimeTransition 需要） |
+| `logical_time_after` | **derived output** = `logical_time_before + normalize(elapsed_time)` |
+
+- 禁止调用方同时自由传 `logical_time_after` + `elapsed_time` 且互相矛盾（如 before=100、elapsed=5、target=200）。
+- Other transition（Observation/Learning/CognitionAction）只携带 `occurrence_logical_time`（事件发生时刻），**不自行推进** logical_time。
+- `INVALID_LOGICAL_TIME`：时间非单调 / 矛盾输入；`INVALID_TIMEBASE`：unit 未知或不匹配。
+
 ---
 
 ## 13. TimeTransition Contract
 
-**Input:** subject_id、expected_state_revision、current logical_time、elapsed_time、mechanism_config、当前 SubjectState 投影。
+**Input:**
+- subject_id
+- expected_state_revision（must equal current）
+- elapsed_time：`Duration{value, unit}`（required）
+- mechanism_config（read）
+- 当前 SubjectState 投影（read，含 `logical_time_before`）
 
-**Producers:** regulation、affect、mood、memory maintenance eligibility。
+**Domain producers:**
+- regulation → RegulationDelta
+- affect → AffectDelta + MoodDelta（**MoodDelta producer = affect domain；不存在独立 mood producer**）
+- memory maintenance eligibility → **derived signal（非 canonical delta）**；V0 TimeTransition 不直接 mutate MemoryState（consolidation_cursor / repository_revision / active_episode_refs / lifecycle_metadata 均不动）
 
-**Output:** multi-domain deltas、next logical_time、mutation trace。
+**Pipeline:** `SubjectState(t) → elapsed time →（regulation / affect / mood / eligibility signal）→ SubjectState(t+Δt)`
 
-**硬性前置：** `elapsed_time >= 0`；`target_logical_time >= current_logical_time`。
+**Preconditions:**
+- subject exists；expected_state_revision 匹配
+- `elapsed_time.value >= 0`；`unit` 已知（否则 `INVALID_TIMEBASE`）
+- `logical_time_after = logical_time_before + normalize(elapsed_time)` 单调（否则 `INVALID_LOGICAL_TIME`）
 
-**硬性后置：**
-- 若 commit：`state_revision +1` 恰好一次；`logical_time` 单调。
-- 不要求 external Observation；不要求 Action。
-- **Appraisal 不在 TimeTransition 内运行**。
-- V0 不直接 mutation Belief/Relationship。
-- 确定性 time decay 不要求 LLM。
+**Postconditions:**
+- 若 commit：`state_revision +1` 恰好一次；`logical_time` 单调 → `logical_time_after`
+- 不要求 external Observation；不要求 Action；**Appraisal 不在其中运行**
+- V0 不直接 mutation Belief / Relationship / MemoryState content
+- deterministic time decay 不要求 LLM
 
-**NO_OP 语义（`DESIGN DECISION`）：** `elapsed_time == 0` → `NO_OP`：不产生 canonical commit、`state_revision` 不变，返回 `TransitionResult{status: NO_OP}`。
+**NO_OP（`DESIGN DECISION`）:** `elapsed_time.value == 0` → `NO_OP`：无 canonical commit、`state_revision` 不变，返回 `TransitionResult{status: NO_OP}`。
 
-**失败语义：** TimeTransition 失败**不得**部分更新 regulation/mood/affect（all-or-nothing）。
+**Failure / Degrade:** TimeTransition 失败**不得**部分更新 regulation/mood/affect（all-or-nothing）。无 LLM / 无外部依赖 → 无 degrade 语义。
+
+**Idempotency:** 同 `transition_id` 重复提交 → `ALREADY_COMMITTED`（见 §22）。
+
+**TransitionResult:** 携带 `logical_time_before/after`、`state_hash_before/after`、`domain_results[]`（含 eligibility signal ref，非 canonical）。
 
 ---
 
 ## 14. ObservationTransition Contract
 
+**Input:**
+- subject_id
+- expected_state_revision（must equal current）
+- Observation（schema-valid）
+- observation logical occurrence time
+- 当前 SubjectState 投影（read）
+- retrieval access（MemoryState / MemoryRepository，read）
+- mechanism_config（read）
+- optional external refs
+
+**Pipeline:**
 ```text
-Observation input
-  → Perception
-  → Memory Retrieval（读 MemoryState / MemoryRepository）
-  → Subjective Interpretation
-  → Appraisal
-  → Affect proposal
-  → optional Context delta
-  → canonical commit（subject-core）
+Observation → Perception → Memory Retrieval → Subjective Interpretation
+            → Appraisal → Affect/Mood delta → Context delta
+            → optional Memory retrieval-metadata delta
+            → one canonical commit（subject-core）
 ```
 
+**Preconditions:** subject exists；expected revision 匹配；Observation schema 有效；occurrence time 有效；producer permissions 有效。
+
+**Output:**
+- ObservationTransitionResult（interpretation result ref、appraisal result ref、retrieval result ref、optional InternalExperience ref）
+- canonical TransitionResult
+
+**Postconditions:**
+- Experience / episodic content **NOT encoded here**；Memory content 子域 untouched
+- affect / mood / context / retrieval-metadata 仅在允许字段分区内变更
+- exactly one or zero canonical commit
+
+**Failure / Degrade（`DESIGN DECISION`）：**
+- **A. no relevant memories** → `LEGAL EMPTY RETRIEVAL`：`retrieval_result = []`，继续 Interpretation/Appraisal（**不是** transition failure）。
+- **B. LLM unavailable**（interpretation/appraisal 依赖 LLM 时）→ pre-commit abort/reject（`SERVICE_UNAVAILABLE`），canonical state 不变。V0 **没有** deterministic appraisal fallback，故**不假装 fallback 存在**。
+- **C. invalid LLM proposal** → `PROPOSAL_REJECTED`，无 canonical mutation。
+- **D. MemoryRepository read failure** → pre-commit failure（`SERVICE_UNAVAILABLE`），canonical state 不变（V0 不把读失败静默降级为空检索——可能误导 Interpretation）。
+
+**Memory ownership（精确版）：**
 - ObservationTransition **不写** Experience Encoding / episodic memory content（那是 LearningTransition）。
-- ObservationTransition **可写** MemoryState 的 **retrieval 子域**（working_refs / recent_retrieval_trace / retrieval_config / last_retrieval_at）——这是对"LearningTransition = single memory owner"的精确化（见 §18）。
+- ObservationTransition **可写** MemoryState 的 **retrieval 子域**（working_refs / recent_retrieval_trace / retrieval_config / last_retrieval_at）——见 §18。
 
 ---
 
@@ -276,35 +347,78 @@ Observation input
 
 ## 16. CognitionActionTransition Contract
 
+**Input:**
+- subject_id
+- expected_state_revision（must equal current）
+- subject state projection（read）
+- optional cognition trigger
+- current logical time
+
+**Pipeline:**
 ```text
-SubjectState → Cognition/Motivation → Policy → NO_ACTION   （合法结束）
+SubjectState → Cognition/Motivation → Policy → NO_ACTION（合法结束）
                                         ↘ ActionIntent → external action execution
 ```
 
-- Action **optional**；`NO_ACTION` 是合法 canonical 结果。
-- CognitionActionTransition 的 canonical effect 可只更新必要的 internal policy/context trace，并输出 **external side-effect intent**。
-- 真正 Environment/Outcome 通常**不属于**同一个 local canonical commit（不把外部世界塞进事务）。
-- 外部 side effect 的 exactly-once / at-least-once 问题**本阶段不设计**，只明确：
-  - external side effect ≠ canonical SubjectState mutation；
-  - 若 external Action 执行失败，**不得伪造 Outcome**。
+**Preconditions:** valid subject revision；permitted policy/reasoning input。
+
+**Output:**
+- `NO_ACTION`（valid policy result）
+- 或 `ActionIntent` / `ActionCommand` + `external_effects[]`
+- optional context / internal state delta
+- canonical TransitionResult
+
+**Postconditions:**
+- Action optional；no fake Outcome
+- external world side effect **不属于** canonical SubjectState commit
+- no direct behavior → memory write
+
+**Failure / Degrade（`DESIGN DECISION`）：**
+- **LLM reasoning unavailable**（且 Action generation 依赖 LLM 时）→ `ACTION_UNAVAILABLE`（runtime failure），**不是** `NO_ACTION`。
+- **严格区分**：`NO_ACTION` = valid policy result；`ACTION_UNAVAILABLE` / `TRANSITION_REJECTED` = runtime failure。**不得把技术故障误当成角色决定 NO_ACTION。**
+
+- 外部 side effect 的 exactly-once / at-least-once 本阶段不设计。
+- external Action 失败 → **不得伪造 Outcome**。
 
 ---
 
 ## 17. LearningTransition Contract
 
+**Input:**
+- Outcome OR InternalExperience（valid experience source）
+- expected_state_revision（must equal current）
+- source transition / result refs
+- current memory repository revision
+- logical occurrence time
+
+**Pipeline:**
 ```text
-V0:
-  Outcome OR InternalExperience
-    → Experience Encoding
-    → MemoryRepository prepare（immutable revision Rn）
-    → MemoryDelta（content 子域）
-    → subject-core canonical commit
+Experience → Encode → prepare immutable MemoryRepository revision → validate
+           → MemoryDelta（content 子域）→ subject-core atomic commit
 ```
 
-- V0 **禁止** belief evolution / relationship evolution / learned plasticity。
-- 未来可扩展为 `MemoryDelta + BeliefDelta + RelationshipDelta + PlasticityDelta`，但依然 **ONE LearningTransition = ONE atomic canonical commit**。
-- MemoryRepository prepare 可发生在 commit 前；继承 State–Memory atomicity：**orphan revision allowed；invalid reference forbidden**。
-- **InternalExperience 来源（`DESIGN DECISION`）：** `ObservationTransitionResult` 可作为 InternalExperience source，即使没有 external Outcome——这样 MICL 能 `Observation → Affect → Learning → memory encode` 而不要求世界动作。
+**Output:**
+- LearningTransitionResult（new repository revision ref if committed、ExperienceRef、MemoryDelta result）
+- canonical TransitionResult
+
+**Preconditions:** valid experience source；valid current repository revision；state revision 匹配；content field ownership 有效。
+
+**Postconditions:**
+- V0 只 mutation Memory **content** 子域
+- no Belief evolution / no Relationship evolution / no Plasticity evolution
+- orphan revision allowed（precommit failure after prepare）
+- invalid repository revision **never** committed
+
+**Failure（`DESIGN DECISION`）：**
+- encoding failure → pre-commit abort（no canonical mutation）
+- repository prepare failure → pre-commit abort
+- repository validation failure → pre-commit abort
+- **state stale after prepare → orphan revision + reject canonical commit + later GC**（见 §19）
+- commit conflict → reject
+
+**InternalExperience 来源（`DESIGN DECISION`）:** `ObservationTransitionResult` 可作为 InternalExperience source，即使没有 external Outcome——使 MICL 能 `Observation → Affect → Learning → memory encode` 而不要求世界动作。
+
+**Idempotency:** Memory prepare 重试应复用已 prepared revision，避免无限孤儿 revision（见 §22）。
 
 ---
 
@@ -507,3 +621,18 @@ TransitionResult {
 5. **Memory retrieval metadata ownership**：ObservationTransition owns retrieval 子域；LearningTransition owns content 子域（见 §18）。
 
 上述修订已同步进 `subjectstate-v0-spec.md`（本任务）。
+
+### Action 2 Consistency Closure（封口修订，本任务追加）
+
+跨文档 consistency residuals 的封口，不影响已接受的总体架构：
+
+1. **Memory ownership 精确化**：消除"ObservationTransition 不写 MemoryState"与"LearningTransition = single memory owner"的过时绝对表述；统一为 partition（Observation→retrieval 子域；Learning→content 子域）。canonical write authority 仍 = subject-core。
+2. **TimeTransition memory signal**：`memory maintenance eligibility` 定为 **derived signal（非 canonical delta）**；TimeTransition 不直接 mutate MemoryState。
+3. **消除独立 mood producer**：MoodDelta producer = affect domain（不引入独立 mood package）。
+4. **时间三源消除双源**：`logical_time_before`（read from canonical）、`elapsed_time`（supplied）、`logical_time_after`（derived）。
+5. **Orchestrator vs subject-core**：subject-core 不调用/不 import domain package；orchestration 属 runtime。
+6. **四类 transition contract 补全**：Observation/CognitionAction/Learning 补齐 Input/Output/Preconditions/Postconditions/Failure/Degrade。
+7. **trace_window 命名统一**：SubjectState 顶层 `trace` → `trace_window`（bounded projection，非完整 history）。
+8. **SubjectState Deferred D1/D4 → RESOLVED**（transition-contracts 已完成）。
+
+**Action 2 状态 = COMPLETE / CONSISTENCY CLOSED。**

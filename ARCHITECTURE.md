@@ -1,6 +1,6 @@
 # ARCHITECTURE.md — CharacterOS-Next 架构宪法
 
-**状态:** 骨架阶段文档。定义架构，不实现。全部结论带标签（VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN）。
+**状态:** 设计文档（Formal Design）。定义架构，不实现。全部结论带标签（VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN）。
 **本文件的层级:** 本文件是 CharacterOS-Next 的架构宪法；任何 ADR（docs/adr/）不得违反本文件，只能细化。
 **修订:** P0-1 起，本文件采用 **canonical transition system（多 transition Subject Runtime）** 取代早期的"单一 15 阶段强制 tick"。修订记录见 `docs/architecture/p0-architecture-correction.md`。
 
@@ -50,7 +50,7 @@
 
 | Transition | 签名（概念） | 职责 | Action 是否发生 |
 |---|---|---|---|
-| **TimeTransition** | `SubjectState(t) → elapsed time → SubjectState(t+Δt)` | regulation 推进、affect settling/decay、mood settling、memory consolidation eligibility、baseline 调整、恢复过程；**无外部事件也能演化** | 否 |
+| **TimeTransition** | `SubjectState(t) → elapsed time → SubjectState(t+Δt)` | regulation 推进、affect settling/decay、mood settling、memory consolidation eligibility（derived signal，非 canonical delta）、baseline 调整、恢复过程；**无外部事件也能演化** | 否 |
 | **ObservationTransition** | `Observation → Perception → Retrieval → Interpretation → Appraisal → Affect update → SubjectState'` | 处理外部/内部信号，更新主观状态 | 否 |
 | **Cognition/ActionTransition** | `SubjectState → Cognition/Motivation → Policy/Decision → optional Action` | 决策与可选动作；Action **optional** | 可选 |
 | **LearningTransition** | `Outcome / Internal Experience → Experience Encoding → Memory Consolidation → Belief/Relationship/Plasticity update → Future SubjectState` | 从结果与经历中学习，更新慢层 | 否（是 Outcome 之后） |
@@ -205,7 +205,7 @@ SubjectStateV0 {
   regulation      : { energy }           // 占位（支持未来 TimeTransition）
   context         : { scene, task, focus[] }
   mechanism_config : { affect_profile: FAST_EMA_V0, legacy_reference_defaults }
-  trace           : { log[] }            // 强制 provenance
+  trace_window    : { entries[], cursor }  // bounded projection（非完整 history，见 spec §21）
   runtime_metadata: { subject_version, logical_time, last_transition_time, state_revision }
 }
 ```
@@ -224,14 +224,14 @@ SubjectStateV0 {
   "context": { "scene": "work", "task": "review", "focus": ["evt#42"] },
   "mechanism_config": { "affect_profile": "FAST_EMA_V0",
                           "legacy_reference_defaults": { "tHold": 60, "alpha": 0.06, "tau": 150, "clamp": 0.25 } },
-  "trace":  [ { "transition": "Observation", "layer": "affect", "rule": "appraisal->affect",
+  "trace_window": [ { "transition": "Observation", "layer": "affect", "rule": "appraisal->affect",
                 "cause": "evt#41(anger,0.7)", "from": "NEUTRAL", "to": "HOLD" } ],
   "runtime_metadata": { "subject_version": "v0", "logical_time": 1042,
                         "state_revision": "r-1042" }
 }
 ```
 
-> 上图仅为概念沟通示意。字段、命名、编码均为 `HYPOTHESIS`，将在 NEXT_ACTIONS #1（SubjectState V0 spec）中正式裁定。
+> 上图仅为概念沟通示意；正式字段/命名/编码已由 `docs/architecture/subjectstate-v0-spec.md` 裁定（P1 Action 1）。
 > `legacy_reference_defaults`（tHold=60/α=0.06/τ=150/clamp=0.25）来源 `VERIFIED`（Plasticity Phase 1），但"是否适合作为 CharacterOS-Next 默认参数"是 `DESIGN DECISION`/`HYPOTHESIS`，不是 VERIFIED 科学真值。
 
 ### 5.4 V0 写规则（单写入口的 V0 版本）
