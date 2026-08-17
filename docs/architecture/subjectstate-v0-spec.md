@@ -455,7 +455,7 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 | Regulation | yes | yes | no | partial（per TimeTransition） | no | regulation | subject-core |
 | Working Context | yes | **partial**（scene/task/active_entity_refs 持久；focus/current_observation 瞬态） | no | yes（瞬态字段） | no | context | subject-core |
 | MechanismConfig | yes | yes | no | no | no | —（config） | subject-core |
-| TraceWindow（trace_window） | yes（bounded window） | yes（窗口 + trace_cursor） | offload 到 AuditStore | no（append-only） | no | subject-core | subject-core |
+| TraceWindow（trace_window） | yes（bounded rolling window） | yes（窗口 + trace_cursor） | offload 到 AuditStore | no（core-managed eviction，非 append-only） | no | subject-core | subject-core |
 | RuntimeMetadata | yes | yes | no | no | no | subject-core | subject-core |
 
 > `Repository-backed` 列：只有 MemoryState 的**引用**指向 MemoryRepository；payload/embedding/index 永远在 repository，不在 canonical state。

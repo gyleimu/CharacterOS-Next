@@ -11,8 +11,8 @@
 | **P0** | Architecture Foundation | 骨架、架构宪法、研究状态、迁移地图、SubjectState V0 概念模型、canonical transition system | **COMPLETE** |
 | **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **COMPLETE** |
 | **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | **COMPLETE** |
-| **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A10 工程行为契约；不运行科学实验 | **READY / NEXT**（P2 实现前强制门禁） |
-| **P2** | Minimal Runtime Implementation | 在 product/sandbox 内实现 MICL 的最小可运行版本；无研究实验 | 未授权 |
+| **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A13 工程行为契约；不运行科学实验 | **COMPLETE** |
+| **P2** | Minimal Runtime Implementation | 在 product/sandbox 内实现 MICL 的最小可运行版本；无研究实验 | **READY / NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
 | **P3** | Controlled Migration | 按 MIGRATION_MAP 逐项执行（每项独立审批） | 未授权 |
 | **P4** | Empirical Evaluation / Benchmarks | evals/ 三组 baseline + longitudinal/ablation/regression | 未授权 |
 | **P5+** | Triggered Research | 仅当研究触发条件命中（§3）才开放对应研究/实验 | 未授权 |
@@ -60,13 +60,13 @@
 | G4 | **NO product feature development**：P0/P0.5/P1 阶段不开发产品功能 |
 | G5 | **NO claim of achieved long-lived agency**：长期主体是愿景，不是现状 |
 | G6 | 任何机制进入实现前必须声明其 baseline 策略（FAST+EMA / LINEAR-G / Memory+LLM 每轮重算，择对应问题形态） |
-| G7 | **Evaluation/Acceptance contract 先于实现**：P2 实现前必须完成 P1.5（A1–A10） |
+| G7 | **Evaluation/Acceptance contract 先于实现**：P2 实现前必须完成 P1.5（A1–A13，见 docs/evaluation/p1-5-engineering-acceptance-contract.md） |
 
 ---
 
-## 5. P1.5 Engineering Acceptance Contract（A1–A10）
+## 5. P1.5 Engineering Acceptance Contract（A1–A13）
 
-> 这是**工程行为契约**，不是研究 benchmark。它在 P2 实现前强制完成，且不运行科学实验。
+> 这是**工程行为契约**，不是研究 benchmark。它在 P2 实现前强制完成，且不运行科学实验。完整正式规格见 `docs/evaluation/p1-5-engineering-acceptance-contract.md`。
 
 | # | 契约 | 含义 |
 |---|---|---|
@@ -80,8 +80,11 @@
 | A8 | Time semantics | state can evolve through time without requiring an external observation |
 | A9 | Optional action | tick can legally complete with no external action |
 | A10 | Failure semantics | a failed LLM proposal does not corrupt canonical state |
+| A11 | Atomic multi-domain commit | one transition = one atomic commit；any delta invalid → none committed |
+| A12 | Idempotency / resume | duplicate transition/micl retry does not double-apply delta or memory |
+| A13 | Learning stale rebase safety | stale after prepare → reload + revalidate + rebase，not just change expected revision |
 
-`[DESIGN DECISION — P0-6：evaluation/acceptance contract 前移到 implementation 之前]`
+`[DESIGN DECISION — P0-6：evaluation/acceptance contract 前移到 implementation 之前；A11–A13 为 P1.5 正式扩展]`
 
 ---
 
@@ -90,7 +93,7 @@
 - **P0.5 准入** = P0 骨架完成。
 - **P1 准入** = P0.5 验收完成（§2）。
 - **P1.5 准入** = P1 设计文档（SubjectState V0 spec + transition contracts + MICL design）完成。
-- **P2 准入** = P1.5 完成（A1–A10 契约）+ 人类批准（实现不得先于设计 + 不得先于 acceptance contract）。
+- **P2 准入** = P1.5 完成（A1–A13 契约）+ **显式授权**（实现不得先于设计 + 不得先于 acceptance contract；P1.5 完成 ≠ P2 自动开始）。
 - **P3 准入** = P2 MICL 在 sandbox 可运行 + 每项迁移单独审批。
 - **研究触发（T1–T8）准入** = 真实产品现象证据 + 独立 Phase 0 + 预注册 + 审批链（继承 CERH 纪律）。
 

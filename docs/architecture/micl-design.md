@@ -102,11 +102,11 @@ MICLRequest {
   micl_id
   subject_id
   expected_initial_state_revision
-  observation                    // Observation（见 §10）
-  occurrence_logical_time        // 事件发生时刻（canonical input，非 wall clock）
+  observation                    // Observation（见 §10）；occurrence time 权威 = Observation.occurrence_logical_time
   cause_refs?
   request_metadata?
 }
+// 注意：MICLRequest 不重复保存 occurrence_logical_time（单一 authority = Observation.occurrence_logical_time，P1 final sync C1）
 
 MICLResult {
   micl_id
@@ -596,7 +596,7 @@ Observation（objective）: "一个重要的人 8 小时未回复消息。"（�
 |---|---|---|
 | Retrieval | 多次晚回复且最终正常解释 | 类似场景 + 负面经历 |
 | Interpretation | "可能正忙" | "可能意味着再次被拒绝" |
-| Appraisal | moderate uncertainty、mild negative goal_congruence、low intensity | high uncertainty、high negative goal_congruence、high relationship_significance、higher intensity |
+| Appraisal | moderate uncertainty、mild negative goal_congruence、low intensity | high uncertainty、high negative goal_congruence、high intensity（relationship relevance 经 Interpretation/context evidence 抬高 relevance/intensity，**不是**独立 Appraisal 字段） |
 | Affect | mild concern、较快 settling | 较强 fear/sadness、较长 persistence |
 
 **关键:** 差异须来自 retrieved memory refs / relationship read model / state projection，**不是**手写 prompt "B 有创伤所以更害怕"。

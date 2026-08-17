@@ -113,7 +113,7 @@ Previous SubjectState
 |---|---|---|
 | (1) Perception | runtime | 设计占位（文本输入）；多模态 = UNKNOWN |
 | (2) Memory Retrieval | memory（MemoryRepository 设施 + 读 MemoryState） | MICL 核心之一（见 NEXT_ACTIONS #3） |
-| (3) Interpretation | subject-core | 设计占位 |
+| (3) Interpretation | appraisal（InterpretationProposal + evidence validation）+ runtime（projection/orchestration） | 设计占位 |
 | (4) Appraisal | appraisal | MICL 核心之一 |
 | (5) Affective Dynamics | affect | MICL 核心之一（V0 = FAST+EMA-derived reference persistence） |
 | (6)–(7) Cognition/Motivation/Policy | behavior (+subject-core) | 设计占位 |

@@ -150,7 +150,7 @@ CanonicalTransitionProposal {
 | mechanism_config | —（config/init） | init | subject-core | NO | persistent | readonly（V0） |
 | memory_state（content 子域） | memory | Learning | subject-core | NO | refs only | conflict→reject |
 | memory_state（retrieval 子域） | memory | Observation | subject-core | NO | refs only | conflict→reject |
-| trace_window | subject-core | all commits | subject-core | NO | window+cursor | append-only |
+| trace_window | subject-core | all commits | subject-core | NO | window+cursor | rolling / bounded（core-managed eviction，非 append-only） |
 | runtime_metadata | subject-core | all commits | subject-core | NO | persistent | monotonic |
 
 **MemoryState 子域（见 §18）：**
@@ -414,8 +414,21 @@ Experience → Encode → prepare immutable MemoryRepository revision → valida
 - encoding failure → pre-commit abort（no canonical mutation）
 - repository prepare failure → pre-commit abort
 - repository validation failure → pre-commit abort
-- **state stale after prepare → orphan revision + reject canonical commit + later GC**（见 §19）
 - commit conflict → reject
+
+**Learning stale after prepare（`DESIGN DECISION`，P1 final sync C2）：**
+- prepared repository revision → **orphan / pending candidate**（不被自动 canonical）。
+- 禁止简单 `expected_revision = latest` 然后原样重提交旧 MemoryDelta（rev103 可能已改 MemoryState/Context/regulation/affect/repository_revision）。
+- 必须以 `REBASE_REQUIRED` 语义处理：
+  1. reject 当前 canonical commit
+  2. load 最新 canonical SubjectState
+  3. verify 源 InternalExperience 仍有效
+  4. verify repository base revision
+  5. revalidate field ownership
+  6. revalidate prepared memory revision 是否仍可 attach
+  7. 安全则 rebuild/rebase MemoryDelta；不安全则丢弃/orphan 候选并重建 Learning 阶段
+
+**核心原则：`STALE != 仅改 expected revision`；retry 必须 re-read + revalidate。**
 
 **InternalExperience 来源（`DESIGN DECISION`）:** `ObservationTransitionResult` 可作为 InternalExperience source，即使没有 external Outcome——使 MICL 能 `Observation → Affect → Learning → memory encode` 而不要求世界动作。
 

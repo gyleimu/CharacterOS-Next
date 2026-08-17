@@ -89,6 +89,7 @@ SubjectState(t)
 
 ## 三个动作之外的一切
 
-- 动作 1–3 **全部 COMPLETE**。**NEXT GATE = ROADMAP P1.5（Engineering Acceptance / Evaluation Contract A1–A10）**。完成 P1.5 前不得进入 P2 实现。
-- 迁移执行（P3）、实现（P2）、评估建设（P4）、研究触发（T1–T8）全部保持未授权。
-- 本文件只做 status handoff，不擅自开始 P1.5 内容。
+- 动作 1–3 **全部 COMPLETE**。**NEXT GATE COMPLETED = ROADMAP P1.5（Engineering Acceptance Contract A1–A13，产物 docs/evaluation/p1-5-engineering-acceptance-contract.md）**。
+- **NEXT AUTHORIZED CANDIDATE = P2 Minimal Runtime Implementation；REQUIRES EXPLICIT START**（P1.5 完成 ≠ P2 自动开始）。
+- 迁移执行（P3）、评估建设（P4）、研究触发（T1–T8）全部保持未授权。
+- 本文件只做 status handoff，不擅自创建 P2 代码任务。

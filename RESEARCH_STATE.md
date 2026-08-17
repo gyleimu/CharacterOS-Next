@@ -89,4 +89,4 @@
 
 ## 7. 一句话研究状态
 
-> 架构修复清单来自约束 A（7 缺口）；情感机制裁决来自约束 B（持久状态 + LLM 边界 + FAST+EMA reference identity）；研究本身处于冻结态——下一步的三个动作（SubjectState V0 / Transition Contracts / MICL 设计）全部是**设计动作**，不是研究动作，不是实现动作。
+> 架构修复清单来自约束 A（7 缺口）；情感机制裁决来自约束 B（持久状态 + LLM 边界 + FAST+EMA reference identity）；研究本身处于冻结态。P1（SubjectState V0 / Transition Contracts / MICL）与 P1.5（Engineering Acceptance Contract A1–A13）已全部完成——它们都是**设计/契约动作**，不是研究动作、不是实现动作。NO DEV_004 / NO experiments 持续有效。
