@@ -50,7 +50,9 @@
 
 ---
 
-## 动作 3 — MICL 设计（Minimal Internal Continuity Loop）（未开始）
+## 动作 3 — MICL 设计（Minimal Internal Continuity Loop）· COMPLETE
+
+**状态:** ✅ COMPLETE（2026-08-17）——产物 `docs/architecture/micl-design.md`。
 
 **优先级理由:** 这是两个审计共同指向的最小增量：约束 A 缺口 #1/#5（Retrieval/Appraisal 先于 Affect + 自传式检索）与约束 B（FAST+EMA reference persistence）的交点。它是 P2（sandbox 实现）的唯一前置。
 
@@ -87,6 +89,6 @@ SubjectState(t)
 
 ## 三个动作之外的一切
 
-- 动作 1–3 完成后的**唯一下一门禁** = ROADMAP P1.5（Engineering Acceptance Contract A1–A10）。完成 P1.5 前不得进入 P2 实现。
+- 动作 1–3 **全部 COMPLETE**。**NEXT GATE = ROADMAP P1.5（Engineering Acceptance / Evaluation Contract A1–A10）**。完成 P1.5 前不得进入 P2 实现。
 - 迁移执行（P3）、实现（P2）、评估建设（P4）、研究触发（T1–T8）全部保持未授权。
-- 三个动作完成后，本文件将被重写为下一组动作；在此之前不得加第 4 条。
+- 本文件只做 status handoff，不擅自开始 P1.5 内容。

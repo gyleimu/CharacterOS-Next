@@ -104,8 +104,9 @@ CanonicalTransitionProposal {
   subject_id
   transition_type               // Time / Observation / CognitionAction / Learning
   expected_state_revision       // optimistic concurrency
-  logical_time
-  elapsed_time?                 // TimeTransition 用；Duration{value,unit}
+  time_input                    // transition-specific（见 §12）：
+                                //   Time:   { kind: elapsed, elapsed_time: Duration }
+                                //   others: { kind: occurrence, occurrence_logical_time }
   cause_refs[]
   domain_deltas: [              // 一个 transition 可有 N 个 domain delta
     { producer, domain, delta, expected_domain_revision? }
@@ -154,7 +155,7 @@ CanonicalTransitionProposal {
 
 **MemoryState 子域（见 §18）：**
 - **content/encoding/consolidation 子域** = `active_episode_refs`、`repository_revision`、`autobiographical_index_revision`、`consolidation_cursor`、`pending_encoding_refs`、`lifecycle_metadata` → **LearningTransition**。
-- **retrieval 子域** = `working_refs`、`recent_retrieval_trace`、`retrieval_config`、`last_retrieval_at` → **ObservationTransition**。
+- **retrieval 子域** = `working_refs`、`recent_retrieval_trace`、`last_retrieval_at` → **ObservationTransition**（`retrieval_config` 属 config authority，init-only，MICL consistency correction）。
 
 ---
 
@@ -325,7 +326,7 @@ Observation → Perception → Memory Retrieval → Subjective Interpretation
 
 **Memory ownership（精确版）：**
 - ObservationTransition **不写** Experience Encoding / episodic memory content（那是 LearningTransition）。
-- ObservationTransition **可写** MemoryState 的 **retrieval 子域**（working_refs / recent_retrieval_trace / retrieval_config / last_retrieval_at）——见 §18。
+- ObservationTransition **可写** MemoryState 的 **retrieval 子域**（working_refs / recent_retrieval_trace / last_retrieval_at）——见 §18（`retrieval_config` 非此域）。
 
 ---
 
@@ -433,7 +434,7 @@ LearningTransition = sole owner of memory CONTENT/ENCODING/CONSOLIDATION mutatio
           pending_encoding_refs, lifecycle_metadata
 
 ObservationTransition = owner of memory RETRIEVAL METADATA mutation only
-  fields: working_refs, recent_retrieval_trace, retrieval_config, last_retrieval_at
+  fields: working_refs, recent_retrieval_trace, last_retrieval_at
 ```
 
 - 两子域字段**互不相交** → 无 double-write。

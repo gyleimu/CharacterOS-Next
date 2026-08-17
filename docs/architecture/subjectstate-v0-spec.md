@@ -176,7 +176,7 @@ SubjectStateV0
 | autobiographical_index_revision | string | optional | `null` | 指向 MemoryRepository 自传索引 revision |
 | repository_revision | string | required | — | **canonical 引用的记忆仓库 revision**（见 §11 原子性） |
 | consolidation_cursor | logical_time | optional | `null` | 巩固已运行到的 logical time |
-| retrieval_config | object | optional | `{}` | 检索配置/偏置状态（默认不含 affect-congruence） |
+| retrieval_config | object | optional | `{}` | 检索配置/偏置状态（默认不含 affect-congruence）；**config authority（init-only，非 Observation 可写）** |
 | recent_retrieval_trace | array<ref> | optional | `[]` | 近期检索痕迹（引用，有界 ring） |
 | lifecycle_metadata | object | optional | `{}` | 记忆生命周期元数据 |
 | pending_encoding_refs | array<ref> | optional | `[]` | 待编码/巩固的经历引用 |
@@ -188,7 +188,7 @@ SubjectStateV0
 - **禁止**把 MemoryState 变成"把整个 vector DB 搬进 SubjectState"——payload 一律在 MemoryRepository。
 - **MemoryState 子域 partition（Action 2 一致性修正，消除双写）** `[DESIGN DECISION]`：
   - **content/encoding/consolidation 子域**（`active_episode_refs`、`repository_revision`、`autobiographical_index_revision`、`consolidation_cursor`、`pending_encoding_refs`、`lifecycle_metadata`）→ **LearningTransition** 唯一 owner。
-  - **retrieval 子域**（`working_refs`、`recent_retrieval_trace`、`retrieval_config`、`last_retrieval_at`）→ **ObservationTransition** 唯一 owner。
+  - **retrieval 子域**（`working_refs`、`recent_retrieval_trace`、`last_retrieval_at`）→ **ObservationTransition** 唯一 owner。（`retrieval_config` 属 config authority，init-only，见 MICL consistency correction）
 
 ---
 
@@ -228,10 +228,13 @@ MemoryRepository（infrastructure，NOT canonical SubjectState）
 prepare new MemoryRepository revision Rn
   → validate payload / index
   → construct MemoryDelta（含 repository_revision=Rn）
-  → subject-core 校验 expected_state_revision + expected_repository_revision
-  → atomic canonical SubjectState commit（引用 Rn）
-  → append provenance
-  → publish new SubjectState
+  → build candidate next state（引用 Rn）
+  → build TraceEntry + trace_window / cursor 更新
+  → subject-core validate（expected_state_revision + expected_repository_revision + whole-state）
+        ↓
+  ONE atomic canonical commit（state mutation + state_revision + TraceEntry + trace/hash/cursor，同界）
+        ↓
+  publish new SubjectState
 ```
 
 **若无法实现真正跨存储 atomic transaction（V0 很可能如此），采用其一：**
@@ -405,7 +408,7 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 
 | 对象 | 归属 | 触发 | 语义 |
 |---|---|---|---|
-| `mutation_trace`（SubjectState.trace_window） | canonical，append-only，immutable | 每次成功 canonical commit | 状态变更溯源 |
+| TraceEntry（写入 `SubjectState.trace_window`，rolling bounded 窗口） | canonical；**TraceEntry immutable**（MutationHistory append-only；trace_window 本身 rolling，见 §21 裁定） | 每次成功 canonical commit | 状态变更溯源 |
 | `audit_event` | audit store（infrastructure） | 失败 proposal / 拒绝 / 越权尝试 | 审计，**不是** canonical mutation |
 
 **TraceEntry（mutation_trace）：**
@@ -484,8 +487,9 @@ CanonicalTransitionProposal {
   subject_id
   expected_state_revision     // optimistic concurrency
   transition_type             // Time/Observation/CognitionAction/Learning
-  logical_time
-  elapsed_time?               // Duration{value, unit}
+  time_input                  // transition-specific（见 transition-contracts §12）：
+                               //   Time:   { kind: elapsed, elapsed_time: Duration }
+                               //   others: { kind: occurrence, occurrence_logical_time }
   cause_refs[]
   domain_deltas[]             // 一个 transition 可有 N 个 domain delta
   external_refs?
@@ -563,7 +567,7 @@ Canonical mutator: always subject-core
 ```
 
 **精确表述（不得再用绝对句）：**
-- ObservationTransition **不写 memory CONTENT**（不写 episodic content / Experience Encoding），但 **owns retrieval metadata 子域**（working_refs / recent_retrieval_trace / retrieval_config / last_retrieval_at）。
+- ObservationTransition **不写 memory CONTENT**（不写 episodic content / Experience Encoding），但 **owns retrieval metadata 子域**（working_refs / recent_retrieval_trace / last_retrieval_at；`retrieval_config` 属 config authority）。
 - LearningTransition **owns content / encoding / consolidation 子域**（active_episode_refs / repository_revision / autobiographical_index_revision / consolidation_cursor / pending_encoding_refs / lifecycle_metadata）。
 
 **不变量:** **DOUBLE MEMORY WRITE FORBIDDEN** —— 两子域字段互不相交，无重叠写。transition ownership 是"谁产 delta"；**canonical write authority 始终是 subject-core**。

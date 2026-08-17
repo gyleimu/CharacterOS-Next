@@ -55,7 +55,7 @@
 |---|---|---|
 | O1 | SubjectState V0 的正式 spec（含 MemoryState ownership + runtime metadata + persistence boundary + trace） | **已完成** → `docs/architecture/subjectstate-v0-spec.md`（P1 Action 1） |
 | O2 | Canonical transition contracts（Time/Observation/CognitionAction/Learning 四类 + lifecycle 组合 + LLM 触点 + failure/idempotency） | **已完成 / CONSISTENCY CLOSED** → `docs/architecture/transition-contracts.md`（P1 Action 2） |
-| O3 | MICL（Minimal Internal Continuity Loop）设计：SubjectState → TimeTransition → Observation → Retrieval → Interpretation/Appraisal → Affect → Experience Encoding → next SubjectState | 待 NEXT_ACTIONS #3 |
+| O3 | MICL（Minimal Internal Continuity Loop）设计：SubjectState → TimeTransition → Observation → Retrieval → Interpretation/Appraisal → Affect → Experience Encoding → next SubjectState | **已完成** → `docs/architecture/micl-design.md`（P1 Action 3） |
 | O4 | LLM appraisal 提案协议的具体字段与校验规则 | `HYPOTHESIS` |
 | O5 | 跨 session 持久性 / 多通道一致性 / 权威抗注入的价值 | `HYPOTHESIS`（触发条件 T1/T4/T6） |
 | O6 | 旧 Phase 5.2 测量修复（bias 消融/特异性）后的重测设计 | 继承自旧线，`HYPOTHESIS`（产品侧触发） |

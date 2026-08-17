@@ -1,6 +1,6 @@
 # CharacterOS-Next
 
-**状态: DESIGN-ONLY（P1 FORMAL DESIGN）** — 本仓库当前包含架构宪法、正式规格（SubjectState V0 + transition contracts）、研究状态、路线图与迁移计划。**不含任何实现代码、不含任何实验资产、不包含任何从旧仓库复制的源码。**
+**状态: DESIGN-ONLY（P1 FORMAL DESIGN — COMPLETE）** — 本仓库当前包含架构宪法、正式规格（SubjectState V0 + transition contracts + MICL design）、研究状态、路线图与迁移计划。**不含任何实现代码、不含任何实验资产、不包含任何从旧仓库复制的源码。** 下一门禁 = P1.5（Engineering Acceptance Contract）。
 
 CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长期人工主体（long-lived agent）总工程体系**的伞形仓库，统一承载：
 
@@ -102,12 +102,13 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 | `docs/architecture/p0-architecture-correction.md` | P0 架构修订记录（问题清单 + 修改 + 前后对照） |
 | `docs/architecture/subjectstate-v0-spec.md` | SubjectState V0 正式规格（P1 Action 1 · COMPLETE） |
 | `docs/architecture/transition-contracts.md` | Canonical transition contracts（P1 Action 2 · COMPLETE） |
+| `docs/architecture/micl-design.md` | MICL — Minimal Internal Continuity Loop 正式设计（P1 Action 3 · COMPLETE） |
 
 ---
 
 ## 6. 目录说明（当前状态）
 
-- `docs/` — vision / theory / architecture / adr / roadmap（architecture 下已有 `p0-architecture-correction.md`、`subjectstate-v0-spec.md`、`transition-contracts.md`；adr/theory 待后续）
+- `docs/` — vision / theory / architecture / adr / roadmap（architecture 下已有 `p0-architecture-correction.md`、`subjectstate-v0-spec.md`、`transition-contracts.md`、`micl-design.md`；adr/theory 待后续）
 - `research/` — emotion / memory / appraisal / plasticity / hypotheses / experiments（当前为空骨架；**experiments 目录仅为未来形态占位，不代表任何实验被授权**）
 - `evals/` — baselines（llm-prompt、fast-ema、characteros-v1）+ longitudinal / ablation / regression（未来评估资产，当前为空）
 - `packages/` — 十个包目录（未来实现；当前空骨架）

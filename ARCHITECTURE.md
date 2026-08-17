@@ -289,7 +289,7 @@ Core 处理:   appraisal_proposal → 校验范围 → Core 规则换算 → 写
 
 | 包 | 责任（未来实现） | 依赖 |
 |---|---|---|
-| subject-core | **唯一 canonical commit authority**；SubjectState 结构、transition 协调、cause-trace、写规则引擎、state_revision 推进 | 无（最底层） |
+| subject-core | **唯一 canonical commit authority**；SubjectState 结构、cause-trace、写规则引擎、state_revision 推进、StateHash、immutable snapshot publish（**不负责 domain orchestration**） | 无（最底层） |
 | memory | MemoryDelta production + retrieval/encoding/consolidation 逻辑 + MemoryRepository 设施（infrastructure）；**NO canonical mutation** | subject-core（只读投影） |
 | appraisal | InterpretationProposal / AppraisalProposal production（LLM 提案 + Core 校验）；**NO canonical mutation** | subject-core、memory |
 | affect | AffectDelta / MoodDelta production + reference mechanism evaluation；**NO canonical mutation** | subject-core |
