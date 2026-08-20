@@ -1,0 +1,3 @@
+packages:
+  - "packages/*"
+  - "product/sandbox"

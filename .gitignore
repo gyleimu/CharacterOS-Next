@@ -2,6 +2,7 @@
 
 # dependencies / builds
 node_modules/
+.pnpm-store/
 dist/
 build/
 .next/

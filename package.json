@@ -1,0 +1,25 @@
+{
+  "name": "characteros-next",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=24.0.0 <25",
+    "pnpm": ">=11.0.0 <12"
+  },
+  "scripts": {
+    "build": "pnpm --recursive --workspace-concurrency=1 --if-present run build",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run",
+    "typecheck": "pnpm --recursive --workspace-concurrency=1 --if-present run typecheck"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.13.3",
+    "eslint": "10.8.1",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0",
+    "vitest": "4.1.11"
+  }
+}

@@ -1,6 +1,6 @@
 # CharacterOS-Next
 
-**状态: DESIGN + ACCEPTANCE CONTRACT COMPLETE，NO IMPLEMENTATION YET** — 本仓库当前包含架构宪法、正式规格（SubjectState V0 + transition contracts + MICL design）、P1.5 工程验收契约、研究状态、路线图与迁移计划。**不含任何实现代码、不含任何实验资产、不包含任何从旧仓库复制的源码。** 下一候选 = P2（Minimal Runtime Implementation，需显式授权）。
+**状态: P2.0 RUNTIME BOOTSTRAP — IN PROGRESS；P2.1+ NOT STARTED** — P0/P1/P1.5 与 P2 runtime plan 已完成。当前授权仅覆盖 TypeScript/pnpm workspace、package boundaries、toolchain、dependency checks、opaque placeholder types 与 conformance skeleton；**不含任何 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，不含实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires explicit authorization。
 
 CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长期人工主体（long-lived agent）总工程体系**的伞形仓库，统一承载：
 
@@ -75,9 +75,9 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 
 ## 4. 本阶段边界（硬性禁止）
 
-**当前阶段 = P1 Formal Design。**
+**当前阶段 = P2.0 Runtime Bootstrap — IN PROGRESS。**
 
-允许：formal architecture specification、state contracts、transition contracts、MICL design（下一步）。
+允许：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。
 
 - ❌ NO DEV_004（以及任何新实验编号）
 - ❌ NO new dynamics experiment
@@ -85,7 +85,8 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 - ❌ NO product feature development
 - ❌ NO claim that CharacterOS-Next already achieves long-lived agency（本仓库当前**没有**实现长期主体，只有定义与计划）
 - ❌ 禁止修改以下任何旧仓库：`CharacterOS`、`CharacterOS emotion`、`CharacterOS-CERH-DEV-001/002/003`、外部审计 workspace
-- ❌ NO implementation（`packages/*` 当前为空骨架，仅 `.gitkeep`）
+- ❌ NO domain/runtime behavior：无 SubjectState、commit、memory、retrieval、transition、MICL、affect、LLM、API、UI、database、embedding、vector DB 或 agent implementation
+- ❌ NO P2.1 Subject Core implementation without explicit authorization
 
 ---
 
@@ -98,12 +99,13 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 | `ROADMAP.md` | 阶段划分（含 P0.5/P1.5）、门禁、研究触发条件 |
 | `RESEARCH_STATE.md` | 两个审计结论的合并状态、开放问题、研究纪律 |
 | `MIGRATION_MAP.md` | 迁移分类体系（KEEP/ADAPT/REWRITE/BASELINE_ONLY/RESEARCH_HYPOTHESIS/ARCHIVE）+ 旧资产迁移表（只写计划） |
-| `NEXT_ACTIONS.md` | 仅 3 个下一动作（SubjectState V0 / Transition Contracts / MICL） |
+| `NEXT_ACTIONS.md` | P1 三个历史设计动作 + 当前 P2.0/P2.1 授权交接 |
 | `docs/architecture/p0-architecture-correction.md` | P0 架构修订记录（问题清单 + 修改 + 前后对照） |
 | `docs/architecture/subjectstate-v0-spec.md` | SubjectState V0 正式规格（P1 Action 1 · COMPLETE） |
 | `docs/architecture/transition-contracts.md` | Canonical transition contracts（P1 Action 2 · COMPLETE） |
 | `docs/architecture/micl-design.md` | MICL — Minimal Internal Continuity Loop 正式设计（P1 Action 3 · COMPLETE） |
 | `docs/evaluation/p1-5-engineering-acceptance-contract.md` | P1.5 工程验收契约（A1–A13 + fixture/oracle + conformance matrix · COMPLETE） |
+| `docs/implementation/p2-runtime-plan.md` | P2.0–P2.5 工程实施计划；当前只授权 P2.0 bootstrap |
 
 ---
 
@@ -111,9 +113,9 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 
 - `docs/` — vision / theory / architecture / adr / roadmap / evaluation（architecture 下已有 p0-correction、subjectstate-v0-spec、transition-contracts、micl-design；evaluation 下有 p1-5 acceptance contract）
 - `research/` — emotion / memory / appraisal / plasticity / hypotheses / experiments（当前为空骨架；**experiments 目录仅为未来形态占位，不代表任何实验被授权**）
-- `evals/` — baselines（llm-prompt、fast-ema、characteros-v1）+ longitudinal / ablation / regression（未来评估资产，当前为空）
-- `packages/` — 十个包目录（未来实现；当前空骨架）
-- `product/` — sandbox / prototypes（未来产品试验场；当前空骨架）
+- `evals/` — baselines + longitudinal / ablation / regression 保持空骨架；`conformance/` 仅含 A1–A13 未来测试位置说明，当前无 fixture/test/runner
+- `packages/` — 十个 strict ESM workspace package skeleton；active 包只导出 opaque type markers，deferred 包为空导出，全部无 domain/runtime behavior
+- `product/` — `sandbox` 是空的 workspace composition boundary，无 executable/API/UI/MICL wiring；`prototypes` 仍为空骨架
 - `archive/` — 未来接收归档资产；**本阶段不移动任何旧文件进来**
 
-> 说明：目录骨架本身不构成"开始实现"或"开始实验"的授权。任何目录内的实际内容必须通过 `ROADMAP.md` 对应阶段的门禁。
+> 说明：P2.0 工程骨架不构成 Subject Runtime 或 MICL 实现，也不授权 P2.1、实验或迁移。任何后续内容必须通过 `ROADMAP.md` 对应门禁并获得显式授权。

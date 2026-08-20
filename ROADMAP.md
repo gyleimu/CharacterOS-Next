@@ -1,6 +1,6 @@
 # ROADMAP.md — CharacterOS-Next 路线图
 
-**状态:** 设计文档（Formal Design）。本路线图只定义阶段与门禁，不授权任何实现/实验在当前阶段发生。
+**状态:** P2.0 Runtime Bootstrap — **IN PROGRESS**。当前只授权工程骨架；P2.1–P2.5 未启动，P2.1 requires explicit authorization。
 
 ---
 
@@ -12,14 +12,15 @@
 | **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **COMPLETE** |
 | **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | **COMPLETE** |
 | **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A13 工程行为契约；不运行科学实验 | **COMPLETE** |
-| **P2** | Minimal Runtime Implementation | 在 product/sandbox 内实现 MICL 的最小可运行版本；无研究实验 | **READY / NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
+| **P2.0** | Runtime Bootstrap | TypeScript workspace、package/tooling/boundary/conceptual placeholder skeleton；无 domain/runtime behavior | **IN PROGRESS** |
+| **P2.1–P2.5** | Minimal Runtime Implementation | Subject Core 至 full conformance，服从 P2 plan 与 entry gates | **NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
 | **P3** | Controlled Migration | 按 MIGRATION_MAP 逐项执行（每项独立审批） | 未授权 |
 | **P4** | Empirical Evaluation / Benchmarks | evals/ 三组 baseline + longitudinal/ablation/regression | 未授权 |
 | **P5+** | Triggered Research | 仅当研究触发条件命中（§3）才开放对应研究/实验 | 未授权 |
 
 ---
 
-## 2. P0 / P0.5 完成标准（当前阶段的验收）
+## 2. P0 / P0.5 完成标准（历史完成标准）
 
 1. 七个根文档（README/VISION/ARCHITECTURE/ROADMAP/RESEARCH_STATE/MIGRATION_MAP/NEXT_ACTIONS）完整且互相一致。`[DESIGN DECISION]`
 2. SubjectState V0 概念模型已定义（含 MemoryState ownership + runtime metadata；不做实现）。`[DESIGN DECISION]`
@@ -93,7 +94,8 @@
 - **P0.5 准入** = P0 骨架完成。
 - **P1 准入** = P0.5 验收完成（§2）。
 - **P1.5 准入** = P1 设计文档（SubjectState V0 spec + transition contracts + MICL design）完成。
-- **P2 准入** = P1.5 完成（A1–A13 契约）+ **显式授权**（实现不得先于设计 + 不得先于 acceptance contract；P1.5 完成 ≠ P2 自动开始）。
+- **P2.0 准入** = P1.5 COMPLETE + P2 runtime plan COMPLETE + **显式 P2.0 bootstrap 授权**（已满足；当前 IN PROGRESS）。
+- **P2.1 准入** = P2.0 bootstrap validation + `docs/implementation/p2-runtime-plan.md` §15 applicable entry-gate closure + **单独显式授权**（当前未授权）。
 - **P3 准入** = P2 MICL 在 sandbox 可运行 + 每项迁移单独审批。
 - **研究触发（T1–T8）准入** = 真实产品现象证据 + 独立 Phase 0 + 预注册 + 审批链（继承 CERH 纪律）。
 

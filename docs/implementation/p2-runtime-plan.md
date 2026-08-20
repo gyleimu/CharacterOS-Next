@@ -2,7 +2,7 @@
 
 **任务状态：** P2 Runtime Implementation Planning — COMPLETE。
 
-**实施状态：** NOT STARTED。本文是工程实施计划，不是 P2 启动授权，不包含实现、测试执行、依赖安装、实验或旧仓库迁移。
+**实施状态：** P2.0 RUNTIME BOOTSTRAP — IN PROGRESS；P2.1–P2.5 NOT STARTED。当前授权只覆盖 workspace、toolchain、package boundaries、opaque placeholders 与 conformance skeleton，不包含 domain/runtime behavior、实验或旧仓库迁移。
 
 **规划基线：** `b59ed790377d2a8877baf354cd6ee975a6578ce5`
 
@@ -15,8 +15,9 @@
 | 对象 | Verdict | 含义 |
 |---|---|---|
 | 本规划产物 | **PASS** | P2 的技术栈、目录边界、范围、阶段、接口职责、验收映射、工作流、风险与完成标准均已定义。 |
-| P2 coding-agent execution readiness | **BLOCKED PENDING ENTRY GATE** | §15 的 MUST 追踪/枚举冲突未封口，当前计划不能直接交给 coding agent 开工。 |
-| P2 implementation | **NOT STARTED / CONDITIONAL** | 本文完成不等于实施开始；仍需显式 P2 授权、P1.5 contract PASS，并完成 §15 的 entry-gate 封口。 |
+| P2.0 bootstrap execution | **AUTHORIZED / IN PROGRESS** | 当前授权严格限于无 domain/runtime behavior 的工程骨架；不代表完整 P2.0 Contract Freeze 已完成。 |
+| P2.1+ coding-agent execution readiness | **BLOCKED PENDING ENTRY GATE** | §15 的 MUST 追踪/枚举冲突未封口，不能进入 Subject Core 或后续 runtime implementation。 |
+| P2.1–P2.5 implementation | **NOT STARTED / CONDITIONAL** | 必须先完成 applicable entry gates，并分别获得明确实施授权。 |
 | P1 架构 | **UNCHANGED** | 本文只安排如何实现 P1，不重新设计、删减或放宽任何 P1/P1.5 约束。 |
 
 ### 1.1 权威来源与优先级
@@ -965,7 +966,7 @@ P2 完成后只允许声称：
 
 ## 18. Safety Check
 
-本规划交付确认：
+本规划文档在规划基线提交时的交付确认（历史）：
 
 - **NO CODE**
 - **NO IMPLEMENTATION**
@@ -979,4 +980,4 @@ P2 完成后只允许声称：
 - **NO MIGRATION**
 - **NO ARCHITECTURE REWRITE**
 
-本文的唯一作用，是将已冻结 P1/P1.5 转换为未来工程团队可执行、可停止、可审计、可验收的 P2 实施路线。
+本文的唯一作用，是将已冻结 P1/P1.5 转换为未来工程团队可执行、可停止、可审计、可验收的 P2 实施路线。当前 P2.0 bootstrap 状态同步不改变上述历史交付事实，也不表示 §15 已封口或 P2.1 已启动。

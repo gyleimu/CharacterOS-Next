@@ -1,6 +1,6 @@
-# NEXT_ACTIONS.md — 接下来的 3 个最高优先级动作
+# NEXT_ACTIONS.md — P1 三个最高优先级动作（历史）与当前阶段交接
 
-**规则:** 本文件只允许列 3 个动作。完成或修订本文件需更新全部根文档保持一致。三个动作全部是**设计动作**：不实现、不实验、不迁移。
+**规则:** 本文件保留三个已完成 P1 设计动作作为审计记录；当前执行/授权状态以末节为准。P2.0 只搭工程骨架，不实现、不实验、不迁移。
 
 ---
 
@@ -87,9 +87,9 @@ SubjectState(t)
 
 ---
 
-## 三个动作之外的一切
+## 当前阶段交接
 
-- 动作 1–3 **全部 COMPLETE**。**NEXT GATE COMPLETED = ROADMAP P1.5（Engineering Acceptance Contract A1–A13，产物 docs/evaluation/p1-5-engineering-acceptance-contract.md）**。
-- **NEXT AUTHORIZED CANDIDATE = P2 Minimal Runtime Implementation；REQUIRES EXPLICIT START**（P1.5 完成 ≠ P2 自动开始）。
-- 迁移执行（P3）、评估建设（P4）、研究触发（T1–T8）全部保持未授权。
-- 本文件只做 status handoff，不擅自创建 P2 代码任务。
+- P1 动作 1–3、P1.5 与 P2 runtime plan 均 **COMPLETE**。
+- **CURRENT AUTHORIZED ACTION = P2.0 Runtime Bootstrap — IN PROGRESS**；仅限 workspace/toolchain/package boundary/opaque placeholders/conformance skeleton，无 domain/runtime behavior。
+- **NEXT STEP = P2.1 Subject Core Implementation — NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION**；不得自动开始，且必须先满足 P2 plan §15 的 applicable entry gates。
+- P3、P4、研究触发与旧代码迁移保持未授权。
