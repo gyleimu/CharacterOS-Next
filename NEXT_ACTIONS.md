@@ -1,6 +1,6 @@
 # NEXT_ACTIONS.md — P1 三个最高优先级动作（历史）与当前阶段交接
 
-**规则:** 本文件保留三个已完成 P1 设计动作作为审计记录；当前执行/授权状态以末节为准。P2.0 只搭工程骨架，不实现、不实验、不迁移。
+**规则:** 本文件保留三个已完成 P1 设计动作作为审计记录；当前执行/授权状态以末节为准。P2.0 只搭工程骨架，P2.1 planning 只定义实施计划；两者都不构成 runtime implementation、实验或迁移授权。
 
 ---
 
@@ -90,6 +90,7 @@ SubjectState(t)
 ## 当前阶段交接
 
 - P1 动作 1–3、P1.5 与 P2 runtime plan 均 **COMPLETE**。
-- **CURRENT AUTHORIZED ACTION = P2.0 Runtime Bootstrap — IN PROGRESS**；仅限 workspace/toolchain/package boundary/opaque placeholders/conformance skeleton，无 domain/runtime behavior。
-- **NEXT STEP = P2.1 Subject Core Implementation — NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION**；不得自动开始，且必须先满足 P2 plan §15 的 applicable entry gates。
+- P2.0 Runtime Bootstrap **COMPLETE**；工程骨架不包含 domain/runtime behavior。
+- P2.1 Subject Core Implementation Planning **COMPLETE**；产物为 `docs/implementation/p2-1-subject-core-plan.md`，未创建 commit engine、mutation logic 或测试。
+- **NEXT STEP = P2.1 Subject Core Implementation — NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION**；不得自动开始，且必须先满足 P2 runtime plan §15 与 P2.1 plan §1.2 的 applicable coding entry gates。
 - P3、P4、研究触发与旧代码迁移保持未授权。

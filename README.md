@@ -1,6 +1,6 @@
 # CharacterOS-Next
 
-**状态: P2.0 RUNTIME BOOTSTRAP — IN PROGRESS；P2.1+ NOT STARTED** — P0/P1/P1.5 与 P2 runtime plan 已完成。当前授权仅覆盖 TypeScript/pnpm workspace、package boundaries、toolchain、dependency checks、opaque placeholder types 与 conformance skeleton；**不含任何 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，不含实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires explicit authorization。
+**状态: P2.0 RUNTIME BOOTSTRAP — COMPLETE；P2.1 SUBJECT CORE PLAN — COMPLETE；P2.1 IMPLEMENTATION — NOT STARTED** — P0/P1/P1.5、P2 runtime plan、P2.0 bootstrap 与 P2.1 Subject Core implementation plan 已完成。当前仓库只有工程骨架与设计计划；**没有 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，没有实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires explicit authorization，并须先关闭 applicable coding entry gates。
 
 CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长期人工主体（long-lived agent）总工程体系**的伞形仓库，统一承载：
 
@@ -75,9 +75,9 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 
 ## 4. 本阶段边界（硬性禁止）
 
-**当前阶段 = P2.0 Runtime Bootstrap — IN PROGRESS。**
+**当前阶段状态 = P2.0 Runtime Bootstrap 与 P2.1 Subject Core Implementation Planning 均 COMPLETE；P2.1 implementation NOT STARTED。**
 
-允许：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。
+已完成且不再扩张的 P2.0 边界：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。P2.1 本轮只新增 implementation plan 文档。
 
 - ❌ NO DEV_004（以及任何新实验编号）
 - ❌ NO new dynamics experiment
@@ -105,7 +105,8 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 | `docs/architecture/transition-contracts.md` | Canonical transition contracts（P1 Action 2 · COMPLETE） |
 | `docs/architecture/micl-design.md` | MICL — Minimal Internal Continuity Loop 正式设计（P1 Action 3 · COMPLETE） |
 | `docs/evaluation/p1-5-engineering-acceptance-contract.md` | P1.5 工程验收契约（A1–A13 + fixture/oracle + conformance matrix · COMPLETE） |
-| `docs/implementation/p2-runtime-plan.md` | P2.0–P2.5 工程实施计划；当前只授权 P2.0 bootstrap |
+| `docs/implementation/p2-runtime-plan.md` | P2.0–P2.5 工程实施计划；P2.0 bootstrap 已完成，P2.1+ implementation 未授权 |
+| `docs/implementation/p2-1-subject-core-plan.md` | P2.1 Subject Core schema/commit/validation/trace/hash/restore/conformance 实施计划；planning COMPLETE，implementation NOT STARTED |
 
 ---
 
@@ -118,4 +119,4 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 - `product/` — `sandbox` 是空的 workspace composition boundary，无 executable/API/UI/MICL wiring；`prototypes` 仍为空骨架
 - `archive/` — 未来接收归档资产；**本阶段不移动任何旧文件进来**
 
-> 说明：P2.0 工程骨架不构成 Subject Runtime 或 MICL 实现，也不授权 P2.1、实验或迁移。任何后续内容必须通过 `ROADMAP.md` 对应门禁并获得显式授权。
+> 说明：P2.0 工程骨架与 P2.1 计划文档都不构成 Subject Runtime 或 MICL 实现，也不授权 P2.1 coding、实验或迁移。任何后续内容必须通过 `ROADMAP.md` 对应门禁并获得显式授权。

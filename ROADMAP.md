@@ -1,6 +1,6 @@
 # ROADMAP.md — CharacterOS-Next 路线图
 
-**状态:** P2.0 Runtime Bootstrap — **IN PROGRESS**。当前只授权工程骨架；P2.1–P2.5 未启动，P2.1 requires explicit authorization。
+**状态:** P2.0 Runtime Bootstrap 与 P2.1 Subject Core Implementation Planning — **COMPLETE**。P2.1 implementation 尚未启动，requires explicit authorization，并须先关闭 applicable coding entry gates。
 
 ---
 
@@ -12,8 +12,10 @@
 | **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **COMPLETE** |
 | **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | **COMPLETE** |
 | **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A13 工程行为契约；不运行科学实验 | **COMPLETE** |
-| **P2.0** | Runtime Bootstrap | TypeScript workspace、package/tooling/boundary/conceptual placeholder skeleton；无 domain/runtime behavior | **IN PROGRESS** |
-| **P2.1–P2.5** | Minimal Runtime Implementation | Subject Core 至 full conformance，服从 P2 plan 与 entry gates | **NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
+| **P2.0** | Runtime Bootstrap | TypeScript workspace、package/tooling/boundary/conceptual placeholder skeleton；无 domain/runtime behavior | **COMPLETE** |
+| **P2.1 Plan** | Subject Core Implementation Planning | schema、responsibility、delta、commit、validation、trace/hash/restore、acceptance 与 phase plan；纯文档 | **COMPLETE** |
+| **P2.1 Implementation** | Subject Core | canonical state authority、validation、atomic commit、revision、trace、hash、restore | **NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
+| **P2.2–P2.5** | Remaining Minimal Runtime | Memory 至 full conformance，服从 P2 plan 与 entry gates | **NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
 | **P3** | Controlled Migration | 按 MIGRATION_MAP 逐项执行（每项独立审批） | 未授权 |
 | **P4** | Empirical Evaluation / Benchmarks | evals/ 三组 baseline + longitudinal/ablation/regression | 未授权 |
 | **P5+** | Triggered Research | 仅当研究触发条件命中（§3）才开放对应研究/实验 | 未授权 |
@@ -94,8 +96,9 @@
 - **P0.5 准入** = P0 骨架完成。
 - **P1 准入** = P0.5 验收完成（§2）。
 - **P1.5 准入** = P1 设计文档（SubjectState V0 spec + transition contracts + MICL design）完成。
-- **P2.0 准入** = P1.5 COMPLETE + P2 runtime plan COMPLETE + **显式 P2.0 bootstrap 授权**（已满足；当前 IN PROGRESS）。
-- **P2.1 准入** = P2.0 bootstrap validation + `docs/implementation/p2-runtime-plan.md` §15 applicable entry-gate closure + **单独显式授权**（当前未授权）。
+- **P2.0 准入** = P1.5 COMPLETE + P2 runtime plan COMPLETE + **显式 P2.0 bootstrap 授权**（已满足；P2.0 COMPLETE）。
+- **P2.1 planning 准入** = P2.0 COMPLETE + 本轮显式 planning 授权（已满足；产物 `docs/implementation/p2-1-subject-core-plan.md` COMPLETE）。
+- **P2.1 implementation 准入** = P2.0 bootstrap validation + `docs/implementation/p2-runtime-plan.md` §15 与 P2.1 plan §1.2 applicable entry-gate closure + **单独显式授权**（当前未授权）。
 - **P3 准入** = P2 MICL 在 sandbox 可运行 + 每项迁移单独审批。
 - **研究触发（T1–T8）准入** = 真实产品现象证据 + 独立 Phase 0 + 预注册 + 审批链（继承 CERH 纪律）。
 
