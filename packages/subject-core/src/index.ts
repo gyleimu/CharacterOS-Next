@@ -231,3 +231,18 @@ export {
   type InMemoryAtomicCommitStoreOptions,
   type InjectedStoreFault
 } from "./commit/store.js";
+
+// --- P2.1.4 restore / persistence envelope -----------------------------------------
+
+export {
+  createPersistenceEnvelope,
+  validateCommitHeadRule,
+  validateRepositoryBindingSet,
+  type CreatePersistenceEnvelopeInput
+} from "./restore/envelope.js";
+
+export {
+  restoreFromEnvelope,
+  type RestoreCapabilities,
+  type RestoreResult
+} from "./restore/restore.js";
