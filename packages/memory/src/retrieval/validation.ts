@@ -33,7 +33,8 @@ import {
   retrievalQueryFingerprint,
   type MemoryRetrievalQueryV0,
   type MemoryRetrievalResultV0,
-  type RetrievalEvidenceV0
+  type RetrievalEvidenceV0,
+  type RetrievalRehearsalV0
 } from "./types.js";
 
 const SCHEMA_REASON = "SS-SCHEMA-001";
@@ -148,8 +149,105 @@ export function validateMemoryRetrievalQuery(v: unknown): ValidationResult<Memor
   return ok(v as unknown as MemoryRetrievalQueryV0);
 }
 
-function validateEvidenceEntry(entry: unknown, label: string): ValidationResult<RetrievalEvidenceV0> {
-  if (!isRecord(entry)) return fail("INVALID_SCHEMA", SCHEMA_REASON, `${label}: expected object`);
+/**
+ * Validates one declarative rehearsal fixture for the P2.2.4 reference adapter:
+ * closed keys, revision/anchor formats, unique selections, order-aligned evidence
+ * with normalized reasons, and candidate_count >= selections. Synchronous — fixtures
+ * carry no query, so no fingerprint applies here.
+ */
+export function validateRehearsalFixture(v: unknown): ValidationResult<RetrievalRehearsalV0> {
+  if (!isRecord(v)) return fail("INVALID_SCHEMA", SCHEMA_REASON, "rehearsal: expected object");
+  const KEYS: readonly string[] = [
+    "repository_revision",
+    "semantic_reference",
+    "selected_memory_refs",
+    "evidence",
+    "candidate_count",
+    "retrieval_trace_ref"
+  ];
+  const shell = closedKeys(v, KEYS, "rehearsal");
+  if (!shell.ok) return shell;
+  if (!isString(v["repository_revision"])) {
+    return fail("INVALID_SCHEMA", SCHEMA_REASON, "rehearsal.repository_revision: expected identifier");
+  }
+  const revision = validateRepositoryRevision(v["repository_revision"], "rehearsal.repository_revision");
+  if (!revision.ok) return revision;
+  const anchor = v["semantic_reference"];
+  if (anchor !== null) {
+    const anchorCheck = validateRefElement(anchor, "rehearsal.semantic_reference");
+    if (!anchorCheck.ok) return anchorCheck;
+  }
+
+  const probe = {
+    schema_version: MEMORY_RETRIEVAL_RESULT_SCHEMA_VERSION,
+    subject_id: "fixture-subject",
+    selected_memory_refs: v["selected_memory_refs"],
+    evidence: v["evidence"],
+    retrieval_trace_ref: v["retrieval_trace_ref"],
+    deterministic_metadata: {
+      repository_revision: v["repository_revision"],
+      candidate_count: 0,
+      computed_under_config: MEMORY_RETRIEVAL_CONFIG_V0,
+      query_fingerprint: `sha256:${"0".repeat(64)}`
+    }
+  };
+  // Reuse result-conformance machinery for selection/evidence rules (alignment,
+  // uniqueness, reason normalization); metadata fields are fixture-declared.
+  // Reuse result-conformance machinery for selection/evidence rules (alignment,
+  // uniqueness, reason normalization); metadata fields are fixture-declared.
+  const shapeCheck = validateRehearsalSelectionShape(probe);
+  if (!shapeCheck.ok) return shapeCheck;
+
+  const count = v["candidate_count"];
+  if (!isNumber(count) || !Number.isSafeInteger(count) || count < 0) {
+    return fail("INVALID_VALUE_RANGE", SCHEMA_REASON, "rehearsal.candidate_count: nonnegative safe integer required");
+  }
+  const selectionCount = Array.isArray(v["selected_memory_refs"]) ? v["selected_memory_refs"].length : 0;
+  if ((count as number) < selectionCount) {
+    return fail("INVALID_VALUE_RANGE", SCHEMA_REASON, "rehearsal.candidate_count must be >= number of selections");
+  }
+  return ok(v as unknown as RetrievalRehearsalV0);
+}
+
+// Local structural check reusing evidence-entry validation without fingerprint logic.
+function validateRehearsalSelectionShape(probe: Record<string, unknown>): ValidationResult<void> {
+  const selections = probe["selected_memory_refs"];
+  if (!Array.isArray(selections)) {
+    return fail("INVALID_SCHEMA", SCHEMA_REASON, "rehearsal.selected_memory_refs: expected array");
+  }
+  let previousSelection: string | undefined;
+  for (let i = 0; i < selections.length; i++) {
+    const parsed = parseEpisodeRef(selections[i], `rehearsal.selected_memory_refs[${i}]`);
+    if (!parsed.ok) return parsed;
+    if (previousSelection !== undefined && parsed.value === previousSelection) {
+      return fail("INVALID_SCHEMA", SCHEMA_REASON, `rehearsal.selected_memory_refs[${i}]: duplicate selection`);
+    }
+    previousSelection = parsed.value;
+  }
+  const evidence = probe["evidence"];
+  if (!Array.isArray(evidence)) {
+    return fail("INVALID_SCHEMA", SCHEMA_REASON, "rehearsal.evidence: expected array");
+  }
+  if (evidence.length !== selections.length) {
+    return fail("INVALID_SCHEMA", SCHEMA_REASON, "rehearsal.evidence must be order-aligned with selections");
+  }
+  for (let i = 0; i < evidence.length; i++) {
+    const label = `rehearsal.evidence[${i}]`;
+    const entryCheck = validateEvidenceEntry(evidence[i], label);
+    if (!entryCheck.ok) return entryCheck;
+    if ((evidence[i] as Record<string, unknown>)["episode_ref"] !== selections[i]) {
+      return fail("INVALID_SCHEMA", SCHEMA_REASON, `${label}: not aligned with selection ${i}`);
+    }
+  }
+  const trace = probe["retrieval_trace_ref"];
+  if (trace !== null) {
+    const traceCheck = validateRefElement(trace, "rehearsal.retrieval_trace_ref", ["retrieval-trace"]);
+    if (!traceCheck.ok) return traceCheck;
+  }
+  return ok(undefined);
+}
+
+function validateEvidenceEntry(entry: unknown, label: string): ValidationResult<RetrievalEvidenceV0> {  if (!isRecord(entry)) return fail("INVALID_SCHEMA", SCHEMA_REASON, `${label}: expected object`);
   const keys = closedKeys(entry, ["episode_ref", "reasons"], label);
   if (!keys.ok) return keys;
   const ref = parseEpisodeRef(entry["episode_ref"], `${label}.episode_ref`);

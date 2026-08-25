@@ -55,6 +55,7 @@ export {
   type RetrievalEvidenceV0,
   type RetrievalReasonDimension,
   type RetrievalReasonV0,
+  type RetrievalRehearsalV0,
   type RetrievalSalienceConstraintsV0,
   type RetrievalTemporalContextV0,
   type SelectedEpisodeRef,
@@ -67,6 +68,15 @@ export {
 } from "./retrieval/validation.js";
 
 export type { MemoryRetrievalService } from "./retrieval/memory-retrieval-service.js";
+
+export {
+  InMemoryRetrievalService,
+  type InMemoryRetrievalServiceOptions
+} from "./retrieval/in-memory-retrieval-service.js";
+
+export {
+  validateRehearsalFixture
+} from "./retrieval/validation.js";
 
 export {
   EPISODIC_MEMORY_RECORD_SCHEMA_VERSION,

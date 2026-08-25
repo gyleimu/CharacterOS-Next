@@ -51,6 +51,31 @@ export type SelectedEpisodeRef = Brand<CanonicalRefV0, "EpisodeRef">;
 export type RetrievalTraceRef = Brand<CanonicalRefV0, "RetrievalTraceRef">;
 
 // ----------------------------------------------------------------------------------
+// Declarative rehearsal fixtures (P2.2.4 reference adapter inputs)
+// ----------------------------------------------------------------------------------
+
+/**
+ * One pre-declared retrieval outcome bound to a (repository revision, semantic
+ * reference) match key. Reference adapters replay these declarations verbatim — the
+ * fixture author owns selections, evidence and candidate counts; the adapter adds no
+ * scoring, ordering or search of its own.
+ */
+export interface RetrievalRehearsalV0 {
+  /** Revision this rehearsal is bound to; queries naming other revisions reject. */
+  readonly repository_revision: RepositoryRevisionIdV0;
+  /** Semantic anchor match key; null matches queries whose anchor is also null. */
+  readonly semantic_reference: CanonicalRefV0 | null;
+  /** Declared ordered selections (unique episode refs). */
+  readonly selected_memory_refs: readonly SelectedEpisodeRef[];
+  /** Declared evidence, order-aligned with `selected_memory_refs`. */
+  readonly evidence: readonly RetrievalEvidenceV0[];
+  /** Declared candidates examined (>= selections length, nonnegative safe integer). */
+  readonly candidate_count: number;
+  /** Declared trace pointer for `recent_retrieval_trace`, or null. */
+  readonly retrieval_trace_ref: RetrievalTraceRef | null;
+}
+
+// ----------------------------------------------------------------------------------
 // Query
 // ----------------------------------------------------------------------------------
 
