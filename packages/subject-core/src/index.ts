@@ -1,6 +1,6 @@
 /**
- * P2.1.1 — Subject Core schema types public surface.
- * Types + constants only. No commit engine, validation, hash, store, runtime or domain logic.
+ * Subject Core public surface — schema types (P2.1.1), validation layer (P2.1.2),
+ * canonical serialization/hash foundation and canonical commit engine (P2.1.3).
  */
 
 export type {
@@ -125,3 +125,109 @@ export type {
   PublishSinkPort,
   ReferenceValidatorPort
 } from "./types/persistence.js";
+
+export {
+  ok,
+  type ValidationResult,
+  type ValidationFailure
+} from "./validation/result.js";
+
+export {
+  validateSubjectState,
+  validateProposal,
+  validateOwnership,
+  isRegisteredProducer,
+  isRegisteredDomain,
+  isRegisteredBinding,
+  isWritablePath,
+  isReadonlyPath,
+  assertRevisionIncrement,
+  assertLogicalTimeMonotonic,
+  assertCheckedLogicalTimeAdvance,
+  validateHashFormat,
+  validateIdentifier,
+  validateCanonicalText,
+  validateLogicalTime,
+  validateStateRevision,
+  validateHistorySequence,
+  validateUnitInterval,
+  validateHash,
+  validateRepositoryRevision,
+  validateRefArray,
+  validateRefElement,
+  parseRef,
+  refKind,
+  isString,
+  isNumber,
+  isRecord
+} from "./validation/index.js";
+
+// --- P2.1.3 canonical serialization / hash foundation ---------------------------
+
+export {
+  canonicalJsonString,
+  NonCanonicalValueError
+} from "./canonical/json.js";
+
+export {
+  sha256Hex,
+  sha256HashV1,
+  hashEnvelope,
+  deriveRef
+} from "./canonical/hash.js";
+
+export {
+  stateHash,
+  snapshotHash,
+  fullSnapshotChecksum,
+  proposalFingerprint,
+  proposalRef,
+  type SnapshotHashInput
+} from "./canonical/projections.js";
+
+// --- P2.1.3 candidate construction ----------------------------------------------
+
+export {
+  applyDeltaOperations,
+  cloneStateForCandidate,
+  deriveRuntimeMetadata,
+  freezeCandidate,
+  withDerivedRuntimeMetadata,
+  type CandidateDraft,
+  type DerivedRuntimeMetadata
+} from "./candidate/candidate.js";
+
+// --- P2.1.3 trace projection -----------------------------------------------------
+
+export {
+  buildTraceEntry,
+  nextTraceWindow,
+  lastTraceRef,
+  TRACE_RULE_IDS,
+  type TraceEntryInput
+} from "./trace/trace.js";
+
+// --- P2.1.3 canonical commit engine ----------------------------------------------
+
+export {
+  validateProposalComposition
+} from "./commit/composition.js";
+
+export {
+  assembleCommitBundle,
+  type AssembleBundleInput
+} from "./commit/bundle.js";
+
+export {
+  createCommitEngine,
+  type CommitEngine,
+  type CommitTransitionInput,
+  type CommitTransitionOutcome,
+  type ReferenceValidatorCapability
+} from "./commit/engine.js";
+
+export {
+  InMemoryAtomicCommitStore,
+  type InMemoryAtomicCommitStoreOptions,
+  type InjectedStoreFault
+} from "./commit/store.js";
