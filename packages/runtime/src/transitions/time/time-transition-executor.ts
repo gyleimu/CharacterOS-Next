@@ -29,6 +29,7 @@ import type { AuthoritativeTransitionRecordV1 } from "@characteros-next/subject-
 import type { ReferenceValidatorCapability } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
+import { anchorContext, preProposalError } from "../common.js";
 
 export interface TimeTransitionInputV0 {
   /** Raw elapsed ticks in `tick` timebase; nonnegative safe integer. */
@@ -53,10 +54,6 @@ export interface TransitionSessionFacts {
 
 export type TimeExecutionResult = CommitTransitionOutcome | { readonly kind: "NO_OP" };
 
-function preProposalError(code: string, reason: string, detail: string): Error {
-  return new Error(`${code}/${reason}: ${detail}`);
-}
-
 /** Raw elapsed admission before any proposal exists (freeze §7.1 pre-proposal rules). */
 function admitElapsedTicks(elapsedTicks: number): void {
   if (typeof elapsedTicks !== "number" || !Number.isFinite(elapsedTicks) || !Number.isInteger(elapsedTicks)) {
@@ -68,28 +65,6 @@ function admitElapsedTicks(elapsedTicks: number): void {
   if (elapsedTicks > Number.MAX_SAFE_INTEGER) {
     throw preProposalError("INVALID_LOGICAL_TIME", "TIME-ADVANCE-001", "elapsed_ticks overflows safe integer domain");
   }
-}
-
-/** Anchors the runtime context to authoritative snapshot truth; drift rejects. */
-function anchorContext(ctx: RuntimeContext, snapshot: SubjectStateV0): RuntimeContext {
-  const rm = snapshot.runtime_metadata;
-  const anchored: RuntimeContext = {
-    subject_id: snapshot.identity.subject_id,
-    current_logical_time: rm.logical_time,
-    state_revision: rm.state_revision
-  };
-  if (
-    ctx.subject_id !== anchored.subject_id ||
-    ctx.current_logical_time !== anchored.current_logical_time ||
-    ctx.state_revision !== anchored.state_revision
-  ) {
-    throw preProposalError(
-      "INVARIANT_VIOLATION",
-      "SS-SCHEMA-001",
-      `runtime context drift: ctx(${ctx.subject_id},${ctx.current_logical_time},${ctx.state_revision}) vs authority(${anchored.subject_id},${anchored.current_logical_time},${anchored.state_revision})`
-    );
-  }
-  return anchored;
 }
 
 /** Deterministic opaque transition id for Time runs (globally unique by construction). */

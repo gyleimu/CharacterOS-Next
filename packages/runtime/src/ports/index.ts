@@ -17,7 +17,9 @@ export type { RegulationProducerInputV0, RegulationProducerPort } from "./regula
 export {
   CONTROLLED_PROJECTION_HASH_PROJECTION,
   CONTROLLED_PROJECTION_SCHEMA_VERSION,
+  ReferenceContextProducer,
   buildControlledProjectionView,
+  buildContextDelta,
   type ContextProducerPort,
   type ControlledProjectionAssembly
 } from "./context-producer-port.js";

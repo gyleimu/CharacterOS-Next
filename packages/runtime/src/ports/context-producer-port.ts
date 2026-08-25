@@ -8,7 +8,7 @@
  * deterministic projection hash over exactly the projected body.
  */
 
-import type { HashV1 } from "@characteros-next/subject-core";
+import type { DomainDeltaV0, HashV1, SubjectStateV0 } from "@characteros-next/subject-core";
 import { hashEnvelope } from "@characteros-next/subject-core";
 import type { MemoryRetrievalResultV0 } from "@characteros-next/memory";
 import type { ControlledProjectionViewV0 } from "./interpretation-port.js";
@@ -34,6 +34,13 @@ export interface ContextProducerPort {
     input: ObservationInputV0,
     assembly: ControlledProjectionAssembly
   ): Promise<ControlledProjectionViewV0>;
+
+  /**
+   * Produces the producer-identity `context` DomainDeltaV0 (exact /context
+   * replacement) from the observation input and the read-only current snapshot
+   * (p2-runtime-plan §4.2). Deterministic; no NLU, no commit, no mutation.
+   */
+  produceContextDelta(input: ObservationInputV0, snapshot: SubjectStateV0): Promise<DomainDeltaV0>;
 }
 
 function compareStrings(a: string, b: string): number {
@@ -83,5 +90,57 @@ function deepFreeze(value: unknown): void {
   Object.freeze(value);
   for (const key of Object.keys(value as Record<string, unknown>)) {
     deepFreeze((value as Record<string, unknown>)[key]);
+  }
+}
+
+/**
+ * Deterministic reference context delta: /context replacement carrying the observed
+ * observation ref and the observation's entity refs as focus/active entities, while
+ * scene/task/environment are copied verbatim from the authoritative snapshot (read
+ * only — exact-replacement semantics, observation-scoped fields only). This is an
+ * engineering default, not an NLU or context model.
+ */
+export async function buildContextDelta(
+  input: ObservationInputV0,
+  snapshot: SubjectStateV0
+): Promise<DomainDeltaV0> {
+  const current = snapshot.context;
+  const delta = {
+    producer: "context",
+    domain: "context",
+    expected_repository_revision: null,
+    operations: [
+      {
+        path: "/context",
+        value: {
+          scene: current.scene,
+          task: current.task,
+          focus_refs: [...input.entity_refs],
+          active_entity_refs: [...input.entity_refs],
+          environment_refs: [...current.environment_refs],
+          current_observation_ref: input.observation_id
+        }
+      }
+    ],
+    provenance_refs: [input.observation_id]
+  } as unknown as DomainDeltaV0;
+  deepFreeze(delta);
+  return delta;
+}
+
+/** Reference implementation of the context producer (view assembly + context delta). */
+export class ReferenceContextProducer implements ContextProducerPort {
+  async produceControlledProjection(
+    input: ObservationInputV0,
+    assembly: ControlledProjectionAssembly
+  ): Promise<ControlledProjectionViewV0> {
+    return buildControlledProjectionView(input, assembly);
+  }
+
+  async produceContextDelta(
+    input: ObservationInputV0,
+    snapshot: SubjectStateV0
+  ): Promise<DomainDeltaV0> {
+    return buildContextDelta(input, snapshot);
   }
 }

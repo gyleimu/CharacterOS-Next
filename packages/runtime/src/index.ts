@@ -48,7 +48,9 @@ export {
 export {
   CONTROLLED_PROJECTION_HASH_PROJECTION,
   CONTROLLED_PROJECTION_SCHEMA_VERSION,
+  ReferenceContextProducer,
   buildControlledProjectionView,
+  buildContextDelta,
   type ContextProducerPort,
   type ControlledProjectionAssembly
 } from "./ports/context-producer-port.js";
@@ -58,3 +60,10 @@ export {
   validateObservationInput,
   type ObservationInputV0
 } from "./transitions/observation/types.js";
+
+export {
+  ObservationTransitionExecutor,
+  buildObservationRetrievalQuery,
+  observationTransitionId,
+  type ObservationExecutionResult
+} from "./transitions/observation/observation-transition-executor.js";

@@ -25,6 +25,7 @@ import type { MemoryRepository } from "@characteros-next/memory";
 import type {
   AppraisalPort,
   AffectProducerPort,
+  ContextProducerPort,
   InterpretationPort,
   RegulationProducerPort,
   RetrievalPort,
@@ -43,6 +44,7 @@ export interface RuntimeCompositionOptions {
   readonly appraisal?: AppraisalPort;
   readonly affectProducer?: AffectProducerPort;
   readonly regulationProducer?: RegulationProducerPort;
+  readonly contextProducer?: ContextProducerPort;
 }
 
 export class RuntimeCompositionRoot {
@@ -65,7 +67,8 @@ export class RuntimeCompositionRoot {
       interpretation: options.interpretation ?? null,
       appraisal: options.appraisal ?? null,
       affectProducer: options.affectProducer ?? null,
-      regulationProducer: options.regulationProducer ?? null
+      regulationProducer: options.regulationProducer ?? null,
+      contextProducer: options.contextProducer ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

@@ -13,6 +13,7 @@
 import type {
   AppraisalPort,
   AffectProducerPort,
+  ContextProducerPort,
   InterpretationPort,
   MemoryPort,
   RegulationProducerPort,
@@ -33,4 +34,6 @@ export interface RuntimeDependencyContainer {
   readonly appraisal: AppraisalPort | null;
   readonly affectProducer: AffectProducerPort | null;
   readonly regulationProducer: RegulationProducerPort | null;
+  /** Observation input → controlled projection + context delta (producer identity `context`). */
+  readonly contextProducer: ContextProducerPort | null;
 }
