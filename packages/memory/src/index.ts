@@ -44,6 +44,31 @@ export {
 } from "./repository/in-memory-memory-repository.js";
 
 export {
+  MEMORY_RETRIEVAL_CONFIG_V0,
+  MEMORY_RETRIEVAL_QUERY_SCHEMA_VERSION,
+  MEMORY_RETRIEVAL_RESULT_SCHEMA_VERSION,
+  RETRIEVAL_REASON_DIMENSIONS,
+  retrievalQueryFingerprint,
+  type MemoryRetrievalQueryV0,
+  type MemoryRetrievalResultV0,
+  type RetrievalDeterministicMetadataV0,
+  type RetrievalEvidenceV0,
+  type RetrievalReasonDimension,
+  type RetrievalReasonV0,
+  type RetrievalSalienceConstraintsV0,
+  type RetrievalTemporalContextV0,
+  type SelectedEpisodeRef,
+  type RetrievalTraceRef
+} from "./retrieval/types.js";
+
+export {
+  validateMemoryRetrievalQuery,
+  validateMemoryRetrievalResult
+} from "./retrieval/validation.js";
+
+export type { MemoryRetrievalService } from "./retrieval/memory-retrieval-service.js";
+
+export {
   EPISODIC_MEMORY_RECORD_SCHEMA_VERSION,
   SALIENCE_SOURCE_ENCODING_DECLARED,
   validateEpisodicMemoryRecord,
