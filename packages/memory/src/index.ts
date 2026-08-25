@@ -40,6 +40,10 @@ export {
 export type { MemoryRepository } from "./repository/memory-repository.js";
 
 export {
+  InMemoryMemoryRepository
+} from "./repository/in-memory-memory-repository.js";
+
+export {
   EPISODIC_MEMORY_RECORD_SCHEMA_VERSION,
   SALIENCE_SOURCE_ENCODING_DECLARED,
   validateEpisodicMemoryRecord,
