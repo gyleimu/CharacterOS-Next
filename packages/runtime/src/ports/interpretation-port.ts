@@ -7,17 +7,26 @@
  * wiring shape: controlled projection view in, draft proposal out.
  */
 
-import type { CanonicalRefV0 } from "@characteros-next/subject-core";
+import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
 import type { MemoryRetrievalResultV0 } from "@characteros-next/memory";
 
-/** Minimum controlled read-model handed to interpretation (§8.3 subset). */
+/**
+ * Controlled read-model handed to interpretation (p2-runtime-plan §8.3 subset).
+ * DRAFT schema, evolved by P2.3.3.1: `projection_ref` was replaced by the grammar-safe
+ * `projection_hash` (kind `projection` is not among the 21 frozen ref kinds); the view
+ * now carries the observation identity and refs-only facts it projects.
+ */
 export interface ControlledProjectionViewV0 {
-  /** Content-addressed pointer of the assembled projection. */
-  readonly projection_ref: CanonicalRefV0;
-  /** Retrieval evidence the projection was allowed to cite. */
-  readonly retrieval_result: MemoryRetrievalResultV0;
-  /** Current canonical scene label (refs-only view; never a SubjectState dump). */
-  readonly context_scene: string;
+  /** Domain-separated deterministic hash of this exact projection body. */
+  readonly projection_hash: HashV1;
+  /** The observation this projection was assembled for. */
+  readonly observation_id: CanonicalRefV0;
+  /** Unique sorted union of the observation's fact refs (source + entity). */
+  readonly observation_refs: readonly CanonicalRefV0[];
+  /** Current canonical scene label when resolved by the executor, else null. */
+  readonly context_scene: string | null;
+  /** Retrieval evidence when the retrieval stage ran, else null. */
+  readonly retrieval_result: MemoryRetrievalResultV0 | null;
 }
 
 /** DRAFT interpretation output — schema finalizes with the appraisal package slice. */

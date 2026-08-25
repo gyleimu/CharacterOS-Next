@@ -42,3 +42,19 @@ export {
   type TimeTransitionInputV0,
   type TransitionSessionFacts
 } from "./transitions/time/time-transition-executor.js";
+
+// --- P2.3.3.1 observation input + context producer --------------------------------
+
+export {
+  CONTROLLED_PROJECTION_HASH_PROJECTION,
+  CONTROLLED_PROJECTION_SCHEMA_VERSION,
+  buildControlledProjectionView,
+  type ContextProducerPort,
+  type ControlledProjectionAssembly
+} from "./ports/context-producer-port.js";
+
+export {
+  OBSERVATION_INPUT_SCHEMA_VERSION,
+  validateObservationInput,
+  type ObservationInputV0
+} from "./transitions/observation/types.js";

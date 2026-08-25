@@ -11,3 +11,14 @@ export type {
 export type { AppraisalPort, AppraisalProposalDraftV0 } from "./appraisal-port.js";
 export type { AffectProducerInputV0, AffectProducerPort } from "./affect-producer-port.js";
 export type { RegulationProducerInputV0, RegulationProducerPort } from "./regulation-producer-port.js";
+
+// --- P2.3.3.1 observation input + context producer --------------------------------
+
+export {
+  CONTROLLED_PROJECTION_HASH_PROJECTION,
+  CONTROLLED_PROJECTION_SCHEMA_VERSION,
+  buildControlledProjectionView,
+  type ContextProducerPort,
+  type ControlledProjectionAssembly
+} from "./context-producer-port.js";
+export type { ObservationInputV0 } from "../transitions/observation/types.js";
