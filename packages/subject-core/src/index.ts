@@ -128,6 +128,7 @@ export type {
 
 export {
   ok,
+  fail,
   type ValidationResult,
   type ValidationFailure
 } from "./validation/result.js";
