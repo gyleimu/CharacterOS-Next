@@ -15,5 +15,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@characteros-next/memory": "workspace:*",
+    "@characteros-next/subject-core": "workspace:*"
   }
 }

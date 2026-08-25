@@ -1,0 +1,13 @@
+/** P2.3.1 — runtime boundary ports (types-only re-exports; no implementations). */
+
+export type { SubjectCorePort } from "./subject-core-port.js";
+export type { MemoryPort } from "./memory-port.js";
+export type { RetrievalPort } from "./retrieval-port.js";
+export type {
+  ControlledProjectionViewV0,
+  InterpretationPort,
+  InterpretationProposalDraftV0
+} from "./interpretation-port.js";
+export type { AppraisalPort, AppraisalProposalDraftV0 } from "./appraisal-port.js";
+export type { AffectProducerInputV0, AffectProducerPort } from "./affect-producer-port.js";
+export type { RegulationProducerInputV0, RegulationProducerPort } from "./regulation-producer-port.js";

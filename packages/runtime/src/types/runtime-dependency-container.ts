@@ -1,0 +1,36 @@
+/**
+ * P2.3.1 — RuntimeDependencyContainer (boundary-layer type).
+ *
+ * The immutable dependency view assembled by RuntimeCompositionRoot and consumed by
+ * future transition executors. Every member is an injected port/capability; the
+ * container itself carries no behavior and is deeply frozen after assembly.
+ *
+ * `null` members are explicit "not yet wired" markers for later P2.3 slices — they are
+ * NOT optional execution paths: executors that require them must treat null as a
+ * composition error.
+ */
+
+import type {
+  AppraisalPort,
+  AffectProducerPort,
+  InterpretationPort,
+  MemoryPort,
+  RegulationProducerPort,
+  RetrievalPort,
+  SubjectCorePort
+} from "../ports/index.js";
+
+export interface RuntimeDependencyContainer {
+  /** Canonical commit boundary + authoritative snapshot reads. */
+  readonly subjectCore: SubjectCorePort;
+  /** Immutable revision repository: prepare/read/verdicts only (refs, no payloads). */
+  readonly memory: MemoryPort;
+  /** Deterministic retrieval seam backed by the memory repository capability. */
+  readonly retrieval: RetrievalPort;
+
+  /** Fixed-provider seams; null until their P2.3 slices wire real adapters. */
+  readonly interpretation: InterpretationPort | null;
+  readonly appraisal: AppraisalPort | null;
+  readonly affectProducer: AffectProducerPort | null;
+  readonly regulationProducer: RegulationProducerPort | null;
+}
