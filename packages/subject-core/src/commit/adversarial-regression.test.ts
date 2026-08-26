@@ -742,4 +742,107 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     expect(recorder.events).toEqual(["reference-gate", "whole-state", "authority"]);
     expect(h.store.getCommittedBundles()).toHaveLength(1);
   });
+
+  /**
+   * §16 restart: a fresh facade over the SAME authoritative store but a fresh
+   * journal restored from the exported record set. Restart semantics must
+   * preserve every durable identity fact.
+   */
+  function restartedHarness(h: Harness): Harness {
+    const journal = new InMemoryTransitionIdentityJournal();
+    journal.importState(h.journal.exportState());
+    const ports: SubjectCoreFacadePorts = {
+      store: h.store,
+      journal,
+      producerAuthorizationVerifier: async (set) => h.issuer.verify(set),
+      stateReader: {
+        async readCurrentSnapshot(subjectId: IdentifierV0) {
+          const bundle = h.store.readCurrentBundle(subjectId);
+          return bundle !== null ? bundle.next_snapshot : h.initial;
+        }
+      },
+      preparedResultValidator: async (binding) => binding.prepared_result_ref === "workflow:w-1",
+      referenceValidator: async () => true
+    };
+    return { facade: new SubjectCoreFacade(ports), store: h.store, journal, initial: h.initial, issuer: h.issuer };
+  }
+
+  it("A15: journal restart preserves COMMITTED identity (replay + reuse conflict)", async () => {
+    const h = buildHarness();
+    const committed = await reserveAndCommitHarness(h, timeProposal("t-attack-a15", 5));
+    expect(committed.kind).toBe("COMMITTED");
+    const r = restartedHarness(h);
+
+    // Same ID + same payload after restart → the original committed truth.
+    const replay = await r.facade.reserveAndRoute(
+      timeProposal("t-attack-a15", 5) as unknown as CanonicalTransitionProposalV1
+    );
+    expect(replay.kind).toBe("ALREADY_COMMITTED");
+
+    // Same ID + changed payload → durable reuse conflict, never re-committed.
+    const conflict = await r.facade.reserveAndRoute(
+      timeProposal("t-attack-a15", 99) as unknown as CanonicalTransitionProposalV1
+    );
+    expect(conflict.kind).toBe("REUSE_CONFLICT");
+    if (conflict.kind === "REUSE_CONFLICT") {
+      expect(conflict.error_code).toBe("TRANSITION_ID_REUSE");
+      expect(conflict.reason).toBe("IDEM-REUSE-001");
+    }
+    const record = await r.journal.readRecord("t-attack-a15" as never);
+    expect(record?.terminal_status).toBe("COMMITTED");
+    expect(record?.reuse_conflicts).toHaveLength(1);
+    expect(h.store.getCommittedBundles()).toHaveLength(1);
+  });
+
+  it("A15: journal restart preserves terminal NO_OP replay", async () => {
+    const h = buildHarness();
+    const zeroProposal = {
+      schema_version: "canonical-transition-proposal-v1",
+      transition_id: "t-attack-a15-noop",
+      subject_id: "subject-s0",
+      transition_type: "Time",
+      expected_state_revision: 0,
+      time_input: { kind: "ELAPSED", elapsed_time: { value: 0, unit: "tick" } },
+      cause_refs: [],
+      domain_deltas: [],
+      external_refs: []
+    } as unknown as CanonicalTransitionProposalV1;
+    const reserved = await h.facade.reserveAndRoute(zeroProposal);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+    await h.facade.terminalizeReservedNoOp({
+      proposal: zeroProposal,
+      continuation: reserved.continuation,
+      producerAuthorization: h.issuer.issue([]),
+      preparedBinding: preparedBinding("t-attack-a15-noop")
+    });
+
+    const r = restartedHarness(h);
+    const replay = await r.facade.reserveAndRoute(zeroProposal);
+    expect(replay.kind).toBe("TERMINAL_NO_OP");
+  });
+
+  it("A15: journal restart preserves OPEN continuation integrity", async () => {
+    const h = buildHarness();
+    const proposal = timeProposal("t-attack-a15-open", 5);
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+
+    // "Process loss" before the second call: the restarted facade must accept
+    // the original continuation and commit against the imported journal.
+    const r = restartedHarness(h);
+    const outcome = await r.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: authorization(h.issuer),
+      preparedBinding: preparedBinding("t-attack-a15-open"),
+      repository_bindings: R0_BINDINGS
+    });
+    expect(outcome.kind).toBe("COMMITTED");
+    if (outcome.kind === "COMMITTED") {
+      expect(outcome.bundle.next_revision).toBe(1);
+    }
+    expect(h.store.getCommittedBundles()).toHaveLength(1);
+  });
 });
