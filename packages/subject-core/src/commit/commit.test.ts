@@ -522,3 +522,47 @@ describe("in-memory AtomicCommitStore CAS", () => {
     expect(store.currentRevision("subject-s0")).toBe(1);
   });
 });
+
+describe("P0-3 — full candidate validation before commit", () => {
+  it("7: individually valid deltas composing into a whole-state violation commit nothing", async () => {
+    // mood.last_update=10 is shape-valid in isolation, but the composed candidate puts
+    // it AFTER logical_time=0 → whole-state INVARIANT_VIOLATION (never hashed/committed).
+    const badMood = {
+      producer: "affect",
+      domain: "affect",
+      expected_repository_revision: null,
+      operations: [
+        {
+          path: "/affect",
+          value: { active_channels: [], generated_under_profile: null, updated_at: null }
+        },
+        { path: "/mood", value: { baseline: 0.1, generated_under_profile: null, last_update: 10 } }
+      ],
+      provenance_refs: []
+    };
+    const p = timeProposal(5, {
+      domain_deltas: [badMood, regulationDeltaFixture()]
+    });
+    const { store, outcome } = await commitOnce(p);
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind !== "REJECTED") return;
+    expect(outcome.failure.error_code).toBe("INVARIANT_VIOLATION");
+    expect(store.getCommittedBundles()).toHaveLength(0);
+    expect(store.currentRevision("subject-s0")).toBeNull();
+  });
+});
+
+function regulationDeltaFixture(): Record<string, unknown> {
+  return {
+    producer: "regulation",
+    domain: "regulation",
+    expected_repository_revision: null,
+    operations: [
+      {
+        path: "/regulation",
+        value: { energy: 1, stress: 0.2, arousal: 0.5, fatigue: 0, last_update: null }
+      }
+    ],
+    provenance_refs: []
+  };
+}

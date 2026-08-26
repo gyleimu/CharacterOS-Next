@@ -26,6 +26,7 @@ import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
 import { validateProposal } from "../validation/proposal.js";
+import { validateSubjectState } from "../validation/subject-state.js";
 import { validateHash } from "../validation/scalars.js";
 import type { ValidationFailure } from "../validation/result.js";
 import {
@@ -241,6 +242,13 @@ export function createCommitEngine(deps: {
       const nextWindow = nextTraceWindow(cur.trace_window, traceEntry, nextRevision);
       draft["trace_window"] = nextWindow;
       const candidate = freezeCandidate(draft);
+
+      // P0-3: FULL candidate validation before any authority computation. Individually
+      // valid deltas that compose into a whole-state violation (timestamps past
+      // logical_time, cross-field inconsistency, readonly drift, trace/cursor
+      // corruption) must NEVER be hashed and committed as authoritative truth.
+      const candidateValidation = validateSubjectState(candidate);
+      if (!candidateValidation.ok) return rejected(candidateValidation.error);
 
       // Memory-content adoption sanity: an adopted revision must be NEW (§7.2).
       const touchesContentRevision = p.domain_deltas.some((delta) =>
