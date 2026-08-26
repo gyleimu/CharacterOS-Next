@@ -311,7 +311,7 @@ export async function observationCapabilities(): Promise<TransitionCapabilities>
   });
   const contextDelta = await buildContextDelta(observation, snapshot);
   return capabilitiesFor(
-    buildObservationProposal({
+    await buildObservationProposal({
       subjectId: "subject-s0",
       stateRevision: 0,
       observation,

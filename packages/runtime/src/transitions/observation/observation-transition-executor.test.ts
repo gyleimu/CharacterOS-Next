@@ -202,8 +202,9 @@ describe("ObservationTransitionExecutor", () => {
     const outcome = await executor.execute(ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     expect(memory.prepareCalls).toBe(0); // zero memory writes
+    // Round-3 B4: collision-safe identity — opaque hash suffix, frozen syntax.
     expect(outcome.kind === "COMMITTED" ? outcome.bundle.transition_id : "").toMatch(
-      /^t-obs-subject-s0-r0-oobservation-o-77$/
+      /^t-obs-[0-9a-f]{64}$/
     );
     expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });

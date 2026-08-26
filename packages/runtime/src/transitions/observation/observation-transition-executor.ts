@@ -26,6 +26,7 @@ import type {
   DomainDeltaV0,
   SubjectStateV0
 } from "@characteros-next/subject-core";
+import { hashEnvelope } from "@characteros-next/subject-core";
 import {
   validateMemoryRetrievalResult,
   type MemoryRetrievalQueryV0
@@ -45,14 +46,30 @@ import { anchorContext, stageFailure, TransitionStageFailure } from "../common.j
 
 export type ObservationExecutionResult = CommitReservedOutcome;
 
-/** Deterministic opaque transition id for Observation runs. */
-export function observationTransitionId(
+/** Round-3 B4 domain separation for collision-safe observation identity. */
+const OBSERVATION_TRANSITION_ID_PROJECTION =
+  "characteros-next/runtime/observation-transition-id/v1" as const;
+
+/**
+ * Deterministic collision-safe transition id for Observation runs (Round-3 B4
+ * closure). The previous lossy string composition (`observationId.replace(":","-")`)
+ * let distinct legal tuples collide; the id is now a domain-separated canonical
+ * hash over the EXACT identity tuple {subject_id, expected_state_revision,
+ * observation_id} — injective for protocol purposes, fully deterministic (no
+ * Date.now / randomUUID / Math.random) and valid under the frozen identifier
+ * syntax (`t-obs-` prefix + 64 lowercase hex = 70 chars ≤ 128).
+ */
+export async function observationTransitionId(
   subjectId: string,
   revision: number,
   observationId: string
-): string {
-  const safeObservationId = observationId.replace(":", "-");
-  return `t-obs-${subjectId}-r${revision}-o${safeObservationId}`;
+): Promise<string> {
+  const digest = await hashEnvelope(OBSERVATION_TRANSITION_ID_PROJECTION, {
+    subject_id: subjectId,
+    expected_state_revision: revision,
+    observation_id: observationId
+  });
+  return `t-obs-${digest.replace(/^sha256:/, "")}`;
 }
 
 /**
@@ -61,18 +78,18 @@ export function observationTransitionId(
  * binding fingerprint can be authoritative). Deltas are copied into raw-ASCII
  * domain order; the input array is never mutated.
  */
-export function buildObservationProposal(params: {
+export async function buildObservationProposal(params: {
   readonly subjectId: string;
   readonly stateRevision: number;
   readonly observation: ObservationInputV0;
   readonly deltas: readonly DomainDeltaV0[];
-}): CanonicalTransitionProposalV1 {
+}): Promise<CanonicalTransitionProposalV1> {
   const sorted = [...params.deltas].sort((a, b) =>
     a.domain < b.domain ? -1 : a.domain > b.domain ? 1 : 0
   );
   return {
     schema_version: "canonical-transition-proposal-v1",
-    transition_id: observationTransitionId(
+    transition_id: await observationTransitionId(
       params.subjectId,
       params.stateRevision,
       params.observation.observation_id
@@ -355,7 +372,7 @@ export class ObservationTransitionExecutor {
     // buildObservationProposal copies into raw-ASCII domain order:
     // affect < context < memory-retrieval.
 
-    const proposal = buildObservationProposal({
+    const proposal = await buildObservationProposal({
       subjectId: anchored.subject_id,
       stateRevision: anchored.state_revision,
       observation: obs,

@@ -40,7 +40,8 @@ describe("A4 — proposal generation conformance", () => {
     expect(bundle.expected_revision).toBe(0);
     expect(bundle.logical_time_before).toBe(0);
     expect(bundle.logical_time_after).toBe(0); // Observation never advances time
-    expect(bundle.transition_id).toMatch(/^t-obs-subject-s0-r0-oobservation-o-77$/);
+    // Round-3 B4: collision-safe identity — opaque hash suffix, frozen syntax.
+    expect(bundle.transition_id).toMatch(/^t-obs-[0-9a-f]{64}$/);
     expect(bundle.trace_entry.transition_type).toBe("Observation");
     expect(bundle.trace_entry.cause_refs).toEqual(["observation:o-77"]);
   });
