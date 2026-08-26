@@ -209,6 +209,13 @@ Not hidden, not promoted:
    `p2-1-contract-freeze.md` does not define the field at all. Documents
    conflict → sub-item stopped per task instruction; no hybrid invented.
    Needs an authoritative ruling before Learning work touches appraisal.
+
+   **Round-3 update (independent re-audit):** classification upgraded to
+   **CONTRACT_CONFLICT**. It does NOT block P2.3.4 affect/regulation producer
+   integration; it DOES block P2.3.5 LearningTransition and any persisted
+   Learning schema using appraisal attribution. No representation was chosen
+   and no appraisal code was changed in Round 3.
+   Marker: **MUST_RESOLVE_BEFORE_P2_3_5**.
 2. **OUTCOME_UNKNOWN resolution** remains intentionally unresolved at the
    engine boundary per frozen §15.2 (reconciliation is a host duty); unchanged
    by this round.
