@@ -11,12 +11,48 @@ import {
   SpyMemoryRepository,
   buildObservationHarness,
   capabilitiesFor,
+  fixedInterpretation,
   observationInput,
+  retrievalService,
   s0,
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
+import { TransitionStageFailure } from "../common.js";
 
 const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77", "Observation");
+
+/**
+ * R2-I (ATTACK G): a rogue retrieval port that first fetches a legitimate result
+ * from the reference service, then corrupts it — runtime must reject the contract
+ * violation itself; TypeScript types never protect a trust boundary.
+ */
+function mutatedRetrieval(
+  mutate: (result: Record<string, unknown>) => void
+): { retrieve(query: never): Promise<never> } {
+  const real = retrievalService(false);
+  return {
+    retrieve: async (query) => {
+      const good = await real.retrieve(query as never);
+      const copy = JSON.parse(JSON.stringify(good)) as Record<string, unknown>;
+      mutate(copy);
+      return copy as never;
+    }
+  };
+}
+
+function alignedEvidenceEntry(episodeRef: string): Record<string, unknown> {
+  return { episode_ref: episodeRef, reasons: [{ dimension: "CONTEXT", score: 0.7 }] };
+}
+
+async function expectStageFailure(promise: Promise<unknown>): Promise<TransitionStageFailure> {
+  try {
+    await promise;
+  } catch (error) {
+    expect(error).toBeInstanceOf(TransitionStageFailure);
+    return error as TransitionStageFailure;
+  }
+  throw new Error("expected the executor to reject");
+}
 
 describe("ObservationTransitionExecutor", () => {
   it("runs the full pipeline and commits: +1 revision, Observation type, single authority", async () => {
@@ -39,26 +75,102 @@ describe("ObservationTransitionExecutor", () => {
     expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });
 
-  it("fails closed on retrieval failure with zero commits", async () => {
+  it("maps retrieval provider failure to canonical SERVICE_UNAVAILABLE (not raw messages)", async () => {
     const { core, executor, ctx } = buildObservationHarness({ failingRetrieval: true });
-    await expect(executor.execute(ctx, observationInput(), CAPS)).rejects.toThrow(
-      /retrieval engine offline/
-    );
+    const failure = await expectStageFailure(executor.execute(ctx, observationInput(), CAPS));
+    expect(failure.stage).toBe("OBSERVATION");
+    expect(failure.error_code).toBe("SERVICE_UNAVAILABLE");
+    expect(failure.reason).toBe("FAIL-SERVICE-001");
     expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
-  it("fails closed on any provider failure (interpretation / affect) with zero commits", async () => {
+  it("keeps canonical failure classification stable across arbitrary provider messages", async () => {
     const a = buildObservationHarness({ failingInterpretation: true });
-    await expect(a.executor.execute(a.ctx, observationInput(), CAPS)).rejects.toThrow(
-      /interpretation provider offline/
-    );
+    const fa = await expectStageFailure(a.executor.execute(a.ctx, observationInput(), CAPS));
+    expect(fa.stage).toBe("OBSERVATION");
+    expect(fa.error_code).toBe("SERVICE_UNAVAILABLE");
+    expect(fa.reason).toBe("FAIL-SERVICE-001");
     expect(a.core.storeRead.getCommittedBundles()).toHaveLength(0);
 
     const b = buildObservationHarness({ failingAffect: true });
-    await expect(b.executor.execute(b.ctx, observationInput(), CAPS)).rejects.toThrow(
-      /affect producer offline/
-    );
+    const fb = await expectStageFailure(b.executor.execute(b.ctx, observationInput(), CAPS));
+    expect(fb.stage).toBe("OBSERVATION");
+    expect(fb.error_code).toBe("SERVICE_UNAVAILABLE");
+    expect(fb.reason).toBe("FAIL-SERVICE-001");
     expect(b.core.storeRead.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it.each([
+    ["missing schema version", (r: Record<string, unknown>) => { delete r["schema_version"]; }],
+    ["missing evidence", (r: Record<string, unknown>) => { delete r["evidence"]; }],
+    ["selected/evidence length mismatch", (r: Record<string, unknown>) => { (r["evidence"] as unknown[]).pop(); }],
+    ["invalid selected ref kind", (r: Record<string, unknown>) => { (r["selected_memory_refs"] as unknown[])[0] = "bogus:not-an-episode"; }],
+    [
+      "duplicates",
+      (r: Record<string, unknown>) => {
+        (r["selected_memory_refs"] as unknown[]).push("episode:e-9");
+        (r["evidence"] as unknown[]).push(alignedEvidenceEntry("episode:e-9"));
+      }
+    ],
+    [
+      "unsorted refs",
+      (r: Record<string, unknown>) => {
+        (r["selected_memory_refs"] as unknown[]).unshift("episode:e-0");
+        (r["evidence"] as unknown[]).unshift(alignedEvidenceEntry("episode:e-0"));
+        const sel = r["selected_memory_refs"] as unknown[];
+        const ev = r["evidence"] as unknown[];
+        // swap first two (raw-ASCII "episode:e-0" < "episode:e-9") keeping alignment
+        [sel[0], sel[1]] = [sel[1], sel[0]];
+        [ev[0], ev[1]] = [ev[1], ev[0]];
+      }
+    ],
+    [
+      "invalid metadata",
+      (r: Record<string, unknown>) => {
+        (r["deterministic_metadata"] as Record<string, unknown>)["candidate_count"] = -3;
+      }
+    ]
+  ])("rejects malformed retrieval result before interpretation: %s", async (_name, mutate) => {
+    let interpretationCalls = 0;
+    const { core, executor, ctx } = buildObservationHarness({
+      retrieval: mutatedRetrieval(mutate),
+      interpretation: {
+        interpret: async (view) => {
+          interpretationCalls += 1;
+          return fixedInterpretation().interpret(view);
+        }
+      }
+    });
+    const failure = await expectStageFailure(executor.execute(ctx, observationInput(), CAPS));
+    expect(failure.error_code).toBe("INVALID_SCHEMA");
+    expect(failure.reason).toBe("SS-SCHEMA-001");
+    expect(interpretationCalls).toBe(0); // rejected BEFORE any interpretation use
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("rejects retrieval result answering a different subject or revision", async () => {
+    const wrongRevision = buildObservationHarness({
+      retrieval: mutatedRetrieval((r) => {
+        (r["deterministic_metadata"] as Record<string, unknown>)["repository_revision"] = "R999";
+      })
+    });
+    const failure = await expectStageFailure(
+      wrongRevision.executor.execute(wrongRevision.ctx, observationInput(), CAPS)
+    );
+    expect(failure.error_code).toBe("INVALID_MEMORY_REVISION");
+    expect(failure.reason).toBe("MEM-REV-001");
+    expect(wrongRevision.core.storeRead.getCommittedBundles()).toHaveLength(0);
+
+    const wrongSubject = buildObservationHarness({
+      retrieval: mutatedRetrieval((r) => {
+        r["subject_id"] = "subject-other";
+      })
+    });
+    const subjectFailure = await expectStageFailure(
+      wrongSubject.executor.execute(wrongSubject.ctx, observationInput(), CAPS)
+    );
+    expect(subjectFailure.error_code).toBe("INVALID_SCHEMA");
+    expect(wrongSubject.core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("is deterministic: same input ⇒ identical proposal/refs/hashes/results", async () => {

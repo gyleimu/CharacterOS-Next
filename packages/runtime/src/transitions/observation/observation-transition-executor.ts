@@ -26,7 +26,10 @@ import type {
   DomainDeltaV0,
   SubjectStateV0
 } from "@characteros-next/subject-core";
-import type { MemoryRetrievalQueryV0 } from "@characteros-next/memory";
+import {
+  validateMemoryRetrievalResult,
+  type MemoryRetrievalQueryV0
+} from "@characteros-next/memory";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
@@ -80,6 +83,30 @@ export function buildObservationRetrievalQuery(
 }
 
 const STAGE = "OBSERVATION" as const;
+
+/**
+ * §14: the provider-failure contract is the stable TransitionStageFailure triple —
+ * raw host exception strings never become contract truth; they survive only as
+ * non-canonical diagnostic metadata (Error `cause`).
+ */
+function providerFailure(provider: string, error: unknown): TransitionStageFailure {
+  if (error instanceof TransitionStageFailure) return error;
+  return new TransitionStageFailure(
+    STAGE,
+    "SERVICE_UNAVAILABLE",
+    "FAIL-SERVICE-001",
+    `${provider} provider failed`,
+    { cause: error }
+  );
+}
+
+async function runProvider<T>(provider: string, call: () => Promise<T>): Promise<T> {
+  try {
+    return await call();
+  } catch (error) {
+    throw providerFailure(provider, error);
+  }
+}
 
 export class ObservationTransitionExecutor {
   constructor(private readonly deps: RuntimeDependencyContainer) {}
@@ -151,18 +178,54 @@ export class ObservationTransitionExecutor {
     const retrievalMetadataProducer = this.deps.retrievalMetadataProducer;
 
     // ---- projection + retrieval ------------------------------------------------------
-    void (await contextProducer.produceControlledProjection(obs, {
-      context_scene: snapshot.context.scene,
-      retrieval_result: null
-    }));
+    void (await runProvider("context projection", () =>
+      contextProducer.produceControlledProjection(obs, {
+        context_scene: snapshot.context.scene,
+        retrieval_result: null
+      })
+    ));
     const query = buildObservationRetrievalQuery(obs, snapshot);
-    const retrievalResult = await this.deps.retrieval.retrieve(query);
+    const retrievalRaw: unknown = await runProvider("retrieval", () =>
+      this.deps.retrieval.retrieve(query)
+    );
+
+    // ---- R2-I (ATTACK G): provider output is a trust boundary -------------------------
+    // Full MemoryRetrievalResultV0 contract validation — including fingerprint
+    // recomputation against the exact query — BEFORE any interpretation/appraisal use.
+    const retrievalChecked = await validateMemoryRetrievalResult(retrievalRaw, query);
+    if (!retrievalChecked.ok) {
+      throw stageFailure(
+        STAGE,
+        "INVALID_SCHEMA",
+        "SS-SCHEMA-001",
+        `retrieval result: ${retrievalChecked.error.detail}`
+      );
+    }
+    const retrievalResult = retrievalChecked.value;
+    if (retrievalResult.subject_id !== query.subject_id) {
+      throw stageFailure(
+        STAGE,
+        "INVALID_SCHEMA",
+        "SS-SCHEMA-001",
+        `retrieval result answers subject ${retrievalResult.subject_id}, expected ${query.subject_id}`
+      );
+    }
+    if (retrievalResult.deterministic_metadata.repository_revision !== query.repository_revision) {
+      throw stageFailure(
+        STAGE,
+        "INVALID_MEMORY_REVISION",
+        "MEM-REV-001",
+        `retrieval result answers revision ${retrievalResult.deterministic_metadata.repository_revision}, expected ${query.repository_revision}`
+      );
+    }
 
     // ---- A4.2: stage dependency is structural (retrieval always precedes) ------------
-    const projectionWithEvidence = await contextProducer.produceControlledProjection(obs, {
-      context_scene: snapshot.context.scene,
-      retrieval_result: retrievalResult
-    });
+    const projectionWithEvidence = await runProvider("context projection", () =>
+      contextProducer.produceControlledProjection(obs, {
+        context_scene: snapshot.context.scene,
+        retrieval_result: retrievalResult
+      })
+    );
     if (projectionWithEvidence.retrieval_result === null) {
       throw stageFailure(
         STAGE,
@@ -173,7 +236,9 @@ export class ObservationTransitionExecutor {
     }
 
     // ---- fixed providers + evidence ownership (A4.3/§19) ------------------------------
-    const interpretationDraft = await interpretation.interpret(projectionWithEvidence);
+    const interpretationDraft = await runProvider("interpretation", () =>
+      interpretation.interpret(projectionWithEvidence)
+    );
     const interpretationChecked = validateInterpretationProposal(interpretationDraft);
     if (!interpretationChecked.ok) {
       throw stageFailure(STAGE, "INVALID_SCHEMA", "SS-SCHEMA-001", interpretationChecked.error.detail);
@@ -187,7 +252,9 @@ export class ObservationTransitionExecutor {
       );
     }
 
-    const appraisalDraft = await appraisal.appraise(projectionWithEvidence, interpretationChecked.value);
+    const appraisalDraft = await runProvider("appraisal", () =>
+      appraisal.appraise(projectionWithEvidence, interpretationChecked.value)
+    );
     const appraisalChecked = validateAppraisalV0(appraisalDraft);
     if (!appraisalChecked.ok) {
       throw stageFailure(STAGE, "INVALID_SCHEMA", "SS-SCHEMA-001", appraisalChecked.error.detail);
@@ -220,13 +287,17 @@ export class ObservationTransitionExecutor {
     }
 
     // ---- deltas + proposal assembly ---------------------------------------------------
-    const affectDelta = await affectProducer.produceAffectDelta({
-      context: anchored,
-      snapshot,
-      transition_type: "Observation",
-      appraisal: appraisalChecked.value
-    });
-    const contextDelta = await contextProducer.produceContextDelta(obs, snapshot);
+    const affectDelta = await runProvider("affect", () =>
+      affectProducer.produceAffectDelta({
+        context: anchored,
+        snapshot,
+        transition_type: "Observation",
+        appraisal: appraisalChecked.value
+      })
+    );
+    const contextDelta = await runProvider("context", () =>
+      contextProducer.produceContextDelta(obs, snapshot)
+    );
 
     const authorizationBindings: Array<{
       producer: "affect" | "context" | "memory" | "regulation";
@@ -237,10 +308,12 @@ export class ObservationTransitionExecutor {
     ];
     const deltas: DomainDeltaV0[] = [affectDelta, contextDelta];
     if (retrievalMetadataProducer !== null) {
-      const metadataDelta = await retrievalMetadataProducer.produceRetrievalMetadataDelta({
-        snapshot,
-        retrieval_result: retrievalResult
-      });
+      const metadataDelta = await runProvider("retrieval metadata", () =>
+        (retrievalMetadataProducer as NonNullable<typeof retrievalMetadataProducer>).produceRetrievalMetadataDelta({
+          snapshot,
+          retrieval_result: retrievalResult
+        })
+      );
       deltas.push(metadataDelta);
       authorizationBindings.push({ producer: "memory", domain: "memory-retrieval" });
     }

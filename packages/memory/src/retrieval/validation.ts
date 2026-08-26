@@ -219,10 +219,15 @@ function validateRehearsalSelectionShape(probe: Record<string, unknown>): Valida
   for (let i = 0; i < selections.length; i++) {
     const parsed = parseEpisodeRef(selections[i], `rehearsal.selected_memory_refs[${i}]`);
     if (!parsed.ok) return parsed;
-    if (previousSelection !== undefined && parsed.value === previousSelection) {
-      return fail("INVALID_SCHEMA", SCHEMA_REASON, `rehearsal.selected_memory_refs[${i}]: duplicate selection`);
+    const selection = String(parsed.value);
+    if (previousSelection !== undefined && selection <= previousSelection) {
+      return fail(
+        "INVALID_SCHEMA",
+        SCHEMA_REASON,
+        `rehearsal.selected_memory_refs[${i}]: selections must be set-like (unique, raw-ASCII-sorted)`
+      );
     }
-    previousSelection = parsed.value;
+    previousSelection = selection;
   }
   const evidence = probe["evidence"];
   if (!Array.isArray(evidence)) {
@@ -325,10 +330,15 @@ export async function validateMemoryRetrievalResult(
   for (let i = 0; i < selections.length; i++) {
     const parsed = parseEpisodeRef(selections[i], `result.selected_memory_refs[${i}]`);
     if (!parsed.ok) return parsed;
-    if (previousSelection !== undefined && parsed.value === previousSelection) {
-      return fail("INVALID_SCHEMA", SCHEMA_REASON, `result.selected_memory_refs[${i}]: duplicate selection`);
+    const selection = String(parsed.value);
+    if (previousSelection !== undefined && selection <= previousSelection) {
+      return fail(
+        "INVALID_SCHEMA",
+        SCHEMA_REASON,
+        `result.selected_memory_refs[${i}]: selections must be set-like (unique, raw-ASCII-sorted)`
+      );
     }
-    previousSelection = parsed.value;
+    previousSelection = selection;
   }
 
   const evidence = v["evidence"];

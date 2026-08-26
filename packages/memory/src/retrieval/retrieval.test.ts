@@ -140,6 +140,18 @@ describe("MemoryRetrievalResultV0 conformance", () => {
     if (!r.ok) expect(r.error.error_code).toBe("INVALID_SCHEMA");
   });
 
+  it("enforces set-like ordering (unique, raw-ASCII-sorted) on selections", async () => {
+    const unsorted = result();
+    unsorted["selected_memory_refs"] = ["episode:e-2", "episode:e-1"];
+    unsorted["evidence"] = [
+      { episode_ref: "episode:e-2", reasons: [{ dimension: "SALIENCE", score: 0.9 }] },
+      { episode_ref: "episode:e-1", reasons: [{ dimension: "CONTEXT", score: 0.8 }] }
+    ];
+    const r = await validateMemoryRetrievalResult(unsorted);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.error_code).toBe("INVALID_SCHEMA");
+  });
+
   it("enforces reason normalization and sorted unique dimensions", async () => {
     const outOfRange = result();
     const outEvidence = outOfRange["evidence"] as Array<Record<string, unknown>>;

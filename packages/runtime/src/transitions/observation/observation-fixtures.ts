@@ -299,6 +299,8 @@ export interface ObservationHarnessOptions {
   readonly contextProducer?: ContextProducerPort;
   readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort | null;
   readonly interpretationEvidence?: readonly string[];
+  /** Explicit interpretation port (overrides failingInterpretation/interpretationEvidence). */
+  readonly interpretation?: InterpretationPort;
   readonly appraisalScore?: number;
   readonly appraisalEvidence?: readonly string[];
   readonly retrieval?: {
@@ -336,13 +338,14 @@ export function buildObservationHarness(
     memoryRepository: memory,
     retrieval,
     interpretation:
-      overrides.failingInterpretation === true
+      overrides.interpretation ??
+      (overrides.failingInterpretation === true
         ? {
             interpret: async () => {
               throw new Error("interpretation provider offline");
             }
           }
-        : fixedInterpretation(overrides.interpretationEvidence),
+        : fixedInterpretation(overrides.interpretationEvidence)),
     appraisal:
       overrides.failingAppraisal === true
         ? {
