@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@characteros-next/memory": [
+        "../memory/src/index.ts"
+      ],
+      "@characteros-next/subject-core": [
+        "../subject-core/src/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}
