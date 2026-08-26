@@ -6,6 +6,8 @@
 
 import {
   createInMemorySubjectCoreFacade,
+  proposalFingerprint,
+  type CanonicalTransitionProposalV1,
   type InMemoryFacadeAssembly,
   type ProducerAuthorizationIssuer,
   type ReadOnlyStoreHandle,
@@ -20,7 +22,7 @@ import {
   type PreparedRevisionV0
 } from "@characteros-next/memory";
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
-import { ReferenceContextProducer } from "../../ports/context-producer-port.js";
+import { ReferenceContextProducer, buildContextDelta } from "../../ports/context-producer-port.js";
 import type { AffectProducerPort } from "../../ports/affect-producer-port.js";
 import type { AppraisalPort } from "../../ports/appraisal-port.js";
 import type { ContextProducerPort } from "../../ports/context-producer-port.js";
@@ -29,7 +31,7 @@ import type { RetrievalMetadataProducerPort } from "../../ports/retrieval-metada
 import type { SubjectCorePort } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { TransitionCapabilities } from "../time/time-transition-executor.js";
-import { ObservationTransitionExecutor } from "./observation-transition-executor.js";
+import { ObservationTransitionExecutor, buildObservationProposal } from "./observation-transition-executor.js";
 import type { ObservationInputV0 } from "./types.js";
 
 export const HASH_V1_R0_REPOSITORY =
@@ -272,20 +274,50 @@ export class SpyMemoryRepository extends InMemoryMemoryRepository {
   }
 }
 
-export function capabilitiesFor(
-  transitionId: string,
-  transitionType: "Time" | "Observation" = "Time"
-): TransitionCapabilities {
+/**
+ * Host-side capability minting (Round-3 B1 closure): the prepared binding must
+ * carry the AUTHORITATIVE payload fingerprint recomputed from the exact proposal
+ * the executor will submit — SubjectCore compares it against the reservation and
+ * rejects all-zero or foreign fingerprints fail-closed.
+ */
+export async function capabilitiesFor(
+  proposal: CanonicalTransitionProposalV1
+): Promise<TransitionCapabilities> {
   return {
     preparedBinding: {
       prepared_result_ref: "workflow:w-obs-1" as CanonicalRefV0,
-      transition_id: transitionId as never,
-      subject_id: "subject-s0" as never,
-      transition_type: transitionType as never,
-      payload_fingerprint: `sha256:${"0".repeat(64)}` as never
+      transition_id: proposal.transition_id,
+      subject_id: proposal.subject_id,
+      transition_type: proposal.transition_type,
+      payload_fingerprint: await proposalFingerprint(proposal)
     },
     repository_bindings: R0_BINDINGS as never
   };
+}
+
+/**
+ * Honest capabilities for the DEFAULT observation harness (s0 snapshot +
+ * observationInput + fixed affect producer + reference context delta) — mirrors
+ * exactly what the executor assembles, byte for byte.
+ */
+export async function observationCapabilities(): Promise<TransitionCapabilities> {
+  const snapshot = s0() as unknown as SubjectStateV0;
+  const observation = observationInput();
+  const affectDelta = await fixedAffectProducer().produceAffectDelta({
+    context: { subject_id: "subject-s0", current_logical_time: 0, state_revision: 0 } as never,
+    snapshot,
+    transition_type: "Observation",
+    appraisal: null
+  });
+  const contextDelta = await buildContextDelta(observation, snapshot);
+  return capabilitiesFor(
+    buildObservationProposal({
+      subjectId: "subject-s0",
+      stateRevision: 0,
+      observation,
+      deltas: [affectDelta, contextDelta]
+    })
+  );
 }
 
 export interface ObservationHarnessOptions {

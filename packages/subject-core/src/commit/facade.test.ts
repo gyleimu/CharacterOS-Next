@@ -142,13 +142,16 @@ function authorization(issuer: ProducerAuthorizationIssuer): ProducerAuthorizati
   ]);
 }
 
-function preparedBinding(transitionId: string): PreparedLogicalResultBindingV1 {
+function preparedBinding(
+  transitionId: string,
+  payloadFingerprint: string = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+): PreparedLogicalResultBindingV1 {
   return {
     prepared_result_ref: "workflow:w-1" as CanonicalRefV0,
     transition_id: transitionId as never,
     subject_id: "subject-s0" as never,
     transition_type: "Time" as never,
-    payload_fingerprint: "sha256:0000000000000000000000000000000000000000000000000000000000000000" as never
+    payload_fingerprint: payloadFingerprint as never
   };
 }
 
@@ -194,7 +197,7 @@ async function reserveAndCommit(
     proposal: proposal as unknown as CanonicalTransitionProposalV1,
     continuation: reserved.continuation,
     producerAuthorization: authorization(harness.issuer),
-    preparedBinding: preparedBinding(proposal["transition_id"] as string),
+    preparedBinding: preparedBinding(proposal["transition_id"] as string, reserved.continuation.payload_fingerprint),
     repository_bindings: R0_BINDINGS
   });
 }
@@ -253,7 +256,7 @@ describe("two-call protocol — idempotency and identity", () => {
       proposal,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([]),
-      preparedBinding: preparedBinding("t-noop-1")
+      preparedBinding: preparedBinding("t-noop-1", reserved.continuation.payload_fingerprint)
     });
     expect(outcome.kind).toBe("NO_OP");
     const record = await h.journal.readRecord("t-noop-1" as never);
@@ -282,7 +285,7 @@ describe("two-call protocol — idempotency and identity", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-unknown-1"),
+      preparedBinding: preparedBinding("t-unknown-1", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(first.kind).toBe("UNRESOLVED");
@@ -299,7 +302,7 @@ describe("two-call protocol — idempotency and identity", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-unknown-1"),
+      preparedBinding: preparedBinding("t-unknown-1", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(second.kind).toBe("COMMITTED");

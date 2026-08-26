@@ -21,7 +21,7 @@ import type { MemoryRetrievalQueryV0 } from "@characteros-next/memory";
 import type { SubjectStateV0 } from "@characteros-next/subject-core";
 import {
   buildObservationHarness,
-  capabilitiesFor,
+  observationCapabilities,
   observationInput,
   retrievalService,
   s0,
@@ -29,12 +29,10 @@ import {
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
 
-const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77", "Observation");
-
 describe("A4 — proposal generation conformance", () => {
   it("produces one Observation proposal pinned to the authoritative position", async () => {
     const { executor, ctx } = buildObservationHarness();
-    const outcome = await executor.execute(ctx, observationInput(), CAPS);
+    const outcome = await executor.execute(ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
     const bundle = outcome.bundle;
@@ -51,7 +49,7 @@ describe("A4 — proposal generation conformance", () => {
 describe("A11 — multi-domain atomic commit", () => {
   it("commits affect + context in exactly ONE canonical commit with one trace", async () => {
     const { core, executor, ctx } = buildObservationHarness();
-    const outcome = await executor.execute(ctx, observationInput(), CAPS);
+    const outcome = await executor.execute(ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     const bundles = core.storeRead.getCommittedBundles();
     expect(bundles).toHaveLength(1);
@@ -91,7 +89,7 @@ describe("atomic failure matrix — SubjectCore commit count = 0", () => {
   for (const { name, options } of cases) {
     it(name, async () => {
       const { core, executor, ctx } = buildObservationHarness(options);
-      await expect(executor.execute(ctx, observationInput(), CAPS)).rejects.toThrow();
+      await expect(executor.execute(ctx, observationInput(), await observationCapabilities())).rejects.toThrow();
       expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
       expect(core.storeRead.currentRevision("subject-s0")).toBeNull();
     });
@@ -110,7 +108,7 @@ describe("determinism matrix — ≥3 isolated runs, identical inputs", () => {
 
     for (let i = 0; i < RUNS; i++) {
       const harness = buildObservationHarness();
-      const outcome = await harness.executor.execute(harness.ctx, observationInput(), CAPS);
+      const outcome = await harness.executor.execute(harness.ctx, observationInput(), await observationCapabilities());
       expect(outcome.kind).toBe("COMMITTED");
       if (outcome.kind !== "COMMITTED") return;
       outputs.push({
@@ -136,7 +134,7 @@ describe("boundary attacks", () => {
     const harness = buildObservationHarness();
     const initialBytes = JSON.stringify(harness.initial);
     Object.freeze(harness.initial);
-    const outcome = await harness.executor.execute(harness.ctx, observationInput(), CAPS);
+    const outcome = await harness.executor.execute(harness.ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     expect(JSON.stringify(harness.initial)).toBe(initialBytes);
     expect(Object.isFrozen(harness.initial)).toBe(true);
@@ -147,7 +145,7 @@ describe("boundary attacks", () => {
   it("memory capability sees zero prepare/read calls during the whole run", async () => {
     const memory = new SpyMemoryRepository();
     const { executor, ctx } = buildObservationHarness({ memory });
-    const outcome = await executor.execute(ctx, observationInput(), CAPS);
+    const outcome = await executor.execute(ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     expect(memory.prepareCalls).toBe(0);
     expect(memory.readCalls).toBe(0);
@@ -163,7 +161,7 @@ describe("boundary attacks", () => {
       }
     };
     const { executor, ctx } = buildObservationHarness({ retrieval: counting });
-    const outcome = await executor.execute(ctx, observationInput(), CAPS);
+    const outcome = await executor.execute(ctx, observationInput(), await observationCapabilities());
     expect(outcome.kind).toBe("COMMITTED");
     expect(retrieveCalls).toBe(1); // exactly one query per execution — no hidden search loops
 

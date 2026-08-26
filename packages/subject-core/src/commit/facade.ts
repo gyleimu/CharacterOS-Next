@@ -322,13 +322,17 @@ export class SubjectCoreFacade {
       return { kind: "NO_OP" };
     }
 
-    // 5. Trusted prepared binding: bound to the reserved identity (§7.6, ATTACK C
-    // closure) — a binding minted for another transition/subject/type is refused
-    // before any verdict is consulted.
+    // 5. Trusted prepared binding: bound to the reserved identity AND the
+    // authoritative payload fingerprint (§7.6, ATTACK C / Round-3 B1 closure).
+    // SubjectCore owns this equality — the host validator verdict can never
+    // substitute for it — so a binding minted for another transition/subject/
+    // type or carrying an all-zero/foreign fingerprint is refused before any
+    // verdict, candidate, hash, trace, bundle or CAS work.
     const bindingBound =
       input.preparedBinding.transition_id === record.transition_id &&
       input.preparedBinding.subject_id === record.subject_id &&
-      input.preparedBinding.transition_type === record.transition_type;
+      input.preparedBinding.transition_type === record.transition_type &&
+      input.preparedBinding.payload_fingerprint === record.payload_fingerprint;
     if (!bindingBound) {
       throw admissionFailure(
         "COMMIT_CHAIN_INTEGRITY_FAILURE",
@@ -440,11 +444,13 @@ export class SubjectCoreFacade {
         "proposal identity does not match the reserved continuation"
       );
     }
-    // Prepared binding bound to the reserved identity (§7.6, ATTACK C closure).
+    // Prepared binding bound to the reserved identity AND authoritative
+    // fingerprint (§7.6, ATTACK C / Round-3 B1 closure; SubjectCore-owned).
     const bindingBound =
       input.preparedBinding.transition_id === record.transition_id &&
       input.preparedBinding.subject_id === record.subject_id &&
-      input.preparedBinding.transition_type === record.transition_type;
+      input.preparedBinding.transition_type === record.transition_type &&
+      input.preparedBinding.payload_fingerprint === record.payload_fingerprint;
     if (!bindingBound) {
       throw admissionFailure(
         "COMMIT_CHAIN_INTEGRITY_FAILURE",

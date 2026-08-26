@@ -218,13 +218,17 @@ function authorization(issuer: ProducerAuthorizationIssuer) {
   ]);
 }
 
-function preparedBinding(transitionId: string, transitionType: string = "Time"): PreparedLogicalResultBindingV1 {
+function preparedBinding(
+  transitionId: string,
+  transitionType: string = "Time",
+  payloadFingerprint: string = "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+): PreparedLogicalResultBindingV1 {
   return {
     prepared_result_ref: "workflow:w-1" as CanonicalRefV0,
     transition_id: transitionId as never,
     subject_id: "subject-s0" as never,
     transition_type: transitionType as never,
-    payload_fingerprint: "sha256:0000000000000000000000000000000000000000000000000000000000000000" as never
+    payload_fingerprint: payloadFingerprint as never
   };
 }
 
@@ -337,7 +341,11 @@ async function reserveAndCommitHarness(
     proposal: proposal as unknown as CanonicalTransitionProposalV1,
     continuation: reserved.continuation,
     producerAuthorization: authorization(h.issuer),
-    preparedBinding: preparedBinding(proposal["transition_id"] as string),
+    preparedBinding: preparedBinding(
+      proposal["transition_id"] as string,
+      proposal["transition_type"] as string,
+      reserved.continuation.payload_fingerprint
+    ),
     repository_bindings: R0_BINDINGS
   });
 }
@@ -438,7 +446,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-attack-a-honest"),
+      preparedBinding: preparedBinding("t-attack-a-honest", "Time", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(outcome.kind).toBe("COMMITTED");
@@ -463,7 +471,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: timeProposal("t-attack-b-second", 4, 1) as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-attack-b-second"),
+      preparedBinding: preparedBinding("t-attack-b-second", "Time", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(second.kind).toBe("COMMITTED");
@@ -483,7 +491,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-attack-a-recon"),
+      preparedBinding: preparedBinding("t-attack-a-recon", "Time", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(outcome.kind).toBe("COMMITTED");
@@ -598,7 +606,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
-      preparedBinding: preparedBinding("t-attack-h1", "Learning"),
+      preparedBinding: preparedBinding("t-attack-h1", "Learning", reserved.continuation.payload_fingerprint),
       repository_bindings: adoptionBindings("R999")
     });
     expect(outcome.kind).toBe("REJECTED");
@@ -619,7 +627,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
-      preparedBinding: preparedBinding("t-attack-h2", "Learning"),
+      preparedBinding: preparedBinding("t-attack-h2", "Learning", reserved.continuation.payload_fingerprint),
       repository_bindings: adoptionBindings("R999")
     });
     expect(outcome.kind).toBe("REJECTED");
@@ -651,7 +659,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
-      preparedBinding: preparedBinding("t-attack-h-stale", "Learning"),
+      preparedBinding: preparedBinding("t-attack-h-stale", "Learning", reserved.continuation.payload_fingerprint),
       repository_bindings: adoptionBindings("R999")
     });
     expect(outcome.kind).toBe("REJECTED");
@@ -672,7 +680,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
-      preparedBinding: preparedBinding("t-attack-h-honest", "Learning"),
+      preparedBinding: preparedBinding("t-attack-h-honest", "Learning", reserved.continuation.payload_fingerprint),
       repository_bindings: adoptionBindings("R999")
     });
     expect(outcome.kind).toBe("COMMITTED");
@@ -814,7 +822,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: zeroProposal,
       continuation: reserved.continuation,
       producerAuthorization: h.issuer.issue([]),
-      preparedBinding: preparedBinding("t-attack-a15-noop")
+      preparedBinding: preparedBinding("t-attack-a15-noop", "Time", reserved.continuation.payload_fingerprint)
     });
 
     const r = restartedHarness(h);
@@ -836,7 +844,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
       producerAuthorization: authorization(h.issuer),
-      preparedBinding: preparedBinding("t-attack-a15-open"),
+      preparedBinding: preparedBinding("t-attack-a15-open", "Time", reserved.continuation.payload_fingerprint),
       repository_bindings: R0_BINDINGS
     });
     expect(outcome.kind).toBe("COMMITTED");

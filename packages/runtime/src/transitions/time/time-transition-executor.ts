@@ -36,6 +36,56 @@ export function timeTransitionId(subjectId: string, revision: number, ticks: num
   return `t-time-${subjectId}-r${revision}-e${ticks}`;
 }
 
+/**
+ * Exact canonical Time proposal for a zero-elapsed durable NO_OP (single source of
+ * truth: executor and host capability minting must assemble the byte-identical
+ * proposal so the prepared binding fingerprint can be authoritative).
+ */
+export function buildTimeNoOpProposal(
+  subjectId: string,
+  stateRevision: number
+): CanonicalTransitionProposalV1 {
+  return {
+    schema_version: "canonical-transition-proposal-v1",
+    transition_id: timeTransitionId(subjectId, stateRevision, 0),
+    subject_id: subjectId,
+    transition_type: "Time",
+    expected_state_revision: stateRevision,
+    time_input: { kind: "ELAPSED", elapsed_time: { value: 0, unit: "tick" } },
+    cause_refs: [],
+    domain_deltas: [],
+    external_refs: []
+  } as unknown as CanonicalTransitionProposalV1;
+}
+
+/**
+ * Exact canonical Time proposal for a positive elapsed run (raw-ASCII domain order:
+ * affect < regulation). Single source of truth shared with host capability minting.
+ */
+export function buildTimeProposal(
+  subjectId: string,
+  stateRevision: number,
+  ticks: number,
+  affectDelta: DomainDeltaV0,
+  regulationDelta: DomainDeltaV0
+): CanonicalTransitionProposalV1 {
+  return {
+    schema_version: "canonical-transition-proposal-v1",
+    transition_id: timeTransitionId(subjectId, stateRevision, ticks),
+    subject_id: subjectId,
+    transition_type: "Time",
+    expected_state_revision: stateRevision,
+    time_input: {
+      kind: "ELAPSED",
+      elapsed_time: { value: ticks, unit: "tick" }
+    },
+    cause_refs: [],
+    // raw-ASCII domain order: affect < regulation
+    domain_deltas: [affectDelta, regulationDelta],
+    external_refs: []
+  } as unknown as CanonicalTransitionProposalV1;
+}
+
 const STAGE = "TIME" as const;
 
 export class TimeTransitionExecutor {
@@ -56,17 +106,7 @@ export class TimeTransitionExecutor {
 
     // ---- elapsed = 0 → durable terminal NO_OP ------------------------------------
     if (input.elapsed_ticks === 0) {
-      const zeroProposal = {
-        schema_version: "canonical-transition-proposal-v1",
-        transition_id: timeTransitionId(anchored.subject_id, anchored.state_revision, 0),
-        subject_id: anchored.subject_id,
-        transition_type: "Time",
-        expected_state_revision: anchored.state_revision,
-        time_input: { kind: "ELAPSED", elapsed_time: { value: 0, unit: "tick" } },
-        cause_refs: [],
-        domain_deltas: [],
-        external_refs: []
-      } as unknown as CanonicalTransitionProposalV1;
+      const zeroProposal = buildTimeNoOpProposal(anchored.subject_id, anchored.state_revision);
       const reserved = await this.deps.subjectCore.reserveAndRoute(zeroProposal);
       switch (reserved.kind) {
         case "CONTINUE":
@@ -136,21 +176,13 @@ export class TimeTransitionExecutor {
       );
     }
 
-    const proposal = {
-      schema_version: "canonical-transition-proposal-v1",
-      transition_id: timeTransitionId(anchored.subject_id, anchored.state_revision, input.elapsed_ticks),
-      subject_id: anchored.subject_id,
-      transition_type: "Time",
-      expected_state_revision: anchored.state_revision,
-      time_input: {
-        kind: "ELAPSED",
-        elapsed_time: { value: input.elapsed_ticks, unit: "tick" }
-      },
-      cause_refs: [],
-      // raw-ASCII domain order: affect < regulation
-      domain_deltas: [affectDelta, regulationDelta],
-      external_refs: []
-    } as unknown as CanonicalTransitionProposalV1;
+    const proposal = buildTimeProposal(
+      anchored.subject_id,
+      anchored.state_revision,
+      input.elapsed_ticks,
+      affectDelta,
+      regulationDelta
+    );
 
     // ---- first call: reservation -------------------------------------------------
     const reserved = await this.deps.subjectCore.reserveAndRoute(proposal);

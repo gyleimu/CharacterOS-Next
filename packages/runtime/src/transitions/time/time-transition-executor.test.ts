@@ -15,7 +15,8 @@ import {
 } from "../observation/observation-fixtures.js";
 import {
   TimeTransitionExecutor,
-  timeTransitionId,
+  buildTimeNoOpProposal,
+  buildTimeProposal,
   type TimeTransitionInputV0
 } from "./time-transition-executor.js";
 
@@ -155,6 +156,19 @@ function fixedRegulation() {
   };
 }
 
+/**
+ * Host-side capability minting for Time runs (Round-3 B1 closure): the prepared
+ * binding fingerprint is recomputed from the exact proposal the executor builds.
+ */
+async function timeCapabilities(ticks: number, revision = 0) {
+  if (ticks === 0) {
+    return capabilitiesFor(buildTimeNoOpProposal("subject-s0", revision));
+  }
+  const affectDelta = await fixedAffect().produceAffectDelta();
+  const regulationDelta = await fixedRegulation().produceRegulationDelta();
+  return capabilitiesFor(buildTimeProposal("subject-s0", revision, ticks, affectDelta, regulationDelta));
+}
+
 function buildExecutor(overrides: { frozenView?: boolean; failingAffect?: boolean } = {}) {
   const { initial } = s0Subject();
   const core = new RealEngineCoreAdapter(initial, { frozenView: overrides.frozenView ?? false });
@@ -186,7 +200,7 @@ describe("TimeTransitionExecutor", () => {
     const outcome = await executor.execute(
       ctxOf(initial),
       ELAPSED_FIVE,
-      capabilitiesFor(timeTransitionId("subject-s0", 0, 5))
+      await timeCapabilities(5)
     );
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
@@ -202,7 +216,7 @@ describe("TimeTransitionExecutor", () => {
 
   it("anchors derived times to the canonical clock, never caller wall values", async () => {
     const { executor, initial } = buildExecutor();
-    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)));
+    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5));
     if (outcome.kind !== "COMMITTED") throw new Error("expected COMMITTED");
     expect(outcome.bundle.logical_time_after).toBe(5); // 0 + 5, not any wall clock
   });
@@ -210,13 +224,13 @@ describe("TimeTransitionExecutor", () => {
   it("rejects runtime context drift against the authoritative snapshot", async () => {
     const { core, executor, initial } = buildExecutor();
     const drifting = { ...ctxOf(initial), current_logical_time: 999 as never };
-    await expect(executor.execute(drifting, ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)))).rejects.toThrow(/drift/);
+    await expect(executor.execute(drifting, ELAPSED_FIVE, await timeCapabilities(5))).rejects.toThrow(/drift/);
     expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("routes elapsed=0 to NO_OP with zero commits", async () => {
     const { core, executor, initial } = buildExecutor();
-    const outcome = await executor.execute(ctxOf(initial), { elapsed_ticks: 0 }, capabilitiesFor(timeTransitionId("subject-s0", 0, 0)));
+    const outcome = await executor.execute(ctxOf(initial), { elapsed_ticks: 0 }, await timeCapabilities(0));
     expect(outcome.kind).toBe("NO_OP");
     expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
     expect(core.storeRead.currentRevision("subject-s0")).toBeNull();
@@ -225,11 +239,11 @@ describe("TimeTransitionExecutor", () => {
   it("propagates authority-advance rejection verbatim when a NEW transition id races (stale at second call)", async () => {
     const { core, executor, initial } = buildExecutor({ frozenView: true });
     // Run A commits revision 1 (id ...e5).
-    await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)));
+    await executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5));
     // Run B proposes a DIFFERENT id (ticks 6) while still observing the frozen
     // revision-0 view. Subject-core RE-READS the latest authority on the second call
     // (expected 0 vs actual 1) → STALE_STATE_REVISION, propagated verbatim.
-    const second = await executor.execute(ctxOf(initial), { elapsed_ticks: 6 }, capabilitiesFor(timeTransitionId("subject-s0", 0, 6)));
+    const second = await executor.execute(ctxOf(initial), { elapsed_ticks: 6 }, await timeCapabilities(6));
     if (second.kind !== "REJECTED") throw new Error(`expected REJECTED, got ${second.kind}`);
     expect(second.failure.error_code).toBe("STALE_STATE_REVISION");
     expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
@@ -237,8 +251,8 @@ describe("TimeTransitionExecutor", () => {
 
   it("same ID + same payload after commit replays ALREADY_COMMITTED without re-committing", async () => {
     const { core, executor, initial } = buildExecutor({ frozenView: true });
-    await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)));
-    const replay = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)));
+    await executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5));
+    const replay = await executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5));
     expect(replay.kind).toBe("COMMITTED");
     expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
     expect(core.storeRead.currentRevision("subject-s0")).toBe(1);
@@ -246,7 +260,7 @@ describe("TimeTransitionExecutor", () => {
 
   it("fails closed when the affect producer fails (nothing committed)", async () => {
     const { core, executor, initial } = buildExecutor({ failingAffect: true });
-    await expect(executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)))).rejects.toThrow(
+    await expect(executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5))).rejects.toThrow(
       /affect producer failed/
     );
     expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
@@ -254,10 +268,10 @@ describe("TimeTransitionExecutor", () => {
 
   it("admits raw elapsed ticks fail-closed before any commit attempt", async () => {
     const { core, executor, initial } = buildExecutor();
-    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: -1 }, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)))).rejects.toThrow(
+    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: -1 }, await timeCapabilities(5))).rejects.toThrow(
       /INVALID_LOGICAL_TIME/
     );
-    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: 1.5 }, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)))).rejects.toThrow(
+    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: 1.5 }, await timeCapabilities(5))).rejects.toThrow(
       /INVALID_SCHEMA/
     );
     expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
@@ -281,7 +295,7 @@ describe("TimeTransitionExecutor", () => {
       regulationProducer: fixedRegulation()
     });
     const executor = new TimeTransitionExecutor(root.dependencies());
-    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor(timeTransitionId("subject-s0", 0, 5)));
+    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, await timeCapabilities(5));
     if (outcome.kind !== "COMMITTED") throw new Error("expected COMMITTED");
     expect(retrievalCalls).toBe(0);
   });

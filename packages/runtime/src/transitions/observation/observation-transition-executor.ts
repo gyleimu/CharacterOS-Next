@@ -56,6 +56,41 @@ export function observationTransitionId(
 }
 
 /**
+ * Exact canonical Observation proposal (single source of truth: executor and host
+ * capability minting must assemble the byte-identical proposal so the prepared
+ * binding fingerprint can be authoritative). Deltas are copied into raw-ASCII
+ * domain order; the input array is never mutated.
+ */
+export function buildObservationProposal(params: {
+  readonly subjectId: string;
+  readonly stateRevision: number;
+  readonly observation: ObservationInputV0;
+  readonly deltas: readonly DomainDeltaV0[];
+}): CanonicalTransitionProposalV1 {
+  const sorted = [...params.deltas].sort((a, b) =>
+    a.domain < b.domain ? -1 : a.domain > b.domain ? 1 : 0
+  );
+  return {
+    schema_version: "canonical-transition-proposal-v1",
+    transition_id: observationTransitionId(
+      params.subjectId,
+      params.stateRevision,
+      params.observation.observation_id
+    ),
+    subject_id: params.subjectId,
+    transition_type: "Observation",
+    expected_state_revision: params.stateRevision,
+    time_input: {
+      kind: "OCCURRENCE",
+      occurrence_logical_time: params.observation.occurrence_logical_time
+    },
+    cause_refs: [params.observation.observation_id],
+    domain_deltas: sorted,
+    external_refs: []
+  } as unknown as CanonicalTransitionProposalV1;
+}
+
+/**
  * Deterministic retrieval query (P0-6 §22): current_context_refs are the GLOBAL
  * deduplicated raw-ASCII-sorted union of focus_refs + environment_refs; no reliance
  * on each group being sorted in isolation.
@@ -317,20 +352,15 @@ export class ObservationTransitionExecutor {
       deltas.push(metadataDelta);
       authorizationBindings.push({ producer: "memory", domain: "memory-retrieval" });
     }
-    // raw-ASCII domain order: affect < context < memory-retrieval
-    deltas.sort((a, b) => (a.domain < b.domain ? -1 : a.domain > b.domain ? 1 : 0));
+    // buildObservationProposal copies into raw-ASCII domain order:
+    // affect < context < memory-retrieval.
 
-    const proposal = {
-      schema_version: "canonical-transition-proposal-v1",
-      transition_id: observationTransitionId(anchored.subject_id, anchored.state_revision, obs.observation_id),
-      subject_id: anchored.subject_id,
-      transition_type: "Observation",
-      expected_state_revision: anchored.state_revision,
-      time_input: { kind: "OCCURRENCE", occurrence_logical_time: obs.occurrence_logical_time },
-      cause_refs: [obs.observation_id],
-      domain_deltas: deltas,
-      external_refs: []
-    } as unknown as CanonicalTransitionProposalV1;
+    const proposal = buildObservationProposal({
+      subjectId: anchored.subject_id,
+      stateRevision: anchored.state_revision,
+      observation: obs,
+      deltas
+    });
 
     // ---- first call: reservation -------------------------------------------------------
     const reserved = await this.deps.subjectCore.reserveAndRoute(proposal);
