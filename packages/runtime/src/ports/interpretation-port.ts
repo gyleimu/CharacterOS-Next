@@ -1,10 +1,8 @@
 /**
- * P2.3.1 — InterpretationPort (DRAFT seam; proposal-only, fixed providers in P2.3).
- *
- * Stage authority (p2-runtime-plan §8.2): Interpretation MAY be a proposal provider;
- * in P2.3 it is a FIXED deterministic provider — never a live LLM. Its proposal payload
- * schema lands with the appraisal-package contract slice; this port freezes only the
- * wiring shape: controlled projection view in, draft proposal out.
+ * P2.3.1/P2.3.3 (P0-6 remediated) — InterpretationPort (proposal-only; fixed providers
+ * in P2.3, never a live LLM). P0-6 §19: the draft now carries the exact projection
+ * hash it answers to and its evidence refs, so runtime validation can enforce
+ * evidence ownership (A4.3) and schema conformance before anything reaches commit.
  */
 
 import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
@@ -12,9 +10,7 @@ import type { MemoryRetrievalResultV0 } from "@characteros-next/memory";
 
 /**
  * Controlled read-model handed to interpretation (p2-runtime-plan §8.3 subset).
- * DRAFT schema, evolved by P2.3.3.1: `projection_ref` was replaced by the grammar-safe
- * `projection_hash` (kind `projection` is not among the 21 frozen ref kinds); the view
- * now carries the observation identity and refs-only facts it projects.
+ * `projection_hash` is the domain-separated deterministic hash of this exact body.
  */
 export interface ControlledProjectionViewV0 {
   /** Domain-separated deterministic hash of this exact projection body. */
@@ -29,9 +25,14 @@ export interface ControlledProjectionViewV0 {
   readonly retrieval_result: MemoryRetrievalResultV0 | null;
 }
 
-/** DRAFT interpretation output — schema finalizes with the appraisal package slice. */
+/** Closed interpretation proposal draft (§19): schema, projection hash, evidence. */
 export interface InterpretationProposalDraftV0 {
+  readonly schema_version: "interpretation-proposal-v0";
   readonly interpretation_ref: CanonicalRefV0;
+  /** The exact projection body this proposal answers to. */
+  readonly projection_hash: HashV1;
+  /** Evidence refs this proposal cites; must ⊆ the allowed evidence set (A4.3). */
+  readonly evidence_refs: readonly CanonicalRefV0[];
 }
 
 export interface InterpretationPort {

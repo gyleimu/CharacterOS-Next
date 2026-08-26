@@ -120,7 +120,6 @@ export type {
   AtomicCommitBundleV1,
   CommitFailureCertainty,
   AtomicCommitOutcomeV1,
-  StateReaderPort,
   AtomicCommitStorePort,
   PublishSinkPort,
   ReferenceValidatorPort
@@ -163,6 +162,51 @@ export {
   isRecord
 } from "./validation/index.js";
 
+// --- P2.3 P0-2: authorized SubjectCore facade (the ONLY public mutation surface) ---
+//
+// Candidate application, bundle assembly, trace construction, the raw engine and the
+// AtomicCommitStore are INTERNAL implementation. External packages reach canonical
+// mutation exclusively through SubjectCoreFacade (reserveAndRoute → commitReserved /
+// terminalizeReservedNoOp → reconcile) or the sanctioned in-memory assembly helper.
+
+export {
+  SubjectCoreFacade,
+  type CommitReservedInput,
+  type CommitReservedOutcome,
+  type PreparedResultValidatorCapability,
+  type ReconcileOutcome,
+  type ReserveAndRouteOutcome,
+  type StateReaderPort,
+  type SubjectCoreFacadePorts,
+  type TerminalizeNoOpInput
+} from "./commit/facade.js";
+
+export {
+  createInMemorySubjectCoreFacade,
+  type InMemoryFacadeAssembly,
+  type InMemoryFacadeOptions,
+  type ReadOnlyStoreHandle
+} from "./commit/reference.js";
+
+export type {
+  TransitionIdentityJournalPort,
+  ReserveIdentityInput,
+  ReserveIdentityOutcome,
+  ReuseConflictInput
+} from "./identity/journal.js";
+
+export type { InjectedStoreFault } from "./commit/store.js";
+
+export type {
+  ProducerAuthorizationSetV1
+} from "./types/transition.js";
+
+export type {
+  CommitTransitionInput,
+  CommitTransitionOutcome,
+  ReferenceValidatorCapability
+} from "./commit/engine.js";
+
 // --- P2.1.3 canonical serialization / hash foundation ---------------------------
 
 export {
@@ -185,53 +229,6 @@ export {
   proposalRef,
   type SnapshotHashInput
 } from "./canonical/projections.js";
-
-// --- P2.1.3 candidate construction ----------------------------------------------
-
-export {
-  applyDeltaOperations,
-  cloneStateForCandidate,
-  deriveRuntimeMetadata,
-  freezeCandidate,
-  withDerivedRuntimeMetadata,
-  type CandidateDraft,
-  type DerivedRuntimeMetadata
-} from "./candidate/candidate.js";
-
-// --- P2.1.3 trace projection -----------------------------------------------------
-
-export {
-  buildTraceEntry,
-  nextTraceWindow,
-  lastTraceRef,
-  TRACE_RULE_IDS,
-  type TraceEntryInput
-} from "./trace/trace.js";
-
-// --- P2.1.3 canonical commit engine ----------------------------------------------
-
-export {
-  validateProposalComposition
-} from "./commit/composition.js";
-
-export {
-  assembleCommitBundle,
-  type AssembleBundleInput
-} from "./commit/bundle.js";
-
-export {
-  createCommitEngine,
-  type CommitEngine,
-  type CommitTransitionInput,
-  type CommitTransitionOutcome,
-  type ReferenceValidatorCapability
-} from "./commit/engine.js";
-
-export {
-  InMemoryAtomicCommitStore,
-  type InMemoryAtomicCommitStoreOptions,
-  type InjectedStoreFault
-} from "./commit/store.js";
 
 // --- P2.1.4 restore / persistence envelope -----------------------------------------
 

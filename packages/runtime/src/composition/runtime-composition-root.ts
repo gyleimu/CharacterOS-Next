@@ -28,6 +28,7 @@ import type {
   ContextProducerPort,
   InterpretationPort,
   RegulationProducerPort,
+  RetrievalMetadataProducerPort,
   RetrievalPort,
   SubjectCorePort
 } from "../ports/index.js";
@@ -45,6 +46,7 @@ export interface RuntimeCompositionOptions {
   readonly affectProducer?: AffectProducerPort;
   readonly regulationProducer?: RegulationProducerPort;
   readonly contextProducer?: ContextProducerPort;
+  readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort;
 }
 
 export class RuntimeCompositionRoot {
@@ -68,7 +70,8 @@ export class RuntimeCompositionRoot {
       appraisal: options.appraisal ?? null,
       affectProducer: options.affectProducer ?? null,
       regulationProducer: options.regulationProducer ?? null,
-      contextProducer: options.contextProducer ?? null
+      contextProducer: options.contextProducer ?? null,
+      retrievalMetadataProducer: options.retrievalMetadataProducer ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

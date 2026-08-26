@@ -47,8 +47,9 @@ describe("validateObservationInput", () => {
       "occurrence_logical_time",
       "source_refs",
       "entity_refs"
-    ]) {
+    ] as const) {
       const missing = observationInput();
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- test fixture: remove one required key at a time
       delete missing[key];
       const r = validateObservationInput(missing);
       expect(r.ok).toBe(false);

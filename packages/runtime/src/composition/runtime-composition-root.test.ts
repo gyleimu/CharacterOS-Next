@@ -1,60 +1,71 @@
 /**
- * P2.3.1 — composition root smoke tests (boundary layer only; NO transitions).
- * Proves: required-capability enforcement, frozen read-only container, and that the
- * root executes nothing (dependencies() is the sole surface).
+ * P2.3.1 (P0-1/P0-2 remediated) — composition root smoke tests (boundary layer only;
+ * NO transitions). Proves: required-capability enforcement, frozen container shell,
+ * explicit not-yet-wired seams, and that the root executes nothing.
  */
 
 import { describe, expect, it } from "vitest";
 
-import {
-  InMemoryMemoryRepository,
-  type MemoryRetrievalQueryV0,
-  type MemoryRetrievalResultV0
-} from "@characteros-next/memory";
-import type {
-  CommitTransitionInput,
-  CommitTransitionOutcome,
-  SubjectStateV0
-} from "@characteros-next/subject-core";
+import type { MemoryRepository, MemoryRetrievalResultV0 } from "@characteros-next/memory";
+import { createInMemorySubjectCoreFacade } from "@characteros-next/subject-core";
+import type { RuntimeCompositionOptions } from "./runtime-composition-root.js";
 import { RuntimeCompositionRoot } from "./runtime-composition-root.js";
+import { ReferenceContextProducer, ReferenceRetrievalMetadataProducer } from "../ports/index.js";
 
-const stubRepo = new InMemoryMemoryRepository();
+class MemoryRepositoryStub implements MemoryRepository {
+  async prepareRevision(): Promise<never> {
+    throw new Error("not used in composition test");
+  }
+  async readManifest(): Promise<null> {
+    return null;
+  }
+  async validateRevisionBinding(): Promise<boolean> {
+    return true;
+  }
+  async validateRefsBelong(): Promise<boolean> {
+    return true;
+  }
+  readonly repository = Object.freeze({});
+}
 
-const stubCore = {
-  commit: async (_input: CommitTransitionInput): Promise<CommitTransitionOutcome> => {
-    throw new Error("transitions are not part of P2.3.1");
-  },
-  readCurrentSnapshot: async (_subjectId: string): Promise<SubjectStateV0 | null> => null
+const emptyRetrieval = {
+  retrieve: async (): Promise<MemoryRetrievalResultV0> =>
+    ({
+      schema_version: "memory-retrieval-result-v0",
+      subject_id: "subject-s0",
+      selected_memory_refs: [],
+      evidence: [],
+      retrieval_trace_ref: null,
+      deterministic_metadata: {
+        repository_revision: "R0",
+        candidate_count: 0,
+        computed_under_config: "MEMORY_RETRIEVAL_V0",
+        query_fingerprint: `sha256:${"0".repeat(64)}`
+      }
+    }) as unknown as MemoryRetrievalResultV0
 };
 
-function buildRoot(): RuntimeCompositionRoot {
-  return new RuntimeCompositionRoot({
-    subjectCore: stubCore,
-    memoryRepository: stubRepo,
-    retrieval: {
-      retrieve: async (query: MemoryRetrievalQueryV0) =>
-        ({
-          schema_version: "memory-retrieval-result-v0",
-          subject_id: query.subject_id,
-          selected_memory_refs: [],
-          evidence: [],
-          retrieval_trace_ref: null,
-          deterministic_metadata: {
-            repository_revision: query.repository_revision,
-            candidate_count: 0,
-            computed_under_config: "MEMORY_RETRIEVAL_V0",
-            query_fingerprint: `sha256:${"0".repeat(64)}`
-          }
-        }) as unknown as MemoryRetrievalResultV0
-    }
+function buildRoot() {
+  const assembly = createInMemorySubjectCoreFacade();
+  const root = new RuntimeCompositionRoot({
+    subjectCore: assembly.facade,
+    memoryRepository: new MemoryRepositoryStub(),
+    retrieval: emptyRetrieval,
+    contextProducer: new ReferenceContextProducer(),
+    retrievalMetadataProducer: new ReferenceRetrievalMetadataProducer()
   });
+  return { root };
 }
 
 describe("RuntimeCompositionRoot", () => {
   it("assembles a frozen dependency view with explicit not-yet-wired seams", () => {
-    const deps = buildRoot().dependencies();
-    expect(deps.subjectCore).toBe(stubCore);
-    expect(deps.memory.repository).toBe(stubRepo);
+    const { root } = buildRoot();
+    const deps = root.dependencies();
+    expect(deps.subjectCore).toBeDefined();
+    expect(deps.memory.repository).toBeDefined();
+    expect(deps.retrieval).toBeDefined();
+    expect(deps.contextProducer).not.toBeNull();
+    expect(deps.retrievalMetadataProducer).not.toBeNull();
     expect(deps.interpretation).toBeNull();
     expect(deps.appraisal).toBeNull();
     expect(deps.affectProducer).toBeNull();
@@ -67,23 +78,22 @@ describe("RuntimeCompositionRoot", () => {
     expect(
       () =>
         new RuntimeCompositionRoot({
-          memoryRepository: stubRepo,
-          retrieval: { retrieve: async (q: MemoryRetrievalQueryV0) => q as never }
-        } as never)
+          memoryRepository: new MemoryRepositoryStub(),
+          retrieval: emptyRetrieval
+        } as unknown as RuntimeCompositionOptions)
     ).toThrow(/subjectCore/);
 
     expect(
       () =>
         new RuntimeCompositionRoot({
-          subjectCore: stubCore,
-          retrieval: { retrieve: async (q: MemoryRetrievalQueryV0) => q as never }
-        } as never)
+          subjectCore: createInMemorySubjectCoreFacade().facade,
+          retrieval: emptyRetrieval
+        } as unknown as RuntimeCompositionOptions)
     ).toThrow(/memoryRepository/);
   });
 
   it("exposes no execution surface beyond dependencies()", () => {
-    const root = buildRoot() as unknown as Record<string, unknown>;
-    const ownKeys = Object.keys(root).sort();
-    expect(ownKeys).toEqual(["container"]);
+    const { root } = buildRoot();
+    expect(Object.keys(root).sort()).toEqual(["container"]);
   });
 });

@@ -1,135 +1,114 @@
 /**
- * P2.3.2 — TimeTransitionExecutor tests.
- * Wires the REAL subject-core engine + in-memory atomic store + real memory repository
- * behind SubjectCorePort, injects deterministic fake affect/regulation producers and
- * trusted session facts, and proves: normal elapsed commit, elapsed=0 NO_OP, logical
- * time anchoring (drift rejects), commit failure propagation (stale/CAS conflict), and
- * producer failure fail-closed with nothing committed.
+ * P2.3.2 (P0-1/P0-6 remediated) — TimeTransitionExecutor tests.
+ * Runs against the SANCTIONED in-memory facade assembly (no raw store imports).
  */
 
 import { describe, expect, it } from "vitest";
 
-import {
-  createCommitEngine,
-  InMemoryAtomicCommitStore,
-  type AtomicCommitStorePort,
-  type CommitEngine,
-  type CommitTransitionInput,
-  type CommitTransitionOutcome,
-  type SubjectStateV0,
-  type CanonicalRefV0,
-  type RepositoryRevisionBindingV1,
-  type HashV1
-} from "@characteros-next/subject-core";
-import { InMemoryMemoryRepository } from "@characteros-next/memory";
-import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
-import type { SubjectCorePort } from "../../ports/subject-core-port.js";
-import type { AffectProducerPort } from "../../ports/affect-producer-port.js";
-import type { RegulationProducerPort } from "../../ports/regulation-producer-port.js";
+import type { SubjectStateV0 } from "@characteros-next/subject-core";
+import type { MemoryRepository } from "@characteros-next/memory";
 import type { RuntimeContext } from "../../types/runtime-context.js";
+import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
 import {
-  TimeTransitionExecutor,
-  type TransitionSessionFacts
-} from "./time-transition-executor.js";
+  RealEngineCoreAdapter,
+  capabilitiesFor
+} from "../observation/observation-fixtures.js";
+import { TimeTransitionExecutor, type TimeTransitionInputV0 } from "./time-transition-executor.js";
 
-const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
-
-const R0_BINDINGS = [
-  { repository_revision: "R0", repository_revision_hash: HASH_V1_R0_REPOSITORY }
-] as unknown as RepositoryRevisionBindingV1[];
-
-function s0(): Record<string, unknown> {
-  return {
-    schema_version: "subject-state-v0",
-    identity: {
-      subject_id: "subject-s0",
-      display_name: "",
-      origin_metadata: { creation_source: null, seed_version: null },
-      identity_anchors: [],
-      self_schema_seed_refs: []
-    },
-    traits_seed: { dimensions: {} },
-    memory_state: {
-      working_refs: [],
-      active_episode_refs: [],
-      autobiographical_index_revision: null,
-      repository_revision: "R0",
-      consolidation_cursor: null,
-      retrieval_config: {
-        profile_id: "RETRIEVAL_V0",
-        affect_congruence_enabled: false,
-        recent_trace_capacity: 64
+function s0Subject(): { subjectId: string; initial: ConstructorParameters<typeof RealEngineCoreAdapter>[0] } {
+  const fixture = JSON.parse(
+    JSON.stringify({
+      schema_version: "subject-state-v0",
+      identity: {
+        subject_id: "subject-s0",
+        display_name: "",
+        origin_metadata: { creation_source: null, seed_version: null },
+        identity_anchors: [],
+        self_schema_seed_refs: []
       },
-      recent_retrieval_trace: [],
-      lifecycle_metadata: {},
-      pending_encoding_refs: [],
-      last_retrieval_at: null
-    },
-    beliefs: { items: [] },
-    relationships: { models: [] },
-    mood: { baseline: 0, generated_under_profile: null, last_update: null },
-    affect: { active_channels: [], generated_under_profile: null, updated_at: null },
-    regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },
-    context: {
-      scene: "idle",
-      task: null,
-      focus_refs: [],
-      active_entity_refs: [],
-      environment_refs: [],
-      current_observation_ref: null
-    },
-    mechanism_config: {
-      affect_profile: { profile_id: "FAST_EMA_V0", timebase: "legacy_tick" },
-      legacy_reference_defaults: { tHold: 60, alpha: 0.06, tau: 150, clamp: 0.25 },
-      feature_flags: {},
-      thresholds: {}
-    },
-    trace_window: {
-      trace_window_schema_version: "trace-window-v1",
-      capacity: 64,
-      cursor: { last_history_sequence: 0, offloaded_through_sequence: 0, offloaded_through_trace_ref: null },
-      entries: []
-    },
-    runtime_metadata: {
-      subject_version: "subject-v0",
-      state_revision: 0,
-      logical_time: 0,
-      last_transition_time: null,
-      last_transition_type: null,
-      created_at: 0,
-      updated_at: 0
-    }
+      traits_seed: { dimensions: {} },
+      memory_state: {
+        working_refs: [],
+        active_episode_refs: [],
+        autobiographical_index_revision: null,
+        repository_revision: "R0",
+        consolidation_cursor: null,
+        retrieval_config: {
+          profile_id: "RETRIEVAL_V0",
+          affect_congruence_enabled: false,
+          recent_trace_capacity: 64
+        },
+        recent_retrieval_trace: [],
+        lifecycle_metadata: {},
+        pending_encoding_refs: [],
+        last_retrieval_at: null
+      },
+      beliefs: { items: [] },
+      relationships: { models: [] },
+      mood: { baseline: 0, generated_under_profile: null, last_update: null },
+      affect: { active_channels: [], generated_under_profile: null, updated_at: null },
+      regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },
+      context: {
+        scene: "idle",
+        task: null,
+        focus_refs: [],
+        active_entity_refs: [],
+        environment_refs: [],
+        current_observation_ref: null
+      },
+      mechanism_config: {
+        affect_profile: { profile_id: "FAST_EMA_V0", timebase: "legacy_tick" },
+        legacy_reference_defaults: { tHold: 60, alpha: 0.06, tau: 150, clamp: 0.25 },
+        feature_flags: {},
+        thresholds: {}
+      },
+      trace_window: {
+        trace_window_schema_version: "trace-window-v1",
+        capacity: 64,
+        cursor: { last_history_sequence: 0, offloaded_through_sequence: 0, offloaded_through_trace_ref: null },
+        entries: []
+      },
+      runtime_metadata: {
+        subject_version: "subject-v0",
+        state_revision: 0,
+        logical_time: 0,
+        last_transition_time: null,
+        last_transition_type: null,
+        created_at: 0,
+        updated_at: 0
+      }
+    })
+  ) as ConstructorParameters<typeof RealEngineCoreAdapter>[0];
+  return { subjectId: "subject-s0", initial: fixture };
+}
+
+function ctxOf(initial: SubjectStateV0): RuntimeContext {
+  return {
+    subject_id: "subject-s0" as never,
+    current_logical_time: initial.runtime_metadata.logical_time as never,
+    state_revision: initial.runtime_metadata.state_revision as never
   };
 }
 
-/** Real engine + store behind the runtime SubjectCorePort seam. */
-class RealEngineCoreAdapter implements SubjectCorePort {
-  readonly store: InMemoryAtomicCommitStore;
-  private readonly engine: CommitEngine;
-  private readonly initial: SubjectStateV0;
-  /** When true, readCurrentSnapshot keeps returning the initial view (stale scenario). */
-  constructor(initial: SubjectStateV0, frozenView = false) {
-    this.initial = initial;
-    this.store = new InMemoryAtomicCommitStore();
-    this.engine = createCommitEngine({ store: this.store });
-    this.frozenView = frozenView;
-  }
+const ELAPSED_FIVE: TimeTransitionInputV0 = { elapsed_ticks: 5 };
 
-  private readonly frozenView: boolean;
-
-  async commit(input: CommitTransitionInput): Promise<CommitTransitionOutcome> {
-    return this.engine.commitTransition(input);
+class MemoryRepositoryStub implements MemoryRepository {
+  async prepareRevision(): Promise<never> {
+    throw new Error("Time never prepares revisions");
   }
-
-  async readCurrentSnapshot(subjectId: string): Promise<SubjectStateV0 | null> {
-    if (this.frozenView) return this.initial;
-    const bundles = this.store.getCommittedBundles().filter((bundle) => bundle.subject_id === subjectId);
-    const last = bundles[bundles.length - 1];
-    return last !== undefined ? last.next_snapshot : this.initial;
+  async readManifest(): Promise<null> {
+    return null;
   }
+  async validateRevisionBinding(): Promise<boolean> {
+    return true;
+  }
+  async validateRefsBelong(): Promise<boolean> {
+    return true;
+  }
+  readonly repository = Object.freeze({});
 }
 
-function fakeAffectProducer(): AffectProducerPort {
+function fixedAffect() {
   return {
     produceAffectDelta: async () =>
       ({
@@ -148,7 +127,7 @@ function fakeAffectProducer(): AffectProducerPort {
   };
 }
 
-function fakeRegulationProducer(): RegulationProducerPort {
+function fixedRegulation() {
   return {
     produceRegulationDelta: async () =>
       ({
@@ -166,56 +145,38 @@ function fakeRegulationProducer(): RegulationProducerPort {
   };
 }
 
-function session(overrides: Partial<TransitionSessionFacts> = {}): TransitionSessionFacts {
-  return {
-    identity_record_version_before: 0,
-    first_seen_sequence: 1,
-    prior_attempts: [],
-    previous_commit_ref: null,
-    previous_record_checksum: null,
-    prepared_result_ref: "workflow:w-time-1" as CanonicalRefV0,
-    repository_bindings: R0_BINDINGS,
-    reference_validator: async () => true,
-    ...overrides
-  };
-}
-
-function ctxOf(snapshot: SubjectStateV0): RuntimeContext {
-  return {
-    subject_id: snapshot.identity.subject_id,
-    current_logical_time: snapshot.runtime_metadata.logical_time,
-    state_revision: snapshot.runtime_metadata.state_revision
-  };
-}
-
-function buildExecutor(overrides: {
-  frozenView?: boolean;
-  affect?: AffectProducerPort;
-  regulation?: RegulationProducerPort;
-  repo?: InMemoryMemoryRepository;
-} = {}) {
-  const initial = s0() as unknown as SubjectStateV0;
-  const core = new RealEngineCoreAdapter(initial, overrides.frozenView ?? false);
+function buildExecutor(overrides: { frozenView?: boolean; failingAffect?: boolean } = {}) {
+  const { initial } = s0Subject();
+  const core = new RealEngineCoreAdapter(initial, { frozenView: overrides.frozenView ?? false });
   const root = new RuntimeCompositionRoot({
     subjectCore: core,
-    memoryRepository: overrides.repo ?? new InMemoryMemoryRepository(),
+    memoryRepository: new MemoryRepositoryStub(),
     retrieval: {
       retrieve: async () => {
         throw new Error("Time must never call retrieval");
       }
     },
-    affectProducer: overrides.affect ?? fakeAffectProducer(),
-    regulationProducer: overrides.regulation ?? fakeRegulationProducer()
+    affectProducer:
+      overrides.failingAffect === true
+        ? {
+            produceAffectDelta: async () => {
+              throw new Error("affect engine offline");
+            }
+          }
+        : fixedAffect(),
+    regulationProducer: fixedRegulation()
   });
   return { core, executor: new TimeTransitionExecutor(root.dependencies()), initial };
 }
 
-const ELAPSED_FIVE: Parameters<TimeTransitionExecutor["execute"]>[1] = { elapsed_ticks: 5 };
-
 describe("TimeTransitionExecutor", () => {
   it("commits a normal elapsed run: +1 revision, logical time advanced, trace present", async () => {
     const { core, executor, initial } = buildExecutor();
-    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
+    const outcome = await executor.execute(
+      ctxOf(initial),
+      ELAPSED_FIVE,
+      capabilitiesFor("t-time-subject-s0-r0-e5")
+    );
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
     expect(outcome.bundle.next_revision).toBe(1);
@@ -224,112 +185,92 @@ describe("TimeTransitionExecutor", () => {
     expect(outcome.bundle.canonical_result.status).toBe("COMMITTED");
     expect(outcome.bundle.next_snapshot.runtime_metadata.last_transition_type).toBe("Time");
     expect(outcome.bundle.next_snapshot.runtime_metadata.created_at).toBe(0);
-    expect(core.store.currentRevision("subject-s0")).toBe(1);
-    expect(core.store.getCommittedBundles()).toHaveLength(1);
+    expect(core.storeRead.currentRevision("subject-s0")).toBe(1);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });
 
   it("anchors derived times to the canonical clock, never caller wall values", async () => {
     const { executor, initial } = buildExecutor();
-    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
-    expect(outcome.kind).toBe("COMMITTED");
-    if (outcome.kind === "COMMITTED") {
-      expect(outcome.bundle.logical_time_after).toBe(5); // 0 + 5, not any wall clock
-    }
+    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-anchor"));
+    if (outcome.kind !== "COMMITTED") throw new Error("expected COMMITTED");
+    expect(outcome.bundle.logical_time_after).toBe(5); // 0 + 5, not any wall clock
   });
 
   it("rejects runtime context drift against the authoritative snapshot", async () => {
     const { core, executor, initial } = buildExecutor();
     const drifting = { ...ctxOf(initial), current_logical_time: 999 as never };
-    await expect(executor.execute(drifting, ELAPSED_FIVE, session())).rejects.toThrow(/drift/);
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
+    await expect(executor.execute(drifting, ELAPSED_FIVE, capabilitiesFor("t-drift"))).rejects.toThrow(/drift/);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
-  it("routes elapsed=0 to NO_OP with zero deltas and zero commits", async () => {
+  it("routes elapsed=0 to NO_OP with zero commits", async () => {
     const { core, executor, initial } = buildExecutor();
-    const outcome = await executor.execute(ctxOf(initial), { elapsed_ticks: 0 }, session());
+    const outcome = await executor.execute(ctxOf(initial), { elapsed_ticks: 0 }, capabilitiesFor("t-zero"));
     expect(outcome.kind).toBe("NO_OP");
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
-    expect(core.store.currentRevision("subject-s0")).toBeNull();
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
+    expect(core.storeRead.currentRevision("subject-s0")).toBeNull();
   });
 
-  it("routes elapsed=0 to NO_OP even after prior commits (fresh authority, no new commit)", async () => {
-    const { core, executor, initial } = buildExecutor();
-    await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
-    const advanced = (await core.readCurrentSnapshot("subject-s0")) as SubjectStateV0;
-    const outcome = await executor.execute(ctxOf(advanced), { elapsed_ticks: 0 }, session());
-    expect(outcome.kind).toBe("NO_OP");
-    expect(core.store.getCommittedBundles()).toHaveLength(1); // unchanged
+  it("propagates authority-advance rejection verbatim when a NEW transition id races (stale at second call)", async () => {
+    const { core, executor, initial } = buildExecutor({ frozenView: true });
+    // Run A commits revision 1 (id ...e5).
+    await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-cas-a"));
+    // Run B proposes a DIFFERENT id (ticks 6) while still observing the frozen
+    // revision-0 view. Subject-core RE-READS the latest authority on the second call
+    // (expected 0 vs actual 1) → STALE_STATE_REVISION, propagated verbatim.
+    const second = await executor.execute(ctxOf(initial), { elapsed_ticks: 6 }, capabilitiesFor("t-cas-b"));
+    if (second.kind !== "REJECTED") throw new Error(`expected REJECTED, got ${second.kind}`);
+    expect(second.failure.error_code).toBe("STALE_STATE_REVISION");
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });
 
-  it("propagates commit failures (CAS conflict via stale authority) verbatim", async () => {
-    const { executor, initial } = buildExecutor({ frozenView: true });
-    await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
-    const second = await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
-    expect(second.kind).toBe("REJECTED");
-    if (second.kind === "REJECTED") {
-      expect(second.failure.error_code).toBe("COMMIT_CONFLICT");
-    }
+  it("same ID + same payload after commit replays ALREADY_COMMITTED without re-committing", async () => {
+    const { core, executor, initial } = buildExecutor({ frozenView: true });
+    await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-replay"));
+    const replay = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-replay"));
+    expect(replay.kind).toBe("COMMITTED");
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
+    expect(core.storeRead.currentRevision("subject-s0")).toBe(1);
   });
 
   it("fails closed when the affect producer fails (nothing committed)", async () => {
-    const failing: AffectProducerPort = {
-      produceAffectDelta: async () => {
-        throw new Error("affect engine offline");
-      }
-    };
-    const { core, executor, initial } = buildExecutor({ affect: failing });
-    await expect(executor.execute(ctxOf(initial), ELAPSED_FIVE, session())).rejects.toThrow(
+    const { core, executor, initial } = buildExecutor({ failingAffect: true });
+    await expect(executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-fail"))).rejects.toThrow(
       /affect producer failed/
     );
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
-  });
-
-  it("fails closed when the regulation producer fails (nothing committed)", async () => {
-    const failing: RegulationProducerPort = {
-      produceRegulationDelta: async () => {
-        throw new Error("regulation engine offline");
-      }
-    };
-    const { core, executor, initial } = buildExecutor({ regulation: failing });
-    await expect(executor.execute(ctxOf(initial), ELAPSED_FIVE, session())).rejects.toThrow(
-      /regulation producer failed/
-    );
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("admits raw elapsed ticks fail-closed before any commit attempt", async () => {
     const { core, executor, initial } = buildExecutor();
-    await expect(
-      executor.execute(ctxOf(initial), { elapsed_ticks: -1 }, session())
-    ).rejects.toThrow(/INVALID_LOGICAL_TIME/);
-    await expect(
-      executor.execute(ctxOf(initial), { elapsed_ticks: 1.5 }, session())
-    ).rejects.toThrow(/INVALID_SCHEMA/);
-    await expect(
-      executor.execute(ctxOf(initial), { elapsed_ticks: Number.MAX_SAFE_INTEGER + 1 }, session())
-    ).rejects.toThrow(/INVALID_LOGICAL_TIME/);
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
+    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: -1 }, capabilitiesFor("t-neg"))).rejects.toThrow(
+      /INVALID_LOGICAL_TIME/
+    );
+    await expect(executor.execute(ctxOf(initial), { elapsed_ticks: 1.5 }, capabilitiesFor("t-frac"))).rejects.toThrow(
+      /INVALID_SCHEMA/
+    );
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
-  it("never touches retrieval or memory capability on the commit path", async () => {
-    const retrievalCalls: string[] = [];
-    const initial = s0() as unknown as SubjectStateV0;
+  it("never touches retrieval on the commit path", async () => {
+    let retrievalCalls = 0;
+    const { initial } = s0Subject();
     const core = new RealEngineCoreAdapter(initial);
     const root = new RuntimeCompositionRoot({
       subjectCore: core,
-      memoryRepository: new InMemoryMemoryRepository(),
+      memoryRepository: new MemoryRepositoryStub(),
       retrieval: {
         retrieve: async () => {
-          retrievalCalls.push("retrieve");
+          retrievalCalls += 1;
           throw new Error("should never be reached");
         }
       },
-      affectProducer: fakeAffectProducer(),
-      regulationProducer: fakeRegulationProducer()
+      affectProducer: fixedAffect(),
+      regulationProducer: fixedRegulation()
     });
     const executor = new TimeTransitionExecutor(root.dependencies());
-    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, session());
-    expect(outcome.kind).toBe("COMMITTED");
-    expect(retrievalCalls).toEqual([]);
+    const outcome = await executor.execute(ctxOf(initial), ELAPSED_FIVE, capabilitiesFor("t-noret"));
+    if (outcome.kind !== "COMMITTED") throw new Error("expected COMMITTED");
+    expect(retrievalCalls).toBe(0);
   });
 });

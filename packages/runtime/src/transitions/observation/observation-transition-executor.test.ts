@@ -10,60 +10,62 @@ import type { SubjectStateV0 } from "@characteros-next/subject-core";
 import {
   SpyMemoryRepository,
   buildObservationHarness,
+  capabilitiesFor,
   observationInput,
   s0,
-  session
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
+
+const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77");
 
 describe("ObservationTransitionExecutor", () => {
   it("runs the full pipeline and commits: +1 revision, Observation type, single authority", async () => {
     const { core, executor, ctx } = buildObservationHarness();
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
     expect(outcome.bundle.next_revision).toBe(1);
     expect(outcome.bundle.next_snapshot.runtime_metadata.last_transition_type).toBe("Observation");
     expect(outcome.bundle.next_snapshot.context.current_observation_ref).toBe("observation:o-77");
     expect(outcome.bundle.next_snapshot.context.focus_refs).toEqual(["entity:e-1", "subject:s0"]);
-    expect(core.store.getCommittedBundles()).toHaveLength(1);
-    expect(core.store.currentRevision("subject-s0")).toBe(1);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
+    expect(core.storeRead.currentRevision("subject-s0")).toBe(1);
   });
 
   it("accepts LEGAL EMPTY retrieval without failing the pipeline", async () => {
     const { core, executor, ctx } = buildObservationHarness({ emptyRetrieval: true });
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
-    expect(core.store.getCommittedBundles()).toHaveLength(1);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });
 
   it("fails closed on retrieval failure with zero commits", async () => {
     const { core, executor, ctx } = buildObservationHarness({ failingRetrieval: true });
-    await expect(executor.execute(ctx, observationInput(), session())).rejects.toThrow(
+    await expect(executor.execute(ctx, observationInput(), CAPS)).rejects.toThrow(
       /retrieval engine offline/
     );
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("fails closed on any provider failure (interpretation / affect) with zero commits", async () => {
     const a = buildObservationHarness({ failingInterpretation: true });
-    await expect(a.executor.execute(a.ctx, observationInput(), session())).rejects.toThrow(
+    await expect(a.executor.execute(a.ctx, observationInput(), CAPS)).rejects.toThrow(
       /interpretation provider offline/
     );
-    expect(a.core.store.getCommittedBundles()).toHaveLength(0);
+    expect(a.core.storeRead.getCommittedBundles()).toHaveLength(0);
 
     const b = buildObservationHarness({ failingAffect: true });
-    await expect(b.executor.execute(b.ctx, observationInput(), session())).rejects.toThrow(
+    await expect(b.executor.execute(b.ctx, observationInput(), CAPS)).rejects.toThrow(
       /affect producer offline/
     );
-    expect(b.core.store.getCommittedBundles()).toHaveLength(0);
+    expect(b.core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("is deterministic: same input ⇒ identical proposal/refs/hashes/results", async () => {
     const a = buildObservationHarness();
     const b = buildObservationHarness();
-    const oa = await a.executor.execute(a.ctx, observationInput(), session());
-    const ob = await b.executor.execute(b.ctx, observationInput(), session());
+    const oa = await a.executor.execute(a.ctx, observationInput(), CAPS);
+    const ob = await b.executor.execute(b.ctx, observationInput(), CAPS);
     expect(oa.kind).toBe("COMMITTED");
     expect(ob.kind).toBe("COMMITTED");
     if (oa.kind !== "COMMITTED" || ob.kind !== "COMMITTED") return;
@@ -76,24 +78,24 @@ describe("ObservationTransitionExecutor", () => {
   it("rejects occurrence drift and context drift before any producer work", async () => {
     const { core, executor, ctx } = buildObservationHarness();
     await expect(
-      executor.execute(ctx, observationInput({ occurrence_logical_time: 5 }), session())
+      executor.execute(ctx, observationInput({ occurrence_logical_time: 5 }), CAPS)
     ).rejects.toThrow(/INVALID_LOGICAL_TIME/);
 
     const drifting = { ...ctx, current_logical_time: 99 as never };
-    await expect(executor.execute(drifting, observationInput(), session())).rejects.toThrow(/drift/);
-    expect(core.store.getCommittedBundles()).toHaveLength(0);
+    await expect(executor.execute(drifting, observationInput(), CAPS)).rejects.toThrow(/drift/);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
   });
 
   it("boundary: never writes memory, never reaches external state, no LLM surface", async () => {
     const memory = new SpyMemoryRepository();
     const { core, executor, ctx } = buildObservationHarness({ memory });
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     expect(memory.prepareCalls).toBe(0); // zero memory writes
     expect(outcome.kind === "COMMITTED" ? outcome.bundle.transition_id : "").toMatch(
       /^t-obs-subject-s0-r0-oobservation-o-77$/
     );
-    expect(core.store.getCommittedBundles()).toHaveLength(1);
+    expect(core.storeRead.getCommittedBundles()).toHaveLength(1);
   });
 
   it("builds the retrieval query deterministically from input + read-only snapshot", () => {

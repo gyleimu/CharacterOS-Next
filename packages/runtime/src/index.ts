@@ -40,7 +40,7 @@ export {
   timeTransitionId,
   type TimeExecutionResult,
   type TimeTransitionInputV0,
-  type TransitionSessionFacts
+  type TransitionCapabilities
 } from "./transitions/time/time-transition-executor.js";
 
 // --- P2.3.3.1 observation input + context producer --------------------------------

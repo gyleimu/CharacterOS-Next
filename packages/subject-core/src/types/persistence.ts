@@ -8,6 +8,8 @@
 import type {
   HashV1,
   IdentifierV0,
+  LogicalTimeV0,
+  RepositoryRevisionIdV0,
   StateRevisionV0,
   TransitionIdV0
 } from "./scalars.js";
@@ -21,8 +23,8 @@ import type { CanonicalCommitResultV1 } from "./result.js";
 /** §8.5 RepositoryRevisionManifestV1 — owned by memory package. */
 export interface RepositoryRevisionManifestV1 {
   readonly schema_version: "repository-revision-manifest-v1";
-  readonly repository_revision: import("./scalars.js").RepositoryRevisionIdV0;
-  readonly parent_revision: import("./scalars.js").RepositoryRevisionIdV0 | null;
+  readonly repository_revision: RepositoryRevisionIdV0;
+  readonly parent_revision: RepositoryRevisionIdV0 | null;
   readonly record_hashes: readonly RepositoryRecordHashV1[];
   readonly index_manifest_hash: HashV1 | null;
 }
@@ -34,7 +36,7 @@ export interface RepositoryRecordHashV1 {
 
 /** §11 RepositoryRevisionBindingV1. */
 export interface RepositoryRevisionBindingV1 {
-  readonly repository_revision: import("./scalars.js").RepositoryRevisionIdV0;
+  readonly repository_revision: RepositoryRevisionIdV0;
   readonly repository_revision_hash: HashV1;
 }
 
@@ -78,8 +80,8 @@ export interface AtomicCommitBundleV1 {
   readonly previous_commit_ref: CanonicalRefV0 | null;
   readonly previous_record_checksum: HashV1 | null;
   readonly next_snapshot: SubjectStateV0;
-  readonly logical_time_before: import("./scalars.js").LogicalTimeV0;
-  readonly logical_time_after: import("./scalars.js").LogicalTimeV0;
+  readonly logical_time_before: LogicalTimeV0;
+  readonly logical_time_after: LogicalTimeV0;
   readonly state_hash_before: HashV1;
   readonly state_hash_after: HashV1;
   readonly snapshot_hash_before: HashV1;
@@ -103,22 +105,22 @@ export type AtomicCommitOutcomeV1 =
   | { readonly outcome: "FAILURE"; readonly certainty: CommitFailureCertainty };
 
 /**
- * §15.1 Conceptual persistence ports (types-only, no implementation). These declare the
- * capability contract surface so that P2.1.2+ adapters can implement it without selecting
- * a store vendor here.
+ * §15.1 Conceptual persistence ports (types-only, no implementation). P2.0 frozen
+ * markers; concrete signatures land with the persistence adapter slices.
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- P2.0 frozen marker; signatures finalize in the adapter slice.
 export interface StateReaderPort {
-  // P2.1.1 marker only: method signatures are finalized in the persistence adapter work.
+  // marker only
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- P2.0 frozen marker; compare-and-commit semantics are frozen conceptually in §15.2.
 export interface AtomicCommitStorePort {
-  // P2.1.1 marker only: compare-and-commit semantics are frozen conceptually in §15.2.
+  // marker only
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- P2.0 frozen marker.
 export interface PublishSinkPort {
-  // P2.1.1 marker only.
+  // marker only
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- P2.0 frozen marker.
 export interface ReferenceValidatorPort {
-  // P2.1.1 marker only.
+  // marker only
 }

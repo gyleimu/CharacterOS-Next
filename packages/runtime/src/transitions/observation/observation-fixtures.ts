@@ -1,18 +1,15 @@
 /**
  * P2.3.3.3 — shared Observation test fixtures (test-only helpers; NOT part of the
- * public runtime surface). Extracted so executor tests and conformance hardening
- * exercise exactly the same wiring.
+ * public runtime surface). All stacks run against the SANCTIONED in-memory facade
+ * assembly — the raw store/journal are never imported here (P0-2 boundary).
  */
 
 import {
-  createCommitEngine,
-  InMemoryAtomicCommitStore,
-  type CommitEngine,
-  type CommitTransitionInput,
-  type CommitTransitionOutcome,
+  createInMemorySubjectCoreFacade,
+  type InMemoryFacadeAssembly,
+  type ReadOnlyStoreHandle,
   type SubjectStateV0,
-  type CanonicalRefV0,
-  type RepositoryRevisionBindingV1
+  type CanonicalRefV0
 } from "@characteros-next/subject-core";
 import {
   InMemoryMemoryRepository,
@@ -22,23 +19,27 @@ import {
   type PreparedRevisionV0
 } from "@characteros-next/memory";
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
-import type { SubjectCorePort } from "../../ports/subject-core-port.js";
 import { ReferenceContextProducer } from "../../ports/context-producer-port.js";
 import type { AffectProducerPort } from "../../ports/affect-producer-port.js";
 import type { AppraisalPort } from "../../ports/appraisal-port.js";
 import type { ContextProducerPort } from "../../ports/context-producer-port.js";
 import type { InterpretationPort } from "../../ports/interpretation-port.js";
+import type { RetrievalMetadataProducerPort } from "../../ports/retrieval-metadata-producer-port.js";
+import type { SubjectCorePort } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
-import type { TransitionSessionFacts } from "../time/time-transition-executor.js";
+import type { TransitionCapabilities } from "../time/time-transition-executor.js";
 import { ObservationTransitionExecutor } from "./observation-transition-executor.js";
 import type { ObservationInputV0 } from "./types.js";
 
 export const HASH_V1_R0_REPOSITORY =
   "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 
-export const R0_BINDINGS = [
+export const R0_BINDINGS: ReadonlyArray<{
+  repository_revision: string;
+  repository_revision_hash: string;
+}> = [
   { repository_revision: "R0", repository_revision_hash: HASH_V1_R0_REPOSITORY }
-] as unknown as RepositoryRevisionBindingV1[];
+];
 
 export function s0(): Record<string, unknown> {
   return {
@@ -104,25 +105,58 @@ export function s0(): Record<string, unknown> {
   };
 }
 
-export class RealEngineCoreAdapter implements SubjectCorePort {
-  readonly store: InMemoryAtomicCommitStore;
-  private readonly engine: CommitEngine;
+/** Facade-backed SubjectCorePort + read-only store handle for assertions. */
+export interface FacadeSubjectCore extends SubjectCorePort {
+  readonly storeRead: ReadOnlyStoreHandle;
+}
+
+export class RealEngineCoreAdapter implements FacadeSubjectCore {
+  readonly storeRead: ReadOnlyStoreHandle;
+  private readonly assembly: InMemoryFacadeAssembly;
   private readonly initial: SubjectStateV0;
+  private readonly frozenView: boolean;
 
-  constructor(initial: SubjectStateV0) {
+  constructor(initial: SubjectStateV0, options: { frozenView?: boolean } = {}) {
     this.initial = initial;
-    this.store = new InMemoryAtomicCommitStore();
-    this.engine = createCommitEngine({ store: this.store });
+    this.frozenView = options.frozenView ?? false;
+    this.assembly = createInMemorySubjectCoreFacade({
+      seedSnapshots: new Map([["subject-s0" as never, initial]])
+    });
+    this.storeRead = this.assembly.storeRead;
   }
 
-  async commit(input: CommitTransitionInput): Promise<CommitTransitionOutcome> {
-    return this.engine.commitTransition(input);
+  async reserveAndRoute(
+    proposal: Parameters<SubjectCorePort["reserveAndRoute"]>[0]
+  ): Promise<Awaited<ReturnType<SubjectCorePort["reserveAndRoute"]>>> {
+    return this.assembly.facade.reserveAndRoute(proposal);
   }
 
-  async readCurrentSnapshot(subjectId: string): Promise<SubjectStateV0 | null> {
-    const bundles = this.store.getCommittedBundles().filter((bundle) => bundle.subject_id === subjectId);
-    const last = bundles[bundles.length - 1];
-    return last !== undefined ? last.next_snapshot : this.initial;
+  async commitReserved(
+    input: Parameters<SubjectCorePort["commitReserved"]>[0]
+  ): Promise<Awaited<ReturnType<SubjectCorePort["commitReserved"]>>> {
+    return this.assembly.facade.commitReserved(input);
+  }
+
+  async terminalizeReservedNoOp(
+    input: Parameters<SubjectCorePort["terminalizeReservedNoOp"]>[0]
+  ): Promise<Awaited<ReturnType<SubjectCorePort["terminalizeReservedNoOp"]>>> {
+    return this.assembly.facade.terminalizeReservedNoOp(input);
+  }
+
+  async reconcile(
+    transitionId: Parameters<SubjectCorePort["reconcile"]>[0],
+    subjectId: Parameters<SubjectCorePort["reconcile"]>[1],
+    fingerprint: Parameters<SubjectCorePort["reconcile"]>[2]
+  ): Promise<Awaited<ReturnType<SubjectCorePort["reconcile"]>>> {
+    return this.assembly.facade.reconcile(transitionId, subjectId, fingerprint);
+  }
+
+  async readCurrentSnapshot(
+    subjectId: string
+  ): Promise<SubjectStateV0 | null> {
+    if (this.frozenView) return this.initial;
+    const bundle = this.storeRead.readCurrentBundle(subjectId);
+    return bundle !== null ? bundle.next_snapshot : this.initial;
   }
 }
 
@@ -138,20 +172,34 @@ export function observationInput(overrides: Record<string, unknown> = {}): Obser
   } as unknown as ObservationInputV0;
 }
 
-export function fixedInterpretation(): InterpretationPort {
+export function fixedInterpretation(evidenceRefs?: readonly string[]): InterpretationPort {
   return {
     interpret: async (view) =>
       ({
-        interpretation_ref: `result:interp-${view.observation_id.replace(":", "-")}`
+        schema_version: "interpretation-proposal-v0",
+        interpretation_ref: `result:interp-${view.observation_id.replace(":", "-")}`,
+        projection_hash: view.projection_hash,
+        evidence_refs:
+          evidenceRefs ??
+          view.retrieval_result?.selected_memory_refs ??
+          ([] as readonly CanonicalRefV0[])
       }) as never
   };
 }
 
-export function fixedAppraisal(): AppraisalPort {
+export function fixedAppraisal(score: number, evidenceRefs?: readonly string[]): AppraisalPort {
   return {
     appraise: async (view) =>
       ({
-        appraisal_ref: `appraisal:ap-${view.observation_id.replace(":", "-")}`
+        schema_version: "appraisal-v0",
+        appraisal_ref: `appraisal:ap-${view.observation_id.replace(":", "-")}`,
+        evidence_refs: evidenceRefs ?? view.retrieval_result?.selected_memory_refs ?? [],
+        relevance: score,
+        goal_congruence: score,
+        attribution: score,
+        controllability: score,
+        uncertainty: score,
+        intensity: score
       }) as never
   };
 }
@@ -203,7 +251,6 @@ export function retrievalService(empty = false): InMemoryRetrievalService {
   });
 }
 
-/** Memory repository wrapped with write/read call counters (boundary proof). */
 export class SpyMemoryRepository extends InMemoryMemoryRepository {
   prepareCalls = 0;
   readCalls = 0;
@@ -218,16 +265,16 @@ export class SpyMemoryRepository extends InMemoryMemoryRepository {
   }
 }
 
-export function session(): TransitionSessionFacts {
+export function capabilitiesFor(transitionId: string): TransitionCapabilities {
   return {
-    identity_record_version_before: 0,
-    first_seen_sequence: 1,
-    prior_attempts: [],
-    previous_commit_ref: null,
-    previous_record_checksum: null,
-    prepared_result_ref: "workflow:w-obs-1" as CanonicalRefV0,
-    repository_bindings: R0_BINDINGS,
-    reference_validator: async () => true
+    preparedBinding: {
+      prepared_result_ref: "workflow:w-obs-1" as CanonicalRefV0,
+      transition_id: transitionId as never,
+      subject_id: "subject-s0" as never,
+      transition_type: "Time" as never,
+      payload_fingerprint: `sha256:${"0".repeat(64)}` as never
+    },
+    repository_bindings: R0_BINDINGS as never
   };
 }
 
@@ -240,8 +287,12 @@ export interface ObservationHarnessOptions {
   readonly failingContextDelta?: boolean;
   readonly memory?: SpyMemoryRepository;
   readonly contextProducer?: ContextProducerPort;
+  readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort | null;
+  readonly interpretationEvidence?: readonly string[];
+  readonly appraisalScore?: number;
+  readonly appraisalEvidence?: readonly string[];
   readonly retrieval?: {
-    retrieve: (query: MemoryRetrievalQueryV0) => Promise<MemoryRetrievalResultV0>;
+    retrieve(query: MemoryRetrievalQueryV0): Promise<MemoryRetrievalResultV0>;
   };
 }
 
@@ -280,7 +331,7 @@ export function buildObservationHarness(
               throw new Error("interpretation provider offline");
             }
           }
-        : fixedInterpretation(),
+        : fixedInterpretation(overrides.interpretationEvidence),
     appraisal:
       overrides.failingAppraisal === true
         ? {
@@ -288,7 +339,7 @@ export function buildObservationHarness(
               throw new Error("appraisal provider offline");
             }
           }
-        : fixedAppraisal(),
+        : fixedAppraisal(overrides.appraisalScore ?? 0.9, overrides.appraisalEvidence),
     affectProducer:
       overrides.failingAffect === true
         ? {
@@ -298,8 +349,7 @@ export function buildObservationHarness(
           }
         : fixedAffectProducer(),
     contextProducer:
-      overrides.contextProducer ??
-      (overrides.failingContextDelta === true
+      overrides.failingContextDelta === true
         ? {
             produceControlledProjection: async (input, assembly) =>
               new ReferenceContextProducer().produceControlledProjection(input, assembly),
@@ -307,7 +357,11 @@ export function buildObservationHarness(
               throw new Error("context producer offline");
             }
           }
-        : new ReferenceContextProducer())
+        : new ReferenceContextProducer(),
+    ...(overrides.retrievalMetadataProducer !== null &&
+    overrides.retrievalMetadataProducer !== undefined
+      ? { retrievalMetadataProducer: overrides.retrievalMetadataProducer }
+      : {})
   });
   const ctx: RuntimeContext = {
     subject_id: "subject-s0" as never,

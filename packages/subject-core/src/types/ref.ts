@@ -7,7 +7,6 @@
  */
 
 import type { Brand, IdentifierV0 } from "./scalars.js";
-import type { RefKind } from "./enums.js";
 
 /** Opaque canonical reference value `kind:id` (§5.3). */
 export type CanonicalRefV0 = Brand<string, "CanonicalRefV0">;

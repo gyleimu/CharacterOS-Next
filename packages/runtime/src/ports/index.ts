@@ -18,9 +18,18 @@ export {
   CONTROLLED_PROJECTION_HASH_PROJECTION,
   CONTROLLED_PROJECTION_SCHEMA_VERSION,
   ReferenceContextProducer,
-  buildControlledProjectionView,
   buildContextDelta,
+  buildControlledProjectionView,
   type ContextProducerPort,
   type ControlledProjectionAssembly
 } from "./context-producer-port.js";
 export type { ObservationInputV0 } from "../transitions/observation/types.js";
+
+// --- P2.3.3 (P0-6 §21) retrieval-metadata producer ---------------------------------
+
+export {
+  ReferenceRetrievalMetadataProducer,
+  buildRetrievalMetadataDelta,
+  type RetrievalMetadataProducerInputV0,
+  type RetrievalMetadataProducerPort
+} from "./retrieval-metadata-producer-port.js";

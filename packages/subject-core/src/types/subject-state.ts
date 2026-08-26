@@ -147,6 +147,7 @@ export interface RuntimeMetadataV0 {
 }
 
 /** §5.1 rule 6: closed object with exactly zero keys, `{}` in JSON. */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- frozen zero-key closed object; emptiness IS the contract.
 export interface EmptyClosedObjectV0 {
   // Intentionally empty; no keys may be added under V0.
 }

@@ -17,6 +17,7 @@ import type {
   InterpretationPort,
   MemoryPort,
   RegulationProducerPort,
+  RetrievalMetadataProducerPort,
   RetrievalPort,
   SubjectCorePort
 } from "../ports/index.js";
@@ -36,4 +37,6 @@ export interface RuntimeDependencyContainer {
   readonly regulationProducer: RegulationProducerPort | null;
   /** Observation input → controlled projection + context delta (producer identity `context`). */
   readonly contextProducer: ContextProducerPort | null;
+  /** Optional Observation retrieval-metadata trio producer (producer identity `memory`). */
+  readonly retrievalMetadataProducer: RetrievalMetadataProducerPort | null;
 }

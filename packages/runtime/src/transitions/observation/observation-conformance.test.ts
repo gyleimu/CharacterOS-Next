@@ -21,18 +21,20 @@ import type { MemoryRetrievalQueryV0 } from "@characteros-next/memory";
 import type { SubjectStateV0 } from "@characteros-next/subject-core";
 import {
   buildObservationHarness,
+  capabilitiesFor,
   observationInput,
   retrievalService,
-  session,
   s0,
   SpyMemoryRepository
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
 
+const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77");
+
 describe("A4 — proposal generation conformance", () => {
   it("produces one Observation proposal pinned to the authoritative position", async () => {
     const { executor, ctx } = buildObservationHarness();
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
     const bundle = outcome.bundle;
@@ -49,19 +51,28 @@ describe("A4 — proposal generation conformance", () => {
 describe("A11 — multi-domain atomic commit", () => {
   it("commits affect + context in exactly ONE canonical commit with one trace", async () => {
     const { core, executor, ctx } = buildObservationHarness();
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
-    const bundles = core.store.getCommittedBundles();
+    const bundles = core.storeRead.getCommittedBundles();
     expect(bundles).toHaveLength(1);
-    expect(core.store.currentRevision("subject-s0")).toBe(1);
+    expect(core.storeRead.currentRevision("subject-s0")).toBe(1);
 
-    const bundle = bundles[0]!;
+    const bundle = bundles[0] as NonNullable<(typeof bundles)[number]>;
     // Both domains are present in the single trace summary, sorted by (domain,producer).
     const summaries = bundle.trace_entry.domain_mutations;
-    expect(summaries.map((summary) => summary.domain)).toEqual(["affect", "context"]);
-    expect(summaries.map((summary) => summary.producer)).toEqual(["affect", "context"]);
+    expect(summaries.map((summary: { domain: string }) => summary.domain)).toEqual([
+      "affect",
+      "context"
+    ]);
+    expect(summaries.map((summary: { producer: string }) => summary.producer)).toEqual([
+      "affect",
+      "context"
+    ]);
     // Path summaries prove both partitions were applied atomically.
-    const paths = summaries.flatMap((summary) => summary.field_changes.map((change) => change.path));
+    const paths = summaries.flatMap(
+      (summary: { field_changes: ReadonlyArray<{ path: string }> }) =>
+        summary.field_changes.map((change) => change.path)
+    );
     expect(paths).toContain("/affect");
     expect(paths).toContain("/mood");
     expect(paths).toContain("/context");
@@ -80,9 +91,9 @@ describe("atomic failure matrix — SubjectCore commit count = 0", () => {
   for (const { name, options } of cases) {
     it(name, async () => {
       const { core, executor, ctx } = buildObservationHarness(options);
-      await expect(executor.execute(ctx, observationInput(), session())).rejects.toThrow();
-      expect(core.store.getCommittedBundles()).toHaveLength(0);
-      expect(core.store.currentRevision("subject-s0")).toBeNull();
+      await expect(executor.execute(ctx, observationInput(), CAPS)).rejects.toThrow();
+      expect(core.storeRead.getCommittedBundles()).toHaveLength(0);
+      expect(core.storeRead.currentRevision("subject-s0")).toBeNull();
     });
   }
 });
@@ -99,7 +110,7 @@ describe("determinism matrix — ≥3 isolated runs, identical inputs", () => {
 
     for (let i = 0; i < RUNS; i++) {
       const harness = buildObservationHarness();
-      const outcome = await harness.executor.execute(harness.ctx, observationInput(), session());
+      const outcome = await harness.executor.execute(harness.ctx, observationInput(), CAPS);
       expect(outcome.kind).toBe("COMMITTED");
       if (outcome.kind !== "COMMITTED") return;
       outputs.push({
@@ -110,7 +121,7 @@ describe("determinism matrix — ≥3 isolated runs, identical inputs", () => {
       });
     }
 
-    const first = outputs[0]!;
+    const first = outputs[0] as (typeof outputs)[number];
     for (const output of outputs) {
       expect(output).toEqual(first);
     }
@@ -125,7 +136,7 @@ describe("boundary attacks", () => {
     const harness = buildObservationHarness();
     const initialBytes = JSON.stringify(harness.initial);
     Object.freeze(harness.initial);
-    const outcome = await harness.executor.execute(harness.ctx, observationInput(), session());
+    const outcome = await harness.executor.execute(harness.ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     expect(JSON.stringify(harness.initial)).toBe(initialBytes);
     expect(Object.isFrozen(harness.initial)).toBe(true);
@@ -136,7 +147,7 @@ describe("boundary attacks", () => {
   it("memory capability sees zero prepare/read calls during the whole run", async () => {
     const memory = new SpyMemoryRepository();
     const { executor, ctx } = buildObservationHarness({ memory });
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     expect(memory.prepareCalls).toBe(0);
     expect(memory.readCalls).toBe(0);
@@ -152,7 +163,7 @@ describe("boundary attacks", () => {
       }
     };
     const { executor, ctx } = buildObservationHarness({ retrieval: counting });
-    const outcome = await executor.execute(ctx, observationInput(), session());
+    const outcome = await executor.execute(ctx, observationInput(), CAPS);
     expect(outcome.kind).toBe("COMMITTED");
     expect(retrieveCalls).toBe(1); // exactly one query per execution — no hidden search loops
 
