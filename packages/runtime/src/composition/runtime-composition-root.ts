@@ -21,6 +21,7 @@
 import type {
   RuntimeDependencyContainer
 } from "../types/runtime-dependency-container.js";
+import { createMemoryPreparationAuthority } from "@characteros-next/memory";
 import type { MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 import type {
@@ -78,7 +79,11 @@ export class RuntimeCompositionRoot {
     const assembled: RuntimeDependencyContainer = {
       subjectCore: options.subjectCore,
       producerAuthorizationIssuer: options.producerAuthorizationIssuer,
-      memory: { repository: options.memoryRepository },
+      // BLOCKER B2 closure: NEVER retain the concrete repository object. The
+      // runtime-facing handle is a fresh frozen projection exposing only the
+      // sanctioned authority operations; any raw revision-minting surface carried
+      // by the injected implementation is unreachable through dependencies().
+      memory: { repository: createMemoryPreparationAuthority(options.memoryRepository) },
       retrieval: options.retrieval,
       interpretation: options.interpretation ?? null,
       appraisal: options.appraisal ?? null,

@@ -90,3 +90,26 @@ export interface MemoryRevisionStoreInternal {
 export interface MemoryRepository
   extends MemoryPreparationAuthority,
     MemoryRevisionStoreInternal {}
+
+/**
+ * P2.3 Round 3 (BLOCKER B2): TRUE RUNTIME PROJECTION of the memory authority.
+ * TypeScript interface narrowing is compile-time only — a concrete repository
+ * object still carries the raw revision-minting surface at runtime, reachable
+ * by any JavaScript caller. This factory returns a NEW frozen wrapper exposing
+ * exactly the sanctioned operations, so runtime/Learning code can never reach
+ * MemoryRevisionStoreInternal through the dependency container. Host and
+ * infrastructure composition keep the concrete object for legitimate duties.
+ */
+export function createMemoryPreparationAuthority(
+  source: MemoryPreparationAuthority
+): MemoryPreparationAuthority {
+  const handle: MemoryPreparationAuthority = {
+    storePayload: (ref, payload) => source.storePayload(ref, payload),
+    payloadHashOf: (ref) => source.payloadHashOf(ref),
+    prepareRevisionForIntent: (intent) => source.prepareRevisionForIntent(intent),
+    readManifest: (revision) => source.readManifest(revision),
+    validateRevisionBinding: (binding) => source.validateRevisionBinding(binding),
+    validateRefsBelong: (revision, refs) => source.validateRefsBelong(revision, refs)
+  };
+  return Object.freeze(handle);
+}

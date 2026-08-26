@@ -51,6 +51,10 @@ export type {
 } from "./repository/memory-repository.js";
 
 export {
+  createMemoryPreparationAuthority
+} from "./repository/memory-repository.js";
+
+export {
   InMemoryMemoryRepository
 } from "./repository/in-memory-memory-repository.js";
 
