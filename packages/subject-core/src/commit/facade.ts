@@ -122,6 +122,7 @@ export interface CommitReservedInput {
 
 export type ReconcileOutcome =
   | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "COMMIT_CONFLICT"; readonly bundle: AtomicCommitBundleV1 }
   | { readonly kind: "TERMINAL_NO_OP" }
   | { readonly kind: "NOT_COMMITTED" };
 
@@ -226,7 +227,13 @@ export class SubjectCoreFacade {
   }
 
   async commitReserved(input: CommitReservedInput): Promise<CommitReservedOutcome> {
-    // 1. Continuation integrity: immutable header must match the journal record.
+    // 1. Syntax gate: the second call never trusts the reserved parse (§13.4 (1)).
+    const syntax = validateProposal(input.proposal);
+    if (!syntax.ok) {
+      throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
+    }
+
+    // 2. Continuation integrity: immutable header must match the journal record.
     const record = await this.ports.journal.readRecord(input.continuation.transition_id);
     if (record === null) {
       throw admissionFailure("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", "reservation record missing");
@@ -243,6 +250,26 @@ export class SubjectCoreFacade {
         "continuation header does not match the journal record"
       );
     }
+
+    // 3. Proposal identity re-bind (ATTACK A closure): the submitted proposal's
+    // cryptographic identity is RECOMPUTED and must equal the identity recorded
+    // at reservation — a continuation can never carry a different proposal.
+    const recomputedRef = await proposalRef(input.proposal);
+    const recomputedFingerprint = await proposalFingerprint(input.proposal);
+    if (
+      input.proposal.transition_id !== record.transition_id ||
+      input.proposal.subject_id !== record.subject_id ||
+      input.proposal.transition_type !== record.transition_type ||
+      recomputedRef !== record.proposal_ref ||
+      recomputedFingerprint !== record.payload_fingerprint
+    ) {
+      throw admissionFailure(
+        "COMMIT_CHAIN_INTEGRITY_FAILURE",
+        "SS-RESTORE-001",
+        "proposal identity does not match the reserved continuation"
+      );
+    }
+
     if (record.terminal_status === "COMMITTED") {
       const bundle = await this.readCommittedBundle(input.continuation.transition_id);
       if (bundle === null) {
@@ -254,7 +281,20 @@ export class SubjectCoreFacade {
       return { kind: "NO_OP" };
     }
 
-    // 2. Trusted prepared binding verdict.
+    // 4. Trusted prepared binding: bound to the reserved identity (§7.6, ATTACK C
+    // closure) — a binding minted for another transition/subject/type is refused
+    // before any verdict is consulted.
+    const bindingBound =
+      input.preparedBinding.transition_id === record.transition_id &&
+      input.preparedBinding.subject_id === record.subject_id &&
+      input.preparedBinding.transition_type === record.transition_type;
+    if (!bindingBound) {
+      throw admissionFailure(
+        "COMMIT_CHAIN_INTEGRITY_FAILURE",
+        "SS-RESTORE-001",
+        "prepared result binding is not bound to the reserved identity"
+      );
+    }
     const bindingOk = await this.ports.preparedResultValidator(input.preparedBinding);
     if (bindingOk !== true) {
       throw admissionFailure(
@@ -264,7 +304,7 @@ export class SubjectCoreFacade {
       );
     }
 
-    // 3. Producer authorization: capability set equals the proposal's distinct pairs.
+    // 5. Producer authorization: capability set equals the proposal's distinct pairs.
     const distinctPairs = new Set<string>();
     for (const delta of input.proposal.domain_deltas) {
       distinctPairs.add(`${delta.producer}|${delta.domain}`);
@@ -280,7 +320,7 @@ export class SubjectCoreFacade {
       return this.rejected("UNAUTHORIZED_PRODUCER", "SS-AUTH-001", "producer authorization set mismatch");
     }
 
-    // 4. RE-READ latest authority.
+    // 6. RE-READ latest authority.
     const currentState = await this.ports.stateReader.readCurrentSnapshot(
       input.continuation.subject_id
     );
@@ -288,7 +328,7 @@ export class SubjectCoreFacade {
       return this.rejected("UNKNOWN_SUBJECT", "SS-AUTH-001", "subject not found at second call");
     }
 
-    // 5. Journal/store-derived facts.
+    // 7. Journal/store-derived facts.
     const store = this.ports.store as StoreReadSurface;
     const previousCommitRef =
       (await this.readCurrentCommitRef(input.continuation.subject_id)) ??
@@ -315,6 +355,10 @@ export class SubjectCoreFacade {
   }
 
   async terminalizeReservedNoOp(input: TerminalizeNoOpInput): Promise<CommitReservedOutcome> {
+    const syntax = validateProposal(input.proposal);
+    if (!syntax.ok) {
+      throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
+    }
     const record = await this.ports.journal.readRecord(input.continuation.transition_id);
     if (record === null) {
       throw admissionFailure("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", "reservation record missing");
@@ -326,6 +370,34 @@ export class SubjectCoreFacade {
       record.payload_fingerprint !== input.continuation.payload_fingerprint
     ) {
       throw admissionFailure("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", "continuation header mismatch");
+    }
+    // Proposal identity re-bind (ATTACK A closure): the exact reserved proposal only.
+    const recomputedRef = await proposalRef(input.proposal);
+    const recomputedFingerprint = await proposalFingerprint(input.proposal);
+    if (
+      input.proposal.transition_id !== record.transition_id ||
+      input.proposal.subject_id !== record.subject_id ||
+      input.proposal.transition_type !== record.transition_type ||
+      recomputedRef !== record.proposal_ref ||
+      recomputedFingerprint !== record.payload_fingerprint
+    ) {
+      throw admissionFailure(
+        "COMMIT_CHAIN_INTEGRITY_FAILURE",
+        "SS-RESTORE-001",
+        "proposal identity does not match the reserved continuation"
+      );
+    }
+    // Prepared binding bound to the reserved identity (§7.6, ATTACK C closure).
+    const bindingBound =
+      input.preparedBinding.transition_id === record.transition_id &&
+      input.preparedBinding.subject_id === record.subject_id &&
+      input.preparedBinding.transition_type === record.transition_type;
+    if (!bindingBound) {
+      throw admissionFailure(
+        "COMMIT_CHAIN_INTEGRITY_FAILURE",
+        "SS-RESTORE-001",
+        "prepared result binding is not bound to the reserved identity"
+      );
     }
     const bindingOk = await this.ports.preparedResultValidator(input.preparedBinding);
     if (bindingOk !== true) {
@@ -432,10 +504,13 @@ export class SubjectCoreFacade {
   ): Promise<ReconcileOutcome> {
     const bundle = await this.readCommittedBundle(transitionId);
     if (bundle !== null) {
-      // Committed truth wins; host decides conflict handling when fingerprints differ.
-      void fingerprint;
-      void subjectId;
-      return { kind: "COMMITTED", bundle };
+      // Committed truth wins ONLY when the caller's identity claim matches the
+      // authoritative bundle; a differing subject/fingerprint is a durable conflict
+      // the host must resolve explicitly — never silently treated as the same run.
+      if (bundle.subject_id === subjectId && bundle.payload_fingerprint === fingerprint) {
+        return { kind: "COMMITTED", bundle };
+      }
+      return { kind: "COMMIT_CONFLICT", bundle };
     }
     const record = await this.ports.journal.readRecord(transitionId);
     if (record !== null && record.terminal_status === "NO_OP") {

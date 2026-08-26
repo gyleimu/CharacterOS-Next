@@ -16,7 +16,7 @@ import {
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
 
-const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77");
+const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77", "Observation");
 
 describe("ObservationTransitionExecutor", () => {
   it("runs the full pipeline and commits: +1 revision, Observation type, single authority", async () => {

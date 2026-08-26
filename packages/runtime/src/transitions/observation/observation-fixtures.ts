@@ -120,7 +120,10 @@ export class RealEngineCoreAdapter implements FacadeSubjectCore {
     this.initial = initial;
     this.frozenView = options.frozenView ?? false;
     this.assembly = createInMemorySubjectCoreFacade({
-      seedSnapshots: new Map([["subject-s0" as never, initial]])
+      seedSnapshots: new Map([["subject-s0" as never, initial]]),
+      // Explicit prepared-record gate (fail closed): only the fixture's trusted ref.
+      preparedResultValidator: async (binding) =>
+        binding.prepared_result_ref === "workflow:w-obs-1"
     });
     this.storeRead = this.assembly.storeRead;
   }
@@ -265,13 +268,16 @@ export class SpyMemoryRepository extends InMemoryMemoryRepository {
   }
 }
 
-export function capabilitiesFor(transitionId: string): TransitionCapabilities {
+export function capabilitiesFor(
+  transitionId: string,
+  transitionType: "Time" | "Observation" = "Time"
+): TransitionCapabilities {
   return {
     preparedBinding: {
       prepared_result_ref: "workflow:w-obs-1" as CanonicalRefV0,
       transition_id: transitionId as never,
       subject_id: "subject-s0" as never,
-      transition_type: "Time" as never,
+      transition_type: transitionType as never,
       payload_fingerprint: `sha256:${"0".repeat(64)}` as never
     },
     repository_bindings: R0_BINDINGS as never

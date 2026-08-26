@@ -29,7 +29,7 @@ import {
 } from "./observation-fixtures.js";
 import { buildObservationRetrievalQuery } from "./observation-transition-executor.js";
 
-const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77");
+const CAPS = capabilitiesFor("t-obs-subject-s0-r0-oobservation-o-77", "Observation");
 
 describe("A4 — proposal generation conformance", () => {
   it("produces one Observation proposal pinned to the authoritative position", async () => {

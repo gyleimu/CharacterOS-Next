@@ -22,8 +22,12 @@ export interface InMemoryFacadeOptions {
   readonly referenceValidator?: ReferenceValidatorCapability;
   /** Optional seed snapshots by subject (default: none — subjects must exist). */
   readonly seedSnapshots?: ReadonlyMap<IdentifierV0, SubjectStateV0>;
-  /** Trusted prepared-record verdict; absent ⇒ binding validation is skipped. */
-  readonly preparedResultValidator?: SubjectCoreFacadePorts["preparedResultValidator"];
+  /**
+   * Trusted prepared-record verdict — REQUIRED. There is no default: a facade
+   * without an explicit prepared-result gate must never be minted (fail closed,
+   * ATTACK C closure).
+   */
+  readonly preparedResultValidator: SubjectCoreFacadePorts["preparedResultValidator"];
 }
 
 export interface ReadOnlyStoreHandle {
@@ -40,8 +44,13 @@ export interface InMemoryFacadeAssembly {
 }
 
 export function createInMemorySubjectCoreFacade(
-  options: InMemoryFacadeOptions = {}
+  options: InMemoryFacadeOptions
 ): InMemoryFacadeAssembly {
+  if (options.preparedResultValidator === undefined) {
+    throw new Error(
+      "createInMemorySubjectCoreFacade: preparedResultValidator is required (fail closed; §7.6)"
+    );
+  }
   const store = new InMemoryAtomicCommitStore();
   const journal = new InMemoryTransitionIdentityJournal();
   const seeds = options.seedSnapshots ?? new Map<IdentifierV0, SubjectStateV0>();
@@ -56,8 +65,7 @@ export function createInMemorySubjectCoreFacade(
         return seeds.get(subjectId) ?? null;
       }
     },
-    preparedResultValidator:
-      options.preparedResultValidator ?? (async () => true),
+    preparedResultValidator: options.preparedResultValidator,
     ...(options.referenceValidator !== undefined
       ? { referenceValidator: options.referenceValidator }
       : {})

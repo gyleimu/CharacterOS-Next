@@ -46,7 +46,10 @@ const emptyRetrieval = {
 };
 
 function buildRoot() {
-  const assembly = createInMemorySubjectCoreFacade();
+  const assembly = createInMemorySubjectCoreFacade({
+    // Composition smoke tests run no transitions; the gate must still be explicit.
+    preparedResultValidator: async () => true
+  });
   const root = new RuntimeCompositionRoot({
     subjectCore: assembly.facade,
     memoryRepository: new MemoryRepositoryStub(),
@@ -86,7 +89,9 @@ describe("RuntimeCompositionRoot", () => {
     expect(
       () =>
         new RuntimeCompositionRoot({
-          subjectCore: createInMemorySubjectCoreFacade().facade,
+          subjectCore: createInMemorySubjectCoreFacade({
+            preparedResultValidator: async () => true
+          }).facade,
           retrieval: emptyRetrieval
         } as unknown as RuntimeCompositionOptions)
     ).toThrow(/memoryRepository/);
