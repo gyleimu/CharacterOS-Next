@@ -25,6 +25,8 @@
 
 **验收:** spec 完成且每条字段/转换可追溯到 ARCHITECTURE.md 与两个约束；无实现产物。
 
+> **历史措辞 superseded：** domain packages计算FAST/EMA、appraisal、context、memory等规则并产delta；subject-core不实现这些domain公式。旧`{transition,layer,rule,cause_ref,from,to}` shape已由multi-domain `TraceEntryV1/TraceWindowV1`替代。Restore exact materializes全部canonical fields，不按session/transition静默reset Context。Exact contract见P2.1 freeze §§7/10/11。
+
 ---
 
 ## 动作 2 — Canonical Transition Contracts · COMPLETE（CONSISTENCY CLOSED）
@@ -75,11 +77,11 @@ SubjectState(t)
 - MICL 范围声明：**不含** world simulation、**不含** external action requirement；只验证内部状态连续性（对应架构五问 Q3/Q4）
 - Memory Retrieval 设计问题：V0 检索基础特征 = semantic relevance、context relevance、recency、salience、entity/relationship relevance；检索结果进入 Interpretation（不进入 canonical state，只作输入）
   - **affect/mood congruence 明确降级为 `HYPOTHESIS`，不是 V0 强制检索键**（避免 sad→negative→sadder 自激风险）
-- Appraisal 设计问题：结构化评价维度（相关性/目标关系/归因/强度）的 V0 最小集；LLM 提案 + Core 校验边界（哪些维度必须 Core 决定，哪些允许 LLM 提案）
+- Appraisal边界（已裁定）：LLM只产Interpretation/Appraisal proposal；appraisal package验证schema/evidence；affect package产delta；subject-core只验证canonical delta authority/invariants并atomic commit
 - persistent Affect 设计问题：FAST+EMA-derived reference persistence 的 V0 语义（legacy reference defaults：tHold=60、α=0.06、τ=150、clamp=0.25）与跨 session 恢复语义；明确这些是 reference baseline，**不是** canonical affect theory
 - 不变量：状态单写入口、cause-trace 全覆盖、慢层不被快事件直改、TimeTransition 先于 Appraisal
 - 标注 baseline 策略：任何机制选择必须声明与 FAST+EMA（以及未来与 Memory+LLM 每轮重算）的比较关系
-- **Engineering Acceptance Contract 可测性**：设计必须能被 ROADMAP §5 的 A1–A10 契约检验（determinism / memory ownership / retrieval relevance / appraisal dependency / affect continuity / state authority / cause trace / time semantics / optional action / failure semantics）
+- **Engineering Acceptance Contract 可测性**：设计必须能被 ROADMAP §5 的 A1–A13 契约检验（determinism / memory ownership / retrieval relevance / appraisal dependency / affect continuity / state authority / cause trace / time semantics / optional action / failure / atomicity / idempotency / stale-rebase semantics）
 
 **禁止:** 写实现代码；引入 COUNTER/INTENSITY/learned 机制；把设计文档写成实验协议（不预注册、不开 CERH、不跑任何测量）；把 affect-congruent retrieval 写成 V0 要求。
 
@@ -92,5 +94,6 @@ SubjectState(t)
 - P1 动作 1–3、P1.5 与 P2 runtime plan 均 **COMPLETE**。
 - P2.0 Runtime Bootstrap **COMPLETE**；工程骨架不包含 domain/runtime behavior。
 - P2.1 Subject Core Implementation Planning **COMPLETE**；产物为 `docs/implementation/p2-1-subject-core-plan.md`，未创建 commit engine、mutation logic 或测试。
-- **NEXT STEP = P2.1 Subject Core Implementation — NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION**；不得自动开始，且必须先满足 P2 runtime plan §15 与 P2.1 plan §1.2 的 applicable coding entry gates。
+- P2.1 Contract Freeze **COMPLETE**；`docs/implementation/p2-1-contract-freeze.md` 已关闭 G1–G11。P2.1 coding readiness = **READY FOR EXPLICIT AUTHORIZATION**；implementation 仍 **NOT STARTED**。
+- **NEXT STEP = P2.1 Subject Core Implementation — REQUIRES EXPLICIT AUTHORIZATION**；不得自动开始。本次 contract freeze 不构成该授权。
 - P3、P4、研究触发与旧代码迁移保持未授权。

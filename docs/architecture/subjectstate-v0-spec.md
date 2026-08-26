@@ -1,6 +1,6 @@
 # SubjectState V0 — Formal Specification
 
-**状态:** P1 Action 1（Formal Design）。本文件是正式规格设计，**不是**实现、不是实验、不是迁移。
+**状态:** P1 Action 1（Formal Design）+ P2.1 Contract Freeze Incorporated。本文是正式规格设计，**不是**实现、不是实验、不是迁移。
 **目标仓库:** `gyleimu/CharacterOS-Next` · 基线 `8c824bf`（本 spec 为该基线的下一增量）
 **结论标签:** VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN（沿用仓库纪律）
 **关联:** `ARCHITECTURE.md`（宪法）、`NEXT_ACTIONS.md` #1（本任务）、`ROADMAP.md` P1/P1.5
@@ -106,7 +106,7 @@ subject-core（canonical mutator）:
 ```text
 SubjectStateV0
 {
-  schema_version        : string                          // envelope 版本（如 "subjectstate-v0"）
+  schema_version        : "subject-state-v0"              // 顶层唯一 schema 版本
 
   identity              : Identity                        // immutable seed
   traits_seed           : TraitsSeed                      // readonly initial seed
@@ -129,6 +129,8 @@ SubjectStateV0
 
 > 说明：`schema_version` 只放在顶层（envelope 版本），不重复放进 runtime_metadata（避免双源）。`runtime_metadata` 承载 subject 级版本/修订/时间。
 
+**P2.1 executable closure：** creation input 与 canonical snapshot 分离。初始化可应用冻结 default；产出的 canonical/persisted `SubjectStateV0` 必须全量物化 13 个顶层字段及所有已列 nested keys，所有 object closed、unknown key reject。restore 不补 default。精确 scalar/ref/order/schema catalog 由已纳入本文的 `docs/implementation/p2-1-contract-freeze.md` §5–§7 控制。
+
 **字段裁定通用符号：** 每字段标注 `type`（string/number/integer/array/object/ref/enum）、`req`（required/optional）、`default`、`range/invariant`、`producer`、`persistence`（见 §22 矩阵）。
 
 ---
@@ -139,9 +141,9 @@ SubjectStateV0
 |---|---|---|---|---|
 | subject_id | string | required | — | 稳定唯一标识；不变 |
 | display_name | string | required | `""` | 展示名 |
-| origin_metadata | object | required | `{}` | 创建来源/seed 版本等元数据 |
-| identity_anchors | array<string> | optional | `[]` | 稳定锚点（canonical role/name refs） |
-| self_schema_seed_refs | array<ref> | optional | `[]` | 指向 seed schema 的引用，不是 schema 本体 |
+| origin_metadata | closed object | required | `{creation_source:null, seed_version:null}` | 两个值均为 IdentifierV0/null；禁止额外 key |
+| identity_anchors | array<string> | required | `[]` | NFC unique ordered 稳定锚点 |
+| self_schema_seed_refs | array<seed-schema ref> | required | `[]` | lexicographic unique typed refs，不是 schema 本体 |
 
 **裁定：**
 - V0 Identity **默认 immutable**；不实现任何高门槛修改（未来可引入独立 IdentityTransition，V0 不做）。
@@ -156,7 +158,7 @@ SubjectStateV0
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| dimensions | object（map name→number） | required | `{}` | 特质维度归一化标量，值域 `[0,1]` |
+| dimensions | pattern map | required | `{}` | key=`^[a-z][a-z0-9_]{0,63}$`；finite value `[0,1]`；keys canonical sorted |
 
 **裁定：**
 - V0 traits 只是 readonly 初始特质种子，**不是持续动态人格系统**；**禁止 personality drift**。
@@ -171,20 +173,20 @@ SubjectStateV0
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| working_refs | array<ref> | required | `[]` | 当前工作记忆引用（episode/event refs，非 payload） |
-| active_episode_refs | array<ref> | required | `[]` | 活跃 episode 引用 |
-| autobiographical_index_revision | string | optional | `null` | 指向 MemoryRepository 自传索引 revision |
+| working_refs | array<memory/episode/event ref> | required | `[]` | 当前工作记忆引用，保留 retrieval rank（非 payload） |
+| active_episode_refs | array<episode ref> | required | `[]` | 活跃 episode 引用，保留 chronology |
+| autobiographical_index_revision | RepositoryRevisionId/null | required | `null` | 指向 MemoryRepository 自传索引 revision |
 | repository_revision | string | required | — | **canonical 引用的记忆仓库 revision**（见 §11 原子性） |
-| consolidation_cursor | logical_time | optional | `null` | 巩固已运行到的 logical time |
-| retrieval_config | object | optional | `{}` | 检索配置/偏置状态（默认不含 affect-congruence）；**config authority（init-only，非 Observation 可写）** |
-| recent_retrieval_trace | array<ref> | optional | `[]` | 近期检索痕迹（引用，有界 ring） |
-| lifecycle_metadata | object | optional | `{}` | 记忆生命周期元数据 |
-| pending_encoding_refs | array<ref> | optional | `[]` | 待编码/巩固的经历引用 |
-| last_retrieval_at | logical_time | optional | `null` | 最近检索时间 |
+| consolidation_cursor | logical_time/null | required | `null` | 巩固已运行到的 logical time；nondecreasing |
+| retrieval_config | closed object | required | `{profile_id:"RETRIEVAL_V0", affect_congruence_enabled:false, recent_trace_capacity:64}` | config authority，init-only |
+| recent_retrieval_trace | array<retrieval-trace ref> | required | `[]` | oldest→newest unique ring，capacity 64 |
+| lifecycle_metadata | EmptyClosedObjectV0 | required | `{}` | V0 禁止任何 key |
+| pending_encoding_refs | array<experience ref> | required | `[]` | unique insertion queue |
+| last_retrieval_at | logical_time/null | required | `null` | 最近检索时间，不晚于 logical_time |
 
 **裁定：**
 - `producer = memory package`；`canonical mutator = subject-core`。
-- `recent_retrieval_trace`：canonical + persistent，但**有界**（cap N，ring），不是全量检索历史（全量历史属 audit/repository）。`[DESIGN DECISION]`
+- `recent_retrieval_trace`：canonical + persistent，但**有界**（capacity 64，ring），不是全量检索历史（全量历史属 audit/repository）。`[DESIGN DECISION]`
 - **禁止**把 MemoryState 变成"把整个 vector DB 搬进 SubjectState"——payload 一律在 MemoryRepository。
 - **MemoryState 子域 partition（Action 2 一致性修正，消除双写）** `[DESIGN DECISION]`：
   - **content/encoding/consolidation 子域**（`active_episode_refs`、`repository_revision`、`autobiographical_index_revision`、`consolidation_cursor`、`pending_encoding_refs`、`lifecycle_metadata`）→ **LearningTransition** 唯一 owner。
@@ -254,7 +256,7 @@ prepare new MemoryRepository revision Rn
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| items | array<{ ref, summary? }> | required | `[]` | 只读 read-model；仅 source refs |
+| items | array<{ ref, summary }> | required | `[]` | closed item；typed source ref + NFC string/null；unique/sorted by ref |
 
 - V0 不实现 belief 更新规则。仅为未来 Interpretation/Appraisal 保留合法读取位置。`[DESIGN DECISION]`
 
@@ -262,7 +264,7 @@ prepare new MemoryRepository revision Rn
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| models | array<{ relationship_id, target_ref, …minimal }> | required | `[]` | 关系模型占位；一等长期状态的**结构位置** |
+| models | array<{ relationship_id, target_ref }> | required | `[]` | closed item；IdentifierV0 + entity/subject ref；unique/sorted by relationship_id |
 
 - Relationship 仍是**一等长期状态**，即使 V0 不更新。`[DESIGN DECISION]`
 - 现在**不**设计 trust engine / attachment engine / relationship dynamics；只保证未来 Appraisal/Retrieval 有合法读取位置。
@@ -274,8 +276,8 @@ prepare new MemoryRepository revision Rn
 | 字段 | type | req | default | range/invariant |
 |---|---|---|---|---|
 | baseline | number | required | `0.0` | `[0, clamp]` |
-| generated_under_profile | string | optional | `null` | provenance（由哪个 profile 生成），**不是** active config 权威 |
-| last_update | logical_time | optional | `null` | — |
+| generated_under_profile | `FAST_EMA_V0`/null | required | `null` | provenance，**不是** active config 权威 |
+| last_update | logical_time/null | required | `null` | 不晚于 canonical logical_time |
 
 - **身份裁定（防 overclaim）:** FAST+EMA-derived reference persistence；**NOT canonical affect theory**。`[DESIGN DECISION]`
 - **参数 `tHold=60 / alpha=0.06 / tau=150 / clamp=0.25` = `legacy reference defaults`**（来源 `VERIFIED`：Plasticity Phase 1）；是否作为 CharacterOS-Next 默认 = `DESIGN DECISION`/`HYPOTHESIS`，不是 VERIFIED 科学真值。
@@ -290,16 +292,16 @@ prepare new MemoryRepository revision Rn
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
 | active_channels | array<AffectChannel> | required | `[]` | 当前活跃情绪通道 |
-| generated_under_profile | string | optional | `null` | provenance（由哪个 profile 生成），**不是** active config 权威 |
-| updated_at | logical_time | optional | `null` | — |
+| generated_under_profile | `FAST_EMA_V0`/null | required | `null` | provenance，**不是** active config 权威 |
+| updated_at | logical_time/null | required | `null` | 不晚于 canonical logical_time |
 
 ```text
 AffectChannel {
-  channel_id          : enum/string          // anger/fear/sadness/joy/...
+  channel_id          : enum                 // {anger,fear,sadness,joy}
   intensity           : number               // [0,1]
   phase               : enum                 // {INACTIVE, ACTIVE, RELEASING}（归一化）
   started_at          : logical_time
-  source_appraisal_ref: ref                  // 触发 appraisal 引用
+  source_appraisal_ref: appraisal ref        // 触发 appraisal 引用
 }
 ```
 
@@ -318,7 +320,7 @@ AffectChannel {
 | stress | number | required | `0.0` | `[0,1]` |
 | arousal | number | required | `0.5` | `[0,1]` |
 | fatigue | number | required | `0.0` | `[0,1]` |
-| last_update | logical_time | optional | `null` | — |
+| last_update | logical_time/null | required | `null` | 不晚于 canonical logical_time |
 
 - V0 不实现完整 homeostasis；只保留最小标量，目标是确保 **Appraisal 可读取 time-normalized regulatory context**。`[DESIGN DECISION]`
 - `RegulationDelta producer ≠ canonical mutator`（producer = regulation 域；mutator = subject-core）。
@@ -331,14 +333,14 @@ AffectChannel {
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
 | scene | string | required | `"idle"` | 场景标签 |
-| task | string | optional | `null` | 任务标签 |
+| task | string/null | required | `null` | 任务标签 |
 | focus_refs | array<ref> | required | `[]` | 焦点引用（transient） |
 | active_entity_refs | array<ref> | required | `[]` | 活跃实体引用 |
 | environment_refs | array<ref> | required | `[]` | 环境/上下文引用 |
-| current_observation_ref | ref | optional | `null` | 当前 observation 引用（transient） |
+| current_observation_ref | observation ref/null | required | `null` | 当前 observation 引用（observation-scoped） |
 
 - Working Context 是快层。`[DESIGN DECISION]`
-- **裁定（persistence）:** `scene`/`task`/`active_entity_refs` 可跨 session 持久（连续性）；`focus_refs`/`current_observation_ref`/`environment_refs` 为 transient（每次 observation/time 重置）。见 §22 矩阵。
+- **裁定（persistence，P2.1 G6 closure）:** 六个 Context 字段全部 canonical、full-persistent、StateHash-included、restore 原样恢复。`focus_refs`/`current_observation_ref`/`environment_refs` 的 “transient” 只表示 observation-scoped / 预期短生命周期；下一次有权 ObservationTransition 可用正常 ContextDelta 替换，restore/TimeTransition 不得静默 reset。
 - **LLM context window ≠ canonical Working Context。** `[DESIGN DECISION]`
 
 ---
@@ -349,10 +351,10 @@ AffectChannel {
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| affect_profile | enum | required | `"FAST_EMA_V0"` | **唯一 active affect config 权威**；`timebase="legacy_tick"`（1 canonical_tick == 1 legacy_tick，`DESIGN DECISION`） |
-| legacy_reference_defaults | object | optional | `{}` | `{tHold, alpha, tau, clamp}`（只读参考） |
-| feature_flags | object | optional | `{}` | 特性开关 |
-| thresholds | object | optional | `{}` | 未来可配置阈值（V0 可空） |
+| affect_profile | closed object | required | `{profile_id:"FAST_EMA_V0", timebase:"legacy_tick"}` | **唯一 active affect config 权威** |
+| legacy_reference_defaults | closed object | required | `{tHold:60, alpha:0.06, tau:150, clamp:0.25}` | exact readonly legacy reference parameters |
+| feature_flags | EmptyClosedObjectV0 | required | `{}` | V0 禁止任何 key |
+| thresholds | EmptyClosedObjectV0 | required | `{}` | V0 禁止任何 key |
 
 - `mechanism_config` 是**配置**，不是 learned plasticity state。`[DESIGN DECISION]`
 - learned plasticity **不在** V0；未来若引入，才需要独立的 plasticity state（另议）。
@@ -364,13 +366,15 @@ AffectChannel {
 
 | 字段 | type | req | default | 说明 |
 |---|---|---|---|---|
-| subject_version | string | required | — | subject schema/实现版本 |
-| state_revision | integer | required | — | 单调递增，见 §20 |
-| logical_time | logical_time | required | — | canonical 逻辑时间 |
-| last_transition_time | logical_time | optional | `null` | 上次 transition 的 logical time |
-| last_transition_type | string | optional | `null` | Time/Observation/Cognition-Action/Learning |
-| created_at | logical_time | required | — | — |
-| updated_at | logical_time | required | — | — |
+| subject_version | literal | required | `"subject-v0"` | subject 版本，不是 build semver |
+| state_revision | safe integer | required | `0` | 单调递增，见 §20 |
+| logical_time | safe integer | required | `0` | canonical 逻辑时间 |
+| last_transition_time | logical_time/null | required | `null` | 上次 transition 的 logical time |
+| last_transition_type | enum/null | required | `null` | Time/Observation/CognitionAction/Learning |
+| created_at | logical_time | required | `0` | immutable subject creation logical time |
+| updated_at | logical_time | required | `0` | `created_at<=updated_at<=logical_time` |
+
+`state_revision`、`logical_time` 与 trace history sequence 的可表示域均为 `0..9007199254740991`。所有 successor/addition 必须 checked：revision/history successor overflow=`INVARIANT_VIOLATION/SS-REVISION-001`；canonical Time addition overflow=`INVALID_LOGICAL_TIME/TIME-ADVANCE-001`。不得 saturate、wrap、round 或依赖 JavaScript 非安全整数。
 
 - `schema_version` 只在顶层（envelope），此处不重复。
 - **`created_at` 唯一 source of truth = `runtime_metadata.created_at`**（subject creation logical time）；Identity 已移除 created_at（Action 2 一致性修正）。`[DESIGN DECISION]`
@@ -401,43 +405,24 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 | **MutationHistory** | logical authoritative history；append-only |
 | **TraceEntry** | immutable 单条 |
 | **SubjectState.trace_window** | bounded projection / recent cache（**不是**完整历史） |
-| **AuditStore / TraceStore** | 完整 offloaded history（infrastructure） |
-| **audit_event** | failed/rejected proposal 的审计记录（不进 MutationHistory） |
+| **Atomic commit journal / MutationHistory** | 完整 authoritative committed history；与 canonical bundle 同 authority point |
+| **TraceHistoryView** | 可选、只读、可由 commit journal 重建的 offload/read projection |
+| **TransitionIdentityJournal / audit_event** | OPEN/NO_OP/rejected/aborted/reuse-conflict identity/audit；不进 MutationHistory |
 
 **两个不同对象（`DESIGN DECISION`）：**
 
 | 对象 | 归属 | 触发 | 语义 |
 |---|---|---|---|
 | TraceEntry（写入 `SubjectState.trace_window`，rolling bounded 窗口） | canonical；**TraceEntry immutable**（MutationHistory append-only；trace_window 本身 rolling，见 §21 裁定） | 每次成功 canonical commit | 状态变更溯源 |
-| `audit_event` | audit store（infrastructure） | 失败 proposal / 拒绝 / 越权尝试 | 审计，**不是** canonical mutation |
+| `audit_event` | identity/audit journal（infrastructure） | 仅完整 proposal + known state context + durable reservation 后的拒绝/中止/ID reuse；Admission/pre-proposal failure 无该记录 | 审计，**不是** canonical mutation |
 
-**TraceEntry（mutation_trace）：**
-
-```text
-{
-  trace_id
-  transition_id
-  transition_type              // Time/Observation/Cognition-Action/Learning
-  subject_revision_before
-  subject_revision_after
-  logical_time
-  layer                        // 被改层（affect/mood/memory_state/context/...）
-  rule_id                      // 哪条 core 规则
-  cause_refs[]                 // 触发引用（event/observation/outcome）
-  proposal_ref?                // 若来自 LLM 提案
-  producer                     // 哪个 domain 产 delta
-  mutation_summary             // field delta（非全量 snapshot）
-  before_hash? / after_hash?   // 可选，V0 用 field delta + 可选 hash
-  memory_revision_before?/after?  // memory transition 时
-  outcome                      // "committed"
-}
-```
+**P2.1 Trace closure：** 每次 successful canonical commit 恰好一个 `TraceEntryV1`；multi-domain 变化聚合在同一 entry 的 `domain_mutations[]`。`state_hash_before` / `state_hash_after`、deterministic `proposal_ref` 与 before/after repository revision 均 required/non-null。`TraceEntryV1` 使用 `trace_schema_version="trace-v1"`；`TraceWindowV1` exact fields = `trace_window_schema_version="trace-window-v1"`、`capacity=64`、`cursor={last_history_sequence,offloaded_through_sequence,offloaded_through_trace_ref}`、ordered `entries[]`。嵌套 trace 版本键不得复用顶层 SubjectState `schema_version`。完整 machine schema 与 cursor/eviction invariants 见 `docs/implementation/p2-1-contract-freeze.md` §10。
 
 **裁定：**
 - **MutationHistory**（authoritative logical history）是 append-only + immutable；**TraceEntry** 是 immutable 单条。大状态**不**保存整份 from/to snapshot，用 field delta / hash / references。`[DESIGN DECISION]`
-- 失败 proposal 写 `audit_event`，**不**写 `mutation_trace`。`[DESIGN DECISION]`
-- 规模：`SubjectState.trace_window` 持有**有界最近窗口** + `trace_cursor` 指向 offloaded 旧条目（AuditStore/TraceStore）。全量历史 = repository/audit。
-- **从 `trace_window` 移出 entry ≠ 删除历史**：历史仍在 authoritative MutationHistory / TraceStore。
+- durable post-reservation rejected/aborted proposal 写 `audit_event`，**不**写 `mutation_trace`；Admission/pre-proposal failure 不伪造 audit。`[DESIGN DECISION]`
+- 规模：`SubjectState.trace_window` 固定持有最近 **64** 条 + logical cursor 指向 offloaded boundary。全量历史 = authoritative MutationHistory / commit journal。
+- **从 `trace_window` 移出 entry ≠ 删除历史**：同一 TraceEntry 已在 authoritative atomic commit journal / MutationHistory；任何 TraceHistoryView 均可重建且不是 writer。
 
 ---
 
@@ -453,9 +438,9 @@ wall clock   : 仅 metadata / audit；不进 StateHash；不影响 deterministic
 | Mood | yes | yes | no | no | no | affect | subject-core |
 | Current Affect | yes | yes | no | no | no | affect | subject-core |
 | Regulation | yes | yes | no | partial（per TimeTransition） | no | regulation | subject-core |
-| Working Context | yes | **partial**（scene/task/active_entity_refs 持久；focus/current_observation 瞬态） | no | yes（瞬态字段） | no | context | subject-core |
+| Working Context | yes | **yes（全部六字段）** | no | 仅由授权 transition delta 替换；restore 不 reset | no | context | subject-core |
 | MechanismConfig | yes | yes | no | no | no | —（config） | subject-core |
-| TraceWindow（trace_window） | yes（bounded rolling window） | yes（窗口 + trace_cursor） | offload 到 AuditStore | no（core-managed eviction，非 append-only） | no | subject-core | subject-core |
+| TraceWindow（trace_window） | yes（bounded rolling window） | yes（窗口 + trace_cursor） | authoritative entry 在 atomic commit journal；可选 TraceHistoryView 可重建；AuditStore 不保存 committed history | no（core-managed eviction，非 append-only） | no | subject-core | subject-core |
 | RuntimeMetadata | yes | yes | no | no | no | subject-core | subject-core |
 
 > `Repository-backed` 列：只有 MemoryState 的**引用**指向 MemoryRepository；payload/embedding/index 永远在 repository，不在 canonical state。
@@ -483,6 +468,7 @@ stale rejection  : expected != current → STALE_STATE_REVISION（拒绝，audit
 
 ```text
 CanonicalTransitionProposal {
+  schema_version             // "canonical-transition-proposal-v1"
   transition_id
   subject_id
   expected_state_revision     // optimistic concurrency
@@ -491,22 +477,34 @@ CanonicalTransitionProposal {
                                //   Time:   { kind: elapsed, elapsed_time: Duration }
                                //   others: { kind: occurrence, occurrence_logical_time }
   cause_refs[]
-  domain_deltas[]             // 一个 transition 可有 N 个 domain delta
-  external_refs?
-  metadata?
+  domain_deltas[]             // exact closed DomainDeltaV0；一个 transition 可有 N 个
+  external_refs[]             // required；set-like canonical refs
 }
-// 每个 domain_delta: { producer, domain, delta, expected_domain_revision? }
+// 每个 domain_delta: closed { producer, domain, expected_repository_revision,
+//                             operations:[{path,value}], provenance_refs[] }
 
 CanonicalCommitResult {
-  accepted
+  schema_version
+  status                     // COMMITTED only；ALREADY is a separate derived response
+  subject_id
+  transition_id
+  payload_fingerprint
   previous_revision
   next_revision
   trace_ref
-  rejection_reason?           // 见 §25
+  state_hash_before
+  state_hash_after
+  snapshot_hash_after
+  commit_ref
+  result_ref
 }
 ```
 
 > 本 envelope 是 Action 2 对 §6/§24 的 multi-domain 修正：一个 transition = 一个 proposal = N 个 domain delta = 一个 atomic canonical commit（详见 `transition-contracts.md` §5–§6）。
+
+Exact field-path/value/result/error contracts are frozen in `docs/implementation/p2-1-contract-freeze.md` §7. Noncanonical observability metadata is outside the canonical proposal and all fingerprints/hashes.
+
+Publish state belongs to post-authority rebuildable `PublishObservationV1`; it never enters immutable CanonicalCommitResult, AtomicCommitBundle checksum, StateHash or SnapshotHash。`AlreadyCommittedResultV1`、`NoOpTransitionResultV1`、`CanonicalErrorResultV1` 与 `AdmissionErrorResultV1` are separate discriminated schemas；不得把 optional fields 拼成一个含糊 result。
 
 ---
 
@@ -520,27 +518,30 @@ INVALID_VALUE_RANGE
 STALE_STATE_REVISION
 INVALID_LOGICAL_TIME
 INVALID_MEMORY_REVISION
+INVALID_MEMORY_REFERENCE
 FORBIDDEN_DIRECT_MUTATION
 UNKNOWN_SUBJECT
 PROPOSAL_REJECTED
+INVARIANT_VIOLATION
 COMMIT_CONFLICT
+TRANSITION_ID_REUSE
 ```
 
-**核心语义：** failure 绝不部分 mutate canonical SubjectState；**canonical commit 是 all-or-nothing**。失败 proposal 记录为 `audit_event`（不进 mutation_trace）。
+**核心语义：** failure 绝不部分 mutate canonical SubjectState；**canonical commit 是 all-or-nothing**。只有 identity/state context 已建立且 journal durable 的 rejected/aborted attempt 才产生 CanonicalErrorResult + audit_event。缺失/非法 transition ID、UNKNOWN_SUBJECT、state read前 infrastructure failure与restore corruption使用独立AdmissionErrorResult，不伪造 revision/hash/audit。精确映射见freeze §§7.5/13。
 
 ---
 
 ## 26. Determinism / Replay Requirements
 
-**三种 hash（`DESIGN DECISION`）：**
+**三种 hash（`DESIGN DECISION`，P2.1 G4 closure）：** SHA-256，wire=`sha256:` + 64 lowercase hex；serialization=`canonical-json-v1`（RFC 8785 JCS/I-JSON）；每个 hash 使用 versioned projection envelope。
 
 | Hash | 覆盖 | 排除 |
 |---|---|---|
-| `StateHash` | 全部 canonical 逻辑字段（identity/traits/memory refs/beliefs/relationships/mood/affect/regulation/context/mechanism_config/runtime_metadata） | wall clock、MemoryRepository payload、trace 内容（trace 自链） |
-| `SnapshotHash` | StateHash + trace cursor/ref | 同上 |
-| `RepositoryRevisionHash` | 单个 MemoryRepository revision | — |
+| `StateHash` | 顶层 `schema_version` + 全部 canonical 逻辑字段（identity/traits/memory refs/beliefs/relationships/mood/affect/regulation/完整 context/mechanism_config/runtime_metadata） | entire trace_window、wall clock、MemoryRepository payload、external audit/log |
+| `SnapshotHash` | StateHash + subject_id + state_revision + exact trace cursor + last trace ref | full TraceEntry/MutationHistory、physical store ref |
+| `RepositoryRevisionHash` | versioned immutable repository manifest（record refs + payload hashes + index manifest hash） | SubjectState 与外部 observability |
 
-- canonical serialization 必须 deterministic：稳定字段顺序、sorted keys、无 wall clock、数值规范形。
+- canonical serialization exact rules/golden vectors = `docs/implementation/p2-1-contract-freeze.md` §8–§9；raw JSON stringify 禁止。
 - 不变量：same logical state → same canonical serialized form → same StateHash。普通 JSON key ordering / wall clock 不得影响 hash。
 
 ---
@@ -603,9 +604,9 @@ Canonical mutator: always subject-core
 |---|---|---|
 | D1 | ~~transition 阶段级输入/输出/失败/rollback 契约~~ **RESOLVED by Action 2** → `docs/architecture/transition-contracts.md` | — |
 | D2 | MICL 检索键最终集（affect-congruence 是否启用 = HYPOTHESIS） | NEXT_ACTIONS #3 |
-| D3 | A1–A10 具体判据与 fixture | ROADMAP P1.5 |
+| D3 | ~~A1–A13 具体判据与 fixture~~ **RESOLVED by P1.5 + P2.1 contract freeze** | — |
 | D4 | ~~Experience Encoding 精确阶段归属~~ **RESOLVED**：memory content mutation owner = LearningTransition（transition-contracts §18） | — |
-| D5 | trace 窗口大小 N / offload 策略 / before_hash-after_hash 是否 V0 必选 | 实现前（P1.5 可加） |
+| D5 | ~~trace window / cursor / hashes~~ **RESOLVED**：capacity=64；logical cursor；before/after StateHash required；见 freeze §10 | — |
 | D6 | trust/fear/attachment 等旧字段的归层 | `DEFERRED`（不硬塞 traits） |
 | D7 | WorldModel 迁移适配评估 | `TO_BE_ASSESSED`（迁移 P3 前） |
 | D8 | Narrative Identity / Self Model | 未来慢变量（V0 不做） |
@@ -622,7 +623,7 @@ Canonical mutator: always subject-core
 | 4 | MemoryState 和 MemoryRepository 是什么关系？ | §9/§10 |
 | 5 | MemoryRepository 写成功但 SubjectState commit 失败怎么办？ | §11 crash 语义：孤儿 revision 容忍 + GC，SubjectState 仍指旧 Rn-1 |
 | 6 | logical time 如何驱动状态，而非系统时间？ | §19/§20：显式 elapsed_time，wall clock 仅 metadata |
-| 7 | session restore 后哪些必须仍存在？ | §22 矩阵：Identity/Traits/MemoryState/Mood/Affect/Regulation/Context(scene/task)/MechanismConfig/RuntimeMetadata/Trace 窗口 |
+| 7 | session restore 后哪些必须仍存在？ | §22 + freeze §11：完整 canonical snapshot，包括全部 Context 与 TraceWindow/Cursor，原样恢复 |
 | 8 | LLM 为何无法直接写"我现在很开心"？ | §28：proposal → validation → subject-core commit，LLM 无 canonical mutator 路径 |
 
 ---
@@ -633,3 +634,7 @@ Canonical mutator: always subject-core
 2. `plasticity_config` → `mechanism_config` 改名 → ARCHITECTURE §5 同步。
 3. WorldModel existence = `VERIFIED` legacy asset；migration = `TO_BE_ASSESSED` → MIGRATION_MAP 已同步。
 4. MICL memory ownership = partitioned（Observation→retrieval 子域；Learning→content 子域）；DOUBLE MEMORY WRITE FORBIDDEN。
+
+### P2.1 Contract Freeze Incorporation
+
+`docs/implementation/p2-1-contract-freeze.md` 是本 spec 对 implementation-level ambiguity 的规范附录，正式关闭 G1–G11。它冻结：`subject-state-v0` fully-materialized closed schema、CanonicalRefV0、Golden S0、JCS/SHA-256 hash projections/vectors、TraceEntry/Window/Cursor capacity 64、exact restore、MechanismConfig object、result/error/identity 与 atomic persistence port。本文中旧的 optional/arbitrary/ellipsis、partial Context restore、trace N/hash optional 或 profile string 示意均由上述 exact clauses 取代；其余 P1 architecture 不变。

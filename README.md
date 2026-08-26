@@ -1,6 +1,6 @@
 # CharacterOS-Next
 
-**状态: P2.0 RUNTIME BOOTSTRAP — COMPLETE；P2.1 SUBJECT CORE PLAN — COMPLETE；P2.1 IMPLEMENTATION — NOT STARTED** — P0/P1/P1.5、P2 runtime plan、P2.0 bootstrap 与 P2.1 Subject Core implementation plan 已完成。当前仓库只有工程骨架与设计计划；**没有 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，没有实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires explicit authorization，并须先关闭 applicable coding entry gates。
+**状态: P2.0 BOOTSTRAP — COMPLETE；P2.1 PLAN — COMPLETE；P2.1 CONTRACT FREEZE — COMPLETE；P2.1 CODING READY / NOT STARTED** — G1–G11 已通过 docs-only closure 全部关闭。当前仓库仍只有工程骨架与冻结文档；**没有 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，没有实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires separate explicit authorization。
 
 CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长期人工主体（long-lived agent）总工程体系**的伞形仓库，统一承载：
 
@@ -75,9 +75,9 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 
 ## 4. 本阶段边界（硬性禁止）
 
-**当前阶段状态 = P2.0 Runtime Bootstrap 与 P2.1 Subject Core Implementation Planning 均 COMPLETE；P2.1 implementation NOT STARTED。**
+**当前阶段状态 = P2.0 Runtime Bootstrap、P2.1 Planning 与 P2.1 Contract Freeze 均 COMPLETE；P2.1 coding READY FOR EXPLICIT AUTHORIZATION / implementation NOT STARTED。**
 
-已完成且不再扩张的 P2.0 边界：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。P2.1 本轮只新增 implementation plan 文档。
+已完成且不再扩张的 P2.0 边界：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。P2.1 当前只完成 implementation plan 与 docs-only contract freeze；未写或启动 Subject Core。
 
 - ❌ NO DEV_004（以及任何新实验编号）
 - ❌ NO new dynamics experiment
@@ -106,7 +106,8 @@ CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长�
 | `docs/architecture/micl-design.md` | MICL — Minimal Internal Continuity Loop 正式设计（P1 Action 3 · COMPLETE） |
 | `docs/evaluation/p1-5-engineering-acceptance-contract.md` | P1.5 工程验收契约（A1–A13 + fixture/oracle + conformance matrix · COMPLETE） |
 | `docs/implementation/p2-runtime-plan.md` | P2.0–P2.5 工程实施计划；P2.0 bootstrap 已完成，P2.1+ implementation 未授权 |
-| `docs/implementation/p2-1-subject-core-plan.md` | P2.1 Subject Core schema/commit/validation/trace/hash/restore/conformance 实施计划；planning COMPLETE，implementation NOT STARTED |
+| `docs/implementation/p2-1-subject-core-plan.md` | P2.1 Subject Core schema/commit/validation/trace/hash/restore/conformance 实施计划；planning COMPLETE |
+| `docs/implementation/p2-1-contract-freeze.md` | G1–G11 machine-level contract freeze；49 MUST、Golden S0/vectors、schema/trace/restore/status/identity/atomic ports；COMPLETE，implementation NOT STARTED |
 
 ---
 

@@ -10,7 +10,7 @@
 
 | # | 原则 | 依据 |
 |---|---|---|
-| P1 | **Single canonical SubjectState，单写入口**：所有状态变更只能经 Core transition rules | `DESIGN DECISION`（约束 B：state authority 在 LLM 之外） |
+| P1 | **Single canonical SubjectState，单写入口**：所有状态变更只能经owning producer proposal/delta + subject-core generic validation/atomic commit | `DESIGN DECISION`（约束 B：state authority 在 LLM 之外） |
 | P2 | **顺序约束**：Retrieval/Appraisal 先于 Affect | `DESIGN DECISION`（依据 `VERIFIED` 约束 A 缺口 #1：旧代码实际为 Event→Emotion→Interpretation 顺序） |
 | P3 | **时间尺度分层**：各状态层独立 timescale、写规则与读写路径，禁止混层 | `DESIGN DECISION`（约束 A 缺口 #7） |
 | P4 | **闭环由 transition 组合实现，非每 tick 强制**：Action 是 optional；仅当外部动作真实发生时才有 Environment→Outcome→Learning 段 | `DESIGN DECISION`（约束 A 缺口 #4；架构修订 P0-2） |
@@ -72,7 +72,7 @@ Previous SubjectState
 ### 3.2 硬性不变量
 
 - Retrieval 先于 Appraisal；Appraisal 先于 Affect。`[DESIGN DECISION]`
-- Canonical 写只经 Core transition rules；LLM 不能直接改状态。`[DESIGN DECISION]`
+- Canonical写只经owning producer delta + subject-core generic authority/invariant validation/atomic commit；LLM不能直接改状态。`[DESIGN DECISION]`
 - 慢层变化必须 bounded + traced；快事件不直接改慢层。`[DESIGN DECISION]`
 - Action 是 optional。`[DESIGN DECISION]`
 - Environment/Outcome 段**仅当**外部动作真实执行后才必需。`[DESIGN DECISION]`
@@ -97,7 +97,7 @@ Previous SubjectState
 (10) Outcome                           结果（仅当 (8) 发生）
 (11) Experience Encoding               经历编码（事件+结果+当时状态）
 (12) Memory Consolidation              记忆巩固（短期→长期、摘要、遗忘）
-(13) Belief / Relationship / Plasticity 长期结构更新（经 Core 规则）
+(13) Belief / Relationship / Plasticity 长期结构更新（未来 owning domain 产 delta；subject-core 仅通用校验/提交）
 (14) Future SubjectState               形成下一状态的 SubjectState
 ```
 
@@ -130,16 +130,16 @@ Previous SubjectState
 
 | 层 | 内容 | 时间尺度 | transition producer（域模块） | 主要读取者 | V0 |
 |---|---|---|---|---|---|
-| **Identity** | 我是谁：subject_id、名字、origin metadata、identity anchors、稳定 self-schema 种子（**不含**自传历史） | 终身（几乎不变） | Core（初始化 + 极罕见生命事件，需高阈值规则） | 全部 | 静态种子（只读） |
-| **Traits / temperament** | 气质与稳定特质 | 年（缓慢漂移） | Core（仅经 LearningTransition 长期更新） | Appraisal、Policy、Expression | 静态种子（只读） |
-| **MemoryState** | 主体的 canonical 记忆状态：working memory references、active episode references、autobiographical index state、long-term store revision、consolidation cursor、retrieval bias/config、recent retrieval trace、memory lifecycle metadata | 混合（index 长期、working 短期） | memory 包（经 Core 规则） | Retrieval、Interpretation、Appraisal | **V0 实现（reference/index/working set）** |
-| **Beliefs / values** | 信念与价值观 | 月–年 | Core（经 LearningTransition，证据累积式更新） | Interpretation、Appraisal、Policy | 结构定义，无更新规则 |
-| **Relationship models** | 对他人/群体的关系模型（一等状态） | 周–年 | Core（经 LearningTransition 关系事件更新） | Retrieval、Interpretation、Appraisal | 结构定义，无更新规则 |
+| **Identity** | 我是谁：subject_id、名字、origin metadata、identity anchors、稳定 self-schema 种子（**不含**自传历史） | 终身（几乎不变） | subject-core init only；V0 无更新 producer | 全部 | 静态种子（只读） |
+| **Traits / temperament** | 气质与稳定特质 | 年（缓慢漂移） | V0 无 producer；未来需独立 domain proposal | Appraisal、Policy、Expression | 静态种子（只读） |
+| **MemoryState** | 主体的 canonical 记忆状态：working memory references、active episode references、autobiographical index state、long-term store revision、consolidation cursor、retrieval bias/config、recent retrieval trace、memory lifecycle metadata | 混合（index 长期、working 短期） | memory 包产 partition-authorized delta；subject-core generic validation/commit | Retrieval、Interpretation、Appraisal | **V0 实现（reference/index/working set）** |
+| **Beliefs / values** | 信念与价值观 | 月–年 | V0 无 producer；未来需独立 evidence-bound domain proposal | Interpretation、Appraisal、Policy | 结构定义，无更新规则 |
+| **Relationship models** | 对他人/群体的关系模型（一等状态） | 周–年 | V0 无 producer；未来需独立 relationship domain proposal | Retrieval、Interpretation、Appraisal | 结构定义，无更新规则 |
 | **Mood / affective baseline** | 情绪基线（慢变量） | 小时–天 | affect 包（经 ObservationTransition/TimeTransition） | Appraisal、Expression、Policy | **V0 实现（FAST+EMA-derived slow）** |
 | **Current affect** | 当前情绪 episode（快变量） | 秒–分钟 | affect 包（经 ObservationTransition） | Expression、Policy、Verbalizer | **V0 实现（FAST episode）** |
 | **Regulatory state** | 调节状态（能量/压力/注意力预算） | 分钟–小时 | regulation 包（经 TimeTransition/Cognition） | Policy、Appraisal | 结构定义（标量占位，支持未来 TimeTransition） |
-| **Working context** | 当前任务/场景/焦点 | 秒–小时 | subject-core（经 Observation/Interpretation） | 全部 | **V0 实现（上下文切片）** |
-| **Mechanism config（机制配置，原 plasticity）** | 学习率/衰减率/阈值/特性开关等元参数 | 参数（偶尔调整） | Core（配置或长期规则） | Affect、Memory、Belief | **V0 实现（常量配置）** |
+| **Working context** | 当前任务/场景/焦点 | 秒–小时 | context producer（经 Observation/CognitionAction）；subject-core commit | 全部 | **V0 实现（上下文切片）** |
+| **Mechanism config（机制配置，原 plasticity）** | 学习率/衰减率/阈值/特性开关等元参数 | 参数（偶尔调整） | subject-core init/config authority；V0 readonly | Affect、Memory、Belief | **V0 实现（常量配置）** |
 
 > **canonical mutator 恒为 subject-core**：上表 "producer" 列是计算 delta 的域模块；真正的 canonical 提交永远由 subject-core 执行（见 §1 P9 / SubjectState V0 spec §5）。任何域模块不得直接 mutate SubjectState。`[DESIGN DECISION]`
 
@@ -204,13 +204,13 @@ SubjectStateV0 {
   affect          : { per_channel FAST_episode, active_channel, intensity }
   regulation      : { energy }           // 占位（支持未来 TimeTransition）
   context         : { scene, task, focus[] }
-  mechanism_config : { affect_profile: FAST_EMA_V0, legacy_reference_defaults }
-  trace_window    : { entries[], cursor }  // bounded projection（非完整 history，见 spec §21）
+  mechanism_config : { affect_profile: { profile_id: FAST_EMA_V0, timebase: legacy_tick }, legacy_reference_defaults }
+  trace_window    : { capacity: 64, cursor, entries[] }  // bounded projection（非完整 history，见 spec §21）
   runtime_metadata: { subject_version, logical_time, last_transition_time, state_revision }
 }
 ```
 
-**概念示意（JSON 形态，仅用于沟通，不是 schema 契约）：**
+**历史概念示意（JSON 形态，仅用于沟通；禁止作为 schema/fixture/implementation input）：**
 
 ```jsonc
 {
@@ -222,7 +222,7 @@ SubjectStateV0 {
   "affect": { "channels": { "anger": "NEUTRAL", "joy": "NEUTRAL" },
               "active": "joy", "progress": 0.5 },
   "context": { "scene": "work", "task": "review", "focus": ["evt#42"] },
-  "mechanism_config": { "affect_profile": "FAST_EMA_V0",
+  "mechanism_config": { "affect_profile": { "profile_id": "FAST_EMA_V0", "timebase": "legacy_tick" },
                           "legacy_reference_defaults": { "tHold": 60, "alpha": 0.06, "tau": 150, "clamp": 0.25 } },
   "trace_window": [ { "transition": "Observation", "layer": "affect", "rule": "appraisal->affect",
                 "cause": "evt#41(anger,0.7)", "from": "NEUTRAL", "to": "HOLD" } ],
@@ -232,16 +232,17 @@ SubjectStateV0 {
 ```
 
 > 上图仅为概念沟通示意；正式字段/命名/编码已由 `docs/architecture/subjectstate-v0-spec.md` 裁定（P1 Action 1）。
+> P2.1 exact schema/hash/trace closure 见 `docs/implementation/p2-1-contract-freeze.md`；上图中的旧 profile string、trace array 和简写字段不再是可实现 schema。
 > `legacy_reference_defaults`（tHold=60/α=0.06/τ=150/clamp=0.25）来源 `VERIFIED`（Plasticity Phase 1），但"是否适合作为 CharacterOS-Next 默认参数"是 `DESIGN DECISION`/`HYPOTHESIS`，不是 VERIFIED 科学真值。
 
 ### 5.4 V0 写规则（单写入口的 V0 版本）
 
 | 变化 | 唯一允许路径 |
 |---|---|
-| 事件 → affect | Appraisal 产出 → affect 包经 Core 规则写入（FAST 状态机转换） |
-| episode 完成 → mood | affect 包经 Core 规则：`slow ← min(clamp, slow+α)` |
-| 时间推进 → decay | TimeTransition 经 Core 规则：`slow ← slow·exp(-1/τ)` |
-| 记忆引用/revision/cursor | memory 包经 Core 规则更新 MemoryState（payload 写 MemoryRepository） |
+| 事件 → affect | appraisal package验证 → affect包计算Affect/Mood delta → subject-core通用schema/authority/invariant校验并commit |
+| episode 完成 → mood | affect producer按reference persistence计算delta → subject-core只校验/commit |
+| 时间推进 → decay | affect/regulation producers消费normalized duration并计算delta → subject-core只校验/commit |
+| 记忆引用/revision/cursor | memory producer产生partition-authorized delta（payload写MemoryRepository）→ subject-core只校验/commit |
 | 任何其他层 | V0 禁止写（只读种子/占位） |
 | LLM 直接写任何层 | **禁止**（见 §6） |
 
@@ -257,10 +258,10 @@ SubjectStateV0 {
 |---|---|---|
 | B1 | LLM 可理解（semantic understanding）、appraise（产出结构化评价提案）、生成表达（语言/语气）、进行 deep reasoning（行为候选生成） | `DESIGN DECISION`（约束 B） |
 | B2 | LLM **不拥有** canonical subject state；SubjectState（含 MemoryState）存储在 Core 中 | `DESIGN DECISION`（约束 B） |
-| B3 | LLM **不可直接任意写** personality / belief / affect / memory：只能提交提案，由 Core transition rules 校验、批准、拒绝或改写后写入 | `DESIGN DECISION`（约束 B） |
-| B4 | 所有状态变更必须经过 Core transition rules；LLM 输出永远不是状态的直接来源 | `DESIGN DECISION` |
-| B5 | LLM 读取状态只经受控投影（verbalizer / structured readout），投影由 Core 生成 | `DESIGN DECISION`（约束 B：State Communication 结论——词句通道强、中性数值通道在 deepseek-v4-pro 上惰性） |
-| B6 | prompt 注入/越权文本不得改写状态：状态变更只接受经解析的结构化提案，且提案内容受 Core 规则约束 | `DESIGN DECISION` |
+| B3 | LLM **不可直接任意写** personality / belief / affect / memory：只可向owning domain提交提案；domain负责schema/evidence validation并产delta，subject-core只做generic authority/invariant validation与commit | `DESIGN DECISION`（约束 B） |
+| B4 | 所有状态变更必须经过owning producer delta + subject-core atomic commit；LLM输出永远不是状态的直接来源 | `DESIGN DECISION` |
+| B5 | LLM读取状态只经runtime controlled projection（verbalizer / structured readout）；subject-core不构造prompt或执行projection orchestration | `DESIGN DECISION`（约束 B） |
+| B6 | prompt注入/越权文本不得改写状态：proposal先经owning domain validation，再经subject-core field authority/invariants；只有atomic commit可推进canonical state | `DESIGN DECISION` |
 
 ### 6.2 通道层级现状（继承约束 B，防止 overclaim）
 
@@ -278,7 +279,9 @@ SubjectStateV0 {
 LLM 可产出:  { type: "appraisal_proposal", event_ref, dimensions: {relevance, goal_relation, attribution, intensity}, confidence }
              { type: "expression_plan", affect_ref, style_hints }        // 表达计划，不写状态
              { type: "reasoning_memo" }                                   // 决策备忘，不写状态
-Core 处理:   appraisal_proposal → 校验范围 → Core 规则换算 → 写入 affect/mood（唯一写入路径）
+处理链:      appraisal package deterministic validation → AppraisalResult
+             → affect package reference mapping → AffectDelta/MoodDelta
+             → subject-core generic validation + atomic commit
 ```
 
 `[DESIGN DECISION — 提案协议的具体字段为 HYPOTHESIS，待 NEXT_ACTIONS #2/#3 裁定]`
@@ -289,9 +292,9 @@ Core 处理:   appraisal_proposal → 校验范围 → Core 规则换算 → 写
 
 | 包 | 责任（未来实现） | 依赖 |
 |---|---|---|
-| subject-core | **唯一 canonical commit authority**；SubjectState 结构、cause-trace、写规则引擎、state_revision 推进、StateHash、immutable snapshot publish（**不负责 domain orchestration**） | 无（最底层） |
+| subject-core | **唯一 canonical commit authority**；closed SubjectState schema、generic field authority/invariant validation、revision/trace/hash、atomic commit（**不含 appraisal/affect/memory/regulation formula，不负责 orchestration**） | 无（最底层） |
 | memory | MemoryDelta production + retrieval/encoding/consolidation 逻辑 + MemoryRepository 设施（infrastructure）；**NO canonical mutation** | subject-core（只读投影） |
-| appraisal | InterpretationProposal / AppraisalProposal production（LLM 提案 + Core 校验）；**NO canonical mutation** | subject-core、memory |
+| appraisal | Interpretation/Appraisal proposal production + appraisal-package deterministic schema/evidence validation；**NO canonical mutation** | subject-core readonly contracts、memory retrieval contracts |
 | affect | AffectDelta / MoodDelta production + reference mechanism evaluation；**NO canonical mutation** | subject-core |
 | belief / personality / relationship / regulation | 对应状态层的 delta production（V0 之后）；**NO canonical mutation** | subject-core |
 | behavior | Cognition/Motivation/Policy、动作生成（可调用 LLM deep reasoning）；**NO canonical mutation** | 全部只读 |
@@ -307,7 +310,7 @@ Core 处理:   appraisal_proposal → 校验范围 → Core 规则换算 → 写
 
 本仓库全部文档必须对这五问给出一致答案：
 
-1. **权威状态在哪里？** → SubjectState（canonical，单写入口 = Core transition rules）。
+1. **权威状态在哪里？** → SubjectState（canonical，单写入口 = subject-core generic validation + atomic commit；domain rule不在core）。
 2. **记忆属于谁？** → MemoryState 属于 SubjectState；MemoryRepository 只是存储设施。
 3. **没有外部事件时会继续变化吗？** → 会，经 TimeTransition。
 4. **每个 tick 必须行动吗？** → 不必须，Action 是 optional。

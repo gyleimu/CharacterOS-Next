@@ -2,7 +2,7 @@
 
 **任务状态：** P2 Runtime Implementation Planning — COMPLETE。
 
-**实施状态：** P2.0 RUNTIME BOOTSTRAP — IN PROGRESS；P2.1–P2.5 NOT STARTED。当前授权只覆盖 workspace、toolchain、package boundaries、opaque placeholders 与 conformance skeleton，不包含 domain/runtime behavior、实验或旧仓库迁移。
+**实施状态：** P2.0 RUNTIME BOOTSTRAP — COMPLETE；P2.1 CONTRACT FREEZE — COMPLETE；P2.1 CODING READY / NOT STARTED；P2.2–P2.5 NOT STARTED。任何 implementation 仍需 phase-specific explicit authorization。
 
 **规划基线：** `b59ed790377d2a8877baf354cd6ee975a6578ce5`
 
@@ -15,8 +15,8 @@
 | 对象 | Verdict | 含义 |
 |---|---|---|
 | 本规划产物 | **PASS** | P2 的技术栈、目录边界、范围、阶段、接口职责、验收映射、工作流、风险与完成标准均已定义。 |
-| P2.0 bootstrap execution | **AUTHORIZED / IN PROGRESS** | 当前授权严格限于无 domain/runtime behavior 的工程骨架；不代表完整 P2.0 Contract Freeze 已完成。 |
-| P2.1+ coding-agent execution readiness | **BLOCKED PENDING ENTRY GATE** | §15 的 MUST 追踪/枚举冲突未封口，不能进入 Subject Core 或后续 runtime implementation。 |
+| P2.0 bootstrap execution | **COMPLETE** | 无 domain/runtime behavior 的工程骨架已完成。 |
+| P2.1 coding-agent execution readiness | **READY FOR EXPLICIT AUTHORIZATION** | `p2-1-contract-freeze.md` 已关闭 G1–G11；这不是 implementation authorization。 |
 | P2.1–P2.5 implementation | **NOT STARTED / CONDITIONAL** | 必须先完成 applicable entry gates，并分别获得明确实施授权。 |
 | P1 架构 | **UNCHANGED** | 本文只安排如何实现 P1，不重新设计、删减或放宽任何 P1/P1.5 约束。 |
 
@@ -65,7 +65,7 @@ SubjectState
 7. **Logical time is canonical。** wall clock 只能作 observability metadata，不驱动 transition、不进入 StateHash。
 8. **LLM is a bounded proposal provider。** LLM 不拥有 state，不写 memory/revision/trace，不直接决定 affect。
 9. **Slow layers remain read-only in V0。** identity、traits、beliefs、relationships 不因 P2 快事件发生漂移。
-10. **Failure is fail-closed per transition。** 失败 proposal 只能产生 audit event；不得形成部分 canonical mutation 或伪造 successful TraceEntry。
+10. **Failure is fail-closed per transition。** 已有完整 canonical proposal、known subject/current snapshot 与 durable identity reservation 的 rejected/aborted attempt 必须产生 `AuditEventV1`；Admission 或 pre-proposal stage failure 的 `audit_refs=[]`，只允许非规范 diagnostics。任何失败都不得形成部分 canonical mutation 或伪造 successful TraceEntry。
 11. **Successful trace is atomic with mutation。** state、revision、TraceEntry、trace cursor/hash refs 必须处于同一 canonical commit boundary。
 12. **No architecture-by-convenience。** 实现困难不能成为修改 ownership、顺序、failure code、revision 或 recovery 语义的理由。
 
@@ -95,7 +95,7 @@ SubjectState
 - TypeScript strict mode + ESM；禁止用 `any` 绕过 canonical boundary。
 - pnpm workspace monorepo；实际版本必须在 P2.0 一次性 pin，并提交 lockfile。
 - schema-first runtime validation；canonical boundary 不能只依赖 TypeScript 编译期类型。
-- 一套 versioned canonicalization rules 与底层 hash algorithm，但分别冻结 full persistence、StateHash、SnapshotHash、RepositoryRevisionHash projections；numeric normalization 和各自 golden vectors 在 P2.0 固定。
+- P2.1 contract freeze §§8–§9 已精确冻结 canonicalization version、底层 SHA-256、full persistence/StateHash/SnapshotHash/RepositoryRevisionHash projections、numeric normalization 与 golden vectors；后续 bootstrap/implementation 不得重新裁定。
 - Vitest 用于 unit/integration/conformance；版本在 P2.0 锁定，不建立第二套 Python oracle。
 - Node 标准 crypto/filesystem 能力优先；P2 不引入数据库、消息队列、Web framework、vector DB 或 live LLM SDK 作为运行时必需依赖。
 
@@ -275,26 +275,28 @@ P2 不重新裁剪 SubjectState。实现与 restore 必须保留以下 canonical
 - `mechanism_config.affect_profile` 是 active affect config 唯一权威；Mood/Affect 的 `generated_under_profile` 只是 provenance。
 - canonical affect public phase 保持 `{INACTIVE, ACTIVE, RELEASING}`；FAST internal phases 不得泄漏成永久 schema。
 - Identity/Traits/Beliefs/Relationships 在 P2 readonly；`mechanism_config` 是配置，不是 learned plasticity state。
-- `scene`、`task`、`active_entity_refs` 属 persistent Context；`focus_refs`、`current_observation_ref`、`environment_refs` 属 transient Context。restore adapter 不得静默改写这些 canonical fields；reset 语义须先完成 §15 ownership 封口。
-- `TraceEntry` immutable、`MutationHistory` append-only、`trace_window` rolling/bounded、AuditStore/TraceStore 保存完整历史；window eviction 不等于删除历史。
+- 六个 Context fields 均 canonical/full-persistent/exact-restored；`focus_refs`、`current_observation_ref`、`environment_refs` 仅是 observation-scoped，由下一次 authorized Observation ContextDelta 替换，restore/Time 不 reset。
+- `TraceEntry` immutable；`MutationHistory` 是atomic commit journal内的append-only authority；`trace_window` rolling/bounded；TraceHistoryView可重建；TransitionIdentityJournal/Audit只保存non-commit outcomes。
 
 ### 6.2 Subject-core commit sequence
 
 未来 commit engine 的概念顺序固定为：
 
-1. 读取 current immutable snapshot 与 current `state_revision`。
-2. 校验 transition envelope、payload identity 与 idempotency key。
-3. 校验 `expected_state_revision`；Learning 同时校验 repository base/revision。
-4. 逐 delta 做 schema/range validation。
-5. 校验 producer、transition owner 与 canonical field authority。
-6. 在 apply 前检测 overlapping field / duplicate domain delta。
-7. 按不重叠 partition 构造 candidate next state；顺序不得依赖 Promise race、object key order 或 registration order。
-8. 校验 whole-state invariants 与 referenced MemoryRepository revision。
-9. 构造 next revision、immutable TraceEntry、trace window/cursor、三类 hash refs 与确定性的 TransitionResult content。
-10. 将 state + revision + trace + cursor/hash refs 作为一个 canonical commit；committed transition ID、payload hash 与 result ref 必须可从同一 authoritative record 恢复。
-11. 发布/返回 TransitionResult。若另设 IdempotencyRegistry，它只能是上述 authoritative record 的同界 index 或可确定性重建的 projection，禁止 commit 后再孤立补写。重复 committed ID 返回原结果，不再次推进 revision。
+1. `reserveAndRoute(proposal)` syntax-admit envelope并读取current immutable snapshot/revision。
+2. 第一调用计算`payload_fingerprint`/proposal ref；通过`TransitionIdentityJournal` durable reserve first-seen identity（OPEN可有`attempts=[]`）。
+3. 第一调用路由terminal COMMITTED/NO_OP、changed-fingerprint reuse conflict；NEW/SAME_OPEN只返回trusted `ReservedTransitionContinuationV1`，不做semantic validation或调用WorkflowStore。restart以同proposal重调该调用只做幂等OPEN lookup并重铸continuation。
+4. 仅对该continuation，由runtime-owned `WorkflowStore` durable create/read-verify exact `PreparedLogicalResultV1`，并由trusted composition mint `PreparedLogicalResultBindingV1`；terminal/reuse路由不重建prepared record。
+5. mutation路径调用`commitReserved(proposal,continuation,ProducerAuthorizationSetV1,PreparedLogicalResultBindingV1)`；它不得再次reserve或调用WorkflowStore。该调用重算ref/fingerprint、校验trusted capabilities、重读同一header；terminal race路由原结果，OPEN则捕获当前exact record version并重新读取latest canonical authority。continuation/record/binding invalid=`COMMIT_CHAIN_INTEGRITY_FAILURE/SS-RESTORE-001`，unavailable=`SERVICE_UNAVAILABLE/FAIL-PRECOMMIT-001`，均无attempt/audit。
+6. 基于第二调用重新读取的authority校验expected state/repository revisions、trusted producer bindings、field/transition authority；不得复用preparation前snapshot，subject-core不读取prepared payload/domain data。exact Time zero-delta路径由runtime `terminalizeReservedNoOp`消费同一continuation/binding，重读latest authority并通过revision/time/zero-delta/zero-binding guards后才journal-CAS；stale产生普通rejected attempt/audit而非NO_OP。
+7. 按冻结precedence校验conflict/composition/path-specific value/range。
+8. 按不重叠partition构造candidate；顺序不得依赖race/key/registration order。
+9. 先校验最终 MemoryRepository bindings/refs，再校验 whole-state invariants；两者服从 freeze §13.4 的唯一 precedence。
+10. 按无环derivation构造revision、StateHash、TraceEntry/ref、window/cursor、SnapshotHash、commit/result refs。
+11. 构造并验证绑定同一`prepared_result_ref`的完整AtomicCommitBundle与terminal transition-record successor。
+12. 只调用一次`AtomicCommitStore.compareAndCommit(expected_revision,identity_record_version_before,complete_bundle)`；state/trace/history/identity/result同一authority point。
+13. reconcile conflict或authority-unknown；后者不得直接断言ABORTED。authority后只更新PublishSink/derived indexes/views；重复committed ID返回原结果，不推进revision。
 
-任何一步失败：candidate 丢弃，canonical snapshot 不变，只写外部 audit event。post-commit correction 必须是一个新的 corrective transition，禁止原地 rollback。
+任何 authority point 前失败：candidate 丢弃，canonical snapshot 不变。仅 durable canonical attempt 写 `AuditEventV1`；Admission/pre-proposal failure 不伪造 transition ID、fingerprint 或 audit，只保留非规范 diagnostics。`OUTCOME_UNKNOWN` 必须先 reconcile；若已提交则返回原 committed truth。post-commit correction 必须是一个新的 corrective transition，禁止原地 rollback。
 
 ### 6.3 Memory ownership partition
 
@@ -310,15 +312,15 @@ TimeTransition 的 memory maintenance eligibility 只是 derived signal，不得
 
 P2 采用足以满足本地 conformance 的最小策略，不引入生产数据库：
 
-- SubjectState persistence 通过 subject-core 定义的 store port；sandbox 提供 deterministic local reference adapter，以证明跨 process/session restore。
+- SubjectState persistence服从subject-core定义的reader/reference/identity/publish ports与唯一`AtomicCommitStore`；sandbox提供deterministic local reference adapter，以证明跨process/session restore。
 - MemoryRepository P2 concrete adapter 以 in-memory immutable revision model 为主，并提供确定性 snapshot export/import，使新 repository instance 能模拟真实 session boundary。
 - Learning 先 prepare immutable repository revision，再由 subject-core 校验引用后提交 SubjectState。
 - repository prepare 成功、canonical commit 失败时，prepared revision 成为 orphan/pending；SubjectState 继续指旧 revision。
 - retry 必须复用同一 prepared revision；stale 时 reload + revalidate + rebase/rebuild，不能只改 expected revision。
 - commit 成功但 publish 失败时，committed snapshot 仍是 authority；恢复 publish，不回滚 revision。
-- authoritative TraceEntry 不得因 TraceStore/offload 故障丢失；P2 reference adapter采用 write-ahead/prepare-commit 等价语义，具体文件原子策略在 P2.0 冻结。
-- stage commit 成功但 WorkflowStore checkpoint 失败时，resume 必须先用稳定 stage ID 对 authoritative transition result/MutationHistory 做 reconciliation，重建 checkpoint 后再判断下一 stage；不得重跑已提交 mutation。
-- restore adapter 不得在 deserialization 时静默 reset transient Context。若 contract 最终选择 materialize 同一 snapshot，则 StateHash 必须相同；若选择 reset 形成新 canonical state，则必须通过正式 transition、`revision +1` 与 TraceEntry，并有冻结 oracle。
+- atomic bundle的trace/history component preparation失败→none committed；派生TraceHistoryView/offload故障不得丢authoritative history，也不得触发第二次trace commit。
+- 每个 complete transition proposal 在 NO_OP terminalization / canonical authority 前，runtime 先 durable write + read-verify freeze §7.6 `PreparedLogicalResultV1`；AtomicCommitBundle/terminal attempt 绑定其 content-addressed `workflow` ref。stage commit 成功但 WorkflowStore terminal checkpoint 失败时，resume 用 bundle + prepared record 重建 byte-identical logical result/checkpoint 后再判断下一 stage；不得重跑已提交 mutation。
+- restore adapter 必须 exact materialize 完整 canonical snapshot；StateHash/revision 不变，任何 Context reset 都不属于 restore。
 
 这只是本地 reference persistence，不是 real deployment 或 distributed transaction design。
 
@@ -350,12 +352,18 @@ P2 必须区分四个相关但不等价的对象：
 
 | Boundary / Port | 概念操作 | 输入 | 输出 | 责任与限制 |
 |---|---|---|---|---|
-| SubjectCore | create / restore / read snapshot | validated seed 或 persisted snapshot + repository validator | immutable SubjectState / fail-closed result | 保证 schema、revision、repository ref 与 persistent/transient 语义；不调用 domain |
-| CanonicalCommitEngine | commit | CanonicalTransitionProposal（含 N 个 domain deltas） | TransitionResult + next snapshot 或 rejection | 唯一 canonical mutation path；不是 `commit(single delta)` |
+| SubjectCore | pure materialize seed / restore / read snapshot | exact `SubjectSeedInputV0` + R0 `ReferenceValidator`，或 complete persisted envelope + verdict-only `ReferenceValidator` + `PreparedResultValidator` | `SubjectCreationResultV1`、immutable restored SubjectState 或 exact AdmissionError | creation 不持久化/overwrite；restore按冻结顺序校验repository refs、bundle chain与prepared-result binding；不读取domain payload、不调用 owning domain |
+| CanonicalCommitEngine | reserveAndRoute / commitReserved | first call: CanonicalTransitionProposal；second call: same proposal + trusted `ReservedTransitionContinuationV1` + `ProducerAuthorizationSetV1` + `PreparedLogicalResultBindingV1` | continuation/terminal/reuse route；then TransitionResult + next snapshot 或 rejection | exact two-call protocol；second call不reserve/不调用WorkflowStore，只验证/carry prepared ref；禁止单一 `commit(proposal,binding)` 或 `commit(single delta)` |
 | CanonicalSerializationAndHash | persist / hash state / hash snapshot | canonical snapshot + versioned projection rule | full persisted form、StateHash、SnapshotHash | 区分 persistence 与 hash projections；不包含 repository revision content |
-| IdempotencyRegistry | lookup / rebuild index | transition ID + payload hash + authoritative transition history | original result、retry permission 或 reuse rejection | 只作同界 index/可重建 projection；不得成为 post-commit 单点 authority |
-| SubjectStateStore | load / atomic persist / publish recovery | subject ID、candidate snapshot、expected revision、trace bundle | persisted snapshot/ref 或 conflict | concrete adapter 在 sandbox；store 不计算 domain delta |
-| TraceStore | prepare / commit / read history | TraceEntry、cursor、transition ref | authoritative mutation history/ref | successful trace 与 mutation 同边界；audit event 独立 |
+| IdempotencyRegistry | lookup / rebuild index | transition ID + `payload_fingerprint` + authoritative transition records | original result、retry permission或reuse rejection | only derived index；not identity authority |
+| StateReader | load current | subject ID | current committed bundle/snapshot or admission failure | read-only；no repair/default/migrate |
+| TransitionRecordReader | lookup durable identity/result | transition ID | unified OPEN/attempt/terminal view | read-only；trace_window/index不是ledger |
+| TransitionIdentityJournal | reserve / terminalize reserved NO_OP / append noncommit attempt / record conflict | admitted identity/fingerprint or trusted continuation + expected current record version | reservation/terminal/attempt/audit result | durable first-seen、NO_OP、rejected/aborted/reuse audit；cannot finalize COMMITTED alone；continuation由SubjectCore第一调用mint |
+| ReferenceValidator | validate | immutable repository revision/hash/bound refs | valid/invalid binding | memory integrity only；no retrieval/ranking/domain import into core |
+| PreparedResultValidator | validate binding only | `workflow` ref + expected transition identity/proposal fingerprint | valid/invalid/unavailable verdict | inverted capability owned by runtime；不返回 prepared payload/domain data，不 retrieval/write；restore step 8 与 bundle recovery 只消费 verdict；unavailable=`SERVICE_UNAVAILABLE/FAIL-PRECOMMIT-001`，不得让 subject-core import/call WorkflowStore |
+| AtomicCommitStore | compare and commit once | expected revision + identity record version + complete bundle | committed/conflict/failure certainty | **only canonical writer**；state/trace/history/record/result all-or-nothing |
+| PublishSink | publish / recover | committed `commit_ref` projection | PENDING/PUBLISHED observation | post-authority rebuildable；never modifies canonical result/checksum |
+| TraceHistoryView | read / rebuild | authoritative commit journal | offload/read projection | optional read model；never prepare/commit authority |
 | MemoryRepository | get revision / retrieve / prepare / validate / hash revision / export-import | repository revision、query、EpisodicMemoryRecord candidate | RetrievalResult、RepositoryRevisionHash 或 immutable prepared revision | repository 是 infrastructure；不得写 SubjectState |
 | RetrievalService | retrieve | controlled query + fixed config + repository revision | selected refs + ranking evidence + trace ref | deterministic、explainable；empty result 合法；read failure 不伪装为空 |
 | PerceptionNormalizer | normalize | objective text Observation | PerceptionResult | 不生成 emotion/appraisal，不预写主观意义 |
@@ -372,9 +380,9 @@ P2 必须区分四个相关但不等价的对象：
 | InternalExperienceBuilder | build | committed Observation result refs + affect/mood before/after refs | refs-only InternalExperience | 不复制整个 state，不伪造 Action/Outcome/future result |
 | SalienceNormalizer | normalize | traceable appraisal intensity/novelty/relationship evidence | bounded deterministic salience + provenance | LLM 不得任意写 importance/salience |
 | EpisodicMemoryEncoder | encode | InternalExperience + bounded salience | EpisodicMemoryRecord candidate | 不更新 belief/personality/relationship；P2 不调用 LLM summarization |
-| LearningTransitionExecutor | execute / rebase | InternalExperience + current revisions | prepared memory ref + TransitionResult 或 contract-frozen stale/rebase result | 只写 memory content 子域；stale 必须 reload/revalidate；不自行新增 `REBASE_REQUIRED` enum |
+| LearningTransitionExecutor | execute / rebase | InternalExperience + current revisions | prepared memory ref + TransitionResult | stale core result先=`REJECTED/STALE_STATE_REVISION/SS-REVISION-001`；unsafe rebuild唯一=`REBASE_REQUIRED/STALE_STATE_REVISION/REBASE-STALE-001`；不得新增status/code |
 | MICLRuntime | run / resume | MICLRequest 或 checkpoint | MICLResult + final snapshot | 复用已 committed stages；不回滚、不重复 affect/memory |
-| WorkflowStore | checkpoint / load / reconcile | micl ID、stable stage IDs/results、payload hash、failure/audit refs + authoritative transition results | resumable workflow record | 不是 canonical state；checkpoint 丢失后先 reconciliation，不得重跑 committed stage |
+| WorkflowStore | prepare / checkpoint / load / reconcile | trusted `ReservedTransitionContinuationV1` + content-addressed `PreparedLogicalResultV1`（micl ID/request fingerprint/stage key + exact domain/external refs）+ authoritative bundle/outcome refs | trusted `PreparedLogicalResultBindingV1` + resumable workflow record + reconstructable exact logical result | only after OPEN continuation；prepared record 在 authority 前 durable；terminal checkpoint不是唯一 truth；subject-core不import/call；checkpoint丢失后 bundle+prepared reconciliation，不得重跑 committed stage |
 | ConformanceRunner | execute requirement fixtures | frozen fixture catalog + runtime composition | PASS/FAIL + six evidence artifacts | 只用客观 oracle；不以语言质量豁免 |
 
 ---
@@ -457,14 +465,14 @@ LLM unavailable 或 proposal invalid 时，Observation stage pre-commit abort/re
 
 | Module | Requirement IDs / groups | Acceptance groups | Required evidence |
 |---|---|---|---|
-| subject-core | `HASH-DET-001`、`TR-DET-001`、`TR-ATOMIC-001`、`TRACE-*`、`HASH-*`、`FAIL-*`、`IDEM-*` | A1、A6、A7、A10、A11、A12 | state hash、trace、failure、fixture manifests |
-| memory | `MEM-REV-001`、`MEM-OWN-001`、`MEM-RET-001`、`LLM-EVID-001`、`REBASE-STALE-001` | A2、A3、A4、A10、A13 | repository revision、fixture、failure manifests |
-| appraisal | `LLM-EVID-001`、`LLM-AUTH-001`；A4.1/A4.2 contract semantics | A4、A6 | projection hash、fixture results、failure summary |
-| affect | `LLM-AUTH-001`、`TIME-*`；A5 contract semantics | A5、A6、A8 | state hash、transition trace、fixture results |
-| runtime/transitions | `TR-DET-001`、`TR-ATOMIC-001`、`TIME-*`、`FAIL-*`、`IDEM-*` | A1、A8、A10、A11、A12 | transition trace、failure、fixture manifests |
-| runtime/micl | `MICL-*`、`IDEM-*`、`REBASE-STALE-001` | A5、A9、A10、A12、A13 | conformance report、fixture/failure evidence |
+| subject-core | freeze §3.2 exact 28-ID P2.1 catalog | A1、A2、A6、A7、A10、A11、A12 core slices | state hash、trace、failure、fixture manifests |
+| memory | `MEM-REV-001`, `MEM-OWN-001`, `MEM-ORPHAN-001`, `MEM-RET-DET-001`, `MEM-RET-HISTORY-001`, `MEM-RET-CONTROL-001`, `MEM-IDEM-001` | A2、A3、A10、A12、A13 | repository revision、fixture、failure manifests |
+| appraisal | `MICL-RETRIEVAL-001`, `MICL-STAGE-001`, `LLM-EVID-001`, `LLM-AUTH-001` | A4、A6 | projection hash、fixture results、failure summary |
+| affect | `SS-AFFECT-001`, `TIME-AFFECT-001`, `LLM-AUTH-001` | A5、A6、A8 | state hash、transition trace、fixture results |
+| runtime/transitions | `TR-DET-001`, `TR-ATOMIC-001`, `TIME-ADVANCE-001`, `TIME-NOOP-001`, `TIME-OCCURRENCE-001`, `TIME-WALL-001`, `FAIL-SERVICE-001`, `FAIL-PREPARE-001`, `REBASE-STALE-001` | A1、A8、A10、A11、A13 | transition trace、failure、fixture manifests |
+| runtime/micl | `MICL-DET-001`, `MICL-ACTION-001`, `MICL-RESUME-001`, `TRACE-CHAIN-001`, `MEM-IDEM-001`, `REBASE-STALE-001` | A5、A7、A9、A10、A12、A13 | conformance report、fixture/failure evidence |
 
-`MICL-RESUME` 是用户示例标签，不是当前 P1.5 已冻结的精确 Requirement ID；现有 resume contract 由 `IDEM-*` + `MICL-*` 覆盖。P2 不自行发明新的 ID。
+Exact full row-per-leaf source/fixture/oracle/evidence matrix = `p2-1-contract-freeze.md` §3；`MICL-RESUME-001` is now the unique frozen resume ID。
 
 ### 9.2 A1–A13 implementation gates
 
@@ -478,7 +486,7 @@ LLM unavailable 或 proposal invalid 时，Observation stage pre-commit abort/re
 | A6 State authority outside LLM | direct mutation、fake memory/revision/trace、prompt injection 全部 reject | P2.3 |
 | A7 Cause trace | 每次 canonical commit 有完整 trace；MICL 全因果链可从 refs 重建 | P2.4 |
 | A8 Time semantics | elapsed、zero NO_OP、future/equal/past occurrence、wall-clock invariance 全符合 contract | P2.3 |
-| A9 Optional Action | Time→Observation→Learning 无 Action/Outcome 仍 `COMPLETED`，且 `external_effects=[]` | P2.4 |
+| A9 Optional Action | Time→Observation→Learning 无 Action/Outcome 仍 `COMPLETED`，且 `external_effect_refs=[]` | P2.4 |
 | A10 Failure semantics | 所列 read/provider/producer/prepare/stale/commit/duplicate failure 都有正确 revision/orphan/retry/audit/status | P2.4 |
 | A11 Atomic multi-domain | 一个 invalid ContextDelta 使 Affect/Mood/Context/RetrievalMetadata 全部不提交 | P2.3 |
 | A12 Idempotency/resume | duplicate/reuse 正确；resume 不重跑 committed stages、不重复 affect/memory/revision | P2.4 |
@@ -486,7 +494,7 @@ LLM unavailable 或 proposal invalid 时，Observation stage pre-commit abort/re
 
 ### 9.3 Frozen fixtures and oracles
 
-P2.0 必须在 §15 的 S0/schema 与 requirement-index gaps 封口后，导入/冻结 P1.5 定义的：
+P2.1 contract freeze已按本计划§15 entry gate导入并冻结P1.5定义的：
 
 - Golden SubjectState `S0`；
 - memory histories `H0`–`H3`；
@@ -533,7 +541,7 @@ P2.0 必须在 §15 的 S0/schema 与 requirement-index gaps 封口后，导入/
 - repository prepare → MemoryContentDelta → canonical repo ref update。
 - Observation read/interpret/appraise/affect/context/retrieval-metadata 原子链。
 - MICL Time→Observation→Learning、partial completion、checkpoint/resume。
-- process/session restart、restore validation、publish recovery、TraceStore failure injection。
+- process/session restart、restore validation、publish recovery、atomic trace/history component preparation failure与post-authority TraceHistoryView projection failure injection。
 - stale/interleaving/rebase 与 duplicate transition/MICL。
 - `commit✓ / idempotency-index record✗ / retry` reconciliation：不得重复 revision。
 - `stage commit✓ / workflow checkpoint✗ / resume` reconciliation：不得重复 affect/memory/revision。
@@ -577,7 +585,7 @@ P2.0 必须在 §15 的 S0/schema 与 requirement-index gaps 封口后，导入/
 - pinned Node/TypeScript/package manager/test runner/toolchain；
 - workspace、strict config、package manifests、lockfile；
 - import DAG enforcement；
-- canonical schema、full persistence serialization、StateHash/SnapshotHash/RepositoryRevisionHash implementation decisions 的 ADR；
+- 记录采用既有 P2.1 freeze §§8–§9 以及 adapter/tooling 选择的 ADR；ADR 不得重新决定 canonical algorithm、projection 或 golden vector；
 - A1–A13 + P1.5 §§25–31 normative cross-cutting requirement/fixture/oracle/evidence index；
 - 空的 phase test harness 与 sandbox composition boundary。
 
@@ -737,10 +745,10 @@ P2.0 必须在 §15 的 S0/schema 与 requirement-index gaps 封口后，导入/
 
 - Time→Observation→Learning 无 Action 仍 COMPLETED；
 - Learning 失败不回滚 Time/Observation；resume 只执行未完成 stage；
-- same micl ID/same payload 不重复 affect/memory/revision；changed payload reject；
-- stage commit 后 checkpoint 丢失可从 stable IDs + authoritative results 重建，不重跑 committed stage；
+- same micl ID/same `MICL request fingerprint` 不重复 affect/memory/revision；different request fingerprint reject；
+- stage commit 后 terminal checkpoint 丢失可从 authoritative bundle-bound prepared record 重建 exact logical result，不重跑 committed stage；
 - restart 后 affect/mood/memory revision/trace 连续；
-- restore 不静默 reset transient Context；具体 materialize/reset transition 语义服从 §15 封口；
+- restore exact materializes all canonical Context fields；no hidden reset；
 - stale after prepare 走 reload/revalidate/rebase/rebuild，并返回 contract 冻结的 stale/rebase result mapping；
 - A5/A7/A9/A10/A12/A13 slice 全 PASS。
 
@@ -874,8 +882,8 @@ AI agent 不允许：
 | R6 | subject-core 吸收 domain orchestration | 核心循环依赖、Producer=Mutator | subject-core import memory/affect/appraisal/provider | automated import DAG gate；subject-core zero-domain rule |
 | R7 | state-memory crash window 处理错误 | SubjectState 引用无效 repo revision | commit 前未 validate；retry 生成无限 orphan | immutable prepare + ref validation + orphan policy + A2/A10/A13 |
 | R8 | Requirement ID/状态/schema 枚举漂移 | 实现与 reviewer 使用不同 oracle | A11/partial/rebase status、timebase/S0 shape 不一致 | §15 docs-only normalization；机器可读 leaf requirement index；禁止自行造 ID/schema |
-| R9 | persistence/StateHash/SnapshotHash/RepositoryRevisionHash 混写 | A1、restore、replay 全失真或 trace window 丢失 | 普通 JSON order、wall clock、numeric edge、projection 未定义 | P2.0 分别冻结 projections/algorithm/version/golden vectors；单一底层 oracle rules |
-| R10 | resume 重复应用 affect/memory | revision、体验记录重复 | retry 重跑 Time/Observation；commit 后 index/checkpoint 丢失；prepared revision 不复用 | stable IDs/payload hash；authoritative history reconciliation；A12 + crash-window fixtures |
+| R9 | persistence/StateHash/SnapshotHash/RepositoryRevisionHash 混写 | A1、restore、replay 全失真或 trace window 丢失 | 普通 JSON order、wall clock、numeric edge、projection 未定义 | 遵守 P2.1 freeze §§8–§9 已冻结的 projections/algorithm/version/golden vectors；单一底层 oracle rules |
+| R10 | resume 重复应用 affect/memory | revision、体验记录重复 | retry 重跑 Time/Observation；commit 后 index/checkpoint 丢失；prepared revision/result 不复用 | stable IDs/versioned fingerprints；bundle-bound prepared logical record + authoritative history reconciliation；A12 + crash-window fixtures |
 | R11 | FAST+EMA 或 bridge 被过度宣称 | 研究/产品结论失真，未来 schema 被锁死 | internal FAST phase 泄漏 public schema；出现“情绪理论”措辞 | public normalized phases；provenance；文档/reviewer wording gate |
 | R12 | local reference persistence 被误当 production readiness | 提前部署、忽略 durability limits | sandbox adapter 被产品层直接复用 | 明确 adapter label/limitations；deployment remains non-scope |
 
@@ -894,24 +902,9 @@ P2 第一条 implementation commit 之前必须同时满足：
 7. P2 scope 仍限于 MICL minimal runtime；
 8. NO research experiment / NO uncontrolled migration。
 
-当前规划审查发现以下**追踪/枚举封口项**。它们不改变架构，但在实施前必须由 contract owner 做 docs-only clarification：
+上述 traceability gaps 已由 `docs/implementation/p2-1-contract-freeze.md` docs-only closure 全部解决：G1–G11 = CLOSED；49 unique MUST leaf IDs、65 fixture cases、Golden S0/JCS/SHA-256 vectors、Trace/Restore/AffectConfig/Status/Identity/AtomicPort/Retrieval ownership 均冻结。`ATOMIC-001` 仅为历史别名；canonical ID=`TR-ATOMIC-001`。
 
-| Gap | 当前证据 | P2 处理规则 |
-|---|---|---|
-| A11 ID | 正文 `ATOMIC-001`；Conformance Matrix `TR-ATOMIC-001` | 计划映射暂引用 matrix 的 `TR-ATOMIC-001` 并保留 alias 记录；实施前冻结唯一 ID |
-| A4.1/A4.2 ID | 有 fixture/oracle，matrix 未给单独稳定 ID | 不删 fixture、不自行造 ID；实施前补 requirement index |
-| A5 ID | 有完整 MUST 语义，matrix 无单独稳定 ID | 按 A5 全量实现；实施前补 requirement index |
-| Requirement family wildcards | `TIME-*`、`TRACE-*`、`HASH-*`、`FAIL-*`、`IDEM-*`、`MICL-*` 仍是 family，不是完整 leaf catalog | 实施前冻结 leaf IDs，或正式定义 family→fixture/oracle/evidence expansion rule |
-| `MICL-RESUME` | 用户示例名；冻结 contract 实际为 `IDEM-*` + `MICL-*` | 不发明新 ID；除非正式 contract clarification 明确新增 |
-| Learning stale / `REBASE_REQUIRED` | MICL failure table 简写与 P1.5 A13 的 rebase 要求不完全一致；TransitionResult/MICLResult status enum 又都未定义 `REBASE_REQUIRED` | 执行以 A13 的 reload/revalidate/rebase 语义为硬约束；contract owner 冻结它是 transition status、MICL status、failure code/reason 或映射，并同步 schemas/oracle |
-| MICL failure status | `PARTIAL_COMPLETION` 与 `FAILED_AFTER_OBSERVATION` 的唯一选择未封口；Time NO_OP 后 Observation failure 也未唯一分类 | contract owner 冻结状态选择表后再实现 workflow enum |
-| Transient Context reset ownership | SubjectState/MICL 要求 transient fields 在下一次 Time/Observation 重置；Transition ownership matrix/Time contract 未授权 Time 写 Context | contract owner 决定受限 Time ContextResetDelta 或 Observation/显式 reset transition 语义，并同步 ownership、Time contract、restore/fixtures；实现者不得自行选 |
-| Affect profile/timebase shape | SubjectState 把 `mechanism_config.affect_profile` 定义为 enum/string；Transition contract 使用 `affect_profile.timebase` object path | schema freeze 前由 contract owner 固定 affect profile 类型与 `legacy_tick` 唯一字段路径；实现层不得扩 schema |
-| Golden S0 `schema_version` | SubjectState spec 规定顶层唯一源；P1.5 S0 描述把它列入 `runtime_metadata` | S0 materialization 前做 docs-only correction；不得由 fixture builder 猜测或建立双源 |
-| MEM-OWN source reference | Conformance Matrix 引用 `spec §5.1/§9`，当前 spec 实际为 §5/§9 | docs-only 修正 source pointer；Requirement 语义不变 |
-| A1–A10 vs A1–A13 | MICL 原文仍是 P1.5 前置映射 | P2 一律按最终 P1.5 A1–A13；不丢 A11–A13 |
-
-在这些项封口、P1.5 contract PASS 且获得显式授权之前，coding-agent execution readiness 保持 **BLOCKED**，P2 implementation status 保持 **NOT STARTED / CONDITIONAL**。这不影响本规划产物的 PASS。
+Gate 2（人类显式授权）仍未满足。因此 P2.1 状态是 **READY FOR EXPLICIT AUTHORIZATION / NOT STARTED**；P2.2+ 仍按各自 phase gates 与 authorization 执行。Contract freeze completion 不自动启动 implementation。
 
 ---
 
@@ -949,7 +942,7 @@ P2 完成后只允许声称：
 | R3 是否把 LLM 当状态核心？ | **NO** | LLM 仅 proposal provider；controlled projection + validation + producer + subject-core commit 是唯一影响路径。 |
 | R4 是否把 emotion 简化成 label？ | **NO** | 冻结 Interpretation 与六维 Appraisal，Affect 是 downstream；禁止 Observation/LLM emotion label 直连。 |
 | R5 是否范围膨胀？ | **NO** | Behavior/Action/World/slow-layer dynamics/vector DB/deployment/training/research 明确排除；必要增加项均来自 P1/P1.5 MUST。 |
-| R6 是否可被 coding agent 执行？ | **YES, CONDITIONAL** | 每 phase 有目标、输入、输出、验收、禁止事项与 requirement slice；但实施前须完成 §15 gate 并获得显式授权。 |
+| R6 是否可被 coding agent 执行？ | **YES, AUTHORIZATION-GATED** | contract ambiguity gates已关闭；每 phase有目标/输入/输出/验收/禁止/requirements；P2.1仍需显式授权。 |
 
 ### 17.1 Additional attack checks
 
@@ -980,4 +973,4 @@ P2 完成后只允许声称：
 - **NO MIGRATION**
 - **NO ARCHITECTURE REWRITE**
 
-本文的唯一作用，是将已冻结 P1/P1.5 转换为未来工程团队可执行、可停止、可审计、可验收的 P2 实施路线。当前 P2.0 bootstrap 状态同步不改变上述历史交付事实，也不表示 §15 已封口或 P2.1 已启动。
+本文的唯一作用，是将已冻结 P1/P1.5 转换为未来工程团队可执行、可停止、可审计、可验收的 P2 实施路线。当前P2.0 bootstrap状态同步不改变上述历史交付事实；P2.1 contract freeze已按§15封口，但不表示P2.1 implementation已启动。

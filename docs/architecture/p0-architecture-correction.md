@@ -35,7 +35,7 @@
 | P0-3 | 定义 TimeTransition 为一等语义；Appraisal 使用 time-normalized 状态 | ARCHITECTURE §3.1；ROADMAP A8；NEXT_ACTIONS #2/#3 |
 | P0-4 | FAST+EMA → "V0 reference persistence implementation / reference baseline"；参数 → "legacy reference defaults"（来源 VERIFIED，采用=DESIGN DECISION） | ARCHITECTURE §5；RESEARCH_STATE；MIGRATION_MAP；NEXT_ACTIONS |
 | P0-5 | 证据标签拆分："审计观察"=VERIFIED、"架构采用"=DESIGN DECISION | 全部文档 |
-| P0-6 | 新增 P1.5 Engineering Acceptance Contract（A1–A10），先于 P2 实现 | ROADMAP §5；NEXT_ACTIONS |
+| P0-6 | 新增 P1.5 Engineering Acceptance Contract（当时A1–A10；后续正式扩展为A1–A13），先于P2实现 | ROADMAP §5；P1.5/freeze |
 | P0-7 | Identity 移除"历史/自我叙事"；自传历史归 MemoryState | ARCHITECTURE §4；MIGRATION_MAP |
 | P0-8 | affect/mood-congruent retrieval 降级为 HYPOTHESIS，非 V0 强制键 | RESEARCH_STATE；NEXT_ACTIONS #3 |
 | P0-9 | "最小闭环" → "MICL（Minimal Internal Continuity Loop）" | 全部文档 |
@@ -75,7 +75,7 @@ Action = optional; Time advance 不需要外部事件
 ## 4. SubjectState Ownership（修订后）
 
 ```text
-SubjectState（canonical，单写入口 = Core transition rules）
+SubjectState（canonical，单写入口 = owning producer delta + subject-core generic validation/atomic commit）
 ├── Identity（不含自传历史）
 ├── Traits
 ├── MemoryState          ← 属于主体：references/index/revision/cursor/config/trace/metadata
@@ -122,7 +122,7 @@ MemoryRepository        ← infrastructure：episodic payload/embedding/索引
 - SubjectState V0 正式字段 schema（已由 `docs/architecture/subjectstate-v0-spec.md` 解决，P1 Action 1）
 - transition 的阶段级输入/输出/失败语义（已由 `docs/architecture/transition-contracts.md` 解决，P1 Action 2）
 - MICL 的检索键最终集与 appraisal 维度集（留给 NEXT_ACTIONS #3）
-- A1–A10 的具体判据与 fixture（留给 ROADMAP P1.5）
+- A1–A13 的具体判据与fixture（已由P1.5 + P2.1 contract freeze关闭；本行原A1–A10为历史范围）
 - affect-congruent retrieval 是否启用（= HYPOTHESIS，研究触发前不实验）
 - WorldModel 旧资产是否适合迁移到新架构（existence = `VERIFIED` legacy asset `src/core/worldmodel/worldModel.ts`；migration suitability = `TO_BE_ASSESSED / DESIGN REVIEW REQUIRED`）
 

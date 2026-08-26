@@ -1,6 +1,6 @@
 # Canonical Transition Contracts — Formal Specification
 
-**状态:** P1 Action 2（Formal Design）。本文件是正式 transition contract 设计，**不是**实现、不是实验、不是迁移。
+**状态:** P1 Action 2（Formal Design）+ P2.1 Contract Freeze Incorporated。本文是正式 transition contract 设计，**不是**实现、不是实验、不是迁移。
 **目标仓库:** `gyleimu/CharacterOS-Next` · 基线 `2b97ca1`
 **上游约束:** `docs/architecture/subjectstate-v0-spec.md`（SubjectState V0 正式规格）、`ARCHITECTURE.md`（宪法）
 **结论标签:** VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN
@@ -100,6 +100,7 @@ subject-core（generic canonical commit engine）
 
 ```text
 CanonicalTransitionProposal {
+  schema_version                 // "canonical-transition-proposal-v1"
   transition_id
   subject_id
   transition_type               // Time / Observation / CognitionAction / Learning
@@ -109,16 +110,18 @@ CanonicalTransitionProposal {
                                 //   others: { kind: occurrence, occurrence_logical_time }
   cause_refs[]
   domain_deltas: [              // 一个 transition 可有 N 个 domain delta
-    { producer, domain, delta, expected_domain_revision? }
+    { producer, domain, expected_repository_revision,
+      operations:[{path,value}], provenance_refs[] }
   ]
-  external_refs?
-  metadata?
+  external_refs[]                // required set-like canonical refs
 }
 ```
 
+所有列出的 proposal/delta keys 均 required；空 refs 用 `[]`。两个 memory domain 的 `expected_repository_revision` 必须等于 current repository revision，其他 domain 必须 null；不存在 opaque `delta`、`expected_domain_revision?` 或 canonical metadata。Exact producer authentication、paths、values、ordering 与 fingerprint schema 见 freeze §7；observability metadata 在 proposal 外部。
+
 **聚合语义：**
 - **delta aggregation order**：deltas 应用于**互不重叠的字段分区**；顺序不依赖 Promise race / object key order / module registration order。
-- **validation order**：先 schema/range 逐 delta，再字段冲突检测，再 whole-state 不变量，最后 MemoryRepository revision 引用校验。
+- **validation order**：使用 freeze §13.4 单一 precedence：syntax → subject/context → identity reservation → revision guards → producer capability → path/transition owner → conflicts/composition → value/range → repository refs → whole-state/bundle → CAS。
 - **conflict semantics**：两个 delta 触碰同一 canonical 字段 → `DOMAIN_DELTA_CONFLICT`（拒绝），**绝不 last-wins**。
 - **duplicate domain delta**：同一 (producer, domain) 出现两次 → 拒绝（`DOMAIN_DELTA_CONFLICT`）。
 - **missing required delta**：transition 类型声明的必需 domain delta 缺失 → `MISSING_REQUIRED_DELTA`。
@@ -146,7 +149,7 @@ CanonicalTransitionProposal {
 | mood | affect | Observation / Time | subject-core | NO | persistent | conflict→reject |
 | affect | affect | Observation / Time | subject-core | NO | persistent | conflict→reject |
 | regulation | regulation | Time / CognitionAction | subject-core | NO | persistent | conflict→reject |
-| context | context | Observation / CognitionAction | subject-core | NO | partial | conflict→reject |
+| context | context | Observation / CognitionAction | subject-core | NO | full snapshot persistence | conflict→reject |
 | mechanism_config | —（config/init） | init | subject-core | NO | persistent | readonly（V0） |
 | memory_state（content 子域） | memory | Learning | subject-core | NO | refs only | conflict→reject |
 | memory_state（retrieval 子域） | memory | Observation | subject-core | NO | refs only | conflict→reject |
@@ -162,12 +165,15 @@ CanonicalTransitionProposal {
 ## 9. Transition Lifecycle（最小）
 
 ```text
-RECEIVED → VALIDATING → PREPARED → COMMITTED → PUBLISHED
-                    ↘ REJECTED / ABORTED
+RECEIVED → IDENTITY_RESERVED → VALIDATING → PREPARED
+                                      → atomic authority point → COMMITTED
+                                      ↘ REJECTED / ABORTED
+
+COMMITTED → PublishObservation projection: PENDING | PUBLISHED
 ```
 
 - **PREPARED ≠ canonical**；只有 **COMMITTED** 状态才是 canonical。
-- PUBLISHED 失败**不得**回滚已成功的 canonical commit，除非另有明确恢复策略；external observers 应能从 committed state 恢复。
+- PENDING/PUBLISHED 不是 canonical transition status，不进入 committed result/checksum。Publish 失败**不得**回滚 canonical commit；external observers 从 committed bundle 恢复。
 - 本文件只定义语义，不实现复杂分布式 FSM。
 
 **Rollback / Correction 语义（无"原地 rollback"，`DESIGN DECISION`）：**
@@ -193,6 +199,7 @@ publish next snapshot
 
 - **正式禁止**：canonical commit → later append mutation_trace（会导致 state_revision=42 但 rev42 的 trace 不存在）。
 - `audit_event` 可以是外部 audit infrastructure；但 successful canonical mutation_trace **必须**与对应 state mutation 原子一致。
+- **P2.1 atomic port closure：** canonical write 只有 `AtomicCommitStore.compareAndCommit(expected_revision, identity_record_version_before, complete_bundle)` 一个概念能力；state snapshot、revision/hash、TraceEntry/MutationHistory、TraceWindow/Cursor、transition identity/result 同一 authority point。StateStore/TraceStore/index 均不得独立 commit。exact bundle/CAS/recovery oracle 见 freeze §15。
 
 ---
 
@@ -203,8 +210,9 @@ publish next snapshot
 | **MutationHistory** | logical authoritative history；**append-only** |
 | **TraceEntry** | immutable 单条 |
 | **SubjectState.trace_window** | bounded projection / recent cache（**不是**完整历史） |
-| **AuditStore / TraceStore** | 完整 offloaded history（infrastructure） |
-| **audit_event** | failed/rejected proposal 的审计记录（**不进** MutationHistory） |
+| **Atomic commit journal / MutationHistory** | 完整 authoritative committed history，与 state/trace/record 同 authority point |
+| **TraceHistoryView** | optional read/offload projection；可由 commit journal 重建；不是 writer |
+| **TransitionIdentityJournal / audit_event** | OPEN/NO_OP/rejected/aborted/reuse conflict；**不进** MutationHistory |
 
 ```text
 FullMutationHistory:  A → B → C → D → E   (append-only)
@@ -212,8 +220,9 @@ SubjectState.trace_window: [C, D, E]       (bounded projection)
 trace_cursor: points to full history / offload boundary
 ```
 
-- 从 canonical bounded window 移出 entry **≠ 删除历史**（历史仍在 authoritative trace/audit store）。
-- successful canonical change → MutationHistory；failed/rejected proposal → audit_event only。
+- 从 canonical bounded window 移出 entry **≠ 删除历史**（同一entry已在authoritative atomic commit journal / MutationHistory）。
+- successful canonical change → MutationHistory；只有完整 proposal + known state context + durable reservation 后的 rejected/aborted attempt → `AuditEventV1` only。Admission/pre-proposal stage failure 的 `audit_ref(s)` 为空，只可有非规范 diagnostics。
+- P2.1 freeze：每 commit 恰好一条 multi-domain `TraceEntryV1`；before/after StateHash required；TraceWindow capacity=64；exact cursor/eviction schema 见 freeze §10。
 
 ---
 
@@ -268,8 +277,9 @@ trace_cursor: points to full history / offload boundary
 
 **Preconditions:**
 - subject exists；expected_state_revision 匹配
-- `elapsed_time.value >= 0`；`unit` 已知（否则 `INVALID_TIMEBASE`）
-- `logical_time_after = logical_time_before + normalize(elapsed_time)` 单调（否则 `INVALID_LOGICAL_TIME`）
+- raw duration 在 canonical proposal 形成前由 Time runtime 准入：value 必须是 finite signed safe integer，unit 必须是 well-formed Identifier；malformed=`INVALID_SCHEMA`，unit 非 `tick`=`INVALID_TIMEBASE`，value<0=`INVALID_LOGICAL_TIME`。这些 pre-proposal failure 不创建 transition identity、AuditEvent 或 trace。
+- subject-core 只接收 normalized `{value: nonnegative safe integer, unit:"tick"}`；`logical_time_after = logical_time_before + value` 使用 checked safe-integer addition。超出 `0..9007199254740991`=`INVALID_LOGICAL_TIME/TIME-ADVANCE-001`，不得 saturate、wrap、round 或丢失精度。
+- successful commit 的 `state_revision/history_sequence` successor 也必须可表示；max revision 尝试 commit=`INVARIANT_VIOLATION/SS-REVISION-001`，revision/hash unchanged，audit yes，trace none。
 
 **Postconditions:**
 - 若 commit：`state_revision +1` 恰好一次；`logical_time` 单调 → `logical_time_after`
@@ -283,7 +293,7 @@ trace_cursor: points to full history / offload boundary
 
 **Idempotency:** 同 `transition_id` 重复提交 → `ALREADY_COMMITTED`（见 §22）。
 
-**TransitionResult:** 携带 `logical_time_before/after`、`state_hash_before/after`、`domain_results[]`（含 eligibility signal ref，非 canonical）。
+**LogicalTransitionResultV1:** 按freeze §7.6携带required logical-time/hash/snapshot-hash、`domain_result_refs[]`（含eligibility signal result ref，非canonical state）、outcome/audit refs；不使用optional-field bag。
 
 ---
 
@@ -297,7 +307,7 @@ trace_cursor: points to full history / offload boundary
 - 当前 SubjectState 投影（read）
 - retrieval access（MemoryState / MemoryRepository，read）
 - mechanism_config（read）
-- optional external refs
+- required `external_refs[]` key（可为空数组）
 
 **Pipeline:**
 ```text
@@ -339,7 +349,7 @@ Observation → Perception → Memory Retrieval → Subjective Interpretation
 - Appraisal 产出结构化 proposal。
 - LLM 可参与 Interpretation proposal / Appraisal proposal，但：
   ```text
-  LLM proposal → schema validation → Core/domain appraisal validation
+  LLM proposal → schema validation → appraisal package deterministic validation
                 → Affect producer → AffectDelta → subject-core canonical commit
   ```
 - **LLM output ≠ canonical affect delta。**
@@ -365,7 +375,7 @@ SubjectState → Cognition/Motivation → Policy → NO_ACTION（合法结束）
 
 **Output:**
 - `NO_ACTION`（valid policy result）
-- 或 `ActionIntent` / `ActionCommand` + `external_effects[]`
+- 或 `ActionIntent` / `ActionCommand` + `external_effect_refs[]`
 - optional context / internal state delta
 - canonical TransitionResult
 
@@ -419,14 +429,14 @@ Experience → Encode → prepare immutable MemoryRepository revision → valida
 **Learning stale after prepare（`DESIGN DECISION`，P1 final sync C2）：**
 - prepared repository revision → **orphan / pending candidate**（不被自动 canonical）。
 - 禁止简单 `expected_revision = latest` 然后原样重提交旧 MemoryDelta（rev103 可能已改 MemoryState/Context/regulation/affect/repository_revision）。
-- 必须以 `REBASE_REQUIRED` 语义处理：
-  1. reject 当前 canonical commit
+- core stale attempt先精确返回 `REJECTED + error_code=STALE_STATE_REVISION + reason=SS-REVISION-001`；随后以 Learning rebase 语义处理：
+  1. 保持当前 canonical commit rejected / none committed
   2. load 最新 canonical SubjectState
   3. verify 源 InternalExperience 仍有效
   4. verify repository base revision
   5. revalidate field ownership
   6. revalidate prepared memory revision 是否仍可 attach
-  7. 安全则 rebuild/rebase MemoryDelta；不安全则丢弃/orphan 候选并重建 Learning 阶段
+  7. 安全则使用**新 transition ID/fingerprint** rebuild/rebase MemoryDelta；不安全则返回 Learning `status=REBASE_REQUIRED,error_code=STALE_STATE_REVISION,reason=REBASE-STALE-001`
 
 **核心原则：`STALE != 仅改 expected revision`；retry 必须 re-read + revalidate。**
 
@@ -488,34 +498,37 @@ Observation → Learning            （InternalExperience）
 ## 21. TransitionResult
 
 ```text
-TransitionResult {
-  transition_id
-  transition_type
-  status                        // NO_OP / COMMITTED / REJECTED / ABORTED / ALREADY_COMMITTED
-  previous_state_revision
-  next_state_revision?
-  logical_time_before
-  logical_time_after
-  state_hash_before?
-  state_hash_after?
-  mutation_trace_ref?
-  domain_results[]
-  external_effects[]
-  rejection_reason?
-  audit_event_ref?
-}
+TransitionOutcomeV1 =
+    CanonicalCommitResultV1
+  | AlreadyCommittedResultV1
+  | NoOpTransitionResultV1
+  | CanonicalErrorResultV1
+  | LearningRebaseRequiredResultV1
+
+LogicalTransitionResultV1 = closed runtime wrapper over one outcome plus
+  required revision/time/hash fields, domain_result_refs[],
+  external_effect_refs[] and audit_refs[]
 ```
+
+Subject-core emits only commit/already/canonical-error members；Time runtime emits NO_OP and Learning runtime emits rebase. Admission/restore failures use separate `AdmissionErrorResultV1` and never pretend to be a logical transition attempt. `LearningRebaseRequiredResultV1` has exact `status=REBASE_REQUIRED,error_code=STALE_STATE_REVISION,reason=REBASE-STALE-001`; it follows an underlying core stale rejection. Exact required keys/cross-rules for both outcome union and logical wrapper are freeze §§7.3–7.6/13；no implementation may reconstruct the former optional-field bag。
+
+每个 complete proposal 的 exact domain/external refs 先进入 freeze §7.6 content-addressed `PreparedLogicalResultV1` 并在 authority 前 durable/read-verified；NO_OP attempt 或 `AtomicCommitBundleV1` 绑定其 `workflow` ref。COMMITTED 后即使 terminal WorkflowStore checkpoint 丢失，runtime 也必须从 authoritative bundle + prepared record 重建 byte-identical `LogicalTransitionResultV1`；不得重跑 stage 或改用 retry-current values。subject-core 仅通过 runtime-owned、verdict-only `PreparedResultValidator` 验证绑定并携带 ref；该端口不暴露 prepared payload/domain data，subject-core 不 import/call WorkflowStore。
 
 ---
 
 ## 22. Idempotency / Retry
 
-- `transition_id` 唯一。
+- `transition_id` 唯一；NO_OP identity/result 也必须跨 restart durable。
+- syntax-valid input先计算fingerprint并通过`TransitionIdentityJournal` durable first-seen reservation；OPEN reservation允许`attempts=[]`以表达reservation后崩溃。
+- changed-fingerprint reuse 采用 freeze §14.1 的显式 `recordReuseConflict`：caller 必须传入已加载的 revision/logical-time/StateHash/SnapshotHash；journal 不隐式读取 canonical state，并以 stable attempted proposal/ref/fingerprint 幂等追加 conflict/audit/result；首次观察 position 被保留供 response-loss replay。
 - 同一 `transition_id` 重复提交：
   - 已 committed → **不得**再次 `state_revision +1`；返回 `ALREADY_COMMITTED` + 原 `TransitionResult` ref。
-  - 之前 aborted/rejected → 若 payload 不变可同 ID 重试（idempotent）；内容变化 → 必须新 `transition_id`。
-- `same transition_id + same payload hash → idempotent result`；`same id + different payload → TRANSITION_ID_REUSE`（拒绝）。
+  - 已 NO_OP、same fingerprint → 返回原 `NO_OP` result；不改 revision，不冒充 `ALREADY_COMMITTED`。
+  - 之前 aborted/rejected或OPEN → same fingerprint可进入新的append-only attempt并重新执行完整validation；不保证返回原失败或隐式成功。
+  - 任意状态下different fingerprint → `TRANSITION_ID_REUSE`，并用original+attempted identity/fingerprint生成conflict audit；original record不变。
 - Memory prepare 重试应复用已 prepared revision，避免无限孤儿 revision。
+- payload fingerprint = versioned SHA-256/JCS `proposal-fingerprint-v1` over the semantic proposal without transition_id/observability metadata；expected revision is included。
+- transition identity/fingerprint header and rejected/aborted attempts are durable across restart in the authoritative identity/attempt journal；committed record is in the atomic bundle。bounded trace_window and derived idempotency indexes are never identity authority。
 
 ---
 
@@ -523,25 +536,27 @@ TransitionResult {
 
 继承 SubjectState V0 spec §25，另补 transition 级：
 
-| 错误 | pre/post-commit | canonical mutation? | audit_event? |
+| 错误 | pre/post-commit | canonical mutation? | `AuditEventV1`? |
 |---|---|---|---|
-| INVALID_SCHEMA / INVALID_VALUE_RANGE | pre | no | yes |
+| INVALID_SCHEMA / INVALID_VALUE_RANGE | pre | no | CanonicalError yes；Admission syntax no |
 | STALE_STATE_REVISION | pre | no | yes |
-| INVALID_LOGICAL_TIME / INVALID_TIMEBASE | pre | no | yes |
-| INVALID_MEMORY_REVISION | pre | no | yes |
-| FORBIDDEN_DIRECT_MUTATION | pre | no | yes |
-| UNKNOWN_SUBJECT | pre | no | yes |
-| PROPOSAL_REJECTED | pre | no | yes |
+| INVALID_LOGICAL_TIME / INVALID_TIMEBASE | pre | no | durable canonical attempt yes；pre-proposal owning-runtime failure no |
+| INVALID_MEMORY_REVISION | pre/restore | no | CanonicalError yes；restore Admission no |
+| INVALID_MEMORY_REFERENCE | pre/restore | no | CanonicalError yes；restore Admission no |
+| FORBIDDEN_DIRECT_MUTATION | pre | no | classified readonly-path canonical attempt yes；layer-0 direct bypass Admission no |
+| UNKNOWN_SUBJECT | pre | no | no（Admission） |
+| PROPOSAL_REJECTED | pre-proposal owner | no | no（no canonical attempt） |
 | DOMAIN_DELTA_CONFLICT | pre | no | yes |
 | MISSING_REQUIRED_DELTA | pre | no | yes |
 | UNAUTHORIZED_PRODUCER | pre | no | yes |
-| INVALID_TRANSITION_COMPOSITION | pre | no | yes |
+| INVALID_TRANSITION_COMPOSITION | pre | no | canonical attempt yes；pre-proposal runtime no |
 | INVALID_TRANSITION_OWNER | pre | no | yes |
-| COMMIT_CONFLICT | pre | no | yes |
+| INVARIANT_VIOLATION | pre | no | yes |
+| COMMIT_CONFLICT | pre | no | yes，only after reconciliation proves loser not committed |
 | TRANSITION_ID_REUSE | pre | no | yes |
-| EXTERNAL_ACTION_FAILED | runtime result | no | yes（runtime） |
+| EXTERNAL_ACTION_FAILED | runtime result | no | no `AuditEventV1`; noncanonical runtime diagnostics only |
 
-**核心语义：** failure 绝不部分 mutate canonical SubjectState（all-or-nothing）。
+**核心语义：** failure 绝不部分 mutate canonical SubjectState（all-or-nothing）。`AuditEventV1` 的唯一 admission boundary、null rules 与 exact result mapping 见 freeze §§7.5/13.3；本表的 “no” 不禁止非规范日志。
 
 ---
 
@@ -549,15 +564,17 @@ TransitionResult {
 
 - optimistic concurrency：`expected_state_revision`。
 - stale → `STALE_STATE_REVISION`（拒绝 + audit_event），不产生 canonical mutation。
-- 单写者模型（subject-core 串行化 canonical commit）使 V0 无需分布式锁；仅定义语义。
+- precheck 已匹配但 authority-point CAS 失败 → `COMMIT_CONFLICT`；loser 零 mutation 并 reload。
+- store definite pre-authority failure可在durable attempt后返回`ABORTED/SERVICE_UNAVAILABLE`。authority outcome unknown不得直接断言ABORTED；必须按transition ID/fingerprint reconcile：发现committed bundle则返回原commit，证明未publish后才允许retry/abort。
+- 单写者/compare-and-commit 模型使 V0 无需分布式锁；仅定义语义，不声明跨进程/生产 durability。
 
 ---
 
 ## 25. External Side Effects Boundary
 
-- `external_effects[]`（在 TransitionResult 中）记录 ActionIntent/ActionCommand。
+- `external_effect_refs[]`（在 `LogicalTransitionResultV1` 中）只记录 ActionIntent/ActionCommand 的非 canonical 引用；P2/MICL V0 固定为空数组。
 - external side effect **不是** canonical SubjectState mutation。
-- external Action 失败 → 不伪造 Outcome；记录 runtime failure（audit_event，非 canonical）。
+- external Action 失败 → 不伪造 Outcome；只记录非规范 runtime diagnostic，不伪造 `AuditEventV1` 或 canonical mutation。
 - exactly-once / at-least-once / outbox 语义 = `DEFERRED`（不在 V0）。
 
 ---
@@ -569,12 +586,12 @@ TransitionResult {
 | Time | （全部） | NO（V0） | — | NO | — |
 | Observation | Perception/Semantic Interpretation | YES | interpretation proposal | NO | schema + domain |
 | Observation | Appraisal | YES | appraisal proposal | NO | schema + appraisal |
-| Observation | Memory Retrieval | NO（retrieval 由 core 执行） | — | NO | — |
+| Observation | Memory Retrieval | NO（由 memory package deterministic RetrievalService 执行，runtime/orchestrator 调用） | — | NO | deterministic query/result validation |
 | CognitionAction | Reasoning / Policy | YES | reasoning memo / policy candidate | NO | schema |
 | Learning | Experience summarization | V0 NO（谨慎） | — | NO | — |
 | 任何 | — | — | — | **NEVER** | — |
 
-**不变量：** LLM direct canonical mutation = **NEVER**（任何阶段）。
+**不变量：** LLM direct canonical mutation = **NEVER**（任何阶段）。表中的 retrieval executor 绝不指 subject-core；subject-core 不 import/call memory 或 retrieval。
 
 ---
 
@@ -589,9 +606,10 @@ TransitionResult {
 
 ## 28. Hash / Replay Interaction
 
-- `StateHash` 覆盖 canonical 逻辑字段；排除 wall clock / repository payload / trace 内容。
+- `StateHash` = SHA-256 over `canonical-json-v1` JCS versioned projection；包含顶层 schema_version 与完整 canonical Context，排除 entire trace_window / wall clock / repository payload / audit/log。
 - TransitionResult 携带 `state_hash_before/after`。
 - 同一 logical state + 同一 input + 同一 elapsed_time → 同一 transition result（deterministic replay）。
+- SnapshotHash adds subject/revision/exact trace cursor/last trace ref only；golden vectors 见 freeze §9。
 
 ---
 
@@ -601,8 +619,8 @@ TransitionResult {
 |---|---|---|
 | D1 | external side-effect exactly-once / at-least-once / outbox | P2+ 实现前 |
 | D2 | MICL 检索键最终集（affect-congruence = HYPOTHESIS） | NEXT_ACTIONS #3 |
-| D3 | A1–A10 具体判据与 fixture | ROADMAP P1.5 |
-| D4 | trace_window 大小 N / offload 策略 / before/after hash 是否 V0 必选 | P1.5 可加 |
+| D3 | ~~A1–A13 具体判据与 fixture~~ **RESOLVED**：freeze §17 的 40-case exact matrix | — |
+| D4 | ~~trace window / cursor / hashes~~ **RESOLVED**：capacity=64；logical cursor；before/after StateHash required；见 freeze §10 | — |
 | D5 | Experience summarization 是否允许 LLM（当前 V0=NO） | 未来 evidence |
 | D6 | belief/relationship/plasticity 的 Learning 扩展 delta | 未来阶段 |
 | D7 | 真实秒级 timebase + 确定性 adapter | 产品需求触发 |
@@ -616,7 +634,7 @@ TransitionResult {
 | 1 | TimeTransition 改 mood/affect/regulation 是一次 commit 还是三次？ | §5/§13：一次 atomic commit |
 | 2 | 一个 delta 无效，其余是否提交？ | §5/§6：否，reject all |
 | 3 | mutation_trace 与 state mutation 同原子边界？ | §10：是 |
-| 4 | trace_window 截断后完整历史去哪？ | §11：MutationHistory / AuditStore |
+| 4 | trace_window 截断后完整历史去哪？ | §11：authoritative atomic commit journal / MutationHistory；TraceHistoryView only |
 | 5 | affect mechanism config 唯一真值源？ | §12 + 一致性修正：mechanism_config.affect_profile |
 | 6 | tHold=60 / tau=150 单位？ | §12：60 ticks / 150 ticks（legacy_tick timebase，1:1） |
 | 7 | Observation/Learning 谁能写哪部分 MemoryState？ | §8/§18：retrieval 子域 vs content 子域 |
@@ -630,7 +648,7 @@ TransitionResult {
 
 1. **Profile authority 单一化**：`mechanism_config.affect_profile` = 唯一 active config 权威；Mood/Affect 的 `reference_profile` 改为 provenance 字段 `generated_under_profile`（历史溯源，非 config 权威）。
 2. **created_at 单一源**：`runtime_metadata.created_at` = 唯一 subject creation logical time；移除 `identity.created_at`。
-3. **Trace 术语拆分**：MutationHistory / TraceEntry / trace_window / AuditStore / audit_event（见 §11）。
+3. **Trace 术语拆分**：atomic commit journal / MutationHistory / TraceEntry / trace_window / TraceHistoryView / identity audit_event（见 §11）。
 4. **Proposal envelope multi-domain**：`CanonicalTransitionProposal.domain_deltas[]`（见 §6）。
 5. **Memory retrieval metadata ownership**：ObservationTransition owns retrieval 子域；LearningTransition owns content 子域（见 §18）。
 
@@ -650,3 +668,7 @@ TransitionResult {
 8. **SubjectState Deferred D1/D4 → RESOLVED**（transition-contracts 已完成）。
 
 **Action 2 状态 = COMPLETE / CONSISTENCY CLOSED。**
+
+### P2.1 Contract Freeze Incorporation
+
+`docs/implementation/p2-1-contract-freeze.md` 是本文 implementation-level contract 的规范附录。G1–G11 已全部关闭：exact proposal/delta/result schema、JCS/SHA-256 projections/vectors、one-commit/one multi-domain TraceEntry、capacity 64、durable identity/fingerprint/attempt journal、error/status/reason 与唯一 atomic write port 均已冻结。本文任何旧的 opaque metadata/delta、trace N/hash optional、bounded-window identity ledger 或 “retrieval 由 core 执行” 表述均由上述 exact clauses 取代；subject-core 仍只负责 generic validation/atomic canonical commit。
