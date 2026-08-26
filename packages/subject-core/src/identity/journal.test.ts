@@ -27,7 +27,29 @@ function reserve(journal: InMemoryTransitionIdentityJournal, transitionId: strin
   });
 }
 
-/** Structurally valid terminal COMMITTED record (crafted for injection tests). */
+/**
+ * Structurally AND semantically valid terminal COMMITTED record (crafted for
+ * injection tests): a genuine last COMMITTED attempt whose result ref equals
+ * the terminal result ref (Round-3 B3: semantic validation accepts it, so
+ * forgery must be modeled at the semantic level, not just the shape level).
+ */
+function committedAttemptFor(resultRef: CanonicalRefV0): Record<string, unknown> {
+  return {
+    attempt_sequence: 1,
+    status: "COMMITTED",
+    revision_before: 0,
+    revision_after: 1,
+    state_hash_before: `sha256:${"a".repeat(64)}`,
+    state_hash_after: `sha256:${"b".repeat(64)}`,
+    result_ref: resultRef,
+    prepared_result_ref: "workflow:w-1",
+    trace_ref: "trace:t-1",
+    audit_ref: null,
+    error_code: null,
+    reason: null
+  };
+}
+
 function forgedCommittedRecord(transitionId: string): AuthoritativeTransitionRecordV1 {
   return {
     schema_version: "transition-record-v1",
@@ -39,7 +61,7 @@ function forgedCommittedRecord(transitionId: string): AuthoritativeTransitionRec
     payload_fingerprint: FINGERPRINT,
     fingerprint_version: "proposal-fingerprint-v1",
     first_seen_sequence: 1 as HistorySequenceV0,
-    attempts: [],
+    attempts: [committedAttemptFor(RESULT_REF) as never],
     reuse_conflicts: [],
     terminal_status: "COMMITTED",
     terminal_result_ref: RESULT_REF
@@ -79,6 +101,82 @@ describe("journal export/import hardening (§16)", () => {
       journal.importState([forged as unknown as AuthoritativeTransitionRecordV1])
     ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
     expect(await journal.readRecord("t-inject-terminal" as TransitionIdV0)).toBeNull();
+  });
+
+  it("B3.1: forged structurally valid COMMITTED with zero attempts is rejected (semantic gate)", async () => {
+    const journal = new InMemoryTransitionIdentityJournal();
+    // Structurally perfect, semantically impossible: a terminal COMMITTED state
+    // without any attempt never exists under the frozen journal lifecycle.
+    const forged = { ...forgedCommittedRecord("t-b3-empty-attempts"), attempts: [] };
+    expect(() =>
+      journal.importState([forged as unknown as AuthoritativeTransitionRecordV1])
+    ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
+    expect(await journal.readRecord("t-b3-empty-attempts" as TransitionIdV0)).toBeNull();
+  });
+
+  it("B3.2: terminal result ref differing from the last committed attempt is rejected", async () => {
+    const journal = new InMemoryTransitionIdentityJournal();
+    const forged = {
+      ...forgedCommittedRecord("t-b3-ref-mismatch"),
+      terminal_result_ref: "result:other" as CanonicalRefV0
+    };
+    expect(() =>
+      journal.importState([forged as unknown as AuthoritativeTransitionRecordV1])
+    ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
+    expect(await journal.readRecord("t-b3-ref-mismatch" as TransitionIdV0)).toBeNull();
+  });
+
+  it("B3.3: a reuse conflict replaying the reserved identity tuple is rejected", async () => {
+    const journal = new InMemoryTransitionIdentityJournal();
+    const base = forgedCommittedRecord("t-b3-conflict-replay");
+    const conflict = {
+      conflict_sequence: 1,
+      attempted_subject_id: "subject-s0",
+      attempted_transition_type: "Time",
+      attempted_proposal_ref: PROPOSAL_REF,
+      attempted_payload_fingerprint: FINGERPRINT,
+      revision_before: 0,
+      logical_time_before: 0,
+      state_hash_before: `sha256:${"c".repeat(64)}`,
+      snapshot_hash_before: `sha256:${"d".repeat(64)}`,
+      error_code: "TRANSITION_ID_REUSE",
+      reason: "IDEM-REUSE-001",
+      audit_ref: "audit:a-1",
+      result_ref: "result:c-1"
+    };
+    const forged = {
+      ...base,
+      record_version: 3,
+      reuse_conflicts: [conflict as never]
+    };
+    expect(() =>
+      journal.importState([forged as unknown as AuthoritativeTransitionRecordV1])
+    ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
+    expect(await journal.readRecord("t-b3-conflict-replay" as TransitionIdV0)).toBeNull();
+  });
+
+  it("B3.x: attempt status invariants reject forged COMMITTED/NO_OP attempts", async () => {
+    const journal = new InMemoryTransitionIdentityJournal();
+    // COMMITTED attempt that does not advance the revision.
+    const badAttempt = { ...committedAttemptFor(RESULT_REF), revision_after: 0 };
+    const forged = {
+      ...forgedCommittedRecord("t-b3-attempt-invariant"),
+      attempts: [badAttempt as never]
+    };
+    expect(() =>
+      journal.importState([forged as unknown as AuthoritativeTransitionRecordV1])
+    ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
+
+    // record_version below the journal-history floor (1 + attempts + conflicts).
+    const shortVersion = {
+      ...forgedCommittedRecord("t-b3-short-version"),
+      record_version: 1,
+      attempts: [committedAttemptFor(RESULT_REF) as never]
+    };
+    expect(() =>
+      journal.importState([shortVersion as unknown as AuthoritativeTransitionRecordV1])
+    ).toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
+    expect(await journal.readRecord("t-b3-short-version" as TransitionIdV0)).toBeNull();
   });
 
   it.each([

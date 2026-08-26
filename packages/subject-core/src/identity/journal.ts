@@ -15,13 +15,15 @@
  *   time/state hash/snapshot hash) enter `recordReuseConflict` explicitly from the
  *   caller (subject-core loads them, §14.1).
  * - Optional host-side persistence: `exportState` returns a deep-frozen snapshot
- *   and `importState` FULLY validates every record (closed shape, branded
- *   scalars, terminal pairing, contiguous attempt/conflict sequences) before
- *   applying anything — one invalid record rejects the whole batch and invalid
- *   terminal records can never be injected; the first-seen sequence counter is
- *   recovered deterministically so restarted journals never collide with
- *   pre-restart identities. COMMITTED records additionally rebuild from the
- *   authoritative store.
+ *   and `importState` FULLY validates every record — closed shape, branded
+ *   scalars, terminal pairing AND frozen transition-identity SEMANTICS (§14.2/
+ *   §14.3 attempt status invariants, terminal attempt/result agreement, OPEN
+ *   emptiness, impossible reuse conflicts, record-version floor) — before
+ *   applying anything. One invalid record rejects the whole batch, so a
+ *   structurally valid but semantically forged terminal record can never be
+ *   injected; the first-seen sequence counter is recovered deterministically so
+ *   restarted journals never collide with pre-restart identities. COMMITTED
+ *   records additionally rebuild from the authoritative store.
  */
 
 import type {
@@ -250,7 +252,55 @@ function validateImportedAttempt(v: unknown, d: string, index: number): Check {
   if (!ar.ok) return ar;
   const ec = stringOrNull(o["error_code"], `${d}.error_code`);
   if (!ec.ok) return ec;
-  return stringOrNull(o["reason"], `${d}.reason`);
+  const reason = stringOrNull(o["reason"], `${d}.reason`);
+  if (!reason.ok) return reason;
+  return attemptStatusInvariants(o, d);
+}
+
+/**
+ * §14.3 attempt status invariants (Round-3 B3): structural validity alone cannot
+ * prove a transition happened — the frozen status semantics must hold too.
+ */
+function attemptStatusInvariants(o: Record<string, unknown>, d: string): Check {
+  const status = o["status"];
+  if (status === "COMMITTED") {
+    if ((o["revision_after"] as number) !== (o["revision_before"] as number) + 1) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: COMMITTED attempt must advance the revision by exactly one`);
+    }
+    if (o["trace_ref"] === null) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: COMMITTED attempt requires a trace ref`);
+    }
+    if (o["audit_ref"] !== null || o["error_code"] !== null || o["reason"] !== null) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: COMMITTED attempt carries audit/error/reason`);
+    }
+    return ok(undefined);
+  }
+  if (status === "NO_OP") {
+    if (
+      o["revision_after"] !== o["revision_before"] ||
+      o["state_hash_after"] !== o["state_hash_before"]
+    ) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: NO_OP attempt must keep revision and state hash unchanged`);
+    }
+    if (o["trace_ref"] !== null || o["audit_ref"] !== null || o["error_code"] !== null) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: NO_OP attempt carries trace/audit/error`);
+    }
+    return literal(o["reason"], "TIME-NOOP-001", `${d}.reason`);
+  }
+  // REJECTED / ABORTED: no authority advance, durable audit trail required.
+  if (
+    o["revision_after"] !== o["revision_before"] ||
+    o["state_hash_after"] !== o["state_hash_before"]
+  ) {
+    return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: ${String(status)} attempt must keep revision and state hash unchanged`);
+  }
+  if (o["trace_ref"] !== null) {
+    return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: ${String(status)} attempt carries a trace ref`);
+  }
+  if (o["audit_ref"] === null || o["error_code"] === null || o["reason"] === null) {
+    return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: ${String(status)} attempt requires audit/error/reason`);
+  }
+  return ok(undefined);
 }
 
 function validateImportedConflict(v: unknown, d: string, index: number): Check {
@@ -290,6 +340,68 @@ function validateImportedConflict(v: unknown, d: string, index: number): Check {
   if (!auditRef.ok) return auditRef;
   const resultRef = isString(o["result_ref"]) ? asCheck(parseRef(o["result_ref"], `${d}.result_ref`)) : fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.result_ref: expected ref`);
   if (!resultRef.ok) return resultRef;
+  return ok(undefined);
+}
+
+/**
+ * §14.2/§14.3 terminal semantics (Round-3 B3): a structurally valid record can
+ * still be FORGED — terminal COMMITTED/NO_OP must correspond to a genuine last
+ * attempt whose authoritative fields agree with the terminal fields, attempts
+ * may be empty only while OPEN, only the last attempt may be terminal, and a
+ * reuse conflict can never replay the record's own reserved identity.
+ */
+function validateRecordTerminalSemantics(o: Record<string, unknown>, d: string): Check {
+  const attempts = o["attempts"] as unknown[];
+  const conflicts = o["reuse_conflicts"] as unknown[];
+  const terminal = o["terminal_status"];
+
+  // record_version counts reservation + one bump per successor event.
+  const minVersion = 1 + attempts.length + conflicts.length;
+  if ((o["record_version"] as number) < minVersion) {
+    return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.record_version inconsistent with journal history (expected >= ${minVersion})`);
+  }
+
+  // OPEN records never carry terminal attempts.
+  if (terminal === null) {
+    for (let i = 0; i < attempts.length; i++) {
+      const status = (attempts[i] as Record<string, unknown>)["status"];
+      if (status === "COMMITTED" || status === "NO_OP") {
+        return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: OPEN record carries a terminal ${String(status)} attempt`);
+      }
+    }
+  }
+
+  if (terminal !== null) {
+    if (attempts.length === 0) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: terminal ${String(terminal)} record without any attempt`);
+    }
+    const last = attempts[attempts.length - 1] as Record<string, unknown>;
+    if (last["status"] !== terminal) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: terminal ${String(terminal)} requires the last attempt to be ${String(terminal)}`);
+    }
+    if (o["terminal_result_ref"] !== last["result_ref"]) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.terminal_result_ref disagrees with the last ${String(terminal)} attempt`);
+    }
+    // Single-assignment terminal: no earlier attempt may already be terminal.
+    for (let i = 0; i < attempts.length - 1; i++) {
+      const status = (attempts[i] as Record<string, unknown>)["status"];
+      if (status === "COMMITTED" || status === "NO_OP") {
+        return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: attempt ${i + 1} appends after a terminal attempt`);
+      }
+    }
+  }
+
+  // A reuse conflict exists ONLY for a differing identity/fingerprint; replaying
+  // the record's own reserved tuple is impossible under the frozen routing rules.
+  for (let i = 0; i < conflicts.length; i++) {
+    const conflict = conflicts[i] as Record<string, unknown>;
+    if (
+      conflict["attempted_proposal_ref"] === o["proposal_ref"] &&
+      conflict["attempted_payload_fingerprint"] === o["payload_fingerprint"]
+    ) {
+      return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.reuse_conflicts[${i}] replays the reserved identity tuple`);
+    }
+  }
   return ok(undefined);
 }
 
@@ -350,14 +462,16 @@ function validateImportedRecord(v: unknown, index: number): Check {
     if (o["terminal_result_ref"] !== null) {
       return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.terminal_result_ref without terminal_status`);
     }
-    return ok(undefined);
+    return validateRecordTerminalSemantics(o, d);
   }
   const ts = oneOf(terminal, ["COMMITTED", "NO_OP"], `${d}.terminal_status`);
   if (!ts.ok) return ts;
   if (!isString(o["terminal_result_ref"])) {
     return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.terminal_result_ref required for terminal ${String(terminal)}`);
   }
-  return asCheck(parseRef(o["terminal_result_ref"], `${d}.terminal_result_ref`));
+  const refCheck = asCheck(parseRef(o["terminal_result_ref"], `${d}.terminal_result_ref`));
+  if (!refCheck.ok) return refCheck;
+  return validateRecordTerminalSemantics(o, d);
 }
 
 function deepFreeze(value: unknown): void {
