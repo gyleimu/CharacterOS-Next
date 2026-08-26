@@ -11,7 +11,6 @@ import type {
   CanonicalTransitionProposalV1,
   CommitReservedInput,
   CommitReservedOutcome,
-  ProducerAuthorizationSetV1,
   ReconcileOutcome,
   ReserveAndRouteOutcome,
   SubjectStateV0,
@@ -48,17 +47,4 @@ export interface TransitionCapabilities {
     readonly repository_revision: string;
     readonly repository_revision_hash: string;
   }>;
-}
-
-/** Authorization-set constructor helper (host composition responsibility). */
-export function authorizationSet(
-  bindings: readonly {
-    producer: "affect" | "context" | "memory" | "regulation";
-    domain: "affect" | "context" | "memory-content" | "memory-retrieval" | "regulation";
-  }[]
-): ProducerAuthorizationSetV1 {
-  return {
-    schema_version: "producer-authorization-set-v1",
-    bindings: [...bindings]
-  };
 }

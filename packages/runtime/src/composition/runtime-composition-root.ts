@@ -22,6 +22,7 @@ import type {
   RuntimeDependencyContainer
 } from "../types/runtime-dependency-container.js";
 import type { MemoryRepository } from "@characteros-next/memory";
+import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 import type {
   AppraisalPort,
   AffectProducerPort,
@@ -36,6 +37,12 @@ import type {
 export interface RuntimeCompositionOptions {
   /** Required: canonical commit boundary + authoritative snapshot reads. */
   readonly subjectCore: SubjectCorePort;
+  /**
+   * Required: the trusted producer-authorization issuer whose verify verdict is
+   * wired into `subjectCore` (ATTACK D closure). Executors mint capabilities
+   * through it; there is no structural alternative.
+   */
+  readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
   /** Required: immutable revision repository capability. */
   readonly memoryRepository: MemoryRepository;
   /** Required: deterministic retrieval seam. */
@@ -56,6 +63,9 @@ export class RuntimeCompositionRoot {
     if (options.subjectCore === undefined) {
       throw new Error("composition error: subjectCore capability is required");
     }
+    if (options.producerAuthorizationIssuer === undefined) {
+      throw new Error("composition error: producerAuthorizationIssuer capability is required");
+    }
     if (options.memoryRepository === undefined) {
       throw new Error("composition error: memoryRepository capability is required");
     }
@@ -64,6 +74,7 @@ export class RuntimeCompositionRoot {
     }
     const assembled: RuntimeDependencyContainer = {
       subjectCore: options.subjectCore,
+      producerAuthorizationIssuer: options.producerAuthorizationIssuer,
       memory: { repository: options.memoryRepository },
       retrieval: options.retrieval,
       interpretation: options.interpretation ?? null,

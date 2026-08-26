@@ -17,6 +17,10 @@ import { InMemoryAtomicCommitStore } from "./store.js";
 import { InMemoryTransitionIdentityJournal } from "../identity/journal.js";
 import { SubjectCoreFacade, type SubjectCoreFacadePorts } from "./facade.js";
 import { createInMemorySubjectCoreFacade } from "./reference.js";
+import {
+  createProducerAuthorizationIssuer,
+  type ProducerAuthorizationIssuer
+} from "./producer-authorization.js";
 
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 
@@ -128,14 +132,11 @@ function timeProposal(transitionId: string, ticks = 5, expectedRevision = 0): Re
   };
 }
 
-function authorization() {
-  return {
-    schema_version: "producer-authorization-set-v1",
-    bindings: [
-      { producer: "affect", domain: "affect" },
-      { producer: "regulation", domain: "regulation" }
-    ]
-  } as never;
+function authorization(issuer: ProducerAuthorizationIssuer) {
+  return issuer.issue([
+    { producer: "affect", domain: "affect" },
+    { producer: "regulation", domain: "regulation" }
+  ]);
 }
 
 function preparedBinding(transitionId: string): PreparedLogicalResultBindingV1 {
@@ -153,15 +154,18 @@ interface Harness {
   store: InMemoryAtomicCommitStore;
   journal: InMemoryTransitionIdentityJournal;
   initial: SubjectStateV0;
+  issuer: ProducerAuthorizationIssuer;
 }
 
 function buildHarness(): Harness {
   const initial = s0() as unknown as SubjectStateV0;
   const store = new InMemoryAtomicCommitStore();
   const journal = new InMemoryTransitionIdentityJournal();
+  const issuer = createProducerAuthorizationIssuer();
   const ports: SubjectCoreFacadePorts = {
     store,
     journal,
+    producerAuthorizationVerifier: async (set) => issuer.verify(set),
     stateReader: {
       async readCurrentSnapshot(subjectId: IdentifierV0) {
         const bundle = store.readCurrentBundle(subjectId);
@@ -174,7 +178,7 @@ function buildHarness(): Harness {
     preparedResultValidator: async (binding) => binding.prepared_result_ref === "workflow:w-1",
     referenceValidator: async () => true
   };
-  return { facade: new SubjectCoreFacade(ports), store, journal, initial };
+  return { facade: new SubjectCoreFacade(ports), store, journal, initial, issuer };
 }
 
 async function reserveAndCommitHarness(
@@ -187,7 +191,7 @@ async function reserveAndCommitHarness(
   return h.facade.commitReserved({
     proposal: proposal as unknown as CanonicalTransitionProposalV1,
     continuation: reserved.continuation,
-    producerAuthorization: authorization(),
+    producerAuthorization: authorization(h.issuer),
     preparedBinding: preparedBinding(proposal["transition_id"] as string),
     repository_bindings: R0_BINDINGS
   });
@@ -207,7 +211,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       h.facade.commitReserved({
         proposal: proposalB as unknown as CanonicalTransitionProposalV1,
         continuation: reserved.continuation,
-        producerAuthorization: authorization(),
+        producerAuthorization: authorization(h.issuer),
         preparedBinding: preparedBinding("t-attack-a"),
         repository_bindings: R0_BINDINGS
       })
@@ -242,7 +246,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       h.facade.terminalizeReservedNoOp({
         proposal: mutated,
         continuation: reserved.continuation,
-        producerAuthorization: { schema_version: "producer-authorization-set-v1", bindings: [] },
+        producerAuthorization: h.issuer.issue([]),
         preparedBinding: preparedBinding("t-attack-a-noop")
       })
     ).rejects.toThrow(/COMMIT_CHAIN_INTEGRITY_FAILURE\/SS-RESTORE-001/);
@@ -263,7 +267,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       h.facade.commitReserved({
         proposal: proposal as unknown as CanonicalTransitionProposalV1,
         continuation: reserved.continuation,
-        producerAuthorization: authorization(),
+        producerAuthorization: authorization(h.issuer),
         preparedBinding: foreignBinding,
         repository_bindings: R0_BINDINGS
       })
@@ -288,7 +292,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     const outcome = await h.facade.commitReserved({
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
-      producerAuthorization: authorization(),
+      producerAuthorization: authorization(h.issuer),
       preparedBinding: preparedBinding("t-attack-a-honest"),
       repository_bindings: R0_BINDINGS
     });
@@ -313,7 +317,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     const second = await h.facade.commitReserved({
       proposal: timeProposal("t-attack-b-second", 4, 1) as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
-      producerAuthorization: authorization(),
+      producerAuthorization: authorization(h.issuer),
       preparedBinding: preparedBinding("t-attack-b-second"),
       repository_bindings: R0_BINDINGS
     });
@@ -333,7 +337,7 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     const outcome = await h.facade.commitReserved({
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
-      producerAuthorization: authorization(),
+      producerAuthorization: authorization(h.issuer),
       preparedBinding: preparedBinding("t-attack-a-recon"),
       repository_bindings: R0_BINDINGS
     });
@@ -356,5 +360,36 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       ("sha256:" + "f".repeat(64)) as never
     );
     expect(mismatched.kind).toBe("COMMIT_CONFLICT");
+  });
+
+  it("D1: ATTACK D — a structurally identical forged authorization set is refused", async () => {
+    const h = buildHarness();
+    const proposal = timeProposal("t-attack-d", 5);
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+
+    // The attacker constructs a set with the EXACT same shape and bindings as a
+    // legitimately minted one. It never passed through the issuer, so the
+    // capability gate must refuse it even though it is structurally valid.
+    const forged = {
+      schema_version: "producer-authorization-set-v1",
+      bindings: [
+        { producer: "affect", domain: "affect" },
+        { producer: "regulation", domain: "regulation" }
+      ]
+    } as never;
+    const outcome = await h.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: forged,
+      preparedBinding: preparedBinding("t-attack-d"),
+      repository_bindings: R0_BINDINGS
+    });
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("UNAUTHORIZED_PRODUCER");
+    }
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
   });
 });

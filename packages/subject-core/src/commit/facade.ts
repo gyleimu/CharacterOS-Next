@@ -85,11 +85,20 @@ export type PreparedResultValidatorCapability = (
   binding: PreparedLogicalResultBindingV1
 ) => boolean | Promise<boolean>;
 
+/**
+ * Verdict-only inverted capability for the trusted producer authorization set
+ * (§7.1, ATTACK D closure): true ONLY for issuer-minted capabilities.
+ */
+export type ProducerAuthorizationVerifierCapability = (
+  set: ProducerAuthorizationSetV1
+) => boolean | Promise<boolean>;
+
 export interface SubjectCoreFacadePorts {
   readonly store: AtomicCommitStorePort;
   readonly journal: TransitionIdentityJournalPort;
   readonly stateReader: StateReaderPort;
   readonly preparedResultValidator: PreparedResultValidatorCapability;
+  readonly producerAuthorizationVerifier: ProducerAuthorizationVerifierCapability;
   readonly referenceValidator?: ReferenceValidatorCapability;
 }
 
@@ -233,7 +242,19 @@ export class SubjectCoreFacade {
       throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
     }
 
-    // 2. Continuation integrity: immutable header must match the journal record.
+    // 2. Forged-capability gate (§13.4 layer 0, ATTACK D closure): the producer
+    // authorization set must be an issuer-minted trusted capability; a merely
+    // structural copy is UNAUTHORIZED_PRODUCER before anything else runs.
+    const capabilityOk = await this.ports.producerAuthorizationVerifier(input.producerAuthorization);
+    if (capabilityOk !== true) {
+      return this.rejected(
+        "UNAUTHORIZED_PRODUCER",
+        "SS-AUTH-001",
+        "producer authorization capability invalid or forged"
+      );
+    }
+
+    // 3. Continuation integrity: immutable header must match the journal record.
     const record = await this.ports.journal.readRecord(input.continuation.transition_id);
     if (record === null) {
       throw admissionFailure("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", "reservation record missing");
@@ -251,7 +272,7 @@ export class SubjectCoreFacade {
       );
     }
 
-    // 3. Proposal identity re-bind (ATTACK A closure): the submitted proposal's
+    // 4. Proposal identity re-bind (ATTACK A closure): the submitted proposal's
     // cryptographic identity is RECOMPUTED and must equal the identity recorded
     // at reservation — a continuation can never carry a different proposal.
     const recomputedRef = await proposalRef(input.proposal);
@@ -281,7 +302,7 @@ export class SubjectCoreFacade {
       return { kind: "NO_OP" };
     }
 
-    // 4. Trusted prepared binding: bound to the reserved identity (§7.6, ATTACK C
+    // 5. Trusted prepared binding: bound to the reserved identity (§7.6, ATTACK C
     // closure) — a binding minted for another transition/subject/type is refused
     // before any verdict is consulted.
     const bindingBound =
@@ -304,7 +325,7 @@ export class SubjectCoreFacade {
       );
     }
 
-    // 5. Producer authorization: capability set equals the proposal's distinct pairs.
+    // 6. Producer authorization: capability set equals the proposal's distinct pairs.
     const distinctPairs = new Set<string>();
     for (const delta of input.proposal.domain_deltas) {
       distinctPairs.add(`${delta.producer}|${delta.domain}`);
@@ -320,7 +341,7 @@ export class SubjectCoreFacade {
       return this.rejected("UNAUTHORIZED_PRODUCER", "SS-AUTH-001", "producer authorization set mismatch");
     }
 
-    // 6. RE-READ latest authority.
+    // 7. RE-READ latest authority.
     const currentState = await this.ports.stateReader.readCurrentSnapshot(
       input.continuation.subject_id
     );
@@ -328,7 +349,7 @@ export class SubjectCoreFacade {
       return this.rejected("UNKNOWN_SUBJECT", "SS-AUTH-001", "subject not found at second call");
     }
 
-    // 7. Journal/store-derived facts.
+    // 8. Journal/store-derived facts.
     const store = this.ports.store as StoreReadSurface;
     const previousCommitRef =
       (await this.readCurrentCommitRef(input.continuation.subject_id)) ??
@@ -358,6 +379,15 @@ export class SubjectCoreFacade {
     const syntax = validateProposal(input.proposal);
     if (!syntax.ok) {
       throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
+    }
+    // Forged-capability gate (§13.4 layer 0, ATTACK D closure).
+    const capabilityOk = await this.ports.producerAuthorizationVerifier(input.producerAuthorization);
+    if (capabilityOk !== true) {
+      return this.rejected(
+        "UNAUTHORIZED_PRODUCER",
+        "SS-AUTH-001",
+        "producer authorization capability invalid or forged"
+      );
     }
     const record = await this.ports.journal.readRecord(input.continuation.transition_id);
     if (record === null) {

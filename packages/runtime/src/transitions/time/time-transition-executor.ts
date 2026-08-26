@@ -16,10 +16,7 @@ import type {
 } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
-import {
-  authorizationSet,
-  type TransitionCapabilities
-} from "../../ports/subject-core-port.js";
+import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import { admitElapsedTicks, anchorContext, stageFailure, TransitionStageFailure } from "../common.js";
 
 export interface TimeTransitionInputV0 {
@@ -76,7 +73,7 @@ export class TimeTransitionExecutor {
           return this.deps.subjectCore.terminalizeReservedNoOp({
             proposal: zeroProposal,
             continuation: reserved.continuation,
-            producerAuthorization: authorizationSet([]),
+            producerAuthorization: this.deps.producerAuthorizationIssuer.issue([]),
             preparedBinding: capabilities.preparedBinding
           });
         case "TERMINAL_NO_OP":
@@ -179,7 +176,7 @@ export class TimeTransitionExecutor {
     return this.deps.subjectCore.commitReserved({
       proposal,
       continuation: reserved.continuation,
-      producerAuthorization: authorizationSet([
+      producerAuthorization: this.deps.producerAuthorizationIssuer.issue([
         { producer: "affect", domain: "affect" },
         { producer: "regulation", domain: "regulation" }
       ]),

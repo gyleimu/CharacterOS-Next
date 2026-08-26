@@ -7,6 +7,7 @@
 import {
   createInMemorySubjectCoreFacade,
   type InMemoryFacadeAssembly,
+  type ProducerAuthorizationIssuer,
   type ReadOnlyStoreHandle,
   type SubjectStateV0,
   type CanonicalRefV0
@@ -112,6 +113,8 @@ export interface FacadeSubjectCore extends SubjectCorePort {
 
 export class RealEngineCoreAdapter implements FacadeSubjectCore {
   readonly storeRead: ReadOnlyStoreHandle;
+  /** Trusted issuer wired into the facade verifier (ATTACK D closure). */
+  readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
   private readonly assembly: InMemoryFacadeAssembly;
   private readonly initial: SubjectStateV0;
   private readonly frozenView: boolean;
@@ -126,6 +129,7 @@ export class RealEngineCoreAdapter implements FacadeSubjectCore {
         binding.prepared_result_ref === "workflow:w-obs-1"
     });
     this.storeRead = this.assembly.storeRead;
+    this.producerAuthorizationIssuer = this.assembly.producerAuthorizationIssuer;
   }
 
   async reserveAndRoute(
@@ -328,6 +332,7 @@ export function buildObservationHarness(
       : retrievalService(overrides.emptyRetrieval ?? false));
   const root = new RuntimeCompositionRoot({
     subjectCore: core,
+    producerAuthorizationIssuer: core.producerAuthorizationIssuer,
     memoryRepository: memory,
     retrieval,
     interpretation:

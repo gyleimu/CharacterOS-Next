@@ -16,6 +16,10 @@ import type { ReferenceValidatorCapability } from "./engine.js";
 import { InMemoryAtomicCommitStore } from "./store.js";
 import { InMemoryTransitionIdentityJournal } from "../identity/journal.js";
 import { SubjectCoreFacade, type SubjectCoreFacadePorts } from "./facade.js";
+import {
+  createProducerAuthorizationIssuer,
+  type ProducerAuthorizationIssuer
+} from "./producer-authorization.js";
 
 export interface InMemoryFacadeOptions {
   /** Verdict-only repository capability (defaults to accepting everything). */
@@ -41,6 +45,12 @@ export interface InMemoryFacadeAssembly {
   readonly facade: SubjectCoreFacade;
   readonly storeRead: ReadOnlyStoreHandle;
   readonly journal: InMemoryTransitionIdentityJournal;
+  /**
+   * The trusted producer-authorization issuer wired into the facade's verifier
+   * (ATTACK D closure). Host compositions issue capabilities through THIS issuer
+   * only; structurally copied sets are refused by the facade.
+   */
+  readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
 }
 
 export function createInMemorySubjectCoreFacade(
@@ -53,6 +63,7 @@ export function createInMemorySubjectCoreFacade(
   }
   const store = new InMemoryAtomicCommitStore();
   const journal = new InMemoryTransitionIdentityJournal();
+  const producerAuthorizationIssuer = createProducerAuthorizationIssuer();
   const seeds = options.seedSnapshots ?? new Map<IdentifierV0, SubjectStateV0>();
 
   const ports: SubjectCoreFacadePorts = {
@@ -66,6 +77,7 @@ export function createInMemorySubjectCoreFacade(
       }
     },
     preparedResultValidator: options.preparedResultValidator,
+    producerAuthorizationVerifier: async (set) => producerAuthorizationIssuer.verify(set),
     ...(options.referenceValidator !== undefined
       ? { referenceValidator: options.referenceValidator }
       : {})
@@ -73,6 +85,7 @@ export function createInMemorySubjectCoreFacade(
 
   return {
     facade: new SubjectCoreFacade(ports),
+    producerAuthorizationIssuer,
     storeRead: {
       getCommittedBundles: () => store.getCommittedBundles(),
       currentRevision: (subjectId: string) => store.currentRevision(subjectId),

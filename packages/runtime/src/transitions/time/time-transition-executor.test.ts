@@ -154,6 +154,7 @@ function buildExecutor(overrides: { frozenView?: boolean; failingAffect?: boolea
   const core = new RealEngineCoreAdapter(initial, { frozenView: overrides.frozenView ?? false });
   const root = new RuntimeCompositionRoot({
     subjectCore: core,
+    producerAuthorizationIssuer: core.producerAuthorizationIssuer,
     memoryRepository: new MemoryRepositoryStub(),
     retrieval: {
       retrieve: async () => {
@@ -262,6 +263,7 @@ describe("TimeTransitionExecutor", () => {
     const core = new RealEngineCoreAdapter(initial);
     const root = new RuntimeCompositionRoot({
       subjectCore: core,
+      producerAuthorizationIssuer: core.producerAuthorizationIssuer,
       memoryRepository: new MemoryRepositoryStub(),
       retrieval: {
         retrieve: async () => {

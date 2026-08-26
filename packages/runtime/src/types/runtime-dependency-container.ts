@@ -21,10 +21,13 @@ import type {
   RetrievalPort,
   SubjectCorePort
 } from "../ports/index.js";
+import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 
 export interface RuntimeDependencyContainer {
   /** Canonical commit boundary + authoritative snapshot reads. */
   readonly subjectCore: SubjectCorePort;
+  /** Trusted issuer minting producer-authorization capabilities verified by core. */
+  readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
   /** Immutable revision repository: prepare/read/verdicts only (refs, no payloads). */
   readonly memory: MemoryPort;
   /** Deterministic retrieval seam backed by the memory repository capability. */

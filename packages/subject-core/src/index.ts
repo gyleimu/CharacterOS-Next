@@ -174,12 +174,18 @@ export {
   type CommitReservedInput,
   type CommitReservedOutcome,
   type PreparedResultValidatorCapability,
+  type ProducerAuthorizationVerifierCapability,
   type ReconcileOutcome,
   type ReserveAndRouteOutcome,
   type StateReaderPort,
   type SubjectCoreFacadePorts,
   type TerminalizeNoOpInput
 } from "./commit/facade.js";
+
+export {
+  createProducerAuthorizationIssuer,
+  type ProducerAuthorizationIssuer
+} from "./commit/producer-authorization.js";
 
 export {
   createInMemorySubjectCoreFacade,

@@ -52,6 +52,7 @@ function buildRoot() {
   });
   const root = new RuntimeCompositionRoot({
     subjectCore: assembly.facade,
+    producerAuthorizationIssuer: assembly.producerAuthorizationIssuer,
     memoryRepository: new MemoryRepositoryStub(),
     retrieval: emptyRetrieval,
     contextProducer: new ReferenceContextProducer(),
@@ -86,12 +87,22 @@ describe("RuntimeCompositionRoot", () => {
         } as unknown as RuntimeCompositionOptions)
     ).toThrow(/subjectCore/);
 
+    const facadeAssembly = createInMemorySubjectCoreFacade({
+      preparedResultValidator: async () => true
+    });
     expect(
       () =>
         new RuntimeCompositionRoot({
-          subjectCore: createInMemorySubjectCoreFacade({
-            preparedResultValidator: async () => true
-          }).facade,
+          subjectCore: facadeAssembly.facade,
+          retrieval: emptyRetrieval
+        } as unknown as RuntimeCompositionOptions)
+    ).toThrow(/producerAuthorizationIssuer/);
+
+    expect(
+      () =>
+        new RuntimeCompositionRoot({
+          subjectCore: facadeAssembly.facade,
+          producerAuthorizationIssuer: facadeAssembly.producerAuthorizationIssuer,
           retrieval: emptyRetrieval
         } as unknown as RuntimeCompositionOptions)
     ).toThrow(/memoryRepository/);

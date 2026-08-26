@@ -29,10 +29,7 @@ import type {
 import type { MemoryRetrievalQueryV0 } from "@characteros-next/memory";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
-import {
-  authorizationSet,
-  type TransitionCapabilities
-} from "../../ports/subject-core-port.js";
+import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import type { ObservationInputV0 } from "./types.js";
 import { validateObservationInput } from "./types.js";
 import {
@@ -286,7 +283,7 @@ export class ObservationTransitionExecutor {
     return this.deps.subjectCore.commitReserved({
       proposal,
       continuation: reserved.continuation,
-      producerAuthorization: authorizationSet(authorizationBindings),
+      producerAuthorization: this.deps.producerAuthorizationIssuer.issue(authorizationBindings),
       preparedBinding: capabilities.preparedBinding,
       repository_bindings: capabilities.repository_bindings as never
     });

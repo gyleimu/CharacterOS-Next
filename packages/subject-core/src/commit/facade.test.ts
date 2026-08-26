@@ -20,6 +20,10 @@ import type { IdentifierV0 } from "../types/scalars.js";
 import { InMemoryAtomicCommitStore } from "./store.js";
 import { InMemoryTransitionIdentityJournal } from "../identity/journal.js";
 import { SubjectCoreFacade, type SubjectCoreFacadePorts } from "./facade.js";
+import {
+  createProducerAuthorizationIssuer,
+  type ProducerAuthorizationIssuer
+} from "./producer-authorization.js";
 
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 
@@ -131,14 +135,11 @@ function timeProposal(transitionId: string, ticks = 5): Record<string, unknown> 
   };
 }
 
-function authorization(): ProducerAuthorizationSetV1 {
-  return {
-    schema_version: "producer-authorization-set-v1",
-    bindings: [
-      { producer: "affect", domain: "affect" },
-      { producer: "regulation", domain: "regulation" }
-    ]
-  };
+function authorization(issuer: ProducerAuthorizationIssuer): ProducerAuthorizationSetV1 {
+  return issuer.issue([
+    { producer: "affect", domain: "affect" },
+    { producer: "regulation", domain: "regulation" }
+  ]);
 }
 
 function preparedBinding(transitionId: string): PreparedLogicalResultBindingV1 {
@@ -156,15 +157,18 @@ interface Harness {
   store: InMemoryAtomicCommitStore;
   journal: InMemoryTransitionIdentityJournal;
   initial: SubjectStateV0;
+  issuer: ProducerAuthorizationIssuer;
 }
 
 function buildHarness(overrides: { nextFault?: () => "OUTCOME_UNKNOWN" | undefined } = {}): Harness {
   const initial = s0() as unknown as SubjectStateV0;
   const store = new InMemoryAtomicCommitStore(overrides.nextFault ? { nextFault: overrides.nextFault } : {});
   const journal = new InMemoryTransitionIdentityJournal();
+  const issuer = createProducerAuthorizationIssuer();
   const ports: SubjectCoreFacadePorts = {
     store,
     journal,
+    producerAuthorizationVerifier: async (set) => issuer.verify(set),
     stateReader: {
       async readCurrentSnapshot(subjectId: IdentifierV0) {
         const bundle = store.readCurrentBundle(subjectId);
@@ -176,7 +180,7 @@ function buildHarness(overrides: { nextFault?: () => "OUTCOME_UNKNOWN" | undefin
       binding.transition_id === (store.readCommittedByTransitionId(binding.transition_id)?.transition_id ?? binding.transition_id),
     referenceValidator: async () => true
   };
-  return { facade: new SubjectCoreFacade(ports), store, journal, initial };
+  return { facade: new SubjectCoreFacade(ports), store, journal, initial, issuer };
 }
 
 async function reserveAndCommit(
@@ -189,7 +193,7 @@ async function reserveAndCommit(
   return harness.facade.commitReserved({
     proposal: proposal as unknown as CanonicalTransitionProposalV1,
     continuation: reserved.continuation,
-    producerAuthorization: authorization(),
+    producerAuthorization: authorization(harness.issuer),
     preparedBinding: preparedBinding(proposal["transition_id"] as string),
     repository_bindings: R0_BINDINGS
   });
@@ -248,10 +252,7 @@ describe("two-call protocol — idempotency and identity", () => {
     const outcome = await h.facade.terminalizeReservedNoOp({
       proposal,
       continuation: reserved.continuation,
-      producerAuthorization: {
-        schema_version: "producer-authorization-set-v1",
-        bindings: []
-      },
+      producerAuthorization: h.issuer.issue([]),
       preparedBinding: preparedBinding("t-noop-1")
     });
     expect(outcome.kind).toBe("NO_OP");
@@ -280,7 +281,7 @@ describe("two-call protocol — idempotency and identity", () => {
     const first = await h.facade.commitReserved({
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
-      producerAuthorization: authorization(),
+      producerAuthorization: authorization(h.issuer),
       preparedBinding: preparedBinding("t-unknown-1"),
       repository_bindings: R0_BINDINGS
     });
@@ -297,7 +298,7 @@ describe("two-call protocol — idempotency and identity", () => {
     const second = await h.facade.commitReserved({
       proposal: proposal as unknown as CanonicalTransitionProposalV1,
       continuation: reserved.continuation,
-      producerAuthorization: authorization(),
+      producerAuthorization: authorization(h.issuer),
       preparedBinding: preparedBinding("t-unknown-1"),
       repository_bindings: R0_BINDINGS
     });
@@ -368,9 +369,11 @@ describe("two-call protocol — idempotency and identity", () => {
     // "Restart": fresh journal + fresh facade over the SAME authoritative store.
     const freshJournal = new InMemoryTransitionIdentityJournal();
     freshJournal.rebuildFromCommittedBundles(h.store.getCommittedBundles());
+    const restartedIssuer = createProducerAuthorizationIssuer();
     const ports: SubjectCoreFacadePorts = {
       store: h.store,
       journal: freshJournal,
+      producerAuthorizationVerifier: async (set) => restartedIssuer.verify(set),
       stateReader: {
         async readCurrentSnapshot(subjectId: IdentifierV0) {
           const bundle = h.store.readCurrentBundle(subjectId);
