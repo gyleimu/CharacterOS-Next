@@ -21,10 +21,18 @@ const toRestrictedPaths = (names, message) =>
 const escapeRegularExpression = (value) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+/**
+ * Test files run under vitest; the runner import is allowlisted repo-wide (chore:
+ * allow vitest imports in test files). Production sources remain fail-closed.
+ */
+const testRunnerImports = ["vitest"];
+
 const unapprovedBareImport = (allowedPackages) => ({
-  regex: `^(?!\\.{1,2}/)(?!(?:${allowedPackages
+  regex: `^(?!\\.{1,2}/)(?!(?:(?:${allowedPackages
     .map(escapeRegularExpression)
-    .join("|")})$).+`,
+    .join("|")})|(?:${testRunnerImports
+    .map(escapeRegularExpression)
+    .join("|")}))$).+`,
   message:
     "External and undeclared workspace imports are fail-closed until explicitly allowlisted."
 });
