@@ -18,7 +18,7 @@ architecture was reopened. The single note is the pre-existing appraisal
 | Round-3 baseline (expected local HEAD) | `359813d0408a30d30e20c3f26dd721f815e24ff6` ✔ matched |
 | origin/main at start | `bb0a3a32a23d30ec9b1427ecb422e6c66ad28369` |
 | Round-3 final code HEAD | `ac3d5bc` (B5) |
-| Final HEAD (incl. this report) | see `git rev-parse HEAD` after the docs commit |
+| Final HEAD (incl. report + push-result record) | `e1d88f0` (report commit; the record commit follows it) |
 | Commits this round | 5 code commits + docs commits; all explicit file-listed, `git add .` never used |
 
 Baseline check at start: `git status --short` clean, `HEAD == 359813d…`, no
@@ -184,14 +184,17 @@ Fresh detached worktree at final code HEAD (`ac3d5bc`), no reused dist:
 | `f158dfa` | fix: validate imported transition journal semantics, not just shape (blocker B3) | subject-core `identity/journal.ts`, `journal.test.ts`, `round3-b3.test.ts` (new) |
 | `4e62f7f` | fix: make observation transition identity collision-safe via domain-separated hash (blocker B4) | runtime observation executor + fixtures + conformance/executor tests + `round3-b4.test.ts` (new) |
 | `ac3d5bc` | test: close observation A11 atomicity regression and honor contextProducer override (blocker B5) | runtime observation fixtures + `round3-b5.test.ts` (new) |
-| (docs) | docs: round-3 attribution conflict marker + this report | `docs/evaluation/*` |
+| (docs) | docs: round-3 attribution conflict marker + this report | `docs/evaluation/*` (`a7e4822`, `e1d88f0`) |
 
 ## 11. Remote Sync
 
-- Local HEAD before push: final docs-commit SHA (this report).
-- `git push origin main` executed after B1–B5 + cold gates + report + clean
-  `git status` (result recorded below at push time).
-- Post-push verification: `git rev-parse HEAD` == `git rev-parse origin/main`.
+- Local HEAD before push: `e1d88f0` (round-3 report commit), `git status` clean.
+- Push result: **SUCCESS** — `git push origin main` →
+  `bb0a3a3..e1d88f0  main -> main` (exit 0). All 17 previously-unpushed local
+  commits (Round 2 + Round 3) are now on origin/main; nothing was reset.
+- Post-push verification: `git rev-parse HEAD` == `git rev-parse origin/main`
+  == `e1d88f0fb03a813f5b66cb839879b7003155d903` (the push-result record commit
+  in `docs` follows and is pushed immediately after).
 
 ## 12. Remaining P1/P2
 
