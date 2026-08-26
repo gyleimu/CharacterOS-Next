@@ -11,7 +11,7 @@ import type {
   TransitionIdV0
 } from "./scalars.js";
 import type { CanonicalRefV0 } from "./ref.js";
-import type { DomainName, TransitionType } from "./enums.js";
+import type { DomainName, ProducerName, TransitionType } from "./enums.js";
 import type {
   AffectV0,
   EmptyClosedObjectV0,
@@ -87,3 +87,20 @@ export type ReadonlyFieldPathV0 =
   | "/runtime_metadata";
 
 export type CanonicalFieldPathV0 = WritableFieldPathV0 | ReadonlyFieldPathV0;
+
+/**
+ * §7.1 ProducerAuthorizationSetV1 — trusted invocation capability supplied by the
+ * composition root, NOT a proposal field and NOT hash/persistence data. Closed
+ * `{bindings:[{producer,domain}]}`; entries use registered producer/domain literals,
+ * are unique and sorted by `(producer,domain)`, and for one request must equal EXACTLY
+ * the distinct `(producer,domain)` set in `domain_deltas`. Only the host composition
+ * can construct an instance; a payload merely claiming a producer string without the
+ * matching authenticated capability is UNAUTHORIZED_PRODUCER.
+ */
+export interface ProducerAuthorizationSetV1 {
+  readonly schema_version: "producer-authorization-set-v1";
+  readonly bindings: readonly {
+    readonly producer: ProducerName;
+    readonly domain: DomainName;
+  }[];
+}

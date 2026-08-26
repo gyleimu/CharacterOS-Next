@@ -14,6 +14,7 @@ import type {
   AtomicCommitOutcomeV1,
   CommitFailureCertainty
 } from "../types/persistence.js";
+import type { CanonicalRefV0 } from "../types/ref.js";
 
 export interface AtomicCommitStorePort {
   compareAndCommit(
@@ -53,6 +54,29 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
     return [...this.committedBundles];
   }
 
+  /** Latest committed bundle of one subject, or null. */
+  readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null {
+    for (let i = this.committedBundles.length - 1; i >= 0; i--) {
+      const bundle = this.committedBundles[i] as AtomicCommitBundleV1;
+      if (bundle.subject_id === subjectId) return bundle;
+    }
+    return null;
+  }
+
+  /** Committed bundle by immutable transition id (authoritative idempotency lookup). */
+  readCommittedByTransitionId(transitionId: string): AtomicCommitBundleV1 | null {
+    for (let i = this.committedBundles.length - 1; i >= 0; i--) {
+      const bundle = this.committedBundles[i] as AtomicCommitBundleV1;
+      if (bundle.transition_id === transitionId) return bundle;
+    }
+    return null;
+  }
+
+  /** Current commit ref of one subject (previous-chain link), or null at revision 0. */
+  readCurrentCommitRef(subjectId: string): CanonicalRefV0 | null {
+    return this.readCurrentBundle(subjectId)?.commit_ref ?? null;
+  }
+
   currentRevision(subjectId: string): number | null {
     return this.heads.get(subjectId)?.revision ?? null;
   }
@@ -67,9 +91,12 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
       return { outcome: "FAILURE", certainty: fault };
     }
     const head = this.heads.get(complete_bundle.subject_id);
+    // Identity record-version CAS is owned by the TransitionIdentityJournal (§14);
+    // the store CAS keys on the canonical revision (and mirrors the journal version
+    // for concurrency once a head exists). Genesis requires expected revision 0.
     const casMatches =
       head === undefined
-        ? expected_revision === 0 && identity_record_version_before === 0
+        ? expected_revision === 0
         : head.revision === expected_revision &&
           head.record_version === identity_record_version_before;
     if (!casMatches) {
