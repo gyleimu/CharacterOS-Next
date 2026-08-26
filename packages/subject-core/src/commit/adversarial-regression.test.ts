@@ -21,6 +21,7 @@ import {
   createProducerAuthorizationIssuer,
   type ProducerAuthorizationIssuer
 } from "./producer-authorization.js";
+import type { PipelineStageObserver } from "./engine.js";
 import { createPersistenceEnvelope } from "../restore/envelope.js";
 import { restoreFromEnvelope } from "../restore/restore.js";
 
@@ -258,6 +259,24 @@ function adoptionBindings(adoptedRevision: string) {
   ] as unknown as RepositoryRevisionBindingV1[];
 }
 
+/**
+ * ATTACK H fixture: every delta is individually schema-valid (layer 8 passes), but
+ * the composed candidate violates a §6.2 cross-field invariant — mood.last_update
+ * lies after the derived logical_time — so ONLY the whole-state gate (layer 10)
+ * can catch it.
+ */
+function wholeStateViolationProposal(transitionId: string): Record<string, unknown> {
+  const p = timeProposal(transitionId);
+  const deltas = p["domain_deltas"] as Array<Record<string, unknown>>;
+  const firstDelta = deltas[0];
+  if (firstDelta === undefined) throw new Error("fixture invariant: first domain delta missing");
+  const operations = firstDelta["operations"] as Array<Record<string, unknown>>;
+  const moodOp = operations.find((op) => op["path"] === "/mood");
+  if (moodOp === undefined) throw new Error("fixture invariant: /mood operation missing");
+  (moodOp["value"] as Record<string, unknown>)["last_update"] = 9999;
+  return p;
+}
+
 interface Harness {
   facade: SubjectCoreFacade;
   store: InMemoryAtomicCommitStore;
@@ -274,6 +293,8 @@ function buildHarness(
       readonly next_repository_revision: string;
       readonly candidate_memory_refs: readonly string[];
     }) => boolean | Promise<boolean>;
+    referenceValidator?: (binding: RepositoryRevisionBindingV1) => boolean | Promise<boolean>;
+    pipelineObserver?: PipelineStageObserver;
   } = {}
 ): Harness {
   const initial = s0() as unknown as SubjectStateV0;
@@ -297,7 +318,10 @@ function buildHarness(
     // (transition_id/subject_id/transition_type/payload_fingerprint) is
     // enforced by the facade against the journal record, never trusted here.
     preparedResultValidator: async (binding) => binding.prepared_result_ref === "workflow:w-1",
-    referenceValidator: async () => true
+    referenceValidator: overrides.referenceValidator ?? (async () => true),
+    ...(overrides.pipelineObserver !== undefined
+      ? { pipelineObserver: overrides.pipelineObserver }
+      : {})
   };
   return { facade: new SubjectCoreFacade(ports), store, journal, initial, issuer };
 }
@@ -655,6 +679,67 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     if (outcome.kind === "COMMITTED") {
       expect(outcome.bundle.next_snapshot.memory_state.repository_revision).toBe("R999");
     }
+    expect(h.store.getCommittedBundles()).toHaveLength(1);
+  });
+
+  /**
+   * ATTACK H instrumentation: records the exact stage order of the commit
+   * pipeline so precedence regressions are observable, not merely inferred
+   * from outcome codes.
+   */
+  function stageRecorder(): { events: string[]; observer: PipelineStageObserver } {
+    const events: string[] = [];
+    return {
+      events,
+      observer: {
+        referenceValidation: () => events.push("reference-gate"),
+        wholeStateValidation: () => events.push("whole-state"),
+        authorityPreparation: () => events.push("authority")
+      }
+    };
+  }
+
+  it("J1: ATTACK H — multi-defect input reports the earliest failing layer (reference before whole-state)", async () => {
+    // Double defect: the reference validator denies the binding (layer 9) AND
+    // the composed candidate violates a §6.2 whole-state invariant (layer 10).
+    // §13.4 frozen precedence requires the layer-9 failure to win; no
+    // whole-state or authority work may happen after it.
+    const recorder = stageRecorder();
+    const h = buildHarness({
+      referenceValidator: async () => false,
+      pipelineObserver: recorder.observer
+    });
+    const outcome = await reserveAndCommitHarness(h, wholeStateViolationProposal("t-attack-j1"));
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("INVALID_MEMORY_REVISION");
+      expect(outcome.failure.reason).toBe("MEM-REV-001");
+    }
+    expect(recorder.events).toEqual(["reference-gate"]);
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("J2: ATTACK H — a whole-state violation rejects before any canonical hash/trace/bundle work", async () => {
+    const recorder = stageRecorder();
+    const h = buildHarness({ pipelineObserver: recorder.observer });
+    const outcome = await reserveAndCommitHarness(h, wholeStateViolationProposal("t-attack-j2"));
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("INVARIANT_VIOLATION");
+      expect(outcome.failure.reason).toBe("SS-SCHEMA-001");
+    }
+    // Reference gate ran and passed, whole-state gate fired and rejected;
+    // canonical authority preparation (hash/trace/bundle) never started.
+    expect(recorder.events).toEqual(["reference-gate", "whole-state"]);
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("J-order: an honest commit runs reference → whole-state → authority in frozen order", async () => {
+    const recorder = stageRecorder();
+    const h = buildHarness({ pipelineObserver: recorder.observer });
+    const outcome = await reserveAndCommitHarness(h, timeProposal("t-attack-j-order", 5));
+    expect(outcome.kind).toBe("COMMITTED");
+    expect(recorder.events).toEqual(["reference-gate", "whole-state", "authority"]);
     expect(h.store.getCommittedBundles()).toHaveLength(1);
   });
 });

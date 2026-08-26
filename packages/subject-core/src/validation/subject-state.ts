@@ -782,8 +782,17 @@ function validateTraceWindow(v: unknown, d: string, stateRevision: number): Chec
 /**
  * Validate an unknown input as a complete closed SubjectStateV0 snapshot.
  * Pure: input -> ValidationResult. No repair, no defaults, no normalization.
+ *
+ * `preTraceWindowRevision` (R2-J / §13.4 precedence): lets the commit engine run
+ * whole-state validation BEFORE the trace-window projection exists, by tying the
+ * §10.3 cursor/entry invariants to the prior revision instead of the candidate's
+ * already-derived successor. Omitted (restore/admission paths) ties them to the
+ * snapshot's own `runtime_metadata.state_revision`.
  */
-export function validateSubjectState(v: unknown): ValidationResult<SubjectStateV0> {
+export function validateSubjectState(
+  v: unknown,
+  options?: { readonly preTraceWindowRevision?: number }
+): ValidationResult<SubjectStateV0> {
   const root = reqRecord(v, "subjectState");
   if (!root.ok) return root;
   const o = root.value;
@@ -835,7 +844,11 @@ export function validateSubjectState(v: unknown): ValidationResult<SubjectStateV
   if (!context.ok) return context;
   const mech = validateMechanismConfig(o["mechanism_config"], "mechanism_config");
   if (!mech.ok) return mech;
-  const tw = validateTraceWindow(o["trace_window"], "trace_window", stateRevision);
+  const tw = validateTraceWindow(
+    o["trace_window"],
+    "trace_window",
+    options?.preTraceWindowRevision ?? stateRevision
+  );
   if (!tw.ok) return tw;
 
   return ok(v as unknown as SubjectStateV0);

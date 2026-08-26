@@ -56,7 +56,11 @@ import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { HashV1, IdentifierV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { ErrorCode, RequirementId } from "../types/enums.js";
-import type { ReferenceValidatorCapability, MemoryAdoptionValidatorCapability } from "./engine.js";
+import type {
+  ReferenceValidatorCapability,
+  MemoryAdoptionValidatorCapability,
+  PipelineStageObserver
+} from "./engine.js";
 import {
   createCommitEngine,
   type CommitEngine,
@@ -106,6 +110,11 @@ export interface SubjectCoreFacadePorts {
    * binding-neutral proposals.
    */
   readonly memoryAdoptionValidator?: MemoryAdoptionValidatorCapability;
+  /**
+   * R2-J (ATTACK H): optional instrumentation seam observing the frozen §13.4
+   * pipeline precedence (reference/adoption → whole-state → hash/trace/bundle).
+   */
+  readonly pipelineObserver?: PipelineStageObserver;
 }
 
 export type ReserveAndRouteOutcome =
@@ -163,7 +172,12 @@ export class SubjectCoreFacade {
   private readonly engine: CommitEngine;
 
   constructor(private readonly ports: SubjectCoreFacadePorts) {
-    this.engine = createCommitEngine({ store: ports.store });
+    this.engine = createCommitEngine({
+      store: ports.store,
+      ...(ports.pipelineObserver !== undefined
+        ? { pipelineObserver: ports.pipelineObserver }
+        : {})
+    });
   }
 
   async reserveAndRoute(proposal: CanonicalTransitionProposalV1): Promise<ReserveAndRouteOutcome> {

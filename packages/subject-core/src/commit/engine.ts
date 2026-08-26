@@ -6,9 +6,13 @@
  * Deterministic guard order per input: envelope re-validation (P2.1.2 layer) →
  * subject match → expected-state-revision precheck → time resolution (NO_OP routing /
  * checked advance / occurrence equality) → required composition → immutable candidate
- * construction → StateHash before/after → TraceEntry + window projection → SnapshotHash
- * both sides → repository binding set validation (verdict-only capability) → bundle
- * assembly → single compareAndCommit CAS. The engine holds NO state itself; all writes
+ * construction → repository binding set validation + memory-adoption boundary (§13.4
+ * layer 9) → FULL validateSubjectState over the pre-trace candidate (layer 10) →
+ * StateHash before/after → TraceEntry + window projection → defensive FULL
+ * re-validation of the frozen successor → SnapshotHash both sides → bundle
+ * assembly → single compareAndCommit CAS (R2-J / ATTACK H: no invalid candidate ever
+ * receives an authoritative-looking hash/trace/bundle). The engine holds NO state
+ * itself; all writes
  * go through the injected AtomicCommitStorePort and producers never touch state
  * directly (Producer != Mutator).
  *
@@ -62,6 +66,18 @@ export type MemoryAdoptionValidatorCapability = (adoption: {
   readonly next_repository_revision_hash: HashV1 | null;
   readonly candidate_memory_refs: readonly CanonicalRefV0[];
 }) => boolean | Promise<boolean>;
+
+/**
+ * Test/instrumentation seam (R2-J / ATTACK H): observes the frozen §13.4 pipeline
+ * precedence. `authorityPreparation` marks the FIRST canonical hash/trace/bundle
+ * computation; it must never fire before the reference/adoption and whole-state
+ * gates run.
+ */
+export interface PipelineStageObserver {
+  readonly referenceValidation?: () => void;
+  readonly wholeStateValidation?: () => void;
+  readonly authorityPreparation?: () => void;
+}
 
 export interface CommitTransitionInput {
   /** Complete canonical proposal; syntax is re-validated defensively. */
@@ -178,7 +194,9 @@ export interface CommitEngine {
 
 export function createCommitEngine(deps: {
   readonly store: AtomicCommitStorePort;
+  readonly pipelineObserver?: PipelineStageObserver;
 }): CommitEngine {
+  const observer = deps.pipelineObserver;
   return {
     async commitTransition(input: CommitTransitionInput): Promise<CommitTransitionOutcome> {
       // Layer 1 (defensive re-validation of the complete envelope).
@@ -239,7 +257,87 @@ export function createCommitEngine(deps: {
       withDerivedRuntimeMetadata(draft, derived.value);
       const nextRevision = derived.value.state_revision;
 
-      // Steps 11–12: hashes and trace/window projection.
+      // §13.4 layer 9: repository binding set validation + verdict-only capability.
+      observer?.referenceValidation?.();
+      const bindingFailure = await validateRepositoryBindings(
+        cur,
+        draft as unknown as SubjectStateV0,
+        p,
+        input.repository_bindings,
+        input.reference_validator
+      );
+      if (bindingFailure !== null) return rejected(bindingFailure);
+
+      // Memory-content adoption sanity: an adopted revision must be NEW (§7.2).
+      const touchesContentRevision = p.domain_deltas.some((delta) =>
+        delta.operations.some((operation) => operation.path === "/memory_state/repository_revision")
+      );
+      if (
+        touchesContentRevision &&
+        (draft["memory_state"] as Record<string, unknown>)["repository_revision"] ===
+          cur.memory_state.repository_revision
+      ) {
+        return rejected({
+          error_code: "INVALID_MEMORY_REVISION",
+          reason: "MEM-REV-001",
+          detail: "adopted repository revision must differ from the current revision"
+        });
+      }
+
+      // R2-H: memory adoption boundary. A canonical memory-binding change may only
+      // be adopted when a trusted validator confirms it (verdict-only); a missing
+      // validator fails closed. Proposals that do not change the binding never
+      // touch this gate.
+      const draftMemoryRevision = (draft["memory_state"] as Record<string, unknown>)[
+        "repository_revision"
+      ] as string;
+      if (draftMemoryRevision !== cur.memory_state.repository_revision) {
+        if (input.memory_adoption_validator === undefined) {
+          return rejected({
+            error_code: "INVALID_MEMORY_REVISION",
+            reason: "MEM-REV-001",
+            detail: "memory adoption requires a trusted adoption validator"
+          });
+        }
+        const adoptedBinding = input.repository_bindings.find(
+          (binding) => binding.repository_revision === draftMemoryRevision
+        );
+        const verdict = await input.memory_adoption_validator({
+          subject_id: cur.identity.subject_id,
+          current_repository_revision: cur.memory_state.repository_revision,
+          next_repository_revision: draftMemoryRevision,
+          next_repository_revision_hash: adoptedBinding?.repository_revision_hash ?? null,
+          candidate_memory_refs: [
+            ...((draft["memory_state"] as Record<string, unknown>)["working_refs"] as CanonicalRefV0[]),
+            ...((draft["memory_state"] as Record<string, unknown>)[
+              "active_episode_refs"
+            ] as CanonicalRefV0[])
+          ]
+        });
+        if (verdict !== true) {
+          return rejected({
+            error_code: "INVALID_MEMORY_REVISION",
+            reason: "MEM-REV-001",
+            detail: `memory adoption validator rejected ${draftMemoryRevision}`
+          });
+        }
+      }
+
+      // §13.4 layer 10 (R2-J / P0-3): FULL whole-state validation BEFORE any
+      // canonical hash/trace/bundle authority work. Individually valid deltas that
+      // compose into a whole-state violation (timestamps past logical_time,
+      // cross-field inconsistency, readonly drift) must NEVER receive an
+      // authoritative-looking projection. The §10.3 trace-linkage invariants tie to
+      // the PREVIOUS revision here: the trace window projection is appended only
+      // after this gate passes.
+      observer?.wholeStateValidation?.();
+      const candidateValidation = validateSubjectState(draft, {
+        preTraceWindowRevision: rm.state_revision
+      });
+      if (!candidateValidation.ok) return rejected(candidateValidation.error);
+
+      // §13.4 layer 11: canonical hashes, trace entry and window projection.
+      observer?.authorityPreparation?.();
       const stateHashBefore = await stateHash(cur);
       const stateHashAfter = await stateHash(draft as unknown as SubjectStateV0);
       const pref = await proposalRef(p);
@@ -252,35 +350,16 @@ export function createCommitEngine(deps: {
         state_hash_before: stateHashBefore,
         state_hash_after: stateHashAfter,
         memory_revision_before: cur.memory_state.repository_revision,
-        memory_revision_after: (draft["memory_state"] as Record<string, unknown>)[
-          "repository_revision"
-        ] as string
+        memory_revision_after: draftMemoryRevision
       });
       const nextWindow = nextTraceWindow(cur.trace_window, traceEntry, nextRevision);
       draft["trace_window"] = nextWindow;
       const candidate = freezeCandidate(draft);
 
-      // P0-3: FULL candidate validation before any authority computation. Individually
-      // valid deltas that compose into a whole-state violation (timestamps past
-      // logical_time, cross-field inconsistency, readonly drift, trace/cursor
-      // corruption) must NEVER be hashed and committed as authoritative truth.
-      const candidateValidation = validateSubjectState(candidate);
-      if (!candidateValidation.ok) return rejected(candidateValidation.error);
-
-      // Memory-content adoption sanity: an adopted revision must be NEW (§7.2).
-      const touchesContentRevision = p.domain_deltas.some((delta) =>
-        delta.operations.some((operation) => operation.path === "/memory_state/repository_revision")
-      );
-      if (
-        touchesContentRevision &&
-        candidate.memory_state.repository_revision === cur.memory_state.repository_revision
-      ) {
-        return rejected({
-          error_code: "INVALID_MEMORY_REVISION",
-          reason: "MEM-REV-001",
-          detail: "adopted repository revision must differ from the current revision"
-        });
-      }
+      // Defensive FULL re-validation of the frozen successor including the §10.3
+      // trace-window/cursor linkage of the successor revision itself.
+      const finalValidation = validateSubjectState(candidate);
+      if (!finalValidation.ok) return rejected(finalValidation.error);
 
       // Snapshot hashes bind state to exact trace positions (§8.4).
       const snapshotHashBefore = await snapshotHash({
@@ -297,50 +376,6 @@ export function createCommitEngine(deps: {
         trace_cursor: nextWindow.cursor,
         last_trace_ref: traceEntry.trace_id
       });
-
-      // Layer 9-equivalent: repository binding set + verdict-only capability.
-      const bindingFailure = await validateRepositoryBindings(
-        cur,
-        candidate,
-        p,
-        input.repository_bindings,
-        input.reference_validator
-      );
-      if (bindingFailure !== null) return rejected(bindingFailure);
-
-      // R2-H: memory adoption boundary. A canonical memory-binding change may only
-      // be adopted when a trusted validator confirms it (verdict-only); a missing
-      // validator fails closed. Proposals that do not change the binding never
-      // touch this gate.
-      if (candidate.memory_state.repository_revision !== cur.memory_state.repository_revision) {
-        if (input.memory_adoption_validator === undefined) {
-          return rejected({
-            error_code: "INVALID_MEMORY_REVISION",
-            reason: "MEM-REV-001",
-            detail: "memory adoption requires a trusted adoption validator"
-          });
-        }
-        const adoptedBinding = input.repository_bindings.find(
-          (binding) => binding.repository_revision === candidate.memory_state.repository_revision
-        );
-        const verdict = await input.memory_adoption_validator({
-          subject_id: cur.identity.subject_id,
-          current_repository_revision: cur.memory_state.repository_revision,
-          next_repository_revision: candidate.memory_state.repository_revision,
-          next_repository_revision_hash: adoptedBinding?.repository_revision_hash ?? null,
-          candidate_memory_refs: [
-            ...candidate.memory_state.working_refs,
-            ...candidate.memory_state.active_episode_refs
-          ]
-        });
-        if (verdict !== true) {
-          return rejected({
-            error_code: "INVALID_MEMORY_REVISION",
-            reason: "MEM-REV-001",
-            detail: `memory adoption validator rejected ${candidate.memory_state.repository_revision}`
-          });
-        }
-      }
 
       // Steps 12–14: full bundle assembly (deep-frozen evidence).
       const bundle = await assembleCommitBundle({

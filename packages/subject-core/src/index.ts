@@ -211,7 +211,8 @@ export type {
   CommitTransitionInput,
   CommitTransitionOutcome,
   ReferenceValidatorCapability,
-  MemoryAdoptionValidatorCapability
+  MemoryAdoptionValidatorCapability,
+  PipelineStageObserver
 } from "./commit/engine.js";
 
 // --- P2.1.3 canonical serialization / hash foundation ---------------------------
