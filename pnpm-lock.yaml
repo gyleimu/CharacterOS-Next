@@ -47,7 +47,14 @@ importers:
 
   packages/relationship: {}
 
-  packages/runtime: {}
+  packages/runtime:
+    dependencies:
+      '@characteros-next/memory':
+        specifier: workspace:*
+        version: link:../memory
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
 
   packages/subject-core: {}
 
