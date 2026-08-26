@@ -460,6 +460,56 @@ describe("restoreFromEnvelope — revision and linkage rejects", () => {
   });
 });
 
+describe("P0-4 — commit chain / prepared result verification", () => {
+  async function rev1EnvelopeWithHead(commitRef: string, checksum: string) {
+    const env = await makeEnvelope(s1(), {
+      commit_head: { commit_ref: commitRef as never, record_checksum: checksum as never } as never
+    });
+    return JSON.parse(JSON.stringify(env));
+  }
+
+  it("accepts when the chain verifier confirms head/prepared-result/bundle consistency", async () => {
+    const env = await rev1EnvelopeWithHead("commit:" + "c".repeat(64), hashHex("ok"));
+    const r = await restoreFromEnvelope(env, { commitChainVerifier: async () => true });
+    expect(r.ok).toBe(true);
+  });
+
+  it("8: rejects when the chain verifier denies continuity", async () => {
+    const env = await rev1EnvelopeWithHead("commit:" + "c".repeat(64), hashHex("ok"));
+    const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async () => false
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.failure.error_code).toBe("COMMIT_CHAIN_INTEGRITY_FAILURE");
+  });
+
+  it("9: rejects when the prepared result is missing for the bound transition", async () => {
+    const env = await rev1EnvelopeWithHead("commit:" + "c".repeat(64), hashHex("ok"));
+    // Verifier models a host whose prepared-record store lacks the bound ref.
+    const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async (expected) =>
+        expected.record_checksum !== null &&
+        expected.commit_ref !== null &&
+        expected.snapshot_hash.startsWith("sha256:") &&
+        false /* prepared-result lookup: MISSING */
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.failure.error_code).toBe("COMMIT_CHAIN_INTEGRITY_FAILURE");
+  });
+
+  it("passes revision-chain continuity to the verifier via state_revision", async () => {
+    const seen: number[] = [];
+    const env = await rev1EnvelopeWithHead("commit:" + "c".repeat(64), hashHex("ok"));
+    await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async (expected) => {
+        seen.push(expected.state_revision);
+        return true;
+      }
+    });
+    expect(seen).toEqual([1]);
+  });
+});
+
 describe("restoreFromEnvelope — shell rejects", () => {
   it("rejects unknown keys and wrong literals before hashing", async () => {
     const extra = JSON.parse(JSON.stringify(await makeEnvelope(s0()))) as Record<string, unknown>;

@@ -24,6 +24,7 @@
 
 import type { PersistedSubjectEnvelopeV1, RepositoryRevisionBindingV1 } from "../types/persistence.js";
 import type { HashV1 } from "../types/scalars.js";
+import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { ErrorCode, RequirementId } from "../types/enums.js";
 import type { ValidationFailure } from "../validation/result.js";
@@ -60,6 +61,19 @@ export interface RestoreCapabilities {
    * snapshot belongs to that revision. Pure verdict — never returns payloads.
    */
   readonly referenceValidator?: (binding: RepositoryRevisionBindingV1) => boolean | Promise<boolean>;
+  /**
+   * P0-4: verdict-only commit-chain / prepared-result verification. When provided for
+   * a revision > 0 restore, it must confirm: continuous chain behind `commit_ref`,
+   * correct record checksum, terminal identity consistency, prepared-result binding,
+   * and bundle after-revision/hash equality with the restored snapshot.
+   */
+  readonly commitChainVerifier?: (expected: {
+    readonly subject_id: string;
+    readonly state_revision: number;
+    readonly commit_ref: CanonicalRefV0 | null;
+    readonly record_checksum: HashV1 | null;
+    readonly snapshot_hash: HashV1;
+  }) => boolean | Promise<boolean>;
 }
 
 export type RestoreResult =
@@ -196,6 +210,31 @@ export async function restoreFromEnvelope(
   // ---- Stage 8: commit head rule --------------------------------------------------------
   const headRule = validateCommitHeadRule(snapshot, head as PersistedSubjectEnvelopeV1["commit_head"]);
   if (!headRule.ok) return { ok: false, failure: headRule.error };
+
+  // ---- Stage 9 (P0-4): full commit-chain / prepared-result verification ----------------
+  // Inverted capability: the host proves (verdict-only) that the chain behind this
+  // commit head is continuous, the terminal identity matches, the prepared result is
+  // bound to THIS transition, and the bundle's after-revision/hash equal the restored
+  // snapshot. Absence of the capability keeps format-level guarantees only.
+  if (capabilities.commitChainVerifier !== undefined) {
+    const verdict = await capabilities.commitChainVerifier({
+      subject_id: snapshot.identity.subject_id,
+      state_revision: snapshot.runtime_metadata.state_revision,
+      commit_ref: (head as { commit_ref?: CanonicalRefV0 } | null)?.commit_ref ?? null,
+      record_checksum: (head as { record_checksum?: HashV1 } | null)?.record_checksum ?? null,
+      snapshot_hash: envelope["snapshot_hash"] as HashV1
+    });
+    if (verdict !== true) {
+      return {
+        ok: false,
+        failure: {
+          error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+          reason: "SS-RESTORE-001",
+          detail: "commit chain / prepared result verification rejected the restored position"
+        }
+      };
+    }
+  }
 
   // ---- Materialization: exact reconstruction, immutable ---------------------------------
   const restored = structuredClone(snapshot) as unknown as SubjectStateV0;
