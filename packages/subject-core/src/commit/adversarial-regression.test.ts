@@ -88,13 +88,13 @@ function s0(): Record<string, unknown> {
   };
 }
 
-function timeProposal(transitionId: string, ticks = 5): Record<string, unknown> {
+function timeProposal(transitionId: string, ticks = 5, expectedRevision = 0): Record<string, unknown> {
   return {
     schema_version: "canonical-transition-proposal-v1",
     transition_id: transitionId,
     subject_id: "subject-s0",
     transition_type: "Time",
-    expected_state_revision: 0,
+    expected_state_revision: expectedRevision,
     time_input: { kind: "ELAPSED", elapsed_time: { value: ticks, unit: "tick" } },
     cause_refs: [],
     domain_deltas: [
@@ -175,6 +175,22 @@ function buildHarness(): Harness {
     referenceValidator: async () => true
   };
   return { facade: new SubjectCoreFacade(ports), store, journal, initial };
+}
+
+async function reserveAndCommitHarness(
+  h: Harness,
+  proposal: Record<string, unknown>
+): Promise<Awaited<ReturnType<SubjectCoreFacade["commitReserved"]>>> {
+  const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+  expect(reserved.kind).toBe("CONTINUE");
+  if (reserved.kind !== "CONTINUE") throw new Error("expected continuation");
+  return h.facade.commitReserved({
+    proposal: proposal as unknown as CanonicalTransitionProposalV1,
+    continuation: reserved.continuation,
+    producerAuthorization: authorization(),
+    preparedBinding: preparedBinding(proposal["transition_id"] as string),
+    repository_bindings: R0_BINDINGS
+  });
 }
 
 describe("adversarial regression — trust-boundary closure round 2", () => {
@@ -277,6 +293,35 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       repository_bindings: R0_BINDINGS
     });
     expect(outcome.kind).toBe("COMMITTED");
+  });
+
+  it("B1: ATTACK B — store CAS keys on state revision, never the per-transition identity version", async () => {
+    const h = buildHarness();
+    // First honest transition commits revision 1 (its journal record ends at
+    // record_version > 1 after the committed attempt is appended).
+    const first = await reserveAndCommitHarness(h, timeProposal("t-attack-b-first", 3));
+    expect(first.kind).toBe("COMMITTED");
+
+    // A NEW transition identity arrives with its own record_version = 1. A store
+    // CAS that conflates subject-head revision with the previous transition's
+    // identity record version rejects this honest successor with COMMIT_CONFLICT.
+    const reserved = await h.facade.reserveAndRoute(
+      timeProposal("t-attack-b-second", 4, 1) as unknown as CanonicalTransitionProposalV1
+    );
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+    const second = await h.facade.commitReserved({
+      proposal: timeProposal("t-attack-b-second", 4, 1) as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: authorization(),
+      preparedBinding: preparedBinding("t-attack-b-second"),
+      repository_bindings: R0_BINDINGS
+    });
+    expect(second.kind).toBe("COMMITTED");
+    if (second.kind !== "COMMITTED") return;
+    expect(second.bundle.next_revision).toBe(2);
+    expect(h.store.currentRevision("subject-s0")).toBe(2);
+    expect(h.store.getCommittedBundles()).toHaveLength(2);
   });
 
   it("A-reconcile: reconcile binds committed truth to subject and fingerprint claims", async () => {

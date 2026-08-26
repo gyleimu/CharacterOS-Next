@@ -36,10 +36,9 @@ export interface InMemoryAtomicCommitStoreOptions {
 
 interface SubjectHead {
   readonly revision: number;
-  readonly record_version: number;
 }
 
-/** Single-subject-heads in-memory store; per-subject revision + record-version CAS. */
+/** Single-subject-heads in-memory store; per-subject state-revision CAS. */
 export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
   private readonly heads = new Map<string, SubjectHead>();
   private readonly committedBundles: AtomicCommitBundleV1[] = [];
@@ -91,16 +90,20 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
       return { outcome: "FAILURE", certainty: fault };
     }
     const head = this.heads.get(complete_bundle.subject_id);
-    // Identity record-version CAS is owned by the TransitionIdentityJournal (§14);
-    // the store CAS keys on the canonical revision (and mirrors the journal version
-    // for concurrency once a head exists). Genesis requires expected revision 0.
+    // ATTACK B closure: the store CAS keys ONLY on the canonical state revision.
+    // The per-transition identity record version is owned by the
+    // TransitionIdentityJournal (§14) — conflating the two denies every honest
+    // successor transition, because each new identity arrives with its own
+    // record_version = 1 regardless of the subject's committed history.
     const casMatches =
-      head === undefined
-        ? expected_revision === 0
-        : head.revision === expected_revision &&
-          head.record_version === identity_record_version_before;
+      head === undefined ? expected_revision === 0 : head.revision === expected_revision;
     if (!casMatches) {
       // A CAS mismatch never overwrites the winner (§15.2).
+      return { outcome: "CONFLICT" };
+    }
+    // Parameter consistency: the caller's claimed identity version must equal the
+    // bundle it submits (the journal remains the CAS authority for that version).
+    if (complete_bundle.identity_record_version_before !== identity_record_version_before) {
       return { outcome: "CONFLICT" };
     }
     if (complete_bundle.expected_revision !== expected_revision) {
@@ -108,8 +111,7 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
     }
     this.committedBundles.push(complete_bundle);
     this.heads.set(complete_bundle.subject_id, {
-      revision: complete_bundle.next_revision,
-      record_version: complete_bundle.transition_record.record_version
+      revision: complete_bundle.next_revision
     });
     return { outcome: "COMMITTED", bundle: complete_bundle };
   }
