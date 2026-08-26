@@ -210,7 +210,8 @@ export type {
 export type {
   CommitTransitionInput,
   CommitTransitionOutcome,
-  ReferenceValidatorCapability
+  ReferenceValidatorCapability,
+  MemoryAdoptionValidatorCapability
 } from "./commit/engine.js";
 
 // --- P2.1.3 canonical serialization / hash foundation ---------------------------

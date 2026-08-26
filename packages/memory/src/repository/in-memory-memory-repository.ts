@@ -83,14 +83,26 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   }
 
   /**
-   * P0-5: registers a repository-owned immutable payload for one memory-bound ref and
-   * returns the recomputed content hash. The payload is deep-frozen on ingest; the
-   * manifest's payload_hash must equal this recomputed value at prepare time.
+   * P0-5 (ATTACK F closure): registers a repository-owned immutable payload for one
+   * memory-bound ref and returns the recomputed content hash. The payload is
+   * deep-frozen on ingest; the manifest's payload_hash must equal this recomputed
+   * value at prepare time. Once a ref holds content, storing DIFFERENT content under
+   * it is refused (MEMORY_PREPARE_CONFLICT); identical content is idempotent.
    */
   async storePayload(ref: CanonicalRefV0, payload: unknown): Promise<HashV1> {
     const frozen = structuredClone(payload) as unknown;
     deepFreezePayload(frozen);
     const hash = (await computePayloadHash(frozen)) as HashV1;
+    const existing = this.payloads.get(ref);
+    if (existing !== undefined) {
+      const existingHash = (await computeRecordPayloadHash(existing)) as HashV1;
+      if (existingHash !== hash) {
+        throw new Error(
+          `MEMORY_PREPARE_CONFLICT: ref ${ref} already stores different immutable content`
+        );
+      }
+      return existingHash;
+    }
     this.payloads.set(ref, frozen);
     return hash;
   }

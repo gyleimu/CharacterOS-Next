@@ -19,21 +19,38 @@
 
 import type {
   CanonicalRefV0,
+  HashV1,
   RepositoryRevisionBindingV1,
   RepositoryRevisionIdV0,
   RepositoryRevisionManifestV1
 } from "@characteros-next/subject-core";
 import type {
+  MemoryPrepareIntentV1,
   PreparedRevisionV0,
   RevisionPrepareRequestV0
 } from "../revisions.js";
 
-export interface MemoryRepository {
+/**
+ * P2.3 Round 2 (ATTACK F / R2-G): the SANCTIONED Learning-facing memory authority.
+ * Preparation is intent-driven only (`prepareRevisionForIntent` — intent identity,
+ * payload fingerprint, parent revision, repository-owned payloads). It never exposes
+ * the raw revision-minting path, so intent-level idempotency cannot be bypassed
+ * through the runtime-facing boundary.
+ */
+export interface MemoryPreparationAuthority {
+  /** Registers repository-owned immutable content for one ref (content-hash verdict). */
+  storePayload(ref: CanonicalRefV0, payload: unknown): Promise<HashV1>;
+
+  /** Recomputed content hash of a stored payload, or null when absent. */
+  payloadHashOf(ref: CanonicalRefV0): Promise<HashV1 | null>;
+
   /**
-   * Prepares (but never adopts) one new immutable revision derived from
-   * `parent_revision`. Deterministic per request; failure rejects.
+   * Idempotent intent-driven prepare: same intent_id + same fingerprint resolves to
+   * the SAME prepared revision; a changed fingerprint under the same intent_id is a
+   * conflict. Every declared payload_hash is verified against repository-owned
+   * immutable content before any revision is minted.
    */
-  prepareRevision(request: RevisionPrepareRequestV0): Promise<PreparedRevisionV0>;
+  prepareRevisionForIntent(intent: MemoryPrepareIntentV1): Promise<PreparedRevisionV0>;
 
   /** Reads the immutable manifest of one revision, or null when absent. */
   readManifest(revision: RepositoryRevisionIdV0): Promise<RepositoryRevisionManifestV1 | null>;
@@ -50,3 +67,26 @@ export interface MemoryRepository {
    */
   validateRefsBelong(revision: RepositoryRevisionIdV0, refs: readonly CanonicalRefV0[]): Promise<boolean>;
 }
+
+/**
+ * P2.3 Round 2 (ATTACK F / R2-G): LOW-LEVEL INFRASTRUCTURE ONLY. Raw revision
+ * minting without intent identity/fingerprint enforcement. It is NEVER the
+ * sanctioned Learning-facing authority and must not be exposed through the
+ * runtime-facing MemoryPort.
+ */
+export interface MemoryRevisionStoreInternal {
+  /**
+   * Prepares (but never adopts) one new immutable revision derived from
+   * `parent_revision`. Deterministic per request; failure rejects.
+   */
+  prepareRevision(request: RevisionPrepareRequestV0): Promise<PreparedRevisionV0>;
+}
+
+/**
+ * Infrastructure composition view: adapters that also host the raw store (tests,
+ * in-process reference infrastructure) implement both surfaces. Runtime/Learning
+ * consumers must type against MemoryPreparationAuthority only.
+ */
+export interface MemoryRepository
+  extends MemoryPreparationAuthority,
+    MemoryRevisionStoreInternal {}

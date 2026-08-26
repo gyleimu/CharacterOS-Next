@@ -48,6 +48,21 @@ export type ReferenceValidatorCapability = (
   binding: RepositoryRevisionBindingV1
 ) => boolean | Promise<boolean>;
 
+/**
+ * Verdict-only inverted capability (R2-H / ATTACK F): a canonical memory-binding
+ * change may be adopted ONLY when a trusted host proves (1) the revision exists,
+ * (2) its manifest/repository hashes are correct, (3) its parent equals the current
+ * canonical memory revision, (4) the candidate's memory-bound refs belong to it,
+ * (5) payload/intent integrity holds, and (6) no stale/orphan revision is adopted.
+ */
+export type MemoryAdoptionValidatorCapability = (adoption: {
+  readonly subject_id: string;
+  readonly current_repository_revision: string;
+  readonly next_repository_revision: string;
+  readonly next_repository_revision_hash: HashV1 | null;
+  readonly candidate_memory_refs: readonly CanonicalRefV0[];
+}) => boolean | Promise<boolean>;
+
 export interface CommitTransitionInput {
   /** Complete canonical proposal; syntax is re-validated defensively. */
   readonly proposal: CanonicalTransitionProposalV1;
@@ -65,6 +80,8 @@ export interface CommitTransitionInput {
   readonly prepared_result_ref: CanonicalRefV0;
   readonly repository_bindings: readonly RepositoryRevisionBindingV1[];
   readonly reference_validator?: ReferenceValidatorCapability;
+  /** R2-H: REQUIRED (fail-closed) whenever the proposal changes the canonical memory binding. */
+  readonly memory_adoption_validator?: MemoryAdoptionValidatorCapability;
 }
 
 export type CommitTransitionOutcome =
@@ -290,6 +307,40 @@ export function createCommitEngine(deps: {
         input.reference_validator
       );
       if (bindingFailure !== null) return rejected(bindingFailure);
+
+      // R2-H: memory adoption boundary. A canonical memory-binding change may only
+      // be adopted when a trusted validator confirms it (verdict-only); a missing
+      // validator fails closed. Proposals that do not change the binding never
+      // touch this gate.
+      if (candidate.memory_state.repository_revision !== cur.memory_state.repository_revision) {
+        if (input.memory_adoption_validator === undefined) {
+          return rejected({
+            error_code: "INVALID_MEMORY_REVISION",
+            reason: "MEM-REV-001",
+            detail: "memory adoption requires a trusted adoption validator"
+          });
+        }
+        const adoptedBinding = input.repository_bindings.find(
+          (binding) => binding.repository_revision === candidate.memory_state.repository_revision
+        );
+        const verdict = await input.memory_adoption_validator({
+          subject_id: cur.identity.subject_id,
+          current_repository_revision: cur.memory_state.repository_revision,
+          next_repository_revision: candidate.memory_state.repository_revision,
+          next_repository_revision_hash: adoptedBinding?.repository_revision_hash ?? null,
+          candidate_memory_refs: [
+            ...candidate.memory_state.working_refs,
+            ...candidate.memory_state.active_episode_refs
+          ]
+        });
+        if (verdict !== true) {
+          return rejected({
+            error_code: "INVALID_MEMORY_REVISION",
+            reason: "MEM-REV-001",
+            detail: `memory adoption validator rejected ${candidate.memory_state.repository_revision}`
+          });
+        }
+      }
 
       // Steps 12–14: full bundle assembly (deep-frozen evidence).
       const bundle = await assembleCommitBundle({

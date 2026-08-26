@@ -15,6 +15,7 @@ import type {
 } from "@characteros-next/subject-core";
 import { computeRepositoryRevisionHash } from "../revisions.js";
 import { InMemoryMemoryRepository } from "./in-memory-memory-repository.js";
+import type { MemoryPreparationAuthority } from "./memory-repository.js";
 
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 
@@ -192,5 +193,54 @@ describe("deterministic repeats", () => {
     expect(await computeRepositoryRevisionHash(a.manifest)).toBe(
       await computeRepositoryRevisionHash(b.manifest)
     );
+  });
+});
+
+describe("ATTACK F — repository-owned payload immutability", () => {
+  function payloadOf(episodeId: string, body: string): Record<string, unknown> {
+    return { schema_version: "episodic-memory-record-v0", episode_id: episodeId, body };
+  }
+
+  it("F1: re-storing DIFFERENT content under an existing ref is refused; original survives", async () => {
+    const repo = new InMemoryMemoryRepository();
+    await repo.prepareRevision({ parent_revision: null, records: [] });
+    const hash1 = await repo.storePayload("episode:e-f" as CanonicalRefV0, payloadOf("e-f", "original"));
+    const prepared = await repo.prepareRevisionForIntent({
+      intent_id: "intent-i-f" as never,
+      parent_revision: rid("R0"),
+      records: [{ ref: "episode:e-f" as CanonicalRefV0, payload_hash: hash1 }]
+    });
+    const bindingHash = await computeRepositoryRevisionHash(prepared.manifest);
+
+    // Attacker attempts to overwrite the immutable payload under the same ref.
+    await expect(
+      repo.storePayload("episode:e-f" as CanonicalRefV0, payloadOf("e-f", "REWRITTEN"))
+    ).rejects.toThrow(/MEMORY_PREPARE_CONFLICT/);
+
+    // Original payload unchanged; the prepared revision binding stays valid.
+    expect(await repo.payloadHashOf("episode:e-f" as CanonicalRefV0)).toBe(hash1);
+    await expect(
+      repo.validateRevisionBinding(binding(prepared.repository_revision, bindingHash))
+    ).resolves.toBe(true);
+  });
+
+  it("F2: re-storing IDENTICAL content under the same ref is idempotent", async () => {
+    const repo = new InMemoryMemoryRepository();
+    await repo.prepareRevision({ parent_revision: null, records: [] });
+    const first = await repo.storePayload("episode:e-g" as CanonicalRefV0, payloadOf("e-g", "same"));
+    const second = await repo.storePayload("episode:e-g" as CanonicalRefV0, payloadOf("e-g", "same"));
+    expect(second).toBe(first);
+    expect(await repo.payloadHashOf("episode:e-g" as CanonicalRefV0)).toBe(first);
+  });
+});
+
+describe("ATTACK F — sanctioned authority boundary (R2-G)", () => {
+  it("G1: the preparation authority is intent-driven only; raw prepare stays infrastructure-only", () => {
+    const authority: MemoryPreparationAuthority = new InMemoryMemoryRepository();
+    expect(typeof authority.prepareRevisionForIntent).toBe("function");
+    expect(typeof authority.storePayload).toBe("function");
+    // The sanctioned Learning-facing surface never exposes the raw minting path:
+    // @ts-expect-error raw prepareRevision belongs to MemoryRevisionStoreInternal only
+    void authority.prepareRevision;
   });
 });

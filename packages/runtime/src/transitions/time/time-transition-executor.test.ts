@@ -6,7 +6,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { SubjectStateV0 } from "@characteros-next/subject-core";
-import type { MemoryRepository } from "@characteros-next/memory";
+import type { MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
 import {
@@ -96,8 +96,14 @@ function ctxOf(initial: SubjectStateV0): RuntimeContext {
 
 const ELAPSED_FIVE: TimeTransitionInputV0 = { elapsed_ticks: 5 };
 
-class MemoryRepositoryStub implements MemoryRepository {
-  async prepareRevision(): Promise<never> {
+class MemoryRepositoryStub implements MemoryPreparationAuthority {
+  async storePayload(): Promise<never> {
+    throw new Error("Time never stores payloads");
+  }
+  async payloadHashOf(): Promise<null> {
+    return null;
+  }
+  async prepareRevisionForIntent(): Promise<never> {
     throw new Error("Time never prepares revisions");
   }
   async readManifest(): Promise<null> {

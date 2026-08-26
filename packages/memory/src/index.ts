@@ -37,7 +37,18 @@ export {
   type RevisionPrepareRequestV0
 } from "./revisions.js";
 
-export type { MemoryRepository } from "./repository/memory-repository.js";
+export {
+  MEMORY_PREPARE_INTENT_PROJECTION,
+  computePrepareIntentFingerprint,
+  validatePrepareIntentBody,
+  type MemoryPrepareIntentV1
+} from "./revisions.js";
+
+export type {
+  MemoryPreparationAuthority,
+  MemoryRepository,
+  MemoryRevisionStoreInternal
+} from "./repository/memory-repository.js";
 
 export {
   InMemoryMemoryRepository

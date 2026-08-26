@@ -237,6 +237,15 @@ describe("MemoryRepository contract shape", () => {
       async readManifest(revision) {
         return manifests.get(revision) ?? null;
       },
+      async storePayload() {
+        throw new Error("contract shape stub has no storage engine");
+      },
+      async payloadHashOf() {
+        return null;
+      },
+      async prepareRevisionForIntent() {
+        throw new Error("contract shape stub has no storage engine");
+      },
       async validateRevisionBinding() {
         return true;
       },

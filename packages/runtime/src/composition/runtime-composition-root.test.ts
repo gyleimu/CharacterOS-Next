@@ -6,14 +6,20 @@
 
 import { describe, expect, it } from "vitest";
 
-import type { MemoryRepository, MemoryRetrievalResultV0 } from "@characteros-next/memory";
+import type { MemoryPreparationAuthority, MemoryRetrievalResultV0 } from "@characteros-next/memory";
 import { createInMemorySubjectCoreFacade } from "@characteros-next/subject-core";
 import type { RuntimeCompositionOptions } from "./runtime-composition-root.js";
 import { RuntimeCompositionRoot } from "./runtime-composition-root.js";
 import { ReferenceContextProducer, ReferenceRetrievalMetadataProducer } from "../ports/index.js";
 
-class MemoryRepositoryStub implements MemoryRepository {
-  async prepareRevision(): Promise<never> {
+class MemoryRepositoryStub implements MemoryPreparationAuthority {
+  async storePayload(): Promise<never> {
+    throw new Error("not used in composition test");
+  }
+  async payloadHashOf(): Promise<null> {
+    return null;
+  }
+  async prepareRevisionForIntent(): Promise<never> {
     throw new Error("not used in composition test");
   }
   async readManifest(): Promise<null> {

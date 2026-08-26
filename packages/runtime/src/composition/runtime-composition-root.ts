@@ -21,7 +21,7 @@
 import type {
   RuntimeDependencyContainer
 } from "../types/runtime-dependency-container.js";
-import type { MemoryRepository } from "@characteros-next/memory";
+import type { MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 import type {
   AppraisalPort,
@@ -43,8 +43,11 @@ export interface RuntimeCompositionOptions {
    * through it; there is no structural alternative.
    */
   readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
-  /** Required: immutable revision repository capability. */
-  readonly memoryRepository: MemoryRepository;
+  /**
+   * Required: the SANCTIONED intent-driven memory authority (R2-G closure). The
+   * raw revision-minting surface is intentionally NOT part of this seam.
+   */
+  readonly memoryRepository: MemoryPreparationAuthority;
   /** Required: deterministic retrieval seam. */
   readonly retrieval: RetrievalPort;
   /** Optional until their slices wire adapters. */

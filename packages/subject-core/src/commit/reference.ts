@@ -12,7 +12,7 @@
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { IdentifierV0 } from "../types/scalars.js";
 import type { AtomicCommitBundleV1 } from "../types/persistence.js";
-import type { ReferenceValidatorCapability } from "./engine.js";
+import type { ReferenceValidatorCapability, MemoryAdoptionValidatorCapability } from "./engine.js";
 import { InMemoryAtomicCommitStore } from "./store.js";
 import { InMemoryTransitionIdentityJournal } from "../identity/journal.js";
 import { SubjectCoreFacade, type SubjectCoreFacadePorts } from "./facade.js";
@@ -24,6 +24,11 @@ import {
 export interface InMemoryFacadeOptions {
   /** Verdict-only repository capability (defaults to accepting everything). */
   readonly referenceValidator?: ReferenceValidatorCapability;
+  /**
+   * R2-H (ATTACK F): verdict-only memory adoption proof. When omitted, ANY proposal
+   * that changes the canonical memory binding fails closed at the engine.
+   */
+  readonly memoryAdoptionValidator?: MemoryAdoptionValidatorCapability;
   /** Optional seed snapshots by subject (default: none — subjects must exist). */
   readonly seedSnapshots?: ReadonlyMap<IdentifierV0, SubjectStateV0>;
   /**
@@ -80,6 +85,9 @@ export function createInMemorySubjectCoreFacade(
     producerAuthorizationVerifier: async (set) => producerAuthorizationIssuer.verify(set),
     ...(options.referenceValidator !== undefined
       ? { referenceValidator: options.referenceValidator }
+      : {}),
+    ...(options.memoryAdoptionValidator !== undefined
+      ? { memoryAdoptionValidator: options.memoryAdoptionValidator }
       : {})
   };
 

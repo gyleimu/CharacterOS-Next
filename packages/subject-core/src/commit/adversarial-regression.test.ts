@@ -217,14 +217,45 @@ function authorization(issuer: ProducerAuthorizationIssuer) {
   ]);
 }
 
-function preparedBinding(transitionId: string): PreparedLogicalResultBindingV1 {
+function preparedBinding(transitionId: string, transitionType: string = "Time"): PreparedLogicalResultBindingV1 {
   return {
     prepared_result_ref: "workflow:w-1" as CanonicalRefV0,
     transition_id: transitionId as never,
     subject_id: "subject-s0" as never,
-    transition_type: "Time" as never,
+    transition_type: transitionType as never,
     payload_fingerprint: "sha256:0000000000000000000000000000000000000000000000000000000000000000" as never
   };
+}
+
+/** Learning-typed proposal adopting `adoptedRevision` as the canonical memory revision. */
+function learningProposal(transitionId: string, adoptedRevision: string): Record<string, unknown> {
+  return {
+    schema_version: "canonical-transition-proposal-v1",
+    transition_id: transitionId,
+    subject_id: "subject-s0",
+    transition_type: "Learning",
+    expected_state_revision: 0,
+    time_input: { kind: "OCCURRENCE", occurrence_logical_time: 0 },
+    cause_refs: [],
+    domain_deltas: [
+      {
+        producer: "memory",
+        domain: "memory-content",
+        expected_repository_revision: adoptedRevision,
+        operations: [{ path: "/memory_state/repository_revision", value: adoptedRevision }],
+        provenance_refs: []
+      }
+    ],
+    external_refs: []
+  };
+}
+
+/** Sorted binding set covering current R0 plus an adopted revision with a FAKE hash. */
+function adoptionBindings(adoptedRevision: string) {
+  return [
+    { repository_revision: "R0", repository_revision_hash: HASH_V1_R0_REPOSITORY },
+    { repository_revision: adoptedRevision, repository_revision_hash: `sha256:${"9".repeat(64)}` }
+  ] as unknown as RepositoryRevisionBindingV1[];
 }
 
 interface Harness {
@@ -235,7 +266,16 @@ interface Harness {
   issuer: ProducerAuthorizationIssuer;
 }
 
-function buildHarness(): Harness {
+function buildHarness(
+  overrides: {
+    memoryAdoptionValidator?: (adoption: {
+      readonly subject_id: string;
+      readonly current_repository_revision: string;
+      readonly next_repository_revision: string;
+      readonly candidate_memory_refs: readonly string[];
+    }) => boolean | Promise<boolean>;
+  } = {}
+): Harness {
   const initial = s0() as unknown as SubjectStateV0;
   const store = new InMemoryAtomicCommitStore();
   const journal = new InMemoryTransitionIdentityJournal();
@@ -244,6 +284,9 @@ function buildHarness(): Harness {
     store,
     journal,
     producerAuthorizationVerifier: async (set) => issuer.verify(set),
+    ...(overrides.memoryAdoptionValidator !== undefined
+      ? { memoryAdoptionValidator: overrides.memoryAdoptionValidator as never }
+      : {}),
     stateReader: {
       async readCurrentSnapshot(subjectId: IdentifierV0) {
         const bundle = store.readCurrentBundle(subjectId);
@@ -516,5 +559,102 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
     const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(result.value)));
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.snapshot.runtime_metadata.state_revision).toBe(0);
+  });
+
+  it("H1: ATTACK F — memory adoption without a trusted validator is refused (fail-closed)", async () => {
+    const h = buildHarness();
+    const proposal = learningProposal("t-attack-h1", "R999");
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+
+    // Fake revision id + fake hashes, all schema-valid strings. No adoption
+    // validator is wired, so the binding change MUST be refused fail-closed.
+    const outcome = await h.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
+      preparedBinding: preparedBinding("t-attack-h1", "Learning"),
+      repository_bindings: adoptionBindings("R999")
+    });
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("INVALID_MEMORY_REVISION");
+      expect(outcome.failure.reason).toBe("MEM-REV-001");
+    }
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("H2: ATTACK F — a denying adoption validator rejects the forged revision", async () => {
+    const h = buildHarness({ memoryAdoptionValidator: async () => false });
+    const proposal = learningProposal("t-attack-h2", "R999");
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+    const outcome = await h.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
+      preparedBinding: preparedBinding("t-attack-h2", "Learning"),
+      repository_bindings: adoptionBindings("R999")
+    });
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("INVALID_MEMORY_REVISION");
+      expect(outcome.failure.reason).toBe("MEM-REV-001");
+    }
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("H-stale: ATTACK F — a stale adoption (parent drifted) is refused, never silently adopted", async () => {
+    // The host validator models stale detection: it knows the adopted revision's
+    // parent no longer equals the canonical current revision, so it denies.
+    const seen: Array<{ current: string; next: string }> = [];
+    const h = buildHarness({
+      memoryAdoptionValidator: async (adoption) => {
+        seen.push({
+          current: adoption.current_repository_revision,
+          next: adoption.next_repository_revision
+        });
+        return false; // R999 was prepared against a memory base that has since moved
+      }
+    });
+    const proposal = learningProposal("t-attack-h-stale", "R999");
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+    const outcome = await h.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
+      preparedBinding: preparedBinding("t-attack-h-stale", "Learning"),
+      repository_bindings: adoptionBindings("R999")
+    });
+    expect(outcome.kind).toBe("REJECTED");
+    expect(seen).toEqual([{ current: "R0", next: "R999" }]);
+    expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("H-happy: a validator-confirmed adoption commits (no over-blocking)", async () => {
+    const h = buildHarness({
+      memoryAdoptionValidator: async (adoption) =>
+        adoption.current_repository_revision === "R0" && adoption.next_repository_revision === "R999"
+    });
+    const proposal = learningProposal("t-attack-h-honest", "R999");
+    const reserved = await h.facade.reserveAndRoute(proposal as unknown as CanonicalTransitionProposalV1);
+    expect(reserved.kind).toBe("CONTINUE");
+    if (reserved.kind !== "CONTINUE") return;
+    const outcome = await h.facade.commitReserved({
+      proposal: proposal as unknown as CanonicalTransitionProposalV1,
+      continuation: reserved.continuation,
+      producerAuthorization: h.issuer.issue([{ producer: "memory", domain: "memory-content" }]),
+      preparedBinding: preparedBinding("t-attack-h-honest", "Learning"),
+      repository_bindings: adoptionBindings("R999")
+    });
+    expect(outcome.kind).toBe("COMMITTED");
+    if (outcome.kind === "COMMITTED") {
+      expect(outcome.bundle.next_snapshot.memory_state.repository_revision).toBe("R999");
+    }
+    expect(h.store.getCommittedBundles()).toHaveLength(1);
   });
 });

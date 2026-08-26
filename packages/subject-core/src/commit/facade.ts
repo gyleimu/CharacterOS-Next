@@ -56,7 +56,7 @@ import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { HashV1, IdentifierV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { ErrorCode, RequirementId } from "../types/enums.js";
-import type { ReferenceValidatorCapability } from "./engine.js";
+import type { ReferenceValidatorCapability, MemoryAdoptionValidatorCapability } from "./engine.js";
 import {
   createCommitEngine,
   type CommitEngine,
@@ -100,6 +100,12 @@ export interface SubjectCoreFacadePorts {
   readonly preparedResultValidator: PreparedResultValidatorCapability;
   readonly producerAuthorizationVerifier: ProducerAuthorizationVerifierCapability;
   readonly referenceValidator?: ReferenceValidatorCapability;
+  /**
+   * R2-H (ATTACK F): verdict-only memory adoption proof. REQUIRED — fail-closed —
+   * whenever a proposal changes the canonical memory binding; never consulted for
+   * binding-neutral proposals.
+   */
+  readonly memoryAdoptionValidator?: MemoryAdoptionValidatorCapability;
 }
 
 export type ReserveAndRouteOutcome =
@@ -368,6 +374,9 @@ export class SubjectCoreFacade {
       repository_bindings: input.repository_bindings,
       ...(this.ports.referenceValidator !== undefined
         ? { reference_validator: this.ports.referenceValidator }
+        : {}),
+      ...(this.ports.memoryAdoptionValidator !== undefined
+        ? { memory_adoption_validator: this.ports.memoryAdoptionValidator }
         : {})
     };
 
