@@ -13,6 +13,7 @@
 
 import type {
   HashV1,
+  IdentifierV0,
   RepositoryRevisionIdV0,
   RepositoryRecordHashV1
 } from "@characteros-next/subject-core";
@@ -167,4 +168,84 @@ export function computeRepositoryRevisionHash(manifest: RepositoryRevisionManife
     record_hashes: manifest.record_hashes,
     index_manifest_hash: manifest.index_manifest_hash
   });
+}
+
+// --- P2.3 Pre-Learning P0-5: prepare-intent identity (idempotent prepare) ----------
+
+export const MEMORY_PREPARE_INTENT_PROJECTION =
+  "characteros-next/memory/prepare-intent/v1" as const;
+
+/**
+ * Stable learning-intent identity for revision preparation (audit P0-5): the same
+ * intent_id + same payload fingerprint MUST resolve to the SAME prepared revision;
+ * a changed fingerprint under the same intent_id is a conflict. This makes retry and
+ * re-prepare idempotent instead of minting R2, R3, … duplicates.
+ */
+export interface MemoryPrepareIntentV1 {
+  readonly intent_id: IdentifierV0;
+  /** Deterministic fingerprint over {parent_revision, records} — computed if omitted. */
+  readonly payload_fingerprint?: HashV1;
+  readonly parent_revision: RepositoryRevisionIdV0 | null;
+  readonly records: readonly RepositoryRecordHashV1[];
+}
+
+/** Computes the deterministic payload fingerprint over {parent_revision, records}. */
+export async function computePrepareIntentFingerprint(
+  intent: Pick<MemoryPrepareIntentV1, "parent_revision" | "records">
+): Promise<HashV1> {
+  return hashEnvelope(MEMORY_PREPARE_INTENT_PROJECTION, {
+    parent_revision: intent.parent_revision,
+    records: intent.records
+  });
+}
+
+/** Validates one closed MemoryPrepareIntentV1 body (schema conformance only). */
+export function validatePrepareIntentBody(v: unknown): ValidationResult<MemoryPrepareIntentV1> {
+  if (!isRecord(v)) return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "prepare intent: expected object");
+  for (const key of Object.keys(v)) {
+    if (!["intent_id", "parent_revision", "records"].includes(key)) {
+      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `prepare intent.${key}: unknown key`);
+    }
+  }
+  if (!isString(v["intent_id"])) {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "prepare intent.intent_id: expected identifier");
+  }
+  const intentId = validateRepositoryRevision(v["intent_id"], "prepare intent.intent_id");
+  if (!intentId.ok) return intentId;
+  const parent = v["parent_revision"];
+  if (parent !== null) {
+    if (!isString(parent)) {
+      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "prepare intent.parent_revision: expected identifier or null");
+    }
+    const parentCheck = validateRepositoryRevision(parent, "prepare intent.parent_revision");
+    if (!parentCheck.ok) return parentCheck;
+  }
+  if (!Array.isArray(v["records"])) {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "prepare intent.records: expected array");
+  }
+  let previousRef: string | undefined;
+  for (let i = 0; i < v["records"].length; i++) {
+    const label = `prepare intent.records[${i}]`;
+    const entry = v["records"][i];
+    if (!isRecord(entry)) {
+      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}: expected object`);
+    }
+    const refCheck = parseMemoryBoundRef(entry["ref"], `${label}.ref`);
+    if (!refCheck.ok) return refCheck;
+    if (!isString(entry["payload_hash"])) {
+      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}.payload_hash: expected hash string`);
+    }
+    const hashCheck = validateHash(entry["payload_hash"], `${label}.payload_hash`);
+    if (!hashCheck.ok) return hashCheck;
+    if (previousRef !== undefined) {
+      if ((entry["ref"] as string) === previousRef) {
+        return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}.ref: duplicate record ref`);
+      }
+      if ((entry["ref"] as string) < previousRef) {
+        return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}.ref: records not sorted by ref`);
+      }
+    }
+    previousRef = entry["ref"] as string;
+  }
+  return ok(v as unknown as MemoryPrepareIntentV1);
 }
