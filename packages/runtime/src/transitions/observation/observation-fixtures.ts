@@ -328,6 +328,10 @@ export interface ObservationHarnessOptions {
   readonly failingAffect?: boolean;
   readonly failingContextDelta?: boolean;
   readonly memory?: SpyMemoryRepository;
+  /**
+   * Explicit context producer override (Round-3 B5: actually honored now —
+   * takes precedence over failingContextDelta and the reference default).
+   */
   readonly contextProducer?: ContextProducerPort;
   readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort | null;
   readonly interpretationEvidence?: readonly string[];
@@ -395,7 +399,8 @@ export function buildObservationHarness(
           }
         : fixedAffectProducer(),
     contextProducer:
-      overrides.failingContextDelta === true
+      overrides.contextProducer ??
+      (overrides.failingContextDelta === true
         ? {
             produceControlledProjection: async (input, assembly) =>
               new ReferenceContextProducer().produceControlledProjection(input, assembly),
@@ -403,7 +408,7 @@ export function buildObservationHarness(
               throw new Error("context producer offline");
             }
           }
-        : new ReferenceContextProducer(),
+        : new ReferenceContextProducer()),
     ...(overrides.retrievalMetadataProducer !== null &&
     overrides.retrievalMetadataProducer !== undefined
       ? { retrievalMetadataProducer: overrides.retrievalMetadataProducer }
