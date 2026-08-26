@@ -16,6 +16,7 @@
  *   6 memory-bound reference membership (capability) .......... INVALID_MEMORY_REFERENCE / MEM-REV-001
  *   7 trace window/cursor linkage integrity .................... TRACE_INTEGRITY_FAILURE / TRACE-CONTENT-001
  *   8 commit_head rule (null iff revision 0; well-formed) ...... COMMIT_CHAIN_INTEGRITY_FAILURE / SS-RESTORE-001
+ *   9 commit-chain history proof (MANDATORY for revision > 0) ... COMMIT_CHAIN_INTEGRITY_FAILURE / SS-RESTORE-001
  *
  * Trace-linkage defects discovered during step 1 are DEFERRED to step 7 so the
  * reported code follows §11 precedence even when a corrupted snapshot carries
@@ -62,10 +63,12 @@ export interface RestoreCapabilities {
    */
   readonly referenceValidator?: (binding: RepositoryRevisionBindingV1) => boolean | Promise<boolean>;
   /**
-   * P0-4: verdict-only commit-chain / prepared-result verification. When provided for
-   * a revision > 0 restore, it must confirm: continuous chain behind `commit_ref`,
-   * correct record checksum, terminal identity consistency, prepared-result binding,
-   * and bundle after-revision/hash equality with the restored snapshot.
+   * P0-4: verdict-only commit-chain / prepared-result verification. REQUIRED for
+   * any revision > 0 restore (ATTACK E closure: absence rejects fail-closed with
+   * COMMIT_CHAIN_INTEGRITY_FAILURE); revision 0 keeps genesis semantics. When
+   * invoked it must confirm: continuous chain behind `commit_ref`, correct record
+   * checksum, terminal identity consistency, prepared-result binding, and bundle
+   * after-revision/hash equality with the restored snapshot.
    */
   readonly commitChainVerifier?: (expected: {
     readonly subject_id: string;
@@ -211,11 +214,22 @@ export async function restoreFromEnvelope(
   const headRule = validateCommitHeadRule(snapshot, head as PersistedSubjectEnvelopeV1["commit_head"]);
   if (!headRule.ok) return { ok: false, failure: headRule.error };
 
-  // ---- Stage 9 (P0-4): full commit-chain / prepared-result verification ----------------
+  // ---- Stage 9 (P0-4 / ATTACK E): full commit-chain / prepared-result verification ----
   // Inverted capability: the host proves (verdict-only) that the chain behind this
   // commit head is continuous, the terminal identity matches, the prepared result is
   // bound to THIS transition, and the bundle's after-revision/hash equal the restored
-  // snapshot. Absence of the capability keeps format-level guarantees only.
+  // snapshot. Revision 0 keeps genesis semantics; revision > 0 REQUIRES the proof —
+  // a missing verifier rejects fail-closed (no silent structural fallback).
+  if (
+    snapshot.runtime_metadata.state_revision > 0 &&
+    capabilities.commitChainVerifier === undefined
+  ) {
+    return rejection(
+      "COMMIT_CHAIN_INTEGRITY_FAILURE",
+      "SS-RESTORE-001",
+      "revision > 0 restore requires commit-chain proof; no commitChainVerifier provided"
+    );
+  }
   if (capabilities.commitChainVerifier !== undefined) {
     const verdict = await capabilities.commitChainVerifier({
       subject_id: snapshot.identity.subject_id,

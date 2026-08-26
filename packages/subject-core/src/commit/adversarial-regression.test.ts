@@ -21,6 +21,8 @@ import {
   createProducerAuthorizationIssuer,
   type ProducerAuthorizationIssuer
 } from "./producer-authorization.js";
+import { createPersistenceEnvelope } from "../restore/envelope.js";
+import { restoreFromEnvelope } from "../restore/restore.js";
 
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 
@@ -90,6 +92,82 @@ function s0(): Record<string, unknown> {
       updated_at: 0
     }
   };
+}
+
+const EXACT_RULE_IDS = [
+  "HASH-DET-001",
+  "SS-AUTH-001",
+  "SS-IMMUTABLE-001",
+  "SS-REVISION-001",
+  "TR-ATOMIC-001",
+  "TRACE-ATOMIC-001",
+  "TRACE-CONTENT-001"
+];
+
+function traceEntry(seq: number): Record<string, unknown> {
+  return {
+    trace_schema_version: "trace-v1",
+    trace_id: `trace:t${seq}`,
+    history_sequence: seq,
+    transition_id: `t-${seq}`,
+    transition_type: "Observation",
+    subject_id: "subject-s0",
+    subject_revision_before: seq - 1,
+    subject_revision_after: seq,
+    logical_time: seq,
+    rule_ids: [...EXACT_RULE_IDS],
+    cause_refs: [],
+    proposal_ref: `proposal:p${seq}`,
+    domain_mutations: [
+      {
+        producer: "context",
+        domain: "context",
+        layers: ["context"],
+        field_changes: [{ path: "/context", operation: "SET" }]
+      }
+    ],
+    state_hash_before: `sha256:${"a".repeat(60)}0001`,
+    state_hash_after: `sha256:${"a".repeat(60)}0002`,
+    memory_revision_before: "R0",
+    memory_revision_after: "R0",
+    outcome: "COMMITTED"
+  };
+}
+
+/** Structurally valid revision-1 snapshot (ATTACK E fixture body). */
+function s1(): Record<string, unknown> {
+  const s = s0();
+  s["runtime_metadata"] = {
+    subject_version: "subject-v0",
+    state_revision: 1,
+    logical_time: 3,
+    last_transition_time: 3,
+    last_transition_type: "Observation",
+    created_at: 0,
+    updated_at: 3
+  };
+  s["trace_window"] = {
+    trace_window_schema_version: "trace-window-v1",
+    capacity: 64,
+    cursor: { last_history_sequence: 1, offloaded_through_sequence: 0, offloaded_through_trace_ref: null },
+    entries: [traceEntry(1)]
+  };
+  return s;
+}
+
+const FAKE_COMMIT_HEAD = {
+  commit_ref: `commit:${"f".repeat(64)}`,
+  record_checksum: `sha256:${"d".repeat(64)}`
+} as never;
+
+async function rev1EnvelopeWithFakeHead(): Promise<Record<string, unknown>> {
+  const result = await createPersistenceEnvelope({
+    snapshot: s1() as unknown as SubjectStateV0,
+    repository_bindings: R0_BINDINGS,
+    commit_head: FAKE_COMMIT_HEAD
+  });
+  if (!result.ok) throw new Error(`fixture envelope rejected: ${result.error.detail}`);
+  return JSON.parse(JSON.stringify(result.value)) as Record<string, unknown>;
 }
 
 function timeProposal(transitionId: string, ticks = 5, expectedRevision = 0): Record<string, unknown> {
@@ -391,5 +469,52 @@ describe("adversarial regression — trust-boundary closure round 2", () => {
       expect(outcome.failure.error_code).toBe("UNAUTHORIZED_PRODUCER");
     }
     expect(h.store.getCommittedBundles()).toHaveLength(0);
+  });
+
+  it("E1: ATTACK E — revision>0 restore without chain proof is refused (fail-closed)", async () => {
+    // Attacker persists a structurally valid revision-1 snapshot with a FAKE
+    // commit head and self-consistent hashes. Without a commitChainVerifier the
+    // old restore path succeeded (fail-open). It must now refuse: revision > 0
+    // can only materialize with trusted commit-chain proof.
+    const env = await rev1EnvelopeWithFakeHead();
+    const r = await restoreFromEnvelope(env);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.failure.error_code).toBe("COMMIT_CHAIN_INTEGRITY_FAILURE");
+      expect(r.failure.reason).toBe("SS-RESTORE-001");
+    }
+  });
+
+  it("E2: ATTACK E — a denying chain verifier still rejects the forged head", async () => {
+    const env = await rev1EnvelopeWithFakeHead();
+    const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async () => false
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.failure.error_code).toBe("COMMIT_CHAIN_INTEGRITY_FAILURE");
+      expect(r.failure.reason).toBe("SS-RESTORE-001");
+    }
+  });
+
+  it("E-happy: revision>0 restore succeeds when the chain verifier confirms", async () => {
+    const env = await rev1EnvelopeWithFakeHead();
+    const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async (expected) =>
+        expected.subject_id === "subject-s0" && expected.state_revision === 1
+    });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.snapshot.runtime_metadata.state_revision).toBe(1);
+  });
+
+  it("E0: revision-0 genesis restore keeps working without chain proof (no over-blocking)", async () => {
+    const result = await createPersistenceEnvelope({
+      snapshot: s0() as unknown as SubjectStateV0,
+      repository_bindings: R0_BINDINGS
+    });
+    if (!result.ok) throw new Error("fixture envelope rejected");
+    const r = await restoreFromEnvelope(JSON.parse(JSON.stringify(result.value)));
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.snapshot.runtime_metadata.state_revision).toBe(0);
   });
 });

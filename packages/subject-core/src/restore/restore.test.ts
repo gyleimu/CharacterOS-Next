@@ -349,7 +349,11 @@ describe("restoreFromEnvelope — valid restores", () => {
     const env = await makeEnvelope(authentic as unknown as Record<string, unknown>, {
       commit_head: { commit_ref: "commit:" + "c".repeat(64), record_checksum: hashHex("r1") } as never
     });
-    const restored = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)));
+    // Revision > 0 restore REQUIRES chain proof (ATTACK E closure); the store
+    // behind this fixture is the honest committer, so the verdict confirms.
+    const restored = await restoreFromEnvelope(JSON.parse(JSON.stringify(env)), {
+      commitChainVerifier: async () => true
+    });
     expect(restored.ok).toBe(true);
     if (!restored.ok) return;
     expect((restored.snapshot["context"] as unknown as Record<string, unknown>)["scene"]).toBe("lab");
