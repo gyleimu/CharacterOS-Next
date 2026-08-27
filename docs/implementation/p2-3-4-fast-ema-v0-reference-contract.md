@@ -80,6 +80,12 @@ MemoryRepository、Retrieval、LLM、wall clock、随机源；personality / beli
 - 本契约的通道路由（§6）不消费 attribution，也不通过其他字段间接编码其分类语义。
 - 本裁定**不解决**上游契约冲突；标记保持原样。
 
+> **Status update（P2.3.5.0a，语义层已解决）：** 上游表示法冲突已由
+> `docs/implementation/p2-3-5-appraisal-attribution-resolution.md` 在语义契约层解决
+> （Appraisal V0 attribution ∈ {"self","other","situation"} 闭集；数值表示退役；当前状态
+> `RESOLVED_PENDING_RUNTIME_ALIGNMENT`）。本节的 normative 盲性要求不变且永久成立：
+> `FAST_EMA_V0` 对 `attribution` 不读取、不校验、不参与任何分支或数值。
+
 ## 5. Observation Bridge（Appraisal → FAST）
 
 架构冻结了"确定性工程桥接必须存在"（p2-runtime-plan §4.2/§5.1-9；micl-design §22），但未冻结映射。
