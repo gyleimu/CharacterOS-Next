@@ -1,8 +1,35 @@
-/** P2.0 location marker only; no MICL request schema exists. */
-export type MICLRequest = unknown;
+/**
+ * P2.4 — MICL V0 public surface (Minimal Internal Continuity Loop).
+ */
 
-/** P2.0 location marker only; no MICL result schema exists. */
-export type MICLResult = unknown;
+export {
+  MICL_REQUEST_SCHEMA_VERSION,
+  validateMiclRequest,
+  type MICLRequestV0,
+  type MiclFailureStage,
+  type MiclResultStatus,
+  type MiclResultV0,
+  type MiclStageCheckpointV0,
+  type MiclWorkflowRecordV0
+} from "./micl-types.js";
 
-/** P2.0 location marker only; no workflow or run method exists. */
-export type MICLWorkflow = unknown;
+export {
+  MICL_REQUEST_FINGERPRINT_PROJECTION,
+  deriveMiclRequestFingerprint,
+  miclSemanticRequestBody
+} from "./micl-identity.js";
+
+export {
+  InMemoryMiclWorkflowStore,
+  MICL_PREPARED_RESULT_PROJECTION,
+  type MiclWorkflowStore
+} from "./micl-workflow-store.js";
+
+export {
+  createMiclStageMinter,
+  MICL_SENTINEL_PREPARED_REF_PREFIX,
+  miclWorkflowBinding,
+  type MiclStageMinter
+} from "./micl-capabilities.js";
+
+export { MiclRuntime, type MiclRunResult } from "./micl-runtime.js";

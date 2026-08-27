@@ -2,7 +2,18 @@ export type {
   ControlledContextProjection,
   ContextDelta
 } from "./context/index.js";
-export type { MICLRequest, MICLResult, MICLWorkflow } from "./micl/index.js";
+export type {
+  MICLRequestV0,
+  MiclResultV0,
+  MiclRunResult
+} from "./micl/index.js";
+
+export {
+  InMemoryMiclWorkflowStore,
+  MiclRuntime,
+  validateMiclRequest,
+  type MiclWorkflowStore
+} from "./micl/index.js";
 export type {
   TransitionExecutionContext,
   TransitionRequest,
