@@ -34,6 +34,8 @@ import type {
   RetrievalPort,
   SubjectCorePort
 } from "../ports/index.js";
+import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
+import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
 
 export interface RuntimeCompositionOptions {
   /** Required: canonical commit boundary + authoritative snapshot reads. */
@@ -58,6 +60,18 @@ export interface RuntimeCompositionOptions {
   readonly regulationProducer?: RegulationProducerPort;
   readonly contextProducer?: ContextProducerPort;
   readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort;
+  /**
+   * P2.3.5.3c — read-only committed-bundle projection for Learning trusted-source
+   * validation (host-minted from its own durable store read face). Optional until
+   * Learning wiring; the Learning executor fails closed when null.
+   */
+  readonly learningSourceAuthority?: LearningSourceReadAuthority;
+  /**
+   * P2.3.5.3c — host-minted narrow adoption projection (exactly
+   * `markAdopted(revision)`) over its concrete repository. Required for the
+   * successful Learning lifecycle; the executor fails closed when null.
+   */
+  readonly learningAdoptionAuthority?: LearningAdoptionAuthority;
 }
 
 export class RuntimeCompositionRoot {
@@ -90,7 +104,9 @@ export class RuntimeCompositionRoot {
       affectProducer: options.affectProducer ?? null,
       regulationProducer: options.regulationProducer ?? null,
       contextProducer: options.contextProducer ?? null,
-      retrievalMetadataProducer: options.retrievalMetadataProducer ?? null
+      retrievalMetadataProducer: options.retrievalMetadataProducer ?? null,
+      learningSourceAuthority: options.learningSourceAuthority ?? null,
+      learningAdoptionAuthority: options.learningAdoptionAuthority ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

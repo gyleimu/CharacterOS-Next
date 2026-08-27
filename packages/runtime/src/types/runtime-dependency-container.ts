@@ -21,6 +21,8 @@ import type {
   RetrievalPort,
   SubjectCorePort
 } from "../ports/index.js";
+import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
+import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 
 export interface RuntimeDependencyContainer {
@@ -42,4 +44,18 @@ export interface RuntimeDependencyContainer {
   readonly contextProducer: ContextProducerPort | null;
   /** Optional Observation retrieval-metadata trio producer (producer identity `memory`). */
   readonly retrievalMetadataProducer: RetrievalMetadataProducerPort | null;
+  /**
+   * P2.3.5.3c — Learning trusted-source read authority (read-only committed-bundle
+   * projection over the host's durable store); null until the Learning slice wires it.
+   * Grants NO write surface: Learning's repository prepare capability remains the
+   * separately projected MemoryPreparationAuthority.
+   */
+  readonly learningSourceAuthority: LearningSourceReadAuthority | null;
+  /**
+   * P2.3.5.3c — narrow adoption seam: exactly `markAdopted(candidateRevision)`,
+   * invoked ONLY after the canonical commit has bound the candidate revision.
+   * Grants NO revision/manifest/payload mutation surface. null = not yet wired;
+   * the Learning executor fails closed on the wiring gate.
+   */
+  readonly learningAdoptionAuthority: LearningAdoptionAuthority | null;
 }

@@ -101,3 +101,15 @@ export {
   ExperienceEncoderV0,
   type LearningEncodingContextV0
 } from "./transitions/learning/experience-encoder-v0.js";
+
+export {
+  LearningTransitionExecutor,
+  buildLearningProposal,
+  type LearningTransitionInputV0,
+  type LearningExecutionResult
+} from "./transitions/learning/learning-transition-executor.js";
+
+export type {
+  LearningAdoptionAuthority,
+  LearningAdoptionRevision
+} from "./transitions/learning/learning-adoption-authority.js";

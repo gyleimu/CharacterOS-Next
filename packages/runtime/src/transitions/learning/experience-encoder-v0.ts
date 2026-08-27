@@ -50,12 +50,10 @@ import {
   validateEpisodicMemoryRecord,
   type EpisodicMemoryRecordV0
 } from "@characteros-next/memory";
-import type { TrustedLearningExperienceV0 } from "./learning-source-authority.js";
 import { isTrustedLearningExperience } from "./learning-source-authority.js";
+import { deriveLearningTransitionId } from "./learning-identity.js";
 
-/** Domain-separated projections EXACTLY as frozen by the committed contract. */
-const LEARNING_TRANSITION_ID_PROJECTION =
-  "characteros-next/runtime/learning-transition-id/v1" as const;
+/** Domain-separated episode-ref projection EXACTLY as frozen by the contract. */
 const EPISODE_REF_PROJECTION =
   "characteros-next/memory/episode-ref/v1" as const;
 
@@ -136,18 +134,14 @@ export class ExperienceEncoderV0 {
       throw new Error("experience encoder: context.intent_identity must be a non-empty deterministic identifier");
     }
 
-    // ---- Frozen identity derivations (contract §13 + §6.1, exact formulas) -----
-    // §13: transition identity over the Learning basis; §6.1: episode-ref
-    // projection composed over the OPAQUE prepare-identity component supplied
-    // by the encoding context (minted upstream by the repository-prepare
-    // slice; NO derivation, construction or registration happens here).
-    const transitionIdDigest = await hex64(LEARNING_TRANSITION_ID_PROJECTION, {
-      subject_id: t.subject_id,
-      expected_state_revision: context.expected_state_revision,
-      source_transition_id: t.source_transition_id,
-      rebuild_ordinal: context.rebuild_ordinal
-    });
-    const learningTransitionId = `t-learn-${transitionIdDigest}`;
+    // ---- Frozen identity derivations (contract §13 shared derivation + §6.1) ---
+    // transition id: shared frozen §13 derivation (single implementation, also
+    // used by the Learning executor for the canonical proposal identity);
+    // episode_ref: frozen §6.1 projection composed over the OPAQUE
+    // prepare-identity component supplied by the encoding context (minted
+    // upstream by the repository-prepare slice; NO derivation, construction or
+    // registration happens here).
+    const learningTransitionId = await deriveLearningTransitionId(t, context);
     const episodeRef = `episode:${await hex64(EPISODE_REF_PROJECTION, {
       subject_id: t.subject_id,
       source_transition_id: t.source_transition_id,
