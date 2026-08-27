@@ -19,6 +19,23 @@
  * MemoryState, and — critically — NO MemoryPreparationAuthority. It performs
  * ZERO memory writes and ZERO canonical mutation (pure read + verdict).
  *
+ * TRUST MODEL (P2.3.5.3a.1 hardening): a JavaScript property is DATA — even a
+ * non-enumerable module-private Symbol own-property is reflectable
+ * (Object.getOwnPropertySymbols / Reflect.ownKeys / getOwnPropertyDescriptors)
+ * and copyable onto a forged object. Trusted authority is therefore NOT
+ * property-bound: it is IDENTITY/VALIDATION-bound membership in a module-private
+ * WeakSet registry granted ONLY by `validateTrustedLearningExperience` after the
+ * full durable source-authority flow. Trust intentionally disappears across
+ * JSON serialization, structuredClone, spread, descriptor/symbol copy, IPC and
+ * process restart; after crash/restart the host re-supplies the CANDIDATE and
+ * the system reruns durable validation to create a NEW trusted runtime object.
+ * Semantic candidate data may be re-supplied; runtime trust capability may NOT.
+ *
+ * FUTURE CONSUMER RULE (P2.3.5.3b): ExperienceEncoderV0 MUST runtime-check
+ * trusted authority via `isTrustedLearningExperience` (or an equivalent
+ * internal assertion). A TypeScript parameter annotation alone
+ * (`encode(input: TrustedLearningExperienceV0)`) is NOT sufficient.
+ *
  * Slice scope: trusted input ONLY. No encoding, no prepare, no adoption, no
  * Learning transition identity, no A12/A13 orchestration.
  */
@@ -53,14 +70,14 @@ export interface LearningSourceReadAuthority {
  * ONLY the minimum validated candidate data, deeply frozen, freshly constructed
  * (never the caller's object, never the source bundle).
  *
- * TRUST CAPABILITY (P2.3.5.3a final trust check): this exported type is
- * DESCRIPTIVE ONLY — a TypeScript shape is not a trust capability. Trust is a
- * runtime authority marker (`TRUSTED_AUTHORITY_MARKER`, module-private Symbol)
- * attached non-enumerably ONLY by `validateTrustedLearningExperience` after the
- * full durable source-authority flow. Plain/JSON-reconstructed objects with
- * identical visible fields carry no marker and are rejected by
- * `isTrustedLearningExperience`. The marker never participates in
- * serialization or determinism (non-enumerable symbol property).
+ * TRUST CAPABILITY (P2.3.5.3a.1 reflective forge closure): this exported type
+ * is DESCRIPTIVE ONLY — a TypeScript shape is not a trust capability, and no
+ * object property (enumerable, non-enumerable, string- or symbol-keyed) can be
+ * one either, because every own property is reflectable and copyable. Trust is
+ * module-private registry membership granted ONLY by
+ * `validateTrustedLearningExperience` after durable source-authority
+ * validation. The trusted object's own-key surface is EXACTLY the canonical 11
+ * visible fields; nothing hidden participates in serialization or determinism.
  */
 export interface TrustedLearningExperienceV0 {
   readonly subject_id: LearningExperienceCandidateV0["subject_id"];
@@ -77,24 +94,27 @@ export interface TrustedLearningExperienceV0 {
 }
 
 /**
- * Module-private runtime authority marker. It is NEVER exported, so no external
- * module can attach, forge or strip it; it is non-enumerable, so it never
- * alters canonical bytes, JSON output or deterministic comparison.
+ * Module-private identity registry. Membership is granted ONLY by
+ * `validateTrustedLearningExperience` after the complete durable source-
+ * authority flow; the registry itself is never exported, so no external module
+ * can register, forge or strip trust. WeakSet keeps no strong references: a
+ * trusted object released by every holder is reclaimed, and trust can never be
+ * serialized, cloned, spread, descriptor-copied or IPC-transferred — after
+ * crash/restart trust is re-established only by re-validation from durable
+ * evidence. Registry state never participates in hashes/fingerprints.
  */
-const TRUSTED_AUTHORITY_MARKER = Symbol("characteros-next/learning/trusted-experience-authority/v0");
+const trustedLearningExperienceRegistry = new WeakSet<object>();
 
 /**
- * Runtime trust verdict for future trusted consumers (e.g. ExperienceEncoderV0):
- * true ONLY for objects produced by `validateTrustedLearningExperience` after
- * the complete durable source-authority validation. A structurally identical
- * plain object (or one reconstructed from JSON/structuredClone) is rejected.
+ * Runtime trust verdict for future trusted consumers (e.g. ExperienceEncoderV0,
+ * which MUST call this — a type annotation alone is not a trust capability):
+ * true ONLY for the exact runtime objects produced by
+ * `validateTrustedLearningExperience`. A structurally identical plain object,
+ * a JSON/structuredClone/spread copy, or an object carrying copied symbols or
+ * property descriptors of a genuine trusted object is rejected.
  */
 export function isTrustedLearningExperience(value: unknown): value is TrustedLearningExperienceV0 {
-  return (
-    value !== null &&
-    typeof value === "object" &&
-    Object.prototype.hasOwnProperty.call(value, TRUSTED_AUTHORITY_MARKER)
-  );
+  return value !== null && typeof value === "object" && trustedLearningExperienceRegistry.has(value);
 }
 
 function deepFreeze(value: unknown): void {
@@ -250,14 +270,10 @@ export async function validateTrustedLearningExperience(
     environment_refs: [...c.environment_refs],
     declared_salience: c.declared_salience
   };
-  // Runtime authority attachment (pre-freeze, non-enumerable, symbol-keyed):
-  // this is the ONLY path that can produce a trusted object.
-  Object.defineProperty(trusted, TRUSTED_AUTHORITY_MARKER, {
-    value: true,
-    enumerable: false,
-    writable: false,
-    configurable: false
-  });
   deepFreeze(trusted);
+  // Trust grant (identity-bound, not property-bound): THIS is the only path
+  // that can make an object trusted. No property/descriptor/symbol copy of
+  // `trusted` can reproduce registry membership.
+  trustedLearningExperienceRegistry.add(trusted);
   return ok(trusted);
 }

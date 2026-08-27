@@ -679,9 +679,9 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
 
 // ---------------------------------------------------------------------------------
 // Forgeability regression (§2–§5 of the final trust check): a TypeScript shape
-// is NOT a trust capability. Trust is a runtime authority marker attached only
-// by validateTrustedLearningExperience; plain/JSON/cloned objects with identical
-// visible fields are rejected by the trusted boundary.
+// is NOT a trust capability. Trust is module-private registry membership
+// granted only by validateTrustedLearningExperience; plain/JSON/cloned objects
+// with identical visible fields are rejected by the trusted boundary.
 // ---------------------------------------------------------------------------------
 
 describe("P2.3.5.3a trusted-representation forgeability regression", () => {
@@ -714,7 +714,7 @@ describe("P2.3.5.3a trusted-representation forgeability regression", () => {
     expect(isTrustedLearningExperience(42)).toBe(false);
   });
 
-  it("the authority marker is invisible to canonical bytes and enumeration (determinism preserved)", async () => {
+  it("the registry grants no visible own keys (determinism preserved)", async () => {
     const bundleA = world.bundleA as AtomicCommitBundleV1;
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
@@ -738,7 +738,7 @@ describe("P2.3.5.3a trusted-representation forgeability regression", () => {
       "source_transition_id",
       "subject_id"
     ]);
-    // JSON serialization is byte-identical to a plain clone (marker invisible).
+    // JSON serialization is byte-identical to a plain clone (trust invisible).
     const plain = JSON.parse(JSON.stringify(trusted)) as Record<string, unknown>;
     expect(JSON.stringify(trusted)).toBe(JSON.stringify(plain));
   });
@@ -770,5 +770,151 @@ describe("P2.3.5.3a trusted-representation forgeability regression", () => {
     // No public entrypoint constructs trusted objects from arbitrary data:
     // the only exported producers are the read-only candidate validator and the
     // authority validator itself (both verified above to fail closed).
+  });
+});
+
+// ---------------------------------------------------------------------------------
+// P2.3.5.3a.1 reflective forge closure (F1–F10): a JavaScript property is DATA —
+// even a non-enumerable module-private Symbol own-property is reflectable via
+// Object.getOwnPropertySymbols / Reflect.ownKeys / getOwnPropertyDescriptors and
+// copyable onto a forged object. Trust must therefore be identity/validation-bound
+// (module-private registry membership granted ONLY by validateTrustedLearning-
+// Experience), never property-bound. Data survives serialization; trust does not.
+// ---------------------------------------------------------------------------------
+
+describe("P2.3.5.3a.1 reflective brand forge closure (F1-F10)", () => {
+  async function genuineTrusted() {
+    const checked = await validateTrustedLearningExperience(
+      readAuthority(),
+      world.ctx as RuntimeContext,
+      candidateFor(world.bundleA as AtomicCommitBundleV1)
+    );
+    expect(checked.ok).toBe(true);
+    if (!checked.ok) throw new Error("fixture invariant: expected trusted result");
+    return checked.value;
+  }
+
+  /** Forged object carrying the exact canonical visible fields. */
+  function visibleClone(trusted: TrustedLearningExperienceV0): Record<string, unknown> {
+    return JSON.parse(JSON.stringify(trusted)) as Record<string, unknown>;
+  }
+
+  it("F1: genuine validator result is trusted", async () => {
+    expect(isTrustedLearningExperience(await genuineTrusted())).toBe(true);
+  });
+
+  it("F2: plain object with identical visible fields is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    expect(isTrustedLearningExperience(visibleClone(trusted))).toBe(false);
+  });
+
+  it("F3: JSON round-trip is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const roundTripped = JSON.parse(JSON.stringify(trusted));
+    expect(isTrustedLearningExperience(roundTripped)).toBe(false);
+  });
+
+  it("F4: structuredClone is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    expect(isTrustedLearningExperience(structuredClone(trusted))).toBe(false);
+  });
+
+  it("F5: object spread is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const spread = { ...trusted };
+    expect(isTrustedLearningExperience(spread)).toBe(false);
+  });
+
+  it("F6: copying ALL Reflect.ownKeys (incl. symbols) onto a forged object is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const forged: Record<PropertyKey, unknown> = {};
+    for (const key of Reflect.ownKeys(trusted)) {
+      const descriptor = Object.getOwnPropertyDescriptor(trusted, key);
+      if (descriptor !== undefined) Object.defineProperty(forged, key, descriptor);
+    }
+    // The forge reproduces the complete own-property surface byte-for-byte...
+    expect(JSON.stringify(forged)).toBe(JSON.stringify(trusted));
+    // ...yet it MUST NOT become trusted.
+    expect(isTrustedLearningExperience(forged)).toBe(false);
+  });
+
+  it("F7: copying ALL property descriptors onto a forged object is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const forged = Object.defineProperties({}, Object.getOwnPropertyDescriptors(trusted));
+    expect(isTrustedLearningExperience(forged)).toBe(false);
+  });
+
+  it("F8: copying ALL own symbols onto a forged object is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const forged = visibleClone(trusted);
+    for (const sym of Object.getOwnPropertySymbols(trusted)) {
+      const descriptor = Object.getOwnPropertyDescriptor(trusted, sym);
+      if (descriptor !== undefined) Object.defineProperty(forged, sym, descriptor);
+    }
+    expect(isTrustedLearningExperience(forged)).toBe(false);
+  });
+
+  it("F9: matching prototype + copied descriptors is NOT trusted", async () => {
+    const trusted = await genuineTrusted();
+    const forged = Object.create(Object.getPrototypeOf(trusted));
+    Object.defineProperties(forged, Object.getOwnPropertyDescriptors(trusted));
+    expect(isTrustedLearningExperience(forged)).toBe(false);
+  });
+
+  it("F10: deep-freezing a forged object does NOT grant trust", async () => {
+    const trusted = await genuineTrusted();
+    const forged = visibleClone(trusted);
+    Object.freeze(forged);
+    for (const value of Object.values(forged)) {
+      if (value !== null && typeof value === "object") Object.freeze(value);
+    }
+    expect(Object.isFrozen(forged)).toBe(true);
+    expect(isTrustedLearningExperience(forged)).toBe(false);
+  });
+
+  it("§11 crash/resupply: fresh re-validation creates a NEW trusted object (T1 !== T2), clones of either stay untrusted", async () => {
+    const candidate = candidateFor(world.bundleA as AtomicCommitBundleV1);
+    const first = await validateTrustedLearningExperience(
+      readAuthority(),
+      world.ctx as RuntimeContext,
+      JSON.parse(JSON.stringify(candidate))
+    );
+    const second = await validateTrustedLearningExperience(
+      readAuthority(),
+      world.ctx as RuntimeContext,
+      JSON.parse(JSON.stringify(candidate))
+    );
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    if (!first.ok || !second.ok) return;
+    // Runtime identity may differ; visible canonical bytes are equal.
+    expect(first.value).not.toBe(second.value);
+    expect(JSON.stringify(first.value)).toBe(JSON.stringify(second.value));
+    // Both independently validated objects are trusted.
+    expect(isTrustedLearningExperience(first.value)).toBe(true);
+    expect(isTrustedLearningExperience(second.value)).toBe(true);
+    // Serialized/cloned trust never survives — re-validation is the only path.
+    expect(isTrustedLearningExperience(JSON.parse(JSON.stringify(first.value)))).toBe(false);
+    expect(isTrustedLearningExperience(structuredClone(second.value))).toBe(false);
+  });
+
+  it("determinism preserved: registry state never appears in visible canonical bytes", async () => {
+    const trusted = await genuineTrusted();
+    // Exactly the 11 canonical visible fields exist as own keys — no authority
+    // symbol, no registry token, nothing hidden participates in serialization.
+    expect(Reflect.ownKeys(trusted).sort()).toEqual([
+      "appraisal_ref",
+      "declared_salience",
+      "entity_refs",
+      "environment_refs",
+      "event_refs",
+      "focus_refs",
+      "observation_ref",
+      "occurrence_logical_time",
+      "scene",
+      "source_transition_id",
+      "subject_id"
+    ]);
+    expect(Object.getOwnPropertySymbols(trusted)).toEqual([]);
   });
 });
