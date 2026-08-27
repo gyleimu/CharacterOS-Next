@@ -27,4 +27,10 @@ export type LearningAdoptionRevision = Parameters<
 export interface LearningAdoptionAuthority {
   /** Mark the canonically bound candidate revision as adopted (idempotent). */
   markAdopted(revision: LearningAdoptionRevision): void;
+  /**
+   * P2.3.5.3d — verdict-only read of the durable adoption marker, used ONLY
+   * for post-commit adoption reconciliation (§9: committed-but-unadopted
+   * detection) and the attachability predicate (§12.1). No store internals.
+   */
+  isAdopted(revision: LearningAdoptionRevision): boolean;
 }
