@@ -2,6 +2,8 @@
 
 **Status: NORMATIVE FOR APPRAISAL V0 ATTRIBUTION REPRESENTATION**
 
+**Attribution conflict status: RESOLVED** (P2.3.5.0c closure — runtime alignment committed as `b3267ac`; see §15 closure evidence).
+
 **Decision driver (P2.3.5.0 read-only audit, HEAD `7ac43a2`):** `CHANGE_TO_CATEGORICAL_ATTRIBUTION` — repository evidence supports locus semantics only.
 
 **Subordinate to (jointly frozen / committed, read-only authority):**
@@ -247,15 +249,39 @@ Distinguish always: *historical canonical compatibility* vs *current transient f
 
 ```text
 previous marker:   CONTRACT_CONFLICT / MUST_RESOLVE_BEFORE_P2_3_5     (commit a7e4822)
-current status:    RESOLVED_PENDING_RUNTIME_ALIGNMENT                 (this document)
-future status:     RESOLVED                                           only after P2.3.5.0b
+intermediate:      RESOLVED_PENDING_RUNTIME_ALIGNMENT                 (this document, commit aa2847a)
+current status:    RESOLVED                                           (P2.3.5.0c closure, runtime alignment commit b3267ac)
 ```
 
-**Do NOT declare `FULLY_RESOLVED` until the P2.3.5.0b runtime type + fail-closed validation alignment is committed and tested.** The distinction matters:
+The provisional rule recorded at P2.3.5.0a was: *Do NOT declare `FULLY_RESOLVED` until the P2.3.5.0b runtime type + fail-closed validation alignment is committed and tested.* That condition is now satisfied (see closure evidence below), so the active status is **RESOLVED**.
 
 > semantic contract resolved ≠ implementation already aligned
 
-A caller MUST treat the current runtime `UnitIntervalV0` attribution as the last remaining misalignment until P2.3.5.0b lands.
+The historical distinction above is preserved as provenance; it no longer describes an open gap.
+
+### 15.1 Closure Evidence (P2.3.5.0c)
+
+| Item | Evidence |
+|---|---|
+| Semantic resolution commit | `aa2847a29473c20fd06cc05228f126f48744b34f` (this document) |
+| Runtime alignment commit | `b3267ace3caca4ff1a9271d0c9ad2ae9cc511955` (P2.3.5.0b, pushed & synchronized) |
+| Verification at alignment | **28 test files / 383 tests / 0 skipped / 0 failed** |
+| Runtime type | `AppraisalAttributionV0 = "self" \| "other" \| "situation"` (`appraisal-port.ts`) |
+| Runtime validation | provider-boundary `validateAppraisalV0` accepts exactly the three literals; rejects numeric values, unknown strings, case variants, `null`, objects, arrays, missing field — no coercion/trim/lowercasing/aliases |
+| Failure boundary | malformed attribution rejected BEFORE AffectProducer execution; AffectProducer invocation count = 0; canonical mutation = 0 (zero-partial-mutation regression, 3 invalid-value variants) |
+| FAST_EMA_V0 | remains attribution-blind; three literals produce byte-identical deltas; production algorithm unchanged |
+| Persistence | SubjectState / Memory / restore / journal schemas unchanged (protected-package diffs empty) |
+
+**Blocker record:** the former marker `CONTRACT_CONFLICT / MUST_RESOLVE_BEFORE_P2_3_5` is hereby recorded as **RESOLVED**. The attribution blocker no longer prevents P2.3.5 contract planning.
+
+**Authorization distinction (unchanged by this closure):**
+
+```text
+P2.3.5 CONTRACT PLANNING:            AUTHORIZED
+LearningTransition IMPLEMENTATION:   NOT YET AUTHORIZED (requires a separate P2.3.5 planning/gate)
+```
+
+Appraisal V0 runtime attribution is now exactly `"self" | "other" | "situation"`, and the actual provider-boundary validation enforces the exact closed enum.
 
 ## 16. Conformance Tests Required for P2.3.5.0b
 
@@ -316,20 +342,20 @@ Compared against the seven authoritative sources plus current code:
 | `p1-5-engineering-acceptance-contract.md` §27 (AffixBridge-1) | `attribution=other` example | Consistent: literal usage matches the enum |
 | `p2-1-contract-freeze.md` | only `appraisal` ref-kind grammar; SubjectState catalog contains no appraisal field | Consistent: no canonical-surface impact |
 | `p2-3-runtime-plan.md` §"six-field structured output" (L96) | proposal-only fixed providers | Consistent: statement unaffected by the field's inner representation |
-| FAST_EMA_V0 contract §4 | conflict marker + mandatory blindness | Consistent: blindness retained; status note cross-references this resolution |
+| FAST_EMA_V0 contract §4 | conflict marker + mandatory blindness | Consistent: blindness retained; status note cross-references this resolution (closed by P2.3.5.0c) |
 | REGULATION_V0 contract | zero Appraisal consumption | Consistent: unaffected |
-| current `appraisal-port.ts` | still `UnitIntervalV0` | Known misalignment → exactly why verdict is READY_FOR_RUNTIME_ALIGNMENT, not FULLY_RESOLVED |
+| current `appraisal-port.ts` | aligned to `AppraisalAttributionV0` as of `b3267ac` | Aligned: the misalignment recorded at P2.3.5.0a was closed by the P2.3.5.0b runtime alignment commit |
 
 **No higher authority requires numeric attribution. No higher authority conflicts with the categorical closure.**
 
-Verdict: **CONTRACT_READY_FOR_RUNTIME_ALIGNMENT** (runtime itself must be aligned in P2.3.5.0b; see §15).
+Verdict: **RESOLVED** — semantic contract committed (`aa2847a`) and runtime aligned (`b3267ac`); see §15.1 closure evidence.
 
 ## 20. Cross-Reference Index
 
 - Resolves: CONTRACT_CONFLICT marked in round-2 §204 / round-3 §13 evaluation reports and commit `a7e4822`.
-- Status-note update applied: `p2-3-4-fast-ema-v0-reference-contract.md` §4.
-- Supersedes: implementation-era `attribution: UnitIntervalV0` typing in `appraisal-port.ts` (upon P2.3.5.0b landing).
-- Governs future consumers: P2.3.5.0b runtime validation (§12), P2.3.5 Learning planning (§11), P2.4+ Experience persistence (FUTURE_ONLY).
+- Status-note update applied: `p2-3-4-fast-ema-v0-reference-contract.md` §4 (updated to RESOLVED by P2.3.5.0c).
+- Supersedes: implementation-era `attribution: UnitIntervalV0` typing in `appraisal-port.ts` — **landed in P2.3.5.0b (`b3267ac`)**.
+- Governs future consumers: P2.3.5.0b runtime validation (§12, delivered), P2.3.5 Learning planning (§11, planning authorized; implementation not yet authorized), P2.4+ Experience persistence (FUTURE_ONLY).
 
 ---
 

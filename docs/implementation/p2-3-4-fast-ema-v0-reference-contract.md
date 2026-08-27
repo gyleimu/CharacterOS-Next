@@ -80,10 +80,11 @@ MemoryRepository、Retrieval、LLM、wall clock、随机源；personality / beli
 - 本契约的通道路由（§6）不消费 attribution，也不通过其他字段间接编码其分类语义。
 - 本裁定**不解决**上游契约冲突；标记保持原样。
 
-> **Status update（P2.3.5.0a，语义层已解决）：** 上游表示法冲突已由
-> `docs/implementation/p2-3-5-appraisal-attribution-resolution.md` 在语义契约层解决
-> （Appraisal V0 attribution ∈ {"self","other","situation"} 闭集；数值表示退役；当前状态
-> `RESOLVED_PENDING_RUNTIME_ALIGNMENT`）。本节的 normative 盲性要求不变且永久成立：
+> **Status update（P2.3.5.0c，已闭合）：** 上游表示法冲突已由
+> `docs/implementation/p2-3-5-appraisal-attribution-resolution.md` 解决，当前状态 **RESOLVED**
+> （语义契约 `aa2847a`；运行时对齐 `b3267ac`：Appraisal V0 attribution 为
+> {"self","other","situation"} 闭集，数值表示退役，provider 边界强制闭集枚举）。
+> 本节的 normative 盲性要求不变且永久成立：
 > `FAST_EMA_V0` 对 `attribution` 不读取、不校验、不参与任何分支或数值。
 
 ## 5. Observation Bridge（Appraisal → FAST）
