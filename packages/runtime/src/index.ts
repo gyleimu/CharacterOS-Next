@@ -82,3 +82,17 @@ export {
   ReferenceRegulationV0Producer,
   createReferenceRegulationV0Producer
 } from "./producers/reference-regulation-v0-producer.js";
+
+// --- P2.3.5.3a Learning trusted input / source authority -------------------------
+
+export {
+  validateLearningExperienceCandidate,
+  type LearningExperienceCandidateV0
+} from "./transitions/learning/learning-candidate.js";
+
+export {
+  validateTrustedLearningExperience,
+  isTrustedLearningExperience,
+  type LearningSourceReadAuthority,
+  type TrustedLearningExperienceV0
+} from "./transitions/learning/learning-source-authority.js";
