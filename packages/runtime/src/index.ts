@@ -67,3 +67,10 @@ export {
   observationTransitionId,
   type ObservationExecutionResult
 } from "./transitions/observation/observation-transition-executor.js";
+
+// --- P2.3.4.1 FAST+EMA reference affect producer ----------------------------------
+
+export {
+  ReferenceFastEmaAffectProducer,
+  createReferenceFastEmaAffectProducer
+} from "./producers/reference-fast-ema-affect-producer.js";

@@ -344,7 +344,8 @@ export class ObservationTransitionExecutor {
         context: anchored,
         snapshot,
         transition_type: "Observation",
-        appraisal: appraisalChecked.value
+        appraisal: appraisalChecked.value,
+        elapsed_ticks: null
       })
     );
     const contextDelta = await runProvider("context", () =>

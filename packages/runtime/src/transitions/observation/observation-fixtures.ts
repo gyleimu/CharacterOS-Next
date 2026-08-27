@@ -307,7 +307,8 @@ export async function observationCapabilities(): Promise<TransitionCapabilities>
     context: { subject_id: "subject-s0", current_logical_time: 0, state_revision: 0 } as never,
     snapshot,
     transition_type: "Observation",
-    appraisal: null
+    appraisal: null,
+    elapsed_ticks: null
   });
   const contextDelta = await buildContextDelta(observation, snapshot);
   return capabilitiesFor(
@@ -328,6 +329,8 @@ export interface ObservationHarnessOptions {
   readonly failingAffect?: boolean;
   readonly failingContextDelta?: boolean;
   readonly memory?: SpyMemoryRepository;
+  /** Explicit affect producer override (P2.3.4.1: real reference producer wiring). */
+  readonly affectProducer?: AffectProducerPort;
   /**
    * Explicit context producer override (Round-3 B5: actually honored now —
    * takes precedence over failingContextDelta and the reference default).
@@ -391,13 +394,14 @@ export function buildObservationHarness(
           }
         : fixedAppraisal(overrides.appraisalScore ?? 0.9, overrides.appraisalEvidence),
     affectProducer:
-      overrides.failingAffect === true
+      overrides.affectProducer ??
+      (overrides.failingAffect === true
         ? {
             produceAffectDelta: async () => {
               throw new Error("affect producer offline");
             }
           }
-        : fixedAffectProducer(),
+        : fixedAffectProducer()),
     contextProducer:
       overrides.contextProducer ??
       (overrides.failingContextDelta === true

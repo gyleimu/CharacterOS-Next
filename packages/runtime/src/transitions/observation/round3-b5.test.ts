@@ -49,7 +49,8 @@ async function honestAffectDelta(): Promise<DomainDeltaV0> {
     context: { subject_id: "subject-s0", current_logical_time: 0, state_revision: 0 } as never,
     snapshot: s0() as unknown as SubjectStateV0,
     transition_type: "Observation",
-    appraisal: null
+    appraisal: null,
+    elapsed_ticks: null
   });
 }
 

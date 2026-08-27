@@ -148,7 +148,8 @@ export class TimeTransitionExecutor {
         context: anchored,
         snapshot,
         transition_type: "Time",
-        appraisal: null
+        appraisal: null,
+        elapsed_ticks: input.elapsed_ticks
       });
     } catch (error) {
       throw new TransitionStageFailure(

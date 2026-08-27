@@ -18,6 +18,12 @@ export interface AffectProducerInputV0 {
   readonly transition_type: Extract<TransitionType, "Time" | "Observation">;
   /** Accepted appraisal draft for Observation; null for Time evolution. */
   readonly appraisal: AppraisalProposalDraftV0 | null;
+  /**
+   * Canonical elapsed ticks of the enclosing Time transition (the proposal
+   * `time_input` truth); null for Observation. The producer can never derive
+   * elapsed from any other surface, so the DRAFT seam is closed here (P2.3.4.1).
+   */
+  readonly elapsed_ticks: number | null;
 }
 
 export interface AffectProducerPort {
