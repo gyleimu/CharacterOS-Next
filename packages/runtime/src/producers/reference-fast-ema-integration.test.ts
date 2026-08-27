@@ -178,7 +178,7 @@ describe("ReferenceFastEmaAffectProducer × ObservationTransitionExecutor", () =
       evidence_refs: ["episode:e-9"],
       relevance: 0.9,
       goal_congruence: 0.9,
-      attribution: 0.9,
+      attribution: "situation",
       controllability: 0.9,
       uncertainty: 0.9,
       intensity: 0.9

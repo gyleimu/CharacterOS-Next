@@ -24,7 +24,7 @@ import {
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
 import { ReferenceContextProducer, buildContextDelta } from "../../ports/context-producer-port.js";
 import type { AffectProducerPort } from "../../ports/affect-producer-port.js";
-import type { AppraisalPort } from "../../ports/appraisal-port.js";
+import type { AppraisalAttributionV0, AppraisalPort } from "../../ports/appraisal-port.js";
 import type { ContextProducerPort } from "../../ports/context-producer-port.js";
 import type { InterpretationPort } from "../../ports/interpretation-port.js";
 import type { RetrievalMetadataProducerPort } from "../../ports/retrieval-metadata-producer-port.js";
@@ -196,7 +196,16 @@ export function fixedInterpretation(evidenceRefs?: readonly string[]): Interpret
   };
 }
 
-export function fixedAppraisal(score: number, evidenceRefs?: readonly string[]): AppraisalPort {
+/**
+ * P2.3.5.0b — attribution is the closed categorical locus enum (commit aa2847a).
+ * The default literal is the semantically neutral fixture value; callers MUST NOT
+ * reintroduce numeric values or any numeric-to-literal mapping.
+ */
+export function fixedAppraisal(
+  score: number,
+  evidenceRefs?: readonly string[],
+  attribution: AppraisalAttributionV0 = "situation"
+): AppraisalPort {
   return {
     appraise: async (view) =>
       ({
@@ -205,7 +214,7 @@ export function fixedAppraisal(score: number, evidenceRefs?: readonly string[]):
         evidence_refs: evidenceRefs ?? view.retrieval_result?.selected_memory_refs ?? [],
         relevance: score,
         goal_congruence: score,
-        attribution: score,
+        attribution,
         controllability: score,
         uncertainty: score,
         intensity: score
@@ -342,6 +351,10 @@ export interface ObservationHarnessOptions {
   readonly interpretation?: InterpretationPort;
   readonly appraisalScore?: number;
   readonly appraisalEvidence?: readonly string[];
+  /** Categorical attribution locus override (default: "situation"). */
+  readonly appraisalAttribution?: AppraisalAttributionV0;
+  /** Explicit appraisal port (overrides appraisalScore/Evidence/Attribution). */
+  readonly appraisal?: AppraisalPort;
   readonly retrieval?: {
     retrieve(query: MemoryRetrievalQueryV0): Promise<MemoryRetrievalResultV0>;
   };
@@ -392,7 +405,12 @@ export function buildObservationHarness(
               throw new Error("appraisal provider offline");
             }
           }
-        : fixedAppraisal(overrides.appraisalScore ?? 0.9, overrides.appraisalEvidence),
+        : (overrides.appraisal ??
+            fixedAppraisal(
+              overrides.appraisalScore ?? 0.9,
+              overrides.appraisalEvidence,
+              overrides.appraisalAttribution
+            )),
     affectProducer:
       overrides.affectProducer ??
       (overrides.failingAffect === true

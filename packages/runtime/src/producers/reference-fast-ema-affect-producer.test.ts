@@ -115,7 +115,7 @@ function appraisalOf(overrides: Partial<Record<string, number | string>> = {}): 
     evidence_refs: [],
     relevance: 1,
     goal_congruence: 0.9,
-    attribution: 0.5,
+    attribution: "situation",
     controllability: 0.5,
     uncertainty: 0.2,
     intensity: 0.8,
@@ -322,19 +322,24 @@ describe("FAST_EMA_V0 observation bridge (contract §5–§6)", () => {
     expect(moodOf(zeroIntensity).baseline).toBe(0);
   });
 
-  it("U4: attribution independence — same inputs except attribution ⇒ byte-identical output", async () => {
-    const a = await producer.produceAffectDelta(
-      observationInputOf(appraisalOf({ attribution: 0.1, goal_congruence: 0.2, uncertainty: 0.2, controllability: 0.8 }))
+  it("U4: attribution independence — same inputs except attribution ⇒ byte-identical output (all three closed-enum literals, P2.3.5.0b)", async () => {
+    const base = { goal_congruence: 0.2, uncertainty: 0.2, controllability: 0.8 };
+    const self = await producer.produceAffectDelta(
+      observationInputOf(appraisalOf({ attribution: "self", ...base }))
     );
-    const b = await producer.produceAffectDelta(
-      observationInputOf(appraisalOf({ attribution: 0.9, goal_congruence: 0.2, uncertainty: 0.2, controllability: 0.8 }))
+    const other = await producer.produceAffectDelta(
+      observationInputOf(appraisalOf({ attribution: "other", ...base }))
     );
-    expect(fingerprint(a)).toBe(fingerprint(b));
+    const situation = await producer.produceAffectDelta(
+      observationInputOf(appraisalOf({ attribution: "situation", ...base }))
+    );
+    expect(fingerprint(self)).toBe(fingerprint(other));
+    expect(fingerprint(other)).toBe(fingerprint(situation));
   });
 
-  it("U4: attribution extreme values never enter any branch (joy path)", async () => {
-    const a = await producer.produceAffectDelta(observationInputOf(appraisalOf({ attribution: 0 })));
-    const b = await producer.produceAffectDelta(observationInputOf(appraisalOf({ attribution: 1 })));
+  it("U4: every categorical attribution literal never enters any branch (joy path)", async () => {
+    const a = await producer.produceAffectDelta(observationInputOf(appraisalOf({ attribution: "self" })));
+    const b = await producer.produceAffectDelta(observationInputOf(appraisalOf({ attribution: "other" })));
     expect(fingerprint(a)).toBe(fingerprint(b));
   });
 });

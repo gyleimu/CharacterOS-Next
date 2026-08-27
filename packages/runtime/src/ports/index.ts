@@ -8,7 +8,7 @@ export type {
   InterpretationPort,
   InterpretationProposalDraftV0
 } from "./interpretation-port.js";
-export type { AppraisalPort, AppraisalProposalDraftV0 } from "./appraisal-port.js";
+export type { AppraisalPort, AppraisalProposalDraftV0, AppraisalAttributionV0 } from "./appraisal-port.js";
 export type { AffectProducerInputV0, AffectProducerPort } from "./affect-producer-port.js";
 export type { RegulationProducerInputV0, RegulationProducerPort } from "./regulation-producer-port.js";
 

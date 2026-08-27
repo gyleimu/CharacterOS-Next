@@ -16,7 +16,10 @@ import { fail, ok, type ValidationResult } from "@characteros-next/subject-core"
 import type {
   InterpretationProposalDraftV0
 } from "../../ports/interpretation-port.js";
-import type { AppraisalProposalDraftV0 } from "../../ports/appraisal-port.js";
+import type {
+  AppraisalAttributionV0,
+  AppraisalProposalDraftV0
+} from "../../ports/appraisal-port.js";
 
 const SCHEMA_REASON = "SS-SCHEMA-001";
 
@@ -50,21 +53,35 @@ export function validateInterpretationProposal(v: unknown): ValidationResult<Int
   return ok(v as unknown as InterpretationProposalDraftV0);
 }
 
-const APPRAISAL_FIELDS = [
+const APPRAISAL_NUMERIC_FIELDS = [
   "relevance",
   "goal_congruence",
-  "attribution",
   "controllability",
   "uncertainty",
   "intensity"
 ] as const;
+
+/**
+ * P2.3.5.0b — closed categorical attribution locus (commit aa2847a resolution):
+ * exactly `"self" | "other" | "situation"`, case-sensitive, no coercion,
+ * no trimming, no lowercasing, no aliases (numeric values retired).
+ */
+const APPRAISAL_ATTRIBUTION_LITERALS: readonly AppraisalAttributionV0[] = [
+  "self",
+  "other",
+  "situation"
+];
+
+function isAttributionLiteral(v: unknown): v is AppraisalAttributionV0 {
+  return typeof v === "string" && (APPRAISAL_ATTRIBUTION_LITERALS as readonly string[]).includes(v);
+}
 
 /** Validates the closed six-field AppraisalV0 (§19) — no extra fields accepted. */
 export function validateAppraisalV0(v: unknown): ValidationResult<AppraisalProposalDraftV0> {
   if (!isRecord(v)) return fail("INVALID_SCHEMA", SCHEMA_REASON, "appraisal: expected object");
   const shell = closedKeys(
     v,
-    ["schema_version", "appraisal_ref", "evidence_refs", ...APPRAISAL_FIELDS],
+    ["schema_version", "appraisal_ref", "evidence_refs", ...APPRAISAL_NUMERIC_FIELDS, "attribution"],
     "appraisal"
   );
   if (!shell.ok) return shell;
@@ -74,13 +91,20 @@ export function validateAppraisalV0(v: unknown): ValidationResult<AppraisalPropo
   if (!isString(v["appraisal_ref"])) {
     return fail("INVALID_SCHEMA", SCHEMA_REASON, "appraisal.appraisal_ref");
   }
-  for (const field of APPRAISAL_FIELDS) {
+  for (const field of APPRAISAL_NUMERIC_FIELDS) {
     const value = v[field];
     if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) {
       return fail("INVALID_VALUE_RANGE", SCHEMA_REASON, `appraisal.${field}: UnitIntervalV0 required`);
     }
     const checked = validateUnitInterval(value, `appraisal.${field}`);
     if (!checked.ok) return checked;
+  }
+  if (!isAttributionLiteral(v["attribution"])) {
+    return fail(
+      "INVALID_SCHEMA",
+      SCHEMA_REASON,
+      `appraisal.attribution: expected exactly "self" | "other" | "situation" (closed enum, no coercion)`
+    );
   }
   const evidence = validateRefArray(v["evidence_refs"], "appraisal.evidence_refs", { sorted: true });
   if (!evidence.ok) return evidence;

@@ -18,6 +18,7 @@ export type { RuntimeDependencyContainer } from "./types/runtime-dependency-cont
 export type {
   AppraisalPort,
   AppraisalProposalDraftV0,
+  AppraisalAttributionV0,
   AffectProducerInputV0,
   AffectProducerPort,
   ControlledProjectionViewV0,
