@@ -96,3 +96,8 @@ export {
   type LearningSourceReadAuthority,
   type TrustedLearningExperienceV0
 } from "./transitions/learning/learning-source-authority.js";
+
+export {
+  ExperienceEncoderV0,
+  type LearningEncodingContextV0
+} from "./transitions/learning/experience-encoder-v0.js";
