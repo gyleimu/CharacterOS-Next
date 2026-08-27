@@ -74,3 +74,10 @@ export {
   ReferenceFastEmaAffectProducer,
   createReferenceFastEmaAffectProducer
 } from "./producers/reference-fast-ema-affect-producer.js";
+
+// --- P2.3.4.2b REGULATION_V0 reference producer ------------------------------------
+
+export {
+  ReferenceRegulationV0Producer,
+  createReferenceRegulationV0Producer
+} from "./producers/reference-regulation-v0-producer.js";

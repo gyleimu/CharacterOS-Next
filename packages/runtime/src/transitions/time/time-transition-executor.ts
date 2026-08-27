@@ -162,10 +162,14 @@ export class TimeTransitionExecutor {
     }
     let regulationDelta: DomainDeltaV0;
     try {
+      // P2.3.4.2b — closed least-privilege intake (REGULATION_V0 contract §4):
+      // same canonical pre-transition snapshot authority as AffectProducer, but
+      // ONLY the narrow projection {context, regulation, elapsed_ticks}; the
+      // affect delta computed above is never consumed here.
       regulationDelta = await regulationProducer.produceRegulationDelta({
         context: anchored,
-        snapshot,
-        transition_type: "Time"
+        regulation: snapshot.regulation,
+        elapsed_ticks: input.elapsed_ticks
       });
     } catch (error) {
       throw new TransitionStageFailure(
