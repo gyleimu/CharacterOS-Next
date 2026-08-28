@@ -149,6 +149,33 @@ export {
 export { ReferenceCognitionProviderV0 } from "./producers/reference-cognition-provider.js";
 export type { CognitionProviderV0 } from "./ports/cognition-port.js";
 
+// --- P2-next Real LLM Cognition Provider V0 ------------------------------------------
+
+export {
+  LlmCognitionProviderV0,
+  LlmCognitionRejectionErrorV0,
+  type LlmCognitionProviderConfigV0,
+  type LlmCognitionRejectionCode
+} from "./providers/cognition/llm-cognition-provider.js";
+
+export {
+  buildCognitivePromptMessages,
+  renderCognitiveSubjectData,
+  renderCognitiveSystemRules,
+  COGNITIVE_PROMPT_PROJECTION_VERSION
+} from "./providers/cognition/cognitive-prompt-projection.js";
+
+export {
+  ModelTransportErrorV0,
+  OpenAiCompatibleTransportV0,
+  type ModelTransportV0,
+  type ModelTransportConfigV0,
+  type ModelTransportRequestV0,
+  type ModelTransportResponseV0,
+  type ModelTransportMessageV0,
+  type ModelTransportFailureCode
+} from "./transports/model-transport.js";
+
 export type {
   LearningAdoptionAuthority,
   LearningAdoptionRevision
