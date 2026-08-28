@@ -27,6 +27,7 @@ import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core
 import type {
   AppraisalPort,
   AffectProducerPort,
+  CognitionProviderV0,
   ContextProducerPort,
   InterpretationPort,
   RegulationProducerPort,
@@ -60,6 +61,11 @@ export interface RuntimeCompositionOptions {
   readonly regulationProducer?: RegulationProducerPort;
   readonly contextProducer?: ContextProducerPort;
   readonly retrievalMetadataProducer?: RetrievalMetadataProducerPort;
+  /**
+   * P2-next — CognitionProviderV0 seam (proposals only). Optional until the
+   * CognitionAction slice wiring; the executor fails closed when null.
+   */
+  readonly cognitionProvider?: CognitionProviderV0;
   /**
    * P2.3.5.3c — read-only committed-bundle projection for Learning trusted-source
    * validation (host-minted from its own durable store read face). Optional until
@@ -105,6 +111,7 @@ export class RuntimeCompositionRoot {
       regulationProducer: options.regulationProducer ?? null,
       contextProducer: options.contextProducer ?? null,
       retrievalMetadataProducer: options.retrievalMetadataProducer ?? null,
+      cognitionProvider: options.cognitionProvider ?? null,
       learningSourceAuthority: options.learningSourceAuthority ?? null,
       learningAdoptionAuthority: options.learningAdoptionAuthority ?? null
     };

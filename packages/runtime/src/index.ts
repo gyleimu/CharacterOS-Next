@@ -120,6 +120,35 @@ export {
   type LearningExecutionResult
 } from "./transitions/learning/learning-transition-executor.js";
 
+// --- P2-next CognitionActionTransition V0 ------------------------------------------
+
+export {
+  CognitionActionTransitionExecutor,
+  buildCognitionActionProposal,
+  buildCognitiveContextProjection,
+  cognitionActionTransitionId,
+  COGNITION_ACTION_TRANSITION_ID_PROJECTION,
+  type CognitionActionExecutionResultV0
+} from "./transitions/cognition-action/cognition-action-transition-executor.js";
+
+export {
+  actionIntentAllowed,
+  allowedEvidenceSet,
+  cognitiveProjectionHash,
+  COGNITIVE_CONTEXT_PROJECTION_HASH_PROJECTION,
+  COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION,
+  findUnsupportedEvidenceRef,
+  validateCognitionProposal,
+  type ActionIntentV0,
+  type AllowedActionV0,
+  type CognitionActionInputV0,
+  type CognitionProposalV0,
+  type CognitiveContextProjectionV0
+} from "./transitions/cognition-action/types.js";
+
+export { ReferenceCognitionProviderV0 } from "./producers/reference-cognition-provider.js";
+export type { CognitionProviderV0 } from "./ports/cognition-port.js";
+
 export type {
   LearningAdoptionAuthority,
   LearningAdoptionRevision

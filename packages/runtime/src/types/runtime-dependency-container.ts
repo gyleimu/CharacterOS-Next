@@ -13,6 +13,7 @@
 import type {
   AppraisalPort,
   AffectProducerPort,
+  CognitionProviderV0,
   ContextProducerPort,
   InterpretationPort,
   MemoryPort,
@@ -44,6 +45,12 @@ export interface RuntimeDependencyContainer {
   readonly contextProducer: ContextProducerPort | null;
   /** Optional Observation retrieval-metadata trio producer (producer identity `memory`). */
   readonly retrievalMetadataProducer: RetrievalMetadataProducerPort | null;
+  /**
+   * P2-next — CognitionProviderV0 seam: proposals ONLY (schema/evidence/
+   * action-space validated by the executor; canonical mutation impossible).
+   * null = not yet wired; the CognitionAction executor fails closed.
+   */
+  readonly cognitionProvider: CognitionProviderV0 | null;
   /**
    * P2.3.5.3c — Learning trusted-source read authority (read-only committed-bundle
    * projection over the host's durable store); null until the Learning slice wires it.

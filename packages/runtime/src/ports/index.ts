@@ -12,6 +12,10 @@ export type { AppraisalPort, AppraisalProposalDraftV0, AppraisalAttributionV0 } 
 export type { AffectProducerInputV0, AffectProducerPort } from "./affect-producer-port.js";
 export type { RegulationProducerInputV0, RegulationProducerPort } from "./regulation-producer-port.js";
 
+// --- P2-next CognitionActionTransition provider seam -------------------------------
+
+export type { CognitionProviderV0 } from "./cognition-port.js";
+
 // --- P2.3.3.1 observation input + context producer --------------------------------
 
 export {
