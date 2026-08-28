@@ -35,6 +35,15 @@ importers:
 
   packages/belief: {}
 
+  packages/influence-evidence:
+    dependencies:
+      '@characteros-next/memory-influence':
+        specifier: workspace:*
+        version: link:../memory-influence
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
+
   packages/memory:
     dependencies:
       '@characteros-next/subject-core':
