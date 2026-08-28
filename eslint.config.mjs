@@ -134,12 +134,24 @@ export default tseslint.config(
     ],
     "appraisal may consume only memory and subject-core public contracts."
   ),
-  ...["belief", "personality", "relationship", "behavior"].map((name) =>
+  ...["belief", "relationship", "behavior"].map((name) =>
     packageBoundaryConfig(
       `packages/${name}/src/**/*.ts`,
       [`@characteros-next/${name}`],
       `${name} is deferred and cannot depend on another workspace package.`
     )
+  ),
+  packageBoundaryConfig(
+    "packages/personality/src/**/*.ts",
+    [
+      "@characteros-next/personality",
+      "@characteros-next/subject-core",
+      "@characteros-next/memory",
+      "@characteros-next/memory-influence",
+      "@characteros-next/influence-evidence",
+      "@characteros-next/runtime"
+    ],
+    "personality may consume only subject-core, memory, memory-influence, influence-evidence, and runtime public contracts."
   ),
   packageBoundaryConfig(
     "packages/runtime/src/**/*.ts",

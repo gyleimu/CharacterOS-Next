@@ -59,7 +59,24 @@ importers:
         specifier: workspace:*
         version: link:../subject-core
 
-  packages/personality: {}
+  packages/personality:
+    dependencies:
+      '@characteros-next/influence-evidence':
+        specifier: workspace:*
+        version: link:../influence-evidence
+      '@characteros-next/memory-influence':
+        specifier: workspace:*
+        version: link:../memory-influence
+      '@characteros-next/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
+    devDependencies:
+      '@characteros-next/memory':
+        specifier: workspace:*
+        version: link:../memory
 
   packages/regulation: {}
 
