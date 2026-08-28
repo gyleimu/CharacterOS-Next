@@ -208,6 +208,18 @@ export {
   type SandboxEntityPostureV0
 } from "./actions/sandbox-world.js";
 
+export {
+  OutcomeReintegrationRunnerV0,
+  type OutcomeReintegrationResultV0
+} from "./actions/outcome-reintegration-runner.js";
+
+export {
+  adaptOutcomeToObservation,
+  factualOutcomeSummary,
+  type OutcomeObservationMappingV0,
+  type OutcomeProvenanceV0
+} from "./actions/outcome-observation-adapter.js";
+
 export type {
   LearningAdoptionAuthority,
   LearningAdoptionRevision
