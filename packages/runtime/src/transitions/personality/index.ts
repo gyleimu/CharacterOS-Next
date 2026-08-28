@@ -22,6 +22,5 @@ export {
 
 export {
   PersonalityTransitionExecutor,
-  type PersonalityExecutionResult,
-  type RuntimeContext
+  type PersonalityExecutionResult
 } from "./personality-transition-executor.js";

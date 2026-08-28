@@ -17,10 +17,21 @@ import type {
   HashV1,
   IdentifierV0,
   StateRevisionV0,
+  TransitionIdV0,
   UnitIntervalV0
 } from "@characteros-next/subject-core";
 import type { EpisodeRef } from "@characteros-next/memory";
-import { fail, ok, isRecord, validateIdentifier, validateUnitInterval, type ValidationResult } from "@characteros-next/subject-core";
+import {
+  fail,
+  ok,
+  isRecord,
+  validateHash,
+  validateIdentifier,
+  validateStateRevision,
+  validateUnitInterval,
+  type ValidationResult
+} from "@characteros-next/subject-core";
+import { parseEpisodeRef } from "@characteros-next/memory";
 import { hashEnvelope } from "@characteros-next/subject-core";
 
 export const PERSONALITY_UPDATE_PROPOSAL_SCHEMA_VERSION = "personality-update-proposal-v0" as const;
@@ -63,10 +74,6 @@ const PROPOSAL_KEYS: readonly string[] = [
   "evidence_binding"
 ];
 
-function isNumber(v: unknown): v is number {
-  return typeof v === "number" && Number.isFinite(v);
-}
-
 /** Fail-closed proposal validation: closed keys, bounds, ordering, uniqueness. */
 export function validatePersonalityUpdateProposal(
   v: unknown
@@ -84,10 +91,12 @@ export function validatePersonalityUpdateProposal(
   if (typeof subjectRaw !== "string") return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "proposal.subject_id: expected identifier");
   const subject = validateIdentifier(subjectRaw, "proposal.subject_id");
   if (!subject.ok) return subject;
-  const rev = v["expected_state_revision"];
-  if (!isNumber(rev) || !Number.isSafeInteger(rev) || rev < 0) {
+  const revRaw = v["expected_state_revision"];
+  if (typeof revRaw !== "number") {
     return fail("INVALID_VALUE_RANGE", "SS-SCHEMA-001", "proposal.expected_state_revision: nonnegative safe integer required");
   }
+  const revision = validateStateRevision(revRaw, "proposal.expected_state_revision");
+  if (!revision.ok) return revision;
   const updatesRaw = v["updates"];
   if (!Array.isArray(updatesRaw) || updatesRaw.length === 0) {
     return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "proposal.updates: nonempty array required");
@@ -112,7 +121,11 @@ export function validatePersonalityUpdateProposal(
       if (id.value < prevId) return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}: dimension_ids not raw-ASCII-sorted`);
     }
     prevId = id.value;
-    const value = validateUnitInterval(item["next_value"] as number, `${label}.next_value`);
+    const valueRaw = item["next_value"];
+    if (typeof valueRaw !== "number") {
+      return fail("INVALID_VALUE_RANGE", "SS-SCHEMA-001", `${label}.next_value: number required`);
+    }
+    const value = validateUnitInterval(valueRaw, `${label}.next_value`);
     if (!value.ok) return value;
     updates.push({ dimension_id: id.value, next_value: value.value });
   }
@@ -127,28 +140,28 @@ export function validatePersonalityUpdateProposal(
   if (!Array.isArray(refs) || refs.length === 0) {
     return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "proposal.evidence_binding.member_refs: nonempty episode-ref array required");
   }
+  const memberRefs: EpisodeRef[] = [];
   for (let i = 0; i < refs.length; i++) {
-    if (typeof refs[i] !== "string" || !(refs[i] as string).startsWith("episode:")) {
-      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `proposal.evidence_binding.member_refs[${i}]: episode ref required`);
-    }
+    const parsed = parseEpisodeRef(refs[i], `proposal.evidence_binding.member_refs[${i}]`);
+    if (!parsed.ok) return fail("INVALID_SCHEMA", "SS-SCHEMA-001", parsed.error.detail);
+    memberRefs.push(parsed.value);
   }
-  const fp = eb["member_set_fingerprint"];
-  if (typeof fp !== "string" || !fp.startsWith("sha256:")) {
+  const fpRaw = eb["member_set_fingerprint"];
+  if (typeof fpRaw !== "string") {
     return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "proposal.evidence_binding.member_set_fingerprint: sha256 hash required");
   }
+  const fingerprint = validateHash(fpRaw, "proposal.evidence_binding.member_set_fingerprint");
+  if (!fingerprint.ok) return fingerprint;
   return ok({
-      schema_version: PERSONALITY_UPDATE_PROPOSAL_SCHEMA_VERSION,
-      subject_id: subject.value as IdentifierV0,
-      expected_state_revision: rev as unknown as StateRevisionV0,
-      updates: updates.map((u) => ({
-        dimension_id: u.dimension_id as IdentifierV0,
-        next_value: u.next_value as UnitIntervalV0
-      })),
-      evidence_binding: {
-        member_refs: refs as unknown as readonly EpisodeRef[],
-        member_set_fingerprint: fp as HashV1
-      }
-    });
+    schema_version: PERSONALITY_UPDATE_PROPOSAL_SCHEMA_VERSION,
+    subject_id: subject.value,
+    expected_state_revision: revision.value,
+    updates,
+    evidence_binding: {
+      member_refs: memberRefs,
+      member_set_fingerprint: fingerprint.value
+    }
+  });
 }
 
 function strip(digest: string): string {
@@ -176,7 +189,7 @@ export async function deriveEvidenceMemberSetFingerprint(
  */
 export async function derivePersonalityTransitionId(
   proposal: PersonalityUpdateProposalV0
-): Promise<string> {
+): Promise<TransitionIdV0> {
   const digest = strip(
     await hashEnvelope(PERSONALITY_TRANSITION_ID_PROJECTION, {
       subject_id: proposal.subject_id,
@@ -186,5 +199,19 @@ export async function derivePersonalityTransitionId(
       evidence_refs: proposal.evidence_binding.member_refs
     })
   );
-  return `t-personality-${digest}`;
+  return brandTransitionId(`t-personality-${digest}`);
+}
+
+/**
+ * TransitionIdV0 shares the frozen IdentifierV0 format contract (§5.2); the
+ * derived literal is verified by the canonical validator before the nominal
+ * brand is applied (validator-backed single assertion, no unknown hop).
+ */
+function brandTransitionId(raw: string): TransitionIdV0 {
+  const checked = validateIdentifier(raw, "personality.transition_id");
+  if (!checked.ok) {
+    throw new Error(`PERSONALITY_TRANSITION_ID_INVALID: ${checked.error.reason} ${checked.error.detail}`);
+  }
+  const id: string = checked.value;
+  return id as TransitionIdV0;
 }

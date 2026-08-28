@@ -4,15 +4,26 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { stateHash, type SubjectStateV0 } from "@characteros-next/subject-core";
+import {
+  stateHash,
+  validateIdentifier,
+  validateLogicalTime,
+  validateStateRevision,
+  type SubjectStateV0,
+  type ValidationResult
+} from "@characteros-next/subject-core";
 import { createInMemorySubjectCoreFacade } from "@characteros-next/subject-core";
 import {
   InMemoryMemoryRepository,
+  parseEpisodeRef,
+  type EpisodeRef,
   type MemoryPreparationAuthority
 } from "@characteros-next/memory";
 
 import type { SubjectCorePort } from "../../ports/subject-core-port.js";
+import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { InMemoryFacadeAssembly, ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
+import type { PersonalityUpdateProposalV0 } from "./personality-update-proposal.js";
 import { s0 } from "../observation/observation-fixtures.js";
 import {
   initializeEmptyPersonalityState,
@@ -29,6 +40,24 @@ const SUBJECT_ID = "subject-s0";
 const EPISODE_A = "episode:b7a0d91e171ee47470324bc8bfe02ac2b307018f56b9e03e76d946298636c05d";
 const EPISODE_B = "episode:c81e728d9d4c2f636f067f89cc14862c00000000000000000000000000000000";
 const EPISODE_NONEXISTENT = "episode:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+
+function requireBrand<T>(r: ValidationResult<T>): T {
+  if (!r.ok) throw new Error(`fixture brand invalid: ${r.error.detail}`);
+  return r.value;
+}
+
+function episodeRef(raw: string): EpisodeRef {
+  return requireBrand(parseEpisodeRef(raw, "fixture.episode_ref"));
+}
+
+/** Canonical branded read-position context (validator-backed, no type escape). */
+function personalityCtx(stateRevision: number): RuntimeContext {
+  return {
+    subject_id: requireBrand(validateIdentifier(SUBJECT_ID, "ctx.subject_id")),
+    current_logical_time: requireBrand(validateLogicalTime(0, "ctx.current_logical_time")),
+    state_revision: requireBrand(validateStateRevision(stateRevision, "ctx.state_revision"))
+  };
+}
 
 interface TestCore extends SubjectCorePort {
   readonly issuer: ProducerAuthorizationIssuer;
@@ -103,7 +132,7 @@ function buildWorld() {
   const executor = new PersonalityTransitionExecutor({
     subjectCore: core,
     issuer: core.issuer,
-    memoryRepository: memory as never
+    memoryRepository: memory
   });
   return { memory, core, executor };
 }
@@ -114,7 +143,7 @@ async function makeProposal(
   const memberRefs = overrides.member_refs ?? [EPISODE_A];
   const fingerprint =
     overrides.fingerprint_override ??
-    (await deriveEvidenceMemberSetFingerprint(memberRefs as never));
+    (await deriveEvidenceMemberSetFingerprint(memberRefs.map(episodeRef)));
   const { member_refs: _m, fingerprint_override: _f, ...rest } = overrides;
   void _m;
   void _f;
@@ -124,11 +153,20 @@ async function makeProposal(
     expected_state_revision: 0,
     updates: [{ dimension_id: "openness", next_value: 0.7 }],
     evidence_binding: {
-      member_refs: memberRefs as never,
-      member_set_fingerprint: fingerprint as never
+      member_refs: memberRefs,
+      member_set_fingerprint: fingerprint
     },
     ...rest
   };
+}
+
+/** Fixture proposal admitted through the real fail-closed validator. */
+async function validProposal(
+  overrides: { member_refs?: string[]; fingerprint_override?: string; [key: string]: unknown } = {}
+): Promise<PersonalityUpdateProposalV0> {
+  const r = validatePersonalityUpdateProposal(await makeProposal(overrides));
+  if (!r.ok) throw new Error(`fixture proposal invalid: ${r.error.detail}`);
+  return r.value;
 }
 
 describe("PersonalityState V0 Foundation", () => {
@@ -184,10 +222,7 @@ describe("PersonalityState V0 Foundation", () => {
 
   it("P3/P4: traits_seed remains unchanged and separate after a Personality transition", async () => {
     const world = buildWorld();
-    const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal() as never
-    );
+    const result = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(result.kind).toBe("COMMITTED");
     if (result.kind !== "COMMITTED") return;
     const bundleP3 = world.core.storeRead.readCurrentBundle(SUBJECT_ID);
@@ -212,10 +247,10 @@ describe("PersonalityState V0 Foundation", () => {
     const world = buildWorld();
     const before = world.core.storeRead.getCommittedBundles().length;
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
+      personalityCtx(0),
       await makeProposal({
         updates: [{ dimension_id: "neuroticism", next_value: 0.1 }]
-      }) as never
+      })
     );
     expect(result.kind).toBe("REJECTED_UNKNOWN_DIMENSION");
     expect(world.core.storeRead.getCommittedBundles().length).toBe(before);
@@ -232,10 +267,7 @@ describe("PersonalityState V0 Foundation", () => {
 
   it("P11/P12: hash changes when personality changes; equivalent states hash identically (state projection)", async () => {
     const world = buildWorld();
-    const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal() as never
-    );
+    const result = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(result.kind).toBe("COMMITTED");
     const afterBundle = world.core.storeRead.readCurrentBundle(SUBJECT_ID);
     if (afterBundle === null) throw new Error("bundle missing");
@@ -263,13 +295,13 @@ describe("PersonalityState V0 Foundation", () => {
     const world = buildWorld();
     const bundlesBefore = world.core.storeRead.getCommittedBundles().length;
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
+      personalityCtx(0),
       await makeProposal({
         updates: [
           { dimension_id: "conscientiousness", next_value: 0.65 },
           { dimension_id: "openness", next_value: 0.7 }
         ]
-      }) as never
+      })
     );
     expect(result.kind).toBe("COMMITTED");
     if (result.kind !== "COMMITTED") return;
@@ -295,13 +327,13 @@ describe("PersonalityState V0 Foundation", () => {
   it("P15/P26: multi-dimension proposal commits atomically (single revision)", async () => {
     const world = buildWorld();
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
+      personalityCtx(0),
       await makeProposal({
         updates: [
           { dimension_id: "conscientiousness", next_value: 0.65 },
           { dimension_id: "openness", next_value: 0.7 }
         ]
-      }) as never
+      })
     );
     expect(result.kind).toBe("COMMITTED");
     const bundles = world.core.storeRead.getCommittedBundles();
@@ -311,36 +343,23 @@ describe("PersonalityState V0 Foundation", () => {
   it("P16: failed proposal commits zero revision", async () => {
     const world = buildWorld();
     const before = world.core.storeRead.getCommittedBundles().length;
-    await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal({ expected_state_revision: 5 }) as never
-    );
+    await world.executor.execute(personalityCtx(0), await makeProposal({ expected_state_revision: 5 }));
     expect(world.core.storeRead.getCommittedBundles().length).toBe(before);
   });
 
   it("P17: same transition (same proposal) replay ⇒ ALREADY_COMMITTED, +0 revision", async () => {
     const world = buildWorld();
-    const proposal = await makeProposal() as never;
-    const first = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      proposal
-    );
+    const first = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(first.kind).toBe("COMMITTED");
     const bundlesAfterFirst = world.core.storeRead.getCommittedBundles().length;
-    const replay = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal() as never
-    );
+    const replay = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(replay.kind).toBe("ALREADY_COMMITTED");
     expect(world.core.storeRead.getCommittedBundles().length).toBe(bundlesAfterFirst);
   });
 
   it("P18: same transition identity + changed proposal ⇒ fail closed (REUSE_CONFLICT)", async () => {
     const world = buildWorld();
-    const first = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal() as never
-    );
+    const first = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(first.kind).toBe("COMMITTED");
     // Same transition identity is derived from the proposal; changing ONLY the
     // value while keeping every identity input identical is impossible by
@@ -348,23 +367,16 @@ describe("PersonalityState V0 Foundation", () => {
     // a same-id/different-fingerprint attempt must be rejected by the executor
     // (deterministic identity) or the journal. We exercise the stale guard and
     // the deterministic identity directly:
-    const id1 = await derivePersonalityTransitionId(
-      (await makeProposal() as unknown) as never
-    );
+    const id1 = await derivePersonalityTransitionId(await validProposal());
     const id2 = await derivePersonalityTransitionId(
-      (await makeProposal({
-        updates: [{ dimension_id: "openness", next_value: 0.9 }]
-      }) as unknown) as never
+      await validProposal({ updates: [{ dimension_id: "openness", next_value: 0.9 }] })
     );
     expect(id1).not.toBe(id2); // changed proposal ⇒ new identity, never silent overwrite
   });
 
   it("P20/P21/P22: no direct memory write and no MemoryInfluence/InfluenceEvidence mutation path", async () => {
     const world = buildWorld();
-    const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      await makeProposal() as never
-    );
+    const result = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(result.kind).toBe("COMMITTED");
     // Memory repository untouched: still the genesis empty revision.
     const manifest = await world.memory.readManifest("R0" as never);
@@ -372,16 +384,12 @@ describe("PersonalityState V0 Foundation", () => {
   });
 
   it("P23/P24/P25: deterministic identity — same proposal ⇒ same id, changed ⇒ different id; no wall clock", async () => {
-    const a = await derivePersonalityTransitionId(
-      (await makeProposal() as unknown) as never
-    );
-    const b = await derivePersonalityTransitionId(
-      (await makeProposal() as unknown) as never
-    );
+    const a = await derivePersonalityTransitionId(await validProposal());
+    const b = await derivePersonalityTransitionId(await validProposal());
     expect(a).toBe(b);
-    const fp = await deriveEvidenceMemberSetFingerprint([EPISODE_A] as never);
+    const fp = await deriveEvidenceMemberSetFingerprint([episodeRef(EPISODE_A)]);
 
-    const fp2 = await deriveEvidenceMemberSetFingerprint([EPISODE_A] as never);
+    const fp2 = await deriveEvidenceMemberSetFingerprint([episodeRef(EPISODE_A)]);
 
     expect(fp).toBe(fp2);
   });
@@ -409,10 +417,7 @@ describe("PersonalityState V0 Foundation", () => {
 
   it("EA1: existing bound-revision episode is accepted as evidence (commit succeeds)", async () => {
     const world = buildWorld();
-    const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      (await makeProposal()) as never
-    );
+    const result = await world.executor.execute(personalityCtx(0), await makeProposal());
     expect(result.kind).toBe("COMMITTED");
   });
 
@@ -420,8 +425,8 @@ describe("PersonalityState V0 Foundation", () => {
     const world = buildWorld();
     const before = world.core.storeRead.getCommittedBundles().length;
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      (await makeProposal({ member_refs: [EPISODE_NONEXISTENT] })) as never
+      personalityCtx(0),
+      await makeProposal({ member_refs: [EPISODE_NONEXISTENT] })
     );
     expect(result.kind).toBe("REJECTED_UNVERIFIED_EVIDENCE_MEMBER");
     expect(world.core.storeRead.getCommittedBundles().length).toBe(before);
@@ -437,8 +442,8 @@ describe("PersonalityState V0 Foundation", () => {
     const world = buildWorld();
     const before = world.core.storeRead.getCommittedBundles().length;
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      (await makeProposal({ member_refs: [EPISODE_B] })) as never
+      personalityCtx(0),
+      await makeProposal({ member_refs: [EPISODE_B] })
     );
     expect(result.kind).toBe("REJECTED_UNVERIFIED_EVIDENCE_MEMBER");
     expect(world.core.storeRead.getCommittedBundles().length).toBe(before);
@@ -451,15 +456,12 @@ describe("PersonalityState V0 Foundation", () => {
     });
     const world = buildWorld();
     const before = world.core.storeRead.getCommittedBundles().length;
-    const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      forged as never
-    );
+    const result = await world.executor.execute(personalityCtx(0), forged);
     expect(result.kind).toBe("REJECTED_FORGED_EVIDENCE_FINGERPRINT");
     expect(world.core.storeRead.getCommittedBundles().length).toBe(before);
     // EA5: same valid evidence reproduces the fingerprint deterministically.
-    const a = await deriveEvidenceMemberSetFingerprint([EPISODE_A] as never);
-    const b = await deriveEvidenceMemberSetFingerprint([EPISODE_A] as never);
+    const a = await deriveEvidenceMemberSetFingerprint([episodeRef(EPISODE_A)]);
+    const b = await deriveEvidenceMemberSetFingerprint([episodeRef(EPISODE_A)]);
     expect(a).toBe(b);
     const binding = (await makeProposal({ member_refs: [EPISODE_A] })) as {
       evidence_binding: { member_set_fingerprint: string };
@@ -470,8 +472,8 @@ describe("PersonalityState V0 Foundation", () => {
   it("EA10: evidence verification performs no memory write", async () => {
     const world = buildWorld();
     await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      (await makeProposal({ member_refs: [EPISODE_NONEXISTENT] })) as never
+      personalityCtx(0),
+      await makeProposal({ member_refs: [EPISODE_NONEXISTENT] })
     );
     const r0 = await world.memory.readManifest("R0" as never);
     expect(r0?.record_hashes ?? []).toHaveLength(0);
@@ -482,10 +484,10 @@ describe("PersonalityState V0 Foundation", () => {
     // The executor applies the caller-supplied value VERBATIM (no evidence→delta
     // formula, no rate/momentum law): any bounded value is honored as-is.
     const result = await world.executor.execute(
-      { subject_id: SUBJECT_ID, current_logical_time: 0, state_revision: 0 },
-      (await makeProposal({
+      personalityCtx(0),
+      await makeProposal({
         updates: [{ dimension_id: "openness", next_value: 0.9 as never }]
-      })) as never
+      })
     );
     expect(result.kind).toBe("COMMITTED");
     if (result.kind !== "COMMITTED") return;
