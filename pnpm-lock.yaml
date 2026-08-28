@@ -41,6 +41,15 @@ importers:
         specifier: workspace:*
         version: link:../subject-core
 
+  packages/memory-influence:
+    dependencies:
+      '@characteros-next/memory':
+        specifier: workspace:*
+        version: link:../memory
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
+
   packages/personality: {}
 
   packages/regulation: {}
