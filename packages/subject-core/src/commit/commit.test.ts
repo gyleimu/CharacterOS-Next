@@ -30,7 +30,7 @@ const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635
 /** Golden S0 exactly as frozen in §4.2 (same fixture proven against §9 vectors). */
 function s0(): Record<string, unknown> {
   return {
-    schema_version: "subject-state-v0",
+    schema_version: "subject-state-v1",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -39,6 +39,7 @@ function s0(): Record<string, unknown> {
       self_schema_seed_refs: []
     },
     traits_seed: { dimensions: {} },
+    personality: { schema_version: "personality-state-v0", dimensions: [] },
     memory_state: {
       working_refs: [],
       active_episode_refs: [],

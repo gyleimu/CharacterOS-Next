@@ -33,6 +33,7 @@ function stateProjectionValue(snapshot: SubjectStateV0): Record<string, unknown>
     schema_version: snapshot.schema_version,
     identity: snapshot.identity,
     traits_seed: snapshot.traits_seed,
+    personality: snapshot.personality,
     memory_state: snapshot.memory_state,
     beliefs: snapshot.beliefs,
     relationships: snapshot.relationships,

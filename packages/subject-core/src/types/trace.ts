@@ -30,7 +30,7 @@ export interface DomainMutationSummaryV1 {
   readonly field_changes: readonly FieldChangeSummaryV1[];
 }
 
-export type TraceLayerName = "mood" | "affect" | "regulation" | "context" | "memory_state";
+export type TraceLayerName = "mood" | "affect" | "regulation" | "context" | "memory_state" | "personality";
 
 export interface FieldChangeSummaryV1 {
   readonly path: string;

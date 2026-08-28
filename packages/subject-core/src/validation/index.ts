@@ -32,7 +32,7 @@ export {
   validateUnitInterval
 } from "./scalars.js";
 
-export { validateSubjectState } from "./subject-state.js";
+export { validateSubjectState, validatePersonalityState } from "./subject-state.js";
 
 export { validateProposal } from "./proposal.js";
 

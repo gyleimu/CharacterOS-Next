@@ -36,6 +36,27 @@ export interface TraitsSeedV0 {
   readonly dimensions: { readonly [trait: string]: UnitIntervalV0 };
 }
 
+/**
+ * PersonalityState V0 (schema v1) — persistent ACQUIRED slow state, canonically
+ * distinct from the immutable traits_seed. A registered-dimension container:
+ * dimensions are unique and sorted by dimension_id; updates may only target
+ * EXISTING registered dimensions (new dimensions require an explicit schema
+ * migration). Values reuse the bounded UnitIntervalV0 scalar. This state is NOT
+ * emotion/mood/belief/relationship/need/cognition, and never reinterprets
+ * traits_seed.
+ */
+export const PERSONALITY_STATE_SCHEMA_VERSION = "personality-state-v0" as const;
+
+export interface PersonalityDimensionStateV0 {
+  readonly dimension_id: IdentifierV0;
+  readonly value: UnitIntervalV0;
+}
+
+export interface PersonalityStateV0 {
+  readonly schema_version: typeof PERSONALITY_STATE_SCHEMA_VERSION;
+  readonly dimensions: readonly PersonalityDimensionStateV0[];
+}
+
 /** §6.2 retrieval_config (closed, init-only). */
 export interface RetrievalConfigV0 {
   readonly profile_id: "RETRIEVAL_V0";
@@ -152,11 +173,12 @@ export interface EmptyClosedObjectV0 {
   // Intentionally empty; no keys may be added under V0.
 }
 
-/** §6.1 SubjectStateV0 — exactly 13 top-level fields, all required. */
+/** §6.1 SubjectState — exactly 14 top-level fields, all required (v1: +personality). */
 export interface SubjectStateV0 {
-  readonly schema_version: "subject-state-v0";
+  readonly schema_version: "subject-state-v1";
   readonly identity: IdentityV0;
   readonly traits_seed: TraitsSeedV0;
+  readonly personality: PersonalityStateV0;
   readonly memory_state: MemoryStateV0;
   readonly beliefs: BeliefsV0;
   readonly relationships: RelationshipsV0;

@@ -13,6 +13,7 @@
 
 import type { AffectChannelId, AffectPhase, RefKind } from "../types/enums.js";
 import { fail, ok, type ValidationResult } from "./result.js";
+import { validatePersonalityState } from "./subject-state.js";
 import {
   isNumber,
   isRecord,
@@ -324,6 +325,8 @@ export function validateFieldValueForPath(
       return validateRepositoryRevisionShape(v, detail);
     case "/memory_state/consolidation_cursor":
       return validateConsolidationCursorShape(v, detail, ctx);
+    case "/personality":
+      return validatePersonalityState(v, detail);
     case "/memory_state/lifecycle_metadata":
       return validateEmptyClosedObjectShape(v, detail);
     case "/memory_state/pending_encoding_refs":

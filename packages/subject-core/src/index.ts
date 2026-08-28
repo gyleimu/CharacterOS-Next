@@ -45,6 +45,8 @@ export type {
   IdentityV0,
   OriginMetadataV0,
   TraitsSeedV0,
+  PersonalityStateV0,
+  PersonalityDimensionStateV0,
   RetrievalConfigV0,
   MemoryStateV0,
   BeliefsV0,
@@ -62,6 +64,8 @@ export type {
   RuntimeMetadataV0,
   EmptyClosedObjectV0
 } from "./types/subject-state.js";
+
+export { PERSONALITY_STATE_SCHEMA_VERSION } from "./types/subject-state.js";
 
 export type {
   TraceCursorV1,
@@ -134,6 +138,7 @@ export {
 
 export {
   validateSubjectState,
+  validatePersonalityState,
   validateProposal,
   validateOwnership,
   isRegisteredProducer,

@@ -50,7 +50,7 @@ const SS_AUTH = "SS-AUTH-001";
 const CONFLICT_CODE = "DOMAIN_DELTA_CONFLICT";
 const CONFLICT_REASON = "TR-CONFLICT-001";
 
-const TRANSITIONS: readonly TransitionType[] = ["Time", "Observation", "CognitionAction", "Learning"];
+const TRANSITIONS: readonly TransitionType[] = ["Time", "Observation", "CognitionAction", "Learning", "Personality"];
 
 const PROPOSAL_KEYS: readonly string[] = [
   "schema_version",

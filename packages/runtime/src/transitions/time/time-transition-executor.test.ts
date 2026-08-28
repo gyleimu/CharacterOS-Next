@@ -23,7 +23,7 @@ import {
 function s0Subject(): { subjectId: string; initial: ConstructorParameters<typeof RealEngineCoreAdapter>[0] } {
   const fixture = JSON.parse(
     JSON.stringify({
-      schema_version: "subject-state-v0",
+      schema_version: "subject-state-v1",
       identity: {
         subject_id: "subject-s0",
         display_name: "",
@@ -32,6 +32,7 @@ function s0Subject(): { subjectId: string; initial: ConstructorParameters<typeof
         self_schema_seed_refs: []
       },
       traits_seed: { dimensions: {} },
+      personality: { schema_version: "personality-state-v0", dimensions: [] },
       memory_state: {
         working_refs: [],
         active_episode_refs: [],

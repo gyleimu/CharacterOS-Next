@@ -60,7 +60,7 @@ const SCHEMA = "SS-SCHEMA-001";
 const TRACE_CODE = "TRACE_INTEGRITY_FAILURE";
 const TRACE_REASON = "TRACE-CONTENT-001";
 
-const TRANSITION_TYPES: readonly TransitionType[] = ["Time", "Observation", "CognitionAction", "Learning"];
+const TRANSITION_TYPES: readonly TransitionType[] = ["Time", "Observation", "CognitionAction", "Learning", "Personality"];
 
 /** §10.2 exact lexicographically sorted constant rule_ids set for every V0 TraceEntry. */
 const EXACT_RULE_IDS: readonly string[] = [
@@ -73,8 +73,8 @@ const EXACT_RULE_IDS: readonly string[] = [
   "TRACE-CONTENT-001"
 ];
 
-const TRACE_LAYERS: readonly string[] = ["mood", "affect", "regulation", "context", "memory_state"];
-const DOMAIN_NAMES: readonly string[] = ["affect", "context", "memory-content", "memory-retrieval", "regulation"];
+const TRACE_LAYERS: readonly string[] = ["mood", "affect", "regulation", "context", "memory_state", "personality"];
+const DOMAIN_NAMES: readonly string[] = ["affect", "context", "memory-content", "memory-retrieval", "regulation", "personality"];
 
 const TRAIT_KEY_RE = /^[a-z][a-z0-9_]{0,63}$/;
 const FORBIDDEN_TRAIT_KEYS: readonly string[] = ["trust", "fear", "attachment"];
@@ -519,12 +519,13 @@ function validateDomainMutationSummary(v: unknown, d: string): Check {
   return ok(undefined);
 }
 
-/** The 13 writable FieldReplacementV0 literals (§7.2). */
+/** The 14 writable FieldReplacementV0 literals (§7.2, v1: +personality). */
 const WRITABLE_PATHS: readonly string[] = [
   "/mood",
   "/affect",
   "/regulation",
   "/context",
+  "/personality",
   "/memory_state/working_refs",
   "/memory_state/recent_retrieval_trace",
   "/memory_state/last_retrieval_at",
@@ -780,6 +781,45 @@ function validateTraceWindow(v: unknown, d: string, stateRevision: number): Chec
 }
 
 /**
+ * PersonalityState V0 validation (schema v1). Closed keys, schema literal,
+ * unique + raw-ASCII-sorted dimension_ids (IdentifierV0), bounded [0,1] values.
+ * Registered-dimension container: membership is owned by the initial canonical
+ * state; proposals may only target existing dimensions.
+ */
+export function validatePersonalityState(v: unknown, d: string): Check {
+  const rec = reqRecord(v, d);
+  if (!rec.ok) return rec;
+  const o = rec.value;
+  const closed = closedKeys(o, ["schema_version", "dimensions"], d);
+  if (!closed.ok) return closed;
+  const sv = lit(o["schema_version"], "personality-state-v0", `${d}.schema_version`);
+  if (!sv.ok) return sv;
+  const dims = reqArray(o["dimensions"], `${d}.dimensions`);
+  if (!dims.ok) return dims;
+  let prevId: string | undefined;
+  for (let i = 0; i < dims.value.length; i++) {
+    const label = `${d}.dimensions[${i}]`;
+    const item = reqRecord(dims.value[i], label);
+    if (!item.ok) return item;
+    const ic = closedKeys(item.value, ["dimension_id", "value"], label);
+    if (!ic.ok) return ic;
+    const idRaw = item.value["dimension_id"];
+    if (!isString(idRaw)) return fail("INVALID_SCHEMA", SCHEMA, `${label}.dimension_id: expected identifier`);
+    const id = validateIdentifier(idRaw, `${label}.dimension_id`);
+    if (!id.ok) return id;
+    if (prevId !== undefined) {
+      const cur = idRaw as string;
+      if (cur === prevId) return fail("INVALID_SCHEMA", SCHEMA, `${label}: duplicate dimension_id`);
+      if (cur < prevId) return fail("INVALID_SCHEMA", SCHEMA, `${label}: dimension_ids not raw-ASCII-sorted`);
+    }
+    prevId = item.value["dimension_id"] as string;
+    const val = scalarField(item.value["value"], `${label}.value`, validateUnitInterval);
+    if (!val.ok) return val;
+  }
+  return ok(undefined);
+}
+
+/**
  * Validate an unknown input as a complete closed SubjectStateV0 snapshot.
  * Pure: input -> ValidationResult. No repair, no defaults, no normalization.
  *
@@ -800,6 +840,7 @@ export function validateSubjectState(
     "schema_version",
     "identity",
     "traits_seed",
+    "personality",
     "memory_state",
     "beliefs",
     "relationships",
@@ -813,7 +854,7 @@ export function validateSubjectState(
   ];
   const closed = closedKeys(o, TOP_LEVEL_KEYS, "subjectState");
   if (!closed.ok) return closed;
-  const sv = lit(o["schema_version"], "subject-state-v0", "subjectState.schema_version");
+  const sv = lit(o["schema_version"], "subject-state-v1", "subjectState.schema_version");
   if (!sv.ok) return sv;
 
   // Admitted first: §6.2 timestamp invariants of other blocks are relative to this.
@@ -826,6 +867,8 @@ export function validateSubjectState(
   if (!id.ok) return id;
   const ts = validateTraitsSeed(o["traits_seed"], "traits_seed");
   if (!ts.ok) return ts;
+  const ps = validatePersonalityState(o["personality"], "personality");
+  if (!ps.ok) return ps;
   const ms = validateMemoryState(o["memory_state"], "memory_state", logicalTime);
   if (!ms.ok) return ms;
   const bl = validateBeliefs(o["beliefs"], "beliefs");

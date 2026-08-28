@@ -42,6 +42,7 @@ function layerForPath(path: string): TraceLayerName | undefined {
   if (path === "/affect") return "affect";
   if (path === "/regulation") return "regulation";
   if (path === "/context") return "context";
+  if (path === "/personality") return "personality";
   if (path.startsWith("/memory_state/")) return "memory_state";
   return undefined;
 }

@@ -17,7 +17,8 @@ import type {
   EmptyClosedObjectV0,
   MoodV0,
   RegulatoryStateV0,
-  WorkingContextV0
+  WorkingContextV0,
+  PersonalityStateV0
 } from "./subject-state.js";
 
 /** §7.1 canonical time input — exactly one shape per transition class. */
@@ -67,6 +68,7 @@ export type FieldReplacementV0 =
   | { readonly path: "/memory_state/repository_revision"; readonly value: RepositoryRevisionIdV0 }
   | { readonly path: "/memory_state/consolidation_cursor"; readonly value: LogicalTimeV0 | null }
   | { readonly path: "/memory_state/lifecycle_metadata"; readonly value: EmptyClosedObjectV0 }
+  | { readonly path: "/personality"; readonly value: PersonalityStateV0 }
   | { readonly path: "/memory_state/pending_encoding_refs"; readonly value: readonly CanonicalRefV0[] };
 
 /**

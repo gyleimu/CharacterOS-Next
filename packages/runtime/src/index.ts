@@ -224,3 +224,21 @@ export type {
   LearningAdoptionAuthority,
   LearningAdoptionRevision
 } from "./transitions/learning/learning-adoption-authority.js";
+
+// --- P2-next PersonalityState V0 Foundation ------------------------------------------
+
+export {
+  PERSONALITY_UPDATE_PROPOSAL_SCHEMA_VERSION,
+  PERSONALITY_TRANSITION_ID_PROJECTION,
+  PERSONALITY_EVIDENCE_MEMBER_SET_PROJECTION,
+  PersonalityTransitionExecutor,
+  deriveEvidenceMemberSetFingerprint,
+  derivePersonalityTransitionId,
+  initializeEmptyPersonalityState,
+  initializePersonalityFromTraitsSeed,
+  validatePersonalityUpdateProposal,
+  type PersonalityDimensionUpdateV0,
+  type PersonalityEvidenceBindingV0,
+  type PersonalityExecutionResult,
+  type PersonalityUpdateProposalV0
+} from "./transitions/personality/index.js";
