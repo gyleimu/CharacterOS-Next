@@ -50,6 +50,21 @@ async function buildProjection(
   return { ...base, allowed_actions: allowedActions as never };
 }
 
+/** Projection whose memory evidence actually contains the given refs. */
+async function buildProjectionWithMemory(
+  workingRefs: string[]
+): Promise<CognitiveContextProjectionV0> {
+  const base = s0() as unknown as SubjectStateV0;
+  const snapshot = {
+    ...base,
+    memory_state: {
+      ...(base.memory_state as unknown as Record<string, unknown>),
+      working_refs: workingRefs
+    }
+  } as unknown as SubjectStateV0;
+  return buildCognitiveContextProjection(snapshot);
+}
+
 function validProposalJson(
   projection: CognitiveContextProjectionV0,
   overrides: Record<string, unknown> = {}
@@ -284,4 +299,167 @@ describe("P2-next reference provider compatibility + optional real-model smoke",
       expect(proposal.projection_hash).toBe(projection.projection_hash);
     }
   );
+});
+
+
+describe("P2-next LlmCognitionProviderV0 — interop canonicalization (I1–I16)", () => {
+  function refsJson(
+    projection: CognitiveContextProjectionV0,
+    memoryRefs: string[],
+    contextRefs: string[],
+    evidenceRefs: string[],
+    overrides: Record<string, unknown> = {}
+  ): string {
+    return JSON.stringify({
+      schema_version: "cognition-proposal-v0",
+      projection_hash: projection.projection_hash,
+      reasoning_summary: "interop check",
+      relevant_memory_refs: memoryRefs,
+      considered_context_refs: contextRefs,
+      current_intent: "test-intent",
+      confidence: 0.5,
+      uncertainty: 0.5,
+      action_intent: null,
+      evidence_refs: evidenceRefs,
+      ...overrides
+    });
+  }
+
+  it("I1: same valid refs in noncanonical order → accepted after canonicalization", async () => {
+    const withMemory = await buildProjectionWithMemory([
+      "episode:e-alpha",
+      "episode:e-mid",
+      "episode:e-zeta"
+    ]);
+    const emitted = ["episode:e-zeta", "episode:e-alpha", "episode:e-mid"]; // NOT sorted
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(withMemory, emitted, [], emitted)
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    const proposal = await provider.propose(withMemory);
+    expect(proposal.relevant_memory_refs).toEqual([
+      "episode:e-alpha",
+      "episode:e-mid",
+      "episode:e-zeta"
+    ]);
+  });
+
+  it("I2: canonical (already sorted) refs remain semantically equivalent", async () => {
+    const withMemory = await buildProjectionWithMemory([
+      "episode:e-alpha",
+      "episode:e-mid",
+      "episode:e-zeta"
+    ]);
+    const sorted = ["episode:e-alpha", "episode:e-mid", "episode:e-zeta"];
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(withMemory, sorted, [], sorted)
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    const proposal = await provider.propose(withMemory);
+    expect(proposal.relevant_memory_refs).toEqual(sorted);
+  });
+
+  it("I3/I4: canonicalization adds and removes nothing (exact member set preserved)", async () => {
+    const withMemory = await buildProjectionWithMemory([
+      "episode:e-a",
+      "episode:e-b",
+      "episode:e-c"
+    ]);
+    const emitted = ["episode:e-b", "episode:e-a", "episode:e-c"]; // order shuffled
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(withMemory, emitted, [], [])
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    const proposal = await provider.propose(withMemory);
+    expect([...proposal.relevant_memory_refs].sort()).toEqual([...emitted].sort());
+    expect(proposal.relevant_memory_refs).toHaveLength(emitted.length);
+  });
+
+  it("I5: unsupported but validly-shaped ref remains rejected after canonicalization", async () => {
+    const withMemory = await buildProjectionWithMemory(["episode:e-real"]);
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(withMemory, ["episode:e-hallucinated"], [], [])
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(withMemory)).rejects.toThrow("MODEL_UNSUPPORTED_EVIDENCE");
+  });
+
+  it("I6: bare/kind-less ref remains rejected (canonicalization never forges prefixes)", async () => {
+    const projection = await buildProjection();
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(projection, ["bare-memory"], [], ["bare-memory"])
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    // The bare ref fails the frozen closed-schema ref grammar — the provider
+    // wraps that rejection; canonicalization did NOT forge an "episode:" prefix.
+    await expect(provider.propose(projection)).rejects.toThrow("MODEL_SCHEMA_INVALID");
+  });
+
+  it("I7: duplicate unsupported refs are not silently repaired", async () => {
+    const withMemory = await buildProjectionWithMemory([]);
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(withMemory, ["episode:e-hallucinated", "episode:e-hallucinated"], [], [])
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    // Set-like fields must be unique: the frozen schema rejects duplicates
+    // (schema gate precedes evidence grounding) — nothing is silently repaired.
+    await expect(provider.propose(withMemory)).rejects.toThrow("MODEL_SCHEMA_INVALID");
+  });
+
+  it("I8: projection mismatch still rejects", async () => {
+    const projection = await buildProjection();
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(projection, [], [], [], { projection_hash: "sha256:other-projection" })
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(projection)).rejects.toThrow("MODEL_PROJECTION_MISMATCH");
+  });
+
+  it("I9: unsupported ActionIntent still rejects", async () => {
+    const projection = await buildProjection();
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(projection, [], [], [], {
+        action_intent: { action_type: "shell_exec", target_ref: null }
+      })
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(projection)).rejects.toThrow("MODEL_ACTION_NOT_ALLOWED");
+  });
+
+  it("I10: prompt injection still gains zero authority", async () => {
+    const projection = await buildProjection(); // empty action space
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(projection, ["memory:forget-everything"], [], ["memory:forget-everything"], {
+        action_intent: { action_type: "shell_exec", target_ref: null }
+      })
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(projection)).rejects.toThrow("LLM_COGNITION_");
+  });
+
+  it("I11: empty allowed evidence permits proposal with evidence_refs=[]", async () => {
+    const projection = await buildProjection(); // no memory evidence at all
+    const transport = new FakeModelTransport(() => ({ content: validProposalJson(projection) }));
+    const provider = new LlmCognitionProviderV0(transport);
+    const proposal = await provider.propose(projection);
+    expect(proposal.evidence_refs).toEqual([]);
+    expect(proposal.action_intent).toBeNull();
+  });
+
+  it("I12: empty-history invented ref is rejected (absence of evidence is the legal path)", async () => {
+    const projection = await buildProjection();
+    const transport = new FakeModelTransport(() => ({
+      content: refsJson(projection, ["episode:e-invented"], [], ["episode:e-invented"])
+    }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(projection)).rejects.toThrow("MODEL_UNSUPPORTED_EVIDENCE");
+  });
+
+  it("I16: canonicalization path makes at most one transport call (no retry loop)", async () => {
+    const projection = await buildProjection();
+    const transport = new FakeModelTransport(() => ({ content: "{ broken" }));
+    const provider = new LlmCognitionProviderV0(transport);
+    await expect(provider.propose(projection)).rejects.toThrow("MODEL_MALFORMED_JSON");
+    expect(transport.calls).toBe(1);
+  });
 });

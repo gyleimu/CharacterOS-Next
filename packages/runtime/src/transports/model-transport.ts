@@ -29,6 +29,13 @@ export interface ModelTransportConfigV0 {
   readonly timeout_ms: number;
   /** Deterministic-leaning generation config (NOT a determinism claim). */
   readonly temperature: number;
+  /**
+   * Max output tokens. HOST CONFIGURATION — no universal constant. Live-smoke
+   * note (qwen3:8b): budgets near 512 truncated structured JSON mid-string;
+   * 2048 produced complete output. Hosts should size this to their model and
+   * the proposal schema, and treat truncation as MODEL_MALFORMED_JSON-class
+   * provider failure, never as success.
+   */
   readonly max_output_tokens: number;
 }
 

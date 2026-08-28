@@ -78,6 +78,43 @@ function parseModelJson(content: string): unknown {
   }
 }
 
+/**
+ * The CognitionProposalV0 set-like ref collections whose frozen canonical
+ * order is lexicographic. ONLY these fields are wire-format canonicalized:
+ * representation (array order) is normalized; the member set is untouched —
+ * no refs are added, removed, renamed, prefixed, or dropped here. Bare or
+ * hallucinated refs still reach the frozen validation and are rejected there.
+ */
+const SET_LIKE_REF_FIELDS: readonly string[] = [
+  "relevant_memory_refs",
+  "considered_context_refs",
+  "evidence_refs"
+];
+
+/**
+ * Wire-format canonicalization (LIVE-SMOKE REPAIR, qwen3:8b evidence):
+ * models emit semantically valid ref arrays in non-canonical order. Sorting a
+ * set-like field is a pure representation transform — membership, provenance
+ * and semantics are unchanged. This layer is NOT a trust boundary: every
+ * substantive gate (closed schema, projection binding, evidence grounding,
+ * action space) still runs afterwards on the canonicalized object.
+ */
+function canonicalizeWireFormat(parsed: unknown): unknown {
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+    return parsed;
+  }
+  const out: Record<string, unknown> = { ...(parsed as Record<string, unknown>) };
+  for (const field of SET_LIKE_REF_FIELDS) {
+    const value = out[field];
+    if (Array.isArray(value)) {
+      out[field] = [...(value as unknown[])].sort((a, b) =>
+        String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0
+      );
+    }
+  }
+  return out;
+}
+
 export class LlmCognitionProviderV0 implements CognitionProviderV0 {
   constructor(
     private readonly transport: ModelTransportV0,
@@ -91,8 +128,8 @@ export class LlmCognitionProviderV0 implements CognitionProviderV0 {
     // ---- transport: SINGLE attempt; transport failures are provider failures ---
     const response = await this.transport.complete({ messages });
 
-    // ---- parse → closed schema (untrusted until all gates pass) -----------------
-    const parsed = parseModelJson(response.content);
+    // ---- parse → wire canonicalization → closed schema (untrusted until all gates)
+    const parsed = canonicalizeWireFormat(parseModelJson(response.content));
     const checked = validateCognitionProposal(parsed);
     if (!checked.ok) {
       throw new LlmCognitionRejectionErrorV0("MODEL_SCHEMA_INVALID", checked.error.detail);
