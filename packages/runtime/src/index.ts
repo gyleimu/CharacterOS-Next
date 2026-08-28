@@ -176,6 +176,38 @@ export {
   type ModelTransportFailureCode
 } from "./transports/model-transport.js";
 
+// --- P2-next Action Execution / Outcome V0 --------------------------------------------
+
+export {
+  ACTION_OUTCOME_SCHEMA_VERSION,
+  ACTION_EXECUTION_ID_PROJECTION,
+  deriveExecutionId,
+  validateActionOutcome,
+  type ActionOutcomeV0,
+  type ActionOutcomeStatusV0,
+  type ActionExecutionContextV0
+} from "./actions/types.js";
+
+export {
+  ActionExecutionRunner,
+  type ActionRunnerInputV0,
+  type ActionRunnerResultV0
+} from "./actions/action-runner.js";
+
+export {
+  InMemoryActionExecutionLedger,
+  type ActionExecutorV0,
+  type ActionExecutionLedgerV0,
+  type ActionExecutionRecordV0
+} from "./actions/action-executor-port.js";
+
+export {
+  DeterministicSandboxWorldV0,
+  sandboxObservationRef,
+  type SandboxActionTypeV0,
+  type SandboxEntityPostureV0
+} from "./actions/sandbox-world.js";
+
 export type {
   LearningAdoptionAuthority,
   LearningAdoptionRevision
