@@ -11,6 +11,7 @@ const workspacePackages = [
   "@characteros-next/belief",
   "@characteros-next/personality",
   "@characteros-next/relationship",
+  "@characteros-next/long-term-state-domain",
   "@characteros-next/behavior",
   "@characteros-next/sandbox"
 ];
@@ -44,7 +45,7 @@ const publicEntryOnly = [
   },
   {
     regex:
-      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|appraisal|affect|regulation|runtime|belief|personality|relationship|behavior)|product/sandbox)(?:/|$)",
+      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|appraisal|affect|regulation|runtime|belief|personality|relationship|long-term-state-domain|behavior)|product/sandbox)(?:/|$)",
     message: "Cross-package relative imports are forbidden; use a public package root."
   }
 ];
@@ -140,6 +141,16 @@ export default tseslint.config(
       [`@characteros-next/${name}`],
       `${name} is deferred and cannot depend on another workspace package.`
     )
+  ),
+  packageBoundaryConfig(
+    "packages/long-term-state-domain/src/**/*.ts",
+    ["@characteros-next/long-term-state-domain", "@characteros-next/subject-core"],
+    "long-term-state-domain may consume only subject-core public contracts."
+  ),
+  packageBoundaryConfig(
+    "packages/long-term-state-domain/src/**/*.test.ts",
+    ["@characteros-next/long-term-state-domain", "@characteros-next/subject-core", "node:fs"],
+    "long-term-state-domain tests may additionally read source fixtures for executable absence guards."
   ),
   packageBoundaryConfig(
     "packages/personality/src/**/*.ts",

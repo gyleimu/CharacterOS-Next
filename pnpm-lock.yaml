@@ -44,6 +44,12 @@ importers:
         specifier: workspace:*
         version: link:../subject-core
 
+  packages/long-term-state-domain:
+    dependencies:
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
+
   packages/memory:
     dependencies:
       '@characteros-next/subject-core':
