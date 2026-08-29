@@ -18,11 +18,9 @@
   },
   "dependencies": {
     "@characteros-next/influence-evidence": "workspace:*",
+    "@characteros-next/memory": "workspace:*",
     "@characteros-next/memory-influence": "workspace:*",
     "@characteros-next/runtime": "workspace:*",
     "@characteros-next/subject-core": "workspace:*"
-  },
-  "devDependencies": {
-    "@characteros-next/memory": "workspace:*"
   }
 }

@@ -64,6 +64,9 @@ importers:
       '@characteros-next/influence-evidence':
         specifier: workspace:*
         version: link:../influence-evidence
+      '@characteros-next/memory':
+        specifier: workspace:*
+        version: link:../memory
       '@characteros-next/memory-influence':
         specifier: workspace:*
         version: link:../memory-influence
@@ -73,10 +76,6 @@ importers:
       '@characteros-next/subject-core':
         specifier: workspace:*
         version: link:../subject-core
-    devDependencies:
-      '@characteros-next/memory':
-        specifier: workspace:*
-        version: link:../memory
 
   packages/regulation: {}
 

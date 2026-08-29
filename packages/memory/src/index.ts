@@ -55,6 +55,11 @@ export {
 } from "./repository/memory-repository.js";
 
 export {
+  MEMORY_RECORD_PAYLOAD_HASH_PROJECTION,
+  computeMemoryRecordPayloadHash
+} from "./record-payload-hash.js";
+
+export {
   InMemoryMemoryRepository
 } from "./repository/in-memory-memory-repository.js";
 

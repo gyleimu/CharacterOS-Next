@@ -27,7 +27,7 @@ import type {
   RepositoryRevisionManifestV1,
   HashV1
 } from "@characteros-next/subject-core";
-import { hashEnvelope } from "@characteros-next/subject-core";
+import { computeMemoryRecordPayloadHash } from "../record-payload-hash.js";
 import {
   computePrepareIntentFingerprint,
   computeRepositoryRevisionHash,
@@ -48,13 +48,8 @@ interface StoredRevision {
   readonly memberRefs: ReadonlySet<string>;
 }
 
-/** Deterministic payload hash over the canonical form of a stored record object. */
-async function computeRecordPayloadHash(payload: unknown): Promise<string> {
-  return hashEnvelope("characteros-next/memory/record-payload/v1", payload);
-}
-
 async function computePayloadHash(payload: unknown): Promise<string> {
-  return computeRecordPayloadHash(payload);
+  return computeMemoryRecordPayloadHash(payload);
 }
 
 function deepFreezePayload(value: unknown): void {
@@ -95,7 +90,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     const hash = (await computePayloadHash(frozen)) as HashV1;
     const existing = this.payloads.get(ref);
     if (existing !== undefined) {
-      const existingHash = (await computeRecordPayloadHash(existing)) as HashV1;
+      const existingHash = await computeMemoryRecordPayloadHash(existing);
       if (existingHash !== hash) {
         throw new Error(
           `MEMORY_PREPARE_CONFLICT: ref ${ref} already stores different immutable content`
@@ -111,7 +106,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   async payloadHashOf(ref: CanonicalRefV0): Promise<HashV1 | null> {
     const payload = this.payloads.get(ref);
     if (payload === undefined) return null;
-    return (await computeRecordPayloadHash(payload)) as HashV1;
+    return computeMemoryRecordPayloadHash(payload);
   }
 
   /**
@@ -151,7 +146,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
           `MEMORY_PREPARE_CONFLICT: record ${record.ref} has no repository-owned payload`
         );
       }
-      const recomputed = (await computeRecordPayloadHash(payload)) as HashV1;
+      const recomputed = await computeMemoryRecordPayloadHash(payload);
       if (recomputed !== record.payload_hash) {
         throw new Error(`MEMORY_PREPARE_CONFLICT: payload hash mismatch for ${record.ref}`);
       }
