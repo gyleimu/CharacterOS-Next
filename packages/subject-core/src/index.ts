@@ -51,8 +51,9 @@ export type {
   MemoryStateV0,
   BeliefsV0,
   BeliefItemV0,
-  RelationshipsV0,
-  RelationshipModelV0,
+  RelationshipStateV0,
+  RelationshipCounterpartStateV0,
+  RelationshipDimensionStateV0,
   MoodV0,
   AffectV0,
   AffectChannelV0,
@@ -65,7 +66,10 @@ export type {
   EmptyClosedObjectV0
 } from "./types/subject-state.js";
 
-export { PERSONALITY_STATE_SCHEMA_VERSION } from "./types/subject-state.js";
+export {
+  PERSONALITY_STATE_SCHEMA_VERSION,
+  RELATIONSHIP_STATE_SCHEMA_VERSION
+} from "./types/subject-state.js";
 
 export type {
   TraceCursorV1,
@@ -139,6 +143,7 @@ export {
 export {
   validateSubjectState,
   validatePersonalityState,
+  validateRelationshipState,
   validateProposal,
   validateOwnership,
   isRegisteredProducer,

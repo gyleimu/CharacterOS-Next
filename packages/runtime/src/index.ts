@@ -242,3 +242,20 @@ export {
   type PersonalityExecutionResult,
   type PersonalityUpdateProposalV0
 } from "./transitions/personality/index.js";
+
+// --- RelationshipState V0 Foundation ----------------------------------------------
+
+export {
+  RELATIONSHIP_TRANSITION_ID_PROJECTION,
+  RELATIONSHIP_UPDATE_PROPOSAL_SCHEMA_VERSION,
+  RelationshipTransitionExecutor,
+  deriveRelationshipEvidenceMemberSetFingerprint,
+  deriveRelationshipTransitionId,
+  initializeEmptyRelationshipState,
+  initializeRelationshipState,
+  validateRelationshipUpdateProposal,
+  type RelationshipDimensionUpdateV0,
+  type RelationshipEvidenceBindingV0,
+  type RelationshipExecutionResult,
+  type RelationshipUpdateProposalV0
+} from "./transitions/relationship/index.js";

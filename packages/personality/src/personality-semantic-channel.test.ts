@@ -178,7 +178,7 @@ function personalityState(): PersonalityStateV0 {
 
 function subjectFixture(repositoryRevision: string): SubjectStateV0 {
   return {
-    schema_version: "subject-state-v1",
+    schema_version: "subject-state-v2",
     identity: {
       subject_id: SUBJECT_ID,
       display_name: "",
@@ -205,7 +205,7 @@ function subjectFixture(repositoryRevision: string): SubjectStateV0 {
       last_retrieval_at: null
     },
     beliefs: { items: [] },
-    relationships: { models: [] },
+    relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },
@@ -602,7 +602,7 @@ describe("provider least authority, validation and abstention", () => {
     for (const forbidden of ["target_dimension", "direction", "next_value", "confidence", "reasoning"]) {
       expect(text).not.toContain(forbidden);
     }
-    expect(world.state.schema_version).toBe("subject-state-v1");
+    expect(world.state.schema_version).toBe("subject-state-v2");
     expect(world.state.runtime_metadata.state_revision).toBe(0);
   });
 

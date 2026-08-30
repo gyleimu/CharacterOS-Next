@@ -60,7 +60,14 @@ const SCHEMA = "SS-SCHEMA-001";
 const TRACE_CODE = "TRACE_INTEGRITY_FAILURE";
 const TRACE_REASON = "TRACE-CONTENT-001";
 
-const TRANSITION_TYPES: readonly TransitionType[] = ["Time", "Observation", "CognitionAction", "Learning", "Personality"];
+const TRANSITION_TYPES: readonly TransitionType[] = [
+  "Time",
+  "Observation",
+  "CognitionAction",
+  "Learning",
+  "Personality",
+  "Relationship"
+];
 
 /** §10.2 exact lexicographically sorted constant rule_ids set for every V0 TraceEntry. */
 const EXACT_RULE_IDS: readonly string[] = [
@@ -73,8 +80,24 @@ const EXACT_RULE_IDS: readonly string[] = [
   "TRACE-CONTENT-001"
 ];
 
-const TRACE_LAYERS: readonly string[] = ["mood", "affect", "regulation", "context", "memory_state", "personality"];
-const DOMAIN_NAMES: readonly string[] = ["affect", "context", "memory-content", "memory-retrieval", "regulation", "personality"];
+const TRACE_LAYERS: readonly string[] = [
+  "mood",
+  "affect",
+  "regulation",
+  "context",
+  "memory_state",
+  "personality",
+  "relationships"
+];
+const DOMAIN_NAMES: readonly string[] = [
+  "affect",
+  "context",
+  "memory-content",
+  "memory-retrieval",
+  "regulation",
+  "personality",
+  "relationship"
+];
 
 const TRAIT_KEY_RE = /^[a-z][a-z0-9_]{0,63}$/;
 const FORBIDDEN_TRAIT_KEYS: readonly string[] = ["trust", "fear", "attachment"];
@@ -393,37 +416,99 @@ function validateBeliefs(v: unknown, d: string): Check {
   return ok(undefined);
 }
 
-function validateRelationships(v: unknown, d: string): Check {
+/**
+ * RelationshipState V0 validation for SubjectState V2. The container is closed,
+ * counterpart membership is explicit and canonical-ref sorted, and dimensions
+ * are registered, unique, raw-ASCII sorted UnitInterval values.
+ */
+export function validateRelationshipState(v: unknown, d: string): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;
-  const c = closedKeys(o, ["models"], d);
+  const c = closedKeys(o, ["schema_version", "counterparts"], d);
   if (!c.ok) return c;
-  const models = reqArray(o["models"], `${d}.models`);
-  if (!models.ok) return models;
-  let prevId: string | undefined;
-  for (let i = 0; i < models.value.length; i++) {
-    const label = `${d}.models[${i}]`;
-    const mr = reqRecord(models.value[i], label);
-    if (!mr.ok) return mr;
-    const mc = closedKeys(mr.value, ["relationship_id", "target_ref"], label);
-    if (!mc.ok) return mc;
-    if (!isString(mr.value["relationship_id"])) {
-      return fail("INVALID_SCHEMA", SCHEMA, `${label}.relationship_id: expected identifier`);
-    }
-    const rid = validateIdentifier(mr.value["relationship_id"], `${label}.relationship_id`);
-    if (!rid.ok) return rid;
-    const tgt = validateRefElement(mr.value["target_ref"], `${label}.target_ref`, ["entity", "subject"]);
-    if (!tgt.ok) return tgt;
-    if (prevId !== undefined) {
-      if (rid.value === prevId) {
-        return fail("INVALID_SCHEMA", SCHEMA, `${label}.relationship_id: duplicate model`);
+  const sv = lit(o["schema_version"], "relationship-state-v0", `${d}.schema_version`);
+  if (!sv.ok) return sv;
+  const counterparts = reqArray(o["counterparts"], `${d}.counterparts`);
+  if (!counterparts.ok) return counterparts;
+  let previousCounterpartRef: string | undefined;
+  for (let i = 0; i < counterparts.value.length; i++) {
+    const label = `${d}.counterparts[${i}]`;
+    const counterpart = reqRecord(counterparts.value[i], label);
+    if (!counterpart.ok) return counterpart;
+    const counterpartKeys = closedKeys(
+      counterpart.value,
+      ["counterpart_ref", "dimensions"],
+      label
+    );
+    if (!counterpartKeys.ok) return counterpartKeys;
+    const counterpartRef = validateRefElement(
+      counterpart.value["counterpart_ref"],
+      `${label}.counterpart_ref`,
+      ["entity", "subject"]
+    );
+    if (!counterpartRef.ok) return counterpartRef;
+    if (previousCounterpartRef !== undefined) {
+      if (counterpartRef.value === previousCounterpartRef) {
+        return fail("INVALID_SCHEMA", SCHEMA, `${label}.counterpart_ref: duplicate counterpart`);
       }
-      if (rid.value < prevId) {
-        return fail("INVALID_SCHEMA", SCHEMA, `${label}.relationship_id: models not sorted by relationship_id`);
+      if (counterpartRef.value < previousCounterpartRef) {
+        return fail(
+          "INVALID_SCHEMA",
+          SCHEMA,
+          `${label}.counterpart_ref: counterparts not raw-canonical-ref sorted`
+        );
       }
     }
-    prevId = rid.value;
+    previousCounterpartRef = counterpartRef.value;
+
+    const dimensions = reqArray(counterpart.value["dimensions"], `${label}.dimensions`);
+    if (!dimensions.ok) return dimensions;
+    let previousDimensionId: string | undefined;
+    for (let j = 0; j < dimensions.value.length; j++) {
+      const dimensionLabel = `${label}.dimensions[${j}]`;
+      const dimension = reqRecord(dimensions.value[j], dimensionLabel);
+      if (!dimension.ok) return dimension;
+      const dimensionKeys = closedKeys(
+        dimension.value,
+        ["dimension_id", "value"],
+        dimensionLabel
+      );
+      if (!dimensionKeys.ok) return dimensionKeys;
+      if (!isString(dimension.value["dimension_id"])) {
+        return fail(
+          "INVALID_SCHEMA",
+          SCHEMA,
+          `${dimensionLabel}.dimension_id: expected identifier`
+        );
+      }
+      const dimensionId = validateIdentifier(
+        dimension.value["dimension_id"],
+        `${dimensionLabel}.dimension_id`
+      );
+      if (!dimensionId.ok) return dimensionId;
+      if (previousDimensionId !== undefined) {
+        if (dimensionId.value === previousDimensionId) {
+          return fail("INVALID_SCHEMA", SCHEMA, `${dimensionLabel}.dimension_id: duplicate dimension`);
+        }
+        if (dimensionId.value < previousDimensionId) {
+          return fail(
+            "INVALID_SCHEMA",
+            SCHEMA,
+            `${dimensionLabel}.dimension_id: dimensions not raw-ASCII-sorted`
+          );
+        }
+      }
+      previousDimensionId = dimensionId.value;
+      if (!isNumber(dimension.value["value"])) {
+        return fail("INVALID_SCHEMA", SCHEMA, `${dimensionLabel}.value: expected number`);
+      }
+      const value = validateUnitInterval(
+        dimension.value["value"],
+        `${dimensionLabel}.value`
+      );
+      if (!value.ok) return value;
+    }
   }
   return ok(undefined);
 }
@@ -519,13 +604,14 @@ function validateDomainMutationSummary(v: unknown, d: string): Check {
   return ok(undefined);
 }
 
-/** The 14 writable FieldReplacementV0 literals (§7.2, v1: +personality). */
+/** The 15 writable FieldReplacementV0 literals (V2: +relationship authority). */
 const WRITABLE_PATHS: readonly string[] = [
   "/mood",
   "/affect",
   "/regulation",
   "/context",
   "/personality",
+  "/relationships",
   "/memory_state/working_refs",
   "/memory_state/recent_retrieval_trace",
   "/memory_state/last_retrieval_at",
@@ -854,7 +940,7 @@ export function validateSubjectState(
   ];
   const closed = closedKeys(o, TOP_LEVEL_KEYS, "subjectState");
   if (!closed.ok) return closed;
-  const sv = lit(o["schema_version"], "subject-state-v1", "subjectState.schema_version");
+  const sv = lit(o["schema_version"], "subject-state-v2", "subjectState.schema_version");
   if (!sv.ok) return sv;
 
   // Admitted first: §6.2 timestamp invariants of other blocks are relative to this.
@@ -873,7 +959,7 @@ export function validateSubjectState(
   if (!ms.ok) return ms;
   const bl = validateBeliefs(o["beliefs"], "beliefs");
   if (!bl.ok) return bl;
-  const rel = validateRelationships(o["relationships"], "relationships");
+  const rel = validateRelationshipState(o["relationships"], "relationships");
   if (!rel.ok) return rel;
   const mood = validateMoodShape(o["mood"], "mood", { logical_time: logicalTime });
   if (!mood.ok) return mood;

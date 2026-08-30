@@ -103,6 +103,14 @@ export function validateProposalComposition(
     case "Personality": {
       return requirePaths(pathsForDomain(proposal, "personality"), "personality", ["/personality"], base);
     }
+    case "Relationship": {
+      return requirePaths(
+        pathsForDomain(proposal, "relationship"),
+        "relationship",
+        ["/relationships"],
+        base
+      );
+    }
     default:
       return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${base}: unknown transition type`);
   }

@@ -92,9 +92,9 @@ export interface CognitiveContextProjectionV0 {
   /** Memory read evidence: working refs + recent retrieval-selected refs. */
   readonly memory_working_refs: readonly CanonicalRefV0[];
   readonly recent_retrieval_refs: readonly CanonicalRefV0[];
-  /** V0 read models: beliefs/relationships are canonical placeholders (V0 readonly). */
+  /** V0 read models: beliefs/relationships remain count-only in this projection. */
   readonly belief_item_count: number;
-  readonly relationship_model_count: number;
+  readonly relationship_counterpart_count: number;
   /** The only action space the provider may propose within. */
   readonly allowed_actions: readonly AllowedActionV0[];
   /** Content-addressed integrity of the exact projection body. */

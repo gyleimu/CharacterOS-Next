@@ -88,14 +88,29 @@ export interface BeliefItemV0 {
   readonly summary: string | null;
 }
 
-/** §6.2 RelationshipsV0 (readonly; first-class read position). */
-export interface RelationshipsV0 {
-  readonly models: readonly RelationshipModelV0[];
+/**
+ * RelationshipState V0 — persistent counterpart-specific slow state.
+ *
+ * This is a generic registered container, not a relationship psychology model.
+ * Counterparts are unique and raw-canonical-ref sorted; dimensions within each
+ * counterpart are unique and raw-ASCII sorted by dimension_id. Membership is
+ * explicit canonical state and updates may target only existing members.
+ */
+export const RELATIONSHIP_STATE_SCHEMA_VERSION = "relationship-state-v0" as const;
+
+export interface RelationshipDimensionStateV0 {
+  readonly dimension_id: IdentifierV0;
+  readonly value: UnitIntervalV0;
 }
 
-export interface RelationshipModelV0 {
-  readonly relationship_id: IdentifierV0;
-  readonly target_ref: CanonicalRefV0;
+export interface RelationshipCounterpartStateV0 {
+  readonly counterpart_ref: CanonicalRefV0;
+  readonly dimensions: readonly RelationshipDimensionStateV0[];
+}
+
+export interface RelationshipStateV0 {
+  readonly schema_version: typeof RELATIONSHIP_STATE_SCHEMA_VERSION;
+  readonly counterparts: readonly RelationshipCounterpartStateV0[];
 }
 
 /** §6.2 MoodV0 / AffectV0 / RegulatoryStateV0 / WorkingContextV0. */
@@ -173,15 +188,21 @@ export interface EmptyClosedObjectV0 {
   // Intentionally empty; no keys may be added under V0.
 }
 
-/** §6.1 SubjectState — exactly 14 top-level fields, all required (v1: +personality). */
+/**
+ * §6.1 SubjectState — exactly 14 top-level fields, all required.
+ *
+ * V2 is one explicit, migration-free evolution: the closed V1
+ * `relationships.models` placeholder is replaced by canonical
+ * RelationshipStateV0. V1 snapshots are not accepted as V2.
+ */
 export interface SubjectStateV0 {
-  readonly schema_version: "subject-state-v1";
+  readonly schema_version: "subject-state-v2";
   readonly identity: IdentityV0;
   readonly traits_seed: TraitsSeedV0;
   readonly personality: PersonalityStateV0;
   readonly memory_state: MemoryStateV0;
   readonly beliefs: BeliefsV0;
-  readonly relationships: RelationshipsV0;
+  readonly relationships: RelationshipStateV0;
   readonly mood: MoodV0;
   readonly affect: AffectV0;
   readonly regulation: RegulatoryStateV0;

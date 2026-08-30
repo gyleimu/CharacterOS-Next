@@ -128,10 +128,10 @@ interface TestCore extends SubjectCorePort {
   };
 }
 
-/** Full subject-state-v1 fixture with the synthetic registered dimension. */
+/** Full subject-state-v2 fixture with the synthetic registered dimension. */
 function subjectFixture(): SubjectStateV0 {
   return {
-    schema_version: "subject-state-v1",
+    schema_version: "subject-state-v2",
     identity: {
       subject_id: SUBJECT_ID,
       display_name: "",
@@ -158,7 +158,7 @@ function subjectFixture(): SubjectStateV0 {
       last_retrieval_at: null
     },
     beliefs: { items: [] },
-    relationships: { models: [] },
+    relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },

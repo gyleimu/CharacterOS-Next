@@ -30,7 +30,14 @@ export interface DomainMutationSummaryV1 {
   readonly field_changes: readonly FieldChangeSummaryV1[];
 }
 
-export type TraceLayerName = "mood" | "affect" | "regulation" | "context" | "memory_state" | "personality";
+export type TraceLayerName =
+  | "mood"
+  | "affect"
+  | "regulation"
+  | "context"
+  | "memory_state"
+  | "personality"
+  | "relationships";
 
 export interface FieldChangeSummaryV1 {
   readonly path: string;
@@ -43,7 +50,12 @@ export interface TraceEntryV1 {
   readonly trace_id: CanonicalRefV0;
   readonly history_sequence: HistorySequenceV0;
   readonly transition_id: TransitionIdV0;
-  readonly transition_type: "Time" | "Observation" | "CognitionAction" | "Learning";
+  readonly transition_type:
+    | "Time"
+    | "Observation"
+    | "CognitionAction"
+    | "Learning"
+    | "Relationship";
   readonly subject_id: IdentifierV0;
   readonly subject_revision_before: StateRevisionV0;
   readonly subject_revision_after: StateRevisionV0;

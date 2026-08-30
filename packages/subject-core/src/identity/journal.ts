@@ -167,7 +167,13 @@ function stringOrNull(v: unknown, d: string): Check {
     : fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: expected nonempty string or null`);
 }
 
-const IMPORT_TRANSITION_TYPES: readonly string[] = ["Time", "Observation", "CognitionAction", "Learning"];
+const IMPORT_TRANSITION_TYPES: readonly string[] = [
+  "Time",
+  "Observation",
+  "CognitionAction",
+  "Learning",
+  "Relationship"
+];
 const IMPORT_ATTEMPT_STATUSES: readonly string[] = ["REJECTED", "ABORTED", "NO_OP", "COMMITTED"];
 
 const RECORD_KEYS: readonly string[] = [

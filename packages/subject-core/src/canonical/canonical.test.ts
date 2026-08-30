@@ -25,7 +25,7 @@ import {
 /** Golden S0 exactly as frozen in §4.2. */
 function s0(): Record<string, unknown> {
   return {
-    schema_version: "subject-state-v1",
+    schema_version: "subject-state-v2",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -52,7 +52,7 @@ function s0(): Record<string, unknown> {
       last_retrieval_at: null
     },
     beliefs: { items: [] },
-    relationships: { models: [] },
+    relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },
@@ -112,20 +112,20 @@ function s1(): Record<string, unknown> {
 }
 
 const HASH_V1_EMPTY = "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a";
-const HASH_V1_S0_FULL_CHECKSUM = "sha256:b915e35c8c577b2600362a7e6b656cc353da00441b7d4705778fbc37297887d1";
-const HASH_V1_S0_STATE = "sha256:77874060464032ec0acc0f33a15708320349b848905bc4c63cf4f02ef74fbd69";
-const HASH_V1_S0_SNAPSHOT = "sha256:0912b06e5f3759e2502d2cd0c720f67e4665bbb06b18e9188180062f5dcde32a";
+const HASH_V1_S0_FULL_CHECKSUM = "sha256:e117c49d8c65e35cbd5e76d1ec7385b25de8e5ada0cf1459fc73bc205e84a3af";
+const HASH_V1_S0_STATE = "sha256:1f0fc3d2bda43c102ac1e4dd2ca4fd4728c26eb9770bc69114fbb1b4c15e76a6";
+const HASH_V1_S0_SNAPSHOT = "sha256:08f36bdbe3b635db6c4818e0c66b81c51f2c47e7d554eefd5c7c005e7ac298f1";
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
 const HASH_V1_SIMPLE_PROPOSAL = "sha256:7fbf85ce972c8a140af6432990a65584e7d246743a326427beb579e427b51911";
-const HASH_V1_S1_STATE = "sha256:e9efe40fcb9cc3f2a4a32017ccbc1fc34cb9e5382db48b82cf5e3bdc5f66bcb7";
+const HASH_V1_S1_STATE = "sha256:a84c1074fd1ef3876981207aaf94b9c0ef102e93c1dd3d9259b2a1c128be9ef4";
 
 /** Exact §9.1 S0 StateHash envelope (1474 UTF-8 bytes). */
 const GOLDEN_S0_STATE_INPUT =
-  '{"projection":"characteros-next/subject-state/state-hash/v1","value":{"affect":{"active_channels":[],"generated_under_profile":null,"updated_at":null},"beliefs":{"items":[]},"context":{"active_entity_refs":[],"current_observation_ref":null,"environment_refs":[],"focus_refs":[],"scene":"idle","task":null},"identity":{"display_name":"","identity_anchors":[],"origin_metadata":{"creation_source":null,"seed_version":null},"self_schema_seed_refs":[],"subject_id":"subject-s0"},"mechanism_config":{"affect_profile":{"profile_id":"FAST_EMA_V0","timebase":"legacy_tick"},"feature_flags":{},"legacy_reference_defaults":{"alpha":0.06,"clamp":0.25,"tHold":60,"tau":150},"thresholds":{}},"memory_state":{"active_episode_refs":[],"autobiographical_index_revision":null,"consolidation_cursor":null,"last_retrieval_at":null,"lifecycle_metadata":{},"pending_encoding_refs":[],"recent_retrieval_trace":[],"repository_revision":"R0","retrieval_config":{"affect_congruence_enabled":false,"profile_id":"RETRIEVAL_V0","recent_trace_capacity":64},"working_refs":[]},"mood":{"baseline":0,"generated_under_profile":null,"last_update":null},"personality":{"dimensions":[],"schema_version":"personality-state-v0"},"regulation":{"arousal":0.5,"energy":1,"fatigue":0,"last_update":null,"stress":0},"relationships":{"models":[]},"runtime_metadata":{"created_at":0,"last_transition_time":null,"last_transition_type":null,"logical_time":0,"state_revision":0,"subject_version":"subject-v0","updated_at":0},"schema_version":"subject-state-v1","traits_seed":{"dimensions":{}}}}';
+  '{"projection":"characteros-next/subject-state/state-hash/v1","value":{"affect":{"active_channels":[],"generated_under_profile":null,"updated_at":null},"beliefs":{"items":[]},"context":{"active_entity_refs":[],"current_observation_ref":null,"environment_refs":[],"focus_refs":[],"scene":"idle","task":null},"identity":{"display_name":"","identity_anchors":[],"origin_metadata":{"creation_source":null,"seed_version":null},"self_schema_seed_refs":[],"subject_id":"subject-s0"},"mechanism_config":{"affect_profile":{"profile_id":"FAST_EMA_V0","timebase":"legacy_tick"},"feature_flags":{},"legacy_reference_defaults":{"alpha":0.06,"clamp":0.25,"tHold":60,"tau":150},"thresholds":{}},"memory_state":{"active_episode_refs":[],"autobiographical_index_revision":null,"consolidation_cursor":null,"last_retrieval_at":null,"lifecycle_metadata":{},"pending_encoding_refs":[],"recent_retrieval_trace":[],"repository_revision":"R0","retrieval_config":{"affect_congruence_enabled":false,"profile_id":"RETRIEVAL_V0","recent_trace_capacity":64},"working_refs":[]},"mood":{"baseline":0,"generated_under_profile":null,"last_update":null},"personality":{"dimensions":[],"schema_version":"personality-state-v0"},"regulation":{"arousal":0.5,"energy":1,"fatigue":0,"last_update":null,"stress":0},"relationships":{"counterparts":[],"schema_version":"relationship-state-v0"},"runtime_metadata":{"created_at":0,"last_transition_time":null,"last_transition_type":null,"logical_time":0,"state_revision":0,"subject_version":"subject-v0","updated_at":0},"schema_version":"subject-state-v2","traits_seed":{"dimensions":{}}}}';
 
 /** Exact §9.2 S0 SnapshotHash envelope. */
 const GOLDEN_S0_SNAPSHOT_INPUT =
-  '{"last_trace_ref":null,"projection":"characteros-next/subject-state/snapshot-hash/v1","state_hash":"sha256:77874060464032ec0acc0f33a15708320349b848905bc4c63cf4f02ef74fbd69","state_revision":0,"subject_id":"subject-s0","trace_cursor":{"last_history_sequence":0,"offloaded_through_sequence":0,"offloaded_through_trace_ref":null}}';
+  '{"last_trace_ref":null,"projection":"characteros-next/subject-state/snapshot-hash/v1","state_hash":"sha256:1f0fc3d2bda43c102ac1e4dd2ca4fd4728c26eb9770bc69114fbb1b4c15e76a6","state_revision":0,"subject_id":"subject-s0","trace_cursor":{"last_history_sequence":0,"offloaded_through_sequence":0,"offloaded_through_trace_ref":null}}';
 
 describe("canonicalJsonString — JCS mechanics", () => {
   it("serializes an empty object to {}", () => {

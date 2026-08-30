@@ -2,7 +2,10 @@
 
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import type { ValidationResult } from "@characteros-next/subject-core";
+import {
+  validateSubjectState,
+  type ValidationResult
+} from "@characteros-next/subject-core";
 
 import * as boundaryApi from "./index.js";
 import {
@@ -305,12 +308,17 @@ describe("applicability is non-authorizing and explicit", () => {
     expect(Object.isFrozen(output.domains)).toBe(true);
   });
 
-  it("DB27 no SubjectState schema change", () => {
+  it("DB27 SubjectState version semantics are truthful and explicit", () => {
     expect(PUBLIC_RUNTIME_EXPORTS.filter((name) => /SubjectState/i.test(name))).toEqual([]);
-    expect(SUBJECT_STATE_SOURCE).toContain('readonly schema_version: "subject-state-v1";');
+    expect(SUBJECT_STATE_SOURCE).toContain('readonly schema_version: "subject-state-v2";');
     expect(SUBJECT_STATE_VALIDATION_SOURCE).toContain(
-      'lit(o["schema_version"], "subject-state-v1", "subjectState.schema_version")'
+      'lit(o["schema_version"], "subject-state-v2", "subjectState.schema_version")'
     );
+    const legacyV1 = validateSubjectState({ schema_version: "subject-state-v1" });
+    expect(legacyV1.ok).toBe(false);
+    if (!legacyV1.ok) {
+      expect(legacyV1.error.detail).toContain("subjectState.schema_version");
+    }
     expect(SUBJECT_STATE_SOURCE).not.toMatch(/LongTermStateDomainApplicability/);
     expect(PRODUCTION_CODE).not.toMatch(/@characteros-next\/subject-core\/|SubjectState/);
   });

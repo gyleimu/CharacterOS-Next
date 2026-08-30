@@ -12,24 +12,33 @@ import { fail, ok, type ValidationResult } from "./result.js";
 const SS_AUTH = "SS-AUTH-001";
 const SCHEMA = "SS-SCHEMA-001";
 
-const REGISTERED_PRODUCERS: readonly ProducerName[] = ["affect", "context", "memory", "regulation", "personality"];
+const REGISTERED_PRODUCERS: readonly ProducerName[] = [
+  "affect",
+  "context",
+  "memory",
+  "regulation",
+  "personality",
+  "relationship"
+];
 const REGISTERED_DOMAINS: readonly DomainName[] = [
   "affect",
   "context",
   "memory-content",
   "memory-retrieval",
   "regulation",
-  "personality"
+  "personality",
+  "relationship"
 ];
 
-/** §7.2 registered `(producer,domain)` bindings (exact six tuples). */
+/** §7.2 registered `(producer,domain)` bindings. */
 const REGISTERED_BINDINGS: ReadonlyArray<readonly [ProducerName, DomainName]> = [
   ["affect", "affect"],
   ["context", "context"],
   ["memory", "memory-content"],
   ["memory", "memory-retrieval"],
   ["regulation", "regulation"],
-  ["personality", "personality"]
+  ["personality", "personality"],
+  ["relationship", "relationship"]
 ];
 
 /** §7.2 writable-path ownership: path → owning `(producer,domain)` + allowed transitions. */
@@ -49,6 +58,11 @@ const OWNERSHIP: Readonly<
   "/memory_state/consolidation_cursor": { producer: "memory", domain: "memory-content", transitions: ["Learning"] },
   "/memory_state/lifecycle_metadata": { producer: "memory", domain: "memory-content", transitions: ["Learning"] },
   "/personality": { producer: "personality", domain: "personality", transitions: ["Personality"] },
+  "/relationships": {
+    producer: "relationship",
+    domain: "relationship",
+    transitions: ["Relationship"]
+  },
   "/memory_state/pending_encoding_refs": { producer: "memory", domain: "memory-content", transitions: ["Learning"] }
 };
 
@@ -57,7 +71,6 @@ const READONLY_PATHS: readonly ReadonlyFieldPathV0[] = [
   "/identity",
   "/traits_seed",
   "/beliefs",
-  "/relationships",
   "/mechanism_config",
   "/trace_window",
   "/runtime_metadata"

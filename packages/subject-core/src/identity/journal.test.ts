@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 
 import { InMemoryTransitionIdentityJournal } from "./journal.js";
 import type { AuthoritativeTransitionRecordV1 } from "../types/identity.js";
+import type { TransitionType } from "../types/enums.js";
 import type { HashV1, HistorySequenceV0, IdentifierV0, TransitionIdV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 
@@ -17,11 +18,15 @@ const FINGERPRINT = ("sha256:" + "1".repeat(64)) as HashV1;
 const PROPOSAL_REF = "proposal:p1" as CanonicalRefV0;
 const RESULT_REF = "result:r1" as CanonicalRefV0;
 
-function reserve(journal: InMemoryTransitionIdentityJournal, transitionId: string) {
+function reserve(
+  journal: InMemoryTransitionIdentityJournal,
+  transitionId: string,
+  transitionType: TransitionType = "Time"
+) {
   return journal.reserveIdentity({
     transition_id: transitionId as TransitionIdV0,
     subject_id: "subject-s0" as IdentifierV0,
-    transition_type: "Time",
+    transition_type: transitionType,
     proposal_ref: PROPOSAL_REF,
     payload_fingerprint: FINGERPRINT
   });
@@ -244,5 +249,21 @@ describe("journal export/import hardening (§16)", () => {
     expect(
       (await journalB.readRecord("t-roundtrip-other" as TransitionIdV0))?.first_seen_sequence
     ).toBe(2);
+  });
+
+  it("round-trips Relationship transition identity records across journal import", async () => {
+    const journalA = new InMemoryTransitionIdentityJournal();
+    await reserve(journalA, "t-relationship-roundtrip", "Relationship");
+
+    const journalB = new InMemoryTransitionIdentityJournal();
+    journalB.importState(journalA.exportState());
+
+    const restored = await journalB.readRecord(
+      "t-relationship-roundtrip" as TransitionIdV0
+    );
+    expect(restored?.transition_type).toBe("Relationship");
+    expect(
+      (await reserve(journalB, "t-relationship-roundtrip", "Relationship")).route
+    ).toBe("SAME_OPEN_OR_RETRY");
   });
 });

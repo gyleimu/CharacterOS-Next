@@ -30,9 +30,9 @@ import {
 import { restoreFromEnvelope } from "./restore.js";
 
 const HASH_V1_R0_REPOSITORY = "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00";
-const HASH_V1_S0_FULL_CHECKSUM = "sha256:b915e35c8c577b2600362a7e6b656cc353da00441b7d4705778fbc37297887d1";
-const HASH_V1_S0_STATE = "sha256:77874060464032ec0acc0f33a15708320349b848905bc4c63cf4f02ef74fbd69";
-const HASH_V1_S0_SNAPSHOT = "sha256:0912b06e5f3759e2502d2cd0c720f67e4665bbb06b18e9188180062f5dcde32a";
+const HASH_V1_S0_FULL_CHECKSUM = "sha256:e117c49d8c65e35cbd5e76d1ec7385b25de8e5ada0cf1459fc73bc205e84a3af";
+const HASH_V1_S0_STATE = "sha256:1f0fc3d2bda43c102ac1e4dd2ca4fd4728c26eb9770bc69114fbb1b4c15e76a6";
+const HASH_V1_S0_SNAPSHOT = "sha256:08f36bdbe3b635db6c4818e0c66b81c51f2c47e7d554eefd5c7c005e7ac298f1";
 
 const EXACT_RULE_IDS = [
   "HASH-DET-001",
@@ -55,7 +55,7 @@ function hashHex(seed: string): string {
 
 function s0(): Record<string, unknown> {
   return {
-    schema_version: "subject-state-v1",
+    schema_version: "subject-state-v2",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -82,7 +82,7 @@ function s0(): Record<string, unknown> {
       last_retrieval_at: null
     },
     beliefs: { items: [] },
-    relationships: { models: [] },
+    relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },

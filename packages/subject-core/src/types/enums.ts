@@ -41,9 +41,22 @@ export const AFFECT_CHANNEL_IDS = ["anger", "fear", "sadness", "joy"] as const;
 export type AffectPhase = "INACTIVE" | "ACTIVE" | "RELEASING";
 
 /** §7.1 transition types. */
-export type TransitionType = "Time" | "Observation" | "CognitionAction" | "Learning" | "Personality";
+export type TransitionType =
+  | "Time"
+  | "Observation"
+  | "CognitionAction"
+  | "Learning"
+  | "Personality"
+  | "Relationship";
 
-export const TRANSITION_TYPES = ["Time", "Observation", "CognitionAction", "Learning", "Personality"] as const;
+export const TRANSITION_TYPES = [
+  "Time",
+  "Observation",
+  "CognitionAction",
+  "Learning",
+  "Personality",
+  "Relationship"
+] as const;
 
 /** §7.1 canonical time input kinds. */
 export type TimeInputKind = "ELAPSED" | "OCCURRENCE";
@@ -156,7 +169,13 @@ export type LaterPhaseRequirementId =
 export type RequirementId = P21RequirementId | LaterPhaseRequirementId;
 
 /** §7.2 registered producer literals. */
-export type ProducerName = "affect" | "context" | "memory" | "regulation" | "personality";
+export type ProducerName =
+  | "affect"
+  | "context"
+  | "memory"
+  | "regulation"
+  | "personality"
+  | "relationship";
 
 /** §7.2 registered domain literals (memory split into content / retrieval). */
 export type DomainName =
@@ -165,4 +184,5 @@ export type DomainName =
   | "memory-content"
   | "memory-retrieval"
   | "regulation"
-  | "personality";
+  | "personality"
+  | "relationship";

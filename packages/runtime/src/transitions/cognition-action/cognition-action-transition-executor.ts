@@ -147,7 +147,7 @@ export async function buildCognitiveContextProjection(
     memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
     recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
     belief_item_count: snapshot.beliefs.items.length,
-    relationship_model_count: snapshot.relationships.models.length,
+    relationship_counterpart_count: snapshot.relationships.counterparts.length,
     allowed_actions: [] as { action_type: string; target_ref: string | null }[]
   };
   const projectionHash = await cognitiveProjectionHash(projectionBody);

@@ -46,7 +46,7 @@ export const R0_BINDINGS: ReadonlyArray<{
 
 export function s0(): Record<string, unknown> {
   return {
-    schema_version: "subject-state-v1",
+    schema_version: "subject-state-v2",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -73,7 +73,7 @@ export function s0(): Record<string, unknown> {
       last_retrieval_at: null
     },
     beliefs: { items: [] },
-    relationships: { models: [] },
+    relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0, last_update: null },

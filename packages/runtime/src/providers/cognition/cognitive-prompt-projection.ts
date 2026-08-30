@@ -41,9 +41,9 @@ export function renderCognitiveSubjectData(
       ? "(none available in V0 read model)"
       : `${projection.belief_item_count} canonical belief item(s) exist but are not exposed in the V0 read model`;
   const relationships =
-    projection.relationship_model_count === 0
+    projection.relationship_counterpart_count === 0
       ? "(none available in V0 read model)"
-      : `${projection.relationship_model_count} canonical relationship model(s) exist but are not exposed in the V0 read model`;
+      : `${projection.relationship_counterpart_count} canonical relationship counterpart(s) exist but are not exposed in the V0 read model`;
   const actionSpace =
     projection.allowed_actions.length === 0
       ? "(no external actions allowed this cycle — NO_ACTION is the only valid external posture)"
