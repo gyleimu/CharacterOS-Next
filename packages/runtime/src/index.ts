@@ -259,3 +259,18 @@ export {
   type RelationshipExecutionResult,
   type RelationshipUpdateProposalV0
 } from "./transitions/relationship/index.js";
+
+// --- Relationship Counterpart Registration V0 --------------------------------------
+
+export {
+  RELATIONSHIP_COUNTERPART_REGISTRATION_PROPOSAL_SCHEMA_VERSION,
+  RELATIONSHIP_COUNTERPART_REGISTRATION_TRANSITION_ID_PROJECTION,
+  RelationshipCounterpartRegistrationExecutor,
+  deriveCounterpartRegistrationEvidenceMemberSetFingerprint,
+  deriveRelationshipCounterpartRegistrationTransitionId,
+  validateRelationshipCounterpartRegistrationProposal,
+  type RelationshipCounterpartRegistrationDimensionV0,
+  type RelationshipCounterpartRegistrationEvidenceBindingV0,
+  type RelationshipCounterpartRegistrationProposalV0,
+  type RelationshipCounterpartRegistrationResult
+} from "./transitions/relationship/index.js";
