@@ -338,3 +338,23 @@ export {
   type RelationshipPlasticityProducerResultV0,
   type RelationshipPlasticityRejectionCodeV0
 } from "./transitions/relationship/index.js";
+
+// --- Relationship Adaptation Workflow V0 -------------------------------------------
+
+export {
+  RELATIONSHIP_ADAPTATION_PROPOSAL_CHECKPOINT_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_ADAPTATION_PROVIDER_CANDIDATE_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_ADAPTATION_REQUEST_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_ADAPTATION_REQUEST_SCHEMA_VERSION,
+  RELATIONSHIP_ADAPTATION_WORKFLOW_RECORD_SCHEMA_VERSION,
+  runRelationshipAdaptationWorkflowV0,
+  type RelationshipAdaptationPlasticityRebuildOrdinalV0,
+  type RelationshipAdaptationProposalCheckpointV0,
+  type RelationshipAdaptationProviderCandidateV0,
+  type RelationshipAdaptationRequestV0,
+  type RelationshipAdaptationStageV0,
+  type RelationshipAdaptationTerminalV0,
+  type RelationshipAdaptationWorkflowDepsV0,
+  type RelationshipAdaptationWorkflowRecordV0,
+  type RelationshipAdaptationWorkflowStoreV0
+} from "./transitions/relationship/index.js";
