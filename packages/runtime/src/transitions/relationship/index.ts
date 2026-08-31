@@ -120,3 +120,8 @@ export {
   type RelationshipAdaptationWorkflowRecordV0,
   type RelationshipAdaptationWorkflowStoreV0
 } from "./relationship-adaptation-workflow.js";
+
+export {
+  OllamaRelationshipSemanticChannelProviderV0,
+  type OllamaRelationshipSemanticChannelProviderConfigV0
+} from "./relationship-semantic-ollama-provider.js";

@@ -358,3 +358,8 @@ export {
   type RelationshipAdaptationWorkflowRecordV0,
   type RelationshipAdaptationWorkflowStoreV0
 } from "./transitions/relationship/index.js";
+
+export {
+  OllamaRelationshipSemanticChannelProviderV0,
+  type OllamaRelationshipSemanticChannelProviderConfigV0
+} from "./transitions/relationship/index.js";
