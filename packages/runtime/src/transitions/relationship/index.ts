@@ -36,3 +36,58 @@ export {
   RelationshipCounterpartRegistrationExecutor,
   type RelationshipCounterpartRegistrationResult
 } from "./relationship-counterpart-registration-executor.js";
+
+export {
+  RELATIONSHIP_EVIDENCE_CHANNEL_POLICY_SCHEMA_VERSION,
+  RELATIONSHIP_EVIDENCE_CHANNEL_POLICY_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_EVIDENCE_CHANNEL_DIRECTIONS,
+  RELATIONSHIP_EVIDENCE_CHANNEL_MAX_CHANNELS,
+  deriveRelationshipEvidenceChannelPolicyFingerprint,
+  resolveRelationshipEvidenceChannel,
+  validateRelationshipEvidenceChannelPolicy,
+  type RelationshipEvidenceChannelDirectionV0,
+  type RelationshipEvidenceChannelPolicyV0,
+  type RelationshipEvidenceChannelRuleV0
+} from "./relationship-evidence-channel-policy.js";
+
+export {
+  RELATIONSHIP_SEMANTIC_CHANNEL_AUDIT_SCHEMA_VERSION,
+  RELATIONSHIP_SEMANTIC_CHANNEL_CATALOG_SCHEMA_VERSION,
+  RELATIONSHIP_SEMANTIC_CHANNEL_RESULT_SCHEMA_VERSION,
+  RELATIONSHIP_SEMANTIC_CONTEXT_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_SEMANTIC_CATALOG_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_SEMANTIC_CONTEXT_PROJECTION_SCHEMA_VERSION,
+  RELATIONSHIP_SEMANTIC_MAX_CHANNELS,
+  RELATIONSHIP_SEMANTIC_MAX_CRITERION_LENGTH,
+  RELATIONSHIP_SEMANTIC_MAX_EVIDENCE_RECORDS,
+  RELATIONSHIP_SEMANTIC_MAX_SCENE_LENGTH,
+  RELATIONSHIP_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+  RelationshipSemanticProviderErrorV0,
+  deriveRelationshipSemanticCatalogFingerprint,
+  deriveRelationshipSemanticContextFingerprint,
+  isHostMintedRelationshipSemanticResult,
+  runRelationshipSemanticChannelV0,
+  validateRelationshipSemanticChannelCatalog,
+  type RelationshipSemanticChannelCatalogV0,
+  type RelationshipSemanticChannelDefinitionV0,
+  type RelationshipSemanticChannelProviderCatalogV0,
+  type RelationshipSemanticChannelProviderInputV0,
+  type RelationshipSemanticChannelProviderV0,
+  type RelationshipSemanticChannelRejectionCodeV0,
+  type RelationshipSemanticChannelResultV0,
+  type RelationshipSemanticChannelRunnerInputV0,
+  type RelationshipSemanticChannelRunResultV0,
+  type RelationshipSemanticContextProjectionV0,
+  type RelationshipSemanticEvidenceItemV0,
+  type RelationshipSemanticEvidenceRepositoryV0,
+  type RelationshipSemanticProviderFailureCodeV0,
+  type RelationshipSemanticProviderOutputV0
+} from "./relationship-semantic-channel.js";
+
+export {
+  RELATIONSHIP_SEMANTIC_PROMPT_PROJECTION_VERSION,
+  RELATIONSHIP_SEMANTIC_PROVIDER_MAX_OUTPUT_TOKENS,
+  OpenAICompatibleRelationshipSemanticChannelProviderV0,
+  buildRelationshipSemanticChannelPromptMessages,
+  type OpenAICompatibleRelationshipSemanticChannelProviderConfigV0
+} from "./relationship-semantic-openai-provider.js";
