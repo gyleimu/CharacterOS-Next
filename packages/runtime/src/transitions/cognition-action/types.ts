@@ -260,8 +260,10 @@ export function validateCognitionProposal(v: unknown): ValidationResult<Cognitio
 
 /**
  * The allowed evidence set for §15 grounding: memory evidence (working ∪
- * recent retrieval) ∪ projection context refs ∪ the subject identity ref.
- * belief:/relationship: refs are NEVER allowed in V0 (empty read models).
+ * recent retrieval) ∪ projection context refs. The subject identity ref is
+ * NOT automatically included. belief:/relationship: refs are NEVER citeable
+ * in V0 — relationship values are projected as read-only SUBJECT STATE
+ * (relationship_dimensions), which is visible but not citeable.
  */
 export function allowedEvidenceSet(
   projection: CognitiveContextProjectionV0
