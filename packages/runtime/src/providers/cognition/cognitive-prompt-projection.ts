@@ -41,9 +41,13 @@ export function renderCognitiveSubjectData(
       ? "(none available in V0 read model)"
       : `${projection.belief_item_count} canonical belief item(s) exist but are not exposed in the V0 read model`;
   const relationships =
-    projection.relationship_counterpart_count === 0
-      ? "(none available in V0 read model)"
-      : `${projection.relationship_counterpart_count} canonical relationship counterpart(s) exist but are not exposed in the V0 read model`;
+    projection.relationship_dimensions.length === 0
+      ? projection.relationship_counterpart_count === 0
+        ? "(none available in V0 read model)"
+        : `${projection.relationship_counterpart_count} canonical relationship counterpart(s) exist but are not exposed in the V0 read model`
+      : projection.relationship_dimensions
+          .map((r) => `- ${r.counterpart_ref}: ${r.dimension_id}=${r.value}`)
+          .join("\n");
   const actionSpace =
     projection.allowed_actions.length === 0
       ? "(no external actions allowed this cycle — NO_ACTION is the only valid external posture)"

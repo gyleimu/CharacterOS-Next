@@ -48,6 +48,18 @@ export interface AllowedActionV0 {
 }
 
 /**
+ * Read-only canonical Relationship dimension value as exposed to cognition
+ * (V0 relationship projection): counterpart → dimension → canonical numeric
+ * value. Lawful exposure is exactly this triple — no plasticity policy, no
+ * hidden channel mapping, no next_value, no capability material.
+ */
+export interface RelationshipDimensionProjectionV0 {
+  readonly counterpart_ref: CanonicalRefV0;
+  readonly dimension_id: IdentifierV0;
+  readonly value: number;
+}
+
+/**
  * A proposed external action. It is a REQUEST for a future execution layer —
  * NOT evidence that an action happened, and never an Outcome (§10/§11).
  */
@@ -92,9 +104,14 @@ export interface CognitiveContextProjectionV0 {
   /** Memory read evidence: working refs + recent retrieval-selected refs. */
   readonly memory_working_refs: readonly CanonicalRefV0[];
   readonly recent_retrieval_refs: readonly CanonicalRefV0[];
-  /** V0 read models: beliefs/relationships remain count-only in this projection. */
+  /** V0 read models: beliefs remain count-only; relationships expose canonical dimension values. */
   readonly belief_item_count: number;
   readonly relationship_counterpart_count: number;
+  /**
+   * Read-only canonical Relationship dimension values, deterministically sorted
+   * by (counterpart_ref, dimension_id). Empty array when no counterparts exist.
+   */
+  readonly relationship_dimensions: readonly RelationshipDimensionProjectionV0[];
   /** The only action space the provider may propose within. */
   readonly allowed_actions: readonly AllowedActionV0[];
   /** Content-addressed integrity of the exact projection body. */

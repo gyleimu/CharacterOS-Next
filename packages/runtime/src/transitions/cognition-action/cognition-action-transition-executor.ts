@@ -148,6 +148,19 @@ export async function buildCognitiveContextProjection(
     recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
     belief_item_count: snapshot.beliefs.items.length,
     relationship_counterpart_count: snapshot.relationships.counterparts.length,
+    relationship_dimensions: snapshot.relationships.counterparts
+      .flatMap((counterpart) =>
+        counterpart.dimensions.map((dimension) => ({
+          counterpart_ref: counterpart.counterpart_ref as string,
+          dimension_id: dimension.dimension_id as string,
+          value: dimension.value as number
+        }))
+      )
+      .sort(
+        (a, b) =>
+          (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0) ||
+          (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0)
+      ),
     allowed_actions: [] as { action_type: string; target_ref: string | null }[]
   };
   const projectionHash = await cognitiveProjectionHash(projectionBody);
