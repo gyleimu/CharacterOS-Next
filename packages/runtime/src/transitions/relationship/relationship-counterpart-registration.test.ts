@@ -939,7 +939,7 @@ describe("Frozen foundation invariants (CR35–CR43)", () => {
 });
 
 describe("Suite-level graph invariants (CR50)", () => {
-  it("CR50: registration introduces no new workspace dependency edges (graph stays acyclic)", () => {
+  it("CR50: dependency edges remain exactly the lawful workspace set (graph stays acyclic)", () => {
     const runtimePackage = JSON.parse(runtimePackageRaw) as {
       dependencies?: Record<string, string>;
       devDependencies?: Record<string, string>;
@@ -948,8 +948,12 @@ describe("Suite-level graph invariants (CR50)", () => {
       ...runtimePackage.dependencies,
       ...runtimePackage.devDependencies
     }).filter((name) => name.startsWith("@characteros-next/"));
+    // Updated by RelationshipPlasticityProducer V0 (STRATEGY_A): runtime now
+    // lawfully consumes memory-influence and influence-evidence as well.
     expect(workspaceDeps.sort()).toEqual([
+      "@characteros-next/influence-evidence",
       "@characteros-next/memory",
+      "@characteros-next/memory-influence",
       "@characteros-next/subject-core"
     ]);
   });

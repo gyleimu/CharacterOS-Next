@@ -1213,7 +1213,9 @@ describe("Suite-level graph invariants (RSR75)", () => {
       ...runtimePackage.devDependencies
     }).filter((name) => name.startsWith("@characteros-next/"));
     expect(workspaceDeps.sort()).toEqual([
+      "@characteros-next/influence-evidence",
       "@characteros-next/memory",
+      "@characteros-next/memory-influence",
       "@characteros-next/subject-core"
     ]);
   });

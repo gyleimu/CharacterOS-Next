@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
@@ -17,7 +19,9 @@
     "typecheck": "tsc -p tsconfig.typecheck.json"
   },
   "dependencies": {
+    "@characteros-next/influence-evidence": "workspace:*",
     "@characteros-next/memory": "workspace:*",
+    "@characteros-next/memory-influence": "workspace:*",
     "@characteros-next/subject-core": "workspace:*"
   }
 }

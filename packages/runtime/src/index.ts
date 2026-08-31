@@ -325,3 +325,16 @@ export {
   type RelationshipSemanticProviderFailureCodeV0,
   type RelationshipSemanticProviderOutputV0
 } from "./transitions/relationship/index.js";
+
+// --- RelationshipPlasticityProducer V0 ---------------------------------------------
+
+export {
+  RELATIONSHIP_PLASTICITY_EVIDENCE_SCALE,
+  RELATIONSHIP_PLASTICITY_MAX_PROJECTIONS,
+  RELATIONSHIP_PLASTICITY_MAX_SINGLE_STEP,
+  produceRelationshipPlasticityV0,
+  type RelationshipPlasticityNoProposalReasonV0,
+  type RelationshipPlasticityProducerInputV0,
+  type RelationshipPlasticityProducerResultV0,
+  type RelationshipPlasticityRejectionCodeV0
+} from "./transitions/relationship/index.js";

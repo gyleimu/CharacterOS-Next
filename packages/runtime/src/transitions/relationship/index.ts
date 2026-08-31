@@ -91,3 +91,14 @@ export {
   buildRelationshipSemanticChannelPromptMessages,
   type OpenAICompatibleRelationshipSemanticChannelProviderConfigV0
 } from "./relationship-semantic-openai-provider.js";
+
+export {
+  RELATIONSHIP_PLASTICITY_EVIDENCE_SCALE,
+  RELATIONSHIP_PLASTICITY_MAX_PROJECTIONS,
+  RELATIONSHIP_PLASTICITY_MAX_SINGLE_STEP,
+  produceRelationshipPlasticityV0,
+  type RelationshipPlasticityNoProposalReasonV0,
+  type RelationshipPlasticityProducerInputV0,
+  type RelationshipPlasticityProducerResultV0,
+  type RelationshipPlasticityRejectionCodeV0
+} from "./relationship-plasticity-producer.js";

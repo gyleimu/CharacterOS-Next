@@ -170,6 +170,8 @@ export default tseslint.config(
       "@characteros-next/runtime",
       "@characteros-next/subject-core",
       "@characteros-next/memory",
+      "@characteros-next/memory-influence",
+      "@characteros-next/influence-evidence",
       "@characteros-next/appraisal",
       "@characteros-next/affect",
       "@characteros-next/regulation"
