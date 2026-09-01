@@ -477,3 +477,72 @@ export {
   OllamaRelationshipSemanticChannelProviderV0,
   type OllamaRelationshipSemanticChannelProviderConfigV0
 } from "./transitions/relationship/index.js";
+
+// --- Belief Decision Influence Relation Foundation V0 ------------------------------
+
+export {
+  ACCEPTED_COGNITION_PROPOSAL_FINGERPRINT_PROJECTION,
+  ACCEPTED_COGNITION_PROPOSAL_SCHEMA_VERSION,
+  ACTION_SPACE_FINGERPRINT_PROJECTION,
+  BELIEF_STATE_ACTION_RELATION_KINDS,
+  COGNITION_ACTION_SPACE_SCHEMA_VERSION,
+  COGNITION_PROPOSAL_V1_SCHEMA_VERSION,
+  CognitionRelationRejectionErrorV1,
+  MAX_RELATION_ALLOWED_ACTIONS,
+  MAX_RELATION_BELIEF_ITEMS,
+  MAX_STATE_ACTION_RELATIONS,
+  deriveAcceptedCognitionProposalFingerprintV1,
+  deriveCognitionActionSpaceFingerprintV1,
+  validateAllowedActionSpaceV1,
+  type AcceptedCognitionProposalV1,
+  type BeliefStateActionRelationKindV0,
+  type BeliefStateActionRelationV0,
+  type BeliefStateLocatorV0,
+  type CognitionProposalV1,
+  type CognitionProposalV1RejectionCodeV1
+} from "./transitions/cognition-action/cognition-proposal-v1.js";
+
+export {
+  COGNITION_RELATION_PROVIDER_INPUT_SCHEMA_VERSION,
+  type CognitionRelationProviderInputV1,
+  type CognitionRelationProviderV1
+} from "./ports/cognition-relation-port.js";
+
+export {
+  COGNITIVE_PROMPT_PROJECTION_V1_VERSION,
+  buildCognitivePromptMessagesV1
+} from "./providers/cognition/cognitive-prompt-projection-v1.js";
+
+export {
+  COGNITION_V1_MAX_MODEL_CALLS_PER_INVOCATION,
+  LlmCognitionRelationProviderV1,
+  type LlmCognitionRelationProviderConfigV1
+} from "./providers/cognition/llm-cognition-relation-provider-v1.js";
+
+export {
+  DECISION_INFLUENCE_PROJECTION_SCHEMA_VERSION,
+  DECISION_INFLUENCE_RELATION_OUTPUT_FINGERPRINT_PROJECTION,
+  produceBeliefDecisionInfluenceRelationProjectionV0,
+  runCognitionRelationAdmissionV1,
+  type CognitionRelationAdmissionResultV1,
+  type CognitionRelationHostBindingV1,
+  type DecisionInfluenceProjectionV0
+} from "./transitions/cognition-action/belief-decision-influence-relation.js";
+
+export {
+  BELIEF_DECISION_INFLUENCE_RELATION_PROVIDER_OUTCOME_SCHEMA_VERSION,
+  BELIEF_DECISION_INFLUENCE_RELATION_REQUEST_FINGERPRINT_PROJECTION,
+  BELIEF_DECISION_INFLUENCE_RELATION_REQUEST_SCHEMA_VERSION,
+  BELIEF_DECISION_INFLUENCE_RELATION_WORKFLOW_CHECKPOINT_FINGERPRINT_PROJECTION,
+  BELIEF_DECISION_INFLUENCE_RELATION_WORKFLOW_RECORD_SCHEMA_VERSION,
+  deriveBeliefDecisionInfluenceRelationRequestFingerprintV0,
+  deriveBeliefDecisionInfluenceRelationWorkflowCheckpointFingerprintV0,
+  runBeliefDecisionInfluenceRelationWorkflowV0,
+  type BeliefDecisionInfluenceRelationProviderOutcomeV0,
+  type BeliefDecisionInfluenceRelationRequestV0,
+  type BeliefDecisionInfluenceRelationStageV0,
+  type BeliefDecisionInfluenceRelationWorkflowDepsV0,
+  type BeliefDecisionInfluenceRelationWorkflowRecordV0,
+  type BeliefDecisionInfluenceRelationWorkflowResultV0,
+  type BeliefDecisionInfluenceRelationWorkflowStoreV0
+} from "./transitions/cognition-action/belief-decision-influence-relation-workflow.js";
