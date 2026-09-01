@@ -85,3 +85,14 @@ export {
   type BeliefAdaptationWorkflowRecordV0,
   type BeliefAdaptationWorkflowStoreV0
 } from "./belief-adaptation-workflow.js";
+
+export {
+  BELIEF_SEMANTIC_OLLAMA_PROVIDER_ERROR_CODES,
+  BeliefSemanticOllamaProviderErrorV0,
+  OLLAMA_BELIEF_SEMANTIC_PROVIDER_NUM_PREDICT,
+  OLLAMA_BELIEF_SEMANTIC_PROVIDER_TIMEOUT_MS,
+  OllamaBeliefSemanticProviderV0,
+  buildBeliefSemanticOllamaPromptMessages,
+  type BeliefSemanticOllamaProviderErrorCodeV0,
+  type OllamaBeliefSemanticProviderConfigV0
+} from "./belief-semantic-ollama-provider.js";

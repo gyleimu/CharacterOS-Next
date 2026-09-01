@@ -333,6 +333,19 @@ export {
   type BeliefAdaptationWorkflowStoreV0
 } from "./transitions/belief/index.js";
 
+// --- Belief Ollama Semantic Provider V0 ---------------------------------------------
+
+export {
+  BELIEF_SEMANTIC_OLLAMA_PROVIDER_ERROR_CODES,
+  BeliefSemanticOllamaProviderErrorV0,
+  OLLAMA_BELIEF_SEMANTIC_PROVIDER_NUM_PREDICT,
+  OLLAMA_BELIEF_SEMANTIC_PROVIDER_TIMEOUT_MS,
+  OllamaBeliefSemanticProviderV0,
+  buildBeliefSemanticOllamaPromptMessages,
+  type BeliefSemanticOllamaProviderErrorCodeV0,
+  type OllamaBeliefSemanticProviderConfigV0
+} from "./transitions/belief/index.js";
+
 // --- RelationshipState V0 Foundation ----------------------------------------------
 
 export {
