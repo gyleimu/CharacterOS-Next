@@ -307,6 +307,32 @@ export {
   type BeliefPlasticityResultV0
 } from "./transitions/belief/index.js";
 
+// --- Belief Adaptation Workflow V0 -------------------------------------------------
+
+export {
+  BELIEF_ADAPTATION_PROPOSAL_CHECKPOINT_FINGERPRINT_PROJECTION,
+  BELIEF_ADAPTATION_PROPOSAL_CHECKPOINT_SCHEMA_VERSION,
+  BELIEF_ADAPTATION_REQUEST_FINGERPRINT_PROJECTION,
+  BELIEF_ADAPTATION_REQUEST_SCHEMA_VERSION,
+  BELIEF_ADAPTATION_SEMANTIC_CANDIDATE_FINGERPRINT_PROJECTION,
+  BELIEF_ADAPTATION_WORKFLOW_CHECKPOINT_FINGERPRINT_PROJECTION,
+  BELIEF_ADAPTATION_WORKFLOW_RECORD_SCHEMA_VERSION,
+  BELIEF_WORKFLOW_MAX_EXTERNAL_SEMANTIC_CALLS,
+  BELIEF_WORKFLOW_MAX_STALE_REBUILDS,
+  deriveBeliefAdaptationProposalCheckpointFingerprint,
+  deriveBeliefAdaptationSemanticCandidateFingerprint,
+  deriveBeliefAdaptationWorkflowCheckpointFingerprint,
+  runBeliefAdaptationWorkflowV0,
+  type BeliefAdaptationProposalCheckpointV0,
+  type BeliefAdaptationRequestV0,
+  type BeliefAdaptationSemanticCandidateV0,
+  type BeliefAdaptationStageV0,
+  type BeliefAdaptationTerminalV0,
+  type BeliefAdaptationWorkflowDepsV0,
+  type BeliefAdaptationWorkflowRecordV0,
+  type BeliefAdaptationWorkflowStoreV0
+} from "./transitions/belief/index.js";
+
 // --- RelationshipState V0 Foundation ----------------------------------------------
 
 export {
