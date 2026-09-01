@@ -546,3 +546,25 @@ export {
   type BeliefDecisionInfluenceRelationWorkflowResultV0,
   type BeliefDecisionInfluenceRelationWorkflowStoreV0
 } from "./transitions/cognition-action/belief-decision-influence-relation-workflow.js";
+
+// --- Belief Decision Integration Policy V0 -----------------------------------------
+
+export {
+  BELIEF_DECISION_INTEGRATION_POLICY_DESCRIPTOR_V0,
+  BELIEF_DECISION_INTEGRATION_POLICY_FINGERPRINT_PROJECTION,
+  BELIEF_DECISION_INTEGRATION_POLICY_ID_V0,
+  BELIEF_DECISION_TENDENCY_OUTPUT_FINGERPRINT_PROJECTION,
+  BELIEF_DECISION_TENDENCY_PROJECTION_SCHEMA_VERSION,
+  BeliefDecisionIntegrationPolicyErrorV0,
+  deriveBeliefDecisionIntegrationPolicyFingerprintV0,
+  produceBeliefDecisionTendencyProjectionV0,
+  type BeliefActionTendencyV0,
+  type BeliefDecisionContributionV0,
+  type BeliefDecisionIntegrationPolicyDescriptorV0,
+  type BeliefDecisionIntegrationPolicyErrorCodeV0,
+  type BeliefDecisionRelationContributionV0,
+  type BeliefDecisionTendencyProducerInputV0,
+  type BeliefDecisionTendencyProjectionV0,
+  type BeliefDecisionTendencyV0,
+  type BeliefStanceV0
+} from "./transitions/cognition-action/belief-decision-integration-policy.js";
