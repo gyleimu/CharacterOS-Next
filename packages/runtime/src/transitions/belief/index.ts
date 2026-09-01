@@ -45,3 +45,19 @@ export {
   type BeliefSemanticTargetResolutionRunnerInputV0,
   type BeliefSemanticTargetResolutionV0
 } from "./belief-semantic-target-resolution.js";
+
+export {
+  BELIEF_PLASTICITY_NUMERIC_CANONICALIZATION,
+  BELIEF_PLASTICITY_OUTPUT_FINGERPRINT_PROJECTION,
+  BELIEF_PLASTICITY_POLICY_VERSION,
+  BELIEF_PLASTICITY_REJECTION_CODES,
+  BELIEF_PLASTICITY_RESULT_SCHEMA_VERSION,
+  BELIEF_PLASTICITY_STEP,
+  isAuthorizedBeliefPlasticityResultV0,
+  produceBeliefPlasticityV0,
+  type BeliefPlasticityOutcomeV0,
+  type BeliefPlasticityProducerInputV0,
+  type BeliefPlasticityProducerRunResultV0,
+  type BeliefPlasticityRejectionCodeV0,
+  type BeliefPlasticityResultV0
+} from "./belief-plasticity-producer.js";
