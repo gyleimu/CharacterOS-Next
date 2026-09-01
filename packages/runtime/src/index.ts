@@ -178,6 +178,15 @@ export {
   type ModelTransportFailureCode
 } from "./transports/model-transport.js";
 
+// --- Ollama Native Cognition Transport V0 (transport/provider compatibility) -------
+
+export {
+  OllamaNativeCognitionTransportV0,
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS,
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
+  type OllamaNativeCognitionTransportConfigV0
+} from "./providers/cognition/ollama-native-cognition-transport.js";
+
 // --- P2-next Action Execution / Outcome V0 --------------------------------------------
 
 export {
