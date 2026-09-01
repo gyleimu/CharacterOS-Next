@@ -568,3 +568,23 @@ export {
   type BeliefDecisionTendencyV0,
   type BeliefStanceV0
 } from "./transitions/cognition-action/belief-decision-integration-policy.js";
+
+// --- Cognition Decision Arbitration Policy V0 (Belief-only) -----------------------------------------
+
+export {
+  BELIEF_POSITIVE_MAX_ARBITRATION_POLICY_DESCRIPTOR_V0,
+  BELIEF_POSITIVE_MAX_ARBITRATION_POLICY_FINGERPRINT_PROJECTION,
+  BELIEF_POSITIVE_MAX_ARBITRATION_POLICY_ID_V0,
+  BELIEF_DECISION_SELECTION_OUTPUT_FINGERPRINT_PROJECTION,
+  BELIEF_DECISION_SELECTION_SCHEMA_VERSION,
+  BeliefDecisionArbitrationErrorV0,
+  deriveBeliefPositiveMaxArbitrationPolicyFingerprintV0,
+  isAuthorizedBeliefDecisionSelectionV0,
+  produceBeliefDecisionSelectionV0,
+  type BeliefDecisionArbitrationErrorCodeV0,
+  type BeliefDecisionArbitrationInputV0,
+  type BeliefDecisionNoSelectionReasonV0,
+  type BeliefDecisionSelectionBaseV0,
+  type BeliefDecisionSelectionV0,
+  type BeliefPositiveMaxArbitrationPolicyDescriptorV0
+} from "./transitions/cognition-action/belief-decision-arbitration-policy.js";
