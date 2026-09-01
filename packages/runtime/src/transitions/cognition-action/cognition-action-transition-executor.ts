@@ -47,9 +47,11 @@ import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import {
   actionIntentAllowed,
   allowedEvidenceSet,
+  BELIEF_COGNITION_MAX_ITEMS,
   cognitiveProjectionHash,
   findUnsupportedEvidenceRef,
   validateCognitionProposal,
+  type BeliefStanceProjectionV0,
   type CognitiveContextProjectionV0,
   type CognitionActionInputV0,
   type CognitionProposalV0
@@ -151,6 +153,23 @@ export async function buildCognitiveContextProjection(
     memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
     recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
     belief_item_count: snapshot.beliefs.items.length,
+    // Belief → Cognition Read Projection V0: COPIED stance surface from the
+    // authoritative canonical snapshot — raw-ASCII proposition_id ascending,
+    // bounded to the first 64, exact credence copy (no rounding). The copy
+    // joins the hash body BEFORE cognitiveProjectionHash, so the existing
+    // projection_hash binds belief ids/labels/exact credence/total count.
+    belief_items: snapshot.beliefs.items
+      .map(
+        (item): BeliefStanceProjectionV0 => ({
+          proposition_id: item.proposition_id,
+          proposition_label: item.proposition_label,
+          credence: item.credence
+        })
+      )
+      .sort((a, b) =>
+        a.proposition_id < b.proposition_id ? -1 : a.proposition_id > b.proposition_id ? 1 : 0
+      )
+      .slice(0, BELIEF_COGNITION_MAX_ITEMS),
     relationship_counterpart_count: snapshot.relationships.counterparts.length,
     relationship_dimensions: snapshot.relationships.counterparts
       .flatMap((counterpart) =>

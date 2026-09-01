@@ -28,7 +28,10 @@ import {
 import type { SubjectCorePort } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import { buildCognitiveContextProjection } from "../cognition-action/cognition-action-transition-executor.js";
-import { allowedEvidenceSet } from "../cognition-action/types.js";
+import {
+  allowedEvidenceSet,
+  type BeliefStanceProjectionV0
+} from "../cognition-action/types.js";
 import { s0 } from "../observation/observation-fixtures.js";
 import { initializeEmptyBeliefState } from "./belief-init.js";
 import {
@@ -596,7 +599,7 @@ describe("BeliefTransitionExecutor authority", () => {
     ).toBe(false);
   });
 
-  it("keeps cognition count-only and does not make belief state citeable", async () => {
+  it("projects belief current stances read-only while they remain STATE_VISIBLE_NOT_CITEABLE", async () => {
     const id = await propositionId();
     const snapshot = fixtureState([
       {
@@ -607,10 +610,16 @@ describe("BeliefTransitionExecutor authority", () => {
     ]);
     const projection = await buildCognitiveContextProjection(snapshot);
     expect(projection.belief_item_count).toBe(1);
-    const serialized = JSON.stringify(projection);
-    expect(serialized).not.toContain(id);
-    expect(serialized).not.toContain(PROPOSITION_LABEL);
+    // Approved read projection: the current stance surface (id, label, EXACT
+    // canonical credence) is cognition-visible.
+    const items = projection.belief_items as readonly BeliefStanceProjectionV0[];
+    expect(items).toEqual([
+      { proposition_id: id, proposition_label: PROPOSITION_LABEL, credence: 0.75 }
+    ]);
+    // ...but remains STATE_VISIBLE_NOT_CITEABLE: the proposition id never
+    // enters the allowed evidence set and no citeable ref is invented.
     expect(allowedEvidenceSet(projection).has(id)).toBe(false);
+    expect(JSON.stringify([...allowedEvidenceSet(projection)])).not.toContain(id);
   });
 
   it("roundtrips Belief journal identity and contains no model/network/random authority", async () => {

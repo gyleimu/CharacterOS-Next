@@ -43,10 +43,11 @@ export function renderCognitiveSubjectData(
       : projection.affect_channels
           .map((c) => `${c.channel}=${c.strength}`)
           .join(", ");
-  const beliefs =
-    projection.belief_item_count === 0
-      ? "(none available in V0 read model)"
-      : `${projection.belief_item_count} canonical belief item(s) exist but are not exposed in the V0 read model`;
+  const beliefStances =
+    projection.belief_items.length === 0
+      ? "(none)"
+      : projection.belief_items.map((item) => `  ${JSON.stringify(item)}`).join("\n");
+  const beliefs = `[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing ${projection.belief_items.length} of ${projection.belief_item_count} canonical belief item(s)\n${beliefStances}`;
   const relationships =
     projection.relationship_dimensions.length === 0
       ? projection.relationship_counterpart_count === 0
@@ -82,7 +83,7 @@ export function renderCognitiveSubjectData(
     `[affect] ${affect}`,
     `[mood] baseline=${projection.mood_baseline}`,
     `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,
-    `[beliefs] ${beliefs}`,
+    beliefs,
     `[relationships] ${relationships}`,
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):`,
@@ -103,7 +104,7 @@ export function renderCognitiveSystemRules(): string {
     '   {"schema_version":"cognition-proposal-v0","projection_hash":"<copy the projection_hash from SUBJECT DATA verbatim>","reasoning_summary":"<compact inspectable summary>","relevant_memory_refs":[<refs only from CITEABLE CONTEXT REFS>],"considered_context_refs":[<refs only from CITEABLE CONTEXT REFS>],"current_intent":<string|null>,"confidence":<0..1>,"uncertainty":<0..1>,"action_intent":<{"action_type":"<from ALLOWED ACTION SPACE>","target_ref":<ref|null>}|null>,"evidence_refs":[<refs only from CITEABLE CONTEXT REFS>]}',
     "3. Every ref you cite MUST appear verbatim in CITEABLE CONTEXT REFS. You MUST NOT invent memories, entities or events.",
     "4. Cite refs EXACTLY as written — never alter, translate or remove a ref's kind prefix (e.g. keep \"episode:\" exactly).",
-    "5. SUBJECT STATE values are visible context, NOT citeable refs. Do not turn subject-state field names or labels into refs. Do not cite a counterpart_ref merely because it appears under Relationships state.",
+    "5. SUBJECT STATE values are visible context, NOT citeable refs. Do not turn subject-state field names or labels into refs. Do not cite a counterpart_ref merely because it appears under Relationships state. Do not cite a proposition_id or belief label merely because it appears under Subjective Belief Stances.",
     "6. If no listed ref was considered, empty ref arrays are valid and normal.",
     "7. You may propose an action ONLY from the ALLOWED ACTION SPACE. If it is empty, action_intent MUST be null.",
     "8. action_intent is a declarative proposal only — it will NOT be executed.",

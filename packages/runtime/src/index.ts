@@ -134,6 +134,7 @@ export {
 export {
   actionIntentAllowed,
   allowedEvidenceSet,
+  BELIEF_COGNITION_MAX_ITEMS,
   cognitiveProjectionHash,
   COGNITIVE_CONTEXT_PROJECTION_HASH_PROJECTION,
   COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION,
@@ -141,6 +142,7 @@ export {
   validateCognitionProposal,
   type ActionIntentV0,
   type AllowedActionV0,
+  type BeliefStanceProjectionV0,
   type CognitionActionInputV0,
   type CognitionProposalV0,
   type CognitiveContextProjectionV0

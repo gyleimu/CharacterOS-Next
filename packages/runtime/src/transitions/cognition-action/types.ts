@@ -20,7 +20,8 @@ import type {
   HashV1,
   IdentifierV0,
   LogicalTimeV0,
-  StateRevisionV0
+  StateRevisionV0,
+  UnitIntervalV0
 } from "@characteros-next/subject-core";
 import {
   fail,
@@ -46,6 +47,22 @@ export interface AllowedActionV0 {
   readonly action_type: string;
   readonly target_ref: CanonicalRefV0 | null;
 }
+
+/**
+ * Read-only Belief → Cognition projection item (Belief → Cognition Read
+ * Projection V0): the exact canonical stance surface — proposition id, label
+ * and EXACT canonical credence (no rounding/banding). A subjective persistent
+ * epistemic stance, NOT an objective world fact: STATE_VISIBLE_NOT_CITEABLE —
+ * projected ids/labels never enter the allowed evidence set.
+ */
+export interface BeliefStanceProjectionV0 {
+  readonly proposition_id: IdentifierV0;
+  readonly proposition_label: string;
+  readonly credence: UnitIntervalV0;
+}
+
+/** Bounded cognition-visible belief stance count (read projection V0). */
+export const BELIEF_COGNITION_MAX_ITEMS = 64 as const;
 
 /**
  * Read-only canonical Relationship dimension value as exposed to cognition
@@ -104,8 +121,19 @@ export interface CognitiveContextProjectionV0 {
   /** Memory read evidence: working refs + recent retrieval-selected refs. */
   readonly memory_working_refs: readonly CanonicalRefV0[];
   readonly recent_retrieval_refs: readonly CanonicalRefV0[];
-  /** V0 read models: beliefs remain count-only; relationships expose canonical dimension values. */
+  /**
+   * V0 read models: beliefs expose bounded read-only stances (exact canonical
+   * credence; STATE_VISIBLE_NOT_CITEABLE); relationships expose canonical
+   * dimension values.
+   */
+  /** TOTAL canonical belief count (independent of the bounded projection). */
   readonly belief_item_count: number;
+  /**
+   * Bounded read-only belief stances: raw-ASCII proposition_id ascending,
+   * first BELIEF_COGNITION_MAX_ITEMS. Derived non-canonical read view — never
+   * persisted, never citeable, zero model calls to construct.
+   */
+  readonly belief_items: readonly BeliefStanceProjectionV0[];
   readonly relationship_counterpart_count: number;
   /**
    * Read-only canonical Relationship dimension values, deterministically sorted
