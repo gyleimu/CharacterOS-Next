@@ -152,12 +152,12 @@ describe("closed target contract", () => {
       validateLongTermStateTargetV0({
         domain: "PERSONALITY",
         target_kind: "SUBJECT_GLOBAL",
-        proposition_ref: "source:proposition-p"
+        proposition_id: "belief-proposition-p"
       }).ok
     ).toBe(false);
   });
 
-  it("DB13 Belief target requires proposition ref", () => {
+  it("DB13 Belief target requires proposition id", () => {
     expect(
       validateLongTermStateTargetV0({ domain: "BELIEF", target_kind: "PROPOSITION" }).ok
     ).toBe(false);
@@ -168,7 +168,7 @@ describe("closed target contract", () => {
       validateLongTermStateTargetV0({
         domain: "BELIEF",
         target_kind: "PROPOSITION",
-        proposition_ref: "not-a-canonical-ref"
+        proposition_id: "not a canonical identifier"
       }).ok
     ).toBe(false);
   });
@@ -196,7 +196,7 @@ describe("closed target contract", () => {
       validateLongTermStateTargetV0({
         domain: "BELIEF",
         target_kind: "PROPOSITION",
-        proposition_ref: "source:proposition-p",
+        proposition_id: "belief-proposition-p",
         metadata: {}
       }).ok
     ).toBe(false);
@@ -211,14 +211,14 @@ describe("closed target contract", () => {
       validateLongTermStateTargetV0({
         domain: "RELATIONSHIP",
         target_kind: "COUNTERPART",
-        proposition_ref: "source:proposition-p"
+        proposition_id: "belief-proposition-p"
       }).ok
     ).toBe(false);
     expect(
       validateLongTermStateTargetV0({
         domain: "BELIEF",
         target_kind: "COUNTERPART",
-        proposition_ref: "source:proposition-p"
+        proposition_id: "belief-proposition-p"
       }).ok
     ).toBe(false);
     expect(
@@ -310,14 +310,19 @@ describe("applicability is non-authorizing and explicit", () => {
 
   it("DB27 SubjectState version semantics are truthful and explicit", () => {
     expect(PUBLIC_RUNTIME_EXPORTS.filter((name) => /SubjectState/i.test(name))).toEqual([]);
-    expect(SUBJECT_STATE_SOURCE).toContain('readonly schema_version: "subject-state-v2";');
-    expect(SUBJECT_STATE_VALIDATION_SOURCE).toContain(
-      'lit(o["schema_version"], "subject-state-v2", "subjectState.schema_version")'
+    expect(SUBJECT_STATE_SOURCE).toContain(
+      'export const SUBJECT_STATE_SCHEMA_VERSION = "subject-state-v3" as const;'
     );
-    const legacyV1 = validateSubjectState({ schema_version: "subject-state-v1" });
-    expect(legacyV1.ok).toBe(false);
-    if (!legacyV1.ok) {
-      expect(legacyV1.error.detail).toContain("subjectState.schema_version");
+    expect(SUBJECT_STATE_SOURCE).toContain(
+      "readonly schema_version: typeof SUBJECT_STATE_SCHEMA_VERSION;"
+    );
+    expect(SUBJECT_STATE_VALIDATION_SOURCE).toContain(
+      'lit(o["schema_version"], "subject-state-v3", "subjectState.schema_version")'
+    );
+    const legacyV2 = validateSubjectState({ schema_version: "subject-state-v2" });
+    expect(legacyV2.ok).toBe(false);
+    if (!legacyV2.ok) {
+      expect(legacyV2.error.detail).toContain("subjectState.schema_version");
     }
     expect(SUBJECT_STATE_SOURCE).not.toMatch(/LongTermStateDomainApplicability/);
     expect(PRODUCTION_CODE).not.toMatch(/@characteros-next\/subject-core\/|SubjectState/);
@@ -345,7 +350,7 @@ describe("applicability is non-authorizing and explicit", () => {
       validateLongTermStateTargetV0({
         domain: "BELIEF",
         target_kind: "PROPOSITION",
-        proposition_ref: "source:alice-breaks-promises"
+        proposition_id: "belief-alice-breaks-promises"
       })
     );
     const relationshipTarget = requireOk(
@@ -408,7 +413,7 @@ describe("applicability is non-authorizing and explicit", () => {
         validateLongTermStateTargetV0({
           domain: "BELIEF",
           target_kind: "PROPOSITION",
-          proposition_ref: "source:generalized-proposition"
+          proposition_id: "belief-generalized-proposition"
         })
       ),
       requireOk(
@@ -426,10 +431,13 @@ describe("applicability is non-authorizing and explicit", () => {
     ]);
   });
 
-  it("DB37 BeliefState not implemented", () => {
+  it("DB37 Belief foundation is canonical while packages/belief remains behavior-empty", () => {
     expect(PUBLIC_RUNTIME_EXPORTS.filter((name) => /BeliefState/i.test(name))).toEqual([]);
     expect(uncommented(BELIEF_PACKAGE_SOURCE)).toBe("export {};");
     expect(BELIEF_PACKAGE_SOURCE).not.toMatch(/\bBeliefState\w*\b/);
+    expect(SUBJECT_STATE_SOURCE).toContain("export interface BeliefStateV0");
+    expect(PRODUCTION_SOURCE).toContain("proposition_id");
+    expect(PRODUCTION_SOURCE).not.toContain("proposition_ref");
   });
 
   it("DB38 RelationshipState not implemented", () => {

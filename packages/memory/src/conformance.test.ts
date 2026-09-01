@@ -62,7 +62,7 @@ function rid(id: string): Parameters<InMemoryMemoryRepository["readManifest"]>[0
 function snapshotReferencing(revisionId: string): SubjectStateV0 {
   return JSON.parse(
     JSON.stringify({
-      schema_version: "subject-state-v2",
+      schema_version: "subject-state-v3",
       identity: {
         subject_id: "subject-s0",
         display_name: "",
@@ -84,7 +84,7 @@ function snapshotReferencing(revisionId: string): SubjectStateV0 {
         pending_encoding_refs: [],
         last_retrieval_at: null
       },
-      beliefs: { items: [] },
+      beliefs: { schema_version: "belief-state-v0", items: [] },
       relationships: { schema_version: "relationship-state-v0", counterparts: [] },
       mood: { baseline: 0, generated_under_profile: null, last_update: null },
       affect: { active_channels: [], generated_under_profile: null, updated_at: null },

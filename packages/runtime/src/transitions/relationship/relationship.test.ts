@@ -208,7 +208,7 @@ async function validProposal(
   return checked.value;
 }
 
-describe("RelationshipState V0 schema and explicit SubjectState V2 evolution", () => {
+describe("RelationshipState V0 schema within explicit SubjectState V3", () => {
   it("RF1–RF6/RF13–RF16: generic closed state, empty state, allowed refs and deterministic explicit initialization", () => {
     const empty = initializeEmptyRelationshipState();
     expect(empty).toEqual({

@@ -35,7 +35,7 @@ import type {
 } from "../types/identity.js";
 import type { HashV1, HistorySequenceV0, IdentifierV0, LogicalTimeV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
-import type { TransitionType } from "../types/enums.js";
+import { TRANSITION_TYPES, type TransitionType } from "../types/enums.js";
 import type { AtomicCommitBundleV1 } from "../types/persistence.js";
 import { deriveRef } from "../canonical/hash.js";
 import { fail, ok, type ValidationResult } from "../validation/result.js";
@@ -167,13 +167,7 @@ function stringOrNull(v: unknown, d: string): Check {
     : fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: expected nonempty string or null`);
 }
 
-const IMPORT_TRANSITION_TYPES: readonly string[] = [
-  "Time",
-  "Observation",
-  "CognitionAction",
-  "Learning",
-  "Relationship"
-];
+const IMPORT_TRANSITION_TYPES: readonly string[] = TRANSITION_TYPES;
 const IMPORT_ATTEMPT_STATUSES: readonly string[] = ["REJECTED", "ABORTED", "NO_OP", "COMMITTED"];
 
 const RECORD_KEYS: readonly string[] = [
@@ -228,7 +222,12 @@ function hashField(v: unknown, d: string): Check {
   return asCheck(validateHash(v, d));
 }
 
-function validateImportedAttempt(v: unknown, d: string, index: number): Check {
+function validateImportedAttempt(
+  v: unknown,
+  d: string,
+  index: number,
+  transitionType: TransitionType
+): Check {
   if (!isRecord(v)) return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: expected object`);
   const o = v;
   const c = closedKeys(o, ATTEMPT_KEYS, d);
@@ -260,14 +259,18 @@ function validateImportedAttempt(v: unknown, d: string, index: number): Check {
   if (!ec.ok) return ec;
   const reason = stringOrNull(o["reason"], `${d}.reason`);
   if (!reason.ok) return reason;
-  return attemptStatusInvariants(o, d);
+  return attemptStatusInvariants(o, d, transitionType);
 }
 
 /**
  * §14.3 attempt status invariants (Round-3 B3): structural validity alone cannot
  * prove a transition happened — the frozen status semantics must hold too.
  */
-function attemptStatusInvariants(o: Record<string, unknown>, d: string): Check {
+function attemptStatusInvariants(
+  o: Record<string, unknown>,
+  d: string,
+  transitionType: TransitionType
+): Check {
   const status = o["status"];
   if (status === "COMMITTED") {
     if ((o["revision_after"] as number) !== (o["revision_before"] as number) + 1) {
@@ -291,7 +294,17 @@ function attemptStatusInvariants(o: Record<string, unknown>, d: string): Check {
     if (o["trace_ref"] !== null || o["audit_ref"] !== null || o["error_code"] !== null) {
       return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}: NO_OP attempt carries trace/audit/error`);
     }
-    return literal(o["reason"], "TIME-NOOP-001", `${d}.reason`);
+    if (transitionType === "Time") {
+      return literal(o["reason"], "TIME-NOOP-001", `${d}.reason`);
+    }
+    if (transitionType === "CognitionAction" || transitionType === "Belief") {
+      return literal(o["reason"], "TR-ATOMIC-001", `${d}.reason`);
+    }
+    return fail(
+      "COMMIT_CHAIN_INTEGRITY_FAILURE",
+      "SS-RESTORE-001",
+      `${d}: ${transitionType} cannot terminalize as NO_OP`
+    );
   }
   // REJECTED / ABORTED: no authority advance, durable audit trail required.
   if (
@@ -452,7 +465,12 @@ function validateImportedRecord(v: unknown, index: number): Check {
     return fail("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", `${d}.attempts: expected array`);
   }
   for (let i = 0; i < o["attempts"].length; i++) {
-    const a = validateImportedAttempt(o["attempts"][i], `${d}.attempts[${i}]`, i);
+    const a = validateImportedAttempt(
+      o["attempts"][i],
+      `${d}.attempts[${i}]`,
+      i,
+      o["transition_type"] as TransitionType
+    );
     if (!a.ok) return a;
   }
   if (!Array.isArray(o["reuse_conflicts"])) {

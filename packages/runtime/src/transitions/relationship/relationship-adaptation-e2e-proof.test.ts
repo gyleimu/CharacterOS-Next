@@ -398,7 +398,7 @@ describe("Relationship Adaptation Offline Deterministic E2E Proof V0", () => {
     // ---- BEFORE snapshot (authoritative canonical read) ------------------------
     const before = await world.deps.subjectCore.readCurrentSnapshot(identifier(SUBJECT_ID));
     if (before === null) throw new Error("canonical before snapshot missing");
-    expect(before.schema_version).toBe("subject-state-v2");
+    expect(before.schema_version).toBe("subject-state-v3");
     expect(validateSubjectState(before).ok).toBe(true);
     const beforeRevision = before.runtime_metadata.state_revision;
     const beforeLogicalTime = before.runtime_metadata.logical_time;

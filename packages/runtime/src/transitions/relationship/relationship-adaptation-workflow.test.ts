@@ -1208,11 +1208,11 @@ describe("Process restart matrix and idempotency (RAWI94–RAWI105)", () => {
 });
 
 describe("Non-scope (RAWI107–RAWI120)", () => {
-  it("RAWI107/RAWI108: SubjectState remains V2 and is never mutated by the workflow", async () => {
+  it("RAWI107/RAWI108: SubjectState remains V3 and is never mutated by the workflow", async () => {
     const world = await buildWorld({ decision: "ABSTAIN" });
     const before = structuredClone(world.state);
     await runRelationshipAdaptationWorkflowV0(world.deps, await canonicalRequest(world));
-    expect(world.state.schema_version).toBe("subject-state-v2");
+    expect(world.state.schema_version).toBe("subject-state-v3");
     expect(validateSubjectState(world.state).ok).toBe(true);
     expect(world.state).toEqual(before);
   });

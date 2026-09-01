@@ -111,6 +111,9 @@ export function validateProposalComposition(
         base
       );
     }
+    case "Belief": {
+      return requirePaths(pathsForDomain(proposal, "belief"), "belief", ["/beliefs"], base);
+    }
     default:
       return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${base}: unknown transition type`);
   }

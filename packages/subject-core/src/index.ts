@@ -49,8 +49,8 @@ export type {
   PersonalityDimensionStateV0,
   RetrievalConfigV0,
   MemoryStateV0,
-  BeliefsV0,
-  BeliefItemV0,
+  BeliefStateV0,
+  BeliefItemStateV0,
   RelationshipStateV0,
   RelationshipCounterpartStateV0,
   RelationshipDimensionStateV0,
@@ -67,6 +67,8 @@ export type {
 } from "./types/subject-state.js";
 
 export {
+  SUBJECT_STATE_SCHEMA_VERSION,
+  BELIEF_STATE_SCHEMA_VERSION,
   PERSONALITY_STATE_SCHEMA_VERSION,
   RELATIONSHIP_STATE_SCHEMA_VERSION
 } from "./types/subject-state.js";
@@ -142,6 +144,9 @@ export {
 
 export {
   validateSubjectState,
+  validateBeliefState,
+  validateBeliefPropositionLabel,
+  BELIEF_PROPOSITION_LABEL_MAX_UTF16_CODE_UNITS,
   validatePersonalityState,
   validateRelationshipState,
   validateProposal,
@@ -238,6 +243,11 @@ export {
   hashEnvelope,
   deriveRef
 } from "./canonical/hash.js";
+
+export {
+  BELIEF_PROPOSITION_ID_PROJECTION,
+  deriveBeliefPropositionId
+} from "./canonical/belief.js";
 
 export {
   stateHash,

@@ -151,7 +151,7 @@ export type RelationshipPlasticityProducerResultV0 =
     };
 
 export interface RelationshipPlasticityProducerInputV0 {
-  /** CURRENT canonical SubjectState V2 (validated; never mutated). */
+  /** CURRENT canonical SubjectState V3 (validated; never mutated). */
   readonly current_subject_state: SubjectStateV0;
   /**
    * The WHOLE ACCEPTED wrapper minted by the Relationship semantic runner.

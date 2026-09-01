@@ -37,7 +37,7 @@ interface S0Overrides {
 
 function s0State(overrides: S0Overrides = {}): SubjectStateV0 {
   return {
-    schema_version: "subject-state-v2",
+    schema_version: "subject-state-v3",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -63,7 +63,7 @@ function s0State(overrides: S0Overrides = {}): SubjectStateV0 {
       pending_encoding_refs: [],
       last_retrieval_at: null
     },
-    beliefs: { items: [] },
+    beliefs: { schema_version: "belief-state-v0", items: [] },
     relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null, ...overrides.mood },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null, ...overrides.affect },

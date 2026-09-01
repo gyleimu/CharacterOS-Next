@@ -78,14 +78,24 @@ export interface MemoryStateV0 {
   readonly last_retrieval_at: LogicalTimeV0 | null;
 }
 
-/** §6.2 BeliefsV0 (readonly). items are unique/sorted by ref. */
-export interface BeliefsV0 {
-  readonly items: readonly BeliefItemV0[];
+/**
+ * BeliefState V0 — persistent subject epistemic state.
+ *
+ * Proposition identity is CharacterOS-owned. Items are unique and raw-ASCII
+ * sorted by proposition_id. A credence records only the subject's stance; it is
+ * not an objective truth claim or a second confidence/support scalar.
+ */
+export const BELIEF_STATE_SCHEMA_VERSION = "belief-state-v0" as const;
+
+export interface BeliefItemStateV0 {
+  readonly proposition_id: IdentifierV0;
+  readonly proposition_label: string;
+  readonly credence: UnitIntervalV0;
 }
 
-export interface BeliefItemV0 {
-  readonly ref: CanonicalRefV0;
-  readonly summary: string | null;
+export interface BeliefStateV0 {
+  readonly schema_version: typeof BELIEF_STATE_SCHEMA_VERSION;
+  readonly items: readonly BeliefItemStateV0[];
 }
 
 /**
@@ -191,17 +201,18 @@ export interface EmptyClosedObjectV0 {
 /**
  * §6.1 SubjectState — exactly 14 top-level fields, all required.
  *
- * V2 is one explicit, migration-free evolution: the closed V1
- * `relationships.models` placeholder is replaced by canonical
- * RelationshipStateV0. V1 snapshots are not accepted as V2.
+ * V3 is one explicit, migration-free evolution: the V2 beliefs placeholder is
+ * replaced by canonical BeliefStateV0. V2 snapshots are not accepted as V3.
  */
+export const SUBJECT_STATE_SCHEMA_VERSION = "subject-state-v3" as const;
+
 export interface SubjectStateV0 {
-  readonly schema_version: "subject-state-v2";
+  readonly schema_version: typeof SUBJECT_STATE_SCHEMA_VERSION;
   readonly identity: IdentityV0;
   readonly traits_seed: TraitsSeedV0;
   readonly personality: PersonalityStateV0;
   readonly memory_state: MemoryStateV0;
-  readonly beliefs: BeliefsV0;
+  readonly beliefs: BeliefStateV0;
   readonly relationships: RelationshipStateV0;
   readonly mood: MoodV0;
   readonly affect: AffectV0;

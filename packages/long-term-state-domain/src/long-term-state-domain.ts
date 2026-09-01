@@ -16,8 +16,10 @@ import {
   fail,
   isRecord,
   ok,
+  validateIdentifier,
   validateRefElement,
   type CanonicalRefV0,
+  type IdentifierV0,
   type ValidationResult
 } from "@characteros-next/subject-core";
 
@@ -48,8 +50,8 @@ export type LongTermStateTargetV0 =
   | {
       readonly domain: "BELIEF";
       readonly target_kind: "PROPOSITION";
-      /** Generic canonical identity until proposition-specific authority exists. */
-      readonly proposition_ref: CanonicalRefV0;
+      /** CharacterOS-owned proposition identity from BeliefState V0. */
+      readonly proposition_id: IdentifierV0;
     }
   | {
       readonly domain: "RELATIONSHIP";
@@ -73,7 +75,7 @@ export interface LongTermStateDomainApplicabilityV0 {
 const REQUIREMENT = "SS-SCHEMA-001" as const;
 const APPLICABILITY_KEYS: readonly string[] = ["schema_version", "domains"];
 const PERSONALITY_TARGET_KEYS: readonly string[] = ["domain", "target_kind"];
-const BELIEF_TARGET_KEYS: readonly string[] = ["domain", "target_kind", "proposition_ref"];
+const BELIEF_TARGET_KEYS: readonly string[] = ["domain", "target_kind", "proposition_id"];
 const RELATIONSHIP_TARGET_KEYS: readonly string[] = [
   "domain",
   "target_kind",
@@ -161,19 +163,26 @@ export function validateLongTermStateTargetV0(
       return fail(
         "INVALID_SCHEMA",
         REQUIREMENT,
-        "long_term_state_target: BELIEF requires one proposition_ref"
+        "long_term_state_target: BELIEF requires one proposition_id"
       );
     }
-    const propositionRef = validateRefElement(
-      value["proposition_ref"],
-      "long_term_state_target.proposition_ref"
+    if (typeof value["proposition_id"] !== "string") {
+      return fail(
+        "INVALID_SCHEMA",
+        REQUIREMENT,
+        "long_term_state_target.proposition_id: expected identifier"
+      );
+    }
+    const propositionId = validateIdentifier(
+      value["proposition_id"],
+      "long_term_state_target.proposition_id"
     );
-    if (!propositionRef.ok) return propositionRef;
+    if (!propositionId.ok) return propositionId;
     return ok(
       Object.freeze({
         domain: "BELIEF",
         target_kind: "PROPOSITION",
-        proposition_ref: propositionRef.value
+        proposition_id: propositionId.value
       })
     );
   }

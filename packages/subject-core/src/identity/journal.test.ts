@@ -266,4 +266,24 @@ describe("journal export/import hardening (§16)", () => {
       (await reserve(journalB, "t-relationship-roundtrip", "Relationship")).route
     ).toBe("SAME_OPEN_OR_RETRY");
   });
+
+  it("round-trips the shared long-term transition vocabulary without casts", async () => {
+    const journalA = new InMemoryTransitionIdentityJournal();
+    const transitionTypes = ["Personality", "Relationship", "Belief"] as const;
+    for (const transitionType of transitionTypes) {
+      await reserve(journalA, `t-${transitionType.toLowerCase()}-vocabulary`, transitionType);
+    }
+
+    const journalB = new InMemoryTransitionIdentityJournal();
+    journalB.importState(journalA.exportState());
+    for (const transitionType of transitionTypes) {
+      const transitionId = `t-${transitionType.toLowerCase()}-vocabulary`;
+      expect(
+        (await journalB.readRecord(transitionId as TransitionIdV0))?.transition_type
+      ).toBe(transitionType);
+      expect((await reserve(journalB, transitionId, transitionType)).route).toBe(
+        "SAME_OPEN_OR_RETRY"
+      );
+    }
+  });
 });

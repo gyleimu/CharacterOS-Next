@@ -20,8 +20,7 @@
  */
 
 import type { SubjectStateV0 } from "../types/subject-state.js";
-import type { TransitionType } from "../types/enums.js";
-import type { RefKind } from "../types/enums.js";
+import { TRANSITION_TYPES } from "../types/enums.js";
 import {
   isNumber,
   isRecord,
@@ -60,15 +59,6 @@ const SCHEMA = "SS-SCHEMA-001";
 const TRACE_CODE = "TRACE_INTEGRITY_FAILURE";
 const TRACE_REASON = "TRACE-CONTENT-001";
 
-const TRANSITION_TYPES: readonly TransitionType[] = [
-  "Time",
-  "Observation",
-  "CognitionAction",
-  "Learning",
-  "Personality",
-  "Relationship"
-];
-
 /** §10.2 exact lexicographically sorted constant rule_ids set for every V0 TraceEntry. */
 const EXACT_RULE_IDS: readonly string[] = [
   "HASH-DET-001",
@@ -87,10 +77,12 @@ const TRACE_LAYERS: readonly string[] = [
   "context",
   "memory_state",
   "personality",
-  "relationships"
+  "relationships",
+  "beliefs"
 ];
 const DOMAIN_NAMES: readonly string[] = [
   "affect",
+  "belief",
   "context",
   "memory-content",
   "memory-retrieval",
@@ -101,8 +93,6 @@ const DOMAIN_NAMES: readonly string[] = [
 
 const TRAIT_KEY_RE = /^[a-z][a-z0-9_]{0,63}$/;
 const FORBIDDEN_TRAIT_KEYS: readonly string[] = ["trust", "fear", "attachment"];
-
-const BELIEF_REF_KINDS: readonly RefKind[] = ["memory", "episode", "observation", "source"];
 
 type Check = ValidationResult<void>;
 
@@ -384,40 +374,91 @@ function validateMemoryState(v: unknown, d: string, logicalTime: number): Check 
   return lit(rc.value["recent_trace_capacity"], 64, `${d}.retrieval_config.recent_trace_capacity`);
 }
 
-function validateBeliefs(v: unknown, d: string): Check {
+export const BELIEF_PROPOSITION_LABEL_MAX_UTF16_CODE_UNITS = 512;
+
+/** Closed proposition-label admission. Validation rejects; it never trims or normalizes. */
+export function validateBeliefPropositionLabel(
+  v: unknown,
+  d: string
+): ValidationResult<string> {
+  const canonical = validateCanonicalText(v, d);
+  if (!canonical.ok) return canonical;
+  if (canonical.value.length === 0) {
+    return fail("INVALID_VALUE_RANGE", SCHEMA, `${d}: must be nonempty`);
+  }
+  if (canonical.value.trim() !== canonical.value) {
+    return fail("INVALID_SCHEMA", SCHEMA, `${d}: must already be trimmed`);
+  }
+  if (canonical.value.length > BELIEF_PROPOSITION_LABEL_MAX_UTF16_CODE_UNITS) {
+    return fail(
+      "INVALID_VALUE_RANGE",
+      SCHEMA,
+      `${d}: exceeds ${BELIEF_PROPOSITION_LABEL_MAX_UTF16_CODE_UNITS} UTF-16 code units`
+    );
+  }
+  return canonical;
+}
+
+/**
+ * BeliefState V0 validation for SubjectState V3. The container and each item
+ * are closed; proposition ids are unique/raw-ASCII-sorted and credence is a
+ * finite inclusive UnitIntervalV0.
+ */
+export function validateBeliefState(v: unknown, d: string): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;
-  const c = closedKeys(o, ["items"], d);
+  const c = closedKeys(o, ["schema_version", "items"], d);
   if (!c.ok) return c;
+  const sv = lit(o["schema_version"], "belief-state-v0", `${d}.schema_version`);
+  if (!sv.ok) return sv;
   const items = reqArray(o["items"], `${d}.items`);
   if (!items.ok) return items;
-  let prevRef: string | undefined;
+  let previousPropositionId: string | undefined;
   for (let i = 0; i < items.value.length; i++) {
     const label = `${d}.items[${i}]`;
     const ir = reqRecord(items.value[i], label);
     if (!ir.ok) return ir;
-    const ic = closedKeys(ir.value, ["ref", "summary"], label);
+    const ic = closedKeys(
+      ir.value,
+      ["proposition_id", "proposition_label", "credence"],
+      label
+    );
     if (!ic.ok) return ic;
-    const refR = validateRefElement(ir.value["ref"], `${label}.ref`, BELIEF_REF_KINDS);
-    if (!refR.ok) return refR;
-    if (prevRef !== undefined) {
-      if (refR.value === prevRef) return fail("INVALID_SCHEMA", SCHEMA, `${label}.ref: duplicate belief item`);
-      if (refR.value < prevRef) {
-        return fail("INVALID_SCHEMA", SCHEMA, `${label}.ref: items not sorted by ref`);
+    if (!isString(ir.value["proposition_id"])) {
+      return fail("INVALID_SCHEMA", SCHEMA, `${label}.proposition_id: expected identifier`);
+    }
+    const propositionId = validateIdentifier(
+      ir.value["proposition_id"],
+      `${label}.proposition_id`
+    );
+    if (!propositionId.ok) return propositionId;
+    if (previousPropositionId !== undefined) {
+      if (propositionId.value === previousPropositionId) {
+        return fail("INVALID_SCHEMA", SCHEMA, `${label}.proposition_id: duplicate belief item`);
+      }
+      if (propositionId.value < previousPropositionId) {
+        return fail(
+          "INVALID_SCHEMA",
+          SCHEMA,
+          `${label}.proposition_id: items not raw-ASCII-sorted`
+        );
       }
     }
-    prevRef = refR.value;
-    if (ir.value["summary"] !== null) {
-      const s = asCheck(validateCanonicalText(ir.value["summary"], `${label}.summary`));
-      if (!s.ok) return fail("INVALID_SCHEMA", SCHEMA, `${label}.summary: expected canonical text or null`);
-    }
+    previousPropositionId = propositionId.value;
+    const propositionLabel = validateBeliefPropositionLabel(
+      ir.value["proposition_label"],
+      `${label}.proposition_label`
+    );
+    if (!propositionLabel.ok) return propositionLabel;
+    const credence = scalarField(ir.value["credence"], `${label}.credence`, validateUnitInterval);
+    if (!credence.ok) return credence;
   }
   return ok(undefined);
 }
 
 /**
- * RelationshipState V0 validation for SubjectState V2. The container is closed,
+ * RelationshipState V0 validation within current SubjectState V3. The container is closed,
  * counterpart membership is explicit and canonical-ref sorted, and dimensions
  * are registered, unique, raw-ASCII sorted UnitInterval values.
  */
@@ -604,7 +645,7 @@ function validateDomainMutationSummary(v: unknown, d: string): Check {
   return ok(undefined);
 }
 
-/** The 15 writable FieldReplacementV0 literals (V2: +relationship authority). */
+/** The 16 writable FieldReplacementV0 literals (V3: +belief authority). */
 const WRITABLE_PATHS: readonly string[] = [
   "/mood",
   "/affect",
@@ -612,6 +653,7 @@ const WRITABLE_PATHS: readonly string[] = [
   "/context",
   "/personality",
   "/relationships",
+  "/beliefs",
   "/memory_state/working_refs",
   "/memory_state/recent_retrieval_trace",
   "/memory_state/last_retrieval_at",
@@ -940,7 +982,7 @@ export function validateSubjectState(
   ];
   const closed = closedKeys(o, TOP_LEVEL_KEYS, "subjectState");
   if (!closed.ok) return closed;
-  const sv = lit(o["schema_version"], "subject-state-v2", "subjectState.schema_version");
+  const sv = lit(o["schema_version"], "subject-state-v3", "subjectState.schema_version");
   if (!sv.ok) return sv;
 
   // Admitted first: §6.2 timestamp invariants of other blocks are relative to this.
@@ -957,7 +999,7 @@ export function validateSubjectState(
   if (!ps.ok) return ps;
   const ms = validateMemoryState(o["memory_state"], "memory_state", logicalTime);
   if (!ms.ok) return ms;
-  const bl = validateBeliefs(o["beliefs"], "beliefs");
+  const bl = validateBeliefState(o["beliefs"], "beliefs");
   if (!bl.ok) return bl;
   const rel = validateRelationshipState(o["relationships"], "relationships");
   if (!rel.ok) return rel;

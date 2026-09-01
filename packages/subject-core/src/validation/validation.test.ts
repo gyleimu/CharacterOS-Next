@@ -9,6 +9,7 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { TRANSITION_TYPES, type TransitionType } from "../types/enums.js";
 
 import {
   assertCheckedLogicalTimeAdvance,
@@ -28,7 +29,7 @@ import {
 /** Golden S0 from docs/implementation/p2-1-contract-freeze.md §4.2. */
 function s0(): Record<string, unknown> {
   return {
-    schema_version: "subject-state-v2",
+    schema_version: "subject-state-v3",
     identity: {
       subject_id: "subject-s0",
       display_name: "",
@@ -54,7 +55,7 @@ function s0(): Record<string, unknown> {
       pending_encoding_refs: [],
       last_retrieval_at: null
     },
-    beliefs: { items: [] },
+    beliefs: { schema_version: "belief-state-v0", items: [] },
     relationships: { schema_version: "relationship-state-v0", counterparts: [] },
     mood: { baseline: 0, generated_under_profile: null, last_update: null },
     affect: { active_channels: [], generated_under_profile: null, updated_at: null },
@@ -290,6 +291,70 @@ describe("validateSubjectState — valid states", () => {
     const s = s0();
     (s["context"] as Record<string, unknown>)["active_entity_refs"] = ["entity:a", "entity:b"];
     expectOk(validateSubjectState(s));
+  });
+});
+
+describe("authoritative transition vocabulary consistency", () => {
+  it("admits Personality, Relationship, and Belief in canonical metadata and trace", () => {
+    const cases: readonly {
+      readonly transitionType: Extract<TransitionType, "Personality" | "Relationship" | "Belief">;
+      readonly producer: "personality" | "relationship" | "belief";
+      readonly domain: "personality" | "relationship" | "belief";
+      readonly layer: "personality" | "relationships" | "beliefs";
+      readonly path: "/personality" | "/relationships" | "/beliefs";
+    }[] = [
+      {
+        transitionType: "Personality",
+        producer: "personality",
+        domain: "personality",
+        layer: "personality",
+        path: "/personality"
+      },
+      {
+        transitionType: "Relationship",
+        producer: "relationship",
+        domain: "relationship",
+        layer: "relationships",
+        path: "/relationships"
+      },
+      {
+        transitionType: "Belief",
+        producer: "belief",
+        domain: "belief",
+        layer: "beliefs",
+        path: "/beliefs"
+      }
+    ];
+    for (const item of cases) {
+      expect(TRANSITION_TYPES).toContain(item.transitionType);
+      const state = s0();
+      state["runtime_metadata"] = metadata(1, 0, item.transitionType);
+      state["trace_window"] = {
+        trace_window_schema_version: "trace-window-v1",
+        capacity: 64,
+        cursor: {
+          last_history_sequence: 1,
+          offloaded_through_sequence: 0,
+          offloaded_through_trace_ref: null
+        },
+        entries: [
+          {
+            ...entry(1),
+            logical_time: 0,
+            transition_type: item.transitionType,
+            domain_mutations: [
+              {
+                producer: item.producer,
+                domain: item.domain,
+                layers: [item.layer],
+                field_changes: [{ path: item.path, operation: "SET" }]
+              }
+            ]
+          }
+        ]
+      };
+      expect(validateSubjectState(state), item.transitionType).toMatchObject({ ok: true });
+    }
   });
 });
 

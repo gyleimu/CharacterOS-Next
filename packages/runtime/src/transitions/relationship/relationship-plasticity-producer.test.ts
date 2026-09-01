@@ -447,9 +447,9 @@ describe("Semantic capability admission (RPP1–RPP6)", () => {
 });
 
 describe("Current state authority and rebase (RPP7–RPP15)", () => {
-  it("RPP7: SubjectState V2 fixture validates", async () => {
+  it("RPP7: SubjectState V3 fixture validates", async () => {
     const world = await buildSemanticWorld();
-    expect(world.state.schema_version).toBe("subject-state-v2");
+    expect(world.state.schema_version).toBe("subject-state-v3");
     expect(validateSubjectState(world.state).ok).toBe(true);
   });
 
@@ -458,7 +458,7 @@ describe("Current state authority and rebase (RPP7–RPP15)", () => {
     const capability = await mintCapability(world, "CHANNEL", CH_A);
     const broken = {
       ...world.state,
-      schema_version: "subject-state-v3"
+      schema_version: "subject-state-v2"
     } as unknown as SubjectStateV0;
     expectRejected(
       await produceRelationshipPlasticityV0(makeInput(world, capability, { current_subject_state: broken })),
@@ -1258,11 +1258,11 @@ describe("Non-scope / security (RPP79–RPP87)", () => {
     expect(JSON.stringify(second)).toEqual(JSON.stringify(first));
   });
 
-  it("RPP87: SubjectState remains V2", async () => {
+  it("RPP87: SubjectState remains V3", async () => {
     const world = await buildSemanticWorld();
-    expect(world.state.schema_version).toBe("subject-state-v2");
+    expect(world.state.schema_version).toBe("subject-state-v3");
     expect(validateSubjectState(world.state).ok).toBe(true);
-    expect(executableSource()).not.toContain("subject-state-v3");
+    expect(executableSource()).not.toContain("subject-state-v2");
   });
 });
 

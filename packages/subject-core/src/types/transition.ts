@@ -19,7 +19,8 @@ import type {
   RegulatoryStateV0,
   WorkingContextV0,
   PersonalityStateV0,
-  RelationshipStateV0
+  RelationshipStateV0,
+  BeliefStateV0
 } from "./subject-state.js";
 
 /** §7.1 canonical time input — exactly one shape per transition class. */
@@ -71,6 +72,7 @@ export type FieldReplacementV0 =
   | { readonly path: "/memory_state/lifecycle_metadata"; readonly value: EmptyClosedObjectV0 }
   | { readonly path: "/personality"; readonly value: PersonalityStateV0 }
   | { readonly path: "/relationships"; readonly value: RelationshipStateV0 }
+  | { readonly path: "/beliefs"; readonly value: BeliefStateV0 }
   | { readonly path: "/memory_state/pending_encoding_refs"; readonly value: readonly CanonicalRefV0[] };
 
 /**
@@ -84,7 +86,6 @@ export type ReadonlyFieldPathV0 =
   | "/schema_version"
   | "/identity"
   | "/traits_seed"
-  | "/beliefs"
   | "/mechanism_config"
   | "/trace_window"
   | "/runtime_metadata";

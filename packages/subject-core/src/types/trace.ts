@@ -13,7 +13,7 @@ import type {
   RepositoryRevisionIdV0
 } from "./scalars.js";
 import type { CanonicalRefV0 } from "./ref.js";
-import type { DomainName, RequirementId } from "./enums.js";
+import type { DomainName, RequirementId, TransitionType } from "./enums.js";
 
 /** §10.3 TraceCursorV1. Logical monotonic sequence, not a wall-clock or opaque pointer. */
 export interface TraceCursorV1 {
@@ -37,7 +37,8 @@ export type TraceLayerName =
   | "context"
   | "memory_state"
   | "personality"
-  | "relationships";
+  | "relationships"
+  | "beliefs";
 
 export interface FieldChangeSummaryV1 {
   readonly path: string;
@@ -50,12 +51,7 @@ export interface TraceEntryV1 {
   readonly trace_id: CanonicalRefV0;
   readonly history_sequence: HistorySequenceV0;
   readonly transition_id: TransitionIdV0;
-  readonly transition_type:
-    | "Time"
-    | "Observation"
-    | "CognitionAction"
-    | "Learning"
-    | "Relationship";
+  readonly transition_type: TransitionType;
   readonly subject_id: IdentifierV0;
   readonly subject_revision_before: StateRevisionV0;
   readonly subject_revision_after: StateRevisionV0;

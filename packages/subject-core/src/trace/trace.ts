@@ -10,7 +10,13 @@
  * the newest min(revision, 64) entries; eviction position follows §10.3 invariant 5.
  */
 
-import type { HashV1 } from "../types/scalars.js";
+import type {
+  HashV1,
+  HistorySequenceV0,
+  LogicalTimeV0,
+  RepositoryRevisionIdV0,
+  StateRevisionV0
+} from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { RequirementId } from "../types/enums.js";
 import type { TraceLayerName } from "../types/trace.js";
@@ -44,6 +50,7 @@ function layerForPath(path: string): TraceLayerName | undefined {
   if (path === "/context") return "context";
   if (path === "/personality") return "personality";
   if (path === "/relationships") return "relationships";
+  if (path === "/beliefs") return "beliefs";
   if (path.startsWith("/memory_state/")) return "memory_state";
   return undefined;
 }
@@ -84,13 +91,13 @@ export interface TraceEntryInput {
   readonly proposal: CanonicalTransitionProposalV1;
   /** §8.6 proposal ref of the complete admitted proposal (incl. transition_id). */
   readonly proposal_ref: CanonicalRefV0;
-  readonly revision_before: number;
-  readonly revision_after: number;
-  readonly logical_time: number;
+  readonly revision_before: StateRevisionV0;
+  readonly revision_after: StateRevisionV0;
+  readonly logical_time: LogicalTimeV0;
   readonly state_hash_before: HashV1;
   readonly state_hash_after: HashV1;
-  readonly memory_revision_before: string;
-  readonly memory_revision_after: string;
+  readonly memory_revision_before: RepositoryRevisionIdV0;
+  readonly memory_revision_after: RepositoryRevisionIdV0;
 }
 
 /** Builds one deterministic committed TraceEntryV1 (§10.2). */
@@ -101,7 +108,7 @@ export async function buildTraceEntry(input: TraceEntryInput): Promise<TraceEntr
     transition_id: p.transition_id,
     transition_type: p.transition_type,
     subject_id: p.subject_id,
-    history_sequence: input.revision_after,
+    history_sequence: input.revision_after as number as HistorySequenceV0,
     subject_revision_before: input.revision_before,
     subject_revision_after: input.revision_after,
     logical_time: input.logical_time,
@@ -116,10 +123,11 @@ export async function buildTraceEntry(input: TraceEntryInput): Promise<TraceEntr
     outcome: "COMMITTED" as const
   };
   const traceId = (await deriveRef("trace", TRACE_ID_PROJECTION, body)) as CanonicalRefV0;
-  return {
+  const entry: TraceEntryV1 = {
     ...body,
     trace_id: traceId
-  } as unknown as TraceEntryV1;
+  };
+  return entry;
 }
 
 /**

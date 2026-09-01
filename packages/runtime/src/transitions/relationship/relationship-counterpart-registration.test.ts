@@ -848,16 +848,16 @@ describe("Frozen foundation invariants (CR35–CR43)", () => {
     }
   });
 
-  it("CR40: SubjectState schema remains V2 / no v3 appears in registration executable code", async () => {
+  it("CR40: SubjectState V3 fixture remains valid and registration carries no legacy V2 literal", async () => {
     const world = buildWorld();
     expect((await world.core.readCurrentSnapshot(SUBJECT_ID as never))?.schema_version).toBe(
-      "subject-state-v2"
+      "subject-state-v3"
     );
     expect(validateSubjectState(world.initial).ok).toBe(true);
     expect(RELATIONSHIP_COUNTERPART_REGISTRATION_PROPOSAL_SCHEMA_VERSION).toBe(
       "relationship-counterpart-registration-proposal-v0"
     );
-    expect(registrationExecutableSource()).not.toContain("subject-state-v3");
+    expect(registrationExecutableSource()).not.toContain("subject-state-v2");
   });
 
   it("CR42: snapshot/restore preserves the registered counterpart exactly", async () => {

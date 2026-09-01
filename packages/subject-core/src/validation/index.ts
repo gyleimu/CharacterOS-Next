@@ -33,6 +33,9 @@ export {
 } from "./scalars.js";
 
 export {
+  BELIEF_PROPOSITION_LABEL_MAX_UTF16_CODE_UNITS,
+  validateBeliefPropositionLabel,
+  validateBeliefState,
   validateSubjectState,
   validatePersonalityState,
   validateRelationshipState

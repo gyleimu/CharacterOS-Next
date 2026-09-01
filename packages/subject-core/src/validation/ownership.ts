@@ -14,6 +14,7 @@ const SCHEMA = "SS-SCHEMA-001";
 
 const REGISTERED_PRODUCERS: readonly ProducerName[] = [
   "affect",
+  "belief",
   "context",
   "memory",
   "regulation",
@@ -22,6 +23,7 @@ const REGISTERED_PRODUCERS: readonly ProducerName[] = [
 ];
 const REGISTERED_DOMAINS: readonly DomainName[] = [
   "affect",
+  "belief",
   "context",
   "memory-content",
   "memory-retrieval",
@@ -33,6 +35,7 @@ const REGISTERED_DOMAINS: readonly DomainName[] = [
 /** §7.2 registered `(producer,domain)` bindings. */
 const REGISTERED_BINDINGS: ReadonlyArray<readonly [ProducerName, DomainName]> = [
   ["affect", "affect"],
+  ["belief", "belief"],
   ["context", "context"],
   ["memory", "memory-content"],
   ["memory", "memory-retrieval"],
@@ -63,6 +66,7 @@ const OWNERSHIP: Readonly<
     domain: "relationship",
     transitions: ["Relationship"]
   },
+  "/beliefs": { producer: "belief", domain: "belief", transitions: ["Belief"] },
   "/memory_state/pending_encoding_refs": { producer: "memory", domain: "memory-content", transitions: ["Learning"] }
 };
 
@@ -70,7 +74,6 @@ const READONLY_PATHS: readonly ReadonlyFieldPathV0[] = [
   "/schema_version",
   "/identity",
   "/traits_seed",
-  "/beliefs",
   "/mechanism_config",
   "/trace_window",
   "/runtime_metadata"

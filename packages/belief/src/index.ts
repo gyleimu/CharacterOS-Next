@@ -1,2 +1,3 @@
-// Deferred P2 package: no public contracts or behavior are authorized.
+// Behavior remains deferred: the canonical state contract lives in SubjectCore
+// and the Foundation transition executor lives in Runtime.
 export {};

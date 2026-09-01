@@ -243,6 +243,22 @@ export {
   type PersonalityUpdateProposalV0
 } from "./transitions/personality/index.js";
 
+// --- BeliefState Foundation V0 -----------------------------------------------------
+
+export {
+  BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
+  BELIEF_TRANSITION_ID_PROJECTION,
+  BeliefTransitionExecutor,
+  deriveBeliefEvidenceMemberSetFingerprint,
+  deriveBeliefTransitionId,
+  initializeEmptyBeliefState,
+  validateBeliefMutationProposal,
+  type BeliefEvidenceBindingV0,
+  type BeliefExecutionResult,
+  type BeliefMutationProposalV0,
+  type BeliefMutationV0
+} from "./transitions/belief/index.js";
+
 // --- RelationshipState V0 Foundation ----------------------------------------------
 
 export {

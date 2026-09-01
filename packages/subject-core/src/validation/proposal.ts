@@ -23,7 +23,7 @@
  */
 
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
-import type { TransitionType } from "../types/enums.js";
+import { TRANSITION_TYPES, type TransitionType } from "../types/enums.js";
 import { fail, ok, type ValidationResult } from "./result.js";
 import {
   isNumber,
@@ -49,15 +49,6 @@ const SS_AUTH = "SS-AUTH-001";
 /** Frozen code + reason for duplicate/overlap delta conflicts (§13.3, SC-010). */
 const CONFLICT_CODE = "DOMAIN_DELTA_CONFLICT";
 const CONFLICT_REASON = "TR-CONFLICT-001";
-
-const TRANSITIONS: readonly TransitionType[] = [
-  "Time",
-  "Observation",
-  "CognitionAction",
-  "Learning",
-  "Personality",
-  "Relationship"
-];
 
 const PROPOSAL_KEYS: readonly string[] = [
   "schema_version",
@@ -140,7 +131,7 @@ export function validateProposal(v: unknown): ValidationResult<CanonicalTransiti
   if (!sid.ok) return sid;
 
   const ttValue = o["transition_type"];
-  if (!(TRANSITIONS as readonly string[]).includes(ttValue as string)) {
+  if (!(TRANSITION_TYPES as readonly string[]).includes(ttValue as string)) {
     return fail("INVALID_SCHEMA", SCHEMA, "proposal.transition_type: invalid enum");
   }
   const transitionType = ttValue as TransitionType;

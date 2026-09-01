@@ -47,7 +47,8 @@ export type TransitionType =
   | "CognitionAction"
   | "Learning"
   | "Personality"
-  | "Relationship";
+  | "Relationship"
+  | "Belief";
 
 export const TRANSITION_TYPES = [
   "Time",
@@ -55,7 +56,8 @@ export const TRANSITION_TYPES = [
   "CognitionAction",
   "Learning",
   "Personality",
-  "Relationship"
+  "Relationship",
+  "Belief"
 ] as const;
 
 /** §7.1 canonical time input kinds. */
@@ -171,6 +173,7 @@ export type RequirementId = P21RequirementId | LaterPhaseRequirementId;
 /** §7.2 registered producer literals. */
 export type ProducerName =
   | "affect"
+  | "belief"
   | "context"
   | "memory"
   | "regulation"
@@ -180,6 +183,7 @@ export type ProducerName =
 /** §7.2 registered domain literals (memory split into content / retrieval). */
 export type DomainName =
   | "affect"
+  | "belief"
   | "context"
   | "memory-content"
   | "memory-retrieval"

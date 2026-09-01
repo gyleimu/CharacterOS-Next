@@ -321,9 +321,9 @@ function executableSource(): string {
 }
 
 describe("Target authority and evidence ingress (RSR1–RSR15)", () => {
-  it("RSR1: SubjectState V2 unchanged and fixture validates", async () => {
+  it("RSR1: SubjectState V3 unchanged and fixture validates", async () => {
     const world = await buildWorld();
-    expect(world.state.schema_version).toBe("subject-state-v2");
+    expect(world.state.schema_version).toBe("subject-state-v3");
     expect(validateSubjectState(world.state).ok).toBe(true);
   });
 

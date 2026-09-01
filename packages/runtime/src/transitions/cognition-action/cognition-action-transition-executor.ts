@@ -34,6 +34,10 @@ import type {
   CanonicalRefV0,
   CanonicalTransitionProposalV1,
   CommitReservedOutcome,
+  IdentifierV0,
+  LogicalTimeV0,
+  StateRevisionV0,
+  TransitionIdV0,
   SubjectStateV0
 } from "@characteros-next/subject-core";
 import { hashEnvelope } from "@characteros-next/subject-core";
@@ -72,7 +76,7 @@ export async function cognitionActionTransitionId(params: {
   readonly causeRefs: readonly string[];
   readonly projectionHash: string;
   readonly allowedActions: readonly { action_type: string; target_ref: string | null }[];
-}): Promise<string> {
+}): Promise<TransitionIdV0> {
   const digest = await hashEnvelope(COGNITION_ACTION_TRANSITION_ID_PROJECTION, {
     subject_id: params.subjectId,
     expected_state_revision: params.stateRevision,
@@ -84,7 +88,7 @@ export async function cognitionActionTransitionId(params: {
       target_ref: a.target_ref
     }))
   });
-  return `t-cog-${digest.replace(/^sha256:/, "")}`;
+  return `t-cog-${digest.replace(/^sha256:/, "")}` as TransitionIdV0;
 }
 
 /**
@@ -110,17 +114,17 @@ export async function buildCognitionActionProposal(params: {
       projectionHash: params.projectionHash,
       allowedActions: params.allowedActions
     }),
-    subject_id: params.subjectId,
-    transition_type: "CognitionAction" as never,
-    expected_state_revision: params.stateRevision,
+    subject_id: params.subjectId as IdentifierV0,
+    transition_type: "CognitionAction",
+    expected_state_revision: params.stateRevision as StateRevisionV0,
     time_input: {
       kind: "OCCURRENCE",
-      occurrence_logical_time: params.occurrenceLogicalTime
+      occurrence_logical_time: params.occurrenceLogicalTime as LogicalTimeV0
     },
     cause_refs: [...params.causeRefs],
     domain_deltas: [],
     external_refs: []
-  } as unknown as CanonicalTransitionProposalV1;
+  };
 }
 
 /** Builds the frozen controlled projection from the authoritative snapshot. */

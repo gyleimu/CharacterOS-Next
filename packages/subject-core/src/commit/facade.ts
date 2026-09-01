@@ -75,6 +75,7 @@ import {
   stateHash
 } from "../canonical/projections.js";
 import { deriveRef } from "../canonical/hash.js";
+import { canonicalJsonString } from "../canonical/json.js";
 import { lastTraceRef } from "../trace/trace.js";
 
 const AUDIT_ID_PROJECTION = "characteros-next/subject-core/audit-id/v1";
@@ -462,18 +463,51 @@ export class SubjectCoreFacade {
     if (bindingOk !== true) {
       throw admissionFailure("COMMIT_CHAIN_INTEGRITY_FAILURE", "SS-RESTORE-001", "prepared result binding invalid");
     }
-    if (input.proposal.domain_deltas.length !== 0) {
+    const noOpReason =
+      input.proposal.transition_type === "Time"
+        ? ("TIME-NOOP-001" as const)
+        : input.proposal.transition_type === "CognitionAction" ||
+            input.proposal.transition_type === "Belief"
+          ? ("TR-ATOMIC-001" as const)
+          : null;
+    if (noOpReason === null) {
       return this.rejected(
         "INVALID_TRANSITION_COMPOSITION",
         "TR-ATOMIC-001",
-        "NO_OP terminalization requires zero deltas"
+        `${input.proposal.transition_type} cannot terminalize as NO_OP`
       );
     }
-    if (input.producerAuthorization.bindings.length !== 0) {
+
+    const beliefNoOp = input.proposal.transition_type === "Belief";
+    const validNoOpDeltaShape = beliefNoOp
+      ? input.proposal.domain_deltas.length === 1 &&
+        input.proposal.domain_deltas[0]?.producer === "belief" &&
+        input.proposal.domain_deltas[0]?.domain === "belief" &&
+        input.proposal.domain_deltas[0]?.operations.length === 1 &&
+        input.proposal.domain_deltas[0]?.operations[0]?.path === "/beliefs"
+      : input.proposal.domain_deltas.length === 0;
+    if (!validNoOpDeltaShape) {
+      return this.rejected(
+        "INVALID_TRANSITION_COMPOSITION",
+        "TR-ATOMIC-001",
+        beliefNoOp
+          ? "Belief NO_OP requires exactly one /beliefs replacement delta"
+          : "NO_OP terminalization requires zero deltas"
+      );
+    }
+
+    const expectedAuthorization = beliefNoOp ? ["belief|belief"] : [];
+    const actualAuthorization = input.producerAuthorization.bindings.map(
+      (binding) => `${binding.producer}|${binding.domain}`
+    );
+    if (
+      actualAuthorization.length !== expectedAuthorization.length ||
+      actualAuthorization.some((binding, index) => binding !== expectedAuthorization[index])
+    ) {
       return this.rejected(
         "UNAUTHORIZED_PRODUCER",
         "SS-AUTH-001",
-        "NO_OP terminalization requires an empty authorization set"
+        "NO_OP producer authorization set mismatch"
       );
     }
 
@@ -491,6 +525,16 @@ export class SubjectCoreFacade {
         "stale authority cannot terminalize NO_OP"
       );
     }
+    if (beliefNoOp) {
+      const proposedBeliefs = input.proposal.domain_deltas[0]?.operations[0]?.value;
+      if (canonicalJsonString(proposedBeliefs) !== canonicalJsonString(currentState.beliefs)) {
+        return this.rejected(
+          "INVALID_TRANSITION_COMPOSITION",
+          "TR-ATOMIC-001",
+          "Belief NO_OP replacement must equal the authoritative current BeliefState"
+        );
+      }
+    }
 
     // Durable terminal NO_OP record (freeze §14.2/§14.3).
     const stateHashBefore = await stateHash(currentState);
@@ -507,7 +551,10 @@ export class SubjectCoreFacade {
       status: "NO_OP",
       transition_id: input.proposal.transition_id,
       subject_id: input.proposal.subject_id,
-      transition_type: "Time",
+      transition_type: input.proposal.transition_type as Extract<
+        typeof input.proposal.transition_type,
+        "Time" | "CognitionAction" | "Belief"
+      >,
       payload_fingerprint: fingerprint,
       previous_revision: currentState.runtime_metadata.state_revision,
       next_revision: currentState.runtime_metadata.state_revision,
@@ -519,7 +566,7 @@ export class SubjectCoreFacade {
       snapshot_hash_after: snapshotHashBefore,
       trace_ref: null,
       prepared_result_ref: input.preparedBinding.prepared_result_ref,
-      reason: "TIME-NOOP-001"
+      reason: noOpReason
     };
     const resultRef = (await deriveRef("result", RESULT_ID_PROJECTION, noOpBody)) as CanonicalRefV0;
     const attempt: TransitionAttemptV1 = {
@@ -534,7 +581,7 @@ export class SubjectCoreFacade {
       trace_ref: null,
       audit_ref: null,
       error_code: null,
-      reason: "TIME-NOOP-001"
+      reason: noOpReason
     };
     const appended = await this.ports.journal.appendAttempt(
       input.proposal.transition_id,

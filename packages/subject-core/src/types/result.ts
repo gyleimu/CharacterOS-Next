@@ -55,13 +55,13 @@ export interface AlreadyCommittedResultV1 {
   readonly original_result_ref: CanonicalRefV0;
 }
 
-/** §7.4 NoOpTransitionResultV1 — durable terminal for Time elapsed=0 only. */
+/** §7.4 durable terminal for authorized zero-effect transitions. */
 export interface NoOpTransitionResultV1 {
   readonly schema_version: "no-op-transition-result-v1";
   readonly status: "NO_OP";
   readonly transition_id: TransitionIdV0;
   readonly subject_id: IdentifierV0;
-  readonly transition_type: "Time";
+  readonly transition_type: Extract<TransitionType, "Time" | "CognitionAction" | "Belief">;
   readonly payload_fingerprint: HashV1;
   readonly previous_revision: StateRevisionV0;
   readonly next_revision: StateRevisionV0;
@@ -74,7 +74,7 @@ export interface NoOpTransitionResultV1 {
   readonly trace_ref: null;
   readonly prepared_result_ref: CanonicalRefV0;
   readonly result_ref: CanonicalRefV0;
-  readonly reason: "TIME-NOOP-001";
+  readonly reason: "TIME-NOOP-001" | "TR-ATOMIC-001";
 }
 
 /** §7.4 LearningRebaseRequiredResultV1 — runtime-owned, after core stale rejection + unsafe rebuild. */

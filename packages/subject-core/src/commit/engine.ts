@@ -25,7 +25,11 @@
 import type { AtomicCommitBundleV1, RepositoryRevisionBindingV1 } from "../types/persistence.js";
 import type { CanonicalCommitResultV1 } from "../types/result.js";
 import type { AuthoritativeTransitionRecordV1 } from "../types/identity.js";
-import type { HashV1, HistorySequenceV0 } from "../types/scalars.js";
+import type {
+  HashV1,
+  HistorySequenceV0,
+  RepositoryRevisionIdV0
+} from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
@@ -290,7 +294,7 @@ export function createCommitEngine(deps: {
       // touch this gate.
       const draftMemoryRevision = (draft["memory_state"] as Record<string, unknown>)[
         "repository_revision"
-      ] as string;
+      ] as RepositoryRevisionIdV0;
       if (draftMemoryRevision !== cur.memory_state.repository_revision) {
         if (input.memory_adoption_validator === undefined) {
           return rejected({
