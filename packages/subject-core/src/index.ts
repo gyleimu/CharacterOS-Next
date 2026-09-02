@@ -258,6 +258,8 @@ export {
   type SnapshotHashInput
 } from "./canonical/projections.js";
 
+export { TRACE_RULE_IDS, lastTraceRef } from "./trace/trace.js";
+
 // --- P2.1.4 restore / persistence envelope -----------------------------------------
 
 export {
@@ -272,3 +274,42 @@ export {
   type RestoreCapabilities,
   type RestoreResult
 } from "./restore/restore.js";
+
+// --- AtomicCommitBundleV2 authority schema foundation (add-only; V1 unchanged) -------
+
+export type {
+  AtomicCommitBundleV2,
+  AtomicCommitBundleAnyVersion,
+  AtomicCommitBundleVersionV0
+} from "./types/persistence-v2.js";
+export { ATOMIC_COMMIT_BUNDLE_VERSIONS_V0 } from "./types/persistence-v2.js";
+
+export {
+  CANONICAL_WRITER_AUTHORITY_RECORD_SCHEMA_VERSION,
+  CANONICAL_WRITER_FAMILIES_V0,
+  CANONICAL_WRITER_CLASSES_V0,
+  CANONICAL_WRITER_FAMILY_CLASSES_V0,
+  type CanonicalWriterAuthorityRecordV0,
+  type CanonicalWriterFamilyV0,
+  type CanonicalWriterClassV0
+} from "./types/writer-authority.js";
+
+export {
+  WRITER_AUTHORITY_RECORD_PROJECTION,
+  COMMIT_ID_PROJECTION_V2,
+  RECORD_CHECKSUM_PROJECTION_V2,
+  V2_WRITER_AUTHORITY_PAYLOAD_HASH_ROLE,
+  V2_RECORD_CHECKSUM_AUTHORITY_ROLE,
+  deriveWriterAuthorityPayloadHashV0,
+  deriveAtomicCommitRefV2,
+  deriveAtomicCommitRecordChecksumV2,
+  type AtomicCommitRefV2Input
+} from "./canonical/writer-authority-projections.js";
+
+export {
+  validateAtomicCommitBundleV1,
+  validateAtomicCommitBundleV2,
+  validateAtomicCommitBundleAnyVersion,
+  evaluateCommitBundleVersionStepV0,
+  type CommitBundleVersionStepVerdictV0
+} from "./validation/atomic-commit-bundle.js";

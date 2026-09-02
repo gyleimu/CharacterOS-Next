@@ -158,3 +158,19 @@ export {
   RELATIONSHIP_GOVERNED_DIMENSION_RESERVED_PREFIX_V0,
   isReservedRelationshipCoreDimensionIdV0
 } from "./relationship-governed-dimension-namespace.js";
+
+// --- Relationship Governed Writer Authority Payload Contract V0 ----------------------
+
+export {
+  RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_PAYLOAD_SCHEMA_VERSION,
+  RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_PAYLOAD_PROJECTION,
+  RELATIONSHIP_GOVERNED_WRITER_OPERATION_KINDS_V0,
+  deriveRelationshipGovernedFeatureWriterAuthorityPayloadFingerprintV0,
+  validateRelationshipGovernedFeatureWriterAuthorityPayloadV0,
+  validateRelationshipGovernedFeatureAuthorityBindingV0,
+  type RelationshipGovernedFeatureWriterAuthorityPayloadV0,
+  type RelationshipGovernedWriterOperationKindV0,
+  type RelationshipGovernedFeaturePreviousValueV0,
+  type RelationshipGovernedFeatureNextValueV0,
+  type RelationshipGovernedFeaturePreviousGovernedAuthorityV0
+} from "./relationship-governed-writer-authority.js";

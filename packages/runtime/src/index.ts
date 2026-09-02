@@ -655,3 +655,38 @@ export {
   RELATIONSHIP_GOVERNED_DIMENSION_RESERVED_PREFIX_V0,
   isReservedRelationshipCoreDimensionIdV0
 } from "./transitions/relationship/relationship-governed-dimension-namespace.js";
+
+// --- Atomic Commit Bundle V2 Authority Schema Foundation (historical registry) -------
+
+export {
+  RELATIONSHIP_GOVERNED_WRITER_SCHEMA_ID_V0,
+  RELATIONSHIP_GOVERNED_WRITER_SCHEMA_PROJECTION,
+  RELATIONSHIP_GOVERNED_WRITER_SCHEMA_DESCRIPTOR_V0,
+  deriveRelationshipGovernedWriterSchemaFingerprintV0,
+  getRecognizedWriterSchemaContractsV0,
+  resolveRecognizedWriterSchemaContractV0,
+  RECOGNIZED_WRITER_SCHEMA_CONTRACT_IDS_V0,
+  REGISTERED_AUTHORIZATION_GATE_IDS_V0,
+  REGISTERED_GOVERNED_RELATIONSHIP_WRITE_POLICY_IDS_V0,
+  HOST_DYNAMIC_WRITER_AUTHORITY_REGISTRATION_V0,
+  PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0,
+  GOVERNED_RELATIONSHIP_WRITE_POLICY_COUNT_V0,
+  type RecognizedWriterSchemaContractV0,
+  type RelationshipGovernedWriterSchemaDescriptorV0
+} from "./authority/historical-writer-authority-registry.js";
+
+// --- Relationship Governed Writer Authority Payload Contract V0 ----------------------
+
+export {
+  RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_PAYLOAD_SCHEMA_VERSION,
+  RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_PAYLOAD_PROJECTION,
+  RELATIONSHIP_GOVERNED_WRITER_OPERATION_KINDS_V0,
+  deriveRelationshipGovernedFeatureWriterAuthorityPayloadFingerprintV0,
+  validateRelationshipGovernedFeatureWriterAuthorityPayloadV0,
+  validateRelationshipGovernedFeatureAuthorityBindingV0,
+  type RelationshipGovernedFeatureWriterAuthorityPayloadV0,
+  type RelationshipGovernedWriterOperationKindV0,
+  type RelationshipGovernedFeaturePreviousValueV0,
+  type RelationshipGovernedFeatureNextValueV0,
+  type RelationshipGovernedFeaturePreviousGovernedAuthorityV0
+} from "./transitions/relationship/relationship-governed-writer-authority.js";
