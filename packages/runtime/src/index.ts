@@ -690,3 +690,38 @@ export {
   type RelationshipGovernedFeatureNextValueV0,
   type RelationshipGovernedFeaturePreviousGovernedAuthorityV0
 } from "./transitions/relationship/relationship-governed-writer-authority.js";
+
+// --- CharacterOS Atomic Commit Chain Validator V0 --------------------------------------
+
+export {
+  ATOMIC_COMMIT_CHAIN_VALIDATOR_POLICY_ID_V0,
+  ATOMIC_COMMIT_CHAIN_VALIDATION_POLICY_PROJECTION_V0,
+  ATOMIC_COMMIT_CHAIN_VALIDATION_POLICY_DESCRIPTOR_V0,
+  V1_CHAIN_PROOF_LEVEL_V0,
+  V2_CHAIN_PROOF_LEVEL_V0,
+  ATOMIC_COMMIT_CHAIN_CHECKPOINT_SUPPORT_V0,
+  TRUNCATED_CHAIN_POLICY_V0,
+  deriveAtomicCommitChainValidationPolicyFingerprintV0,
+  validateAtomicCommitChainV0,
+  type AtomicCommitChainValidationInputV0,
+  type AtomicCommitChainValidationResultV0,
+  type AtomicCommitChainValidationPolicyDescriptorV0,
+  type ChainValidationFailureCodeV0,
+  type ChainValidationFailureV0,
+  type ChainValidationReceiptV0,
+  type WriterAuthorityStatusV0
+} from "./authority/atomic-commit-chain-validator.js";
+
+// --- Trusted Canonical History Boundary V0 (receipt types + verification only) ---------
+
+export {
+  TRUSTED_CANONICAL_HEAD_SCHEMA_VERSION_V0,
+  TRUSTED_CANONICAL_HISTORY_BOUNDARY_SCHEMA_VERSION_V0,
+  isTrustedCanonicalHistoryBoundaryReceiptV0,
+  verifyGenesisEnvelopeV0,
+  validateTrustedCanonicalHeadInputV0,
+  type TrustedCanonicalHeadInputV0,
+  type TrustedCanonicalHistoryBoundaryReceiptV0,
+  type MintTrustedCanonicalHistoryBoundaryInputV0,
+  type MintTrustedCanonicalHistoryBoundaryOutcomeV0
+} from "./authority/trusted-canonical-history-boundary.js";

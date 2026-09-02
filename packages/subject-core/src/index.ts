@@ -258,7 +258,20 @@ export {
   type SnapshotHashInput
 } from "./canonical/projections.js";
 
-export { TRACE_RULE_IDS, lastTraceRef } from "./trace/trace.js";
+export { TRACE_RULE_IDS, lastTraceRef, nextTraceWindow } from "./trace/trace.js";
+
+// --- Shared canonical transition-effect primitives (chain-validator foundation) ------
+
+export {
+  prepareCanonicalTransitionEffectV0,
+  finalizeCanonicalTransitionEffectV0,
+  replayCanonicalTransitionEffectV0,
+  type PreparedCanonicalTransitionEffectV0,
+  type PrepareCanonicalTransitionEffectOutcomeV0,
+  type FinalizedCanonicalTransitionEffectV0,
+  type FinalizeCanonicalTransitionEffectOutcomeV0,
+  type ReplayCanonicalTransitionEffectOutcomeV0
+} from "./canonical/canonical-transition-effect.js";
 
 // --- P2.1.4 restore / persistence envelope -----------------------------------------
 

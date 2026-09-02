@@ -33,21 +33,13 @@ import type {
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
-import { validateProposal } from "../validation/proposal.js";
 import { validateSubjectState } from "../validation/subject-state.js";
 import { validateHash } from "../validation/scalars.js";
 import type { ValidationFailure } from "../validation/result.js";
 import {
-  applyDeltaOperations,
-  cloneStateForCandidate,
-  deriveRuntimeMetadata,
-  freezeCandidate,
-  withDerivedRuntimeMetadata,
-  type CandidateDraft
-} from "../candidate/candidate.js";
-import { stateHash, proposalRef, snapshotHash } from "../canonical/projections.js";
-import { buildTraceEntry, lastTraceRef, nextTraceWindow } from "../trace/trace.js";
-import { validateProposalComposition } from "./composition.js";
+  prepareCanonicalTransitionEffectV0,
+  finalizeCanonicalTransitionEffectV0
+} from "../canonical/canonical-transition-effect.js";
 import { assembleCommitBundle } from "./bundle.js";
 import type { AtomicCommitStorePort } from "./store.js";
 
@@ -203,63 +195,23 @@ export function createCommitEngine(deps: {
   const observer = deps.pipelineObserver;
   return {
     async commitTransition(input: CommitTransitionInput): Promise<CommitTransitionOutcome> {
-      // Layer 1 (defensive re-validation of the complete envelope).
-      const syntax = validateProposal(input.proposal);
-      if (!syntax.ok) return rejected(syntax.error);
+      // Layers 1–8 via the SHARED canonical transition-effect primitives
+      // (ONE_SHARED_IMPLEMENTATION with V2 chain replay): envelope re-validation,
+      // subject/revision guards, time resolution + NO_OP routing, required
+      // composition, and the deep-cloned pre-trace candidate with deltas +
+      // derived core-owned runtime metadata.
+      const prepared = await prepareCanonicalTransitionEffectV0({
+        predecessor: input.currentState,
+        proposal: input.proposal
+      });
+      if (prepared.kind === "REJECTED") return rejected(prepared.failure);
+      if (prepared.kind === "NO_OP") return { kind: "NO_OP" };
       const p = input.proposal;
       const cur = input.currentState;
       const rm = cur.runtime_metadata;
-
-      // Pre-context guards (§13.4 layers 2/4).
-      if (p.subject_id !== cur.identity.subject_id) {
-        return rejected({
-          error_code: "UNKNOWN_SUBJECT",
-          reason: "SS-AUTH-001",
-          detail: `proposal subject ${p.subject_id} does not match authoritative ${cur.identity.subject_id}`
-        });
-      }
-      if (p.expected_state_revision !== rm.state_revision) {
-        return rejected({
-          error_code: "STALE_STATE_REVISION",
-          reason: "SS-REVISION-001",
-          detail: `expected ${p.expected_state_revision} != current ${rm.state_revision}`
-        });
-      }
-
-      // Time resolution + NO_OP routing (runtime-owned classification surfaced here).
-      if (p.transition_type === "Time") {
-        if (p.time_input.kind !== "ELAPSED") {
-          return rejected({
-            error_code: "INVALID_LOGICAL_TIME",
-            reason: "TIME-ADVANCE-001",
-            detail: "Time transitions require ELAPSED time input"
-          });
-        }
-        if (p.time_input.elapsed_time.value === 0) {
-          if (p.domain_deltas.length === 0) {
-            return { kind: "NO_OP" };
-          }
-          const zeroDeltaComposition = validateProposalComposition(p);
-          if (!zeroDeltaComposition.ok) return rejected(zeroDeltaComposition.error);
-        }
-      }
-
-      const timing =
-        p.time_input.kind === "ELAPSED"
-          ? ({ kind: "ELAPSED", ticks: p.time_input.elapsed_time.value } as const)
-          : ({ kind: "OCCURRENCE", occurrence: p.time_input.occurrence_logical_time } as const);
-      const derived = deriveRuntimeMetadata(rm, p.transition_type, timing);
-      if (!derived.ok) return rejected(derived.error);
-
-      // Layer 7: required composition.
-      const composition = validateProposalComposition(p);
-      if (!composition.ok) return rejected(composition.error);
-
-      // Step 9: deterministic candidate on a deep clone (current snapshot untouched).
-      const draft: CandidateDraft = cloneStateForCandidate(cur);
-      applyDeltaOperations(draft, p);
-      withDerivedRuntimeMetadata(draft, derived.value);
-      const nextRevision = derived.value.state_revision;
+      const draft = prepared.effect.draft;
+      const derived = prepared.effect.derived;
+      const nextRevision = derived.state_revision;
 
       // §13.4 layer 9: repository binding set validation + verdict-only capability.
       observer?.referenceValidation?.();
@@ -340,52 +292,29 @@ export function createCommitEngine(deps: {
       });
       if (!candidateValidation.ok) return rejected(candidateValidation.error);
 
-      // §13.4 layer 11: canonical hashes, trace entry and window projection.
+      // §13.4 layer 11 via the SHARED finalize primitive: canonical hashes,
+      // trace entry + bounded window projection, frozen successor, defensive
+      // full re-validation and snapshot hashes.
       observer?.authorityPreparation?.();
-      const stateHashBefore = await stateHash(cur);
-      const stateHashAfter = await stateHash(draft as unknown as SubjectStateV0);
-      const pref = await proposalRef(p);
-      const traceEntry = await buildTraceEntry({
+      const finalized = await finalizeCanonicalTransitionEffectV0({
+        predecessor: cur,
         proposal: p,
-        proposal_ref: pref,
-        revision_before: rm.state_revision,
-        revision_after: nextRevision,
-        logical_time: derived.value.logical_time,
-        state_hash_before: stateHashBefore,
-        state_hash_after: stateHashAfter,
-        memory_revision_before: cur.memory_state.repository_revision,
-        memory_revision_after: draftMemoryRevision
+        draft,
+        derived
       });
-      const nextWindow = nextTraceWindow(cur.trace_window, traceEntry, nextRevision);
-      draft["trace_window"] = nextWindow;
-      const candidate = freezeCandidate(draft);
-
-      // Defensive FULL re-validation of the frozen successor including the §10.3
-      // trace-window/cursor linkage of the successor revision itself.
-      const finalValidation = validateSubjectState(candidate);
-      if (!finalValidation.ok) return rejected(finalValidation.error);
-
-      // Snapshot hashes bind state to exact trace positions (§8.4).
-      const snapshotHashBefore = await snapshotHash({
-        state_hash: stateHashBefore,
-        subject_id: cur.identity.subject_id,
-        state_revision: rm.state_revision,
-        trace_cursor: cur.trace_window.cursor,
-        last_trace_ref: lastTraceRef(cur.trace_window)
-      });
-      const snapshotHashAfter = await snapshotHash({
-        state_hash: stateHashAfter,
-        subject_id: cur.identity.subject_id,
-        state_revision: nextRevision,
-        trace_cursor: nextWindow.cursor,
-        last_trace_ref: traceEntry.trace_id
-      });
+      if (finalized.kind === "REJECTED") return rejected(finalized.failure);
+      const effect = finalized.effect;
+      const stateHashBefore = effect.state_hash_before;
+      const stateHashAfter = effect.state_hash_after;
+      const snapshotHashBefore = effect.snapshot_hash_before;
+      const snapshotHashAfter = effect.snapshot_hash_after;
+      const traceEntry = effect.trace_entry;
 
       // Steps 12–14: full bundle assembly (deep-frozen evidence).
       const bundle = await assembleCommitBundle({
         proposal: p,
         currentState: cur,
-        candidate,
+        candidate: effect.successor,
         state_hash_before: stateHashBefore,
         state_hash_after: stateHashAfter,
         snapshot_hash_before: snapshotHashBefore,
