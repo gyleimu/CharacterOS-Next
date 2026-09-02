@@ -35,6 +35,7 @@ import {
   type ValidationResult
 } from "@characteros-next/subject-core";
 import { deriveEvidenceMemberSetFingerprint } from "../evidence-member-set-fingerprint-authority.js";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 export const RELATIONSHIP_COUNTERPART_REGISTRATION_PROPOSAL_SCHEMA_VERSION =
   "relationship-counterpart-registration-proposal-v0" as const;
@@ -145,6 +146,15 @@ export function validateRelationshipCounterpartRegistrationProposal(
     }
     const dimensionId = validateIdentifier(dimension["dimension_id"], `${label}.dimension_id`);
     if (!dimensionId.ok) return dimensionId;
+    // Reserved-namespace guard: generic counterpart registration can never
+    // seed relationship_core_* initial dimensions, independently of registry.
+    if (isReservedRelationshipCoreDimensionIdV0(dimensionId.value)) {
+      return fail(
+        "INVALID_SCHEMA",
+        "SS-SCHEMA-001",
+        `${label}.dimension_id: reserved relationship_core_* dimension forbidden in generic counterpart registration`
+      );
+    }
     if (previousDimensionId !== undefined && compareRaw(dimensionId.value, previousDimensionId) <= 0) {
       const reason = dimensionId.value === previousDimensionId ? "duplicate" : "not raw-ASCII-sorted";
       return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}.dimension_id: ${reason}`);

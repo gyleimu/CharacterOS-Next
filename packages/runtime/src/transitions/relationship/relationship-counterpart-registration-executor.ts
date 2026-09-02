@@ -34,6 +34,7 @@ import {
   deriveRelationshipCounterpartRegistrationTransitionId,
   validateRelationshipCounterpartRegistrationProposal
 } from "./relationship-counterpart-registration-proposal.js";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 const RELATIONSHIP_PRODUCER_ID: IdentifierV0 = (() => {
   const checked = validateIdentifier("relationship", "relationship.producer");
@@ -54,6 +55,7 @@ export type RelationshipCounterpartRegistrationResult =
   | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
   | { readonly kind: "REJECTED_INVALID_PROPOSAL"; readonly detail: string }
   | { readonly kind: "REJECTED_ALREADY_REGISTERED"; readonly detail: string }
+  | { readonly kind: "REJECTED_GOVERNED_DIMENSION"; readonly detail: string }
   | { readonly kind: "REJECTED_STALE_REVISION"; readonly detail: string }
   | { readonly kind: "REJECTED_FORGED_EVIDENCE_FINGERPRINT"; readonly detail: string }
   | { readonly kind: "REJECTED_UNVERIFIED_EVIDENCE_MEMBER"; readonly detail: string }
@@ -91,6 +93,17 @@ export class RelationshipCounterpartRegistrationExecutor {
     const proposal = checked.value;
     if (proposal.subject_id !== ctx.subject_id) {
       return rejected("REJECTED_INVALID_PROPOSAL", "proposal subject does not match runtime context");
+    }
+    // Defense in depth: generic counterpart registration must never seed a
+    // reserved relationship_core_* initial dimension, even if proposal
+    // validation were ever refactored.
+    for (const dimension of proposal.dimensions) {
+      if (isReservedRelationshipCoreDimensionIdV0(dimension.dimension_id)) {
+        return rejected(
+          "REJECTED_GOVERNED_DIMENSION",
+          `dimension ${dimension.dimension_id} is in the reserved relationship_core_* namespace and cannot be introduced by generic counterpart registration`
+        );
+      }
     }
 
     const snapshot = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);

@@ -1288,3 +1288,32 @@ describe("Workspace graph (RPP98)", () => {
     // no edge ever returns to runtime, so the graph remains acyclic.
   });
 });
+
+describe("Reserved-namespace writer hardening", () => {
+  it("producer fail-closed when the supplied channel policy targets a reserved relationship_core_* dimension", async () => {
+    const world = await buildSemanticWorld();
+    const capability = await mintCapability(world, "CHANNEL", CH_A);
+    const reservedTargetPolicy: RelationshipEvidenceChannelPolicyV0 = {
+      ...world.policy,
+      channels: [
+        {
+          channel_id:
+            CH_A as RelationshipEvidenceChannelPolicyV0["channels"][number]["channel_id"],
+          target_dimension_id:
+            "relationship_core_reserved_v0" as RelationshipEvidenceChannelPolicyV0["channels"][number]["target_dimension_id"],
+          direction: "INCREASE"
+        }
+      ]
+    };
+    const result = await produceRelationshipPlasticityV0(
+      makeInput(world, capability, { channel_policy: reservedTargetPolicy })
+    );
+    expect(result.kind).toBe("REJECTED");
+    if (result.kind !== "REJECTED") return;
+    // Fail-closed at the hardened generic channel-policy validator the
+    // producer re-runs internally; the dedicated TARGET_DIMENSION_RESERVED
+    // rejection behind it is belt-and-braces for future refactors.
+    expect(result.code).toBe("INVALID_CHANNEL_POLICY");
+    expect(result.detail).toMatch(/reserved relationship_core_\* dimension forbidden/);
+  });
+});

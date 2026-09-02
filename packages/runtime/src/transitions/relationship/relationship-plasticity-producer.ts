@@ -86,6 +86,7 @@ import {
   type RelationshipSemanticChannelResultV0,
   type RelationshipSemanticContextProjectionV0
 } from "./relationship-semantic-channel.js";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 import {
   RELATIONSHIP_UPDATE_PROPOSAL_SCHEMA_VERSION,
   deriveRelationshipEvidenceMemberSetFingerprint,
@@ -109,6 +110,7 @@ export type RelationshipPlasticityRejectionCodeV0 =
   | "CHANNEL_POLICY_ID_MISMATCH"
   | "CHANNEL_POLICY_FINGERPRINT_MISMATCH"
   | "CHANNEL_NOT_IN_POLICY"
+  | "TARGET_DIMENSION_RESERVED"
   | "CURRENT_COUNTERPART_MISSING"
   | "TARGET_DIMENSION_UNREGISTERED"
   | "INVALID_CURRENT_DIMENSION_VALUE"
@@ -333,6 +335,16 @@ export async function produceRelationshipPlasticityV0(
     return rejected(
       "CHANNEL_NOT_IN_POLICY",
       `semantic channel ${channelId} is absent from the frozen channel policy`
+    );
+  }
+  // Defense in depth: the generic channel-policy validator already rejects
+  // relationship_core_* targets; the producer independently refuses to route
+  // the ±step kernel at a reserved dimension even if that validation were
+  // ever bypassed or refactored. The kernel keeps zero authority here.
+  if (isReservedRelationshipCoreDimensionIdV0(policyChannel.target_dimension_id)) {
+    return rejected(
+      "TARGET_DIMENSION_RESERVED",
+      `target dimension ${policyChannel.target_dimension_id} is in the reserved relationship_core_* namespace and cannot be targeted by generic plasticity`
     );
   }
 

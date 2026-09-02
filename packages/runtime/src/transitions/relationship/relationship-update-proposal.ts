@@ -27,6 +27,7 @@ import {
   type ValidationResult
 } from "@characteros-next/subject-core";
 import { deriveEvidenceMemberSetFingerprint } from "../evidence-member-set-fingerprint-authority.js";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 export const RELATIONSHIP_UPDATE_PROPOSAL_SCHEMA_VERSION =
   "relationship-update-proposal-v0" as const;
@@ -132,6 +133,15 @@ export function validateRelationshipUpdateProposal(
     }
     const dimensionId = validateIdentifier(update["dimension_id"], `${label}.dimension_id`);
     if (!dimensionId.ok) return dimensionId;
+    // Reserved-namespace guard: generic host next_value proposals can never
+    // target relationship_core_* dimensions, independently of registry state.
+    if (isReservedRelationshipCoreDimensionIdV0(dimensionId.value)) {
+      return fail(
+        "INVALID_SCHEMA",
+        "SS-SCHEMA-001",
+        `${label}.dimension_id: reserved relationship_core_* dimension forbidden in generic update proposals`
+      );
+    }
     if (previousDimensionId !== undefined && compareRaw(dimensionId.value, previousDimensionId) <= 0) {
       const reason = dimensionId.value === previousDimensionId ? "duplicate" : "not raw-ASCII-sorted";
       return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${label}.dimension_id: ${reason}`);

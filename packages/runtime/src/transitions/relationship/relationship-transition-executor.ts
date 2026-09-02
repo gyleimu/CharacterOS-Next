@@ -27,6 +27,7 @@ import {
   deriveRelationshipTransitionId,
   validateRelationshipUpdateProposal
 } from "./relationship-update-proposal.js";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 const RELATIONSHIP_PRODUCER_ID: IdentifierV0 = (() => {
   const checked = validateIdentifier("relationship", "relationship.producer");
@@ -48,6 +49,7 @@ export type RelationshipExecutionResult =
   | { readonly kind: "REJECTED_INVALID_PROPOSAL"; readonly detail: string }
   | { readonly kind: "REJECTED_UNKNOWN_COUNTERPART"; readonly detail: string }
   | { readonly kind: "REJECTED_UNKNOWN_DIMENSION"; readonly detail: string }
+  | { readonly kind: "REJECTED_GOVERNED_DIMENSION"; readonly detail: string }
   | { readonly kind: "REJECTED_STALE_REVISION"; readonly detail: string }
   | { readonly kind: "REJECTED_FORGED_EVIDENCE_FINGERPRINT"; readonly detail: string }
   | { readonly kind: "REJECTED_UNVERIFIED_EVIDENCE_MEMBER"; readonly detail: string }
@@ -85,6 +87,17 @@ export class RelationshipTransitionExecutor {
     const proposal = checked.value;
     if (proposal.subject_id !== ctx.subject_id) {
       return rejected("REJECTED_INVALID_PROPOSAL", "proposal subject does not match runtime context");
+    }
+    // Defense in depth: even if proposal validation were ever refactored, the
+    // generic executor itself must never mint a delta touching a reserved
+    // relationship_core_* dimension.
+    for (const update of proposal.updates) {
+      if (isReservedRelationshipCoreDimensionIdV0(update.dimension_id)) {
+        return rejected(
+          "REJECTED_GOVERNED_DIMENSION",
+          `dimension ${update.dimension_id} is in the reserved relationship_core_* namespace and cannot be mutated by the generic relationship writer`
+        );
+      }
     }
 
     const snapshot = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);

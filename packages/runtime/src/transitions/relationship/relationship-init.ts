@@ -12,6 +12,7 @@ import {
   type RelationshipCounterpartStateV0,
   type RelationshipStateV0
 } from "@characteros-next/subject-core";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 function compareRaw(a: string, b: string): number {
   if (a < b) return -1;
@@ -34,6 +35,18 @@ export function initializeEmptyRelationshipState(): RelationshipStateV0 {
 export function initializeRelationshipState(
   counterparts: readonly RelationshipCounterpartStateV0[]
 ): RelationshipStateV0 {
+  // Reserved-namespace guard: relationship_core_* dimensions can never enter
+  // canonical state through generic initialization, independently of registry
+  // membership. Ordinary opaque dimensions keep their existing behavior.
+  for (const counterpart of counterparts) {
+    for (const dimension of counterpart.dimensions) {
+      if (isReservedRelationshipCoreDimensionIdV0(dimension.dimension_id)) {
+        throw new Error(
+          `INVALID_RELATIONSHIP_INITIAL_STATE: RESERVED_DIMENSION_FORBIDDEN ${dimension.dimension_id} (relationship_core_* is reserved for CharacterOS-governed features)`
+        );
+      }
+    }
+  }
   const candidate = {
     schema_version: RELATIONSHIP_STATE_SCHEMA_VERSION,
     counterparts: counterparts

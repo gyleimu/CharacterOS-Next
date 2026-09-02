@@ -29,6 +29,7 @@ import {
   type IdentifierV0,
   type ValidationResult
 } from "@characteros-next/subject-core";
+import { isReservedRelationshipCoreDimensionIdV0 } from "./relationship-governed-dimension-namespace.js";
 
 export const RELATIONSHIP_EVIDENCE_CHANNEL_POLICY_SCHEMA_VERSION =
   "relationship-evidence-channel-policy-v0" as const;
@@ -144,6 +145,16 @@ export function validateRelationshipEvidenceChannelPolicy(
     }
     const target = validateIdentifier(targetRaw, `${label}.target_dimension_id`);
     if (!target.ok) return target;
+    // Reserved-namespace guard: generic host semantic routing can never bind
+    // a channel to a relationship_core_* dimension — that target is only
+    // writable by a future CharacterOS feature-specific write authority.
+    if (isReservedRelationshipCoreDimensionIdV0(target.value)) {
+      return fail(
+        "INVALID_SCHEMA",
+        "SS-SCHEMA-001",
+        `${label}.target_dimension_id: reserved relationship_core_* dimension forbidden in generic channel policies`
+      );
+    }
     const directionRaw = item["direction"];
     if (
       typeof directionRaw !== "string" ||

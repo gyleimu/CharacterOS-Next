@@ -151,3 +151,10 @@ export {
   type RelationshipFeatureSemanticPointV0,
   type ResolveRelationshipFeatureDecisionSemanticsInputV0
 } from "./relationship-feature-decision-semantics.js";
+
+// --- Relationship Governed Dimension Namespace V0 ------------------------------------------------------
+
+export {
+  RELATIONSHIP_GOVERNED_DIMENSION_RESERVED_PREFIX_V0,
+  isReservedRelationshipCoreDimensionIdV0
+} from "./relationship-governed-dimension-namespace.js";
