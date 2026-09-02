@@ -622,3 +622,29 @@ export {
   type TendencyScaleContractV0,
   type TendencyScaleNormalizationSemanticsV0
 } from "./transitions/cognition-action/tendency-scale-contract.js";
+
+// --- Relationship Feature Decision Semantics Foundation V0 -------------------------------------------
+
+export {
+  RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
+  RELATIONSHIP_FEATURE_DECISION_ROLES_V0,
+  RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_FINGERPRINT_PROJECTION,
+  RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_SCHEMA_VERSION,
+  RELATIONSHIP_FEATURE_DECISION_SOURCE_STATE_SCHEMA_VERSION_V0,
+  RELATIONSHIP_FEATURE_MONOTONICITY_SEMANTICS_V0,
+  REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0,
+  RelationshipFeatureDecisionSemanticsResolutionErrorV0,
+  RelationshipFeatureDecisionSemanticsValidationErrorV0,
+  deriveRelationshipFeatureDecisionSemanticsContractFingerprintV0,
+  queryRelationshipFeatureDecisionAdmissionV0,
+  resolveRegisteredRelationshipFeatureDecisionSemanticsV0,
+  validateRelationshipFeatureDecisionSemanticsContractV0,
+  type RelationshipFeatureDecisionAdmissionV0,
+  type RelationshipFeatureDecisionRoleV0,
+  type RelationshipFeatureDecisionSemanticsContractV0,
+  type RelationshipFeatureDecisionSemanticsResolutionErrorCodeV0,
+  type RelationshipFeatureDecisionSemanticsValidationErrorCodeV0,
+  type RelationshipFeatureMonotonicitySemanticsV0,
+  type RelationshipFeatureSemanticPointV0,
+  type ResolveRelationshipFeatureDecisionSemanticsInputV0
+} from "./transitions/relationship/relationship-feature-decision-semantics.js";
