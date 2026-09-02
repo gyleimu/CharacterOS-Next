@@ -588,3 +588,37 @@ export {
   type BeliefDecisionSelectionV0,
   type BeliefPositiveMaxArbitrationPolicyDescriptorV0
 } from "./transitions/cognition-action/belief-decision-arbitration-policy.js";
+
+// --- Tendency Scale Contract Foundation V0 ----------------------------------------------------------
+
+export {
+  BELIEF_ACTION_ALIGNMENT_SCALE_FINGERPRINT_PROJECTION,
+  BELIEF_ACTION_ALIGNMENT_SCALE_ID_V0,
+  CROSS_DOMAIN_OPERATIONS_V0,
+  DEFAULT_CROSS_DOMAIN_COMPARABILITY_V0,
+  REGISTERED_TENDENCY_SCALE_IDS_V0,
+  TENDENCY_COMPARABILITY_CONTRACT_FINGERPRINT_PROJECTION,
+  TENDENCY_COMPARABILITY_CONTRACT_SCHEMA_VERSION,
+  TENDENCY_SCALE_CONTRACT_FINGERPRINT_PROJECTION,
+  TENDENCY_SCALE_CONTRACT_SCHEMA_VERSION,
+  TendencyComparabilityContractValidationErrorV0,
+  TendencyScaleContractResolutionErrorV0,
+  TendencyScaleContractValidationErrorV0,
+  deriveTendencyComparabilityContractFingerprintV0,
+  deriveTendencyScaleContractFingerprintV0,
+  getBeliefActionAlignmentScaleContractV0,
+  queryCrossDomainOperationAuthorizationV0,
+  resolveRegisteredTendencyScaleContractV0,
+  validateTendencyComparabilityContractV0,
+  validateTendencyScaleContractV0,
+  type CrossDomainOperationV0,
+  type DefaultCrossDomainComparabilityV0,
+  type ResolveRegisteredTendencyScaleInputV0,
+  type TendencyComparabilityContractV0,
+  type TendencyComparabilityContractValidationErrorCodeV0,
+  type TendencyComparabilityParticipantV0,
+  type TendencyScaleContractResolutionErrorCodeV0,
+  type TendencyScaleContractValidationErrorCodeV0,
+  type TendencyScaleContractV0,
+  type TendencyScaleNormalizationSemanticsV0
+} from "./transitions/cognition-action/tendency-scale-contract.js";
