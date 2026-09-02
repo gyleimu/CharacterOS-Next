@@ -725,3 +725,17 @@ export {
   type MintTrustedCanonicalHistoryBoundaryInputV0,
   type MintTrustedCanonicalHistoryBoundaryOutcomeV0
 } from "./authority/trusted-canonical-history-boundary.js";
+
+// --- Restore Chain Authority Integration V0 --------------------------------------------
+// RESTORE_AUTHORITY_FACTORY_SURFACE = TRUSTED_COMPOSITION_ONLY: the reference-
+// validator-capable factory (createRestoreChainAuthorityV0) is deliberately NOT
+// root-exported — ordinary product callers get only the closed-input product
+// entrypoint below and can never inject repository/chain authority callbacks.
+
+export {
+  restoreCanonicalSubjectFromHistoryV0,
+  type RestoreCanonicalSubjectFromHistoryInputV0,
+  type RestoreChainAuthorityResultV0,
+  type RestoreChainAuthorityFailureCodeV0,
+  type RestoreChainAuthorityFailureV0
+} from "./authority/restore-chain-authority.js";
