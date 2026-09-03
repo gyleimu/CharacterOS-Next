@@ -149,19 +149,30 @@ export async function buildCognitionActionProposal(params: {
 /**
  * Builds the frozen controlled projection from the authoritative snapshot.
  *
- * `additionalRecentRetrievalRefs` (RELATIONSHIP_FAMILIARITY_RETRIEVED_EVIDENCE_
- * COGNITION_INTEGRATION_V0): validated selected Memory episode refs produced by
- * an automatic familiarity-priority retrieval in the SAME execution. They join
- * the EXISTING recent-retrieval evidence context — deduplicated and raw-ASCII
- * sorted per current conventions — becoming citeable only because they are
- * validated Memory evidence. When absent/empty the projection is byte-identical
- * to the pre-slice builder (BASIC_CONTEXT_FIRST compatibility).
+ * PUBLIC TRUST BOUNDARY (EVIDENCE_AUTHORITY_BOUNDARY): this function accepts
+ * EXACTLY the authoritative snapshot — no caller-supplied ref arrays. The
+ * citeable-evidence augmentation used by the automatic familiarity-priority
+ * retrieval lives in the module-private
+ * buildCognitiveContextProjectionInternal and is populated ONLY by the trusted
+ * executor from refs that already passed the existing
+ * validateMemoryRetrievalResult law (SERIALIZED_REF != EVIDENCE_AUTHORITY;
+ * CALLER_REF != VALIDATED_MEMORY_EVIDENCE).
  */
 export async function buildCognitiveContextProjection(
+  snapshot: SubjectStateV0
+): Promise<CognitiveContextProjectionV0> {
+  return buildCognitiveContextProjectionInternal(snapshot, null);
+}
+
+/**
+ * MODULE-PRIVATE validated-evidence augmentation: NOT exported, NOT reachable
+ * from the runtime root or any product surface. `additionalRecentRetrievalRefs`
+ * is populated exclusively by the trusted executor from refs that already
+ * passed validateMemoryRetrievalResult inside the same execution.
+ */
+async function buildCognitiveContextProjectionInternal(
   snapshot: SubjectStateV0,
-  options: {
-    readonly additionalRecentRetrievalRefs?: readonly CanonicalRefV0[];
-  } = {}
+  additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null
 ): Promise<CognitiveContextProjectionV0> {
   // Interaction Familiarity Read Projection V0: the exact admitted governed
   // feature's semantic state surface per registered counterpart. Pure
@@ -202,15 +213,14 @@ export async function buildCognitiveContextProjection(
     context: { ...snapshot.context },
     memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
     recent_retrieval_refs:
-      options.additionalRecentRetrievalRefs === undefined ||
-      options.additionalRecentRetrievalRefs.length === 0
+      additionalRecentRetrievalRefs === null || additionalRecentRetrievalRefs.length === 0
         ? [...snapshot.memory_state.recent_retrieval_trace]
         : // Validated familiarity-priority evidence joins the EXISTING recent
           // retrieval evidence context: deduplicated + raw-ASCII sorted per
           // current conventions (never overwriting ordinary Memory context).
           [...new Set<string>([
             ...(snapshot.memory_state.recent_retrieval_trace as readonly string[]),
-            ...(options.additionalRecentRetrievalRefs as readonly string[])
+            ...(additionalRecentRetrievalRefs as readonly string[])
           ])].sort() as string[],
     belief_item_count: snapshot.beliefs.items.length,
     // Belief → Cognition Read Projection V0: COPIED stance surface from the
@@ -334,9 +344,7 @@ export class CognitionActionTransitionExecutor {
     );
     const evidenceProjection =
       familiaritySelectedRefs.length > 0
-        ? await buildCognitiveContextProjection(snapshot, {
-            additionalRecentRetrievalRefs: familiaritySelectedRefs
-          })
+        ? await buildCognitiveContextProjectionInternal(snapshot, familiaritySelectedRefs)
         : projection;
 
     // The action space is bound into the projection AFTER hashing the body: the
