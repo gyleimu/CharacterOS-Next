@@ -784,6 +784,22 @@ export {
   type RelationshipInteractionFamiliarityContextResolutionStrategyV0
 } from "./transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 
+// --- Relationship Familiarity Retrieval Orchestration V0 (LAYER B, deterministic) -------
+// The frozen COUNTERPART_CONTEXT_SEARCH_FIRST strategy triggers EXACTLY ONE
+// exact-counterpart retrieval attempt through the EXISTING Memory retrieval
+// service and validation law. Host-owned query construction; no scoring
+// changes; no model calls; empty results never invent context.
+
+export {
+  RELATIONSHIP_FAMILIARITY_RETRIEVAL_ORCHESTRATION_SCHEMA_VERSION_V0,
+  INTERACTION_FAMILIARITY_RETRIEVAL_OUTCOMES_V0,
+  buildInteractionFamiliarityCounterpartQueryV0,
+  orchestrateInteractionFamiliarityRetrievalV0,
+  type InteractionFamiliarityRetrievalAttemptTraceV0,
+  type InteractionFamiliarityRetrievalOrchestrationV0,
+  type InteractionFamiliarityRetrievalOutcomeV0
+} from "./transitions/relationship/relationship-interaction-familiarity-retrieval-orchestration.js";
+
 // --- Interaction Familiarity Experience Ingestion V0 ----------------------------------
 // The narrow EXPERIENCE-oriented product capability: the caller supplies an
 // experience identity (subject, registered counterpart, candidate episode);
