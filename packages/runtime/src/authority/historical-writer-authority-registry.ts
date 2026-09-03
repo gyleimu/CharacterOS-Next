@@ -20,11 +20,12 @@
  * CharacterOS-owned static AUTHORIZATION GATE, and exactly ONE CharacterOS-
  * owned static GOVERNED WRITE POLICY
  * (RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0). The write policy
- * REQUIRES positive feature admission, and the Relationship feature-semantics
- * registry still contains ZERO entries — so no production governed
- * Relationship write can be authorized through this registry
- * (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY = NONE,
- * REGISTERED_RELATIONSHIP_DECISION_FEATURE_COUNT = 0).
+ * REQUIRES positive feature admission; as of
+ * RELATIONSHIP_REGISTERED_FEATURE_ADMISSION_V1 exactly ONE real feature
+ * (interaction familiarity) is admitted, and its own feature-specific law must
+ * ALSO validate before a historical familiarity authority classifies
+ * RESOLVED_VALID. There is still NO product governed-write path
+ * (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY = NONE).
  */
 
 import type { HashV1 } from "@characteros-next/subject-core";
@@ -35,10 +36,13 @@ import type {
   CanonicalWriterFamilyV0
 } from "@characteros-next/subject-core";
 import {
+  INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
   RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
   RELATIONSHIP_FEATURE_DECISION_SOURCE_STATE_SCHEMA_VERSION_V0,
-  resolveRegisteredRelationshipFeatureDecisionSemanticsV0
+  resolveRegisteredRelationshipFeatureDecisionSemanticsV0,
+  type RelationshipFeatureDecisionSemanticsContractV0
 } from "../transitions/relationship/relationship-feature-decision-semantics.js";
+import { validateInteractionFamiliarityAuthorityLawV0 } from "../transitions/relationship/relationship-interaction-familiarity-accrual-policy.js";
 import { validateRelationshipGovernedFeatureWriterAuthorityPayloadV0 } from "../transitions/relationship/relationship-governed-writer-authority.js";
 
 // ---- recognized schema contract shape ----------------------------------------------
@@ -267,9 +271,12 @@ export const RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_PROJECTION =
 /**
  * CharacterOS-owned static governed write policy descriptor. Deep frozen,
  * deterministically fingerprinted, closed. CRITICAL: the policy REQUIRES
- * positive feature admission — with the feature registry at ZERO entries the
- * policy denies EVERY reserved target; it NEVER means "any relationship_core_*
- * is allowed".
+ * positive feature admission — a reserved target is writable only through the
+ * exact admitted feature semantics registry and its feature law; it NEVER
+ * means "any relationship_core_* is allowed".
+ * feature_registry_count_at_policy_freeze = 0 is a HISTORICAL FREEZE FACT
+ * (RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0) — it is NOT rewritten
+ * when features are admitted later.
  */
 export interface RelationshipGovernedFeatureWritePolicyDescriptorV0 {
   readonly policy_id: typeof RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_ID_V0;
@@ -401,7 +408,9 @@ export interface HistoricalWriterAuthorityResolutionV0 {
  *   3. authority_payload.write_policy_id + write_policy_fingerprint (validated
  *      through the family-owned closed payload schema) → governed-write-POLICY registry
  *   4. authority_payload.feature_semantics_contract_id + fingerprint → admitted
- *      FEATURE-semantics registry (ZERO entries: everything is UNADMITTED)
+ *      FEATURE-semantics registry, then the admitted feature's OWN law
+ *      (interaction familiarity: receipt lineage, k/32 grid, operation and
+ *      cumulative-evidence cardinality arithmetic)
  *
  * REPAIR NOTE (§34): the pre-repair placeholder compared the write-policy
  * registry against `writer_schema_id` (the WRONG identity family) and never
@@ -409,9 +418,10 @@ export interface HistoricalWriterAuthorityResolutionV0 {
  * demonstrated that defect before this repair was applied. The resolver only
  * PRODUCES the frozen status vocabulary — chain validity law is unchanged.
  *
- * With the feature registry at ZERO entries a non-null Relationship governed
- * authority can NEVER classify RESOLVED_VALID (feature_layer stays
- * UNADMITTED → UNRESOLVED), exactly per §36.
+ * RESOLVED_VALID is reachable ONLY for the exact admitted familiarity feature
+ * when the frozen writer-authority identities AND the interaction-familiarity
+ * law validate; a law violation classifies RESOLVED_INVALID (known-invalid),
+ * an unadmitted feature stays UNRESOLVED.
  */
 export async function classifyHistoricalWriterAuthorityStatusV0(
   writerAuthority: CanonicalWriterAuthorityRecordV0
@@ -488,23 +498,18 @@ export async function classifyHistoricalWriterAuthorityStatusV0(
     };
   }
 
-  // 4. feature layer — exact admitted feature-semantics binding (registry V0
-  // has ZERO entries, so every record is UNADMITTED → never RESOLVED_VALID).
+  // 4. feature layer — exact admitted feature-semantics binding, then the ONE
+  // feature-specific law for the admitted feature (one feature, one law, one
+  // exact path).
+  let admittedContract: RelationshipFeatureDecisionSemanticsContractV0;
   try {
-    resolveRegisteredRelationshipFeatureDecisionSemanticsV0({
+    admittedContract = resolveRegisteredRelationshipFeatureDecisionSemanticsV0({
       domain_id: RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
       source_state_schema_version: RELATIONSHIP_FEATURE_DECISION_SOURCE_STATE_SCHEMA_VERSION_V0,
       dimension_id: payload.value.dimension_id,
       feature_semantics_contract_id: payload.value.feature_semantics_contract_id,
       feature_semantics_contract_fingerprint: payload.value.feature_semantics_contract_fingerprint
     });
-    return {
-      status: "RESOLVED_VALID",
-      schema_layer: "RESOLVED",
-      gate_layer: "RESOLVED",
-      policy_layer: "RESOLVED",
-      feature_layer: "ADMITTED"
-    };
   } catch {
     return {
       ...pending,
@@ -515,6 +520,34 @@ export async function classifyHistoricalWriterAuthorityStatusV0(
       feature_layer: "UNADMITTED"
     };
   }
+  if (admittedContract.dimension_id === INTERACTION_FAMILIARITY_DIMENSION_ID_V0) {
+    const law = validateInteractionFamiliarityAuthorityLawV0(payload.value);
+    if (!law.ok) {
+      return {
+        status: "RESOLVED_INVALID",
+        schema_layer: "RESOLVED",
+        gate_layer: "RESOLVED",
+        policy_layer: "RESOLVED",
+        feature_layer: "ADMITTED"
+      };
+    }
+    return {
+      status: "RESOLVED_VALID",
+      schema_layer: "RESOLVED",
+      gate_layer: "RESOLVED",
+      policy_layer: "RESOLVED",
+      feature_layer: "ADMITTED"
+    };
+  }
+  // Fail closed: an admitted feature without a registered feature-law hook.
+  return {
+    ...pending,
+    status: "UNRESOLVED",
+    schema_layer: "RESOLVED",
+    gate_layer: "RESOLVED",
+    policy_layer: "RESOLVED",
+    feature_layer: "ADMITTED"
+  };
 }
 
 // ---- gate / policy registry views ---------------------------------------------------
@@ -539,8 +572,10 @@ export const HOST_DYNAMIC_WRITER_AUTHORITY_REGISTRATION_V0 = "NO" as const;
 export const PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0 = "NONE" as const;
 /**
  * Exactly ONE CharacterOS-owned static governed write policy exists. The
- * policy REQUIRES positive feature admission, so with the feature registry at
- * ZERO entries it still denies every reserved target — no production governed
- * Relationship write is authorized (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY = NONE).
+ * policy REQUIRES positive feature admission plus the admitted feature's own
+ * law — one admitted real feature (interaction familiarity) satisfies this
+ * only through its exact registered semantics binding and lawful accrual
+ * derivation; no production governed Relationship write path exists
+ * (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY = NONE).
  */
 export const GOVERNED_RELATIONSHIP_WRITE_POLICY_COUNT_V0 = 1 as const;

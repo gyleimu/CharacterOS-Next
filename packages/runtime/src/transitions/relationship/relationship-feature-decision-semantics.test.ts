@@ -11,8 +11,10 @@
  * Fully OFFLINE: pure deterministic functions only — no model, no transport,
  * no localhost, no persistence dependency.
  *
- * ALL synthetic fixtures are test-only and NEVER registered; registry V0
- * remains zero-entry after every test.
+ * ALL synthetic fixtures are test-only and NEVER registered; as of
+ * RELATIONSHIP_REGISTERED_FEATURE_ADMISSION_V1 the registry admits exactly ONE
+ * real feature (interaction familiarity) and still never gains a synthetic
+ * entry from any test.
  */
 
 import { describe, expect, it } from "vitest";
@@ -553,12 +555,14 @@ describe("Relationship Feature Decision Semantics Foundation V0", () => {
     });
   });
 
-  // ---- §38 empty registry ------------------------------------------------------------
+  // ---- §38 registry state (exactly ONE admitted real feature) --------------------------
 
-  describe("§38 empty registry", () => {
-    it("registers zero decision-semantic features and resolves nothing", () => {
+  describe("§38 registry state", () => {
+    it("registers exactly ONE decision-semantic feature: interaction familiarity", () => {
       expect(Object.isFrozen(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0)).toBe(true);
-      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(0);
+      expect([...REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0]).toStrictEqual([
+        "relationship-interaction-familiarity-semantics-v0"
+      ]);
     });
 
     it("fails closed as unregistered for any opaque dimension, including the forbidden test names", () => {
@@ -580,7 +584,7 @@ describe("Relationship Feature Decision Semantics Foundation V0", () => {
           "UNKNOWN_FEATURE_SEMANTICS"
         );
       }
-      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(0);
+      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(1);
     });
 
     it("fails closed on wrong domain or source schema identity literals", () => {
@@ -625,9 +629,9 @@ describe("Relationship Feature Decision Semantics Foundation V0", () => {
             feature_semantics_contract_id: contract.feature_semantics_contract_id,
             feature_semantics_contract_fingerprint: fingerprint
           }),
-        "UNKNOWN_FEATURE_SEMANTICS"
-      );
-      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(0);
+          "UNKNOWN_FEATURE_SEMANTICS"
+        );
+      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(1);
     });
   });
 
@@ -659,6 +663,11 @@ describe("Relationship Feature Decision Semantics Foundation V0", () => {
 
   describe("§42-§44 production surface boundaries", () => {
     const EXPECTED_MODULE_SURFACE_V0: readonly string[] = [
+      "INTERACTION_FAMILIARITY_DIMENSION_ID_V0",
+      "INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_FINGERPRINT_V0",
+      "INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0",
+      "INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0",
+      "INTERACTION_FAMILIARITY_QUANTITY_SEMANTICS_ID_V0",
       "RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0",
       "RELATIONSHIP_FEATURE_DECISION_ROLES_V0",
       "RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_FINGERPRINT_PROJECTION",

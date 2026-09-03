@@ -2,12 +2,13 @@
  * Historical Writer Authority Registry — acceptance suite (§38/§39/§15/§16 +
  * RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0 §5/§6/§33/§34/§47/§54):
  * static CharacterOS-owned schema recognition, exactly ONE authorization gate
- * and ONE governed write policy, zero admitted features, no dynamic
- * registration, frozen surfaces, descriptor fingerprint determinism, the
- * schema-recognized != authorized distinction, and the §34 direct regression
- * proving the historical resolver binds each identity to its EXACT registry
- * family (the pre-repair placeholder compared the write-policy registry
- * against the WRONG identity family — demonstrated failing before repair).
+ * and ONE governed write policy, exactly ONE admitted feature (interaction
+ * familiarity), no dynamic registration, frozen surfaces, descriptor
+ * fingerprint determinism, the schema-recognized != authorized distinction,
+ * and the §34 direct regression proving the historical resolver binds each
+ * identity to its EXACT registry family (the pre-repair placeholder compared
+ * the write-policy registry against the WRONG identity family — demonstrated
+ * failing before repair).
  *
  * Fully OFFLINE: pure deterministic functions only.
  */

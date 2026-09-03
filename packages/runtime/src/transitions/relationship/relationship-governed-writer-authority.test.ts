@@ -538,11 +538,11 @@ describe("Relationship governed writer authority payload contract", () => {
   // ---- §39 no downstream authority + frozen registry boundary ------------------------
 
   describe("§39 no downstream authority", () => {
-    it("mints no capability and registers no feature", () => {
+    it("mints no capability and exposes no registration surface", () => {
       const surface = Object.keys(payloadModule).sort();
       const forbidden = /(AcceptRelationship|AcceptedRelationship|Admitted|Capability|Provenance|register)/i;
       expect(surface.filter((name) => forbidden.test(name))).toStrictEqual([]);
-      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(0);
+      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(1);
     });
 
     it("exposes exactly the approved contract surface", () => {

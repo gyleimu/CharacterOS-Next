@@ -8,7 +8,8 @@
  *   - RelationshipFeatureDecisionSemanticsContractV0 closed schema
  *   - closed deterministic fail-closed validation incl. cross-field rules
  *   - deterministic fingerprints (hashEnvelope / JCS)
- *   - module-private ZERO-ENTRY static feature-semantics registry
+ *   - module-private static feature-semantics registry (exactly ONE admitted
+ *     real feature: interaction familiarity)
  *   - exact fail-closed registry resolution
  *   - default NOT_DECISION_ADMISSIBLE for unregistered canonical features
  *   - explicit distinction: storage admission ≠ decision admission
@@ -601,15 +602,110 @@ export async function deriveRelationshipFeatureDecisionSemanticsContractFingerpr
   );
 }
 
-// ---- static ZERO-ENTRY registry (§15/§16/§27) -------------------------------------
+// ---- FIRST ADMITTED FEATURE: interaction familiarity (V1 slice) ----------------------
+//
+// RELATIONSHIP_REGISTERED_FEATURE_ADMISSION_V1 (INTERACTION_FAMILIARITY_ONLY):
+// exactly ONE real source-controlled feature is statically admitted here.
+// Meaning (normative): the bounded, policy-defined degree to which one exact
+// counterpart has become an established participant in the subject's own
+// admitted firsthand interaction history. Directional, subject- and
+// counterpart-specific, unsigned, longitudinal, persistent. It is NOT trust,
+// liking, affinity, safety, intimacy, dependence, loyalty, relationship
+// quality, objective knowledge, predictive accuracy, memory availability or
+// action utility — high familiarity stays compatible with low trust, negative
+// affinity, danger and hostility. No Belief semantics, no raw cross-domain
+// arithmetic, no action utility authorization (any action use still requires
+// an exact future typed feature×action×counterpart relation).
+
+export const INTERACTION_FAMILIARITY_DIMENSION_ID_V0: IdentifierV0 =
+  "relationship_core_interaction_familiarity_v0" as IdentifierV0;
+
+export const INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0: IdentifierV0 =
+  "relationship-interaction-familiarity-semantics-v0" as IdentifierV0;
+
+export const INTERACTION_FAMILIARITY_QUANTITY_SEMANTICS_ID_V0: IdentifierV0 =
+  "accumulated-firsthand-counterpart-familiarity-v0" as IdentifierV0;
 
 /**
- * §15 Module-private static feature-semantics registry — ZERO entries in V0.
- *
- * No concrete Relationship feature is registered (no trust, no attachment,
- * no closeness, no affinity, no test dimension, no invented production
- * feature). No register(), no add(), no set(), no delete(), no mutable Map
- * exposure, no dynamic registration, no plugin discovery.
+ * The exact admitted interaction-familiarity decision-semantics contract.
+ * Endpoint semantics: 0 = no credited qualifying firsthand counterpart
+ * interaction under the policy; 1 = familiarity credit saturation under V0 —
+ * 1 MUST NOT mean perfect knowledge. Neutral NONE, reference LOWER_ENDPOINT,
+ * polarity UNSIGNED, role MAGNITUDE_ONLY, monotonic non-decreasing
+ * (INCREASING_QUANTITY — no decay/forgetting decrements). Deep frozen.
+ */
+export const INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0: RelationshipFeatureDecisionSemanticsContractV0 =
+  {
+    schema_version: RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_SCHEMA_VERSION,
+    feature_semantics_contract_id: INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0,
+    dimension_id: INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
+    domain_id: RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
+    source_state_schema_version: RELATIONSHIP_FEATURE_DECISION_SOURCE_STATE_SCHEMA_VERSION_V0,
+    input_numeric_type: "UNIT_INTERVAL_V0",
+    input_range: {
+      minimum: 0,
+      maximum: 1,
+      minimum_inclusive: true,
+      maximum_inclusive: true,
+      non_finite: "FORBIDDEN"
+    },
+    quantity_semantics_id: INTERACTION_FAMILIARITY_QUANTITY_SEMANTICS_ID_V0,
+    lower_endpoint_semantics: {
+      value: 0,
+      semantics_id: "no-credited-qualifying-firsthand-counterpart-interaction-v0" as IdentifierV0
+    },
+    upper_endpoint_semantics: {
+      value: 1,
+      semantics_id: "familiarity-credit-saturation-v0" as IdentifierV0
+    },
+    neutral_or_reference_semantics: {
+      neutral: { kind: "NONE" },
+      reference: { kind: "LOWER_ENDPOINT" }
+    },
+    polarity_semantics: "UNSIGNED",
+    magnitude_semantics: { kind: "NONE" },
+    monotonicity_semantics: "INCREASING_QUANTITY",
+    decision_role: "MAGNITUDE_ONLY",
+    action_relation_requirement:
+      "EXACT_FEATURE_STATE_X_EXACT_ACTION_X_EXACT_COUNTERPART_TYPED_RELATION_REQUIRED",
+    counterpart_binding_requirement: "EXACT_CANONICAL_COUNTERPART_REF",
+    direct_numeric_mapping_authorized: false,
+    cross_feature_comparability: "DENY",
+    aggregation_eligibility: "NONE_BY_DEFAULT",
+    normalization_authority: "NONE",
+    provenance_requirements: "EXACT_CURRENT_CANONICAL_RELATIONSHIP_PROJECTION_V0"
+  };
+
+function deepFreezeContract(value: unknown): void {
+  if (value === null || typeof value !== "object") return;
+  if (Object.isFrozen(value)) return;
+  Object.freeze(value);
+  for (const key of Object.keys(value as Record<string, unknown>)) {
+    deepFreezeContract((value as Record<string, unknown>)[key]);
+  }
+}
+deepFreezeContract(INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0);
+
+/**
+ * PINNED exact semantics fingerprint (source-controlled fact): the
+ * deterministic hashEnvelope/JCS derivation of
+ * INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0 under
+ * RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_FINGERPRINT_PROJECTION.
+ * The same hashEnvelope mechanism is used — no second fingerprint system.
+ * The contract test suite asserts the pinned literal equals the live
+ * derivation, so ANY contract edit breaks the pin deliberately.
+ */
+export const INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_FINGERPRINT_V0: HashV1 =
+  "sha256:fcafcad1aba52ee640e83f73b1ec55d8fb9932515b470a324bd0033d9fb7f374" as HashV1;
+
+// ---- static feature-semantics registry (§15/§16/§27) --------------------------------
+
+/**
+ * §15 Module-private static feature-semantics registry — exactly ONE admitted
+ * real feature as of RELATIONSHIP_REGISTERED_FEATURE_ADMISSION_V1:
+ * interaction familiarity. No register(), no add(), no set(), no delete(),
+ * no mutable Map exposure, no dynamic registration, no plugin discovery, no
+ * second feature.
  *
  * fingerprint = deterministic content integrity.
  * registry membership = CharacterOS decision-semantic authority.
@@ -620,14 +716,27 @@ type RegisteredFeatureSemanticsEntryV0 = {
 };
 
 const FEATURE_SEMANTICS_REGISTRY_V0: ReadonlyMap<string, RegisteredFeatureSemanticsEntryV0> =
-  Object.freeze(new Map<string, RegisteredFeatureSemanticsEntryV0>());
+  Object.freeze(
+    new Map<string, RegisteredFeatureSemanticsEntryV0>([
+      [
+        INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0,
+        {
+          contract: INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0,
+          feature_semantics_contract_fingerprint:
+            INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_FINGERPRINT_V0
+        }
+      ]
+    ])
+  );
 
 /**
  * Informational frozen read-only view of registered feature identities.
- * ZERO entries in V0. Exposing this list grants no mutation capability.
+ * Exactly ONE entry (interaction familiarity). Exposing this list grants no
+ * mutation capability.
  */
-export const REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0: readonly string[] =
-  Object.freeze([]);
+export const REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0: readonly string[] = Object.freeze([
+  INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0
+]);
 
 // ---- stable error taxonomy + resolution (§17/§18) --------------------------------
 
@@ -663,9 +772,10 @@ export interface ResolveRelationshipFeatureDecisionSemanticsInputV0 {
  * contract id, contract fingerprint). Fixed literals RELATIONSHIP and
  * relationship-state-v0 are enforced; identity mismatches fail closed.
  *
- * Because registry V0 contains ZERO entries, EVERY attempted resolution
- * currently fails closed as unknown/unregistered — this is expected behavior,
- * not architecture failure. No name special-casing, no fuzzy resolution.
+ * The registry contains exactly ONE admitted real feature (interaction
+ * familiarity); every other identity still fails closed as unknown/
+ * unregistered — expected fail-closed behavior, not architecture failure.
+ * No name special-casing, no fuzzy resolution.
  */
 export function resolveRegisteredRelationshipFeatureDecisionSemanticsV0(
   input: ResolveRelationshipFeatureDecisionSemanticsInputV0
@@ -683,7 +793,7 @@ export function resolveRegisteredRelationshipFeatureDecisionSemanticsV0(
   if (entry === undefined) {
     throw new RelationshipFeatureDecisionSemanticsResolutionErrorV0(
       "UNKNOWN_FEATURE_SEMANTICS",
-      `no registered decision-semantic contract for feature_semantics_contract_id ${input.feature_semantics_contract_id} (registry V0 is zero-entry)`
+      `no registered decision-semantic contract for feature_semantics_contract_id ${input.feature_semantics_contract_id} (registered: interaction familiarity only)`
     );
   }
   if (entry.contract.dimension_id !== input.dimension_id) {
@@ -718,16 +828,18 @@ export type RelationshipFeatureDecisionAdmissionV0 = {
  * Storage admission (a canonical opaque dimension may exist in
  * relationship-state-v0) is explicitly DISTINCT from decision admission.
  *
- * Because registry V0 is zero-entry, EVERY canonical Relationship feature is
- * currently NOT_DECISION_ADMISSIBLE / UNREGISTERED_FEATURE. This query never
- * throws merely because an opaque canonical feature exists, never converts a
- * value to zero, and never manufactures semantics.
+ * Even for the admitted interaction-familiarity feature, DECISION admission
+ * stays closed: decision-admissible use requires the exact typed
+ * feature×action×counterpart relation, and no action-relation provider exists
+ * yet. This query never throws merely because an opaque canonical feature
+ * exists, never converts a value to zero, and never manufactures semantics.
  */
 export function queryRelationshipFeatureDecisionAdmissionV0(
   dimension_id: string
 ): RelationshipFeatureDecisionAdmissionV0 {
-  // Registry V0 has ZERO entries → every feature is unregistered. The exact
-  // opaque dimension_id is deliberately not pattern-matched or coerced.
+  // Decision use is forbidden for every dimension: no typed action relation
+  // exists. The exact opaque dimension_id is deliberately not pattern-matched
+  // or coerced.
   void dimension_id;
   return { decision_admission: "NOT_DECISION_ADMISSIBLE", reason: "UNREGISTERED_FEATURE" };
 }

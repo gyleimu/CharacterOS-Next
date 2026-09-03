@@ -715,6 +715,45 @@ export type {
 
 export type { RelationshipPreparedAuthorityCapabilityV0 } from "./transitions/relationship/relationship-governed-write-authority-service.js";
 
+// --- Relationship Registered Feature Admission V1 (interaction familiarity) -----------
+// Read-only admitted-feature identity, receipt contract and feature-law
+// validators only. There is NO product governed-write API: no caller can
+// supply dimension ids, canonical familiarity values, increments, epochs or
+// authority payloads; the governed writer-authority service, trusted-history
+// issuer and every minting surface remain internal.
+
+export {
+  INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
+  INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_ID_V0,
+  INTERACTION_FAMILIARITY_QUANTITY_SEMANTICS_ID_V0,
+  INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_V0,
+  INTERACTION_FAMILIARITY_FEATURE_SEMANTICS_CONTRACT_FINGERPRINT_V0
+} from "./transitions/relationship/relationship-feature-decision-semantics.js";
+
+export {
+  RELATIONSHIP_INTERACTION_FAMILIARITY_EVIDENCE_RECEIPT_SCHEMA_VERSION_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_EVIDENCE_ADMISSION_POLICY_ID_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_EVIDENCE_RECEIPT_PROJECTION,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_EVIDENCE_RECEIPT_REF_KIND_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_QUALIFYING_CLASSES_V0,
+  validateRelationshipInteractionFamiliarityEvidenceReceiptV0,
+  deriveRelationshipInteractionFamiliarityEvidenceReceiptRefV0,
+  isRelationshipInteractionFamiliarityEvidenceReceiptRefV0,
+  type RelationshipInteractionFamiliarityEvidenceReceiptV0,
+  type RelationshipInteractionFamiliarityQualifyingClassV0
+} from "./transitions/relationship/relationship-interaction-familiarity-evidence-receipt.js";
+
+export {
+  RELATIONSHIP_INTERACTION_FAMILIARITY_ACCRUAL_POLICY_ID_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_GRID_DENOMINATOR_V0,
+  classifyInteractionFamiliarityGridValueV0,
+  interactionFamiliarityGridValueV0,
+  validateInteractionFamiliarityAuthorityLawV0,
+  type InteractionFamiliarityGridClassificationV0,
+  type InteractionFamiliarityLawRejectionCodeV0,
+  type InteractionFamiliarityAuthorityLawCheckV0
+} from "./transitions/relationship/relationship-interaction-familiarity-accrual-policy.js";
+
 // --- Relationship Governed Writer Authority Payload Contract V0 ----------------------
 
 export {

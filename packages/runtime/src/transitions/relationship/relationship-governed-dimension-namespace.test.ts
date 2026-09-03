@@ -251,9 +251,11 @@ describe("Relationship Reserved Namespace and Generic Writer Hardening V0", () =
   // ---- §27/§28 registry + frozen V0 admission boundary ------------------------------
 
   describe("§27/§28 registry and frozen V0 admission boundary", () => {
-    it("feature-semantics registry remains zero-entry: no relationship_core_* feature resolves", () => {
+    it("feature-semantics registry admits exactly ONE governed feature (interaction familiarity)", () => {
       expect(Object.isFrozen(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0)).toBe(true);
-      expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(0);
+      expect([...REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0]).toStrictEqual([
+        "relationship-interaction-familiarity-semantics-v0"
+      ]);
     });
 
     it("frozen denial-only V0 admission stays NOT_DECISION_ADMISSIBLE for a reserved-prefix id", () => {

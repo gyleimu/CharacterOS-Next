@@ -12,15 +12,22 @@
  *      governed relationship_core_* target, removal rejected
  *   2. feature admission (§8)      — exact registered binding (domain, source
  *      state schema, dimension, contract id, contract fingerprint) through
- *      the frozen feature-semantics registry; ZERO entries → every real
- *      governed write FAILS CLOSED here (FEATURE_NOT_ADMITTED)
+ *      the frozen feature-semantics registry; every identity except the ONE
+ *      admitted real feature (interaction familiarity) FAILS CLOSED here
+ *      (FEATURE_NOT_ADMITTED)
  *   3. evidence binding (§12)      — evidence refs nonempty, unique,
  *      raw-ASCII sorted, and EXACTLY equal to proposal.cause_refs AND the
  *      sole Relationship delta provenance_refs (no subset/superset; arbitrary
- *      ref-only claims rejected)
+ *      ref-only claims rejected); for interaction familiarity these are
+ *      familiarity evidence RECEIPT refs, never raw episode refs
  *   4. operation classification (§17) — INITIALIZE / UPDATE / REINITIALIZE
  *      against the exact predecessor target and the trusted-history
  *      prior-authority lookup; removal and equal UPDATE rejected
+ *   4.5 feature law (V1)           — the ONE interaction-familiarity accrual
+ *      law: INITIALIZE derives exactly 1/32 from one receipt; UPDATE derives
+ *      exactly (|R_prev|+1)/32 from R_prev plus one NEW receipt; saturation
+ *      at 32 produces no proposal; REINITIALIZE is not authorized; no
+ *      caller-supplied value bypasses the derivation
  *   5. authority epoch (§20)       — INITIALIZE/REINITIALIZE → current
  *      transition_id; UPDATE → inherited from the proven prior; a caller can
  *      never supply it
@@ -29,13 +36,12 @@
  *   7. positive terminal (§23)     — mint the opaque Runtime prepared-
  *      authority capability (WeakSet, deep frozen, fully bound)
  *
- * With the feature-semantics registry at ZERO entries no product/runtime call
- * can reach the positive terminal, so real production writer_authority stays
- * null and every governed reserved write fails closed
- * (PRODUCTION_NON_NULL_GOVERNED_WRITER_AUTHORITY_WITH_FEATURE_COUNT_ZERO =
- * ZERO). The PipelineStageObserver.authorityPreparation callback is NOT
- * consumed — OBSERVATION_ONLY. This is NOT a Relationship-specific commit
- * pipeline: the commit path remains the ONE shared V2 production pipeline.
+ * There is still NO product governed-write path: the service is internal, no
+ * product API supplies governed values, and ordinary production V2 commits
+ * keep writer_authority = null. The PipelineStageObserver.authorityPreparation
+ * callback is NOT consumed — OBSERVATION_ONLY. This is NOT a Relationship-
+ * specific commit pipeline: the commit path remains the ONE shared V2
+ * production pipeline.
  */
 
 import {
@@ -52,8 +58,10 @@ import type {
 import {
   RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
   RELATIONSHIP_FEATURE_DECISION_SOURCE_STATE_SCHEMA_VERSION_V0,
+  INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
   resolveRegisteredRelationshipFeatureDecisionSemanticsV0
 } from "./relationship-feature-decision-semantics.js";
+import { enforceInteractionFamiliarityLiveLawV0 } from "./relationship-interaction-familiarity-accrual-policy.js";
 import {
   RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_ID_V0,
   RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_ID_V0,
@@ -334,6 +342,7 @@ export type RelationshipGovernedWriteEvaluationV0 =
       readonly kind: "DENIED";
       readonly code:
         | "FEATURE_NOT_ADMITTED"
+        | "FEATURE_LAW_REJECTED"
         | "EVIDENCE_BINDING_MISMATCH"
         | "OPERATION_REJECTED"
         | "UNTRUSTED_HISTORY"
@@ -366,10 +375,10 @@ function refsExactlyEqual(a: readonly CanonicalRefV0[], b: readonly CanonicalRef
 
 /**
  * The ONE internal governed-write evaluation. Feature admission runs FIRST:
- * with the feature-semantics registry at ZERO entries every real call denies
- * with FEATURE_NOT_ADMITTED before any receipt/capability work. The positive
- * terminal below is the complete infrastructure for the future admission
- * slice — UNREACHABLE while the feature registry is zero-entry.
+ * every identity except the ONE admitted real feature (interaction
+ * familiarity) denies with FEATURE_NOT_ADMITTED before any receipt/capability
+ * work, and the admitted feature's own accrual law must then derive the exact
+ * transition (step 4.5).
  *
  * `expected_receipt_ref` lets the commit-time revalidation prove the
  * proposal's external_refs receipt is EXACTLY the recomputed deterministic
@@ -400,7 +409,7 @@ export async function evaluateRelationshipGovernedWriteV0(input: {
       kind: "DENIED",
       code: "FEATURE_NOT_ADMITTED",
       detail:
-        "no positively admitted Relationship feature semantics exists for this governed target (registry V0 is zero-entry)"
+        "no positively admitted Relationship feature semantics exists for this governed target (registered: interaction familiarity only)"
     };
   }
 
@@ -442,6 +451,39 @@ export async function evaluateRelationshipGovernedWriteV0(input: {
       kind: "DENIED",
       code: "OPERATION_REJECTED",
       detail: `${operation.code}: ${operation.detail}`
+    };
+  }
+
+  // 4.5 Feature-specific law — exactly ONE admitted feature (interaction
+  // familiarity), ONE law, ONE exact path. The caller's proposed next value
+  // and cumulative receipt set are only accepted when they EXACTLY equal the
+  // law derivation (INITIALIZE: one receipt → 1/32; UPDATE: R_prev plus one
+  // new receipt → (|R_prev|+1)/32; saturation at 32 → no proposal);
+  // REINITIALIZE is not authorized by ordinary familiarity V0. Any other
+  // dimension fails closed (no feature-law hook is registered for it).
+  if (input.target.dimension_id === INTERACTION_FAMILIARITY_DIMENSION_ID_V0) {
+    const law = enforceInteractionFamiliarityLiveLawV0({
+      operation,
+      previous: input.target.previous,
+      next: input.target.next,
+      proposed_receipt_refs: evidence,
+      prior:
+        lookup.kind === "FOUND"
+          ? { kind: "PRIOR", receipt_refs: lookup.payload.evidence_receipt_refs }
+          : { kind: "NONE" }
+    });
+    if (!law.ok) {
+      return {
+        kind: "DENIED",
+        code: "FEATURE_LAW_REJECTED",
+        detail: `${law.code}: ${law.detail}`
+      };
+    }
+  } else {
+    return {
+      kind: "DENIED",
+      code: "FEATURE_LAW_REJECTED",
+      detail: "no feature-specific law validator is registered for this admitted dimension (fail closed)"
     };
   }
 

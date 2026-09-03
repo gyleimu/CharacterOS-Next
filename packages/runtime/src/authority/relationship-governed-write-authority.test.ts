@@ -3,7 +3,7 @@
  * suite (§47/§48/§49-§53/§55):
  *
  *   §47 registry counts asserted directly (writer schema 1, gates 1,
- *      policies 1, Relationship decision features 0)
+ *      policies 1, Relationship decision features: interaction familiarity)
  *   §48 root-export surface: NO authority issuer/verifier/registration
  *      surface is product-exposed
  *   §49 gate/policy/fingerprint injection rejected by the exact resolvers
@@ -23,8 +23,8 @@
  *
  * Every V2 bundle from the production path comes from the REAL
  * facade/engine/store pipeline; governed historical fixtures are structural
- * (allowed by §53); NO feature is registered anywhere
- * (REGISTERED_RELATIONSHIP_DECISION_FEATURE_COUNT stays 0). Fully OFFLINE.
+ * (allowed by §53); the ONLY registered feature is interaction familiarity
+ * (REGISTERED_RELATIONSHIP_DECISION_FEATURE_COUNT = 1). Fully OFFLINE.
  */
 
 import { describe, expect, it } from "vitest";
