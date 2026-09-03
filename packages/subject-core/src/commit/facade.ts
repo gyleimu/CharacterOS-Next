@@ -65,6 +65,7 @@ import {
   type CommitTransitionInput,
   type CommitTransitionOutcome
 } from "./engine.js";
+import type { PreparedGovernedWriterAuthorityTokenV0 } from "./writer-authority-membrane.js";
 import { validateProposal } from "../validation/proposal.js";
 import {
   proposalFingerprint,
@@ -141,6 +142,15 @@ export interface CommitReservedInput {
   readonly producerAuthorization: ProducerAuthorizationSetV1;
   readonly preparedBinding: PreparedLogicalResultBindingV1;
   readonly repository_bindings: readonly RepositoryRevisionBindingV1[];
+  /**
+   * Governed path ONLY (INTERACTION_FAMILIARITY_EXPERIENCE_INGESTION_V0
+   * minimum wiring): an opaque, WeakSet-admitted prepared governed writer
+   * authority token minted through the assembly's trusted
+   * preparedGovernedWriterAuthorityIssuer (the membrane issuer stays
+   * module-private; trusted internal composition only). Ordinary non-governed
+   * commits omit it and keep the exact null-authority behavior.
+   */
+  readonly prepared_governed_writer_authority?: PreparedGovernedWriterAuthorityTokenV0;
 }
 
 export type ReconcileOutcome =
@@ -391,6 +401,9 @@ export class SubjectCoreFacade {
         : {}),
       ...(this.ports.memoryAdoptionValidator !== undefined
         ? { memory_adoption_validator: this.ports.memoryAdoptionValidator }
+        : {}),
+      ...(input.prepared_governed_writer_authority !== undefined
+        ? { prepared_governed_writer_authority: input.prepared_governed_writer_authority }
         : {})
     };
 

@@ -754,6 +754,28 @@ export {
   type InteractionFamiliarityAuthorityLawCheckV0
 } from "./transitions/relationship/relationship-interaction-familiarity-accrual-policy.js";
 
+// --- Interaction Familiarity Experience Ingestion V0 ----------------------------------
+// The narrow EXPERIENCE-oriented product capability: the caller supplies an
+// experience identity (subject, registered counterpart, candidate episode);
+// CharacterOS owns the entire derivation from experience to governed commit.
+// No state-oriented API exists (no setFamiliarity / writeRelationshipCore /
+// mintFamiliarityReceipt); authority issuers and capabilities remain internal
+// to trusted composition.
+
+export {
+  RELATIONSHIP_INTERACTION_FAMILIARITY_INGESTION_SCHEMA_VERSION_V0,
+  RELATIONSHIP_INTERACTION_QUALIFYING_ADMISSION_CLASSES_V0,
+  processInteractionExperience,
+  type InteractionFamiliarityIngestionDepsV0,
+  type InteractionFamiliarityIngestionOutcomeV0,
+  type InteractionFamiliarityIngestionRejectionCodeV0,
+  type ProcessInteractionExperienceRequestV0,
+  type RelationshipInteractionQualifyingAdmissionClassV0,
+  type RelationshipInteractionQualifyingAdmissionInputV0,
+  type RelationshipInteractionQualifyingAdmissionProviderV0,
+  type RelationshipInteractionQualifyingAdmissionV0
+} from "./transitions/relationship/relationship-interaction-familiarity-ingestion.js";
+
 // --- Relationship Governed Writer Authority Payload Contract V0 ----------------------
 
 export {

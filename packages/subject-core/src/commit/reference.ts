@@ -20,6 +20,11 @@ import {
   createProducerAuthorizationIssuer,
   type ProducerAuthorizationIssuer
 } from "./producer-authorization.js";
+import {
+  mintPreparedGovernedWriterAuthorityTokenV0,
+  type MintPreparedGovernedWriterAuthorityTokenInputV0,
+  type PreparedGovernedWriterAuthorityTokenV0
+} from "./writer-authority-membrane.js";
 
 export interface InMemoryFacadeOptions {
   /** Verdict-only repository capability (defaults to accepting everything). */
@@ -50,6 +55,25 @@ export interface ReadOnlyStoreHandle {
   currentRevision(subjectId: string): number | null;
   readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
   readCommittedByTransitionId(transitionId: string): AtomicCommitBundleAnyVersion | null;
+  /**
+   * Read-only current canonical snapshot (same authority the facade's own
+   * StateReader uses: latest committed bundle snapshot, else the seed).
+   * INTERACTION_FAMILIARITY_EXPERIENCE_INGESTION_V0 read surface.
+   */
+  readCurrentState(subjectId: string): Promise<SubjectStateV0 | null>;
+}
+
+/**
+ * Trusted-composition issuer for prepared governed writer authority tokens
+ * (INTERACTION_FAMILIARITY_EXPERIENCE_INGESTION_V0 minimum wiring). The
+ * membrane issuer itself stays module-private; this handle parallels
+ * producerAuthorizationIssuer: it exists ONLY on the assembly handed to
+ * trusted runtime composition, and the facade/engine keep enforcing every
+ * frozen governed law (token identity binding, reserved-write guard, exact
+ * record materialization).
+ */
+export interface PreparedGovernedWriterAuthorityIssuer {
+  issue(input: MintPreparedGovernedWriterAuthorityTokenInputV0): PreparedGovernedWriterAuthorityTokenV0;
 }
 
 export interface InMemoryFacadeAssembly {
@@ -62,6 +86,12 @@ export interface InMemoryFacadeAssembly {
    * only; structurally copied sets are refused by the facade.
    */
   readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
+  /**
+   * Trusted-composition issuer for prepared governed writer authority tokens
+   * (see PreparedGovernedWriterAuthorityIssuer). NOT a module export surface:
+   * the membrane issuer/verifier remain module-private.
+   */
+  readonly preparedGovernedWriterAuthorityIssuer: PreparedGovernedWriterAuthorityIssuer;
 }
 
 export function createInMemorySubjectCoreFacade(
@@ -103,12 +133,21 @@ export function createInMemorySubjectCoreFacade(
   return {
     facade: new SubjectCoreFacade(ports),
     producerAuthorizationIssuer,
+    preparedGovernedWriterAuthorityIssuer: {
+      issue: (input: MintPreparedGovernedWriterAuthorityTokenInputV0) =>
+        mintPreparedGovernedWriterAuthorityTokenV0(input)
+    },
     storeRead: {
       getCommittedBundles: () => store.getCommittedBundles(),
       currentRevision: (subjectId: string) => store.currentRevision(subjectId),
       readCurrentBundle: (subjectId: string) => store.readCurrentBundle(subjectId),
       readCommittedByTransitionId: (transitionId: string) =>
-        store.readCommittedByTransitionId(transitionId)
+        store.readCommittedByTransitionId(transitionId),
+      readCurrentState: async (subjectId: string) => {
+        const bundle = store.readCurrentBundle(subjectId);
+        if (bundle !== null) return bundle.next_snapshot;
+        return seeds.get(subjectId as IdentifierV0) ?? null;
+      }
     },
     journal
   };
