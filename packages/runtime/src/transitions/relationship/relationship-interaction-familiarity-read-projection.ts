@@ -23,10 +23,19 @@
  * semantics are impossible (the admitted binding is resolved internally and
  * the projection fails closed when it cannot resolve exactly).
  *
- * ABSENCE LAW: ABSENT != PRESENT 0. ABSENT projects nulls; PRESENT must be a
- * LAWFUL familiarity value (on the k/32 credit grid with k >= 1 — PRESENT 0 is
- * an unlawful state, not an absence). Malformed/off-grid present state FAILS
- * CLOSED: no coercion, no rounding, no silent conversion to ABSENT.
+ * ABSENCE LAW: ABSENT != PRESENT 0, and BOTH are lawful. The canonical grid is
+ * G = { k/32 | integer k, 0 <= k <= 32 }, so 0 is a valid familiarity quantity.
+ *   ABSENT    = no canonical interaction-familiarity claim/state exists for
+ *               this counterpart → canonical_value/ordinal_level null.
+ *   PRESENT 0 = a canonical familiarity state EXISTS and its current credited
+ *               quantity is exactly zero → presence PRESENT, value 0, ordinal 0.
+ * The ordinary V0 lived-experience ingestion path never INITIALIZES at 0
+ * (its first qualifying experience goes ABSENT → 1/32), but that production
+ * fact does NOT make PRESENT 0 invalid: read semantics preserve the structural
+ * and hash distinction and never coerce either side into the other.
+ * Off-grid / NaN / ±Infinity / negative / >1 / duplicate / malformed present
+ * state still FAILS CLOSED: no coercion, no rounding, no silent ABSENT
+ * conversion.
  *
  * STATE_VISIBLE_NOT_CITEABLE: familiarity is subjective canonical state
  * context — credited firsthand interaction history under the frozen V0 policy.
@@ -176,7 +185,10 @@ export async function deriveInteractionFamiliarityReadProjectionV0(input: {
     );
   }
 
-  // 3. Presence resolution — ABSENT != PRESENT 0; malformed present fails closed.
+  // 3. Presence resolution — ABSENT != PRESENT 0; BOTH are lawful. The grid is
+  //    G = { k/32 | 0 <= k <= 32 }, so PRESENT 0 projects presence PRESENT with
+  //    canonical_value 0 and ordinal_level 0 (never coerced into ABSENT).
+  //    Off-grid / non-finite / out-of-range / duplicated state fails closed.
   let presence: "ABSENT" | "PRESENT";
   let canonicalValue: number | null;
   let ordinalLevel: number | null;
@@ -193,12 +205,6 @@ export async function deriveInteractionFamiliarityReadProjectionV0(input: {
     const grid = classifyInteractionFamiliarityGridValueV0(rawValue);
     if (!grid.ok) {
       return fail("FAMILIARITY_STATE_MALFORMED", `familiarity value: ${grid.detail}`);
-    }
-    if (grid.k < 1) {
-      return fail(
-        "FAMILIARITY_STATE_MALFORMED",
-        "PRESENT 0 is an unlawful familiarity state (ABSENT is the representation of no credited interaction); fail closed"
-      );
     }
     presence = "PRESENT";
     canonicalValue = rawValue;

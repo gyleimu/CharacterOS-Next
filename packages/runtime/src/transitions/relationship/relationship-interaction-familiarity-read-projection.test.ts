@@ -232,11 +232,42 @@ describe("absence semantics", () => {
     });
   });
 
-  it("keeps ABSENT distinct from PRESENT 0: PRESENT 0 fails closed as unlawful", async () => {
+  it("keeps ABSENT and PRESENT 0 lawful, structurally and hash-distinct, never coerced", async () => {
+    // PRESENT 0 is a VALID grid state: present familiarity at its lower endpoint.
     const zero = await project(aliceOnly(0));
-    expect(zero).toMatchObject({ ok: false, code: "FAMILIARITY_STATE_MALFORMED" });
-    if (zero.ok) return;
-    expect(zero.detail).toContain("PRESENT 0");
+    expect(zero).toMatchObject({
+      ok: true,
+      projection: {
+        presence: "PRESENT",
+        canonical_value: 0,
+        ordinal_level: 0,
+        ordinal_max: 32
+      }
+    });
+
+    const absent = await project(aliceOnly(null));
+    expect(absent).toMatchObject({
+      ok: true,
+      projection: { presence: "ABSENT", canonical_value: null, ordinal_level: null }
+    });
+
+    // structurally distinct — never coerced into each other
+    if (!zero.ok || !absent.ok) return;
+    expect(absent.projection).not.toStrictEqual(zero.projection);
+
+    // hash-distinct under the existing cognitive projection binding
+    const absentView = await buildCognitiveContextProjection(aliceOnly(null));
+    const zeroView = await buildCognitiveContextProjection(aliceOnly(0));
+    expect(absentView.projection_hash).not.toBe(zeroView.projection_hash);
+    expect(absentView.interaction_familiarity[0]?.presence).toBe("ABSENT");
+    expect(zeroView.interaction_familiarity[0]?.presence).toBe("PRESENT");
+    expect(zeroView.interaction_familiarity[0]?.canonical_value).toBe(0);
+    expect(zeroView.interaction_familiarity[0]?.ordinal_level).toBe(0);
+
+    // deterministic PRESENT 0 projection/hash
+    const zeroAgain = await buildCognitiveContextProjection(aliceOnly(0));
+    expect(zeroAgain.projection_hash).toBe(zeroView.projection_hash);
+    expect(zeroAgain.interaction_familiarity).toStrictEqual(zeroView.interaction_familiarity);
   });
 });
 
@@ -477,6 +508,29 @@ describe("cognition visibility", () => {
     // the raw governed dimension never reaches the model unexplained
     expect(userContent).not.toContain(`${FAMILIARITY}=`);
     expect(userContent).not.toContain("0.03125");
+
+    // PRESENT 0 renders distinctly from ABSENT (lower endpoint, not absence,
+    // and not an interaction occurrence)
+    const zeroState = subjectState({
+      counterparts: [
+        {
+          counterpart_ref: ALICE,
+          dimensions: [
+            { dimension_id: "arbitrary_host_dimension", value: 0.25 },
+            { dimension_id: FAMILIARITY, value: 0 }
+          ]
+        }
+      ]
+    });
+    const zeroRender = buildCognitivePromptMessagesV1({
+      projection: await buildCognitiveContextProjection(zeroState),
+      canonical_actions: [],
+      action_space_fingerprint: "sha256:4444444444444444444444444444444444444444444444444444444444444444" as never,
+      allowed_evidence_refs: []
+    } as never);
+    const zeroContent = zeroRender[1]?.content ?? "";
+    expect(zeroContent).toContain(`${ALICE}: presence=PRESENT level=0/32`);
+    expect(zeroContent).not.toContain(`${ALICE}: presence=ABSENT`);
   });
 });
 
