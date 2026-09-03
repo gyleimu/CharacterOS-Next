@@ -754,6 +754,20 @@ export {
   type InteractionFamiliarityAuthorityLawCheckV0
 } from "./transitions/relationship/relationship-interaction-familiarity-accrual-policy.js";
 
+// --- Interaction Familiarity Read Projection V0 (READ-ONLY) ----------------------------
+// Pure semantic read projection of the canonical familiarity state for
+// cognition: state read → validation → semantic projection. It exposes no
+// mutation token, writer authority, history capability or commit capability.
+
+export {
+  RELATIONSHIP_INTERACTION_FAMILIARITY_READ_PROJECTION_SCHEMA_VERSION_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_READ_PROJECTION_VISIBILITY_V0,
+  deriveInteractionFamiliarityReadProjectionV0,
+  type InteractionFamiliarityReadProjectionRejectionCodeV0,
+  type InteractionFamiliarityReadProjectionResultV0,
+  type RelationshipInteractionFamiliarityReadProjectionV0
+} from "./transitions/relationship/relationship-interaction-familiarity-read-projection.js";
+
 // --- Interaction Familiarity Experience Ingestion V0 ----------------------------------
 // The narrow EXPERIENCE-oriented product capability: the caller supplies an
 // experience identity (subject, registered counterpart, candidate episode);

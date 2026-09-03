@@ -41,9 +41,11 @@ import type {
   SubjectStateV0
 } from "@characteros-next/subject-core";
 import { hashEnvelope } from "@characteros-next/subject-core";
+import { isReservedRelationshipCoreDimensionIdV0 } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
+import { deriveInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 import {
   actionIntentAllowed,
   allowedEvidenceSet,
@@ -173,16 +175,41 @@ export async function buildCognitiveContextProjection(
     relationship_counterpart_count: snapshot.relationships.counterparts.length,
     relationship_dimensions: snapshot.relationships.counterparts
       .flatMap((counterpart) =>
-        counterpart.dimensions.map((dimension) => ({
-          counterpart_ref: counterpart.counterpart_ref as string,
-          dimension_id: dimension.dimension_id as string,
-          value: dimension.value as number
-        }))
+        counterpart.dimensions
+          // Reserved governed relationship_core_* dimensions are NEVER exposed
+          // raw: governed features project their own exact semantic surfaces
+          // (interaction_familiarity below). Generic opaque dims are unchanged.
+          .filter((dimension) => !isReservedRelationshipCoreDimensionIdV0(dimension.dimension_id))
+          .map((dimension) => ({
+            counterpart_ref: counterpart.counterpart_ref as string,
+            dimension_id: dimension.dimension_id as string,
+            value: dimension.value as number
+          }))
       )
       .sort(
         (a, b) =>
           (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0) ||
           (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0)
+      ),
+    // Interaction Familiarity Read Projection V0: the exact admitted governed
+    // feature's semantic state surface per registered counterpart. Pure
+    // derivation from the authoritative snapshot; a malformed canonical
+    // familiarity state FAILS CLOSED (no projection is built at all).
+    interaction_familiarity: await Promise.all(
+      [...snapshot.relationships.counterparts]
+        .sort((a, b) => (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0))
+        .map(async (counterpart) => {
+          const derived = await deriveInteractionFamiliarityReadProjectionV0({
+            subjectState: snapshot,
+            counterpart_ref: counterpart.counterpart_ref as never
+          });
+          if (!derived.ok) {
+            throw new Error(
+              `cognitive context projection: interaction familiarity read projection failed (${derived.code}: ${derived.detail})`
+            );
+          }
+          return derived.projection;
+        })
       ),
     allowed_actions: [] as { action_type: string; target_ref: string | null }[]
   };

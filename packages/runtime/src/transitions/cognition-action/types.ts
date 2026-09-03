@@ -36,6 +36,7 @@ import {
   validateUnitInterval,
   type ValidationResult
 } from "@characteros-next/subject-core";
+import type { RelationshipInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 
 export const COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION =
   "cognitive-context-projection-v0" as const;
@@ -138,8 +139,18 @@ export interface CognitiveContextProjectionV0 {
   /**
    * Read-only canonical Relationship dimension values, deterministically sorted
    * by (counterpart_ref, dimension_id). Empty array when no counterparts exist.
+   * Reserved governed relationship_core_* dimensions are NEVER exposed raw —
+   * governed features project their own exact semantic surfaces below.
    */
   readonly relationship_dimensions: readonly RelationshipDimensionProjectionV0[];
+  /**
+   * Interaction Familiarity Read Projection V0 (INTERACTION_FAMILIARITY_READ_
+   * PROJECTION_V0): the ONE admitted governed Relationship feature's exact
+   * semantic state surface, one entry per registered counterpart, determinis-
+   * tically sorted by counterpart_ref. STATE_VISIBLE_NOT_CITEABLE — unsigned
+   * subjective canonical state context, never trust/utility/evidence refs.
+   */
+  readonly interaction_familiarity: readonly RelationshipInteractionFamiliarityReadProjectionV0[];
   /** The only action space the provider may propose within. */
   readonly allowed_actions: readonly AllowedActionV0[];
   /** Content-addressed integrity of the exact projection body. */

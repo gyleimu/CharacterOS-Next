@@ -181,6 +181,7 @@ export async function verifyCognitiveProjectionIntegrityV1(
     belief_items: projection.belief_items,
     relationship_counterpart_count: projection.relationship_counterpart_count,
     relationship_dimensions: projection.relationship_dimensions,
+    interaction_familiarity: projection.interaction_familiarity,
     // The frozen V0 hash body binds allowed_actions (always the empty V0 list).
     allowed_actions: projection.allowed_actions
   });

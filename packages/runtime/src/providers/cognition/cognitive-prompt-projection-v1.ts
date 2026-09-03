@@ -53,6 +53,24 @@ export function renderCognitiveSubjectDataV1(input: CognitionRelationProviderInp
       : projection.relationship_dimensions
           .map((r) => `- ${r.counterpart_ref}: ${r.dimension_id}=${r.value}`)
           .join("\n");
+  // Interaction Familiarity Read Projection V0: structured semantic state,
+  // deterministically rendered. STATE_VISIBLE_NOT_CITEABLE — the model must be
+  // able to distinguish ABSENT / low / higher established familiarity WITHOUT
+  // being told that higher is better, and without any numeric utility framing.
+  const familiarity = projection.interaction_familiarity;
+  const interactionFamiliarity =
+    familiarity.length === 0
+      ? "(no registered counterparts)"
+      : familiarity
+          .map(
+            (f) =>
+              `- ${f.counterpart_ref}: presence=${f.presence}` +
+              (f.presence === "PRESENT"
+                ? ` level=${f.ordinal_level}/${f.ordinal_max}`
+                : " (no credited firsthand interaction familiarity)")
+          )
+          .join("\n");
+  const interactionFamiliarityBlock = `[interaction familiarity — read-only subjective state; the bounded, policy-defined degree of credited firsthand interaction history with this exact counterpart under the frozen V0 policy; UNSIGNED magnitude: higher is NOT better, and familiarity does NOT imply trust, liking, safety, intimacy, affection, agreement, compliance, disclosure willingness, reliability or predictability; STATE_VISIBLE_NOT_CITEABLE: never place it in any refs array — citeable factual content comes only from Memory retrieval]\n${interactionFamiliarity}`;
   // Canonical sorted tuple list — host input order has NO authority.
   const actionSpace =
     input.canonical_actions.length === 0
@@ -81,6 +99,7 @@ export function renderCognitiveSubjectDataV1(input: CognitionRelationProviderInp
     `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,
     beliefs,
     `[relationships] ${relationships}`,
+    interactionFamiliarityBlock,
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):`,
     citeable,
