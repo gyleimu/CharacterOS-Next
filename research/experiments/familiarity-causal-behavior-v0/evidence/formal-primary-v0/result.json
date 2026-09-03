@@ -1,0 +1,202 @@
+{
+  "counts": {
+    "A": {
+      "BROAD_CLARIFICATION": 0,
+      "EVIDENCE_GROUNDED_CONTEXT_USE": 0,
+      "NARROW_MISSING_DETAIL": 0,
+      "UNSUPPORTED_SHARED_CONTEXT": 0,
+      "OTHER_VALID": 0
+    },
+    "B": {
+      "BROAD_CLARIFICATION": 0,
+      "EVIDENCE_GROUNDED_CONTEXT_USE": 8,
+      "NARROW_MISSING_DETAIL": 0,
+      "UNSUPPORTED_SHARED_CONTEXT": 0,
+      "OTHER_VALID": 0
+    }
+  },
+  "paired_directional": 0,
+  "unsupported": 0,
+  "complete": false,
+  "interpretation": "INVALID_EXPERIMENT",
+  "primary_calls": 16,
+  "evaluator_calls": 8,
+  "trials": [
+    {
+      "arm": "A",
+      "trial": 1,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "B",
+      "trial": 1,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "B",
+      "trial": 2,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "A",
+      "trial": 2,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "A",
+      "trial": 3,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "B",
+      "trial": 3,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "B",
+      "trial": 4,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "A",
+      "trial": 4,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "A",
+      "trial": 5,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "B",
+      "trial": 5,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "B",
+      "trial": 6,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "A",
+      "trial": 6,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "A",
+      "trial": 7,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    },
+    {
+      "arm": "B",
+      "trial": 7,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "B",
+      "trial": 8,
+      "seed": null,
+      "host_valid": true,
+      "valid": true,
+      "evaluation": {
+        "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+        "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+        "supporting_refs": [
+          "episode:alice-08"
+        ]
+      }
+    },
+    {
+      "arm": "A",
+      "trial": 8,
+      "seed": null,
+      "host_valid": true,
+      "valid": false,
+      "evaluation": null
+    }
+  ]
+}

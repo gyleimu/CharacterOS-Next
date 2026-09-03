@@ -1,0 +1,62 @@
+{
+  "host_valid": true,
+  "valid": true,
+  "evaluation": {
+    "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+    "rationale": "The reply applies the specific style constraints (concise wording, factual tone, no apologies) explicitly requested by Alice in the provided lawful memory evidence.",
+    "supporting_refs": [
+      "episode:alice-08"
+    ]
+  },
+  "error": null,
+  "retrieval_observations": {
+    "queries": [
+      {
+        "schema_version": "memory-retrieval-query-v0",
+        "subject_id": "subject-familiarity-experiment",
+        "repository_revision": "R0",
+        "semantic_reference": "entity:alice",
+        "temporal": {
+          "now_logical_time": 0,
+          "window_start": null
+        },
+        "entity_refs": [
+          "entity:alice"
+        ],
+        "relationship_refs": [],
+        "current_context_refs": [],
+        "salience_constraints": {
+          "min_declared_score": null,
+          "max_candidates": 16
+        }
+      }
+    ],
+    "retrievalResults": [
+      {
+        "schema_version": "memory-retrieval-result-v0",
+        "subject_id": "subject-familiarity-experiment",
+        "selected_memory_refs": [
+          "episode:alice-08"
+        ],
+        "evidence": [
+          {
+            "episode_ref": "episode:alice-08",
+            "reasons": [
+              {
+                "dimension": "ENTITY",
+                "score": 0.8
+              }
+            ]
+          }
+        ],
+        "retrieval_trace_ref": null,
+        "deterministic_metadata": {
+          "repository_revision": "R0",
+          "candidate_count": 1,
+          "computed_under_config": "MEMORY_RETRIEVAL_V0",
+          "query_fingerprint": "sha256:5a771d407fa590fa8cc3b756fc02a3557c5c0847da669010a9b4baad29fa5f8c"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "observation": 1,
+    "arm": "A",
+    "trial": 1,
+    "seed": null
+  },
+  {
+    "observation": 2,
+    "arm": "B",
+    "trial": 1,
+    "seed": null
+  },
+  {
+    "observation": 3,
+    "arm": "B",
+    "trial": 2,
+    "seed": null
+  },
+  {
+    "observation": 4,
+    "arm": "A",
+    "trial": 2,
+    "seed": null
+  },
+  {
+    "observation": 5,
+    "arm": "A",
+    "trial": 3,
+    "seed": null
+  },
+  {
+    "observation": 6,
+    "arm": "B",
+    "trial": 3,
+    "seed": null
+  },
+  {
+    "observation": 7,
+    "arm": "B",
+    "trial": 4,
+    "seed": null
+  },
+  {
+    "observation": 8,
+    "arm": "A",
+    "trial": 4,
+    "seed": null
+  },
+  {
+    "observation": 9,
+    "arm": "A",
+    "trial": 5,
+    "seed": null
+  },
+  {
+    "observation": 10,
+    "arm": "B",
+    "trial": 5,
+    "seed": null
+  },
+  {
+    "observation": 11,
+    "arm": "B",
+    "trial": 6,
+    "seed": null
+  },
+  {
+    "observation": 12,
+    "arm": "A",
+    "trial": 6,
+    "seed": null
+  },
+  {
+    "observation": 13,
+    "arm": "A",
+    "trial": 7,
+    "seed": null
+  },
+  {
+    "observation": 14,
+    "arm": "B",
+    "trial": 7,
+    "seed": null
+  },
+  {
+    "observation": 15,
+    "arm": "B",
+    "trial": 8,
+    "seed": null
+  },
+  {
+    "observation": 16,
+    "arm": "A",
+    "trial": 8,
+    "seed": null
+  }
+]

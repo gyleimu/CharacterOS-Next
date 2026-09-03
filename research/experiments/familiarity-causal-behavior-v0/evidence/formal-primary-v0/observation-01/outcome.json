@@ -1,0 +1,13 @@
+{
+  "host_valid": true,
+  "valid": false,
+  "evaluation": null,
+  "error": {
+    "phase": "INVALID_PROVIDER_OUTPUT",
+    "message": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+  },
+  "retrieval_observations": {
+    "queries": [],
+    "retrievalResults": []
+  }
+}
