@@ -54,9 +54,8 @@ import {
   type TrustedCanonicalHistoryBoundaryReceiptV0
 } from "./trusted-canonical-history-boundary.js";
 import {
-  getRecognizedWriterSchemaContractsV0,
-  REGISTERED_AUTHORIZATION_GATE_IDS_V0,
-  REGISTERED_GOVERNED_RELATIONSHIP_WRITE_POLICY_IDS_V0
+  classifyHistoricalWriterAuthorityStatusV0,
+  type HistoricalWriterAuthorityStatusV0
 } from "./historical-writer-authority-registry.js";
 
 // ---- policy descriptor --------------------------------------------------------------
@@ -184,11 +183,8 @@ export interface ChainValidationFailureV0 {
   } | undefined;
 }
 
-export type WriterAuthorityStatusV0 =
-  | "NOT_PRESENT"
-  | "RESOLVED_VALID"
-  | "UNRESOLVED"
-  | "RESOLVED_INVALID";
+/** Frozen status vocabulary — owned by the static historical authority resolver. */
+export type WriterAuthorityStatusV0 = HistoricalWriterAuthorityStatusV0;
 
 export interface ChainValidationReceiptV0 {
   readonly schema_version: "atomic-commit-chain-validation-receipt-v0";
@@ -239,34 +235,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /**
- * Writer-authority STATUS classification from the static historical authority
- * registry ONLY. No host boolean, no caller validator, no dynamic
- * registration. With zero gates/policies registered, a schema-matching
- * record currently classifies UNRESOLVED (gate/policy layer unresolved);
- * a known schema id with a wrong family/fingerprint classifies
- * RESOLVED_INVALID (known-invalid historical authority, reported verbatim).
+ * Writer-authority STATUS classification — DELEGATED (§33) to the static
+ * historical authority resolver in the registry module, whose identity-family
+ * binding was repaired (schema→schema registry, gate→gate registry,
+ * payload policy→policy registry, feature semantics→admitted feature
+ * registry). The status vocabulary, when classification runs, summary
+ * counting, and the general chain validity law are UNCHANGED.
  */
 async function classifyWriterAuthorityStatusV0(
   writerAuthority: NonNullable<AtomicCommitBundleV2["writer_authority"]>
 ): Promise<WriterAuthorityStatusV0> {
-  const contracts = await getRecognizedWriterSchemaContractsV0();
-  const known = contracts.find(
-    (contract) => contract.writer_schema_id === writerAuthority.writer_schema_id
-  );
-  if (known === undefined) return "UNRESOLVED";
-  if (
-    known.writer_family !== writerAuthority.writer_family ||
-    known.writer_schema_fingerprint !== writerAuthority.writer_schema_fingerprint
-  ) {
-    return "RESOLVED_INVALID";
-  }
-  if (
-    !REGISTERED_AUTHORIZATION_GATE_IDS_V0.includes(writerAuthority.authorization_gate_id) ||
-    !REGISTERED_GOVERNED_RELATIONSHIP_WRITE_POLICY_IDS_V0.includes(writerAuthority.writer_schema_id)
-  ) {
-    return "UNRESOLVED";
-  }
-  return "RESOLVED_VALID";
+  return (await classifyHistoricalWriterAuthorityStatusV0(writerAuthority)).status;
 }
 
 // ---- validator ----------------------------------------------------------------------

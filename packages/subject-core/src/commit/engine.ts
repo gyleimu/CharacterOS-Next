@@ -49,6 +49,12 @@ import { assembleCommitBundleV2 } from "./bundle-v2.js";
 import { productionCommitTargetVersionV0 } from "./version-policy.js";
 import { evaluateCommitBundleVersionStepV0 } from "../validation/atomic-commit-bundle.js";
 import { validateAtomicCommitBundleV2 } from "../validation/atomic-commit-bundle.js";
+import {
+  detectReservedRelationshipTargetChangesV0,
+  verifyPreparedGovernedWriterAuthorityTokenV0,
+  type PreparedGovernedWriterAuthorityTokenV0
+} from "./writer-authority-membrane.js";
+import { proposalFingerprint, proposalRef } from "../canonical/projections.js";
 import type { AtomicCommitStorePort } from "./store.js";
 
 /** Verdict-only inverted capability (§15.1): existence/hash of one immutable revision. */
@@ -107,6 +113,17 @@ export interface CommitTransitionInput {
   readonly reference_validator?: ReferenceValidatorCapability;
   /** R2-H: REQUIRED (fail-closed) whenever the proposal changes the canonical memory binding. */
   readonly memory_adoption_validator?: MemoryAdoptionValidatorCapability;
+  /**
+   * Governed path ONLY (RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0):
+   * an opaque, WeakSet-admitted prepared authority token minted by the
+   * SubjectCore membrane. NOT a raw CanonicalWriterAuthorityRecordV0 — raw
+   * record input is forbidden by construction. When the prepared effect
+   * changes a reserved relationship_core_* target, a verified token whose
+   * identity binds the EXACT proposal/revision/head is REQUIRED (fail closed
+   * before CAS otherwise); ordinary non-governed transitions keep the exact
+   * null-authority behavior and must NOT carry a token.
+   */
+  readonly prepared_governed_writer_authority?: PreparedGovernedWriterAuthorityTokenV0;
 }
 
 export type CommitTransitionOutcome =
@@ -367,6 +384,107 @@ export function createCommitEngine(deps: {
         }
       }
 
+      // RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0 §30: reserved-write
+      // guard. A prepared effect that changes a reserved relationship_core_*
+      // target REQUIRES a verified internal prepared authority token binding
+      // the EXACT proposal/revision/head — fail closed BEFORE assembly/CAS.
+      // Ordinary non-governed transitions keep the exact null-authority
+      // behavior (GOVERNED_RESERVED_WRITE_WITHOUT_WRITER_AUTHORITY only fires
+      // for reserved targets). Removal of a governed target is unsupported.
+      const reservedChanges = detectReservedRelationshipTargetChangesV0(cur, effect.successor);
+      if (!reservedChanges.ok) {
+        return rejected({
+          error_code: "INVALID_TRANSITION_COMPOSITION",
+          reason: "FAIL-PREPARE-001",
+          detail: `reserved-target detection failed: ${reservedChanges.detail}`
+        });
+      }
+      let governedToken: PreparedGovernedWriterAuthorityTokenV0 | null = null;
+      if (reservedChanges.changes.length > 0) {
+        if (reservedChanges.changes.length > 1) {
+          return rejected({
+            error_code: "INVALID_TRANSITION_COMPOSITION",
+            reason: "FAIL-PREPARE-001",
+            detail: `governed target cardinality: exactly ONE governed Relationship target is supported, got ${reservedChanges.changes.length}`
+          });
+        }
+        const change = reservedChanges.changes[0];
+        if (change === undefined) {
+          return rejected({
+            error_code: "INVALID_TRANSITION_COMPOSITION",
+            reason: "FAIL-PREPARE-001",
+            detail: "governed target cardinality: change record missing"
+          });
+        }
+        if (change.kind === "REMOVED") {
+          return rejected({
+            error_code: "FORBIDDEN_DIRECT_MUTATION",
+            reason: "FAIL-PREPARE-001",
+            detail: `governed feature removal is unsupported (${change.counterpart_ref} ${change.dimension_id})`
+          });
+        }
+        if (p.domain_deltas.length !== 1 || p.domain_deltas[0]?.domain !== "relationship") {
+          return rejected({
+            error_code: "INVALID_TRANSITION_COMPOSITION",
+            reason: "FAIL-PREPARE-001",
+            detail: "a governed Relationship write requires exactly one relationship-domain delta (no cross-domain mix)"
+          });
+        }
+        const governedDelta = p.domain_deltas[0];
+        if (
+          governedDelta === undefined ||
+          governedDelta.operations.length !== 1 ||
+          governedDelta.operations[0]?.path !== "/relationships"
+        ) {
+          return rejected({
+            error_code: "INVALID_TRANSITION_COMPOSITION",
+            reason: "FAIL-PREPARE-001",
+            detail: "a governed Relationship write requires exactly one /relationships replacement operation"
+          });
+        }
+        const token = input.prepared_governed_writer_authority;
+        if (token === undefined) {
+          return rejected({
+            error_code: "FORBIDDEN_DIRECT_MUTATION",
+            reason: "FAIL-PREPARE-001",
+            detail: `governed reserved write without writer authority is forbidden (${change.counterpart_ref} ${change.dimension_id})`
+          });
+        }
+        const admission = verifyPreparedGovernedWriterAuthorityTokenV0(token);
+        if (!admission.ok) {
+          return rejected({
+            error_code: "FORBIDDEN_DIRECT_MUTATION",
+            reason: "FAIL-PREPARE-001",
+            detail: `prepared governed authority token rejected (${admission.code})`
+          });
+        }
+        const [tokenProposalRef, tokenPayloadFingerprint] = await Promise.all([
+          proposalRef(p),
+          proposalFingerprint(p)
+        ]);
+        const expectedHeadRef = previousBundle?.commit_ref ?? null;
+        const identityOk =
+          admission.token.proposal_ref === tokenProposalRef &&
+          admission.token.payload_fingerprint === tokenPayloadFingerprint &&
+          admission.token.subject_id === cur.identity.subject_id &&
+          admission.token.expected_revision === rm.state_revision &&
+          admission.token.history_head_commit_ref === expectedHeadRef;
+        if (!identityOk) {
+          return rejected({
+            error_code: "FORBIDDEN_DIRECT_MUTATION",
+            reason: "FAIL-PREPARE-001",
+            detail: "prepared governed authority token does not bind the exact proposal/subject/revision/head (stale, wrong proposal, or wrong head)"
+          });
+        }
+        governedToken = admission.token;
+      } else if (input.prepared_governed_writer_authority !== undefined) {
+        return rejected({
+          error_code: "FORBIDDEN_DIRECT_MUTATION",
+          reason: "FAIL-PREPARE-001",
+          detail: "a prepared governed authority token was supplied for a transition that changes no governed reserved target"
+        });
+      }
+
       // Forward-only production emission: EVERY new successful commit
       // assembles directly as AtomicCommitBundleV2 (writer_authority = null).
       // No V1 fallback: an invalid V2 assembly/validation fails closed.
@@ -395,7 +513,8 @@ export function createCommitEngine(deps: {
         previous_record_checksum: previousBundle?.record_checksum ?? null,
         previous_trace_ref: effect.previous_trace_ref,
         prepared_result_ref: input.prepared_result_ref,
-        repository_revision_bindings: input.repository_bindings
+        repository_revision_bindings: input.repository_bindings,
+        ...(governedToken !== null ? { writer_authority_token: governedToken } : {})
       });
 
       // §14: PRE-CAS closed V2 validation. An invalid production bundle never

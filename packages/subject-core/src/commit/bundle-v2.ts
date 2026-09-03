@@ -22,6 +22,7 @@
 
 import type { AtomicCommitBundleV2 } from "../types/persistence-v2.js";
 import type { CanonicalCommitResultV1 } from "../types/result.js";
+import type { CanonicalWriterAuthorityRecordV0 } from "../types/writer-authority.js";
 import type { AuthoritativeTransitionRecordV1, TransitionAttemptV1 } from "../types/identity.js";
 import type { HashV1, HistorySequenceV0, StateRevisionV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
@@ -33,8 +34,13 @@ import { deriveRef } from "../canonical/hash.js";
 import { proposalFingerprint, proposalRef } from "../canonical/projections.js";
 import {
   deriveAtomicCommitRefV2,
-  deriveAtomicCommitRecordChecksumV2
+  deriveAtomicCommitRecordChecksumV2,
+  deriveWriterAuthorityPayloadHashV0
 } from "../canonical/writer-authority-projections.js";
+import {
+  verifyPreparedGovernedWriterAuthorityTokenV0,
+  type PreparedGovernedWriterAuthorityTokenV0
+} from "./writer-authority-membrane.js";
 
 export interface AssembleCommitBundleV2Input {
   /** Exact stable validated canonical proposal (ONE snapshot for the whole pipeline). */
@@ -60,6 +66,15 @@ export interface AssembleCommitBundleV2Input {
   /** Trusted `workflow:` ref minted outside subject-core (§7.6 binding). */
   readonly prepared_result_ref: CanonicalRefV0;
   readonly repository_revision_bindings: readonly RepositoryRevisionBindingV1[];
+  /**
+   * Governed path ONLY (RELATIONSHIP_GOVERNED_FEATURE_WRITER_AUTHORITY_V0):
+   * a SubjectCore-issued, WeakSet-admitted prepared authority token. Absent /
+   * undefined → the ordinary path: writer_authority = null with EXACTLY the
+   * frozen ordinary byte output. A raw CanonicalWriterAuthorityRecordV0 input
+   * is forbidden by construction — the record is materialized HERE from the
+   * verified token with the frozen record projection.
+   */
+  readonly writer_authority_token?: PreparedGovernedWriterAuthorityTokenV0;
 }
 
 const RESULT_ID_PROJECTION = "characteros-next/subject-core/result-id/v1";
@@ -85,6 +100,36 @@ export async function assembleCommitBundleV2(
   const pref = await proposalRef(p);
   const payloadFingerprint = await proposalFingerprint(p);
 
+  // Governed path: materialize the EXACT durable record from the verified
+  // internal token. Ordinary path: null (byte-identical to the frozen
+  // pre-membrane production output). Raw record input is impossible here.
+  let writerAuthority: CanonicalWriterAuthorityRecordV0 | null = null;
+  let writerAuthorityPayloadHash: HashV1 | null = null;
+  if (input.writer_authority_token !== undefined) {
+    const admission = verifyPreparedGovernedWriterAuthorityTokenV0(input.writer_authority_token);
+    if (!admission.ok) {
+      throw new Error(`assembleCommitBundleV2: prepared authority token rejected (${admission.code})`);
+    }
+    const token = admission.token;
+    if (token.proposal_ref !== pref || token.payload_fingerprint !== payloadFingerprint) {
+      throw new Error("assembleCommitBundleV2: prepared authority token does not bind the exact proposal");
+    }
+    const recordBody: Omit<CanonicalWriterAuthorityRecordV0, "authority_payload_hash"> = {
+      schema_version: "canonical-writer-authority-record-v0",
+      proposal_ref: token.proposal_ref,
+      payload_fingerprint: token.payload_fingerprint,
+      writer_family: token.writer_family,
+      writer_class: token.writer_class,
+      writer_schema_id: token.writer_schema_id,
+      writer_schema_fingerprint: token.writer_schema_fingerprint,
+      authorization_gate_id: token.authorization_gate_id,
+      authorization_gate_fingerprint: token.authorization_gate_fingerprint,
+      authority_payload: token.authority_payload
+    };
+    writerAuthorityPayloadHash = await deriveWriterAuthorityPayloadHashV0(recordBody);
+    writerAuthority = { ...recordBody, authority_payload_hash: writerAuthorityPayloadHash };
+  }
+
   const commitRef = await deriveAtomicCommitRefV2({
     commit_version: "atomic-commit-v2",
     serialization_version: "canonical-json-v1",
@@ -102,7 +147,7 @@ export async function assembleCommitBundleV2(
     snapshot_hash_before: input.snapshot_hash_before,
     snapshot_hash_after: input.snapshot_hash_after,
     trace_ref: input.trace_entry.trace_id,
-    writer_authority_payload_hash: null
+    writer_authority_payload_hash: writerAuthorityPayloadHash
   });
 
   const resultBody = {
@@ -159,7 +204,7 @@ export async function assembleCommitBundleV2(
     commit_version: "atomic-commit-v2",
     serialization_version: "canonical-json-v1",
     canonical_proposal: p,
-    writer_authority: null,
+    writer_authority: writerAuthority,
     commit_ref: commitRef,
     subject_id: p.subject_id,
     transition_id: p.transition_id,

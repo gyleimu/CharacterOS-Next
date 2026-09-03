@@ -675,6 +675,46 @@ export {
   type RelationshipGovernedWriterSchemaDescriptorV0
 } from "./authority/historical-writer-authority-registry.js";
 
+// --- Relationship Governed Feature Writer Authority V0 (static gate/policy/resolver) ---
+// Read-only descriptors, fingerprints, resolvers and TYPES only. The trusted
+// history issuer, the prepared-authority service and every minting/verifying
+// surface are deliberately NOT root-exported
+// (ARBITRARY_GOVERNED_AUTHORITY_MINT_PRODUCT_EXPOSED = NO).
+
+export {
+  RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_ID_V0,
+  RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_PROJECTION,
+  RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_DESCRIPTOR_V0,
+  deriveRelationshipGovernedFeatureAuthorizationGateFingerprintV0,
+  getRegisteredAuthorizationGatesV0,
+  resolveAuthorizationGateV0,
+  RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_ID_V0,
+  RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_PROJECTION,
+  RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_DESCRIPTOR_V0,
+  deriveRelationshipGovernedFeatureWritePolicyFingerprintV0,
+  getRegisteredGovernedWritePoliciesV0,
+  resolveGovernedWritePolicyV0,
+  classifyHistoricalWriterAuthorityStatusV0,
+  type RegisteredAuthorizationGateV0,
+  type RegisteredGovernedWritePolicyV0,
+  type HistoricalWriterAuthorityStatusV0,
+  type HistoricalWriterAuthorityResolutionV0
+} from "./authority/historical-writer-authority-registry.js";
+
+export {
+  RELATIONSHIP_GOVERNED_WRITE_POLICY_RECEIPT_SCHEMA_VERSION_V0,
+  RELATIONSHIP_GOVERNED_WRITE_POLICY_RECEIPT_PROJECTION,
+  deriveRelationshipGovernedWritePolicyReceiptRefV0,
+  type RelationshipGovernedWritePolicyReceiptDescriptorV0
+} from "./authority/relationship-governed-write-policy-receipt.js";
+
+export type {
+  RelationshipGovernedTrustedHistoryCapabilityV0,
+  CurrentCanonicalHeadFactsV0
+} from "./authority/relationship-governed-trusted-history.js";
+
+export type { RelationshipPreparedAuthorityCapabilityV0 } from "./transitions/relationship/relationship-governed-write-authority-service.js";
+
 // --- Relationship Governed Writer Authority Payload Contract V0 ----------------------
 
 export {

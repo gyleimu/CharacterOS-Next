@@ -334,3 +334,20 @@ export {
   V2_PRODUCTION_CUTOVER_QUIESCENCE_REQUIRED_V0,
   POST_CUTOVER_PRODUCTION_VERSION_POLICY_V0
 } from "./commit/version-policy.js";
+
+// --- Relationship Governed Feature Writer Authority V0 (generic membrane boundary) ----
+// Read-only surface ONLY: the reserved-prefix source of truth, the pure
+// reserved-target diff classifier, and opaque token TYPES. The membrane
+// issuer/verifier are deliberately NOT root-exported (zero authority for
+// product/public callers; trusted internal composition and module-direct
+// internal tests only).
+
+export {
+  RELATIONSHIP_GOVERNED_DIMENSION_RESERVED_PREFIX_V0,
+  isReservedRelationshipCoreDimensionIdV0,
+  detectReservedRelationshipTargetChangesV0
+} from "./commit/writer-authority-membrane.js";
+export type {
+  PreparedGovernedWriterAuthorityTokenV0,
+  ReservedRelationshipTargetChangeV0
+} from "./commit/writer-authority-membrane.js";
