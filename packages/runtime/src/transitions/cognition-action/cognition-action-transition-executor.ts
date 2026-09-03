@@ -48,6 +48,11 @@ import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import { deriveInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 import { deriveInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import {
+  buildInteractionFamiliarityCounterpartQueryV0,
+  orchestrateInteractionFamiliarityRetrievalV0,
+  type InteractionFamiliarityRetrievalOrchestrationV0
+} from "../../transitions/relationship/relationship-interaction-familiarity-retrieval-orchestration.js";
+import {
   actionIntentAllowed,
   allowedEvidenceSet,
   BELIEF_COGNITION_MAX_ITEMS,
@@ -68,6 +73,15 @@ export interface CognitionActionExecutionResultV0 {
   readonly cognition: CognitionProposalV0;
   /** The exact projection the provider answered (audit/replay evidence). */
   readonly projection: CognitiveContextProjectionV0;
+  /**
+   * RELATIONSHIP_FAMILIARITY_RETRIEVAL_ORCHESTRATION_V0 — deterministic
+   * observation-only trace of the AUTOMATIC familiarity-priority retrieval
+   * performed inside normal execution from the frozen influence artifacts
+   * (zero attempts under BASIC_CONTEXT_FIRST / no influence). NOT an authority;
+   * selected refs are canonical episode refs already validated by the existing
+   * Memory retrieval law.
+   */
+  readonly interaction_familiarity_retrieval?: InteractionFamiliarityRetrievalOrchestrationV0;
 }
 
 export const COGNITION_ACTION_TRANSITION_ID_PROJECTION =
@@ -268,6 +282,23 @@ export class CognitionActionTransitionExecutor {
 
     // ---- controlled projection (frozen; answers WHO/WHAT/REMEMBER/FEEL/BELIEVE/SPACE)
     const projection = await buildCognitiveContextProjection(snapshot);
+
+    // ---- RELATIONSHIP_FAMILIARITY_RETRIEVAL_ORCHESTRATION_V0 (Layer B, automatic) ----
+    // Normal execution derives the retrieval decision itself from the frozen
+    // cognition influence artifacts already carried by the projection — the
+    // caller supplies no familiarity value, strategy, query or counterpart
+    // instruction. BASIC_CONTEXT_FIRST / no influence → ZERO extra retrieval
+    // calls; COUNTERPART_CONTEXT_SEARCH_FIRST → EXACTLY ONE exact-counterpart
+    // attempt through the EXISTING retrieval seam and validation law (host-owned
+    // query construction; no scoring changes; no duplication of the policy
+    // threshold; empty results never invent context). The deterministic trace is
+    // an observation on the execution result — never an authority.
+    const interactionFamiliarityRetrieval = await orchestrateInteractionFamiliarityRetrievalV0({
+      influences: projection.interaction_familiarity_cognition_influences,
+      retrieval: this.deps.retrieval,
+      buildCounterpartQuery: (ref) => buildInteractionFamiliarityCounterpartQueryV0(snapshot, ref)
+    });
+
     // The action space is bound into the projection AFTER hashing the body: the
     // space is host-supplied per cycle, the hash covers the state evidence.
     const projectionWithSpace: CognitiveContextProjectionV0 = {
@@ -368,6 +399,11 @@ export class CognitionActionTransitionExecutor {
         break;
     }
 
-    return { outcome, cognition: proposal, projection: projectionWithSpace };
+    return {
+      outcome,
+      cognition: proposal,
+      projection: projectionWithSpace,
+      interaction_familiarity_retrieval: interactionFamiliarityRetrieval
+    };
   }
 }
