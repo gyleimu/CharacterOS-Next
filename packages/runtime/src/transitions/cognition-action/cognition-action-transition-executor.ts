@@ -146,9 +146,22 @@ export async function buildCognitionActionProposal(params: {
   };
 }
 
-/** Builds the frozen controlled projection from the authoritative snapshot. */
+/**
+ * Builds the frozen controlled projection from the authoritative snapshot.
+ *
+ * `additionalRecentRetrievalRefs` (RELATIONSHIP_FAMILIARITY_RETRIEVED_EVIDENCE_
+ * COGNITION_INTEGRATION_V0): validated selected Memory episode refs produced by
+ * an automatic familiarity-priority retrieval in the SAME execution. They join
+ * the EXISTING recent-retrieval evidence context — deduplicated and raw-ASCII
+ * sorted per current conventions — becoming citeable only because they are
+ * validated Memory evidence. When absent/empty the projection is byte-identical
+ * to the pre-slice builder (BASIC_CONTEXT_FIRST compatibility).
+ */
 export async function buildCognitiveContextProjection(
-  snapshot: SubjectStateV0
+  snapshot: SubjectStateV0,
+  options: {
+    readonly additionalRecentRetrievalRefs?: readonly CanonicalRefV0[];
+  } = {}
 ): Promise<CognitiveContextProjectionV0> {
   // Interaction Familiarity Read Projection V0: the exact admitted governed
   // feature's semantic state surface per registered counterpart. Pure
@@ -188,7 +201,17 @@ export async function buildCognitiveContextProjection(
     },
     context: { ...snapshot.context },
     memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
-    recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
+    recent_retrieval_refs:
+      options.additionalRecentRetrievalRefs === undefined ||
+      options.additionalRecentRetrievalRefs.length === 0
+        ? [...snapshot.memory_state.recent_retrieval_trace]
+        : // Validated familiarity-priority evidence joins the EXISTING recent
+          // retrieval evidence context: deduplicated + raw-ASCII sorted per
+          // current conventions (never overwriting ordinary Memory context).
+          [...new Set<string>([
+            ...(snapshot.memory_state.recent_retrieval_trace as readonly string[]),
+            ...(options.additionalRecentRetrievalRefs as readonly string[])
+          ])].sort() as string[],
     belief_item_count: snapshot.beliefs.items.length,
     // Belief → Cognition Read Projection V0: COPIED stance surface from the
     // authoritative canonical snapshot — raw-ASCII proposition_id ascending,
@@ -299,10 +322,27 @@ export class CognitionActionTransitionExecutor {
       buildCounterpartQuery: (ref) => buildInteractionFamiliarityCounterpartQueryV0(snapshot, ref)
     });
 
+    // ---- RELATIONSHIP_FAMILIARITY_RETRIEVED_EVIDENCE_COGNITION_INTEGRATION_V0 ----
+    // Validated selected Memory evidence from the automatic familiarity-priority
+    // retrieval joins the SAME cognition provider context through the EXISTING
+    // recent-retrieval evidence path (dedup + raw-ASCII sort). Only selected
+    // VALIDATED Memory evidence becomes citeable — never familiarity itself,
+    // never receipt/authority refs. With no selected refs the provider context
+    // is byte-identical to the pre-slice behavior (BASIC/empty compatibility).
+    const familiaritySelectedRefs = interactionFamiliarityRetrieval.attempts.flatMap((attempt) =>
+      attempt.outcome === "ATTEMPTED_WITH_USABLE_EVIDENCE" ? attempt.selected_memory_refs : []
+    );
+    const evidenceProjection =
+      familiaritySelectedRefs.length > 0
+        ? await buildCognitiveContextProjection(snapshot, {
+            additionalRecentRetrievalRefs: familiaritySelectedRefs
+          })
+        : projection;
+
     // The action space is bound into the projection AFTER hashing the body: the
     // space is host-supplied per cycle, the hash covers the state evidence.
     const projectionWithSpace: CognitiveContextProjectionV0 = {
-      ...projection,
+      ...evidenceProjection,
       allowed_actions: input.allowed_actions
     };
 
@@ -326,7 +366,7 @@ export class CognitionActionTransitionExecutor {
       throw stageFailure("OBSERVATION", "INVALID_SCHEMA", "SS-SCHEMA-001", checked.error.detail);
     }
     const proposal = checked.value;
-    if (proposal.projection_hash !== projection.projection_hash) {
+    if (proposal.projection_hash !== evidenceProjection.projection_hash) {
       throw stageFailure(
         "OBSERVATION",
         "INVALID_SCHEMA",
@@ -336,7 +376,7 @@ export class CognitionActionTransitionExecutor {
     }
 
     // ---- evidence grounding (§15): memory/context refs must come from the projection
-    const allowed = allowedEvidenceSet(projection);
+    const allowed = allowedEvidenceSet(evidenceProjection);
     const unsupported = findUnsupportedEvidenceRef(
       [...proposal.evidence_refs, ...proposal.relevant_memory_refs, ...proposal.considered_context_refs],
       allowed
@@ -366,7 +406,7 @@ export class CognitionActionTransitionExecutor {
       stateRevision: anchored.state_revision as number,
       occurrenceLogicalTime: anchored.current_logical_time as number,
       causeRefs: [...input.cause_refs],
-      projectionHash: projection.projection_hash,
+      projectionHash: evidenceProjection.projection_hash,
       allowedActions: input.allowed_actions
     });
 
