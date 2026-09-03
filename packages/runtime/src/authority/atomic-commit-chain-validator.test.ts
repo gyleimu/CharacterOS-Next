@@ -360,7 +360,7 @@ async function buildChainBundle(options: {
     return {
       ...partial,
       record_checksum: await hashEnvelope(RECORD_CHECKSUM_PROJECTION_V1, partial)
-    } as unknown as AtomicCommitBundleV1;
+    } as unknown as AtomicCommitBundleAnyVersion;
   }
 
   const partialV2 = {
@@ -727,9 +727,9 @@ describe("Atomic commit chain validator V0", () => {
     // Wrong subject.
     const wrongSubject = await chainFixture([{ version: "v1", value: 0.5 }]);
     const wrongSubjectBundle = {
-      ...(wrongSubject.bundles[0] as AtomicCommitBundleV1),
+      ...(wrongSubject.bundles[0] as AtomicCommitBundleAnyVersion),
       subject_id: "subject-other"
-    } as AtomicCommitBundleV1;
+    } as AtomicCommitBundleAnyVersion;
     // (Tampered bundle also fails its own single-record law; chain reports
     // INVALID_BUNDLE at the lowest index — deterministic precedence.)
     isInvalid(
@@ -767,7 +767,7 @@ describe("Atomic commit chain validator V0", () => {
     isInvalid(
       await validateAtomicCommitChainV0({
         trusted_boundary: duplicateRevision.boundary,
-        bundles: [duplicateRevision.bundles[0] as AtomicCommitBundleAnyVersion, secondRev1]
+        bundles: [duplicateRevision.bundles[0] as AtomicCommitBundleV1, secondRev1]
       }),
       "DUPLICATE_REVISION"
     );
@@ -803,7 +803,7 @@ describe("Atomic commit chain validator V0", () => {
 
     // Wrong state_hash_before / snapshot_hash_before (tampered, checksum-rebuilt).
     const hashTamper = await chainFixture([{ version: "v1", value: 0.5 }]);
-    const tamperBase = hashTamper.bundles[0] as AtomicCommitBundleV1;
+    const tamperBase = hashTamper.bundles[0] as AtomicCommitBundleAnyVersion;
     const tamperedHashes = {
       ...tamperBase,
       state_hash_before: HASH,
@@ -813,7 +813,7 @@ describe("Atomic commit chain validator V0", () => {
     const tamperedHashesBundle = {
       ...tamperedHashes,
       record_checksum: await hashEnvelope("characteros-next/atomic-commit/record-checksum/v1", tamperedHashes)
-    } as unknown as AtomicCommitBundleV1;
+    } as unknown as AtomicCommitBundleAnyVersion;
     // state_hash_before tampering breaks single-record law first (result
     // binding) — deterministic precedence reports INVALID_BUNDLE.
     isInvalid(
@@ -936,7 +936,7 @@ describe("Atomic commit chain validator V0", () => {
     isInvalid(
       await validateAtomicCommitChainV0({
         trusted_boundary: timeBreak.boundary,
-        bundles: [timeBreak.bundles[0] as AtomicCommitBundleAnyVersion, timeTamperedBundle]
+        bundles: [timeBreak.bundles[0] as AtomicCommitBundleV1, timeTamperedBundle]
       }),
       "LOGICAL_TIME_MISMATCH"
     );
@@ -951,8 +951,8 @@ describe("Atomic commit chain validator V0", () => {
       proposal: dupProposal,
       version: "v1",
       previous: {
-        commit_ref: (dupId.bundles[0] as AtomicCommitBundleV1).commit_ref,
-        record_checksum: (dupId.bundles[0] as AtomicCommitBundleV1).record_checksum
+        commit_ref: (dupId.bundles[0] as AtomicCommitBundleAnyVersion).commit_ref,
+        record_checksum: (dupId.bundles[0] as AtomicCommitBundleAnyVersion).record_checksum
       }
     });
     isInvalid(
@@ -965,7 +965,7 @@ describe("Atomic commit chain validator V0", () => {
 
     // Terminal trusted-head mismatch (wrong terminal state hash).
     const headMismatch = await chainFixture([{ version: "v1", value: 0.5 }]);
-    const headMismatchBundle = headMismatch.bundles[0] as AtomicCommitBundleV1;
+    const headMismatchBundle = headMismatch.bundles[0] as AtomicCommitBundleAnyVersion;
     const wrongHead = await mintTrustedCanonicalHistoryBoundaryV0({
       genesis: headMismatch.genesis,
       head: {
@@ -999,10 +999,10 @@ describe("Atomic commit chain validator V0", () => {
         schema_version: "trusted-canonical-head-v0",
         subject_id: "subject-s0",
         revision: 2,
-        commit_ref: (truncated.bundles[1] as AtomicCommitBundleV1).commit_ref,
-        record_checksum: (truncated.bundles[1] as AtomicCommitBundleV1).record_checksum,
-        state_hash: (truncated.bundles[1] as AtomicCommitBundleV1).state_hash_after,
-        snapshot_hash: (truncated.bundles[1] as AtomicCommitBundleV1).snapshot_hash_after
+        commit_ref: (truncated.bundles[1] as AtomicCommitBundleAnyVersion).commit_ref,
+        record_checksum: (truncated.bundles[1] as AtomicCommitBundleAnyVersion).record_checksum,
+        state_hash: (truncated.bundles[1] as AtomicCommitBundleAnyVersion).state_hash_after,
+        snapshot_hash: (truncated.bundles[1] as AtomicCommitBundleAnyVersion).snapshot_hash_after
       } as never
     });
     if (truncatedHead.kind === "MINTED") {
@@ -1042,12 +1042,12 @@ describe("Atomic commit chain validator V0", () => {
       proposal: chainProposal("t-chain-orphan", 1, 0, relationshipsWith(0.9)),
       version: "v1",
       previous: {
-        commit_ref: (fixture.bundles[0] as AtomicCommitBundleV1).commit_ref,
-        record_checksum: (fixture.bundles[0] as AtomicCommitBundleV1).record_checksum
+        commit_ref: (fixture.bundles[0] as AtomicCommitBundleAnyVersion).commit_ref,
+        record_checksum: (fixture.bundles[0] as AtomicCommitBundleAnyVersion).record_checksum
       }
     });
     const withOrphan = [
-      fixture.bundles[0] as AtomicCommitBundleAnyVersion,
+      fixture.bundles[0] as AtomicCommitBundleV1,
       orphan,
       fixture.bundles[0] as AtomicCommitBundleAnyVersion
     ];

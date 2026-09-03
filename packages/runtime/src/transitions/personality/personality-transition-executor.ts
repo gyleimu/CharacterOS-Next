@@ -16,7 +16,7 @@
  */
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   CanonicalTransitionProposalV1,
   DomainDeltaV0,
   IdentifierV0,
@@ -48,8 +48,8 @@ const PERSONALITY_PRODUCER_ID: IdentifierV0 = (() => {
 })();
 
 export type PersonalityExecutionResult =
-  | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleV1; readonly personality: PersonalityStateV0 }
-  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion; readonly personality: PersonalityStateV0 }
+  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
   | { readonly kind: "REJECTED_INVALID_PROPOSAL"; readonly detail: string }
   | { readonly kind: "REJECTED_UNKNOWN_DIMENSION"; readonly detail: string }
   | { readonly kind: "REJECTED_STALE_REVISION"; readonly detail: string }

@@ -40,7 +40,7 @@
  * Learning transition identity, no A12/A13 orchestration.
  */
 
-import type { AtomicCommitBundleV1, CanonicalRefV0 } from "@characteros-next/subject-core";
+import type { AtomicCommitBundleAnyVersion, CanonicalRefV0 } from "@characteros-next/subject-core";
 import { fail, ok, type ValidationResult } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import {
@@ -55,7 +55,7 @@ import {
  */
 export interface LearningSourceReadAuthority {
   /** The committed bundle for one transition id, or null when absent. */
-  readCommittedBundle(transitionId: string): Promise<AtomicCommitBundleV1 | null>;
+  readCommittedBundle(transitionId: string): Promise<AtomicCommitBundleAnyVersion | null>;
   /**
    * Optional contract-§4.2 surface B: durable PreparedLogicalResult
    * domain_result_refs of ONE transition (host WorkflowStore read when

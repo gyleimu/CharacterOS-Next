@@ -17,7 +17,7 @@
 import { describe, expect, it } from "vitest";
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   InMemoryFacadeAssembly,
   ProducerAuthorizationIssuer,
   SubjectStateV0
@@ -56,9 +56,9 @@ const CYCLE2_OBSERVATION_ID = "observation:o-cycle2-person-x-asks-again";
 interface TestCore extends SubjectCorePort {
   readonly issuer: ProducerAuthorizationIssuer;
   readonly storeRead: {
-    readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-    readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null;
-    getCommittedBundles(): readonly AtomicCommitBundleV1[];
+    readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+    readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null;
+    getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
   };
 }
 
@@ -125,7 +125,7 @@ async function runObservation(
   memory: InMemoryMemoryRepository,
   retrievalService: InMemoryRetrievalService,
   observationId: string
-): Promise<AtomicCommitBundleV1> {
+): Promise<AtomicCommitBundleAnyVersion> {
   const deps = root.dependencies();
   const snapshot = (await deps.subjectCore.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const anchored = {

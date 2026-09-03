@@ -12,7 +12,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   CanonicalRefV0,
   SubjectStateV0
 } from "@characteros-next/subject-core";
@@ -47,9 +47,9 @@ const FIXTURE_INTENT_IDENTITY = "li-fixture-prepare-identity-0";
 
 interface HarnessLike {
   storeRead: {
-    readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-    readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null;
-    getCommittedBundles(): readonly AtomicCommitBundleV1[];
+    readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+    readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null;
+    getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
     currentRevision(subjectId: string): number | null;
   };
 }
@@ -58,7 +58,7 @@ const encoder = new ExperienceEncoderV0();
 let storeRead: HarnessLike["storeRead"];
 let snapshotRead: ((subjectId: string) => Promise<SubjectStateV0 | null>) | undefined;
 let memorySpy: { prepareCalls: number; readCalls: number };
-let bundleA: AtomicCommitBundleV1;
+let bundleA: AtomicCommitBundleAnyVersion;
 
 function readAuthority(): Parameters<typeof validateTrustedLearningExperience>[0] {
   return {
@@ -67,7 +67,7 @@ function readAuthority(): Parameters<typeof validateTrustedLearningExperience>[0
 }
 
 function candidateFor(
-  bundle: AtomicCommitBundleV1,
+  bundle: AtomicCommitBundleAnyVersion,
   overrides: Record<string, unknown> = {}
 ): Record<string, unknown> {
   return {

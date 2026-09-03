@@ -8,7 +8,7 @@
 import { describe, expect, it } from "vitest";
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   InMemoryFacadeAssembly,
   ProducerAuthorizationIssuer,
   SubjectStateV0
@@ -41,9 +41,9 @@ const SUBJECT_ID = "subject-s0";
 interface TestCore extends SubjectCorePort {
   readonly issuer: ProducerAuthorizationIssuer;
   readonly storeRead: {
-    readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-    readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null;
-    getCommittedBundles(): readonly AtomicCommitBundleV1[];
+    readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+    readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null;
+    getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
   };
 }
 
@@ -83,7 +83,7 @@ interface World {
   executionLedger: InMemoryActionExecutionLedger;
   reintegrationStore: InMemoryMiclWorkflowStore;
   reintegration: OutcomeReintegrationRunnerV0;
-  bundles: () => readonly AtomicCommitBundleV1[];
+  bundles: () => readonly AtomicCommitBundleAnyVersion[];
 }
 
 /** Counting memory repository: Learning's frozen internal prepare/store are the

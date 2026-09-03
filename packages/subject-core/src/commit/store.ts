@@ -7,24 +7,29 @@
  * writes and no last-write-wins. `InMemoryAtomicCommitStore` is a reference adapter
  * for tests and sandbox composition — it holds state in process memory only (no
  * database, no filesystem, no network) and is deliberately NOT wired into any runtime.
+ *
+ * ATOMIC_COMMIT_STORE_VERSION_MODEL_V0 = ANY_VERSION: the store persists and
+ * returns AtomicCommitBundleAnyVersion (historical V1 and production V2
+ * coexist byte-for-byte — no upcast, no rewrite, no version transformation).
+ * Defense-in-depth: a proposed V1 following a committed V2 for the same
+ * subject is rejected BEFORE persistence (version monotonicity).
  */
 
 import type {
-  AtomicCommitBundleV1,
-  AtomicCommitOutcomeV1,
-  CommitFailureCertainty
-} from "../types/persistence.js";
+  AtomicCommitBundleAnyVersion,
+  AtomicCommitOutcomeAnyVersion
+} from "../types/persistence-v2.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 
 export interface AtomicCommitStorePort {
   compareAndCommit(
     expected_revision: number,
     identity_record_version_before: number,
-    complete_bundle: AtomicCommitBundleV1
-  ): Promise<AtomicCommitOutcomeV1>;
+    complete_bundle: AtomicCommitBundleAnyVersion
+  ): Promise<AtomicCommitOutcomeAnyVersion>;
 }
 
-export type InjectedStoreFault = CommitFailureCertainty;
+export type InjectedStoreFault = "DEFINITE_NOT_COMMITTED" | "OUTCOME_UNKNOWN";
 
 export interface InMemoryAtomicCommitStoreOptions {
   /**
@@ -41,7 +46,8 @@ interface SubjectHead {
 /** Single-subject-heads in-memory store; per-subject state-revision CAS. */
 export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
   private readonly heads = new Map<string, SubjectHead>();
-  private readonly committedBundles: AtomicCommitBundleV1[] = [];
+  private readonly currentBundles = new Map<string, AtomicCommitBundleAnyVersion>();
+  private readonly committedBundles: AtomicCommitBundleAnyVersion[] = [];
   private readonly options: InMemoryAtomicCommitStoreOptions;
 
   constructor(options: InMemoryAtomicCommitStoreOptions = {}) {
@@ -49,23 +55,30 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
   }
 
   /** Committed bundles in authority order (rebuildable projection for tests). */
-  getCommittedBundles(): readonly AtomicCommitBundleV1[] {
+  getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[] {
     return [...this.committedBundles];
   }
 
+  /**
+   * Test/fixture seeding affordance (used by the sanctioned in-memory facade
+   * assembly for historical-subject fixtures): seeds one already-committed
+   * bundle without CAS. Never exposed through the reference storeRead handle.
+   */
+  seedCommittedBundle(bundle: AtomicCommitBundleAnyVersion): void {
+    this.committedBundles.push(bundle);
+    this.currentBundles.set(bundle.subject_id, bundle);
+    this.heads.set(bundle.subject_id, { revision: bundle.next_revision });
+  }
+
   /** Latest committed bundle of one subject, or null. */
-  readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null {
-    for (let i = this.committedBundles.length - 1; i >= 0; i--) {
-      const bundle = this.committedBundles[i] as AtomicCommitBundleV1;
-      if (bundle.subject_id === subjectId) return bundle;
-    }
-    return null;
+  readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null {
+    return this.currentBundles.get(subjectId) ?? null;
   }
 
   /** Committed bundle by immutable transition id (authoritative idempotency lookup). */
-  readCommittedByTransitionId(transitionId: string): AtomicCommitBundleV1 | null {
+  readCommittedByTransitionId(transitionId: string): AtomicCommitBundleAnyVersion | null {
     for (let i = this.committedBundles.length - 1; i >= 0; i--) {
-      const bundle = this.committedBundles[i] as AtomicCommitBundleV1;
+      const bundle = this.committedBundles[i] as AtomicCommitBundleAnyVersion;
       if (bundle.transition_id === transitionId) return bundle;
     }
     return null;
@@ -83,8 +96,8 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
   async compareAndCommit(
     expected_revision: number,
     identity_record_version_before: number,
-    complete_bundle: AtomicCommitBundleV1
-  ): Promise<AtomicCommitOutcomeV1> {
+    complete_bundle: AtomicCommitBundleAnyVersion
+  ): Promise<AtomicCommitOutcomeAnyVersion> {
     const fault = this.options.nextFault?.();
     if (fault !== undefined) {
       return { outcome: "FAILURE", certainty: fault };
@@ -109,7 +122,19 @@ export class InMemoryAtomicCommitStore implements AtomicCommitStorePort {
     if (complete_bundle.expected_revision !== expected_revision) {
       return { outcome: "CONFLICT" };
     }
+    // Version monotonicity defense-in-depth: a proposed V1 following a
+    // committed V2 for the same subject is rejected before persistence. The
+    // store NEVER transforms a bundle version.
+    const current = this.currentBundles.get(complete_bundle.subject_id);
+    if (
+      current !== undefined &&
+      current.commit_version === "atomic-commit-v2" &&
+      complete_bundle.commit_version === "atomic-commit-v1"
+    ) {
+      return { outcome: "CONFLICT" };
+    }
     this.committedBundles.push(complete_bundle);
+    this.currentBundles.set(complete_bundle.subject_id, complete_bundle);
     this.heads.set(complete_bundle.subject_id, {
       revision: complete_bundle.next_revision
     });

@@ -151,7 +151,7 @@ function stubStore(): { store: AtomicCommitStorePort; committed: AtomicCommitBun
 // ---- regression ---------------------------------------------------------------------
 
 describe("Shared canonical transition-effect primitives", () => {
-  it("reproduces the production engine's committed V1 effect EXACTLY (ONE_SHARED_IMPLEMENTATION)", async () => {
+  it("reproduces the production engine's committed V2 effect EXACTLY (ONE_SHARED_IMPLEMENTATION)", async () => {
     const { store, committed } = stubStore();
     const engine: CommitEngine = createCommitEngine({ store });
     const predecessor = baseState(0, 0);
@@ -163,8 +163,7 @@ describe("Shared canonical transition-effect primitives", () => {
       identity_record_version_before: 0,
       first_seen_sequence: 1,
       prior_attempts: [],
-      previous_commit_ref: null,
-      previous_record_checksum: null,
+      previous_bundle: null,
       prepared_result_ref: "workflow:w-effect-001" as never,
       repository_bindings: [
         {
@@ -177,7 +176,7 @@ describe("Shared canonical transition-effect primitives", () => {
     if (outcome.kind !== "COMMITTED") return;
     const bundle = outcome.bundle;
     expect(committed).toHaveLength(1);
-    expect(bundle.commit_version).toBe("atomic-commit-v1");
+    expect(bundle.commit_version).toBe("atomic-commit-v2");
 
     // The SAME effect through the shared primitives:
     const prepared = await prepareCanonicalTransitionEffectV0({ predecessor, proposal });

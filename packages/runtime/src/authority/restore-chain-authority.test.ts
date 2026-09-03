@@ -25,7 +25,6 @@ import {
   proposalRef,
   restoreFromEnvelope,
   type AtomicCommitBundleAnyVersion,
-  type AtomicCommitBundleV1,
   type CanonicalTransitionProposalV1,
   type PersistedSubjectEnvelopeV1,
   type SubjectStateV0
@@ -525,7 +524,7 @@ describe("Restore chain authority integration V0", () => {
       const receipt = result.chain_receipt as { v1_bundle_count: number; v2_bundle_count: number };
       expect(receipt.v1_bundle_count).toBe(steps.length);
       expect(receipt.v2_bundle_count).toBe(0);
-      expect(result.restored_snapshot).toStrictEqual((fixture.bundles[fixture.bundles.length - 1] as AtomicCommitBundleV1).next_snapshot);
+      expect(result.restored_snapshot).toStrictEqual((fixture.bundles[fixture.bundles.length - 1] as AtomicCommitBundleAnyVersion).next_snapshot);
     }
   });
 
@@ -741,7 +740,7 @@ describe("Restore chain authority integration V0", () => {
     const result = await pending;
     expect(result.kind).toBe("RESTORED");
     if (result.kind === "RESTORED") {
-      expect(result.restored_snapshot).toStrictEqual((fixture.bundles[0] as AtomicCommitBundleV1).next_snapshot);
+      expect(result.restored_snapshot).toStrictEqual((fixture.bundles[0] as AtomicCommitBundleAnyVersion).next_snapshot);
     }
     // The coordinator never writes to caller objects (mutation above is ours).
     expect(callerBundles).toHaveLength(0);

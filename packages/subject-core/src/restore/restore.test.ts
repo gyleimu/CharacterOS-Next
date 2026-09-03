@@ -239,8 +239,7 @@ async function realRevisionOne(): Promise<SubjectStateV0> {
     identity_record_version_before: 0,
     first_seen_sequence: 1,
     prior_attempts: [],
-    previous_commit_ref: null,
-    previous_record_checksum: null,
+    previous_bundle: null,
     prepared_result_ref: "workflow:w-r1" as never,
     repository_bindings: R0_BINDINGS
   };

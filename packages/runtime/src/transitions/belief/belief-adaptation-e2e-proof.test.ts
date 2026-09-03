@@ -31,7 +31,7 @@ import {
   BELIEF_STATE_SCHEMA_VERSION,
   createInMemorySubjectCoreFacade,
   stateHash,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type HashV1,
   type InMemoryFacadeAssembly,
   type SubjectStateV0,
@@ -277,7 +277,7 @@ interface E2EWorld {
   readonly provider: DeterministicContradictionProvider;
   readonly initialState: SubjectStateV0;
   readonly episode: EpisodicMemoryRecordV0;
-  readonly committedBundles: Map<string, AtomicCommitBundleV1>;
+  readonly committedBundles: Map<string, AtomicCommitBundleAnyVersion>;
   readonly facade: InMemoryFacadeAssembly;
 }
 
@@ -297,7 +297,7 @@ async function buildE2EWorld(): Promise<E2EWorld> {
     referenceValidator: async () => true,
     memoryAdoptionValidator: async () => false
   });
-  const committedBundles = new Map<string, AtomicCommitBundleV1>();
+  const committedBundles = new Map<string, AtomicCommitBundleAnyVersion>();
   const port: SubjectCorePort = {
     reserveAndRoute: (proposal) => facade.facade.reserveAndRoute(proposal),
     commitReserved: async (input) => {

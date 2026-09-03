@@ -326,3 +326,11 @@ export {
   evaluateCommitBundleVersionStepV0,
   type CommitBundleVersionStepVerdictV0
 } from "./validation/atomic-commit-bundle.js";
+
+// --- Atomic Commit Bundle V2 Production Emission V0 (version policy) -----------------
+
+export {
+  PRODUCTION_COMMIT_TARGET_VERSION_V0,
+  V2_PRODUCTION_CUTOVER_QUIESCENCE_REQUIRED_V0,
+  POST_CUTOVER_PRODUCTION_VERSION_POLICY_V0
+} from "./commit/version-policy.js";

@@ -25,7 +25,7 @@ import {
   createInMemorySubjectCoreFacade,
   RELATIONSHIP_STATE_SCHEMA_VERSION,
   validateSubjectState,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type InMemoryFacadeAssembly,
   type ProducerAuthorizationIssuer,
   type SubjectStateV0,
@@ -411,7 +411,7 @@ async function buildWorld(options: {
   repository: InMemoryMemoryRepository;
   records: readonly EpisodicMemoryRecordV0[];
   state: SubjectStateV0;
-  committedBundles: Map<string, AtomicCommitBundleV1>;
+  committedBundles: Map<string, AtomicCommitBundleAnyVersion>;
   facade: InMemoryFacadeAssembly;
   port: SubjectCorePort;
 }> {
@@ -433,7 +433,7 @@ async function buildWorld(options: {
     referenceValidator: async () => true,
     memoryAdoptionValidator: async () => false
   });
-  const committedBundles = new Map<string, AtomicCommitBundleV1>();
+  const committedBundles = new Map<string, AtomicCommitBundleAnyVersion>();
   const port: SubjectCorePort = {
     reserveAndRoute: (proposal) => facade.facade.reserveAndRoute(proposal),
     commitReserved: async (input) => {

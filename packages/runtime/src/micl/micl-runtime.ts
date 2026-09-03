@@ -25,7 +25,7 @@
  */
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   CanonicalRefV0,
   HashV1,
   LogicalTimeV0,
@@ -581,7 +581,7 @@ function failureCodeOf(outcome: CommitReservedOutcome): string {
 }
 
 /** Checkpoint from a terminal logical outcome; null = nothing to checkpoint. */
-function checkpointFromBundle(stage: MiclStageKey, bundle: AtomicCommitBundleV1): MiclStageCheckpointV0 {
+function checkpointFromBundle(stage: MiclStageKey, bundle: AtomicCommitBundleAnyVersion): MiclStageCheckpointV0 {
   return {
     stage_key: stage,
     transition_id: bundle.transition_id,

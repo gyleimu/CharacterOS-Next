@@ -739,3 +739,9 @@ export {
   type RestoreChainAuthorityFailureCodeV0,
   type RestoreChainAuthorityFailureV0
 } from "./authority/restore-chain-authority.js";
+
+// --- Atomic Commit Bundle V2 Production Emission V0 -------------------------------------
+// RESTORE_AUTHORITY_FACTORY_SURFACE note: the version policy module and V2
+// assembler are production-internal (no caller version selector is exported).
+// The cutover quiescence and target-version constants are re-exported from
+// @characteros-next/subject-core (added by this slice's index change).

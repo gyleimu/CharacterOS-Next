@@ -15,7 +15,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   CanonicalTransitionProposalV1,
   DomainDeltaV0,
   InMemoryFacadeAssembly,
@@ -59,9 +59,9 @@ const OBSERVATION_ID = "observation:o-lc77";
 
 interface TestCore extends SubjectCorePort {
   readonly storeRead: {
-    readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-    readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null;
-    getCommittedBundles(): readonly AtomicCommitBundleV1[];
+    readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+    readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null;
+    getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
     currentRevision(subjectId: string): number | null;
   };
   readonly issuer: ProducerAuthorizationIssuer;
@@ -204,12 +204,12 @@ interface World {
   memory: CountingMemoryAuthority;
   rawMemory: InMemoryMemoryRepository;
   storeRead: TestCore["storeRead"];
-  sourceStoreRead: { readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null };
+  sourceStoreRead: { readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null };
   seedSnapshot: SubjectStateV0;
   adoptionGate: { open: boolean };
   learningExecutor: LearningTransitionExecutor;
   observationExecutor: ObservationTransitionExecutor;
-  observationBundle: AtomicCommitBundleV1;
+  observationBundle: AtomicCommitBundleAnyVersion;
   observationSnapshot: SubjectStateV0;
 }
 
@@ -258,7 +258,7 @@ function chainedSourceAuthority(): LearningSourceReadAuthority {
   };
 }
 
-function candidateFor(bundle: AtomicCommitBundleV1, overrides: Record<string, unknown> = {}): Record<string, unknown> {
+function candidateFor(bundle: AtomicCommitBundleAnyVersion, overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     subject_id: bundle.subject_id,
     source_transition_id: bundle.transition_id,
@@ -376,7 +376,7 @@ beforeAll(async () => {
 
 describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   it("§26 happy path: trusted experience ⇒ one prepare ⇒ ONE canonical adoption binding R1", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preRevision = world.seedSnapshot.runtime_metadata.state_revision as number;
     const outcome = await (world.learningExecutor as LearningTransitionExecutor).execute(
       {
@@ -440,7 +440,7 @@ describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   });
 
   it("§26 cont.: second identical replay ⇒ ALREADY_COMMITTED, no second commit, same prepared revision", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     // Replay observes the frozen pre-Learning anchor view (time-executor
     // frozenView pattern, shared store + journal): same anchored basis ⇒ same
     // deterministic identity ⇒ reserveAndRoute replays the committed bundle.
@@ -477,7 +477,7 @@ describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   });
 
   it("§28: same intent_id + different fingerprint ⇒ normalized prepare conflict (canonical +0)", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const bundlesBefore = world.storeRead.getCommittedBundles().length;
     // Same Learning basis (frozen pre-Learning anchor view ⇒ same intent_id and
     // same episode_ref); only declared_salience differs ⇒ payload bytes differ.
@@ -514,7 +514,7 @@ describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   });
 
   it("C1: untrusted candidate ⇒ typed rejection BEFORE any repository write", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const memory = world.memory as CountingMemoryAuthority;
     const prepareBefore = memory.prepareCalls;
     const storeBefore = memory.storeCalls;
@@ -538,7 +538,7 @@ describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   });
 
   it("C3: repository prepare failure ⇒ ABORTED/FAIL-PREPARE-001, canonical +0, zero store writes", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const rawMemory = world.rawMemory as InMemoryMemoryRepository;
     // Failing authority delegates everything EXCEPT prepare, which throws.
     const failing: MemoryPreparationAuthority = {
@@ -580,7 +580,7 @@ describe("P2.3.5.3c Learning prepare + canonical adoption", () => {
   });
 
   it("§27/G16: prepare success + canonical adoption rejection ⇒ non-canonical orphan, canonical stays bound", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const memory = world.memory as CountingMemoryAuthority;
     // Current canonical basis of the shared world (post happy path: revision 1, bound R1).
     const currentBundle = world.storeRead.readCurrentBundle(SUBJECT_ID);
@@ -917,7 +917,7 @@ function staleWorld(
 
 describe("P2.3.5.3d A12 crash/resume", () => {
   it("C1/§6: crash before prepare ⇒ retry revalidates, single canonical adoption, no orphan", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -956,7 +956,7 @@ describe("P2.3.5.3d A12 crash/resume", () => {
   });
 
   it("C2/§23: prepare succeeds, crash before commit ⇒ exact replay reuses the SAME prepared revision", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1008,7 +1008,7 @@ describe("P2.3.5.3d A12 crash/resume", () => {
   });
 
   it("C3/§22: full success then lost response ⇒ ALREADY_COMMITTED, +0 revision/trace/record", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1048,7 +1048,7 @@ describe("P2.3.5.3d A12 crash/resume", () => {
   });
 
   it("C4/§9/§24: commit binds R1, markAdopted lost ⇒ replay reconciles adoption with canonical +0", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1113,7 +1113,7 @@ describe("P2.3.5.3d A12 crash/resume", () => {
 
 describe("P2.3.5.3d A13 stale rebase", () => {
   it("§16/§26: incompatible new parent ⇒ old R1 NOT bound/unadopted, safe rebuild from R2 with NEW identity", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1166,7 +1166,7 @@ describe("P2.3.5.3d A13 stale rebase", () => {
   });
 
   it("§18: stale with unchanged repository binding ⇒ old prepared revision REUSED via attachability predicate", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1195,7 +1195,7 @@ describe("P2.3.5.3d A13 stale rebase", () => {
   });
 
   it("§25: experience fails revalidation after stale ⇒ REBASE_REQUIRED (no rebuild prepare/bind)", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;
@@ -1224,7 +1224,7 @@ describe("P2.3.5.3d A13 stale rebase", () => {
   });
 
   it("§20/§28: second stale after the single permitted rebuild ⇒ REBASE_REQUIRED, bounded", async () => {
-    const bundleA = world.observationBundle as AtomicCommitBundleV1;
+    const bundleA = world.observationBundle as AtomicCommitBundleAnyVersion;
     const preSnapshot = await world.core.readCurrentSnapshot(SUBJECT_ID as never);
     if (preSnapshot === null) throw new Error("fixture: pre snapshot");
     const preRevision = preSnapshot.runtime_metadata.state_revision as number;

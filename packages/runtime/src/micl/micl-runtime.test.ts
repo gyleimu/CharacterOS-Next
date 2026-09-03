@@ -12,7 +12,7 @@
 import { describe, expect, it } from "vitest";
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   InMemoryFacadeAssembly,
   ProducerAuthorizationIssuer,
   SubjectStateV0
@@ -47,9 +47,9 @@ const SUBJECT_ID = "subject-s0";
 interface TestCore extends SubjectCorePort {
   readonly issuer: ProducerAuthorizationIssuer;
   readonly storeRead: {
-    readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-    readCommittedByTransitionId(id: string): AtomicCommitBundleV1 | null;
-    getCommittedBundles(): readonly AtomicCommitBundleV1[];
+    readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+    readCommittedByTransitionId(id: string): AtomicCommitBundleAnyVersion | null;
+    getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
   };
 }
 
@@ -100,7 +100,7 @@ interface World {
   readonly store: InMemoryMiclWorkflowStore;
   readonly runtime: MiclRuntime;
   readonly sourceAuthority: LearningSourceReadAuthority;
-  readonly bundles: () => readonly AtomicCommitBundleV1[];
+  readonly bundles: () => readonly AtomicCommitBundleAnyVersion[];
 }
 
 function buildComponents(): WorldComponents {
@@ -431,7 +431,7 @@ describe("P2.4 MICL V0 — clean full workflow", () => {
     await expect(world.runtime.run(request)).rejects.toThrow("MICL_CRASH_BEFORE_CHECKPOINT");
     const learningBundle = world
       .bundles()
-      .find((b) => b.transition_type === "Learning") as AtomicCommitBundleV1;
+      .find((b) => b.transition_type === "Learning") as AtomicCommitBundleAnyVersion;
     expect(learningBundle).toBeDefined();
     // Resume: the committed stage result is REBUILT from the durable prepared
     // record + authoritative bundle — no second canonical commit (§32).

@@ -36,7 +36,7 @@ import type {
 import type { HashV1, HistorySequenceV0, IdentifierV0, LogicalTimeV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import { TRANSITION_TYPES, type TransitionType } from "../types/enums.js";
-import type { AtomicCommitBundleV1 } from "../types/persistence.js";
+import type { AtomicCommitBundleAnyVersion } from "../types/persistence-v2.js";
 import { deriveRef } from "../canonical/hash.js";
 import { fail, ok, type ValidationResult } from "../validation/result.js";
 import {
@@ -103,7 +103,7 @@ export interface TransitionIdentityJournalPort {
   /** Explicit caller-bound reuse-conflict recording (§14.1). */
   recordReuseConflict(input: ReuseConflictInput): Promise<ReuseConflictRecorded>;
   /** Rebuild COMMITTED terminal records from authoritative bundles (restart recovery). */
-  rebuildFromCommittedBundles(bundles: readonly AtomicCommitBundleV1[]): void;
+  rebuildFromCommittedBundles(bundles: readonly AtomicCommitBundleAnyVersion[]): void;
   /** Host-side persistence round-trip. */
   exportState(): AuthoritativeTransitionRecordV1[];
   importState(records: readonly AuthoritativeTransitionRecordV1[]): void;
@@ -684,7 +684,7 @@ export class InMemoryTransitionIdentityJournal implements TransitionIdentityJour
     return { conflict, audit };
   }
 
-  rebuildFromCommittedBundles(bundles: readonly AtomicCommitBundleV1[]): void {
+  rebuildFromCommittedBundles(bundles: readonly AtomicCommitBundleAnyVersion[]): void {
     for (const bundle of bundles) {
       const record = bundle.transition_record;
       const existing = this.records.get(record.transition_id);

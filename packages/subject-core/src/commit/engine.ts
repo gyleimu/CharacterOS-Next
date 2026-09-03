@@ -22,7 +22,12 @@
  * OUTCOME_UNKNOWN stays unresolved exactly per §15.2.
  */
 
-import type { AtomicCommitBundleV1, RepositoryRevisionBindingV1 } from "../types/persistence.js";
+import type {
+  RepositoryRevisionBindingV1
+} from "../types/persistence.js";
+import type {
+  AtomicCommitBundleAnyVersion
+} from "../types/persistence-v2.js";
 import type { CanonicalCommitResultV1 } from "../types/result.js";
 import type { AuthoritativeTransitionRecordV1 } from "../types/identity.js";
 import type {
@@ -40,7 +45,10 @@ import {
   prepareCanonicalTransitionEffectV0,
   finalizeCanonicalTransitionEffectV0
 } from "../canonical/canonical-transition-effect.js";
-import { assembleCommitBundle } from "./bundle.js";
+import { assembleCommitBundleV2 } from "./bundle-v2.js";
+import { productionCommitTargetVersionV0 } from "./version-policy.js";
+import { evaluateCommitBundleVersionStepV0 } from "../validation/atomic-commit-bundle.js";
+import { validateAtomicCommitBundleV2 } from "../validation/atomic-commit-bundle.js";
 import type { AtomicCommitStorePort } from "./store.js";
 
 /** Verdict-only inverted capability (§15.1): existence/hash of one immutable revision. */
@@ -86,8 +94,13 @@ export interface CommitTransitionInput {
   readonly first_seen_sequence: number;
   /** Prior durable attempts of the OPEN record (append-only successor semantics). */
   readonly prior_attempts: AuthoritativeTransitionRecordV1["attempts"];
-  readonly previous_commit_ref: CanonicalRefV0 | null;
-  readonly previous_record_checksum: HashV1 | null;
+  /**
+   * Trusted current canonical predecessor bundle read (§6,
+   * PREDECESSOR_BUNDLE_VERSION_SOURCE_V0 = TRUSTED_CURRENT_CANONICAL_BUNDLE_READ):
+   * null exactly at revision 0; ref/checksum/version come from the SAME bundle
+   * object. It must match the reread canonical state on subject/next_revision.
+   */
+  readonly previous_bundle: AtomicCommitBundleAnyVersion | null;
   /** Trusted prepared-record `workflow:` ref minted outside subject-core (§7.6). */
   readonly prepared_result_ref: CanonicalRefV0;
   readonly repository_bindings: readonly RepositoryRevisionBindingV1[];
@@ -99,7 +112,7 @@ export interface CommitTransitionInput {
 export type CommitTransitionOutcome =
   | {
       readonly kind: "COMMITTED";
-      readonly bundle: AtomicCommitBundleV1;
+      readonly bundle: AtomicCommitBundleAnyVersion;
       readonly result: CanonicalCommitResultV1;
     }
   | {
@@ -311,7 +324,60 @@ export function createCommitEngine(deps: {
       const traceEntry = effect.trace_entry;
 
       // Steps 12–14: full bundle assembly (deep-frozen evidence).
-      const bundle = await assembleCommitBundle({
+      // §6 predecessor-bundle consistency: ref/checksum/version come from the
+      // SAME trusted current canonical bundle object, which must match the
+      // reread canonical state on subject and next_revision. Fail closed
+      // BEFORE assembly/CAS on missing/inconsistent positive predecessors.
+      const previousBundle = input.previous_bundle;
+      if (previousBundle === null) {
+        if (rm.state_revision !== 0) {
+          return rejected({
+            error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+            reason: "SS-RESTORE-001",
+            detail: `positive revision ${rm.state_revision} requires a trusted current canonical predecessor bundle`
+          });
+        }
+      } else {
+        if (previousBundle.subject_id !== cur.identity.subject_id) {
+          return rejected({
+            error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+            reason: "SS-RESTORE-001",
+            detail: "predecessor bundle subject does not match the reread canonical state"
+          });
+        }
+        if (previousBundle.next_revision !== rm.state_revision) {
+          return rejected({
+            error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+            reason: "SS-RESTORE-001",
+            detail: `predecessor bundle next_revision ${previousBundle.next_revision} does not match canonical state revision ${rm.state_revision}`
+          });
+        }
+        // §7: version monotonicity via the EXISTING version-step primitive —
+        // never a copied law. Target is the forward-only production version.
+        const step = evaluateCommitBundleVersionStepV0(
+          previousBundle.commit_version,
+          productionCommitTargetVersionV0()
+        );
+        if (step !== "ALLOWED") {
+          return rejected({
+            error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+            reason: "SS-RESTORE-001",
+            detail: `version step ${previousBundle.commit_version} -> ${productionCommitTargetVersionV0()} is not allowed`
+          });
+        }
+      }
+
+      // Forward-only production emission: EVERY new successful commit
+      // assembles directly as AtomicCommitBundleV2 (writer_authority = null).
+      // No V1 fallback: an invalid V2 assembly/validation fails closed.
+      if (productionCommitTargetVersionV0() !== "atomic-commit-v2") {
+        return rejected({
+          error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+          reason: "SS-RESTORE-001",
+          detail: "post-cutover production target must be atomic-commit-v2"
+        });
+      }
+      const bundle = await assembleCommitBundleV2({
         proposal: p,
         currentState: cur,
         candidate: effect.successor,
@@ -325,11 +391,23 @@ export function createCommitEngine(deps: {
         identity_record_version_before: input.identity_record_version_before,
         first_seen_sequence: input.first_seen_sequence as unknown as HistorySequenceV0,
         prior_attempts: input.prior_attempts,
-        previous_commit_ref: input.previous_commit_ref,
-        previous_record_checksum: input.previous_record_checksum,
+        previous_commit_ref: previousBundle?.commit_ref ?? null,
+        previous_record_checksum: previousBundle?.record_checksum ?? null,
+        previous_trace_ref: effect.previous_trace_ref,
         prepared_result_ref: input.prepared_result_ref,
         repository_revision_bindings: input.repository_bindings
       });
+
+      // §14: PRE-CAS closed V2 validation. An invalid production bundle never
+      // reaches the store CAS and never falls back to V1 — fail closed.
+      const preCas = await validateAtomicCommitBundleV2(bundle);
+      if (!preCas.ok) {
+        return rejected({
+          error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+          reason: "SS-RESTORE-001",
+          detail: `pre-CAS V2 validation failed: ${preCas.error.detail}`
+        });
+      }
 
       // Step 15–16: single atomic authority point; outcomes map verbatim (§15.2).
       const outcome = await deps.store.compareAndCommit(rm.state_revision, input.identity_record_version_before, bundle);

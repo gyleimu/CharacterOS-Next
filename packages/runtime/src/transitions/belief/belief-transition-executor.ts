@@ -13,7 +13,7 @@ import {
   parseRef,
   proposalFingerprint,
   validateIdentifier,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type BeliefStateV0,
   type CanonicalTransitionProposalV1,
   type DomainDeltaV0,
@@ -40,10 +40,10 @@ const BELIEF_PRODUCER_ID: IdentifierV0 = (() => {
 export type BeliefExecutionResult =
   | {
       readonly kind: "COMMITTED";
-      readonly bundle: AtomicCommitBundleV1;
+      readonly bundle: AtomicCommitBundleAnyVersion;
       readonly beliefs: BeliefStateV0;
     }
-  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
   | { readonly kind: "NO_OP"; readonly beliefs: BeliefStateV0 }
   | { readonly kind: "REJECTED_INVALID_PROPOSAL"; readonly detail: string }
   | { readonly kind: "REJECTED_ALREADY_REGISTERED"; readonly detail: string }

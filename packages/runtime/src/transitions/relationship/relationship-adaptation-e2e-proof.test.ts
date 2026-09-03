@@ -31,7 +31,7 @@ import {
   createInMemorySubjectCoreFacade,
   RELATIONSHIP_STATE_SCHEMA_VERSION,
   validateSubjectState,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type SubjectStateV0,
   type UnitIntervalV0
 } from "@characteros-next/subject-core";
@@ -301,7 +301,7 @@ async function buildProofWorld(
   provider: DeterministicOfflineSemanticProvider;
   records: readonly EpisodicMemoryRecordV0[];
   state: SubjectStateV0;
-  committedBundles: Map<string, AtomicCommitBundleV1>;
+  committedBundles: Map<string, AtomicCommitBundleAnyVersion>;
 }> {
   const repository = new InMemoryMemoryRepository();
   await repository.prepareRevision({ parent_revision: null, records: [] });
@@ -321,7 +321,7 @@ async function buildProofWorld(
     referenceValidator: async () => true,
     memoryAdoptionValidator: async () => false
   });
-  const committedBundles = new Map<string, AtomicCommitBundleV1>();
+  const committedBundles = new Map<string, AtomicCommitBundleAnyVersion>();
   const port: SubjectCorePort = {
     reserveAndRoute: (proposal) => facade.facade.reserveAndRoute(proposal),
     commitReserved: async (input) => {

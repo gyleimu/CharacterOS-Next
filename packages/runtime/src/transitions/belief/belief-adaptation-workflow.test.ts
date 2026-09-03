@@ -17,7 +17,7 @@ import {
 import {
   BELIEF_STATE_SCHEMA_VERSION,
   createInMemorySubjectCoreFacade,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type HashV1,
   type InMemoryFacadeAssembly,
   type SubjectStateV0,
@@ -319,7 +319,7 @@ async function buildWorld(options: WorldOptions = {}): Promise<{
   repository: InMemoryMemoryRepository;
   records: readonly EpisodicMemoryRecordV0[];
   state: SubjectStateV0;
-  committedBundles: Map<string, AtomicCommitBundleV1>;
+  committedBundles: Map<string, AtomicCommitBundleAnyVersion>;
   facade: InMemoryFacadeAssembly;
   port: SubjectCorePort;
 }> {
@@ -338,7 +338,7 @@ async function buildWorld(options: WorldOptions = {}): Promise<{
     referenceValidator: async () => true,
     memoryAdoptionValidator: async () => false
   });
-  const committedBundles = new Map<string, AtomicCommitBundleV1>();
+  const committedBundles = new Map<string, AtomicCommitBundleAnyVersion>();
   const port: SubjectCorePort = {
     reserveAndRoute: (proposal) => facade.facade.reserveAndRoute(proposal),
     commitReserved: async (input) => {

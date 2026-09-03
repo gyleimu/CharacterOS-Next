@@ -9,7 +9,7 @@
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import type { AtomicCommitBundleV1, CanonicalRefV0, InMemoryFacadeAssembly, SubjectStateV0 } from "@characteros-next/subject-core";
+import type { AtomicCommitBundleAnyVersion, CanonicalRefV0, InMemoryFacadeAssembly, SubjectStateV0 } from "@characteros-next/subject-core";
 import { createInMemorySubjectCoreFacade } from "@characteros-next/subject-core";
 import type { MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { RuntimeContext } from "../../types/runtime-context.js";
@@ -149,10 +149,10 @@ interface World {
   timeCore: SeededCoreAdapter;
   memory: { prepareCalls: number; storeCalls?: number; readCalls?: number };
   ctx: RuntimeContext;
-  bundleA: AtomicCommitBundleV1;
-  bundleB: AtomicCommitBundleV1;
-  timeBundle: AtomicCommitBundleV1;
-  foreignBundle: AtomicCommitBundleV1;
+  bundleA: AtomicCommitBundleAnyVersion;
+  bundleB: AtomicCommitBundleAnyVersion;
+  timeBundle: AtomicCommitBundleAnyVersion;
+  foreignBundle: AtomicCommitBundleAnyVersion;
   executor: ObservationTransitionExecutor;
 }
 
@@ -162,7 +162,7 @@ async function commitObservation(harness: {
   core: RealEngineCoreAdapter;
   ctx: RuntimeContext;
   executor: ObservationTransitionExecutor;
-}, observationId: string): Promise<AtomicCommitBundleV1> {
+}, observationId: string): Promise<AtomicCommitBundleAnyVersion> {
   const current = harness.core.storeRead.readCurrentBundle("subject-s0");
   const snapshot = current === null
     ? (s0() as unknown as SubjectStateV0)
@@ -330,7 +330,7 @@ function sharedReadAuthority(): LearningSourceReadAuthority {
 }
 
 /** Well-formed candidate bound to one committed source bundle. */
-function candidateFor(bundle: AtomicCommitBundleV1, overrides: Record<string, unknown> = {}): Record<string, unknown> {
+function candidateFor(bundle: AtomicCommitBundleAnyVersion, overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
     subject_id: bundle.subject_id,
     source_transition_id: bundle.transition_id,
@@ -347,7 +347,7 @@ function candidateFor(bundle: AtomicCommitBundleV1, overrides: Record<string, un
   };
 }
 
-function appraisalEvidenceOf(bundle: AtomicCommitBundleV1): CanonicalRefV0 {
+function appraisalEvidenceOf(bundle: AtomicCommitBundleAnyVersion): CanonicalRefV0 {
   const channel = bundle.next_snapshot.affect.active_channels[0];
   if (channel === undefined) throw new Error("fixture invariant: expected one committed channel");
   return channel.source_appraisal_ref;
@@ -359,7 +359,7 @@ function appraisalEvidenceOf(bundle: AtomicCommitBundleV1): CanonicalRefV0 {
 
 describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   it("T1: valid trusted candidate succeeds (null + evidenced appraisal variants)", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
     const plain = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
@@ -382,7 +382,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         source_transition_id: "t-obs-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
       })
     );
@@ -394,7 +394,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("T3: source bundle belonging to another subject rejected (cross-subject borrowing)", async () => {
-    const foreign = world.foreignBundle as AtomicCommitBundleV1;
+    const foreign = world.foreignBundle as AtomicCommitBundleAnyVersion;
     const checked = await validateTrustedLearningExperience(
       sharedReadAuthority(),
       world.ctx as RuntimeContext,
@@ -411,7 +411,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       sharedReadAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.timeBundle as AtomicCommitBundleV1, {
+      candidateFor(world.timeBundle as AtomicCommitBundleAnyVersion, {
         observation_ref: "observation:o-source"
       })
     );
@@ -427,7 +427,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         appraisal_ref: "appraisal:ap-fabricated-1"
       })
     );
@@ -439,11 +439,11 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("T6: appraisal_ref from a DIFFERENT committed Observation rejected", async () => {
-    const bundleB = world.bundleB as AtomicCommitBundleV1;
+    const bundleB = world.bundleB as AtomicCommitBundleAnyVersion;
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         appraisal_ref: appraisalEvidenceOf(bundleB)
       })
     );
@@ -457,7 +457,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, { scene: "fabricated-lab" })
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, { scene: "fabricated-lab" })
     );
     expect(checked.ok).toBe(false);
     if (!checked.ok) expect(checked.error.error_code).toBe("UNSUPPORTED_EVIDENCE_REF");
@@ -467,7 +467,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, { focus_refs: ["entity:e-999"] })
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, { focus_refs: ["entity:e-999"] })
     );
     expect(checked.ok).toBe(false);
     if (!checked.ok) expect(checked.error.error_code).toBe("UNSUPPORTED_EVIDENCE_REF");
@@ -477,7 +477,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         environment_refs: ["environment:room-999"]
       })
     );
@@ -489,9 +489,9 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         occurrence_logical_time:
-          ((world.bundleA as AtomicCommitBundleV1).logical_time_after as number) + 1
+          ((world.bundleA as AtomicCommitBundleAnyVersion).logical_time_after as number) + 1
       })
     );
     expect(checked.ok).toBe(false);
@@ -505,7 +505,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, {
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
         observation_ref: "observation:o-999"
       })
     );
@@ -514,7 +514,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("T12: malformed candidate shapes rejected fail-closed", async () => {
-    const base = candidateFor(world.bundleA as AtomicCommitBundleV1);
+    const base = candidateFor(world.bundleA as AtomicCommitBundleAnyVersion);
     const missingSubject = { ...base };
     delete missingSubject["subject_id"];
     const variants: unknown[] = [
@@ -537,7 +537,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const rangeChecked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, { declared_salience: 1.5 })
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, { declared_salience: 1.5 })
     );
     expect(rangeChecked.ok).toBe(false);
     if (!rangeChecked.ok) expect(rangeChecked.error.error_code).toBe("INVALID_VALUE_RANGE");
@@ -547,7 +547,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1, { smuggled_payload: "x" })
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, { smuggled_payload: "x" })
     );
     expect(checked.ok).toBe(false);
     if (!checked.ok) {
@@ -557,8 +557,8 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("T14: repeated validation is deterministic (byte-equivalent trusted output)", async () => {
-    const candidate = candidateFor(world.bundleA as AtomicCommitBundleV1, {
-      appraisal_ref: appraisalEvidenceOf(world.bundleA as AtomicCommitBundleV1)
+    const candidate = candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, {
+      appraisal_ref: appraisalEvidenceOf(world.bundleA as AtomicCommitBundleAnyVersion)
     });
     const first = await validateTrustedLearningExperience(readAuthority(), world.ctx as RuntimeContext, candidate);
     const second = await validateTrustedLearningExperience(readAuthority(), world.ctx as RuntimeContext, candidate);
@@ -570,7 +570,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
 
   it("T15: host resupply after fresh authority reconstruction produces equivalent result", async () => {
     const candidate = JSON.parse(
-      JSON.stringify(candidateFor(world.bundleA as AtomicCommitBundleV1))
+      JSON.stringify(candidateFor(world.bundleA as AtomicCommitBundleAnyVersion))
     ) as Record<string, unknown>;
     const resupplied = JSON.parse(JSON.stringify(candidate)) as Record<string, unknown>;
     const first = await validateTrustedLearningExperience(readAuthority(), world.ctx as RuntimeContext, candidate);
@@ -589,7 +589,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1)
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion)
     );
     expect(checked.ok).toBe(true);
     expect(memory.prepareCalls).toBe(prepareBefore);
@@ -601,8 +601,8 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const before = (world.core as RealEngineCoreAdapter).storeRead.getCommittedBundles().length;
     const revisions = ["subject-s0"].map((id) => (world.core as RealEngineCoreAdapter).storeRead.currentRevision(id));
     for (const candidate of [
-      candidateFor(world.bundleA as AtomicCommitBundleV1),
-      candidateFor(world.bundleA as AtomicCommitBundleV1, { appraisal_ref: "appraisal:ap-fabricated-2" })
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion),
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion, { appraisal_ref: "appraisal:ap-fabricated-2" })
     ]) {
       await validateTrustedLearningExperience(readAuthority(), world.ctx as RuntimeContext, candidate);
     }
@@ -613,7 +613,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("T18: candidate input is never mutated (deep-frozen input survives byte-identically)", async () => {
-    const candidate = candidateFor(world.bundleA as AtomicCommitBundleV1);
+    const candidate = candidateFor(world.bundleA as AtomicCommitBundleAnyVersion);
     const bytesBefore = JSON.stringify(candidate);
     const frozen = JSON.parse(bytesBefore) as Record<string, unknown>;
     const freeze = (value: unknown): void => {
@@ -630,8 +630,8 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("§18 cross-source mixing: source from A + appraisal evidence from B rejected", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
-    const bundleB = world.bundleB as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
+    const bundleB = world.bundleB as AtomicCommitBundleAnyVersion;
     const mixed = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
@@ -647,7 +647,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
   });
 
   it("surface B wiring: prepared domain_result_refs of the SAME transition extend appraisal authority", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
     const preparedRef = "appraisal:prepared-appraisal-evidence" as CanonicalRefV0;
     const authoritySame: LearningSourceReadAuthority = {
       readCommittedBundle: async (id) =>
@@ -666,7 +666,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
       readCommittedBundle: async (id) =>
         (world.core as RealEngineCoreAdapter).storeRead.readCommittedByTransitionId(id),
       readPreparedDomainResultRefs: async (id) =>
-        id === (world.bundleB as AtomicCommitBundleV1).transition_id ? [preparedRef] : null
+        id === (world.bundleB as AtomicCommitBundleAnyVersion).transition_id ? [preparedRef] : null
     };
     const unsupported = await validateTrustedLearningExperience(
       authorityOther,
@@ -686,7 +686,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
 
 describe("P2.3.5.3a trusted-representation forgeability regression", () => {
   it("authority-validated output carries runtime trust; plain identical objects do not", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
@@ -715,7 +715,7 @@ describe("P2.3.5.3a trusted-representation forgeability regression", () => {
   });
 
   it("the registry grants no visible own keys (determinism preserved)", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
@@ -744,7 +744,7 @@ describe("P2.3.5.3a trusted-representation forgeability regression", () => {
   });
 
   it("future trusted-consumer boundary rejects forged input (supported runtime path)", async () => {
-    const bundleA = world.bundleA as AtomicCommitBundleV1;
+    const bundleA = world.bundleA as AtomicCommitBundleAnyVersion;
     // The exact gate a future trusted consumer (e.g. ExperienceEncoderV0) applies.
     function requireTrusted(value: unknown): TrustedLearningExperienceV0 {
       if (!isTrustedLearningExperience(value)) {
@@ -787,7 +787,7 @@ describe("P2.3.5.3a.1 reflective brand forge closure (F1-F10)", () => {
     const checked = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(world.bundleA as AtomicCommitBundleV1)
+      candidateFor(world.bundleA as AtomicCommitBundleAnyVersion)
     );
     expect(checked.ok).toBe(true);
     if (!checked.ok) throw new Error("fixture invariant: expected trusted result");
@@ -873,7 +873,7 @@ describe("P2.3.5.3a.1 reflective brand forge closure (F1-F10)", () => {
   });
 
   it("§11 crash/resupply: fresh re-validation creates a NEW trusted object (T1 !== T2), clones of either stay untrusted", async () => {
-    const candidate = candidateFor(world.bundleA as AtomicCommitBundleV1);
+    const candidate = candidateFor(world.bundleA as AtomicCommitBundleAnyVersion);
     const first = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,

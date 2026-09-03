@@ -12,7 +12,7 @@ import {
   parseRef,
   proposalFingerprint,
   validateIdentifier,
-  type AtomicCommitBundleV1,
+  type AtomicCommitBundleAnyVersion,
   type CanonicalTransitionProposalV1,
   type DomainDeltaV0,
   type IdentifierV0,
@@ -42,10 +42,10 @@ const RELATIONSHIP_PRODUCER_ID: IdentifierV0 = (() => {
 export type RelationshipExecutionResult =
   | {
       readonly kind: "COMMITTED";
-      readonly bundle: AtomicCommitBundleV1;
+      readonly bundle: AtomicCommitBundleAnyVersion;
       readonly relationships: RelationshipStateV0;
     }
-  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
   | { readonly kind: "REJECTED_INVALID_PROPOSAL"; readonly detail: string }
   | { readonly kind: "REJECTED_UNKNOWN_COUNTERPART"; readonly detail: string }
   | { readonly kind: "REJECTED_UNKNOWN_DIMENSION"; readonly detail: string }

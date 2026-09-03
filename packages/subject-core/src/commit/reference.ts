@@ -11,7 +11,7 @@
 
 import type { SubjectStateV0 } from "../types/subject-state.js";
 import type { IdentifierV0 } from "../types/scalars.js";
-import type { AtomicCommitBundleV1 } from "../types/persistence.js";
+import type { AtomicCommitBundleAnyVersion } from "../types/persistence-v2.js";
 import type { ReferenceValidatorCapability, MemoryAdoptionValidatorCapability } from "./engine.js";
 import { InMemoryAtomicCommitStore } from "./store.js";
 import { InMemoryTransitionIdentityJournal } from "../identity/journal.js";
@@ -32,6 +32,12 @@ export interface InMemoryFacadeOptions {
   /** Optional seed snapshots by subject (default: none — subjects must exist). */
   readonly seedSnapshots?: ReadonlyMap<IdentifierV0, SubjectStateV0>;
   /**
+   * Optional seed committed bundles (test/fixture affordance for historical
+   * V1-only subjects): seeded in authority order before any new commit, so
+   * post-cutover promotion tests can start from an authentic V1 history.
+   */
+  readonly seedBundles?: readonly AtomicCommitBundleAnyVersion[];
+  /**
    * Trusted prepared-record verdict — REQUIRED. There is no default: a facade
    * without an explicit prepared-result gate must never be minted (fail closed,
    * ATTACK C closure).
@@ -40,10 +46,10 @@ export interface InMemoryFacadeOptions {
 }
 
 export interface ReadOnlyStoreHandle {
-  getCommittedBundles(): readonly AtomicCommitBundleV1[];
+  getCommittedBundles(): readonly AtomicCommitBundleAnyVersion[];
   currentRevision(subjectId: string): number | null;
-  readCurrentBundle(subjectId: string): AtomicCommitBundleV1 | null;
-  readCommittedByTransitionId(transitionId: string): AtomicCommitBundleV1 | null;
+  readCurrentBundle(subjectId: string): AtomicCommitBundleAnyVersion | null;
+  readCommittedByTransitionId(transitionId: string): AtomicCommitBundleAnyVersion | null;
 }
 
 export interface InMemoryFacadeAssembly {
@@ -67,6 +73,9 @@ export function createInMemorySubjectCoreFacade(
     );
   }
   const store = new InMemoryAtomicCommitStore();
+  for (const seeded of options.seedBundles ?? []) {
+    store.seedCommittedBundle(seeded);
+  }
   const journal = new InMemoryTransitionIdentityJournal();
   const producerAuthorizationIssuer = createProducerAuthorizationIssuer();
   const seeds = options.seedSnapshots ?? new Map<IdentifierV0, SubjectStateV0>();

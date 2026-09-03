@@ -11,9 +11,10 @@ import { describe, expect, it } from "vitest";
 import type { RuntimeMetadataV0, SubjectStateV0 } from "../types/subject-state.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
-import type { AtomicCommitBundleV1, RepositoryRevisionBindingV1 } from "../types/persistence.js";
+import type { RepositoryRevisionBindingV1 } from "../types/persistence.js";
+import type { AtomicCommitBundleAnyVersion } from "../types/persistence-v2.js";
 import { canonicalJsonString } from "../canonical/json.js";
-import { hashEnvelope } from "../canonical/hash.js";
+import { deriveAtomicCommitRecordChecksumV2 } from "../canonical/writer-authority-projections.js";
 import { stateHash, snapshotHash } from "../canonical/projections.js";
 import {
   applyDeltaOperations,
@@ -239,8 +240,7 @@ function baseEngineInput(
     identity_record_version_before: 0,
     first_seen_sequence: 1,
     prior_attempts: [],
-    previous_commit_ref: null,
-    previous_record_checksum: null,
+    previous_bundle: null,
     prepared_result_ref: "workflow:w-0001" as CanonicalRefV0,
     repository_bindings: R0_BINDINGS,
     reference_validator: async () => true,
@@ -369,7 +369,7 @@ describe("commit engine end-to-end", () => {
     const { outcome } = await commitOnce(observationProposal());
     expect(outcome.kind).toBe("COMMITTED");
     if (outcome.kind !== "COMMITTED") return;
-    const bundle: AtomicCommitBundleV1 = outcome.bundle;
+    const bundle: AtomicCommitBundleAnyVersion = outcome.bundle;
 
     expect(bundle.expected_revision).toBe(0);
     expect(bundle.next_revision).toBe(1);
@@ -394,15 +394,16 @@ describe("commit engine end-to-end", () => {
     expect(bundle.transition_record.terminal_status).toBe("COMMITTED");
     expect(bundle.canonical_result.result_ref).toBe(bundle.transition_record.terminal_result_ref);
 
-    // record_checksum recomputes over BUNDLE_WITHOUT_RECORD_CHECKSUM.
+    // record_checksum recomputes over BUNDLE_WITHOUT_RECORD_CHECKSUM using the
+    // frozen V2 projection (post-cutover production emission).
     const copy = { ...bundle } as unknown as Record<string, unknown>;
     delete copy["record_checksum"];
-    await expect(hashEnvelope("characteros-next/atomic-commit/record-checksum/v1", copy)).resolves.toBe(
+    await expect(deriveAtomicCommitRecordChecksumV2(copy as never)).resolves.toBe(
       bundle.record_checksum
     );
 
     // Canonical JSON round-trip stays stable (deterministic serialization).
-    expect(canonicalJsonString(bundle)).toContain('"commit_version":"atomic-commit-v1"');
+    expect(canonicalJsonString(bundle)).toContain('"commit_version":"atomic-commit-v2"');
   });
 
   it("is deterministic: two isolated runs produce byte-identical refs and hashes", async () => {
@@ -449,8 +450,7 @@ describe("commit engine end-to-end", () => {
       currentState: advancedState,
       identity_record_version_before: b1.transition_record.record_version,
       first_seen_sequence: 2,
-      previous_commit_ref: b1.commit_ref,
-      previous_record_checksum: b1.record_checksum,
+      previous_bundle: b1,
       prepared_result_ref: "workflow:w-0002" as CanonicalRefV0
     });
     expect(second.kind).toBe("COMMITTED");
@@ -515,7 +515,7 @@ describe("in-memory AtomicCommitStore CAS", () => {
     const first = await engine.commitTransition(baseEngineInput(observationProposal()));
     if (first.kind !== "COMMITTED") throw new Error("seed commit failed");
 
-    const forged = JSON.parse(JSON.stringify(first.bundle)) as AtomicCommitBundleV1;
+    const forged = JSON.parse(JSON.stringify(first.bundle)) as AtomicCommitBundleAnyVersion;
     // Same expected revision, wrong journal version -> CAS mismatch.
     const outcome = await store.compareAndCommit(0, 0, forged);
     expect(outcome.outcome).toBe("CONFLICT");

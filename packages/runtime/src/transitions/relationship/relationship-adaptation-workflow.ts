@@ -38,7 +38,7 @@
  */
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   HashV1,
   SubjectStateV0,
   TransitionIdV0
@@ -355,7 +355,7 @@ export interface RelationshipAdaptationWorkflowDepsV0 {
   /** Committed-transition authority consulted before every executor call. */
   readonly readCommittedBundle: (
     transition_id: TransitionIdV0
-  ) => Promise<AtomicCommitBundleV1 | null>;
+  ) => Promise<AtomicCommitBundleAnyVersion | null>;
 }
 
 interface ValidatedRequest {

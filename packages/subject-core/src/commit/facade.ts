@@ -43,10 +43,8 @@ import type {
   ReservedTransitionContinuationV1,
   TransitionAttemptV1
 } from "../types/identity.js";
-import type {
-  AtomicCommitBundleV1,
-  RepositoryRevisionBindingV1
-} from "../types/persistence.js";
+import type { RepositoryRevisionBindingV1 } from "../types/persistence.js";
+import type { AtomicCommitBundleAnyVersion } from "../types/persistence-v2.js";
 import type { AtomicCommitStorePort } from "./store.js";
 import type {
   TransitionIdentityJournalPort,
@@ -120,7 +118,7 @@ export interface SubjectCoreFacadePorts {
 
 export type ReserveAndRouteOutcome =
   | { readonly kind: "CONTINUE"; readonly continuation: ReservedTransitionContinuationV1 }
-  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
   | { readonly kind: "TERMINAL_NO_OP" }
   | {
       readonly kind: "REUSE_CONFLICT";
@@ -146,8 +144,8 @@ export interface CommitReservedInput {
 }
 
 export type ReconcileOutcome =
-  | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleV1 }
-  | { readonly kind: "COMMIT_CONFLICT"; readonly bundle: AtomicCommitBundleV1 }
+  | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
+  | { readonly kind: "COMMIT_CONFLICT"; readonly bundle: AtomicCommitBundleAnyVersion }
   | { readonly kind: "TERMINAL_NO_OP" }
   | { readonly kind: "NOT_COMMITTED" };
 
@@ -163,10 +161,10 @@ interface PositionFacts {
 }
 
 interface StoreReadSurface {
-  readCommittedByTransitionId?(id: string): Promise<AtomicCommitBundleV1 | null>;
-  getCommittedBundles?(): readonly AtomicCommitBundleV1[];
+  readCommittedByTransitionId?(id: string): Promise<AtomicCommitBundleAnyVersion | null>;
+  getCommittedBundles?(): readonly AtomicCommitBundleAnyVersion[];
   readCurrentCommitRef?(id: string): CanonicalRefV0 | null;
-  readCurrentBundle?(id: string): AtomicCommitBundleV1 | null;
+  readCurrentBundle?(id: string): AtomicCommitBundleAnyVersion | null;
 }
 
 export class SubjectCoreFacade {
@@ -374,11 +372,9 @@ export class SubjectCoreFacade {
       return this.rejected("UNKNOWN_SUBJECT", "SS-AUTH-001", "subject not found at second call");
     }
 
-    // 8. Journal/store-derived facts.
+    // 8. Journal/store-derived facts. §6: the trusted current canonical
+    // predecessor bundle read is the version/ref/checksum authority.
     const store = this.ports.store as StoreReadSurface;
-    const previousCommitRef =
-      (await this.readCurrentCommitRef(input.continuation.subject_id)) ??
-      null;
     const previousBundle = store.readCurrentBundle?.(input.continuation.subject_id) ?? null;
 
     const engineInput: CommitTransitionInput = {
@@ -387,8 +383,7 @@ export class SubjectCoreFacade {
       identity_record_version_before: record.record_version,
       first_seen_sequence: record.first_seen_sequence,
       prior_attempts: record.attempts,
-      previous_commit_ref: previousCommitRef,
-      previous_record_checksum: previousBundle?.record_checksum ?? null,
+      previous_bundle: previousBundle,
       prepared_result_ref: input.preparedBinding.prepared_result_ref,
       repository_bindings: input.repository_bindings,
       ...(this.ports.referenceValidator !== undefined
@@ -720,25 +715,17 @@ export class SubjectCoreFacade {
     };
   }
 
-  private async readCommittedBundle(transitionId: string): Promise<AtomicCommitBundleV1 | null> {
+  private async readCommittedBundle(transitionId: string): Promise<AtomicCommitBundleAnyVersion | null> {
     const store = this.ports.store as StoreReadSurface;
     if (typeof store.readCommittedByTransitionId === "function") {
       return await store.readCommittedByTransitionId(transitionId);
     }
     const bundles = store.getCommittedBundles?.() ?? [];
     for (let i = bundles.length - 1; i >= 0; i--) {
-      const bundle = bundles[i] as AtomicCommitBundleV1;
+      const bundle = bundles[i] as AtomicCommitBundleAnyVersion;
       if (bundle.transition_id === transitionId) return bundle;
     }
     return null;
-  }
-
-  private async readCurrentCommitRef(subjectId: string): Promise<CanonicalRefV0 | null> {
-    const store = this.ports.store as StoreReadSurface;
-    if (typeof store.readCurrentCommitRef === "function") {
-      return store.readCurrentCommitRef(subjectId) ?? null;
-    }
-    return store.readCurrentBundle?.(subjectId)?.commit_ref ?? null;
   }
 
   private rejected(errorCode: ErrorCode, reason: RequirementId, detail: string): CommitTransitionOutcome {

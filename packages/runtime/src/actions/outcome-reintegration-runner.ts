@@ -26,7 +26,7 @@
  */
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   HashV1,
   MiclStageKey,
   StateRevisionV0,
@@ -236,7 +236,7 @@ export class OutcomeReintegrationRunnerV0 {
           detail: "REBASE_REQUIRED"
         };
       }
-      const asCommit = learningOutcome as { kind: string; bundle?: AtomicCommitBundleV1 };
+      const asCommit = learningOutcome as { kind: string; bundle?: AtomicCommitBundleAnyVersion };
       if (asCommit.kind !== "COMMITTED" || asCommit.bundle === undefined) {
         throw new TransitionStageFailure(
           "LEARNING",
@@ -346,7 +346,7 @@ export class OutcomeReintegrationRunnerV0 {
 
 function checkpointFromBundle(
   stage: MiclStageKey,
-  bundle: AtomicCommitBundleV1
+  bundle: AtomicCommitBundleAnyVersion
 ): MiclStageCheckpointV0 {
   return {
     stage_key: stage,

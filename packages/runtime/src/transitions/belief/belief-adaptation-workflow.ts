@@ -47,7 +47,7 @@
  */
 
 import type {
-  AtomicCommitBundleV1,
+  AtomicCommitBundleAnyVersion,
   HashV1,
   ProducerAuthorizationIssuer,
   RepositoryRevisionIdV0,
@@ -368,7 +368,7 @@ export interface BeliefAdaptationWorkflowDepsV0 {
    */
   readonly readCommittedBundle: (
     transition_id: TransitionIdV0
-  ) => Promise<AtomicCommitBundleV1 | null>;
+  ) => Promise<AtomicCommitBundleAnyVersion | null>;
 }
 
 interface ValidatedRequest {

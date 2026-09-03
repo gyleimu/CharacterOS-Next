@@ -74,6 +74,12 @@ export interface AtomicCommitBundleV2 {
 /** Version-discriminated union over persisted atomic commit bundles. */
 export type AtomicCommitBundleAnyVersion = AtomicCommitBundleV1 | AtomicCommitBundleV2;
 
+/** Any-version store outcome: the committed/replayed bundle may be V1 or V2. */
+export type AtomicCommitOutcomeAnyVersion =
+  | { readonly outcome: "COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
+  | { readonly outcome: "CONFLICT" }
+  | { readonly outcome: "FAILURE"; readonly certainty: "DEFINITE_NOT_COMMITTED" | "OUTCOME_UNKNOWN" };
+
 /** Exact bundle-version literals recognized by the closed validators. */
 export const ATOMIC_COMMIT_BUNDLE_VERSIONS_V0 = Object.freeze([
   "atomic-commit-v1",
