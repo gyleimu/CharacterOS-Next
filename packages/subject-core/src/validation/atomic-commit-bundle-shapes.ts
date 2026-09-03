@@ -361,11 +361,15 @@ export function validateTransitionAttemptShape(
   if (!shb.ok) return shb;
   const sha = validateHash(v["state_hash_after"] as string, `${d}.state_hash_after`);
   if (!sha.ok) return sha;
-  const resultRef = validateRefElement(v["result_ref"], `${d}.result_ref`, ["result"]);
+  // result_ref: `result:` for COMMITTED attempts, `audit:` for REJECTED/ABORTED.
+  // Shape-level validation does not constrain the kind — the chain validator
+  // and stage-specific semantics own that distinction.
+  const resultRef = validateRefElement(v["result_ref"], `${d}.result_ref`);
   if (!resultRef.ok) return resultRef;
   const prepared = validateRefElement(v["prepared_result_ref"], `${d}.prepared_result_ref`, ["workflow"]);
   if (!prepared.ok) return prepared;
-  const traceRef = validateRefElement(v["trace_ref"], `${d}.trace_ref`, ["trace"]);
+  // trace_ref: `trace:` for COMMITTED attempts, null for REJECTED/ABORTED.
+  const traceRef = bundleOptionalRef(v["trace_ref"], `${d}.trace_ref`, ["trace"]);
   if (!traceRef.ok) return traceRef;
   const audit = bundleOptionalRef(v["audit_ref"], `${d}.audit_ref`);
   if (!audit.ok) return audit;

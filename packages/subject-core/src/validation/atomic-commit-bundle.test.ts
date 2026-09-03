@@ -16,7 +16,7 @@
 
 import { beforeAll, describe, expect, it } from "vitest";
 
-import { deriveRef } from "../canonical/hash.js";
+import { deriveRef, hashEnvelope } from "../canonical/hash.js";
 import {
   assembleCommitBundle,
   type AssembleBundleInput
@@ -563,6 +563,133 @@ describe("AtomicCommitBundle closed validators", () => {
       expect(evaluateCommitBundleVersionStepV0("atomic-commit-v2", "atomic-commit-v1")).toBe(
         "DOWNGRADE_FORBIDDEN"
       );
+    });
+  });
+
+  // ---- attempt shape compatibility: prior REJECTED attempt with audit ref + null trace ---
+
+  describe("attempt shape compatibility (prior REJECTED/ABORTED attempts)", () => {
+    it("accepts a lawful V2 bundle carrying a prior REJECTED attempt (audit result_ref + null trace_ref)", async () => {
+      // Build a base V1 bundle through the frozen assembler (no prior attempts).
+      const { v1, proposal } = await buildV1Bundle();
+
+      // Construct a lawful REJECTED prior attempt (the kind the facade appends
+      // when the engine rejects a commit: result_ref = audit ref, trace_ref = null).
+      const rejectedAttempt = {
+        attempt_sequence: 1,
+        status: "REJECTED",
+        revision_before: v1.expected_revision,
+        revision_after: v1.expected_revision,
+        state_hash_before: v1.state_hash_before,
+        state_hash_after: v1.state_hash_before,
+        result_ref: "audit:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        prepared_result_ref: "workflow:w-v2-fixture-reject",
+        trace_ref: null,
+        audit_ref: "audit:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        error_code: "STALE_STATE_REVISION",
+        reason: "SS-REVISION-001"
+      };
+
+      // Reconstruct the V1 bundle with the prior REJECTED attempt in the record.
+      // The V1 assembler builds attempts as [...prior_attempts, committedAttempt],
+      // so the record would be [REJECTED, COMMITTED].
+      const committedAttempt = {
+        attempt_sequence: 2,
+        status: "COMMITTED",
+        revision_before: v1.expected_revision,
+        revision_after: v1.next_revision,
+        state_hash_before: v1.state_hash_before,
+        state_hash_after: v1.state_hash_after,
+        result_ref: v1.canonical_result.result_ref,
+        prepared_result_ref: v1.prepared_result_ref,
+        trace_ref: v1.trace_entry.trace_id,
+        audit_ref: null,
+        error_code: null,
+        reason: null
+      };
+      const modifiedRecord = {
+        ...v1.transition_record,
+        record_version: v1.transition_record.record_version,
+        first_seen_sequence: 1,
+        attempts: [rejectedAttempt, committedAttempt]
+      };
+
+      // Rebuild the V1 bundle with the modified record and recomputed checksum.
+      const modifiedV1Partial: Record<string, unknown> = {
+        ...v1,
+        transition_record: modifiedRecord
+      };
+      delete modifiedV1Partial["record_checksum"];
+      const modifiedV1 = {
+        ...modifiedV1Partial,
+        record_checksum: await hashEnvelope(
+          "characteros-next/atomic-commit/record-checksum/v1",
+          modifiedV1Partial
+        )
+      } as unknown as AtomicCommitBundleV1;
+
+      // Lift to V2 (the V2 lift preserves the transition_record).
+      const v2 = await liftToV2(modifiedV1, proposal, null);
+
+      // The repaired shape validator must ACCEPT the prior REJECTED attempt.
+      const result = await validateAtomicCommitBundleV2(v2);
+      expect(result.ok).toBe(true);
+    });
+
+    it("still rejects malformed refs in prior REJECTED attempts", async () => {
+      const { v1, proposal } = await buildV1Bundle();
+
+      const rejectedAttempt = {
+        attempt_sequence: 1,
+        status: "REJECTED",
+        revision_before: v1.expected_revision,
+        revision_after: v1.expected_revision,
+        state_hash_before: v1.state_hash_before,
+        state_hash_after: v1.state_hash_before,
+        result_ref: "not-a-ref" as never,
+        prepared_result_ref: "workflow:w-v2-fixture-reject" as never,
+        trace_ref: null,
+        audit_ref: "audit:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" as never,
+        error_code: "STALE_STATE_REVISION",
+        reason: "SS-REVISION-001"
+      };
+
+      const committedAttempt = {
+        attempt_sequence: 2,
+        status: "COMMITTED",
+        revision_before: v1.expected_revision,
+        revision_after: v1.next_revision,
+        state_hash_before: v1.state_hash_before,
+        state_hash_after: v1.state_hash_after,
+        result_ref: v1.canonical_result.result_ref,
+        prepared_result_ref: v1.prepared_result_ref,
+        trace_ref: v1.trace_entry.trace_id,
+        audit_ref: null,
+        error_code: null,
+        reason: null
+      };
+      const modifiedRecord = {
+        ...v1.transition_record,
+        first_seen_sequence: 1,
+        attempts: [rejectedAttempt, committedAttempt]
+      };
+
+      const modifiedV1Partial: Record<string, unknown> = {
+        ...v1,
+        transition_record: modifiedRecord
+      };
+      delete modifiedV1Partial["record_checksum"];
+      const modifiedV1 = {
+        ...modifiedV1Partial,
+        record_checksum: await hashEnvelope(
+          "characteros-next/atomic-commit/record-checksum/v1",
+          modifiedV1Partial
+        )
+      } as unknown as AtomicCommitBundleV1;
+
+      const v2 = await liftToV2(modifiedV1, proposal, null);
+      const result = await validateAtomicCommitBundleV2(v2);
+      expect(result.ok).toBe(false);
     });
   });
 });
