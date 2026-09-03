@@ -37,6 +37,7 @@ import {
   type ValidationResult
 } from "@characteros-next/subject-core";
 import type { RelationshipInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
+import type { RelationshipInteractionFamiliarityCognitionInfluenceV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 
 export const COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION =
   "cognitive-context-projection-v0" as const;
@@ -151,6 +152,15 @@ export interface CognitiveContextProjectionV0 {
    * subjective canonical state context, never trust/utility/evidence refs.
    */
   readonly interaction_familiarity: readonly RelationshipInteractionFamiliarityReadProjectionV0[];
+  /**
+   * Interaction Familiarity Cognition Influence V0 (RELATIONSHIP_FAMILIARITY_
+   * COGNITION_INFLUENCE_V0): the ONE deterministic feature-specific cognition
+   * effect — the context-resolution strategy per ACTIVE registered counterpart
+   * (exact canonical ref in context.active_entity_refs), raw-ASCII sorted.
+   * Empty array when no eligible active counterpart exists. Policy-derived
+   * from the read projection above; bound by this projection's hash.
+   */
+  readonly interaction_familiarity_cognition_influences: readonly RelationshipInteractionFamiliarityCognitionInfluenceV0[];
   /** The only action space the provider may propose within. */
   readonly allowed_actions: readonly AllowedActionV0[];
   /** Content-addressed integrity of the exact projection body. */

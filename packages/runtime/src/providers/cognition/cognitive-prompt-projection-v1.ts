@@ -22,6 +22,7 @@
  */
 
 import type { CognitionRelationProviderInputV1 } from "../../ports/cognition-relation-port.js";
+import { renderInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import type { ModelTransportMessageV0 } from "../../transports/model-transport.js";
 
 export const COGNITIVE_PROMPT_PROJECTION_V1_VERSION = "cognitive-prompt-projection-v1" as const;
@@ -100,6 +101,10 @@ export function renderCognitiveSubjectDataV1(input: CognitionRelationProviderInp
     beliefs,
     `[relationships] ${relationships}`,
     interactionFamiliarityBlock,
+    // Shared deterministic influence rendering — IDENTICAL to the V0 path.
+    renderInteractionFamiliarityCognitionInfluencesV0(
+      projection.interaction_familiarity_cognition_influences
+    ),
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):`,
     citeable,

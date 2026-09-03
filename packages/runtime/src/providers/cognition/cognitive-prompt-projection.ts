@@ -24,6 +24,7 @@
 
 import type { CognitiveContextProjectionV0 } from "../../transitions/cognition-action/types.js";
 import { allowedEvidenceSet } from "../../transitions/cognition-action/types.js";
+import { renderInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import type { ModelTransportMessageV0 } from "../../transports/model-transport.js";
 
 export const COGNITIVE_PROMPT_PROJECTION_VERSION = "cognitive-prompt-projection-v0" as const;
@@ -56,6 +57,11 @@ export function renderCognitiveSubjectData(
       : projection.relationship_dimensions
           .map((r) => `- ${r.counterpart_ref}: ${r.dimension_id}=${r.value}`)
           .join("\n");
+  // Shared deterministic influence rendering — IDENTICAL to the V1 path (no
+  // semantic divergence between provider versions).
+  const familiarityInfluences = renderInteractionFamiliarityCognitionInfluencesV0(
+    projection.interaction_familiarity_cognition_influences
+  );
   const actionSpace =
     projection.allowed_actions.length === 0
       ? "(no external actions allowed this cycle — NO_ACTION is the only valid external posture)"
@@ -85,6 +91,7 @@ export function renderCognitiveSubjectData(
     `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,
     beliefs,
     `[relationships] ${relationships}`,
+    familiarityInfluences,
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):`,
     citeable,

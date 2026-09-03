@@ -768,6 +768,22 @@ export {
   type RelationshipInteractionFamiliarityReadProjectionV0
 } from "./transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 
+// --- Relationship Familiarity Cognition Influence V0 (READ-ONLY) ------------------------
+// The ONE deterministic feature-specific cognition strategy artifact: fixed V0
+// policy over the frozen read projection, active-counterpart gated. No
+// retrieval execution (Layer B), no action influence, no model calls.
+
+export {
+  RELATIONSHIP_INTERACTION_FAMILIARITY_COGNITION_INFLUENCE_SCHEMA_VERSION_V0,
+  RELATIONSHIP_INTERACTION_FAMILIARITY_CONTEXT_RESOLUTION_STRATEGIES_V0,
+  COUNTERPART_CONTEXT_SEARCH_FIRST_MIN_CREDIT_LEVEL_V0,
+  deriveInteractionFamiliarityCognitionInfluenceV0,
+  deriveInteractionFamiliarityCognitionInfluencesV0,
+  renderInteractionFamiliarityCognitionInfluencesV0,
+  type RelationshipInteractionFamiliarityCognitionInfluenceV0,
+  type RelationshipInteractionFamiliarityContextResolutionStrategyV0
+} from "./transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
+
 // --- Interaction Familiarity Experience Ingestion V0 ----------------------------------
 // The narrow EXPERIENCE-oriented product capability: the caller supplies an
 // experience identity (subject, registered counterpart, candidate episode);

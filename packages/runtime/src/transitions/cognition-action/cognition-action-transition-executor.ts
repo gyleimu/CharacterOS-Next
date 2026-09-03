@@ -46,6 +46,7 @@ import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import { deriveInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
+import { deriveInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import {
   actionIntentAllowed,
   allowedEvidenceSet,
@@ -135,6 +136,26 @@ export async function buildCognitionActionProposal(params: {
 export async function buildCognitiveContextProjection(
   snapshot: SubjectStateV0
 ): Promise<CognitiveContextProjectionV0> {
+  // Interaction Familiarity Read Projection V0: the exact admitted governed
+  // feature's semantic state surface per registered counterpart. Pure
+  // derivation from the authoritative snapshot; a malformed canonical
+  // familiarity state FAILS CLOSED (no projection is built at all).
+  const interactionFamiliarity = await Promise.all(
+    [...snapshot.relationships.counterparts]
+      .sort((a, b) => (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0))
+      .map(async (counterpart) => {
+        const derived = await deriveInteractionFamiliarityReadProjectionV0({
+          subjectState: snapshot,
+          counterpart_ref: counterpart.counterpart_ref as never
+        });
+        if (!derived.ok) {
+          throw new Error(
+            `cognitive context projection: interaction familiarity read projection failed (${derived.code}: ${derived.detail})`
+          );
+        }
+        return derived.projection;
+      })
+  );
   const projectionBody = {
     subject_id: snapshot.identity.subject_id as string,
     current_logical_time: snapshot.runtime_metadata.logical_time as number,
@@ -192,25 +213,15 @@ export async function buildCognitiveContextProjection(
           (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0)
       ),
     // Interaction Familiarity Read Projection V0: the exact admitted governed
-    // feature's semantic state surface per registered counterpart. Pure
-    // derivation from the authoritative snapshot; a malformed canonical
-    // familiarity state FAILS CLOSED (no projection is built at all).
-    interaction_familiarity: await Promise.all(
-      [...snapshot.relationships.counterparts]
-        .sort((a, b) => (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0))
-        .map(async (counterpart) => {
-          const derived = await deriveInteractionFamiliarityReadProjectionV0({
-            subjectState: snapshot,
-            counterpart_ref: counterpart.counterpart_ref as never
-          });
-          if (!derived.ok) {
-            throw new Error(
-              `cognitive context projection: interaction familiarity read projection failed (${derived.code}: ${derived.detail})`
-            );
-          }
-          return derived.projection;
-        })
-      ),
+    // feature's semantic state surface per registered counterpart (derived
+    // above; malformed canonical familiarity state FAILS CLOSED).
+    interaction_familiarity: interactionFamiliarity,
+    // Interaction Familiarity Cognition Influence V0: the fixed feature policy
+    // applied to the read projections for ACTIVE counterparts only.
+    interaction_familiarity_cognition_influences: deriveInteractionFamiliarityCognitionInfluencesV0({
+      familiarityProjections: interactionFamiliarity,
+      activeEntityRefs: snapshot.context.active_entity_refs as never
+    }),
     allowed_actions: [] as { action_type: string; target_ref: string | null }[]
   };
   const projectionHash = await cognitiveProjectionHash(projectionBody);
