@@ -1,0 +1,17 @@
+{
+  "status": "PRECALL_FREEZE_BASELINE_CONFLICT",
+  "experiment_id": "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V1",
+  "execution_identity": "formal-primary-v1-r1",
+  "real_model_calls": 0,
+  "cognition_calls": 0,
+  "language_calls": 0,
+  "evaluator_calls": 0,
+  "primary_lock_created": false,
+  "formal_output_created": false,
+  "cause": "Authorized harness repair commit 8d7a78a5e266b407067922afa84f801685630330 (bounded large-artifact git-read) changed fingerprint-covered source file research/experiments/familiarity-causal-behavior-v1/artifacts.ts, but the frozen verifyFrozen law (cli.ts:24) had no concept of an authorized post-readiness execution amendment and hard-rejected the repaired source fingerprint (current sha256:c1da004c8bb1af70… ≠ frozen sha256:4c06d1d6ab…) despite built fingerprint, protocol hash, readiness files and production remaining byte-for-byte unchanged.",
+  "readiness_unchanged": true,
+  "production_unchanged": true,
+  "scientific_protocol_unchanged": true,
+  "resolution": "Protocol owner authorized an execution-amendment freeze repair (this task) adding a strict lineage-aware amendment mechanism; new execution identity formal-primary-v1-r2 reserved.",
+  "superseded_by": "formal-primary-v1-r2"
+}

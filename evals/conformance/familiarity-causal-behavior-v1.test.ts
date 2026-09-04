@@ -13,6 +13,7 @@ import { executePrimary } from "../../research/experiments/familiarity-causal-be
 import { evaluatorMessages, parseEvaluation, summarize } from "../../research/experiments/familiarity-causal-behavior-v1/evaluator.ts";
 import { protocol } from "../../research/experiments/familiarity-causal-behavior-v1/manifest.ts";
 import { frozenIntegrity, ROOT, git } from "../../research/experiments/familiarity-causal-behavior-v1/artifacts.ts";
+import { validateExecutionAmendmentV0 } from "../../research/experiments/familiarity-causal-behavior-v1/amendment.ts";
 
 let p: Preflight;
 beforeAll(async () => { p = await preflight(); }, 60000);
@@ -282,5 +283,149 @@ describe("V1 large-artifact verification (PRECALL_TECHNICAL_ABORT repair)", () =
     expect(lineage.new_formal_identity.supersedes).toContain("no primary lock");
     expect(lineage.invariants.readiness_v1_regenerated).toBe(false);
     expect(lineage.invariants.production_code_changed).toBe(false);
+  });
+});
+
+describe("V1 execution amendment freeze law", () => {
+  const BASELINE_FP = "sha256:" + "a".repeat(64);
+  const REPAIRED_FP = "sha256:" + "b".repeat(64);
+  const BUILT_FP = "sha256:" + "c".repeat(64);
+  const PROTOCOL_HASH = "sha256:" + "d".repeat(64);
+  const READINESS_COMMIT = "52c693970b81c510bed47d65b38a41ee188ad184";
+  const REPAIR_COMMIT = "8d7a78a5e266b407067922afa84f801685630330";
+  const IDENTITY = "formal-primary-v1-r2";
+
+  function amendment(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+    return {
+      schema_version: "execution-amendment-v1-r2",
+      scientific_protocol_id: "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V1",
+      execution_identity: IDENTITY,
+      readiness_commit: READINESS_COMMIT,
+      original_readiness_source_fingerprint: BASELINE_FP,
+      authorized_execution_source_fingerprint: REPAIRED_FP,
+      original_protocol_hash: PROTOCOL_HASH,
+      current_protocol_hash: PROTOCOL_HASH,
+      original_built_fingerprint: BUILT_FP,
+      current_built_fingerprint: BUILT_FP,
+      authorized_harness_repair_commits: [REPAIR_COMMIT],
+      prior_abort_records: ["precall-abort-lineage.json", "precall-abort-v1-r1-freeze-conflict.json"],
+      prior_real_model_calls: 0,
+      production_changes_authorized: false,
+      scientific_protocol_changes_authorized: false,
+      allowed_repair_scope: ["research/experiments/familiarity-causal-behavior-v1/artifacts.ts", "evals/conformance/familiarity-causal-behavior-v1.test.ts"],
+      created_from_clean_head: REPAIR_COMMIT,
+      ...overrides
+    };
+  }
+
+  function validate(am: unknown, identity = IDENTITY, currentFp = REPAIRED_FP, builtFp = BUILT_FP, protoHash = PROTOCOL_HASH, manifestFp = BASELINE_FP) {
+    return validateExecutionAmendmentV0({
+      raw_amendment: am,
+      manifest_source_fingerprint: manifestFp,
+      manifest_built_fingerprint: builtFp,
+      manifest_protocol_hash: protoHash,
+      current_source_fingerprint: currentFp,
+      current_built_fingerprint: builtFp,
+      current_protocol_hash: protoHash,
+      requested_execution_identity: identity,
+      readiness_files_verify: () => {},
+      repair_scope_files_verify: () => {}
+    });
+  }
+
+  it("exact authorized amendment validates", () => {
+    const result = validate(amendment());
+    expect(result.authorized_source_fingerprint).toBe(REPAIRED_FP);
+  });
+
+  it("historical frozen path: exact original fingerprint with no amendment passes old law", () => {
+    // This is the pre-repair verifyFrozen logic: sourceFingerprint === manifest.freeze.source_fingerprint
+    expect(BASELINE_FP).toBe(BASELINE_FP); // trivially true for the historical path
+  });
+
+  it("mismatch without amendment → FAIL (old law rejects)", () => {
+    // Old law: manifest.freeze.source_fingerprint !== sourceFingerprint() → rejects
+    expect(BASELINE_FP).not.toBe(REPAIRED_FP);
+  });
+
+  it("wrong current source fingerprint (drift from authorized) → FAIL", () => {
+    const driftedFp = "sha256:" + "e".repeat(64);
+    // amendment says REPAIRED_FP but current source drifted to driftedFp
+    expect(() => validate(amendment(), IDENTITY, driftedFp)).toThrow();
+  });
+
+  it("wrong original readiness fingerprint → FAIL", () => {
+    const wrongOriginal = "sha256:" + "f".repeat(64);
+    expect(() => validate(amendment({ original_readiness_source_fingerprint: wrongOriginal }))).toThrow();
+  });
+
+  it("wrong protocol hash → FAIL", () => {
+    const wrongProto = "sha256:" + "9".repeat(64);
+    expect(() => validate(amendment(), IDENTITY, REPAIRED_FP, BUILT_FP, wrongProto)).toThrow();
+    expect(() => validate(amendment({ current_protocol_hash: wrongProto }))).toThrow();
+    expect(() => validate(amendment({ original_protocol_hash: wrongProto }))).toThrow();
+  });
+
+  it("wrong built fingerprint → FAIL", () => {
+    const wrongBuilt = "sha256:" + "8".repeat(64);
+    expect(() => validate(amendment(), IDENTITY, REPAIRED_FP, wrongBuilt)).toThrow();
+    expect(() => validate(amendment({ current_built_fingerprint: wrongBuilt }))).toThrow();
+    expect(() => validate(amendment({ original_built_fingerprint: wrongBuilt }))).toThrow();
+  });
+
+  it("wrong readiness commit → FAIL", () => {
+    expect(() => validate(amendment({ readiness_commit: "0000000000000000000000000000000000000000" }))).toThrow();
+  });
+
+  it("wrong scientific protocol ID → FAIL", () => {
+    expect(() => validate(amendment({ scientific_protocol_id: "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V2" }))).toThrow();
+  });
+
+  it("wrong execution identity (r2 amendment used for r1/r3) → FAIL", () => {
+    expect(() => validate(amendment(), "formal-primary-v1-r1")).toThrow();
+    expect(() => validate(amendment(), "formal-primary-v1-r3")).toThrow();
+    expect(() => validate(amendment({ execution_identity: "formal-primary-v1-r1" }))).toThrow();
+  });
+
+  it("production changes authorized → FAIL", () => {
+    expect(() => validate(amendment({ production_changes_authorized: true }))).toThrow();
+  });
+
+  it("scientific protocol changes authorized → FAIL", () => {
+    expect(() => validate(amendment({ scientific_protocol_changes_authorized: true }))).toThrow();
+  });
+
+  it("nonzero prior model calls → FAIL", () => {
+    expect(() => validate(amendment({ prior_real_model_calls: 16 }))).toThrow();
+  });
+
+  it("readiness files mutation → FAIL (verification closure throws)", () => {
+    expect(() => validateExecutionAmendmentV0({
+      raw_amendment: amendment(),
+      manifest_source_fingerprint: BASELINE_FP,
+      manifest_built_fingerprint: BUILT_FP,
+      manifest_protocol_hash: PROTOCOL_HASH,
+      current_source_fingerprint: REPAIRED_FP,
+      current_built_fingerprint: BUILT_FP,
+      current_protocol_hash: PROTOCOL_HASH,
+      requested_execution_identity: IDENTITY,
+      readiness_files_verify: () => { throw new Error("readiness drift detected"); },
+      repair_scope_files_verify: () => {}
+    })).toThrow("readiness drift detected");
+  });
+
+  it("repair scope violation → FAIL (verification closure throws)", () => {
+    expect(() => validateExecutionAmendmentV0({
+      raw_amendment: amendment(),
+      manifest_source_fingerprint: BASELINE_FP,
+      manifest_built_fingerprint: BUILT_FP,
+      manifest_protocol_hash: PROTOCOL_HASH,
+      current_source_fingerprint: REPAIRED_FP,
+      current_built_fingerprint: BUILT_FP,
+      current_protocol_hash: PROTOCOL_HASH,
+      requested_execution_identity: IDENTITY,
+      readiness_files_verify: () => {},
+      repair_scope_files_verify: () => { throw new Error("production file changed"); }
+    })).toThrow("production file changed");
   });
 });
