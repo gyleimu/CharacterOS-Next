@@ -1,0 +1,8 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true, "allowImportingTsExtensions": true,
+    "declaration": false, "declarationMap": false, "sourceMap": false
+  },
+  "include": ["*.ts", "../../../evals/conformance/familiarity-causal-behavior-v1.test.ts"]
+}
