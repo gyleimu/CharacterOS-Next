@@ -65,21 +65,6 @@ function ctxOf(initial: SubjectStateV0): RuntimeContext {
   };
 }
 
-function fixedRegulation(): DomainDeltaV0 {
-  return {
-    producer: "regulation",
-    domain: "regulation",
-    expected_repository_revision: null,
-    operations: [
-      {
-        path: "/regulation",
-        value: { energy: 1, stress: 0.2, arousal: 0.5, fatigue: 0, last_update: null }
-      }
-    ],
-    provenance_refs: []
-  } as unknown as DomainDeltaV0;
-}
-
 /** Invocation-counting/capturing wrapper around any inner regulation port. */
 class CapturingRegulationProducer implements RegulationProducerPort {
   calls = 0;

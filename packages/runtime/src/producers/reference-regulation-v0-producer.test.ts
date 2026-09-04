@@ -7,7 +7,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import type { DomainDeltaV0, LogicalTimeV0, RegulatoryStateV0 } from "@characteros-next/subject-core";
+import type { DomainDeltaV0, RegulatoryStateV0 } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../types/runtime-context.js";
 import type { RegulationProducerInputV0 } from "../ports/regulation-producer-port.js";
 import { ReferenceRegulationV0Producer } from "./reference-regulation-v0-producer.js";

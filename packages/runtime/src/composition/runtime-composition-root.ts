@@ -95,7 +95,7 @@ export interface RuntimeCompositionOptions {
    * response executor fails closed.
    */
   readonly episodeContentReader?: EpisodeContentReaderV0;
-  readonly conversationCognitionTransport?: import("../transports/model-transport.js").ModelTransportV0;
+  readonly conversationCognitionTransport?: ModelTransportV0;
 }
 
 export class RuntimeCompositionRoot {

@@ -8,7 +8,6 @@
  * remains empty for the text-response path, so nested action_intent must be null.
  */
 
-import type { HashV1 } from "@characteros-next/subject-core";
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
 import type { CognitiveContextProjectionV0, CognitionProposalV0 } from "../cognition-action/types.js";

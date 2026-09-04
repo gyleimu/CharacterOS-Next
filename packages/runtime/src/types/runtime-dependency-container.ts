@@ -27,6 +27,7 @@ import type { LearningAdoptionAuthority } from "../transitions/learning/learning
 import type { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
 import type { EpisodeContentReaderV0 } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
+import type { ModelTransportV0 } from "../transports/model-transport.js";
 
 export interface RuntimeDependencyContainer {
   /** Canonical commit boundary + authoritative snapshot reads. */
@@ -86,5 +87,5 @@ export interface RuntimeDependencyContainer {
    * directive). null = not wired; the V1 conversation response executor fails
    * closed when null.
    */
-  readonly conversationCognitionTransport: import("../transports/model-transport.js").ModelTransportV0 | null;
+  readonly conversationCognitionTransport: ModelTransportV0 | null;
 }

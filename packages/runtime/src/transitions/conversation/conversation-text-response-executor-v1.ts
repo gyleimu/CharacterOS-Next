@@ -13,8 +13,8 @@
 
 import type { IdentifierV0, SubjectStateV0, CanonicalRefV0 } from "@characteros-next/subject-core";
 import type { CharacterLanguageBehaviorV0, CommunicationDirectiveV0 } from "@characteros-next/behavior";
-import { buildClarificationBehaviorV0, deriveClarificationRealizationInputHashV0 } from "@characteros-next/behavior";
-import { validateIdentifier } from "@characteros-next/subject-core";
+import { buildCharacterLanguageBehaviorV0, buildClarificationBehaviorV0, deriveClarificationRealizationInputHashV0 } from "@characteros-next/behavior";
+import { hashEnvelope, validateIdentifier } from "@characteros-next/subject-core";
 
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
@@ -22,8 +22,7 @@ import type { RuntimeContext } from "../../types/runtime-context.js";
 import { CognitionActionTransitionExecutor } from "../cognition-action/cognition-action-transition-executor.js";
 import { allowedEvidenceSet, type CognitiveContextProjectionV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
-import { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1 } from "../../providers/behavior/conversation-cognition-provider.js";
-import { deriveLanguageRealizationInputHashV0 } from "./language-realization-input.js";
+import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
 import type { LanguageEpisodeContentV0 } from "./language-realization-input.js";
 
 export const CONVERSATION_TEXT_RESPONSE_EXECUTOR_V1_SCHEMA_VERSION =
@@ -115,16 +114,19 @@ export class ConversationTextResponseExecutorV1 {
     }
 
     // ---- directive branching (from validated conversation cognition) ---------------
-    const directive: CommunicationDirectiveV0 = conversationProvider.lastDirective!;
+    const lastDirective = conversationProvider.lastDirective;
+    if (lastDirective === null) {
+      // Unreachable after a successful propose(): preserve the historical
+      // TypeError-on-violation instead of continuing with a null directive.
+      throw new TypeError("conversation cognition directive missing after successful cognition");
+    }
+    const directive: CommunicationDirectiveV0 = lastDirective;
     const evidenceProjection: CognitiveContextProjectionV0 = cognitionResult.projection;
-    const conversationProposalHash = await (async () => {
-      const { hashEnvelope } = await import("@characteros-next/subject-core");
-      return hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
-        schema_version: "conversation-cognition-proposal-v1",
-        cognition: cognitionResult.cognition,
-        communication_directive: directive
-      });
-    })();
+    const conversationProposalHash = await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
+      schema_version: "conversation-cognition-proposal-v1",
+      cognition: cognitionResult.cognition,
+      communication_directive: directive
+    });
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
       return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash);
@@ -205,7 +207,6 @@ export class ConversationTextResponseExecutorV1 {
       episodeContents = read.contents;
     }
 
-    const { hashEnvelope } = await import("@characteros-next/subject-core");
     const languageInput = {
       schema_version: "language-realization-input-v1" as const,
       subject_id: snapshot.identity.subject_id,
@@ -213,7 +214,7 @@ export class ConversationTextResponseExecutorV1 {
       response_request_id: requestId,
       cognition_projection_hash: evidenceProjection.projection_hash,
       cognition_proposal_binding: {
-        schema_version: cognitionResultSchemaVersion(evidenceProjection),
+        schema_version: cognitionResultSchemaVersion(),
         projection_hash: evidenceProjection.projection_hash,
         current_intent: null
       },
@@ -243,7 +244,7 @@ export class ConversationTextResponseExecutorV1 {
 
     let draft;
     try {
-      draft = await this.deps.languageRealizationProvider!.realize({
+      draft = await languageProvider.realize({
         input: languageInput as never,
         input_hash: inputHash,
         lawful_evidence_refs: lawfulEvidence
@@ -265,7 +266,6 @@ export class ConversationTextResponseExecutorV1 {
       return failed("STALE_CONTEXT", "subject/revision changed during language realization; stale text not delivered");
     }
 
-    const { buildCharacterLanguageBehaviorV0 } = await import("@characteros-next/behavior");
     const built = await buildCharacterLanguageBehaviorV0({
       subject_id: snapshot.identity.subject_id,
       source_revision: sourceRevision as never,
@@ -292,10 +292,6 @@ function lawfulEvidence(projection: CognitiveContextProjectionV0): ReadonlySet<s
   return allowedEvidenceSet(projection);
 }
 
-function cognitionResultSchemaVersion(_: unknown): string {
+function cognitionResultSchemaVersion(): string {
   return "cognition-proposal-v0";
 }
-
-// Re-export for testing
-const _ = ConversationCognitionProviderV1;
-const __ = ConversationCognitionRejectionErrorV1;
