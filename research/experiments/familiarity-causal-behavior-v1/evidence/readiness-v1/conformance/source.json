@@ -1,0 +1,9 @@
+{
+  "subject_id": "subject-neutral-conversation",
+  "state_revision": 0,
+  "canonical_head": null,
+  "repository_binding": {
+    "repository_revision": "R0",
+    "repository_revision_hash": "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00"
+  }
+}

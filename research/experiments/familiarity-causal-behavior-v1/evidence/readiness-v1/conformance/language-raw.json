@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:f509c91225f11e03e9a6fb2294c00033151fe9a8e6fcc9a2c93e11b763d83ebf\",\n  \"text\": \"Hello.\",\n  \"evidence_refs\": []\n}",
+  "model": "qwen3.5:9b"
+}

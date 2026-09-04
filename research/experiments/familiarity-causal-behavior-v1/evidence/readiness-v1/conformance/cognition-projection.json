@@ -1,0 +1,33 @@
+{
+  "schema_version": "cognitive-context-projection-v0",
+  "subject_id": "subject-neutral-conversation",
+  "current_logical_time": 0,
+  "state_revision": 0,
+  "traits_dimensions": {},
+  "affect_channels": [],
+  "mood_baseline": 0,
+  "regulation": {
+    "energy": 1,
+    "stress": 0,
+    "arousal": 0.5,
+    "fatigue": 0
+  },
+  "context": {
+    "scene": "A visitor says: \"Hello.\"",
+    "task": "respond to the visitor",
+    "focus_refs": [],
+    "active_entity_refs": [],
+    "environment_refs": [],
+    "current_observation_ref": null
+  },
+  "memory_working_refs": [],
+  "recent_retrieval_refs": [],
+  "belief_item_count": 0,
+  "belief_items": [],
+  "relationship_counterpart_count": 0,
+  "relationship_dimensions": [],
+  "interaction_familiarity": [],
+  "interaction_familiarity_cognition_influences": [],
+  "allowed_actions": [],
+  "projection_hash": "sha256:e422fd905cb89f7ec5fa72c1c6081b730e38c26ee8c1daff114bd06321b34e39"
+}

@@ -1,0 +1,17 @@
+{
+  "verdict": "EXPERIMENT_V1_READY",
+  "manifest_hash": "sha256:6624e9bfd05e660a1859ef24d77724de35cd70409c50e9dff4374036a4afcf74",
+  "preflight_hash": "sha256:1ae797b95b3494d01615497de3a5c957ffa3278e3b984c3702b055311aefcf8f",
+  "harness_commit": "fbf3e9a81e2cbcdc7db6c79767ae2bd795665242",
+  "calls": {
+    "cognition": 1,
+    "language": 1,
+    "evaluator": 0
+  },
+  "validity": "VALID_BEHAVIOR",
+  "guard_error": null,
+  "primary_trials_started": 0,
+  "formal_primary_v1_started": false,
+  "conformance_quality_graded": false,
+  "completed_at": "2026-09-04T02:02:58.663Z"
+}

@@ -1,0 +1,10 @@
+{
+  "schema_version": "character-language-behavior-v0",
+  "behavior_id": "sha256:a3a42f9abf85d9d101ef41b935e64937d8dc00f0ee7c37eaa18b3a1367d39595",
+  "subject_id": "subject-neutral-conversation",
+  "source_revision": 0,
+  "response_request_id": "neutral-response",
+  "input_hash": "sha256:f509c91225f11e03e9a6fb2294c00033151fe9a8e6fcc9a2c93e11b763d83ebf",
+  "text": "Hello.",
+  "evidence_refs": []
+}

@@ -1,0 +1,4 @@
+{
+  "content": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:e422fd905cb89f7ec5fa72c1c6081b730e38c26ee8c1daff114bd06321b34e39\",\"reasoning_summary\":\"Visitor initiated greeting 'Hello'. No memory evidence or context refs available. Respond with standard greeting.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"respond to visitor\",\"confidence\":0.95,\"uncertainty\":0.05,\"action_intent\":null,\"evidence_refs\":[]}",
+  "model": "qwen3.5:9b"
+}

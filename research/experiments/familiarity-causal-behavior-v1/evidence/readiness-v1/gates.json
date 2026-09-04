@@ -1,0 +1,431 @@
+{
+  "status": "PASS",
+  "source_fingerprint": "sha256:4c06d1d6ab80eb006c8718e006bb96a887c08bac2537dd01e5465b58310c29c8",
+  "built_fingerprint": "sha256:d08d4834ee3c27654c100dac96983cffa8273c87b520435b1775b5e68c3b7867",
+  "commands": [
+    {
+      "name": "build:packages/affect",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/affect/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/appraisal",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/appraisal/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/belief",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/belief/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/regulation",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/regulation/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/relationship",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/relationship/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/subject-core",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/subject-core/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/behavior",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/behavior/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/long-term-state-domain",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/long-term-state-domain/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/memory",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/memory/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/memory-influence",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/memory-influence/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/influence-evidence",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/influence-evidence/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/runtime",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/runtime/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/personality",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/personality/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:product/sandbox",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "product/sandbox/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/affect",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/affect/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/appraisal",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/appraisal/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/belief",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/belief/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/regulation",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/regulation/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/relationship",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/relationship/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/subject-core",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/subject-core/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/behavior",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/behavior/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/long-term-state-domain",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/long-term-state-domain/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/memory",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/memory/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/memory-influence",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/memory-influence/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/influence-evidence",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/influence-evidence/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/runtime",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/runtime/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/personality",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "packages/personality/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:product/sandbox",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "product/sandbox/tsconfig.typecheck.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "harness-typecheck",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/typescript/bin/tsc",
+        "-p",
+        "research/experiments/familiarity-causal-behavior-v1/tsconfig.json"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "targeted-tests",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "evals/conformance/familiarity-causal-behavior-v1.test.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "\n RUN  v4.1.11 D:/Documents/CharacterOS-Next\n\n\n Test Files  1 passed (1)\n      Tests  32 passed (32)\n   Start at  10:00:40\n   Duration  10.68s (transform 828ms, setup 0ms, import 1.06s, tests 9.48s, environment 0ms)\n\n",
+      "stderr": "warning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\nwarning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\n"
+    },
+    {
+      "name": "v0-integrity-tests",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "evals/conformance/familiarity-causal-behavior-v0.test.ts",
+        "evals/conformance/familiarity-causal-behavior-v1.test.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "\n RUN  v4.1.11 D:/Documents/CharacterOS-Next\n\n\n Test Files  2 passed (2)\n      Tests  52 passed (52)\n   Start at  10:00:51\n   Duration  10.96s (transform 1.55s, setup 0ms, import 2.08s, tests 19.39s, environment 0ms)\n\n",
+      "stderr": "warning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\nwarning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\n"
+    },
+    {
+      "name": "production-behavior-tests",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "packages/runtime/src/transitions/conversation",
+        "packages/behavior/src/behavior-contracts.test.ts",
+        "packages/memory/src/records/episode-content-reader.test.ts"
+      ],
+      "exit_code": 0,
+      "stdout": "\n RUN  v4.1.11 D:/Documents/CharacterOS-Next\n\n\n Test Files  3 passed (3)\n      Tests  33 passed (33)\n   Start at  10:01:02\n   Duration  5.49s (transform 1.78s, setup 0ms, import 2.35s, tests 3.68s, environment 0ms)\n\n",
+      "stderr": ""
+    },
+    {
+      "name": "full-tests",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "args": [
+        "node_modules/vitest/vitest.mjs",
+        "run"
+      ],
+      "exit_code": 0,
+      "stdout": "\n RUN  v4.1.11 D:/Documents/CharacterOS-Next\n\n\n Test Files  96 passed | 1 skipped (97)\n      Tests  1552 passed | 3 skipped (1555)\n   Start at  10:01:08\n   Duration  15.38s (transform 15.03s, setup 0ms, import 40.10s, tests 53.29s, environment 13ms)\n\n",
+      "stderr": "warning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\nwarning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\n"
+    },
+    {
+      "name": "diff-check",
+      "executable": "git",
+      "args": [
+        "diff",
+        "--check",
+        "bd8f7fbcc01d152742e95aa0a7d7ba1e7981281d"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "warning: unable to access 'C:\\Users\\26965/.config/git/ignore': Permission denied\n"
+    }
+  ],
+  "full_lint": [
+    {
+      "file": "packages/runtime/src/producers/reference-regulation-integration.test.ts",
+      "line": 68,
+      "ruleId": "@typescript-eslint/no-unused-vars",
+      "message": "'fixedRegulation' is defined but never used."
+    },
+    {
+      "file": "packages/runtime/src/producers/reference-regulation-v0-producer.test.ts",
+      "line": 10,
+      "ruleId": "@typescript-eslint/no-unused-vars",
+      "message": "'LogicalTimeV0' is defined but never used."
+    }
+  ]
+}
