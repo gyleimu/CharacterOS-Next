@@ -107,3 +107,11 @@ export {
   type EpisodicMemoryRecordV0,
   type EpisodicMemorySalienceV0
 } from "./records/episodic-record.js";
+export {
+  EPISODE_CONTENT_READER_SCHEMA_VERSION_V0,
+  createEpisodeContentReaderV0,
+  type EpisodeContentReaderV0,
+  type EpisodeContentReadResultV0,
+  type EpisodeContentReadFailureCodeV0,
+  type EpisodeContentV0
+} from "./records/episode-content-reader.js";

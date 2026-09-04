@@ -1279,6 +1279,7 @@ describe("Workspace graph (RPP98)", () => {
       .filter((name) => name.startsWith("@characteros-next/"))
       .sort();
     expect(workspaceDeps).toEqual([
+      "@characteros-next/behavior",
       "@characteros-next/influence-evidence",
       "@characteros-next/memory",
       "@characteros-next/memory-influence",

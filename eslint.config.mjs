@@ -135,12 +135,17 @@ export default tseslint.config(
     ],
     "appraisal may consume only memory and subject-core public contracts."
   ),
-  ...["belief", "relationship", "behavior"].map((name) =>
+  ...["belief", "relationship"].map((name) =>
     packageBoundaryConfig(
       `packages/${name}/src/**/*.ts`,
       [`@characteros-next/${name}`],
       `${name} is deferred and cannot depend on another workspace package.`
     )
+  ),
+  packageBoundaryConfig(
+    "packages/behavior/src/**/*.ts",
+    ["@characteros-next/behavior", "@characteros-next/subject-core"],
+    "behavior may consume only subject-core public contracts for pure language-behavior identity/validation rules."
   ),
   packageBoundaryConfig(
     "packages/long-term-state-domain/src/**/*.ts",
@@ -174,7 +179,8 @@ export default tseslint.config(
       "@characteros-next/influence-evidence",
       "@characteros-next/appraisal",
       "@characteros-next/affect",
-      "@characteros-next/regulation"
+      "@characteros-next/regulation",
+      "@characteros-next/behavior"
     ],
     "runtime may consume only active domain packages through public roots."
   ),

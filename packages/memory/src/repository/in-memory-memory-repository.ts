@@ -110,6 +110,19 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   }
 
   /**
+   * CONCRETE-CLASS-ONLY stored-payload read backing the narrow
+   * createEpisodeContentReaderV0 capability (PRODUCTION_LANGUAGE_BEHAVIOR_
+   * OUTPUT_V0). Deliberately NOT part of the MemoryRepository /
+   * MemoryPreparationAuthority interfaces: raw payload bytes are reachable
+   * only through the validated episode-content reader, never through the
+   * runtime-facing MemoryPort.
+   */
+  readStoredPayload(ref: CanonicalRefV0): unknown | null {
+    const payload = this.payloads.get(ref);
+    return payload === undefined ? null : payload;
+  }
+
+  /**
    * P0-5: idempotent intent-driven prepare. Same intent_id + same payload fingerprint
    * returns the SAME prepared revision; same intent_id + changed fingerprint rejects
    * (conflict). Every record's payload_hash is verified against the repository-owned

@@ -22,8 +22,10 @@ import type {
   RuntimeDependencyContainer
 } from "../types/runtime-dependency-container.js";
 import { createMemoryPreparationAuthority } from "@characteros-next/memory";
-import type { MemoryPreparationAuthority } from "@characteros-next/memory";
+import type { EpisodeContentReaderV0, MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
+import type { ModelTransportV0 } from "../transports/model-transport.js";
+import { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
 import type {
   AppraisalPort,
   AffectProducerPort,
@@ -78,6 +80,21 @@ export interface RuntimeCompositionOptions {
    * successful Learning lifecycle; the executor fails closed when null.
    */
   readonly learningAdoptionAuthority?: LearningAdoptionAuthority;
+  /**
+   * PRODUCTION_LANGUAGE_BEHAVIOR_OUTPUT_V0 — host-supplied model transport for
+   * the language realization provider (ONE call per conversation response; no
+   * retries). Omitted → languageRealizationProvider stays null and the
+   * conversation text response executor fails closed. Cognition-only
+   * operations never touch it.
+   */
+  readonly languageTransport?: ModelTransportV0;
+  /**
+   * PRODUCTION_LANGUAGE_BEHAVIOR_OUTPUT_V0 — host-minted narrow episode content
+   * reader over its concrete memory repository (memory package factory).
+   * Omitted → episodeContentReader stays null and the conversation text
+   * response executor fails closed.
+   */
+  readonly episodeContentReader?: EpisodeContentReaderV0;
 }
 
 export class RuntimeCompositionRoot {
@@ -113,7 +130,12 @@ export class RuntimeCompositionRoot {
       retrievalMetadataProducer: options.retrievalMetadataProducer ?? null,
       cognitionProvider: options.cognitionProvider ?? null,
       learningSourceAuthority: options.learningSourceAuthority ?? null,
-      learningAdoptionAuthority: options.learningAdoptionAuthority ?? null
+      learningAdoptionAuthority: options.learningAdoptionAuthority ?? null,
+      languageRealizationProvider:
+        options.languageTransport !== undefined
+          ? new LanguageRealizationProviderV0(options.languageTransport)
+          : null,
+      episodeContentReader: options.episodeContentReader ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

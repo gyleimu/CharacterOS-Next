@@ -1244,6 +1244,7 @@ describe("Non-scope (RAWI107–RAWI120)", () => {
       .filter((name) => name.startsWith("@characteros-next/"))
       .sort();
     expect(workspaceDeps).toEqual([
+      "@characteros-next/behavior",
       "@characteros-next/influence-evidence",
       "@characteros-next/memory",
       "@characteros-next/memory-influence",

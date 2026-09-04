@@ -22,6 +22,7 @@
     "@characteros-next/influence-evidence": "workspace:*",
     "@characteros-next/memory": "workspace:*",
     "@characteros-next/memory-influence": "workspace:*",
-    "@characteros-next/subject-core": "workspace:*"
+    "@characteros-next/subject-core": "workspace:*",
+    "@characteros-next/behavior": "workspace:*"
   }
 }

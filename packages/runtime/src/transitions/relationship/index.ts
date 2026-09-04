@@ -174,3 +174,12 @@ export {
   type RelationshipGovernedFeatureNextValueV0,
   type RelationshipGovernedFeaturePreviousGovernedAuthorityV0
 } from "./relationship-governed-writer-authority.js";
+export type {
+  RelationshipInteractionFamiliarityReadProjectionV0,
+  InteractionFamiliarityReadProjectionRejectionCodeV0,
+  InteractionFamiliarityReadProjectionResultV0
+} from "./relationship-interaction-familiarity-read-projection.js";
+export type {
+  RelationshipInteractionFamiliarityCognitionInfluenceV0,
+  RelationshipInteractionFamiliarityContextResolutionStrategyV0
+} from "./relationship-interaction-familiarity-cognition-influence.js";

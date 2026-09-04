@@ -31,7 +31,11 @@ importers:
 
   packages/appraisal: {}
 
-  packages/behavior: {}
+  packages/behavior:
+    dependencies:
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
 
   packages/belief: {}
 
@@ -89,6 +93,9 @@ importers:
 
   packages/runtime:
     dependencies:
+      '@characteros-next/behavior':
+        specifier: workspace:*
+        version: link:../behavior
       '@characteros-next/influence-evidence':
         specifier: workspace:*
         version: link:../influence-evidence
@@ -104,7 +111,11 @@ importers:
 
   packages/subject-core: {}
 
-  product/sandbox: {}
+  product/sandbox:
+    dependencies:
+      '@characteros-next/runtime':
+        specifier: workspace:*
+        version: link:../../packages/runtime
 
 packages:
 

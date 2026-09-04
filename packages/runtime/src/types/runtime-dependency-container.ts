@@ -24,6 +24,8 @@ import type {
 } from "../ports/index.js";
 import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
 import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
+import type { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
+import type { EpisodeContentReaderV0 } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
 
 export interface RuntimeDependencyContainer {
@@ -65,4 +67,17 @@ export interface RuntimeDependencyContainer {
    * the Learning executor fails closed on the wiring gate.
    */
   readonly learningAdoptionAuthority: LearningAdoptionAuthority | null;
+  /**
+   * PRODUCTION_LANGUAGE_BEHAVIOR_OUTPUT_V0 — language realization provider
+   * (ONE transport call, no retries). null = not wired; the conversation text
+   * response executor fails closed when null. Never used by cognition-only
+   * operations.
+   */
+  readonly languageRealizationProvider: LanguageRealizationProviderV0 | null;
+  /**
+   * PRODUCTION_LANGUAGE_BEHAVIOR_OUTPUT_V0 — narrow read-only Memory episode
+   * content capability (validated refs → immutable payload content). null =
+   * not wired; the conversation text response executor fails closed when null.
+   */
+  readonly episodeContentReader: EpisodeContentReaderV0 | null;
 }

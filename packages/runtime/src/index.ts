@@ -892,3 +892,20 @@ export {
 // assembler are production-internal (no caller version selector is exported).
 // The cutover quiescence and target-version constants are re-exported from
 // @characteros-next/subject-core (added by this slice's index change).
+
+// --- Production Language Behavior Output V0 ---------------------------------------------
+// The FIRST production user-visible textual behavior surface. Trusted request in
+// → existing cognition → deterministic language input → LanguageRealization
+// provider (ONE call) → validated host-built CharacterLanguageBehaviorV0. The
+// language input builder, memory reader internals, draft minting and behavior
+// constructor authority are NOT product mutation surfaces; only the executor is.
+
+export {
+  CONVERSATION_TEXT_RESPONSE_EXECUTOR_SCHEMA_VERSION_V0,
+  ConversationTextResponseExecutorV0,
+  type ConversationResponseRequestV0,
+  type ConversationResponseFailureStageV0,
+  type ConversationResponseOutputReadyV0,
+  type ConversationResponseFailedV0,
+  type ConversationTextResponseResultV0
+} from "./transitions/conversation/conversation-text-response-executor.js";
