@@ -909,3 +909,12 @@ export {
   type ConversationResponseFailedV0,
   type ConversationTextResponseResultV0
 } from "./transitions/conversation/conversation-text-response-executor.js";
+export {
+  CONVERSATION_TEXT_RESPONSE_EXECUTOR_V1_SCHEMA_VERSION,
+  ConversationTextResponseExecutorV1,
+  type ConversationResponseTraceV1,
+  type ConversationResponseFailureStageV1,
+  type ConversationTextResponseResultV1
+} from "./transitions/conversation/conversation-text-response-executor-v1.js";
+export { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1, CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 } from "./providers/behavior/conversation-cognition-provider.js";
+export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";

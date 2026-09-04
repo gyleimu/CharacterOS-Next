@@ -95,6 +95,7 @@ export interface RuntimeCompositionOptions {
    * response executor fails closed.
    */
   readonly episodeContentReader?: EpisodeContentReaderV0;
+  readonly conversationCognitionTransport?: import("../transports/model-transport.js").ModelTransportV0;
 }
 
 export class RuntimeCompositionRoot {
@@ -135,7 +136,8 @@ export class RuntimeCompositionRoot {
         options.languageTransport !== undefined
           ? new LanguageRealizationProviderV0(options.languageTransport)
           : null,
-      episodeContentReader: options.episodeContentReader ?? null
+      episodeContentReader: options.episodeContentReader ?? null,
+      conversationCognitionTransport: options.conversationCognitionTransport ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

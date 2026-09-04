@@ -21,3 +21,18 @@ export {
   type CharacterLanguageBehaviorV0,
   type CharacterLanguageBehaviorConstructionInputV0
 } from "./character-language-behavior.js";
+export {
+  COMMUNICATION_DIRECTIVE_KINDS_V0,
+  validateCommunicationDirectiveV0,
+  type CommunicationDirectiveV0,
+  type CommunicationDirectiveKindV0
+} from "./communication-directive.js";
+export {
+  CLARIFICATION_RENDERER_ID_V0,
+  CLARIFICATION_TEXT_V0,
+  CLARIFICATION_REALIZATION_INPUT_SCHEMA_VERSION_V0,
+  CLARIFICATION_REALIZATION_INPUT_HASH_PROJECTION_V0,
+  deriveClarificationRealizationInputHashV0,
+  buildClarificationBehaviorV0,
+  type ClarificationRealizationInputV0
+} from "./clarification-behavior.js";

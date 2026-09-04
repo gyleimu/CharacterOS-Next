@@ -80,4 +80,11 @@ export interface RuntimeDependencyContainer {
    * not wired; the conversation text response executor fails closed when null.
    */
   readonly episodeContentReader: EpisodeContentReaderV0 | null;
+  /**
+   * STRUCTURED_COMMUNICATION_DIRECTIVE_V0 — conversation cognition transport
+   * for the V1 conversation cognition provider (ONE call → nested cognition +
+   * directive). null = not wired; the V1 conversation response executor fails
+   * closed when null.
+   */
+  readonly conversationCognitionTransport: import("../transports/model-transport.js").ModelTransportV0 | null;
 }
