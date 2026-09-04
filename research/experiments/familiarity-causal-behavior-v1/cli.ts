@@ -9,7 +9,7 @@ import { preflight, preflightHash, fixedLanguage, assertNoExperimentContract } f
 import { makeManifest, protocol, type Manifest } from "./manifest.ts";
 import { executePrimary } from "./runner.ts";
 import { validateExecutionAmendmentV0, type ValidatedExecutionAmendment } from "./amendment.ts";
-import { ROOT, EXPERIMENT_PATH, git, readJson, writeJson, saver, freshDirectory, committedBaseline,
+import { ROOT, EXPERIMENT_PATH, TEST_PATH, git, readJson, writeJson, saver, freshDirectory, committedBaseline,
   frozenIntegrity, sourceFingerprint, builtFingerprint, verifyGates, probeProvider, type Gates } from "./artifacts.ts";
 
 function transport() {

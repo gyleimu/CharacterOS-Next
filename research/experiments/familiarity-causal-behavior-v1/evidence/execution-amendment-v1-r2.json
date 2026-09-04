@@ -4,14 +4,15 @@
   "execution_identity": "formal-primary-v1-r2",
   "readiness_commit": "52c693970b81c510bed47d65b38a41ee188ad184",
   "original_readiness_source_fingerprint": "sha256:4c06d1d6ab80eb006c8718e006bb96a887c08bac2537dd01e5465b58310c29c8",
-  "authorized_execution_source_fingerprint": "sha256:c17b3988a23ab738cdbae882f73cd17fb2ef197b3f53dcfdf999302a8bcf828d",
+  "authorized_execution_source_fingerprint": "sha256:a77a5cd011a025048c0938fdab917de2c9bc070cea4a7dd4f7a1e60c931afdcc",
   "original_protocol_hash": "sha256:9c8ca38820c9d7b334ea215bbc2a634ff91ee463b3d61f327cc58d0c4b875b2c",
   "current_protocol_hash": "sha256:9c8ca38820c9d7b334ea215bbc2a634ff91ee463b3d61f327cc58d0c4b875b2c",
   "original_built_fingerprint": "sha256:d08d4834ee3c27654c100dac96983cffa8273c87b520435b1775b5e68c3b7867",
   "current_built_fingerprint": "sha256:d08d4834ee3c27654c100dac96983cffa8273c87b520435b1775b5e68c3b7867",
   "authorized_harness_repair_commits": [
     "8d7a78a5e266b407067922afa84f801685630330",
-    "2335f3c7294d07ebb9461981503a0d99e552c8f3"
+    "2335f3c7294d07ebb9461981503a0d99e552c8f3",
+    "fix: TEST_PATH import for amendment repair-scope closure"
   ],
   "prior_abort_records": [
     "precall-abort-lineage.json",
