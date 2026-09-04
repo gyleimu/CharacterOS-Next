@@ -187,6 +187,33 @@ export {
   type OllamaNativeCognitionTransportConfigV0
 } from "./providers/cognition/ollama-native-cognition-transport.js";
 
+// --- Model Transport Diagnostic Trace V0 (diagnostic-only observability) -------------
+
+export {
+  MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0,
+  MODEL_TRANSPORT_TRACE_EVENT_SCHEMA_VERSION_V0,
+  type ModelTransportTraceStageV0,
+  type ModelTransportTraceOutcomeV0,
+  type ModelTransportTerminalStageV0,
+  type ModelTransportTraceEventV0,
+  type OllamaInferenceMetadataV0,
+  type ModelTransportTraceV0,
+  type ModelTransportTraceObserverV0
+} from "./transports/model-transport-trace-v0.js";
+
+// --- Ollama Diagnostic Health Snapshot V0 (diagnostic-only local state probe) --------
+
+export {
+  captureOllamaDiagnosticHealthSnapshotV0,
+  OLLAMA_DIAGNOSTIC_HEALTH_SNAPSHOT_SCHEMA_VERSION_V0,
+  OLLAMA_DIAGNOSTIC_HEALTH_PROBE_TIMEOUT_MS,
+  type OllamaDiagnosticHealthSnapshotConfigV0,
+  type OllamaDiagnosticHealthSnapshotV0,
+  type OllamaDiagnosticServerStateV0,
+  type OllamaDiagnosticProcessStateV0,
+  type OllamaDiagnosticLoadedModelV0
+} from "./providers/cognition/ollama-diagnostic-health-snapshot-v0.js";
+
 // --- P2-next Action Execution / Outcome V0 --------------------------------------------
 
 export {
