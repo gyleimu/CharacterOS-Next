@@ -12,7 +12,7 @@ import { assertActual, assertComplete, assertNoExperimentContract, preflight, ty
 import { executePrimary } from "../../research/experiments/familiarity-causal-behavior-v1/runner.ts";
 import { evaluatorMessages, parseEvaluation, summarize } from "../../research/experiments/familiarity-causal-behavior-v1/evaluator.ts";
 import { protocol } from "../../research/experiments/familiarity-causal-behavior-v1/manifest.ts";
-import { ROOT, git } from "../../research/experiments/familiarity-causal-behavior-v1/artifacts.ts";
+import { ROOT, V0_PATH, git } from "../../research/experiments/familiarity-causal-behavior-v1/artifacts.ts";
 import { validateExecutionAmendmentV0 } from "../../research/experiments/familiarity-causal-behavior-v1/amendment.ts";
 
 let p: Preflight;
@@ -199,13 +199,15 @@ describe("V1 frozen production behavior experiment", () => {
     expect(result.calls.evaluator).toBe(16); expect(result.complete).toBe(false);
     expect(result.trials.every(t => t.validity === "EVALUATOR_FAILURE")).toBe(true);
   }, 60000);
-  it("V0 evidence/source remain present at HEAD", () => {
-    // Production code is lawfully evolving (STRUCTURED_COMMUNICATION_DIRECTIVE_V0);
-    // V0 experiment files must remain present and uncorrupted at HEAD.
-    const v0Path = "research/experiments/familiarity-causal-behavior-v0";
-    const v0TestPath = "evals/conformance/familiarity-causal-behavior-v0.test.ts";
-    const v0Files = git("ls-tree", "-r", "HEAD", "--", v0Path, v0TestPath);
-    expect(v0Files.length).toBeGreaterThan(0);
+  it("V0 evidence/source remain byte-equivalent Git blobs at the required baseline", () => {
+    // V0 blobs unchanged (authorized production evolution for
+    // STRUCTURED_COMMUNICATION_DIRECTIVE_V0 does not touch V0 files;
+    // the broader all-changes-within-experiment-paths check from
+    // frozenIntegrity() is temporarily inapplicable during the production
+    // implementation phase and requires a separate research-infra decision).
+    const v0Baseline = git("ls-tree", "-r", BASELINE, "--", V0_PATH);
+    const v0Head = git("ls-tree", "-r", "HEAD", "--", V0_PATH);
+    expect(v0Head).toBe(v0Baseline);
   });
   it("production has no dependency on experiment code and no primary path bypass is implemented", () => {
     const paths = git("ls-files", "packages", "product").split("\n").filter(f => f.endsWith(".ts"));
