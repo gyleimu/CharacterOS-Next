@@ -1,0 +1,18 @@
+{
+  "input": {
+    "repository_revision": "R0",
+    "refs": [
+      "episode:alice-08"
+    ]
+  },
+  "result": {
+    "ok": true,
+    "contents": [
+      {
+        "ref": "episode:alice-08",
+        "payload_hash": "sha256:9328f2b052870314b6c923fea50b755c9d27bf447f57b0d9abef484c724b0833",
+        "scene": "While revising a status update together, Alice explicitly requested: \"Use concise wording, a factual tone, and no unnecessary apology for these status updates.\""
+      }
+    ]
+  }
+}

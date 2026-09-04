@@ -1,0 +1,7 @@
+{
+  "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+  "rationale": "The behavior text directly implements the specific stylistic constraints (concise wording, factual tone, no apology) explicitly requested by Alice in the provided lawful memory evidence from episode:alice-08.",
+  "supporting_refs": [
+    "episode:alice-08"
+  ]
+}

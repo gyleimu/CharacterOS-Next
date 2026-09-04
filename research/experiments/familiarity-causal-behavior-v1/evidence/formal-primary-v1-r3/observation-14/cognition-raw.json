@@ -1,0 +1,4 @@
+{
+  "content": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:09a2f19ea5536391a44677c299bbd0746952829ec9f9ae102e91189c2aa0f59e\",\"reasoning_summary\":\"Alice requests a revision of an update. Per the COUNTERPART_CONTEXT_SEARCH_FIRST strategy for entity:alice, I retrieved episode:alice-08 to locate the specific update and its revision history. The evidence confirms the existence of the target update within that episode. No external action is permitted in this cycle.\",\"relevant_memory_refs\":[\"episode:alice-08\"],\"considered_context_refs\":[\"entity:alice\",\"episode:alice-08\"],\"current_intent\":\"locate_and_retrieve_update_for_revision\",\"confidence\":0.95,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[\"episode:alice-08\"]}",
+  "model": "qwen3.5:9b"
+}

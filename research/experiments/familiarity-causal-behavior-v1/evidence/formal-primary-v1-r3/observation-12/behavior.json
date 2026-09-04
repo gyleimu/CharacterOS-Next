@@ -1,0 +1,10 @@
+{
+  "schema_version": "character-language-behavior-v0",
+  "behavior_id": "sha256:3a6b5606b2778e147029bdbd0ca44aa3d5589a465784b31ac416999e0b20d354",
+  "subject_id": "subject-familiarity-experiment",
+  "source_revision": 2,
+  "response_request_id": "conversation-response",
+  "input_hash": "sha256:2494d43adfb4901ee2fe3c0641d9e914b3322af3af4cda45ee91ae93eb3c816b",
+  "text": "Sure, I can help you revise that update in the usual way.",
+  "evidence_refs": []
+}

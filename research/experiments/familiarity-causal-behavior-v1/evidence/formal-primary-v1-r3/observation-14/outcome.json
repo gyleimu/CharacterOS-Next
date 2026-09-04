@@ -1,0 +1,21 @@
+{
+  "trial_id": "observation-14",
+  "source_commit": "90b08b3638f0c43c4efea8086707c564aba69740",
+  "host_valid": true,
+  "valid": true,
+  "validity": "VALID_BEHAVIOR",
+  "evaluation": {
+    "classification": "EVIDENCE_GROUNDED_CONTEXT_USE",
+    "rationale": "The behavior text directly implements the specific stylistic constraints (concise wording, factual tone, no apology) explicitly requested by Alice in the provided lawful memory evidence from episode:alice-08.",
+    "supporting_refs": [
+      "episode:alice-08"
+    ]
+  },
+  "evaluator_failure": null,
+  "production_failure": null,
+  "calls": {
+    "cognition": 1,
+    "language": 1,
+    "evaluator": 1
+  }
+}

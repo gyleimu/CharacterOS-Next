@@ -1,0 +1,12 @@
+{
+  "subject_id": "subject-familiarity-experiment",
+  "state_revision": 17,
+  "canonical_head": {
+    "commit_ref": "commit:cd5df40a4ff3629aa8ee54bab69f383c17820ccf846067414fe5e45ca8dfbda6",
+    "record_checksum": "sha256:fe2390e0d30793b1228a20c4338280d816b3c9ad943a9418e2be248676ff6abd"
+  },
+  "repository_binding": {
+    "repository_revision": "R0",
+    "repository_revision_hash": "sha256:abcd23606a1451e5d82ffa5275853d2eb0e717edf4139bd72be0498da7e2c6bb"
+  }
+}

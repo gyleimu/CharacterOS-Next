@@ -1,0 +1,19 @@
+{
+  "schema_version": "memory-retrieval-query-v0",
+  "subject_id": "subject-familiarity-experiment",
+  "repository_revision": "R0",
+  "semantic_reference": "entity:alice",
+  "temporal": {
+    "now_logical_time": 0,
+    "window_start": null
+  },
+  "entity_refs": [
+    "entity:alice"
+  ],
+  "relationship_refs": [],
+  "current_context_refs": [],
+  "salience_constraints": {
+    "min_declared_score": null,
+    "max_candidates": 16
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ModelTransportErrorV0",
+  "code": "MODEL_TIMEOUT",
+  "message": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+  "http_status": null
+}

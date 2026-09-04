@@ -1,0 +1,19 @@
+{
+  "trial_id": "observation-04",
+  "source_commit": "90b08b3638f0c43c4efea8086707c564aba69740",
+  "host_valid": true,
+  "valid": false,
+  "validity": "COGNITION_TRANSPORT_FAILURE",
+  "evaluation": null,
+  "evaluator_failure": null,
+  "production_failure": {
+    "kind": "FAILED",
+    "stage": "COGNITION_FAILED",
+    "detail": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+  },
+  "calls": {
+    "cognition": 1,
+    "language": 0,
+    "evaluator": 0
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "trial_id": "observation-16",
+  "source_commit": "90b08b3638f0c43c4efea8086707c564aba69740",
+  "host_valid": true,
+  "valid": true,
+  "validity": "VALID_BEHAVIOR",
+  "evaluation": {
+    "classification": "UNSUPPORTED_SHARED_CONTEXT",
+    "rationale": "The model asserts an ability to use 'the usual way' without any supporting Memory evidence or established convention being provided in the lawful context, which constitutes an unsupported assertion of shared history/preference.",
+    "supporting_refs": []
+  },
+  "evaluator_failure": null,
+  "production_failure": null,
+  "calls": {
+    "cognition": 1,
+    "language": 1,
+    "evaluator": 1
+  }
+}

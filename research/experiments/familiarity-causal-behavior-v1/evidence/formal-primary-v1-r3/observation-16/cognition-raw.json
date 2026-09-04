@@ -1,0 +1,4 @@
+{
+  "content": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:67146b9ad534e6db99e76c0da91ee17a03aa7b7ab6e9ba9f48336c6b5d3d0d4c\",\"reasoning_summary\":\"Alice requests a revision of an update. Per the interaction familiarity cognition influence for entity:alice (BASIC_CONTEXT_FIRST), no specific counterpart memory lookup is prioritized. No citeable context refs exist to support a specific action or belief. The appropriate response is to acknowledge the request and seek clarification on the 'usual way' since no prior procedural memory is cited.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[\"entity:alice\"],\"current_intent\":\"clarify revision procedure\",\"confidence\":0.9,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[\"entity:alice\"]}",
+  "model": "qwen3.5:9b"
+}

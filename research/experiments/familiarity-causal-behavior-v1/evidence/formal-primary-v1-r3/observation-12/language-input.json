@@ -1,0 +1,82 @@
+{
+  "input": {
+    "schema_version": "language-realization-input-v0",
+    "subject_id": "subject-familiarity-experiment",
+    "source_revision": 2,
+    "response_request_id": "conversation-response",
+    "cognition_projection_hash": "sha256:67146b9ad534e6db99e76c0da91ee17a03aa7b7ab6e9ba9f48336c6b5d3d0d4c",
+    "cognition_proposal_binding": {
+      "schema_version": "cognition-proposal-v0",
+      "projection_hash": "sha256:67146b9ad534e6db99e76c0da91ee17a03aa7b7ab6e9ba9f48336c6b5d3d0d4c",
+      "current_intent": "clarify revision procedure"
+    },
+    "scene": "Alice says: \"Can you help me revise that update in the usual way?\"",
+    "task": "respond to Alice's request to revise the update",
+    "focus_refs": [],
+    "active_entity_refs": [
+      "entity:alice"
+    ],
+    "environment_refs": [],
+    "current_observation_ref": null,
+    "belief_items": [],
+    "traits_dimensions": {},
+    "affect_channels": [],
+    "mood_baseline": 0,
+    "regulation": {
+      "energy": 1,
+      "stress": 0,
+      "arousal": 0.5,
+      "fatigue": 0
+    },
+    "interaction_familiarity": [
+      {
+        "schema_version": "relationship-interaction-familiarity-read-projection-v0",
+        "subject_id": "subject-familiarity-experiment",
+        "source_state_revision": 2,
+        "counterpart_ref": "entity:alice",
+        "dimension_id": "relationship_core_interaction_familiarity_v0",
+        "feature_semantics_contract_id": "relationship-interaction-familiarity-semantics-v0",
+        "feature_semantics_contract_fingerprint": "sha256:fcafcad1aba52ee640e83f73b1ec55d8fb9932515b470a324bd0033d9fb7f374",
+        "quantity_semantics_id": "accumulated-firsthand-counterpart-familiarity-v0",
+        "presence": "PRESENT",
+        "canonical_value": 0.03125,
+        "ordinal_level": 1,
+        "ordinal_max": 32,
+        "visibility": "STATE_VISIBLE_NOT_CITEABLE"
+      },
+      {
+        "schema_version": "relationship-interaction-familiarity-read-projection-v0",
+        "subject_id": "subject-familiarity-experiment",
+        "source_state_revision": 2,
+        "counterpart_ref": "entity:bob",
+        "dimension_id": "relationship_core_interaction_familiarity_v0",
+        "feature_semantics_contract_id": "relationship-interaction-familiarity-semantics-v0",
+        "feature_semantics_contract_fingerprint": "sha256:fcafcad1aba52ee640e83f73b1ec55d8fb9932515b470a324bd0033d9fb7f374",
+        "quantity_semantics_id": "accumulated-firsthand-counterpart-familiarity-v0",
+        "presence": "ABSENT",
+        "canonical_value": null,
+        "ordinal_level": null,
+        "ordinal_max": 32,
+        "visibility": "STATE_VISIBLE_NOT_CITEABLE"
+      }
+    ],
+    "interaction_familiarity_cognition_influences": [
+      {
+        "schema_version": "relationship-interaction-familiarity-cognition-influence-v0",
+        "counterpart_ref": "entity:alice",
+        "context_resolution_strategy": "BASIC_CONTEXT_FIRST"
+      }
+    ],
+    "evidence_refs": [],
+    "memory_episode_contents": [],
+    "constraints": {
+      "max_text_code_points": 4096,
+      "evidence_refs_only": true,
+      "no_new_evidence_authority": true
+    }
+  },
+  "input_hash": "sha256:2494d43adfb4901ee2fe3c0641d9e914b3322af3af4cda45ee91ae93eb3c816b",
+  "lawful_evidence_refs": [
+    "entity:alice"
+  ]
+}

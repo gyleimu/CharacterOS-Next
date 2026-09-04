@@ -1,0 +1,98 @@
+[
+  {
+    "trial_id": "observation-01",
+    "arm": "A",
+    "trial": 1,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-02",
+    "arm": "B",
+    "trial": 1,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-03",
+    "arm": "B",
+    "trial": 2,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-04",
+    "arm": "A",
+    "trial": 2,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-05",
+    "arm": "A",
+    "trial": 3,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-06",
+    "arm": "B",
+    "trial": 3,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-07",
+    "arm": "B",
+    "trial": 4,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-08",
+    "arm": "A",
+    "trial": 4,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-09",
+    "arm": "A",
+    "trial": 5,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-10",
+    "arm": "B",
+    "trial": 5,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-11",
+    "arm": "B",
+    "trial": 6,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-12",
+    "arm": "A",
+    "trial": 6,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-13",
+    "arm": "A",
+    "trial": 7,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-14",
+    "arm": "B",
+    "trial": 7,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-15",
+    "arm": "B",
+    "trial": 8,
+    "seed": null
+  },
+  {
+    "trial_id": "observation-16",
+    "arm": "A",
+    "trial": 8,
+    "seed": null
+  }
+]
