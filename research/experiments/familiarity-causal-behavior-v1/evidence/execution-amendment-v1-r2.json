@@ -12,7 +12,7 @@
   "authorized_harness_repair_commits": [
     "8d7a78a5e266b407067922afa84f801685630330",
     "2335f3c7294d07ebb9461981503a0d99e552c8f3",
-    "fix: TEST_PATH import for amendment repair-scope closure"
+    "afb21428d6873abe73e6fdfc5ce05ae83e886e58"
   ],
   "prior_abort_records": [
     "precall-abort-lineage.json",
