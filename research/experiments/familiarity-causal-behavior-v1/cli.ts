@@ -8,7 +8,8 @@ import { observeResponse, errorRecord, objectHash } from "./observe.ts";
 import { preflight, preflightHash, fixedLanguage, assertNoExperimentContract } from "./preflight.ts";
 import { makeManifest, protocol, type Manifest } from "./manifest.ts";
 import { executePrimary } from "./runner.ts";
-import { validateExecutionAmendmentV0, type ValidatedExecutionAmendment } from "./amendment.ts";
+import { validateExecutionAmendmentV0, type ExecutionAmendmentV0 } from "./amendment.ts";
+import { verifyFreezeBaselineV1, verifyExecutionFreezeBaselineV1 } from "./freeze-baseline.ts";
 import { ROOT, EXPERIMENT_PATH, TEST_PATH, git, readJson, writeJson, saver, freshDirectory, committedBaseline,
   frozenIntegrity, sourceFingerprint, builtFingerprint, verifyGates, probeProvider, type Gates } from "./artifacts.ts";
 
@@ -21,20 +22,17 @@ function lock(kind: string, hash: string, value: unknown) {
   mkdirSync(directory, { recursive: true });
   writeJson(join(directory, `${kind}-${hash.replace("sha256:", "")}.json`), value);
 }
-function verifyFrozen(manifest: Manifest, amendment?: ValidatedExecutionAmendment) {
-  if (amendment) {
-    // Amendment path: the source fingerprint is checked against the amendment's
-    // ONE authorized value (already validated strictly by validateExecutionAmendmentV0).
-    // Built/protocol are still checked against the manifest (unchanged).
-    check(sourceFingerprint() === amendment.authorized_source_fingerprint,
-      "amended source fingerprint matches the authorized execution amendment");
-    check(builtFingerprint() === manifest.freeze.built_fingerprint, "frozen built fingerprint unchanged");
-    check(objectHash(protocol()) === manifest.freeze.protocol_hash, "frozen protocol unchanged");
-  } else {
-    // Historical strict path (no amendment): exact manifest fingerprint equality.
-    check(manifest.freeze.source_fingerprint === sourceFingerprint() && manifest.freeze.built_fingerprint === builtFingerprint() &&
-      manifest.freeze.protocol_hash === objectHash(protocol()), "frozen source/build/protocol unchanged");
-  }
+function verifyFrozen(manifest: Manifest, amendment?: ExecutionAmendmentV0) {
+  // Centralized V1 execution freeze verification (Phase 2: current authorization).
+  verifyExecutionFreezeBaselineV1({
+    readiness_source_fingerprint: manifest.freeze.source_fingerprint,
+    readiness_built_fingerprint: manifest.freeze.built_fingerprint,
+    readiness_protocol_hash: manifest.freeze.protocol_hash,
+    current_source_fingerprint: sourceFingerprint(),
+    current_built_fingerprint: builtFingerprint(),
+    current_protocol_hash: objectHash(protocol()),
+    amendment
+  });
   frozenIntegrity();
 }
 async function prepare(gatesPath: string, outputPath: string) {
@@ -97,7 +95,7 @@ async function run(manifestPath: string, outputPath: string, authorization: stri
   git("merge-base", "--is-ancestor", manifest.harness_commit, head);
 
   // ---- execution amendment (explicit, strict, instance-bound) ------------------------
-  let validatedAmendment: ValidatedExecutionAmendment | undefined;
+  let amendmentObj: ExecutionAmendmentV0 | undefined;
   if (executionAmendmentPath !== undefined) {
     check(executionIdentity !== undefined, "--execution-identity is required when --execution-amendment is provided");
     const rawAmendment = readJson(resolve(ROOT, executionAmendmentPath));
@@ -116,7 +114,7 @@ async function run(manifestPath: string, outputPath: string, authorization: stri
       check(changes.length > 0 && changes.every(allowed),
         `repair-scope isolation: all changes from readiness commit within experiment/V0/TEST paths, got: ${changes.join(", ")}`);
     };
-    const validated = validateExecutionAmendmentV0({
+    validateExecutionAmendmentV0({
       raw_amendment: rawAmendment,
       manifest_source_fingerprint: manifest.freeze.source_fingerprint,
       manifest_built_fingerprint: manifest.freeze.built_fingerprint,
@@ -128,19 +126,32 @@ async function run(manifestPath: string, outputPath: string, authorization: stri
       readiness_files_verify: readinessFilesVerify,
       repair_scope_files_verify: repairScopeVerify
     });
-    validatedAmendment = validated;
+    amendmentObj = rawAmendment as ExecutionAmendmentV0;
   }
 
-  verifyFrozen(manifest, validatedAmendment);
+  // ---- centralized Phase 1 + Phase 2 freeze verification ------------------------------
   const gates = readJson(join(readyDirectory, "gates.json")) as Gates;
-  verifyGates(gates); check(objectHash(gates) === manifest.freeze.gates_hash, "frozen green gates");
+  verifyFreezeBaselineV1({
+    readiness_source_fingerprint: manifest.freeze.source_fingerprint,
+    readiness_built_fingerprint: manifest.freeze.built_fingerprint,
+    readiness_protocol_hash: manifest.freeze.protocol_hash,
+    current_source_fingerprint: sourceFingerprint(),
+    current_built_fingerprint: builtFingerprint(),
+    current_protocol_hash: objectHash(protocol()),
+    amendment: amendmentObj,
+    gates_source_fingerprint: gates.source_fingerprint,
+    gates_built_fingerprint: gates.built_fingerprint
+  });
+  // Gates structure/commands only (fingerprints verified above).
+  verifyGates(gates);
+  check(objectHash(gates) === manifest.freeze.gates_hash, "frozen green gates");
   const p = await preflight(); check(preflightHash(p) === manifest.freeze.preflight_hash, "fresh deterministic preflight matches freeze");
   check(equal(await probeProvider(), manifest.freeze.provider_probe), "exact provider artifact");
   const directory = freshDirectory(outputPath);
   check(relative(ROOT, directory).replaceAll("\\", "/").startsWith("tmp/"), "primary runs in exclusive tmp child to keep source clean");
   lock("primary", objectHash(manifest), { directory, source_commit: head });
   const guard = async () => {
-    verifyFrozen(manifest, validatedAmendment); check(git("status", "--porcelain") === "" && git("rev-parse", "HEAD") === head, "clean fixed source during primary");
+    verifyFrozen(manifest, amendmentObj); check(git("status", "--porcelain") === "" && git("rev-parse", "HEAD") === head, "clean fixed source during primary");
     check(equal(await probeProvider(), manifest.freeze.provider_probe), "exact provider per-stage lock");
   };
   const result = await executePrimary({ preflight: p, cognition: transport(), language: transport(), evaluator: transport(),

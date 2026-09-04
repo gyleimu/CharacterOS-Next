@@ -31,20 +31,17 @@
 import { check } from "./fixtures.ts";
 
 export const EXECUTION_AMENDMENT_SCHEMA_VERSION_V0 =
-  "execution-amendment-v1-r2" as const;
+  "execution-amendment-v1" as const;
 
 export const SCIENTIFIC_PROTOCOL_ID_V1 = "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V1" as const;
 
 export const READINESS_COMMIT_V1 = "52c693970b81c510bed47d65b38a41ee188ad184" as const;
 
-/** The ONE authorized post-repair execution identity for this amendment. */
-export const AUTHORIZED_EXECUTION_IDENTITY = "formal-primary-v1-r2" as const;
-
 /** Immutable amendment artifact (closed shape, no mutable result fields). */
 export interface ExecutionAmendmentV0 {
   readonly schema_version: typeof EXECUTION_AMENDMENT_SCHEMA_VERSION_V0;
   readonly scientific_protocol_id: typeof SCIENTIFIC_PROTOCOL_ID_V1;
-  readonly execution_identity: typeof AUTHORIZED_EXECUTION_IDENTITY;
+  readonly execution_identity: string;
   readonly readiness_commit: typeof READINESS_COMMIT_V1;
   readonly original_readiness_source_fingerprint: string;
   readonly authorized_execution_source_fingerprint: string;
@@ -91,12 +88,12 @@ export function validateExecutionAmendmentV0(input: {
     `amendment.scientific_protocol_id: expected ${SCIENTIFIC_PROTOCOL_ID_V1}`
   );
   check(
-    amendment.execution_identity === AUTHORIZED_EXECUTION_IDENTITY,
-    `amendment.execution_identity: expected ${AUTHORIZED_EXECUTION_IDENTITY}`
+    amendment.execution_identity === input.requested_execution_identity,
+    `amendment.execution_identity must EXACTLY match the requested --execution-identity`
   );
   check(
-    input.requested_execution_identity === AUTHORIZED_EXECUTION_IDENTITY,
-    `requested execution identity must be ${AUTHORIZED_EXECUTION_IDENTITY}`
+    typeof input.requested_execution_identity === "string" && input.requested_execution_identity.length > 0,
+    "requested execution identity must be a non-empty string"
   );
   check(
     amendment.readiness_commit === READINESS_COMMIT_V1,

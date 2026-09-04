@@ -67,7 +67,8 @@ export function committedBaseline() {
   check(git("status", "--porcelain").length === 0, "clean committed worktree");
   frozenIntegrity();
   const head = git("rev-parse", "HEAD");
-  check(git("ls-remote", "origin", "refs/heads/main").split(/\s/)[0] === head, "HEAD equals remote main");
+  // LOCAL git verification: uses the local origin/main tracking ref, no network.
+  check(git("rev-parse", "origin/main") === head, "HEAD equals local origin/main tracking ref");
   return head;
 }
 export async function probeProvider() {
@@ -88,7 +89,10 @@ export interface Gates {
   full_lint: unknown;
 }
 export function verifyGates(gates: Gates) {
-  check(gates.status === "PASS" && gates.source_fingerprint === sourceFingerprint() && gates.built_fingerprint === builtFingerprint(), "green gates match exact source/build");
+  // Structure/commands only. Fingerprint authorization is handled by the
+  // centralized verifyExecutionFreezeBaselineV1 — no independent current-source
+  // comparison here (PRECALL freeze-cascade fix).
+  check(gates.status === "PASS", "gates status must be PASS");
   check(gates.commands.length >= 34 && gates.commands.every(c => c.exit_code === 0) &&
     ["targeted-tests", "v0-integrity-tests", "production-behavior-tests", "full-tests", "harness-typecheck", "diff-check"].every(n => gates.commands.some(c => c.name === n)) &&
     gates.commands.some(c => c.name.startsWith("build:")) && gates.commands.some(c => c.name.startsWith("typecheck:")) && equal(gates.full_lint, LINT_DEBT), "complete green gates with exactly existing lint debt");

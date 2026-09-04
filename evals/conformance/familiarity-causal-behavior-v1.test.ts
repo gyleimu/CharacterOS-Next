@@ -297,7 +297,7 @@ describe("V1 execution amendment freeze law", () => {
 
   function amendment(overrides: Record<string, unknown> = {}): Record<string, unknown> {
     return {
-      schema_version: "execution-amendment-v1-r2",
+      schema_version: "execution-amendment-v1",
       scientific_protocol_id: "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V1",
       execution_identity: IDENTITY,
       readiness_commit: READINESS_COMMIT,
