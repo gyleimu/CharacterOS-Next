@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-imports -- Conformance consumer of isolated experiment host and frozen built roots. */
+import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it, vi } from "vitest";
@@ -213,5 +214,73 @@ describe("V1 frozen production behavior experiment", () => {
     expect(protocol().call_accounting.readiness_neutral_max).toEqual({ cognition: 1, language: 1, evaluator: 0 });
     expect(protocol().readiness_authorizes_formal_run).toBe(false);
     expect(PROVIDERS.cognition.seed).toBeNull(); expect(PROVIDERS.language.seed).toBeNull();
+  });
+});
+
+describe("V1 large-artifact verification (PRECALL_TECHNICAL_ABORT repair)", () => {
+  const readinessDir = join(ROOT, "research/experiments/familiarity-causal-behavior-v1/evidence/readiness-v1");
+  const readinessFiles = ["manifest.json", "preflight.json", "readiness.json", "gates.json"];
+  const DEFAULT_NODE_MAX_BUFFER = 1024 * 1024;
+
+  it("committed readiness-v1/preflight.json exceeds Node's default execFileSync maxBuffer", () => {
+    // The exact artifact whose verification produced `spawnSync git ENOBUFS`
+    // in the aborted pre-call attempt (real-model calls = 0).
+    const bytes = readFileSync(join(readinessDir, "preflight.json"));
+    expect(bytes.byteLength).toBeGreaterThan(DEFAULT_NODE_MAX_BUFFER);
+  });
+
+  it("old default-buffer read reproduces ENOBUFS; repaired harness reads the exact bytes", () => {
+    const path = "research/experiments/familiarity-causal-behavior-v1/evidence/readiness-v1/preflight.json";
+    // OLD behavior: default maxBuffer → ENOBUFS (the confirmed PRECALL abort).
+    let oldFailure: { code?: string } | null = null;
+    try {
+      execFileSync("git", ["show", `HEAD:${path}`], { cwd: ROOT, encoding: "utf8", windowsHide: true });
+    } catch (error) {
+      oldFailure = error as { code?: string };
+    }
+    expect(oldFailure?.code).toBe("ENOBUFS");
+    // NEW behavior: bounded 16 MiB harness buffer → exact committed bytes.
+    const shown = git("show", `HEAD:${path}`);
+    expect(shown).toBe(readFileSync(join(ROOT, path), "utf8").trim());
+  });
+
+  it("repaired harness verifies ALL committed readiness files byte-for-byte (equivalence loop)", () => {
+    for (const name of readinessFiles) {
+      const path = `research/experiments/familiarity-causal-behavior-v1/evidence/readiness-v1/${name}`;
+      expect(git("show", `HEAD:${path}`)).toBe(readFileSync(join(readinessDir, name), "utf8").trim());
+    }
+  });
+
+  it("pins the bounded harness-only buffer constant once", () => {
+    const source = readFileSync(join(ROOT, "research/experiments/familiarity-causal-behavior-v1/artifacts.ts"), "utf8");
+    expect(source).toContain("V1_GIT_READ_MAX_BUFFER_BYTES = 16 * 1024 * 1024");
+    // exactly ONE actual maxBuffer option usage (the doc comment mention aside)
+    expect(source.match(/maxBuffer:/g)?.length).toBe(1);
+    // never leaked into production sources
+    const productionPaths = git("ls-files", "packages", "product").split("\n").filter(f => f.endsWith(".ts"));
+    for (const path of productionPaths) {
+      expect(readFileSync(join(ROOT, path), "utf8")).not.toContain("V1_GIT_READ_MAX_BUFFER_BYTES");
+    }
+  });
+
+  it("precall abort lineage records zero model calls, absent primary lock and the new identity", () => {
+    const lineage = JSON.parse(readFileSync(
+      join(ROOT, "research/experiments/familiarity-causal-behavior-v1/evidence/precall-abort-lineage.json"),
+      "utf8"
+    ));
+    expect(lineage.status).toBe("PRECALL_TECHNICAL_ABORT");
+    expect(lineage.aborted_attempt.real_model_calls).toBe(0);
+    expect(lineage.aborted_attempt.cognition_calls).toBe(0);
+    expect(lineage.aborted_attempt.language_calls).toBe(0);
+    expect(lineage.aborted_attempt.evaluator_calls).toBe(0);
+    expect(lineage.aborted_attempt.primary_lock_created).toBe(false);
+    expect(lineage.aborted_attempt.formal_output_directory_created).toBe(false);
+    expect(lineage.aborted_attempt.abort_cause).toContain("ENOBUFS");
+    expect(lineage.readiness_commit).toBe("52c693970b81c510bed47d65b38a41ee188ad184");
+    expect(lineage.readiness_verdict).toBe("EXPERIMENT_V1_READY");
+    expect(lineage.new_formal_identity.identity).toBe("formal-primary-v1-r1");
+    expect(lineage.new_formal_identity.supersedes).toContain("no primary lock");
+    expect(lineage.invariants.readiness_v1_regenerated).toBe(false);
+    expect(lineage.invariants.production_code_changed).toBe(false);
   });
 });

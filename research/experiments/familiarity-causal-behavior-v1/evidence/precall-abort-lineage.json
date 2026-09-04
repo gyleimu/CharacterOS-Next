@@ -1,0 +1,40 @@
+{
+  "status": "PRECALL_TECHNICAL_ABORT",
+  "experiment_id": "FAMILIARITY_CAUSAL_BEHAVIOR_EXPERIMENT_V1",
+  "protocol_unchanged": true,
+  "readiness_commit": "52c693970b81c510bed47d65b38a41ee188ad184",
+  "readiness_verdict": "EXPERIMENT_V1_READY",
+  "aborted_attempt": {
+    "identity": "formal-primary-v1",
+    "aborted_at_phase": "PRE_RUN_READINESS_VERIFICATION",
+    "real_model_calls": 0,
+    "cognition_calls": 0,
+    "language_calls": 0,
+    "evaluator_calls": 0,
+    "primary_lock_created": false,
+    "formal_output_directory_created": false,
+    "abort_cause": "spawnSync git ENOBUFS — execFileSync default ~1 MiB maxBuffer overflow while verifying the committed readiness-v1/preflight.json (1,327,829 bytes) via git show HEAD:<file>; crash at cli.ts:82 -> artifacts.ts:13 git() helper, before provider probe, fresh preflight, run lock, output directory or any transport instantiation.",
+    "harness_repair": "git() helper in research/experiments/familiarity-causal-behavior-v1/artifacts.ts now uses an explicit bounded maxBuffer (V1_GIT_READ_MAX_BUFFER_BYTES = 16 MiB, pinned once, harness-only); readiness files verify byte-for-byte (see evals/conformance/familiarity-causal-behavior-v1.test.ts large-artifact suite)."
+  },
+  "new_formal_identity": {
+    "identity": "formal-primary-v1-r1",
+    "supersedes": "formal-primary-v1 (aborted pre-call; identity not consumed — no primary lock, no output directory, no model calls)",
+    "authorizes": "formal primary model calls only after the harness-repair commit and under the unchanged frozen manifest 52c693970b81c510bed47d65b38a41ee188ad184"
+  },
+  "invariants": {
+    "scenario_unchanged": true,
+    "histories_unchanged": true,
+    "familiarity_policy_unchanged": true,
+    "threshold_unchanged": true,
+    "retrieval_unchanged": true,
+    "evidence_unchanged": true,
+    "provider_config_unchanged": true,
+    "trial_order_unchanged": true,
+    "rubric_unchanged": true,
+    "evaluator_unchanged": true,
+    "success_gates_unchanged": true,
+    "no_retry_law_unchanged": true,
+    "readiness_v1_regenerated": false,
+    "production_code_changed": false
+  }
+}

@@ -10,7 +10,16 @@ export const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
 export const EXPERIMENT_PATH = "research/experiments/familiarity-causal-behavior-v1";
 export const TEST_PATH = "evals/conformance/familiarity-causal-behavior-v1.test.ts";
 export const V0_PATH = "research/experiments/familiarity-causal-behavior-v0";
-export const git = (...args: string[]) => execFileSync("git", args, { cwd: ROOT, encoding: "utf8", windowsHide: true }).trim();
+/**
+ * Buffer bound for V1 HARNESS GIT READS ONLY (PRECALL_TECHNICAL_ABORT repair):
+ * committed experiment evidence files exceed Node's default execFileSync
+ * maxBuffer (~1 MiB; readiness-v1/preflight.json is ~1.28 MB), so verification
+ * reads need an explicit bounded buffer. 16 MiB is a fixed engineering bound
+ * safely above the largest committed evidence artifact — never unbounded, and
+ * NEVER reused as a production runtime constant.
+ */
+export const V1_GIT_READ_MAX_BUFFER_BYTES = 16 * 1024 * 1024;
+export const git = (...args: string[]) => execFileSync("git", args, { cwd: ROOT, encoding: "utf8", windowsHide: true, maxBuffer: V1_GIT_READ_MAX_BUFFER_BYTES }).trim();
 export const readJson = (path: string): unknown => JSON.parse(readFileSync(path, "utf8"));
 export const writeJson = (path: string, value: unknown) => writeFileSync(path, JSON.stringify(value, null, 2) + "\n", { flag: "wx" });
 export function saver(directory: string) {
