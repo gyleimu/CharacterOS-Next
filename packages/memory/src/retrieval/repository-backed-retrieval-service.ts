@@ -117,15 +117,16 @@ export class RepositoryBackedMemoryRetrievalServiceV0 {
     }
     const q = checked.value;
 
-    const manifest = await this.repository.readManifest(q.repository_revision);
-    if (manifest === null) {
-      throw new Error(`INVALID_MEMORY_REVISION/MEM-REV-001: revision ${q.repository_revision} has no manifest`);
-    }
+    // MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — candidates enumerate the
+    // EFFECTIVE VISIBLE RECORD SET derived from the bound revision ancestry
+    // (every ancestor integrity-verified by the shared visibility authority).
+    // Physical presence in the payload map is never authority by itself.
+    const visible = await this.repository.readVisibleRecordHashes(q.repository_revision);
 
     // ---- enumerate + verify episode candidates (payload remains authority) --------
     const views: RepositoryEpisodeSearchViewV0[] = [];
     let candidateCount = 0;
-    for (const entry of manifest.record_hashes) {
+    for (const entry of visible) {
       if (refKind(entry.ref as CanonicalRefV0) !== "episode") continue;
       candidateCount += 1;
       const payload = this.repository.readStoredPayload(entry.ref as never);

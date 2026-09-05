@@ -9,12 +9,12 @@
  *
  * REQUIRED CHECKS per ref (fail closed, no silent omission):
  *   - non-episode / receipt / authority refs: REJECTED (kind grammar)
- *   - repository revision binding: the revision manifest must exist
- *   - exact canonical ref membership: manifest record_hashes AND
+ *   - repository revision binding: the effective visible record set must exist
+ *   - exact canonical ref membership: effective visible record hashes AND
  *     validateRefsBelong against the subject's bound revision — subject
  *     membership is enforced by binding the revision to the requesting
  *     subject's canonical memory_state
- *   - stored payload hash: recomputed stored hash must equal the manifest's
+ *   - stored payload hash: recomputed stored hash must equal the visible
  *     declared record payload_hash
  *   - EpisodicMemoryRecordV0 schema validation of the stored payload
  *
@@ -70,12 +70,19 @@ export function createEpisodeContentReaderV0(repo: InMemoryMemoryRepository): Ep
   }
   return {
     async read(input) {
-      const manifest = await repo.readManifest(input.repository_revision);
-      if (manifest === null) {
+      // MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — membership and hash lookups
+      // use the EFFECTIVE VISIBLE RECORD SET derived from the bound revision
+      // ancestry (shared visibility authority; validateRefsBelong below now
+      // delegates to the same law).
+      let visible: readonly { ref: string; payload_hash: string }[];
+      try {
+        visible = await repo.readVisibleRecordHashes(input.repository_revision);
+      } catch {
+        // Unknown/unresolvable revision keeps the reader's return semantics.
         return {
           ok: false,
-          code: "REVISION_UNBOUND",
-          detail: `repository revision ${input.repository_revision} has no bound manifest`
+          code: "REVISION_UNBOUND" as const,
+          detail: `repository revision ${input.repository_revision} has no resolvable bound manifest`
         };
       }
       const contents: EpisodeContentV0[] = [];
@@ -89,7 +96,7 @@ export function createEpisodeContentReaderV0(repo: InMemoryMemoryRepository): Ep
           };
         }
         const episodeRef = refCheck.value;
-        const declared = (manifest.record_hashes as readonly { ref: string; payload_hash: string }[]).find(
+        const declared = (visible as readonly { ref: string; payload_hash: string }[]).find(
           (record) => record.ref === episodeRef
         );
         if (declared === undefined) {

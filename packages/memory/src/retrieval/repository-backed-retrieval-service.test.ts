@@ -135,8 +135,10 @@ describe("RepositoryBackedMemoryRetrievalServiceV0", () => {
       baseQuery((tamperedRevision as { repository_revision: string }).repository_revision)
     );
     expect(result.selected_memory_refs).not.toContain(tampered.episode_ref);
-    // The tampered record is still COUNTED as examined.
-    expect(result.deterministic_metadata.candidate_count).toBe(1);
+    // §16: candidate_count = episode candidates enumerated from EFFECTIVE
+    // ANCESTRY VISIBILITY at the queried revision (R1 feedback + R1 other + the
+    // tampered-binding candidate); the tampered record is examined, never selected.
+    expect(result.deterministic_metadata.candidate_count).toBe(3);
   });
 
   it("3/4. deterministic ranking and stable top-K (salience precedence)", async () => {

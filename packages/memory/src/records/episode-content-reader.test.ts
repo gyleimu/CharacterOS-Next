@@ -15,7 +15,7 @@
 import { describe, expect, it } from "vitest";
 
 import { computeMemoryRecordPayloadHash } from "../record-payload-hash.js";
-import type { HashV1 } from "@characteros-next/subject-core";
+import type { HashV1, RepositoryRecordHashV1 } from "@characteros-next/subject-core";
 import { InMemoryMemoryRepository } from "../repository/in-memory-memory-repository.js";
 import { createEpisodeContentReaderV0 } from "./episode-content-reader.js";
 
@@ -140,6 +140,9 @@ describe("Episode Content Reader V0 security", () => {
       }
       override async payloadHashOf(): Promise<HashV1> {
         return brokenHash as never;
+      }
+      override async readVisibleRecordHashes(): Promise<readonly RepositoryRecordHashV1[]> {
+        return [{ ref: "episode:alice-01" as never, payload_hash: brokenHash }];
       }
       override async readManifest(): Promise<never> {
         return {

@@ -22,6 +22,7 @@
 
 import type {
   CanonicalRefV0,
+  RepositoryRecordHashV1,
   RepositoryRevisionBindingV1,
   RepositoryRevisionIdV0,
   RepositoryRevisionManifestV1,
@@ -42,10 +43,17 @@ import type {
 import type {
   MemoryRepository
 } from "./memory-repository.js";
+import {
+  EffectiveRevisionVisibilityAuthorityV0,
+  type RevisionGraphReaderV0,
+  type RevisionSealedRecordV0
+} from "./effective-revision-visibility.js";
 
 interface StoredRevision {
   readonly manifest: RepositoryRevisionManifestV1;
   readonly memberRefs: ReadonlySet<string>;
+  /** MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — prepare-time revision hash seal. */
+  readonly seal: HashV1;
 }
 
 async function computePayloadHash(payload: unknown): Promise<string> {
@@ -75,6 +83,34 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   /** Creation-order revision ids (diagnostics/tests projection). */
   revisionIds(): RepositoryRevisionIdV0[] {
     return [...this.revisions.keys()];
+  }
+
+  /**
+   * MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — narrow graph face for the shared
+   * effective-visibility resolver (sealed manifests only; no payload bytes).
+   */
+  private readonly visibilityGraph: RevisionGraphReaderV0 = {
+    readSealedRevision: async (revision: RepositoryRevisionIdV0): Promise<RevisionSealedRecordV0 | null> => {
+      const stored = this.revisions.get(revision);
+      return stored === undefined ? null : { manifest: stored.manifest, sealed_hash: stored.seal };
+    },
+    knownRevisionCount: (): number => this.revisions.size,
+    isGenesisRevision: (revision: RepositoryRevisionIdV0): boolean => revision === ("R0" as RepositoryRevisionIdV0)
+  };
+
+  private readonly visibilityAuthority =
+    new EffectiveRevisionVisibilityAuthorityV0(this.visibilityGraph);
+
+  /**
+   * MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — the EFFECTIVE VISIBLE RECORD SET:
+   * the canonical deduplicated union of direct record entries across the bound
+   * revision's ancestry, every ancestor integrity-verified (sealed hash,
+   * schema, parent chain). Read-time authority only — manifests stay deltas.
+   */
+  async readVisibleRecordHashes(
+    revision: RepositoryRevisionIdV0
+  ): Promise<readonly RepositoryRecordHashV1[]> {
+    return this.visibilityAuthority.readVisibleRecordHashes(revision);
   }
 
   /**
@@ -222,7 +258,14 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     const memberRefs = new Set<string>(
       prepared.value.manifest.record_hashes.map((record) => record.ref)
     );
-    this.revisions.set(id, { manifest: prepared.value.manifest, memberRefs });
+    // MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — seal the revision at prepare
+    // time so ancestry integrity can be verified at every future read. The
+    // entry is stored synchronously FIRST (callers may chain prepares without
+    // awaiting), then the seal is attached before this promise resolves; the
+    // visibility graph treats an unsealed entry as not-yet-committed.
+    this.revisions.set(id, { manifest: prepared.value.manifest, memberRefs, seal: undefined as never });
+    const seal = await computeRepositoryRevisionHash(prepared.value.manifest);
+    this.revisions.set(id, { manifest: prepared.value.manifest, memberRefs, seal });
     return prepared.value;
   }
 
@@ -236,12 +279,26 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     return (await computeRepositoryRevisionHash(stored.manifest)) === binding.repository_revision_hash;
   }
 
+  /**
+   * MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — EFFECTIVE VISIBILITY semantics:
+   * a ref belongs to the bound revision when it is visible through the bound
+   * revision ancestry (V(R)), not merely through this own revision delta.
+   * Unknown revisions fail closed via the visibility resolver.
+   */
   async validateRefsBelong(
     revision: RepositoryRevisionIdV0,
     refs: readonly CanonicalRefV0[]
   ): Promise<boolean> {
-    const stored = this.revisions.get(revision);
-    if (stored === undefined) return false;
-    return refs.every((ref) => stored.memberRefs.has(ref));
+    // Verdict contract: any resolver failure (unknown revision, tampered or
+    // broken ancestry, cycle) is a fail-closed FALSE, never a throw — callers
+    // such as adoption/commit validators treat false as not-belonging. Detailed
+    // failure causes stay available through readVisibleRecordHashes directly.
+    try {
+      const visible = await this.readVisibleRecordHashes(revision);
+      const visibleRefs = new Set<string>(visible.map((entry) => entry.ref));
+      return refs.every((ref) => visibleRefs.has(ref));
+    } catch {
+      return false;
+    }
   }
 }

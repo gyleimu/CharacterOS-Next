@@ -108,10 +108,13 @@ export function createExperienceReaderV0(deps: {
     }
     const episodeRef = episodeRefInput as CanonicalRefV0;
 
-    // ---- 1. bound revision membership --------------------------------------------
-    const manifest = await deps.repository.readManifest(revision as never);
-    if (manifest === null) return fail("REVISION_UNBOUND", `revision ${revision} has no manifest`);
-    const episodeEntry = manifest.record_hashes.find((r) => r.ref === episodeRef);
+    // ---- 1. bound revision membership (EFFECTIVE VISIBILITY across ancestry) ------
+    // MEMORY_REVISION_LONG_TERM_VISIBILITY_V0: episode, Experience and ingress
+    // event are all resolved against ONE effective visible record set derived
+    // from the same bound revision (shared visibility authority). All existing
+    // fail-closed checks below are preserved unchanged.
+    const visible = await deps.repository.readVisibleRecordHashes(revision as never);
+    const episodeEntry = visible.find((r) => r.ref === episodeRef);
     if (episodeEntry === undefined) {
       return fail("REF_NOT_IN_REVISION", `episode ${episodeRef} is not bound to revision ${revision}`);
     }
@@ -149,7 +152,7 @@ export function createExperienceReaderV0(deps: {
     if (experienceRef !== null && experienceRef !== boundExperienceRef) {
       return fail("EXPERIENCE_LINKAGE_INVALID", "supplied experience_ref does not match the episode-bound experience");
     }
-    const experienceEntry = manifest.record_hashes.find((r) => r.ref === boundExperienceRef);
+    const experienceEntry = visible.find((r) => r.ref === boundExperienceRef);
     if (experienceEntry === undefined) {
       return fail("REF_NOT_IN_REVISION", `experience ${boundExperienceRef} is not bound to revision ${revision}`);
     }
@@ -178,7 +181,7 @@ export function createExperienceReaderV0(deps: {
 
     // ---- 5. nested outcome ↔ ingress event exact consistency -----------------------
     const eventRef = experience.event_ref;
-    const eventEntry = manifest.record_hashes.find((r) => r.ref === eventRef);
+    const eventEntry = visible.find((r) => r.ref === eventRef);
     if (eventEntry === undefined) {
       return fail("REF_NOT_IN_REVISION", `ingress event ${eventRef} is not bound to revision ${revision}`);
     }

@@ -102,6 +102,15 @@ export {
   type RepositoryEpisodeSearchViewV0
 } from "./retrieval/repository-backed-retrieval-service.js";
 
+// --- MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 ------------------------------------------
+
+export {
+  EffectiveRevisionVisibilityAuthorityV0,
+  createEffectiveRevisionVisibilityAuthorityV0,
+  type RevisionGraphReaderV0,
+  type RevisionSealedRecordV0
+} from "./repository/effective-revision-visibility.js";
+
 export {
   validateRehearsalFixture
 } from "./retrieval/validation.js";
