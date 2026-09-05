@@ -1,0 +1,8 @@
+{
+  "call_id": "1",
+  "started_at": "2026-09-05T13:43:27.785Z",
+  "finished_at": "2026-09-05T13:45:27.802Z",
+  "initial_residency": "NOT_RESIDENT",
+  "pre_call_snapshot": "pre-run",
+  "post_call_snapshot": "after-call-1"
+}

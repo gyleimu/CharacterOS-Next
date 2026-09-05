@@ -1,0 +1,13 @@
+{
+  "schema_version": "ollama-natural-low-resource-manifest-v0",
+  "run_id": "natural-low-resource-v0-2026-09-05T13-43-02-170Z",
+  "starting_head": "f515f599ae8c97391cb50480cce917399dc038b4",
+  "origin_main_at_start": "f515f599ae8c97391cb50480cce917399dc038b4",
+  "protected_status_before_run": "",
+  "server_log_start_offset": 152789,
+  "protocol_sha256": "sha256:34c2ff82447b82f28717cb259d4582a98becd5f3df9b3f02895e6dc8ecd35361",
+  "runner_sha256": "sha256:3f9f0d71fadf35aefe0659efab0f72806bb93a3cd608770077278d13b7029899",
+  "frozen_fixture_sha256": "sha256:480e1c1706ad90153cb56a83d07a6954b439d896b9607483363a22fe62da0bd2",
+  "diagnostic_only": true,
+  "artificial_pressure": false
+}

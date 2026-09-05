@@ -1,0 +1,86 @@
+{
+  "schema_version": "ollama-natural-low-resource-snapshot-v0",
+  "name": "after-call-1",
+  "call_id": "1",
+  "captured_at": "2026-09-05T13:45:31.019Z",
+  "health": {
+    "schema_version": "ollama-diagnostic-health-snapshot-v0",
+    "captured_at": "2026-09-05T13:45:27.820Z",
+    "base_url": "http://127.0.0.1:11434",
+    "server": {
+      "reachable": true,
+      "version": "0.33.2",
+      "loaded_models": [
+        {
+          "name": "qwen3.5:9b",
+          "model": "qwen3.5:9b",
+          "size_bytes": 6117182665,
+          "size_vram_bytes": 4978093587
+        }
+      ]
+    },
+    "process": {
+      "platform": "win32",
+      "node_version": "v24.19.0",
+      "process_rss_bytes": 25059328,
+      "heap_used_bytes": 18467984,
+      "heap_total_bytes": 19902464,
+      "uptime_seconds": 146.2444585
+    },
+    "probe_errors": []
+  },
+  "memory": {
+    "node_available_bytes": 183885824,
+    "total_physical_bytes": 16341766144,
+    "windows_free_physical_bytes": 184213504,
+    "windows_total_virtual_bytes": 51525562368,
+    "windows_free_virtual_bytes": 2422001664,
+    "committed_bytes": 49146605568,
+    "commit_limit_bytes": 51525562368,
+    "commit_peak_bytes": 0,
+    "pagefile_allocated_mib": 33553,
+    "pagefile_current_usage_mib": 5079,
+    "pagefile_peak_usage_mib": 7057,
+    "pages_input_per_sec": 42411,
+    "page_reads_per_sec": 5833,
+    "pages_per_sec": 42411,
+    "severe_paging_threshold_observed": true
+  },
+  "processes": {
+    "delta_force": [
+      {
+        "pid": 89712,
+        "process_name": "DeltaForceClient-Win64-Shipping",
+        "started_at": "2026-09-05T19:12:55.2812697+08:00",
+        "working_set_bytes": 1027522560,
+        "private_memory_bytes": 13828452352
+      }
+    ],
+    "ollama": [
+      {
+        "pid": 98764,
+        "process_name": "ollama",
+        "started_at": "2026-09-05T21:43:04.7775680+08:00",
+        "working_set_bytes": 55840768,
+        "private_memory_bytes": 99995648
+      },
+      {
+        "pid": 96948,
+        "process_name": "ollama app",
+        "started_at": "2026-09-05T21:43:03.6620118+08:00",
+        "working_set_bytes": 42315776,
+        "private_memory_bytes": 4170432512
+      }
+    ]
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "memory_used_mib": 7320,
+    "memory_total_mib": 8188,
+    "utilization_percent": 98,
+    "temperature_c": 88
+  },
+  "artificial_pressure_processes": [],
+  "probe_errors": []
+}

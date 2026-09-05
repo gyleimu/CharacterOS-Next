@@ -1,0 +1,361 @@
+{
+  "schema_version": "ollama-natural-low-resource-diagnostic-v0",
+  "diagnostic_id": "OLLAMA_NATURAL_LOW_RESOURCE_REPRODUCTION_V0",
+  "maximum_cognition_calls": 4,
+  "natural_window_lost_threshold_bytes": 1073741824,
+  "authority_boundary": "diagnostic observation only; never canonical state, behavior evidence, or scientific evidence",
+  "artificial_pressure_allowed": false,
+  "run_id": "natural-low-resource-v0-2026-09-05T13-43-02-170Z",
+  "evidence_path": "D:\\Documents\\CharacterOS-Next\\research\\diagnostics\\ollama-natural-low-resource-v0\\evidence\\natural-low-resource-v0-2026-09-05T13-43-02-170Z",
+  "started_at": "2026-09-05T13:43:01.906Z",
+  "finished_at": "2026-09-05T13:45:32.561Z",
+  "starting_head": "f515f599ae8c97391cb50480cce917399dc038b4",
+  "origin_main_at_start": "f515f599ae8c97391cb50480cce917399dc038b4",
+  "server_intervention": {
+    "kind": "START_NORMAL_OLLAMA_APPLICATION",
+    "server_already_running": false,
+    "executable": "C:\\Users\\26965\\AppData\\Local\\Programs\\Ollama\\ollama app.exe",
+    "requested_at": "2026-09-05T13:43:03.564Z",
+    "launcher_pid": 96948,
+    "server_ready_at": "2026-09-05T13:43:16.960Z",
+    "initial_error": "TypeError: fetch failed"
+  },
+  "provider_lock": {
+    "expected": {
+      "base_url": "http://127.0.0.1:11434",
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_predict": 2048,
+      "timeout_ms": 120000,
+      "retries": 0,
+      "seed_field_sent": false,
+      "keep_alive_field_sent": false
+    },
+    "actual": {
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "version_match": true,
+    "digest_match": true,
+    "checked_at": "2026-09-05T13:43:16.966Z",
+    "errors": []
+  },
+  "fixture": {
+    "expected": {
+      "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+      "post_bytes": 4522,
+      "server_prompt_tokens": 1068
+    },
+    "actual": {
+      "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+      "post_bytes": 4522,
+      "message_count": 2,
+      "system_content_bytes": 1746,
+      "user_content_bytes": 2515,
+      "projection_json_bytes": 1235,
+      "approximate_prompt_tokens": 1065,
+      "token_estimate_method": "utf8-content-bytes-divided-by-4"
+    },
+    "match": true
+  },
+  "natural_window_gate": {
+    "threshold_bytes": 1073741824,
+    "pre_run_available_bytes": 600756224,
+    "passed": true
+  },
+  "pre_run_snapshot": {
+    "schema_version": "ollama-natural-low-resource-snapshot-v0",
+    "name": "pre-run",
+    "call_id": null,
+    "captured_at": "2026-09-05T13:43:26.908Z",
+    "health": {
+      "schema_version": "ollama-diagnostic-health-snapshot-v0",
+      "captured_at": "2026-09-05T13:43:17.004Z",
+      "base_url": "http://127.0.0.1:11434",
+      "server": {
+        "reachable": true,
+        "version": "0.33.2",
+        "loaded_models": []
+      },
+      "process": {
+        "platform": "win32",
+        "node_version": "v24.19.0",
+        "process_rss_bytes": 96100352,
+        "heap_used_bytes": 18122400,
+        "heap_total_bytes": 19640320,
+        "uptime_seconds": 15.4271052
+      },
+      "probe_errors": []
+    },
+    "memory": {
+      "node_available_bytes": 379207680,
+      "total_physical_bytes": 16341766144,
+      "windows_free_physical_bytes": 600756224,
+      "windows_total_virtual_bytes": 41037828096,
+      "windows_free_virtual_bytes": 2246414336,
+      "committed_bytes": 37179662336,
+      "commit_limit_bytes": 41037828096,
+      "commit_peak_bytes": 0,
+      "pagefile_allocated_mib": 23552,
+      "pagefile_current_usage_mib": 3588,
+      "pagefile_peak_usage_mib": 5683,
+      "pages_input_per_sec": 8258,
+      "page_reads_per_sec": 679,
+      "pages_per_sec": 8258,
+      "severe_paging_threshold_observed": true
+    },
+    "processes": {
+      "delta_force": [
+        {
+          "pid": 89712,
+          "process_name": "DeltaForceClient-Win64-Shipping",
+          "started_at": "2026-09-05T19:12:55.2812697+08:00",
+          "working_set_bytes": 3320827904,
+          "private_memory_bytes": 13636542464
+        }
+      ],
+      "ollama": [
+        {
+          "pid": 98764,
+          "process_name": "ollama",
+          "started_at": "2026-09-05T21:43:04.7775680+08:00",
+          "working_set_bytes": 44048384,
+          "private_memory_bytes": 64765952
+        },
+        {
+          "pid": 96948,
+          "process_name": "ollama app",
+          "started_at": "2026-09-05T21:43:03.6620118+08:00",
+          "working_set_bytes": 1144180736,
+          "private_memory_bytes": 1187618816
+        }
+      ]
+    },
+    "gpu": {
+      "available": true,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "memory_used_mib": 4266,
+      "memory_total_mib": 8188,
+      "utilization_percent": 5,
+      "temperature_c": 85
+    },
+    "artificial_pressure_processes": [],
+    "probe_errors": []
+  },
+  "model_call_counts": {
+    "cognition": 1,
+    "language": 0,
+    "evaluator": 0
+  },
+  "calls": [
+    {
+      "call": "1",
+      "available_ram_bytes": 600756224,
+      "node_available_ram_bytes": 379207680,
+      "delta_force_working_set_bytes": 3320827904,
+      "delta_force_private_memory_bytes": 13636542464,
+      "ollama_processes": [
+        {
+          "pid": 98764,
+          "process_name": "ollama",
+          "started_at": "2026-09-05T21:43:04.7775680+08:00",
+          "working_set_bytes": 44048384,
+          "private_memory_bytes": 64765952
+        },
+        {
+          "pid": 96948,
+          "process_name": "ollama app",
+          "started_at": "2026-09-05T21:43:03.6620118+08:00",
+          "working_set_bytes": 1144180736,
+          "private_memory_bytes": 1187618816
+        }
+      ],
+      "model_resident": false,
+      "gpu_memory_used_mib": 4266,
+      "gpu_memory_total_mib": 8188,
+      "gpu_utilization_percent": 5,
+      "gpu_temperature_c": 85,
+      "pagefile_current_usage_mib": 3588,
+      "load_duration_ns": null,
+      "prompt_eval_count": null,
+      "prompt_eval_duration_ns": null,
+      "eval_count": null,
+      "eval_duration_ns": null,
+      "eval_tokens_per_second": null,
+      "total_elapsed_ms": 120014,
+      "fetch_elapsed_ms": null,
+      "body_elapsed_ms": null,
+      "abort": true,
+      "abort_elapsed_ms": 120003,
+      "terminal_stage": "BEFORE_FETCH_RESPONSE",
+      "response_status": null,
+      "failure_code": "MODEL_TIMEOUT",
+      "raw_error_name": "AbortError",
+      "raw_error_message": "This operation was aborted",
+      "done_reason": null,
+      "runtime_monitor": {
+        "samples": 236,
+        "minimum_available_bytes": 5795840,
+        "maximum_event_loop_gap_ms": 525
+      },
+      "warnings": [
+        "GPU_DISCOVERY_WATCHDOG",
+        "FREE_MEMORY_REFRESH"
+      ],
+      "outcome": "MODEL_TIMEOUT"
+    }
+  ],
+  "stop_reason": "SEVERE_PAGING_THRESHOLD_OBSERVED",
+  "server_log": {
+    "available": true,
+    "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+    "file_name": "server.log",
+    "start_offset": 0,
+    "end_offset": 43427,
+    "bytes": 43427,
+    "rotated_or_truncated": true,
+    "captured_at": "2026-09-05T13:45:31.858Z",
+    "analysis": {
+      "api_chat_requests": 1,
+      "http_500": 1,
+      "gpu_discovery_watchdog_warnings": 1,
+      "free_memory_refresh_warnings": 1,
+      "insufficient_memory_warnings": 0,
+      "model_load_events": 1,
+      "model_unload_events": 0,
+      "cancel_events": 1,
+      "release_events": 1,
+      "runner_delay_events": 0,
+      "mmap_mentions": 2,
+      "cuda_offload_events": 1,
+      "prompt_cache_update_ms": [
+        0.01
+      ],
+      "runner_prompt_eval_ms": [],
+      "runner_eval_ms": [],
+      "full_prompt_tokens": [
+        1068
+      ]
+    },
+    "warning_events": [
+      {
+        "signature": "GPU_DISCOVERY_WATCHDOG",
+        "timestamp": "2026-09-05T21:43:31.017+08:00",
+        "line": "time=2026-09-05T21:43:31.017+08:00 level=WARN source=runner.go:584 msg=\"llama-server GPU discovery watchdog timed out\" OLLAMA_LIBRARY_PATH=\"[C:\\\\Users\\\\26965\\\\AppData\\\\Local\\\\Programs\\\\Ollama\\\\lib\\\\ollama C:\\\\Users\\\\26965\\\\AppData\\\\Local\\\\Programs\\\\Ollama\\\\lib\\\\ollama\\\\cuda_v12]\" extra_envs=map[CUDA_VISIBLE_DEVICES:0] error=\"context deadline exceeded\""
+      },
+      {
+        "signature": "FREE_MEMORY_REFRESH",
+        "timestamp": "2026-09-05T21:43:31.018+08:00",
+        "line": "time=2026-09-05T21:43:31.018+08:00 level=WARN source=runner.go:364 msg=\"unable to refresh free memory, using old values\""
+      },
+      {
+        "signature": "HTTP_500",
+        "timestamp": null,
+        "line": "[GIN] 2026/09/05 - 21:45:27 | 500 |         1m59s |       127.0.0.1 | POST     \"/api/chat\""
+      }
+    ]
+  },
+  "post_run_log_review": {
+    "continuity": "The normal Ollama application truncated the previous log after the recorded 152789-byte starting offset; the evidence therefore preserves the complete replacement log from byte 0 through byte 43427 for this new server lifecycle.",
+    "ollama_reported_system_free": "528.8 MiB",
+    "ollama_reported_free_swap": "1.1 GiB",
+    "llama_server_start_ms": 25030,
+    "cuda_layers_offloaded": "32/34",
+    "prompt_processing_progress": [
+      {
+        "processed_tokens": 512,
+        "elapsed_ms": 7870,
+        "tokens_per_second": 65.03
+      },
+      {
+        "processed_tokens": 556,
+        "elapsed_ms": 15940,
+        "tokens_per_second": 34.88
+      },
+      {
+        "processed_tokens": 1064,
+        "elapsed_ms": 41780,
+        "tokens_per_second": 25.47
+      }
+    ],
+    "generation_progress_before_timeout": {
+      "generated_tokens": 100,
+      "tokens_per_second": 2.09
+    },
+    "http_result": "500 after 1m59s",
+    "cancel_observed": true,
+    "slot_release_tokens": 1171,
+    "historical_signature_match": {
+      "model_timeout": true,
+      "gpu_discovery_watchdog": true,
+      "free_memory_refresh_warning": true,
+      "slow_prompt_processing": true,
+      "slow_generation": true,
+      "http_500": true,
+      "cancel_and_release": true,
+      "slow_prompt_cache_update": false
+    },
+    "causal_boundary": "This natural state combined low host RAM, severe paging, high commit pressure, limited VRAM and a concurrent GPU workload; it reproduces environmental contention but does not isolate low RAM as the sole cause."
+  },
+  "result_thresholds": {
+    "slow_prompt_ms": 5000,
+    "slow_cache_update_ms": 5000,
+    "resident_slow_ms": 15000,
+    "resident_slow_count": 2
+  },
+  "result_category": "NATURAL_LOW_RESOURCE_TIMEOUT_REPRODUCED",
+  "root_cause_category": "ENVIRONMENTAL_RESOURCE_CONTENTION_SUSPECTED",
+  "root_cause_confidence": "HIGH",
+  "next_slice": "READY_FOR_ENVIRONMENT_STABILIZATION_DESIGN",
+  "comparison": {
+    "r3": {
+      "available_ram_approx_mib": 449,
+      "request_bytes": [
+        4234,
+        4280
+      ],
+      "prompt_tokens": [
+        980,
+        997
+      ],
+      "initial_timeouts": 9,
+      "timeout_ms": 120000,
+      "signatures": [
+        "GPU discovery watchdog timed out",
+        "unable to refresh free memory",
+        "very slow prompt processing",
+        "approximately 58 second prompt-cache update"
+      ]
+    },
+    "healthy_representative_v1": {
+      "available_ram_approx_gib": 3.5,
+      "cold_elapsed_ms": 21224,
+      "warm_elapsed_ms": [
+        6792,
+        7261,
+        7318
+      ],
+      "warnings": 0
+    }
+  },
+  "integrity": {
+    "model_calls_at_most_four": true,
+    "language_calls": 0,
+    "evaluator_calls": 0,
+    "exactly_one_request_hash": true,
+    "frozen_request_match": true,
+    "artificial_pressure_processes_before": 0,
+    "artificial_pressure_processes_after": 0,
+    "production_paths_changed_before_run": false,
+    "retries": 0,
+    "warm_up_calls": 0,
+    "timeout_ms": 120000,
+    "delta_force_mutations": 0,
+    "model_residency_mutations": 0
+  }
+}

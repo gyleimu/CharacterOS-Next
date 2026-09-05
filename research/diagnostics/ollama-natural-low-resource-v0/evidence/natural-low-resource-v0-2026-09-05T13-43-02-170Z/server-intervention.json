@@ -1,0 +1,9 @@
+{
+  "kind": "START_NORMAL_OLLAMA_APPLICATION",
+  "server_already_running": false,
+  "executable": "C:\\Users\\26965\\AppData\\Local\\Programs\\Ollama\\ollama app.exe",
+  "requested_at": "2026-09-05T13:43:03.564Z",
+  "launcher_pid": 96948,
+  "server_ready_at": "2026-09-05T13:43:16.960Z",
+  "initial_error": "TypeError: fetch failed"
+}

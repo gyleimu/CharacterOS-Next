@@ -1,0 +1,2 @@
+# Preserve byte-exact external Ollama log slices; line endings and trailing spaces are evidence.
+evidence/**/server-log-window.txt -text whitespace=-trailing-space

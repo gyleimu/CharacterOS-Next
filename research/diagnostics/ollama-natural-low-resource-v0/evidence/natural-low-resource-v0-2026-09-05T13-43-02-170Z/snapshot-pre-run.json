@@ -1,0 +1,79 @@
+{
+  "schema_version": "ollama-natural-low-resource-snapshot-v0",
+  "name": "pre-run",
+  "call_id": null,
+  "captured_at": "2026-09-05T13:43:26.908Z",
+  "health": {
+    "schema_version": "ollama-diagnostic-health-snapshot-v0",
+    "captured_at": "2026-09-05T13:43:17.004Z",
+    "base_url": "http://127.0.0.1:11434",
+    "server": {
+      "reachable": true,
+      "version": "0.33.2",
+      "loaded_models": []
+    },
+    "process": {
+      "platform": "win32",
+      "node_version": "v24.19.0",
+      "process_rss_bytes": 96100352,
+      "heap_used_bytes": 18122400,
+      "heap_total_bytes": 19640320,
+      "uptime_seconds": 15.4271052
+    },
+    "probe_errors": []
+  },
+  "memory": {
+    "node_available_bytes": 379207680,
+    "total_physical_bytes": 16341766144,
+    "windows_free_physical_bytes": 600756224,
+    "windows_total_virtual_bytes": 41037828096,
+    "windows_free_virtual_bytes": 2246414336,
+    "committed_bytes": 37179662336,
+    "commit_limit_bytes": 41037828096,
+    "commit_peak_bytes": 0,
+    "pagefile_allocated_mib": 23552,
+    "pagefile_current_usage_mib": 3588,
+    "pagefile_peak_usage_mib": 5683,
+    "pages_input_per_sec": 8258,
+    "page_reads_per_sec": 679,
+    "pages_per_sec": 8258,
+    "severe_paging_threshold_observed": true
+  },
+  "processes": {
+    "delta_force": [
+      {
+        "pid": 89712,
+        "process_name": "DeltaForceClient-Win64-Shipping",
+        "started_at": "2026-09-05T19:12:55.2812697+08:00",
+        "working_set_bytes": 3320827904,
+        "private_memory_bytes": 13636542464
+      }
+    ],
+    "ollama": [
+      {
+        "pid": 98764,
+        "process_name": "ollama",
+        "started_at": "2026-09-05T21:43:04.7775680+08:00",
+        "working_set_bytes": 44048384,
+        "private_memory_bytes": 64765952
+      },
+      {
+        "pid": 96948,
+        "process_name": "ollama app",
+        "started_at": "2026-09-05T21:43:03.6620118+08:00",
+        "working_set_bytes": 1144180736,
+        "private_memory_bytes": 1187618816
+      }
+    ]
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "memory_used_mib": 4266,
+    "memory_total_mib": 8188,
+    "utilization_percent": 5,
+    "temperature_c": 85
+  },
+  "artificial_pressure_processes": [],
+  "probe_errors": []
+}

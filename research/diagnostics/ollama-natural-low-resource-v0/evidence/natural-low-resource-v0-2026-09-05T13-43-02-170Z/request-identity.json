@@ -1,0 +1,18 @@
+{
+  "expected": {
+    "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+    "post_bytes": 4522,
+    "server_prompt_tokens": 1068
+  },
+  "actual": {
+    "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+    "post_bytes": 4522,
+    "message_count": 2,
+    "system_content_bytes": 1746,
+    "user_content_bytes": 2515,
+    "projection_json_bytes": 1235,
+    "approximate_prompt_tokens": 1065,
+    "token_estimate_method": "utf8-content-bytes-divided-by-4"
+  },
+  "match": true
+}

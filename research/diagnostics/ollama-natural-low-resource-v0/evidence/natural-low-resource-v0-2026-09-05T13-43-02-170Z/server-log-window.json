@@ -1,0 +1,61 @@
+{
+  "available": true,
+  "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+  "file_name": "server.log",
+  "start_offset": 0,
+  "end_offset": 43427,
+  "bytes": 43427,
+  "rotated_or_truncated": true,
+  "captured_at": "2026-09-05T13:45:31.858Z",
+  "slice_file": "server-log-window.txt",
+  "analysis": {
+    "api_chat_requests": 1,
+    "http_500": 1,
+    "gpu_discovery_watchdog_warnings": 1,
+    "free_memory_refresh_warnings": 1,
+    "insufficient_memory_warnings": 0,
+    "model_load_events": 1,
+    "model_unload_events": 0,
+    "cancel_events": 1,
+    "release_events": 1,
+    "runner_delay_events": 0,
+    "mmap_mentions": 2,
+    "cuda_offload_events": 1,
+    "prompt_cache_update_ms": [
+      0.01
+    ],
+    "runner_prompt_eval_ms": [],
+    "runner_eval_ms": [],
+    "full_prompt_tokens": [
+      1068
+    ]
+  },
+  "warning_events": [
+    {
+      "signature": "GPU_DISCOVERY_WATCHDOG",
+      "timestamp": "2026-09-05T21:43:31.017+08:00",
+      "line": "time=2026-09-05T21:43:31.017+08:00 level=WARN source=runner.go:584 msg=\"llama-server GPU discovery watchdog timed out\" OLLAMA_LIBRARY_PATH=\"[C:\\\\Users\\\\26965\\\\AppData\\\\Local\\\\Programs\\\\Ollama\\\\lib\\\\ollama C:\\\\Users\\\\26965\\\\AppData\\\\Local\\\\Programs\\\\Ollama\\\\lib\\\\ollama\\\\cuda_v12]\" extra_envs=map[CUDA_VISIBLE_DEVICES:0] error=\"context deadline exceeded\""
+    },
+    {
+      "signature": "FREE_MEMORY_REFRESH",
+      "timestamp": "2026-09-05T21:43:31.018+08:00",
+      "line": "time=2026-09-05T21:43:31.018+08:00 level=WARN source=runner.go:364 msg=\"unable to refresh free memory, using old values\""
+    },
+    {
+      "signature": "HTTP_500",
+      "timestamp": null,
+      "line": "[GIN] 2026/09/05 - 21:45:27 | 500 |         1m59s |       127.0.0.1 | POST     \"/api/chat\""
+    }
+  ],
+  "post_run_review": {
+    "continuity": "Previous log was truncated on normal application startup; this file captures the complete replacement log from byte 0 through byte 43427.",
+    "llama_server_start_ms": 25030,
+    "ollama_reported_system_free": "528.8 MiB",
+    "cuda_layers_offloaded": "32/34",
+    "prompt_processing_to_1064_tokens_ms": 41780,
+    "generation_tokens_observed": 100,
+    "generation_tokens_per_second": 2.09,
+    "http_500_after": "1m59s",
+    "cancel_and_release_observed": true
+  }
+}

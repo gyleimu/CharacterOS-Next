@@ -1,0 +1,16 @@
+[
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "465281e4-c362-4deb-af85-47bc297c4150",
+    "stage": "STARTED",
+    "elapsed_ms": 0,
+    "timestamp": "2026-09-05T13:43:27.787Z"
+  },
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "465281e4-c362-4deb-af85-47bc297c4150",
+    "stage": "ABORT_TRIGGERED",
+    "elapsed_ms": 120010,
+    "timestamp": "2026-09-05T13:45:27.797Z"
+  }
+]

@@ -1,0 +1,5 @@
+{
+  "samples": 236,
+  "minimum_available_bytes": 5795840,
+  "maximum_event_loop_gap_ms": 525
+}
