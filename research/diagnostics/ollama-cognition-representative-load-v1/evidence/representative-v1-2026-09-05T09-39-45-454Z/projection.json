@@ -1,0 +1,51 @@
+{
+  "schema_version": "cognitive-context-projection-v0",
+  "subject_id": "diagnostic-subject-v1",
+  "current_logical_time": 42,
+  "state_revision": 0,
+  "traits_dimensions": {
+    "conscientiousness": 0.62,
+    "curiosity": 0.58,
+    "deliberation": 0.71,
+    "adaptability": 0.55
+  },
+  "affect_channels": [
+    {
+      "channel": "attentional_engagement",
+      "strength": 0.56
+    },
+    {
+      "channel": "informational_uncertainty",
+      "strength": 0.31
+    }
+  ],
+  "mood_baseline": 0.08,
+  "regulation": {
+    "energy": 0.72,
+    "stress": 0.19,
+    "arousal": 0.37,
+    "fatigue": 0.16
+  },
+  "context": {
+    "scene": "The subject is reviewing a routine request about organizing a shared reference document.",
+    "task": "Distinguish confirmed requirements from missing context and form a concise interpretation.",
+    "focus_refs": [
+      "event:diagnostic-information-request-001"
+    ],
+    "active_entity_refs": [],
+    "environment_refs": [
+      "entity:diagnostic-reference-document-001"
+    ],
+    "current_observation_ref": "event:diagnostic-information-request-001"
+  },
+  "memory_working_refs": [],
+  "recent_retrieval_refs": [],
+  "belief_item_count": 0,
+  "belief_items": [],
+  "relationship_counterpart_count": 0,
+  "relationship_dimensions": [],
+  "interaction_familiarity": [],
+  "interaction_familiarity_cognition_influences": [],
+  "allowed_actions": [],
+  "projection_hash": "sha256:2d09e3457c753e1821cbe8595610bab1999b3851e7a59f7bae6ab18c676cc49e"
+}

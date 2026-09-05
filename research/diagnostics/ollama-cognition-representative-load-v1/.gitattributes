@@ -1,0 +1,3 @@
+# Preserve byte-exact external Ollama log slices; their native trailing spaces
+# are evidence rather than repository-authored formatting.
+evidence/**/server-log-window.txt whitespace=-trailing-space

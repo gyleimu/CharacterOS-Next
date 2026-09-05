@@ -1,0 +1,304 @@
+{
+  "schema_version": "ollama-cognition-representative-load-diagnostic-v1",
+  "diagnostic_id": "OLLAMA_COGNITION_REPRESENTATIVE_LOAD_DIAGNOSTIC_V1",
+  "call_count": 4,
+  "authority_boundary": "diagnostic observation only; never canonical state, behavior evidence, or scientific evidence",
+  "run_id": "representative-v1-2026-09-05T09-39-45-454Z",
+  "evidence_path": "D:\\Documents\\CharacterOS-Next\\research\\diagnostics\\ollama-cognition-representative-load-v1\\evidence\\representative-v1-2026-09-05T09-39-45-454Z",
+  "started_at": "2026-09-05T09:39:45.378Z",
+  "finished_at": "2026-09-05T09:40:29.475Z",
+  "starting_head": "982397aee7442af9d990c0e5b4bd454f277398db",
+  "origin_main_at_start": "982397aee7442af9d990c0e5b4bd454f277398db",
+  "server_intervention": "none",
+  "request_shape": {
+    "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+    "post_bytes": 4522,
+    "message_count": 2,
+    "system_content_bytes": 1746,
+    "user_content_bytes": 2515,
+    "projection_json_bytes": 1235,
+    "approximate_prompt_tokens": 1065,
+    "token_estimate_method": "utf8-content-bytes-divided-by-4"
+  },
+  "provider_lock": {
+    "expected": {
+      "base_url": "http://127.0.0.1:11434",
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_predict": 2048,
+      "timeout_ms": 120000,
+      "retries": 0,
+      "seed_field_sent": false,
+      "keep_alive_field_sent": false
+    },
+    "actual": {
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "version_match": true,
+    "digest_match": true,
+    "checked_at": "2026-09-05T09:39:44.968Z",
+    "errors": []
+  },
+  "model_call_counts": {
+    "cognition": 4,
+    "language": 0,
+    "evaluator": 0
+  },
+  "calls": [
+    {
+      "call": 1,
+      "initial_residency": "NOT_RESIDENT",
+      "pre_call_snapshot": "snapshot-prerun",
+      "post_call_snapshot": "snapshot-after-call-1",
+      "provider_outcome": "SUCCESS",
+      "provider_error": null,
+      "trace": {
+        "schema_version": "model-transport-trace-v0",
+        "trace_id": "e9acbae7-46b1-4c81-adc5-08b6c903a804",
+        "transport": "ollama-native-cognition-transport-v0",
+        "model": "qwen3.5:9b",
+        "endpoint": "http://127.0.0.1:11434/api/chat",
+        "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+        "request_bytes": 4522,
+        "request_started_at": "2026-09-05T09:39:45.466Z",
+        "request_finished_at": "2026-09-05T09:40:06.691Z",
+        "elapsed_ms": 21224,
+        "timeout_ms": 120000,
+        "timeout_deadline_at": "2026-09-05T09:41:45.466Z",
+        "abort_triggered": false,
+        "abort_triggered_elapsed_ms": null,
+        "fetch_response_elapsed_ms": 21224,
+        "body_read_elapsed_ms": 0,
+        "terminal_stage": "COMPLETED",
+        "response_status": 200,
+        "response_headers_received": true,
+        "outcome": "SUCCESS",
+        "failure_code": null,
+        "raw_error_name": null,
+        "raw_error_message": null,
+        "raw_error_cause_code": null,
+        "ollama": {
+          "total_duration": 21211102400,
+          "load_duration": 7042774400,
+          "prompt_eval_count": 1068,
+          "prompt_eval_duration": 937085000,
+          "eval_count": 271,
+          "eval_duration": 13214755000,
+          "done_reason": "stop"
+        }
+      }
+    },
+    {
+      "call": 2,
+      "initial_residency": "RESIDENT",
+      "pre_call_snapshot": "snapshot-after-call-1",
+      "post_call_snapshot": "snapshot-after-call-2",
+      "provider_outcome": "SUCCESS",
+      "provider_error": null,
+      "trace": {
+        "schema_version": "model-transport-trace-v0",
+        "trace_id": "faa0955e-2684-4ade-8797-3b3c81ab1086",
+        "transport": "ollama-native-cognition-transport-v0",
+        "model": "qwen3.5:9b",
+        "endpoint": "http://127.0.0.1:11434/api/chat",
+        "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+        "request_bytes": 4522,
+        "request_started_at": "2026-09-05T09:40:07.111Z",
+        "request_finished_at": "2026-09-05T09:40:13.903Z",
+        "elapsed_ms": 6792,
+        "timeout_ms": 120000,
+        "timeout_deadline_at": "2026-09-05T09:42:07.111Z",
+        "abort_triggered": false,
+        "abort_triggered_elapsed_ms": null,
+        "fetch_response_elapsed_ms": 6792,
+        "body_read_elapsed_ms": 0,
+        "terminal_stage": "COMPLETED",
+        "response_status": 200,
+        "response_headers_received": true,
+        "outcome": "SUCCESS",
+        "failure_code": null,
+        "raw_error_name": null,
+        "raw_error_message": null,
+        "raw_error_cause_code": null,
+        "ollama": {
+          "total_duration": 6778628000,
+          "load_duration": 1777700,
+          "prompt_eval_count": 1068,
+          "prompt_eval_duration": 61122000,
+          "eval_count": 271,
+          "eval_duration": 6705824000,
+          "done_reason": "stop"
+        }
+      }
+    },
+    {
+      "call": 3,
+      "initial_residency": "RESIDENT",
+      "pre_call_snapshot": "snapshot-after-call-2",
+      "post_call_snapshot": "snapshot-after-call-3",
+      "provider_outcome": "SUCCESS",
+      "provider_error": null,
+      "trace": {
+        "schema_version": "model-transport-trace-v0",
+        "trace_id": "9959366a-be2d-412f-8167-2efbe10361a1",
+        "transport": "ollama-native-cognition-transport-v0",
+        "model": "qwen3.5:9b",
+        "endpoint": "http://127.0.0.1:11434/api/chat",
+        "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+        "request_bytes": 4522,
+        "request_started_at": "2026-09-05T09:40:14.247Z",
+        "request_finished_at": "2026-09-05T09:40:21.509Z",
+        "elapsed_ms": 7261,
+        "timeout_ms": 120000,
+        "timeout_deadline_at": "2026-09-05T09:42:14.247Z",
+        "abort_triggered": false,
+        "abort_triggered_elapsed_ms": null,
+        "fetch_response_elapsed_ms": 7261,
+        "body_read_elapsed_ms": 0,
+        "terminal_stage": "COMPLETED",
+        "response_status": 200,
+        "response_headers_received": true,
+        "outcome": "SUCCESS",
+        "failure_code": null,
+        "raw_error_name": null,
+        "raw_error_message": null,
+        "raw_error_cause_code": null,
+        "ollama": {
+          "total_duration": 7254665400,
+          "load_duration": 2063600,
+          "prompt_eval_count": 1068,
+          "prompt_eval_duration": 58157000,
+          "eval_count": 271,
+          "eval_duration": 7185768000,
+          "done_reason": "stop"
+        }
+      }
+    },
+    {
+      "call": 4,
+      "initial_residency": "RESIDENT",
+      "pre_call_snapshot": "snapshot-after-call-3",
+      "post_call_snapshot": "snapshot-after-call-4",
+      "provider_outcome": "SUCCESS",
+      "provider_error": null,
+      "trace": {
+        "schema_version": "model-transport-trace-v0",
+        "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+        "transport": "ollama-native-cognition-transport-v0",
+        "model": "qwen3.5:9b",
+        "endpoint": "http://127.0.0.1:11434/api/chat",
+        "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+        "request_bytes": 4522,
+        "request_started_at": "2026-09-05T09:40:21.867Z",
+        "request_finished_at": "2026-09-05T09:40:29.185Z",
+        "elapsed_ms": 7318,
+        "timeout_ms": 120000,
+        "timeout_deadline_at": "2026-09-05T09:42:21.867Z",
+        "abort_triggered": false,
+        "abort_triggered_elapsed_ms": null,
+        "fetch_response_elapsed_ms": 7318,
+        "body_read_elapsed_ms": 0,
+        "terminal_stage": "COMPLETED",
+        "response_status": 200,
+        "response_headers_received": true,
+        "outcome": "SUCCESS",
+        "failure_code": null,
+        "raw_error_name": null,
+        "raw_error_message": null,
+        "raw_error_cause_code": null,
+        "ollama": {
+          "total_duration": 7302074000,
+          "load_duration": 1045700,
+          "prompt_eval_count": 1068,
+          "prompt_eval_duration": 62316000,
+          "eval_count": 271,
+          "eval_duration": 7226471000,
+          "done_reason": "stop"
+        }
+      }
+    }
+  ],
+  "server_log": {
+    "available": true,
+    "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+    "file_name": "server.log",
+    "start_offset": 50994,
+    "end_offset": 95787,
+    "bytes": 44793,
+    "rotated_or_truncated": false,
+    "captured_at": "2026-09-05T09:40:29.554Z",
+    "analysis": {
+      "api_chat_requests": 4,
+      "gpu_discovery_watchdog_warnings": 0,
+      "free_memory_refresh_warnings": 0,
+      "model_load_events": 1,
+      "model_unload_events": 0,
+      "cancel_events": 0,
+      "release_events": 4,
+      "prompt_cache_update_ms": [
+        0.01
+      ],
+      "full_prompt_tokens": [
+        1068,
+        1068,
+        1068,
+        1068
+      ],
+      "unique_full_prompt_tokens": [
+        1068
+      ]
+    }
+  },
+  "result_category": "REPRESENTATIVE_DIAGNOSTIC_NORMAL",
+  "result_thresholds": {
+    "slow_elapsed_ms": 50000
+  },
+  "root_cause_category": "ENVIRONMENTAL_RESOURCE_CONTENTION_SUSPECTED",
+  "root_cause_confidence": "MEDIUM",
+  "next_slice": "READY_FOR_ENVIRONMENT_RESOURCE_DIAGNOSTIC",
+  "cross_diagnostic_reference": {
+    "r3": {
+      "post_bytes": [
+        4234,
+        4280
+      ],
+      "prompt_tokens": [
+        980,
+        997
+      ],
+      "initial_timeouts": 9
+    },
+    "v0_run_1": {
+      "post_bytes": 229,
+      "cold_elapsed_ms": 23663,
+      "warm_elapsed_ms": [
+        121,
+        120,
+        115
+      ]
+    },
+    "v0_run_2": {
+      "post_bytes": 229,
+      "cold_elapsed_ms": 8152,
+      "warm_elapsed_ms": [
+        172,
+        110,
+        112
+      ]
+    }
+  },
+  "integrity": {
+    "exactly_four_traces": true,
+    "exactly_one_request_hash": true,
+    "request_hash_matches_offline": true,
+    "production_paths_changed_before_run": false,
+    "retries": 0,
+    "warm_up_calls": 0
+  }
+}

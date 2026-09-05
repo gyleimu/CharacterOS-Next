@@ -1,0 +1,58 @@
+{
+  "schema_version": "ollama-cognition-representative-load-snapshot-v1",
+  "name": "snapshot-after-call-4",
+  "captured_at": "2026-09-05T09:40:29.475Z",
+  "health": {
+    "schema_version": "ollama-diagnostic-health-snapshot-v0",
+    "captured_at": "2026-09-05T09:40:29.204Z",
+    "base_url": "http://127.0.0.1:11434",
+    "server": {
+      "reachable": true,
+      "version": "0.33.2",
+      "loaded_models": [
+        {
+          "name": "qwen3.5:9b",
+          "model": "qwen3.5:9b",
+          "size_bytes": 5490081790,
+          "size_vram_bytes": 5490081790
+        }
+      ]
+    },
+    "process": {
+      "platform": "win32",
+      "node_version": "v24.19.0",
+      "process_rss_bytes": 79630336,
+      "heap_used_bytes": 17884664,
+      "heap_total_bytes": 21213184,
+      "uptime_seconds": 44.5833647
+    },
+    "probe_errors": []
+  },
+  "system_memory": {
+    "total_bytes": 16341766144,
+    "free_bytes": 2520887296
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "memory_used_mib": 7089,
+    "memory_total_mib": 8188,
+    "utilization_percent": 5,
+    "temperature_c": 83
+  },
+  "ollama_processes": [
+    {
+      "pid": 93560,
+      "process_name": "ollama",
+      "started_at": "2026-09-05T17:21:06.7318741+08:00",
+      "working_set_bytes": 48820224
+    },
+    {
+      "pid": 88160,
+      "process_name": "ollama app",
+      "started_at": "2026-09-05T17:21:05.6781140+08:00",
+      "working_set_bytes": 47570944
+    }
+  ],
+  "probe_errors": []
+}

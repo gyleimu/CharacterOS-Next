@@ -1,0 +1,37 @@
+[
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+    "stage": "STARTED",
+    "elapsed_ms": 0,
+    "timestamp": "2026-09-05T09:40:21.867Z"
+  },
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+    "stage": "RESPONSE_HEADERS_RECEIVED",
+    "elapsed_ms": 7318,
+    "timestamp": "2026-09-05T09:40:29.185Z"
+  },
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+    "stage": "BODY_READ_STARTED",
+    "elapsed_ms": 7318,
+    "timestamp": "2026-09-05T09:40:29.185Z"
+  },
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+    "stage": "BODY_READ_COMPLETED",
+    "elapsed_ms": 7318,
+    "timestamp": "2026-09-05T09:40:29.185Z"
+  },
+  {
+    "schema_version": "model-transport-trace-event-v0",
+    "trace_id": "bb020acd-26de-415f-b676-5c537a62407b",
+    "stage": "MODEL_RESPONSE_RECEIVED",
+    "elapsed_ms": 7318,
+    "timestamp": "2026-09-05T09:40:29.185Z"
+  }
+]

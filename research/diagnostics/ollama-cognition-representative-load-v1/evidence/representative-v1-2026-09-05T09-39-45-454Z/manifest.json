@@ -1,0 +1,12 @@
+{
+  "schema_version": "ollama-cognition-representative-load-manifest-v1",
+  "run_id": "representative-v1-2026-09-05T09-39-45-454Z",
+  "starting_head": "982397aee7442af9d990c0e5b4bd454f277398db",
+  "origin_main_at_start": "982397aee7442af9d990c0e5b4bd454f277398db",
+  "fixture_file": "research/diagnostics/ollama-cognition-representative-load-v1/fixture.ts",
+  "fixture_sha256": "sha256:480e1c1706ad90153cb56a83d07a6954b439d896b9607483363a22fe62da0bd2",
+  "runner_file": "research/diagnostics/ollama-cognition-representative-load-v1/runner.ts",
+  "runner_sha256": "sha256:cfe6943c4ac443799309c871ce35bbe2ed48f455b491deefafcbc67be650558d",
+  "production_diff_before_run": "",
+  "diagnostic_only": true
+}
