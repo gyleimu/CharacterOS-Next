@@ -1,0 +1,36 @@
+{
+  "schema_version": "ollama-cognition-transport-diagnostic-snapshot-v0",
+  "name": "snapshot-prerun",
+  "captured_at": "2026-09-05T09:23:32.614Z",
+  "health": {
+    "schema_version": "ollama-diagnostic-health-snapshot-v0",
+    "captured_at": "2026-09-05T09:23:32.537Z",
+    "base_url": "http://127.0.0.1:11434",
+    "server": {
+      "reachable": true,
+      "version": "0.33.2",
+      "loaded_models": []
+    },
+    "process": {
+      "platform": "win32",
+      "node_version": "v24.19.0",
+      "process_rss_bytes": 89452544,
+      "heap_used_bytes": 17060280,
+      "heap_total_bytes": 34963456,
+      "uptime_seconds": 0.36992
+    },
+    "probe_errors": []
+  },
+  "system_memory": {
+    "total_bytes": 16341766144,
+    "free_bytes": 3771768832
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "memory_used_mib": "1139",
+    "memory_total_mib": "8188",
+    "utilization_percent": "34",
+    "temperature_c": "71"
+  }
+}
