@@ -18,6 +18,7 @@ export {
   CHARACTER_LANGUAGE_BEHAVIOR_SCHEMA_VERSION_V0,
   CHARACTER_LANGUAGE_BEHAVIOR_ID_PROJECTION_V0,
   buildCharacterLanguageBehaviorV0,
+  validateCharacterLanguageBehaviorV0,
   type CharacterLanguageBehaviorV0,
   type CharacterLanguageBehaviorConstructionInputV0
 } from "./character-language-behavior.js";

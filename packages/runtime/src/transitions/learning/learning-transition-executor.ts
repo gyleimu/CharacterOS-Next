@@ -50,10 +50,12 @@
  */
 
 import type {
+  AtomicCommitBundleAnyVersion,
   CanonicalRefV0,
   CanonicalTransitionProposalV1,
   CommitReservedOutcome,
-  DomainDeltaV0
+  DomainDeltaV0,
+  ValidationFailure
 } from "@characteros-next/subject-core";
 import { proposalFingerprint } from "@characteros-next/subject-core";
 import type { MemoryPrepareIntentV1 } from "@characteros-next/memory";
@@ -66,6 +68,17 @@ import {
   validateTrustedLearningExperience,
   type TrustedLearningExperienceV0
 } from "./learning-source-authority.js";
+import type { BehaviorOutcomeFeedbackCandidateV0 } from "./behavior-outcome-feedback-candidate.js";
+import {
+  validateTrustedBehaviorOutcomeFeedback,
+  type BehaviorOutcomeFeedbackReadAuthority,
+  type TrustedBehaviorOutcomeFeedbackV0
+} from "./behavior-outcome-feedback-source-authority.js";
+import { FeedbackExperienceEncoderV0 } from "./behavior-outcome-feedback-encoder.js";
+import {
+  deriveBehaviorOutcomeFeedbackIntentId,
+  deriveBehaviorOutcomeFeedbackTransitionId
+} from "../conversation/conversation-feedback-identity.js";
 import { ExperienceEncoderV0 } from "./experience-encoder-v0.js";
 import {
   deriveLearningIntentId,
@@ -97,6 +110,44 @@ export interface LearningRebaseRequiredResultV1 {
 export type LearningExecutionResult =
   | CommitReservedOutcome
   | LearningRebaseRequiredResultV1;
+
+// ============================================================================
+// BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — behavior→experience→memory feedback path
+// ============================================================================
+
+/** Untrusted feedback runtime input (the candidate is validated durably). */
+export interface BehaviorOutcomeFeedbackInputV0 {
+  readonly candidate: BehaviorOutcomeFeedbackCandidateV0;
+}
+
+/** The three record refs minted by one feedback lineage (§13 cardinality). */
+export interface BehaviorOutcomeFeedbackRefsV0 {
+  readonly episode_ref: CanonicalRefV0;
+  readonly experience_ref: CanonicalRefV0;
+  readonly event_ref: CanonicalRefV0;
+}
+
+export type BehaviorOutcomeFeedbackExecutionResult =
+  | {
+      readonly kind: "COMMITTED";
+      readonly bundle: AtomicCommitBundleAnyVersion;
+      readonly refs: BehaviorOutcomeFeedbackRefsV0;
+    }
+  | {
+      /** §18 replay: the linked feedback is already canonically complete (+0). */
+      readonly kind: "ALREADY_COMPLETED";
+      readonly experience_ref: CanonicalRefV0;
+      readonly event_ref: CanonicalRefV0;
+      readonly repository_revision: string;
+    }
+  | { readonly kind: "NO_OP" }
+  | { readonly kind: "REJECTED"; readonly failure: ValidationFailure }
+  | LearningRebaseRequiredResultV1;
+
+/** Internal single feedback-attempt outcome: terminal result, or the stale handoff. */
+type FeedbackAttemptOutcome =
+  | { readonly kind: "DONE"; readonly result: BehaviorOutcomeFeedbackExecutionResult }
+  | { readonly kind: "STALE"; readonly preparedRevision: string };
 
 /** Internal single-attempt outcome: terminal result, or the stale handoff. */
 type AttemptOutcome =
@@ -459,6 +510,318 @@ export class LearningTransitionExecutor {
       return { kind: "STALE", preparedRevision: prepared.repository_revision as string };
     }
     return { kind: "DONE", result: outcome };
+  }
+
+  /**
+   * BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — the behavior→experience→memory feedback
+   * path over the SAME Learning authority: untrusted candidate → durable
+   * feedback source validation (ingress ledger + delivery ledger + committed
+   * O2) → §18 replay check → THREE encoded records (event, experience,
+   * episode) → intent-driven repository prepare → ONE memory-content delta →
+   * ONE canonical Learning commit → markAdopted.
+   *
+   * §17: one linked feedback event ⇒ exactly one Experience, one episode, one
+   * Learning commit. §18: same source event replay reconciles (+0) via the
+   * revision-membership check or the ALREADY_COMMITTED journal replay; changed
+   * factual content fails closed. A13: exactly one bounded stale rebuild.
+   */
+  async executeBehaviorOutcomeFeedback(
+    ctx: RuntimeContext,
+    input: BehaviorOutcomeFeedbackInputV0
+  ): Promise<BehaviorOutcomeFeedbackExecutionResult> {
+    const sourceAuthority = this.deps.learningSourceAuthority;
+    const adoptionAuthority = this.deps.learningAdoptionAuthority;
+    const deliveryLedger = this.deps.conversationDeliveryLedger;
+    const ingressLedger = this.deps.conversationIngressLedger;
+    if (
+      sourceAuthority === null ||
+      adoptionAuthority === null ||
+      deliveryLedger === null ||
+      ingressLedger === null
+    ) {
+      throw stageFailure(STAGE, "SERVICE_UNAVAILABLE", "FAIL-PRECOMMIT-001", "behavior outcome feedback authorities not wired");
+    }
+    const readAuthority: BehaviorOutcomeFeedbackReadAuthority = {
+      deliveryLedger,
+      ingressLedger,
+      committedTransitions: sourceAuthority
+    };
+
+    // ---- initial attempt: rebuild_ordinal = 0 -------------------------------------
+    const first = await this.runFeedbackAttempt(ctx, input.candidate, readAuthority, 0, null);
+    if (first.kind === "DONE") return first.result;
+
+    // ==== A13 §12 — bounded single rebuild (mirrors the Learning workflow) ========
+    const reloaded = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);
+    if (reloaded === null) {
+      return rebaseRequired("canonical subject state unavailable after stale rejection");
+    }
+    const rebaseCtx: RuntimeContext = {
+      subject_id: ctx.subject_id,
+      current_logical_time: reloaded.runtime_metadata.logical_time,
+      state_revision: reloaded.runtime_metadata.state_revision
+    } as unknown as RuntimeContext;
+    const rechecked = await validateTrustedBehaviorOutcomeFeedback(readAuthority, rebaseCtx, input.candidate);
+    if (!rechecked.ok) {
+      return rebaseRequired(`feedback revalidation failed after stale: ${rechecked.error.reason}`);
+    }
+    const reusePrepared = await this.attachablePreparedRevision(
+      first.preparedRevision,
+      reloaded.memory_state.repository_revision as string,
+      adoptionAuthority
+    );
+    const rebuilt = await this.runFeedbackAttempt(rebaseCtx, input.candidate, readAuthority, 1, reusePrepared);
+    if (rebuilt.kind === "DONE") return rebuilt.result;
+    return rebaseRequired("second stale rejection after the single permitted rebuild");
+  }
+
+  /** ONE deterministic feedback attempt at `rebuild_ordinal` (mirrors runAttempt). */
+  private async runFeedbackAttempt(
+    ctx: RuntimeContext,
+    candidate: BehaviorOutcomeFeedbackCandidateV0,
+    readAuthority: BehaviorOutcomeFeedbackReadAuthority,
+    rebuildOrdinal: number,
+    reusePreparedRevision: string | null
+  ): Promise<FeedbackAttemptOutcome> {
+    const adoptionAuthority = this.deps.learningAdoptionAuthority;
+    if (adoptionAuthority === null) {
+      throw stageFailure(STAGE, "SERVICE_UNAVAILABLE", "FAIL-PRECOMMIT-001", "learning adoption authority not wired");
+    }
+
+    // ---- one authoritative canonical basis ---------------------------------------
+    const snapshot = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);
+    if (snapshot === null) {
+      throw stageFailure(STAGE, "UNKNOWN_SUBJECT", "SS-AUTH-001", `subject ${ctx.subject_id} not found`);
+    }
+    const anchored = anchorContext(ctx, snapshot, STAGE);
+
+    // ---- durable feedback source validation (ledgers + committed O2) -------------
+    const trustedChecked = await validateTrustedBehaviorOutcomeFeedback(readAuthority, anchored, candidate);
+    if (!trustedChecked.ok) {
+      throw new TransitionStageFailure(
+        STAGE,
+        trustedChecked.error.error_code,
+        trustedChecked.error.reason,
+        trustedChecked.error.detail
+      );
+    }
+    const trusted: TrustedBehaviorOutcomeFeedbackV0 = trustedChecked.value;
+
+    // ---- §18 replay: already canonically complete ⇒ reconcile (+0) ---------------
+    const repository = this.deps.memory.repository;
+    const currentRevision = snapshot.memory_state.repository_revision as string;
+    const alreadyBound = await repository.validateRefsBelong(currentRevision as never, [
+      trusted.experience_ref,
+      trusted.ingress_event.event_ref
+    ]);
+    if (alreadyBound) {
+      return {
+        kind: "DONE",
+        result: {
+          kind: "ALREADY_COMPLETED",
+          experience_ref: trusted.experience_ref,
+          event_ref: trusted.ingress_event.event_ref,
+          repository_revision: currentRevision
+        }
+      };
+    }
+
+    const basis = {
+      expected_state_revision: anchored.state_revision as number,
+      rebuild_ordinal: rebuildOrdinal
+    };
+
+    // ---- repository payload + intent-driven prepare -------------------------------
+    let prepared: { repository_revision: string };
+    let refs: BehaviorOutcomeFeedbackRefsV0;
+    if (reusePreparedRevision !== null) {
+      const manifest = await repository.readManifest(reusePreparedRevision as never);
+      if (manifest === null) {
+        throw stageFailure(STAGE, "SERVICE_UNAVAILABLE", "FAIL-PREPARE-001", "attachable prepared revision vanished");
+      }
+      prepared = { repository_revision: reusePreparedRevision };
+      const episodeEntry = manifest.record_hashes.find((r) => r.ref.startsWith("episode:"));
+      const experienceEntry = manifest.record_hashes.find((r) => r.ref.startsWith("experience:"));
+      const eventEntry = manifest.record_hashes.find((r) => r.ref.startsWith("event:"));
+      if (episodeEntry === undefined || experienceEntry === undefined || eventEntry === undefined) {
+        throw stageFailure(STAGE, "SERVICE_UNAVAILABLE", "FAIL-PREPARE-001", "attachable prepared revision is not a feedback revision");
+      }
+      refs = {
+        episode_ref: episodeEntry.ref as CanonicalRefV0,
+        experience_ref: experienceEntry.ref as CanonicalRefV0,
+        event_ref: eventEntry.ref as CanonicalRefV0
+      };
+    } else {
+      const intentId = await deriveBehaviorOutcomeFeedbackIntentId({
+        subject_id: trusted.subject_id,
+        source_event_id: trusted.source_event_id,
+        expected_state_revision: basis.expected_state_revision,
+        rebuild_ordinal: basis.rebuild_ordinal
+      });
+      let records;
+      try {
+        records = await new FeedbackExperienceEncoderV0().encode(trusted, {
+          current_logical_time: anchored.current_logical_time,
+          expected_state_revision: basis.expected_state_revision,
+          rebuild_ordinal: basis.rebuild_ordinal,
+          intent_id: intentId
+        });
+      } catch (error) {
+        throw new TransitionStageFailure(
+          STAGE,
+          "SERVICE_UNAVAILABLE",
+          "FAIL-SERVICE-001",
+          "feedback experience encoder failed (fail closed)",
+          { cause: error }
+        );
+      }
+      refs = {
+        episode_ref: records.episode.episode_ref,
+        experience_ref: records.experience.experience_ref,
+        event_ref: records.event.event_ref
+      };
+      try {
+        const stored = [
+          { ref: records.event.event_ref, payload_hash: await repository.storePayload(records.event.event_ref, records.event) },
+          { ref: records.experience.experience_ref, payload_hash: await repository.storePayload(records.experience.experience_ref, records.experience) },
+          { ref: records.episode.episode_ref, payload_hash: await repository.storePayload(records.episode.episode_ref, records.episode) }
+        ];
+        stored.sort((a, b) => (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0));
+        const intent: MemoryPrepareIntentV1 = {
+          intent_id: intentId as never,
+          parent_revision: snapshot.memory_state.repository_revision,
+          records: stored
+        };
+        prepared = await repository.prepareRevisionForIntent(intent);
+      } catch (error) {
+        throw new TransitionStageFailure(
+          STAGE,
+          "SERVICE_UNAVAILABLE",
+          "FAIL-PREPARE-001",
+          "feedback repository prepare failed (fail closed)",
+          { cause: error }
+        );
+      }
+    }
+    if ((prepared.repository_revision as string) === currentRevision) {
+      throw stageFailure(
+        STAGE,
+        "INVALID_MEMORY_REVISION",
+        "MEM-REV-001",
+        "prepared candidate revision must differ from the currently bound revision"
+      );
+    }
+
+    // ---- repository bindings: sorted distinct union of current + next -------------
+    const bindingRevisions = [...new Set([currentRevision, prepared.repository_revision as string])].sort();
+    const repositoryBindings = [];
+    for (const revision of bindingRevisions) {
+      const manifest = await repository.readManifest(revision as never);
+      if (manifest === null) {
+        throw stageFailure(
+          STAGE,
+          "SERVICE_UNAVAILABLE",
+          "FAIL-PREPARE-001",
+          `repository cannot prove a manifest for revision ${revision} (genesis R0 is a host duty)`
+        );
+      }
+      repositoryBindings.push({
+        repository_revision: revision as never,
+        repository_revision_hash: await computeRepositoryRevisionHash(manifest)
+      });
+    }
+
+    // ---- Learning-owned memory-content delta (exactly the binding change) ---------
+    const memoryDelta: DomainDeltaV0 = {
+      producer: "memory",
+      domain: "memory-content",
+      expected_repository_revision: snapshot.memory_state.repository_revision as never,
+      operations: [
+        { path: "/memory_state/repository_revision", value: prepared.repository_revision as never }
+      ],
+      provenance_refs: []
+    } as unknown as DomainDeltaV0;
+
+    // ---- canonical proposal + reservation + single atomic adoption ----------------
+    const feedbackTransitionId = await deriveBehaviorOutcomeFeedbackTransitionId({
+      subject_id: trusted.subject_id,
+      source_event_id: trusted.source_event_id,
+      expected_state_revision: basis.expected_state_revision,
+      rebuild_ordinal: basis.rebuild_ordinal
+    });
+    const proposal = buildLearningProposal({
+      learningTransitionId: feedbackTransitionId,
+      subjectId: anchored.subject_id,
+      stateRevision: anchored.state_revision as number,
+      occurrenceLogicalTime: anchored.current_logical_time as number,
+      observationRef: trusted.observation_ref,
+      memoryDelta
+    });
+    const payloadFingerprint = await proposalFingerprint(proposal);
+
+    const reserved = await this.deps.subjectCore.reserveAndRoute(proposal);
+    switch (reserved.kind) {
+      case "CONTINUE":
+        break;
+      case "ALREADY_COMMITTED": {
+        const bundle = reserved.bundle;
+        const boundRevision = bundle.next_snapshot.memory_state.repository_revision as string;
+        const bundleProvesLearningBinding =
+          bundle.subject_id === (anchored.subject_id as never) &&
+          bundle.transition_type === "Learning" &&
+          bundle.repository_revision_bindings.some(
+            (b) => (b.repository_revision as string) === boundRevision
+          );
+        if (bundleProvesLearningBinding && !adoptionAuthority.isAdopted(boundRevision as never)) {
+          adoptionAuthority.markAdopted(boundRevision as never);
+        }
+        return { kind: "DONE", result: { kind: "COMMITTED", bundle, refs } };
+      }
+      case "TERMINAL_NO_OP":
+        return { kind: "DONE", result: { kind: "NO_OP" } };
+      case "REUSE_CONFLICT":
+        return {
+          kind: "DONE",
+          result: {
+            kind: "REJECTED",
+            failure: {
+              error_code: "TRANSITION_ID_REUSE",
+              reason: "IDEM-REUSE-001",
+              detail: "feedback transition id reuse with changed payload"
+            }
+          }
+        };
+    }
+
+    const outcome = await this.deps.subjectCore.commitReserved({
+      proposal,
+      continuation: reserved.continuation,
+      producerAuthorization: this.deps.producerAuthorizationIssuer.issue([
+        { producer: "memory", domain: "memory-content" }
+      ]),
+      preparedBinding: {
+        prepared_result_ref: `workflow:w-learn-${feedbackTransitionId.replace("t-learn-", "")}` as never,
+        transition_id: proposal.transition_id,
+        subject_id: proposal.subject_id,
+        transition_type: proposal.transition_type,
+        payload_fingerprint: payloadFingerprint
+      },
+      repository_bindings: repositoryBindings as never
+    });
+    if (outcome.kind === "COMMITTED") {
+      adoptionAuthority.markAdopted(prepared.repository_revision as never);
+      return { kind: "DONE", result: { kind: "COMMITTED", bundle: outcome.bundle, refs } };
+    }
+    if (
+      outcome.kind === "REJECTED" &&
+      outcome.failure.error_code === "STALE_STATE_REVISION"
+    ) {
+      return { kind: "STALE", preparedRevision: prepared.repository_revision as string };
+    }
+    if (outcome.kind === "REJECTED") {
+      return { kind: "DONE", result: { kind: "REJECTED", failure: outcome.failure } };
+    }
+    return { kind: "DONE", result: { kind: "NO_OP" } };
   }
 }
 

@@ -24,6 +24,8 @@ import type {
 } from "../ports/index.js";
 import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
 import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
+import type { ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
+import type { ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 import type { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
 import type { EpisodeContentReaderV0 } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
@@ -88,4 +90,18 @@ export interface RuntimeDependencyContainer {
    * closed when null.
    */
   readonly conversationCognitionTransport: ModelTransportV0 | null;
+  /**
+   * BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — composition-owned durable delivery
+   * ledger (§5/§6). Constructed by the composition root itself, never by
+   * callers: feedback execution reads stored delivery truth only. null =
+   * not wired; the feedback path fails closed.
+   */
+  readonly conversationDeliveryLedger: ConversationDeliveryLedgerAuthority | null;
+  /**
+   * BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — composition-owned durable ingress
+   * ledger (§7/§18). Constructed by the composition root itself: the exact
+   * factual reply text and replay/conflict law live here. null = not wired;
+   * the feedback path fails closed.
+   */
+  readonly conversationIngressLedger: ConversationIngressLedgerAuthority | null;
 }

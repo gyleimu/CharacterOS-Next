@@ -945,3 +945,70 @@ export {
 } from "./transitions/conversation/conversation-text-response-executor-v1.js";
 export { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1, CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 } from "./providers/behavior/conversation-cognition-provider.js";
 export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";
+
+// --- BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — behavior→experience→memory feedback ------------
+
+export {
+  validateBehaviorOutcomeFeedbackCandidate,
+  type BehaviorOutcomeFeedbackCandidateV0
+} from "./transitions/learning/behavior-outcome-feedback-candidate.js";
+export {
+  type BehaviorOutcomeFeedbackReadAuthority,
+  validateTrustedBehaviorOutcomeFeedback,
+  isTrustedBehaviorOutcomeFeedback,
+  type TrustedBehaviorOutcomeFeedbackV0
+} from "./transitions/learning/behavior-outcome-feedback-source-authority.js";
+export {
+  FeedbackExperienceEncoderV0,
+  CONVERSATION_FEEDBACK_SCENE_V0,
+  type FeedbackEncodingContextV0,
+  type FeedbackEncodedRecordsV0
+} from "./transitions/learning/behavior-outcome-feedback-encoder.js";
+export {
+  type BehaviorOutcomeFeedbackInputV0,
+  type BehaviorOutcomeFeedbackRefsV0,
+  type BehaviorOutcomeFeedbackExecutionResult
+} from "./transitions/learning/learning-transition-executor.js";
+export {
+  BEHAVIOR_DELIVERY_RECORD_SCHEMA_VERSION,
+  BEHAVIOR_DELIVERY_STATUS_DELIVERED,
+  BEHAVIOR_DELIVERY_STATUS_FAILED,
+  InMemoryConversationDeliveryLedger,
+  createConversationDeliveryLedgerAuthorityV0,
+  type ConversationDeliveryInputV0,
+  type ConversationDeliveryLedgerAuthority,
+  type BehaviorDeliveryRecordV0,
+  type BehaviorDeliveryStatusV0,
+  type DeliveryLedgerFailureCode
+} from "./transitions/conversation/behavior-delivery-ledger.js";
+export {
+  CONVERSATION_INGRESS_INPUT_SCHEMA_VERSION,
+  InMemoryConversationIngressLedger,
+  createConversationIngressLedgerAuthorityV0,
+  type ConversationIngressInputV0,
+  type ConversationIngressLedgerAuthority,
+  type ConversationIngressOutcome
+} from "./transitions/conversation/conversation-ingress-ledger.js";
+export {
+  createExperienceReaderV0,
+  EXPERIENCE_READER_SCHEMA_VERSION_V0,
+  type ExperienceReaderV0,
+  type ExperienceReadResultV0,
+  type ExperienceReadFailureCodeV0
+} from "./transitions/conversation/experience-reader.js";
+export {
+  deriveBehaviorPayloadHash,
+  deriveBehaviorDeliveryId,
+  deriveConversationIngressEventRef,
+  deriveConversationReplyOutcomeRef,
+  deriveBehaviorOutcomeExperienceRef,
+  deriveBehaviorOutcomeFeedbackTransitionId,
+  deriveBehaviorOutcomeFeedbackIntentId,
+  BEHAVIOR_PAYLOAD_HASH_PROJECTION,
+  BEHAVIOR_DELIVERY_ID_PROJECTION,
+  CONVERSATION_INGRESS_EVENT_REF_PROJECTION,
+  CONVERSATION_REPLY_OUTCOME_REF_PROJECTION,
+  BEHAVIOR_OUTCOME_EXPERIENCE_REF_PROJECTION,
+  BEHAVIOR_OUTCOME_FEEDBACK_TRANSITION_ID_PROJECTION,
+  BEHAVIOR_OUTCOME_FEEDBACK_PREPARE_INTENT_PROJECTION
+} from "./transitions/conversation/conversation-feedback-identity.js";

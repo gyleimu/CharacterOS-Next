@@ -39,6 +39,8 @@ import type {
 } from "../ports/index.js";
 import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
 import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
+import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/behavior-delivery-ledger.js";
+import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
 
 export interface RuntimeCompositionOptions {
   /** Required: canonical commit boundary + authoritative snapshot reads. */
@@ -137,7 +139,12 @@ export class RuntimeCompositionRoot {
           ? new LanguageRealizationProviderV0(options.languageTransport)
           : null,
       episodeContentReader: options.episodeContentReader ?? null,
-      conversationCognitionTransport: options.conversationCognitionTransport ?? null
+      conversationCognitionTransport: options.conversationCognitionTransport ?? null,
+      // BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — composition-owned durable ledgers:
+      // constructed HERE (never accepted from options), so feedback execution
+      // reads authoritative stored truth instead of caller-supplied receipts.
+      conversationDeliveryLedger: new InMemoryConversationDeliveryLedger(),
+      conversationIngressLedger: new InMemoryConversationIngressLedger()
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

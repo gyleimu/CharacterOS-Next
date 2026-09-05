@@ -115,3 +115,19 @@ export {
   type EpisodeContentReadFailureCodeV0,
   type EpisodeContentV0
 } from "./records/episode-content-reader.js";
+
+// --- BEHAVIOR_EXPERIENCE_FEEDBACK_V0 record payloads ---------------------------------
+
+export {
+  CONVERSATION_INGRESS_EVENT_RECORD_SCHEMA_VERSION,
+  validateConversationIngressEventRecord,
+  type ConversationIngressEventRecordV0
+} from "./records/conversation-ingress-event-record.js";
+export {
+  EXPERIENCE_RECORD_SCHEMA_VERSION,
+  EXPERIENCE_KIND_BEHAVIOR_OUTCOME,
+  validateExperienceRecord,
+  type ConversationReplyOutcomeV0,
+  type ExperienceCognitionLineageV0,
+  type ExperienceRecordV0
+} from "./records/experience-record.js";
