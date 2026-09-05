@@ -1,0 +1,76 @@
+{
+  "schema_version": "ollama-environment-resource-snapshot-v0",
+  "name": "LEVEL_0-after-0B",
+  "level": 0,
+  "call_id": "0B",
+  "captured_at": "2026-09-05T09:58:09.376Z",
+  "health": {
+    "schema_version": "ollama-diagnostic-health-snapshot-v0",
+    "captured_at": "2026-09-05T09:58:08.332Z",
+    "base_url": "http://127.0.0.1:11434",
+    "server": {
+      "reachable": true,
+      "version": "0.33.2",
+      "loaded_models": [
+        {
+          "name": "qwen3.5:9b",
+          "model": "qwen3.5:9b",
+          "size_bytes": 5490081790,
+          "size_vram_bytes": 5490081790
+        }
+      ]
+    },
+    "process": {
+      "platform": "win32",
+      "node_version": "v24.19.0",
+      "process_rss_bytes": 78635008,
+      "heap_used_bytes": 18230856,
+      "heap_total_bytes": 19640320,
+      "uptime_seconds": 30.9448392
+    },
+    "probe_errors": []
+  },
+  "memory": {
+    "node_available_bytes": 3050225664,
+    "total_physical_bytes": 16341766144,
+    "windows_free_physical_bytes": 3017703424,
+    "windows_total_virtual_bytes": 41037828096,
+    "windows_free_virtual_bytes": 7261732864,
+    "pagefile_allocated_mib": 23552,
+    "pagefile_current_usage_mib": 1094,
+    "pagefile_peak_usage_mib": 5683,
+    "pages_input_per_sec": 0,
+    "page_reads_per_sec": 0,
+    "pages_per_sec": 0,
+    "severe_paging_threshold_observed": false
+  },
+  "gpu": {
+    "available": true,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "memory_used_mib": 7064,
+    "memory_total_mib": 8188,
+    "utilization_percent": 7,
+    "temperature_c": 80
+  },
+  "ollama_processes": [
+    {
+      "pid": 93560,
+      "process_name": "ollama",
+      "started_at": "2026-09-05T17:21:06.7318741+08:00",
+      "working_set_bytes": 64053248
+    },
+    {
+      "pid": 88160,
+      "process_name": "ollama app",
+      "started_at": "2026-09-05T17:21:05.6781140+08:00",
+      "working_set_bytes": 45432832
+    }
+  ],
+  "pressure": {
+    "requested_mib": 0,
+    "actual_allocated_mib": 0,
+    "pid": null,
+    "alive": false
+  },
+  "probe_errors": []
+}

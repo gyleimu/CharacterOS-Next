@@ -1,0 +1,29 @@
+[
+  {
+    "level": 0,
+    "id": "LEVEL_0",
+    "requested_mib": 0,
+    "call_ids": [
+      "0A",
+      "0B"
+    ]
+  },
+  {
+    "level": 1,
+    "id": "LEVEL_1",
+    "requested_mib": 512,
+    "call_ids": [
+      "1A",
+      "1B"
+    ]
+  },
+  {
+    "level": 2,
+    "id": "LEVEL_2",
+    "requested_mib": 1024,
+    "call_ids": [
+      "2A",
+      "2B"
+    ]
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "expected": {
+    "base_url": "http://127.0.0.1:11434",
+    "version": "0.33.2",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 120000,
+    "retries": 0,
+    "seed_field_sent": false,
+    "keep_alive_field_sent": false
+  },
+  "actual": {
+    "version": "0.33.2",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+  },
+  "version_match": true,
+  "digest_match": true,
+  "checked_at": "2026-09-05T09:57:37.725Z",
+  "errors": []
+}

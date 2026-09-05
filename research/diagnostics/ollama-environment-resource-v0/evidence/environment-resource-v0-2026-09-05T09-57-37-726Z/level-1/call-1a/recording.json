@@ -1,0 +1,10 @@
+{
+  "ordinal": 3,
+  "level": 1,
+  "call_id": "1A",
+  "started_at": "2026-09-05T09:58:11.967Z",
+  "finished_at": "2026-09-05T09:58:22.315Z",
+  "initial_residency": "RESIDENT",
+  "pre_call_snapshot": "LEVEL_1-pressure-ready",
+  "post_call_snapshot": "LEVEL_1-after-1A"
+}

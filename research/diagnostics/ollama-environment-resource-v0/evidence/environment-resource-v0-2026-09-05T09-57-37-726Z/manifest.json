@@ -1,0 +1,12 @@
+{
+  "schema_version": "ollama-environment-resource-manifest-v0",
+  "run_id": "environment-resource-v0-2026-09-05T09-57-37-726Z",
+  "starting_head": "157d9ebf84e971ee5a0dd1d93c5ee577611f0044",
+  "origin_main_at_start": "157d9ebf84e971ee5a0dd1d93c5ee577611f0044",
+  "production_diff_before_run": "",
+  "protocol_sha256": "sha256:1c52976b0334c68d412fb5a5fbd2f2bc100e324d074d097bf23b36da7188c446",
+  "runner_sha256": "sha256:f130a3cda983d861a164719d208e81e6edb06670cdeaf4abe0b72acf9fe04707",
+  "helper_sha256": "sha256:e658b3eaa50c76621274d3e6a6b7be3283aa32ecf3d4289c6388b96bc85e0bce",
+  "frozen_fixture_sha256": "sha256:480e1c1706ad90153cb56a83d07a6954b439d896b9607483363a22fe62da0bd2",
+  "diagnostic_only": true
+}

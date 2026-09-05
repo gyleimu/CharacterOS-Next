@@ -1,0 +1,42 @@
+{
+  "level": 2,
+  "helper_source": "research/diagnostics/ollama-environment-resource-v0/pressure-helper.ts",
+  "pid": 87736,
+  "requested_mib": 1024,
+  "actual_allocated_mib": 1024,
+  "started_at": "2026-09-05T09:58:34.429Z",
+  "ended_at": "2026-09-05T09:58:53.262Z",
+  "parent_release_reason": "STAGE_COMPLETE",
+  "release_requested": true,
+  "exit_code": 0,
+  "exit_signal": null,
+  "clean_termination": true,
+  "events": [
+    {
+      "kind": "READY",
+      "payload": {
+        "pid": 87736,
+        "timestamp": "2026-09-05T09:58:34.634Z",
+        "requested_mib": 1024,
+        "actual_allocated_mib": 1024,
+        "chunk_mib": 16,
+        "safety_floor_mib": 768,
+        "free_mib_before": 2869,
+        "free_mib_after": 1864,
+        "max_lifetime_ms": 600000
+      }
+    },
+    {
+      "kind": "RELEASED",
+      "payload": {
+        "pid": 87736,
+        "timestamp": "2026-09-05T09:58:53.209Z",
+        "reason": "PARENT_RELEASE",
+        "requested_mib": 1024,
+        "actual_allocated_mib": 1024,
+        "started_at": "2026-09-05T09:58:34.510Z",
+        "free_mib_at_release": 1953
+      }
+    }
+  ]
+}

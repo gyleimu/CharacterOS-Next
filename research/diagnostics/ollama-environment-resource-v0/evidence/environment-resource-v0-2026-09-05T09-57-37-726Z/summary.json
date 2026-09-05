@@ -1,0 +1,421 @@
+{
+  "schema_version": "ollama-environment-resource-diagnostic-v0",
+  "diagnostic_id": "OLLAMA_ENVIRONMENT_RESOURCE_DIAGNOSTIC_V0",
+  "maximum_model_calls": 6,
+  "calls_per_level": 2,
+  "safety_floor_mib": 768,
+  "pressure_chunk_mib": 16,
+  "pressure_helper_max_lifetime_ms": 600000,
+  "authority_boundary": "diagnostic observation only; never canonical state, behavior evidence, or scientific evidence",
+  "run_id": "environment-resource-v0-2026-09-05T09-57-37-726Z",
+  "evidence_path": "D:\\Documents\\CharacterOS-Next\\research\\diagnostics\\ollama-environment-resource-v0\\evidence\\environment-resource-v0-2026-09-05T09-57-37-726Z",
+  "starting_head": "157d9ebf84e971ee5a0dd1d93c5ee577611f0044",
+  "origin_main_at_start": "157d9ebf84e971ee5a0dd1d93c5ee577611f0044",
+  "provider_lock": {
+    "expected": {
+      "base_url": "http://127.0.0.1:11434",
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_predict": 2048,
+      "timeout_ms": 120000,
+      "retries": 0,
+      "seed_field_sent": false,
+      "keep_alive_field_sent": false
+    },
+    "actual": {
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "version_match": true,
+    "digest_match": true,
+    "checked_at": "2026-09-05T09:57:37.725Z",
+    "errors": []
+  },
+  "fixture": {
+    "expected": {
+      "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+      "post_bytes": 4522,
+      "server_prompt_tokens": 1068
+    },
+    "actual": {
+      "request_hash": "sha256:4f86bb8094756a96bc8639d33e8b635a4bfb16223629a9a1c8ece05e6e31648d",
+      "post_bytes": 4522,
+      "message_count": 2,
+      "system_content_bytes": 1746,
+      "user_content_bytes": 2515,
+      "projection_json_bytes": 1235,
+      "approximate_prompt_tokens": 1065,
+      "token_estimate_method": "utf8-content-bytes-divided-by-4"
+    },
+    "match": true
+  },
+  "model_call_counts": {
+    "cognition": 6,
+    "language": 0,
+    "evaluator": 0
+  },
+  "pressure_levels": [
+    {
+      "level": 0,
+      "id": "LEVEL_0",
+      "requested_mib": 0,
+      "call_ids": [
+        "0A",
+        "0B"
+      ]
+    },
+    {
+      "level": 1,
+      "id": "LEVEL_1",
+      "requested_mib": 512,
+      "call_ids": [
+        "1A",
+        "1B"
+      ]
+    },
+    {
+      "level": 2,
+      "id": "LEVEL_2",
+      "requested_mib": 1024,
+      "call_ids": [
+        "2A",
+        "2B"
+      ]
+    }
+  ],
+  "helpers": [
+    {
+      "level": 1,
+      "helper_source": "research/diagnostics/ollama-environment-resource-v0/pressure-helper.ts",
+      "pid": 92000,
+      "requested_mib": 512,
+      "actual_allocated_mib": 512,
+      "started_at": "2026-09-05T09:58:10.595Z",
+      "ended_at": "2026-09-05T09:58:31.672Z",
+      "parent_release_reason": "STAGE_COMPLETE",
+      "release_requested": true,
+      "exit_code": 0,
+      "exit_signal": null,
+      "clean_termination": true,
+      "events": [
+        {
+          "kind": "READY",
+          "payload": {
+            "pid": 92000,
+            "timestamp": "2026-09-05T09:58:10.794Z",
+            "requested_mib": 512,
+            "actual_allocated_mib": 512,
+            "chunk_mib": 16,
+            "safety_floor_mib": 768,
+            "free_mib_before": 2874,
+            "free_mib_after": 2373,
+            "max_lifetime_ms": 600000
+          }
+        },
+        {
+          "kind": "RELEASED",
+          "payload": {
+            "pid": 92000,
+            "timestamp": "2026-09-05T09:58:31.633Z",
+            "reason": "PARENT_RELEASE",
+            "requested_mib": 512,
+            "actual_allocated_mib": 512,
+            "started_at": "2026-09-05T09:58:10.700Z",
+            "free_mib_at_release": 2373
+          }
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "helper_source": "research/diagnostics/ollama-environment-resource-v0/pressure-helper.ts",
+      "pid": 87736,
+      "requested_mib": 1024,
+      "actual_allocated_mib": 1024,
+      "started_at": "2026-09-05T09:58:34.429Z",
+      "ended_at": "2026-09-05T09:58:53.262Z",
+      "parent_release_reason": "STAGE_COMPLETE",
+      "release_requested": true,
+      "exit_code": 0,
+      "exit_signal": null,
+      "clean_termination": true,
+      "events": [
+        {
+          "kind": "READY",
+          "payload": {
+            "pid": 87736,
+            "timestamp": "2026-09-05T09:58:34.634Z",
+            "requested_mib": 1024,
+            "actual_allocated_mib": 1024,
+            "chunk_mib": 16,
+            "safety_floor_mib": 768,
+            "free_mib_before": 2869,
+            "free_mib_after": 1864,
+            "max_lifetime_ms": 600000
+          }
+        },
+        {
+          "kind": "RELEASED",
+          "payload": {
+            "pid": 87736,
+            "timestamp": "2026-09-05T09:58:53.209Z",
+            "reason": "PARENT_RELEASE",
+            "requested_mib": 1024,
+            "actual_allocated_mib": 1024,
+            "started_at": "2026-09-05T09:58:34.510Z",
+            "free_mib_at_release": 1953
+          }
+        }
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "level": 0,
+      "call": "0A",
+      "available_ram_bytes": 4108087296,
+      "windows_free_physical_bytes": 4060360704,
+      "pressure_requested_mib": 0,
+      "pressure_actual_mib": 0,
+      "pressure_pid": null,
+      "model_resident": false,
+      "gpu_memory_used_mib": 743,
+      "load_duration_ns": 6772622500,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 776624000,
+      "eval_count": 271,
+      "eval_duration_ns": 9973095000,
+      "eval_tokens_per_second": 27.173109250438305,
+      "total_elapsed_ms": 17551,
+      "fetch_elapsed_ms": 17551,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    },
+    {
+      "level": 0,
+      "call": "0B",
+      "available_ram_bytes": 3073171456,
+      "windows_free_physical_bytes": 3023998976,
+      "pressure_requested_mib": 0,
+      "pressure_actual_mib": 0,
+      "pressure_pid": null,
+      "model_resident": true,
+      "gpu_memory_used_mib": 7030,
+      "load_duration_ns": 1566100,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 64313999,
+      "eval_count": 271,
+      "eval_duration_ns": 9997061000,
+      "eval_tokens_per_second": 27.10796703151056,
+      "total_elapsed_ms": 10085,
+      "fetch_elapsed_ms": 10085,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    },
+    {
+      "level": 1,
+      "call": "1A",
+      "available_ram_bytes": 2475376640,
+      "windows_free_physical_bytes": 2422616064,
+      "pressure_requested_mib": 512,
+      "pressure_actual_mib": 512,
+      "pressure_pid": 92000,
+      "model_resident": true,
+      "gpu_memory_used_mib": 7064,
+      "load_duration_ns": 1041500,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 204668000,
+      "eval_count": 271,
+      "eval_duration_ns": 10119486000,
+      "eval_tokens_per_second": 26.780016297270436,
+      "total_elapsed_ms": 10348,
+      "fetch_elapsed_ms": 10348,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    },
+    {
+      "level": 1,
+      "call": "1B",
+      "available_ram_bytes": 2501685248,
+      "windows_free_physical_bytes": 2448273408,
+      "pressure_requested_mib": 512,
+      "pressure_actual_mib": 512,
+      "pressure_pid": 92000,
+      "model_resident": true,
+      "gpu_memory_used_mib": 7107,
+      "load_duration_ns": 1733800,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 56971000,
+      "eval_count": 271,
+      "eval_duration_ns": 6988339000,
+      "eval_tokens_per_second": 38.77888579818466,
+      "total_elapsed_ms": 7069,
+      "fetch_elapsed_ms": 7069,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    },
+    {
+      "level": 2,
+      "call": "2A",
+      "available_ram_bytes": 1963393024,
+      "windows_free_physical_bytes": 1891590144,
+      "pressure_requested_mib": 1024,
+      "pressure_actual_mib": 1024,
+      "pressure_pid": 87736,
+      "model_resident": true,
+      "gpu_memory_used_mib": 7152,
+      "load_duration_ns": 2089800,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 333265000,
+      "eval_count": 271,
+      "eval_duration_ns": 7685155000,
+      "eval_tokens_per_second": 35.26278910444877,
+      "total_elapsed_ms": 8045,
+      "fetch_elapsed_ms": 8045,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    },
+    {
+      "level": 2,
+      "call": "2B",
+      "available_ram_bytes": 2048086016,
+      "windows_free_physical_bytes": 1987383296,
+      "pressure_requested_mib": 1024,
+      "pressure_actual_mib": 1024,
+      "pressure_pid": 87736,
+      "model_resident": true,
+      "gpu_memory_used_mib": 7108,
+      "load_duration_ns": 1028600,
+      "prompt_eval_count": 1068,
+      "prompt_eval_duration_ns": 58523000,
+      "eval_count": 271,
+      "eval_duration_ns": 7041932000,
+      "eval_tokens_per_second": 38.48375701441025,
+      "total_elapsed_ms": 7123,
+      "fetch_elapsed_ms": 7123,
+      "body_elapsed_ms": 0,
+      "abort": false,
+      "terminal_stage": "COMPLETED",
+      "response_status": 200,
+      "warnings": [],
+      "outcome": "SUCCESS"
+    }
+  ],
+  "trends": [
+    {
+      "level": 0,
+      "calls": [
+        "0A",
+        "0B"
+      ],
+      "mean_total_ms": 13818,
+      "mean_load_ms": 3387.0943,
+      "mean_prompt_eval_ms": 420.4689995,
+      "mean_eval_ms": 9985.078,
+      "mean_eval_tokens_per_second": 27.140538140974435
+    },
+    {
+      "level": 1,
+      "calls": [
+        "1A",
+        "1B"
+      ],
+      "mean_total_ms": 8708.5,
+      "mean_load_ms": 1.38765,
+      "mean_prompt_eval_ms": 130.8195,
+      "mean_eval_ms": 8553.9125,
+      "mean_eval_tokens_per_second": 32.77945104772755
+    },
+    {
+      "level": 2,
+      "calls": [
+        "2A",
+        "2B"
+      ],
+      "mean_total_ms": 7584,
+      "mean_load_ms": 1.5592,
+      "mean_prompt_eval_ms": 195.894,
+      "mean_eval_ms": 7363.5435,
+      "mean_eval_tokens_per_second": 36.87327305942951
+    }
+  ],
+  "server_log": {
+    "available": true,
+    "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+    "file_name": "server.log",
+    "start_offset": 99270,
+    "end_offset": 151048,
+    "bytes": 51778,
+    "rotated_or_truncated": false,
+    "captured_at": "2026-09-05T09:58:54.863Z",
+    "analysis": {
+      "api_chat_requests": 6,
+      "http_500": 0,
+      "gpu_discovery_watchdog_warnings": 0,
+      "free_memory_refresh_warnings": 0,
+      "insufficient_memory_warnings": 0,
+      "model_load_events": 1,
+      "model_unload_events": 0,
+      "cancel_events": 0,
+      "release_events": 6,
+      "prompt_cache_update_ms": [
+        0.01
+      ],
+      "full_prompt_tokens": [
+        1068,
+        1068,
+        1068,
+        1068,
+        1068,
+        1068
+      ]
+    }
+  },
+  "stop": {
+    "safety_stop": false,
+    "timeout_stop": false,
+    "reason": null
+  },
+  "result_category": "RESOURCE_PRESSURE_EFFECT_SUGGESTED",
+  "root_cause_category": "ENVIRONMENTAL_RESOURCE_CONTENTION_SUSPECTED",
+  "root_cause_confidence": "MEDIUM",
+  "next_slice": "READY_FOR_ENVIRONMENT_STABILIZATION_DESIGN",
+  "final_helper_process_query": "",
+  "integrity": {
+    "model_calls_at_most_six": true,
+    "language_calls": 0,
+    "evaluator_calls": 0,
+    "exactly_one_request_hash": true,
+    "frozen_request_match": true,
+    "production_paths_changed_before_run": false,
+    "all_started_helpers_terminated": true,
+    "retries": 0,
+    "warm_up_calls": 0,
+    "timeout_ms": 120000
+  }
+}

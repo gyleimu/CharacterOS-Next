@@ -1,0 +1,10 @@
+{
+  "ordinal": 4,
+  "level": 1,
+  "call_id": "1B",
+  "started_at": "2026-09-05T09:58:23.406Z",
+  "finished_at": "2026-09-05T09:58:30.475Z",
+  "initial_residency": "RESIDENT",
+  "pre_call_snapshot": "LEVEL_1-after-1A",
+  "post_call_snapshot": "LEVEL_1-after-1B"
+}

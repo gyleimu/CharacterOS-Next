@@ -1,0 +1,18 @@
+{
+  "schema_version": "cognition-proposal-v0",
+  "projection_hash": "sha256:2d09e3457c753e1821cbe8595610bab1999b3851e7a59f7bae6ab18c676cc49e",
+  "reasoning_summary": "The subject is reviewing a request to organize a shared reference document. No specific requirements or missing context were provided in the input data, only the event and entity identifiers. The cognitive state reflects informational uncertainty (0.31) but high deliberation (0.71). Since no external actions are allowed and no memory evidence exists, the cognition result is a neutral interpretation of the current situation without proposing an action or citing specific memory events.",
+  "relevant_memory_refs": [],
+  "considered_context_refs": [
+    "entity:diagnostic-reference-document-001",
+    "event:diagnostic-information-request-001"
+  ],
+  "current_intent": "Interpret the routine request for organizing a shared reference document in the absence of specific requirements.",
+  "confidence": 0.85,
+  "uncertainty": 0.31,
+  "action_intent": null,
+  "evidence_refs": [
+    "entity:diagnostic-reference-document-001",
+    "event:diagnostic-information-request-001"
+  ]
+}
