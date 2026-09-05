@@ -16,7 +16,7 @@
  * mutation, cross-revision splice) fails closed.
  */
 
-import type { CanonicalRefV0 } from "@characteros-next/subject-core";
+import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
 import { isRecord, refKind, validateIdentifier } from "@characteros-next/subject-core";
 import type { InMemoryMemoryRepository } from "@characteros-next/memory";
 import {
@@ -49,6 +49,7 @@ export type ExperienceReadFailureCodeV0 =
   | "PAYLOAD_MISSING"
   | "PAYLOAD_HASH_MISMATCH"
   | "PAYLOAD_SCHEMA_INVALID"
+  | "NOT_EXPERIENCE_EPISODE"
   | "EXPERIENCE_LINKAGE_INVALID"
   | "EVENT_LINKAGE_INVALID"
   | "DELIVERY_LINKAGE_INVALID";
@@ -62,6 +63,15 @@ export type ExperienceReadResultV0 =
       /** The verified delivered behavior artifact (factual recovery). */
       readonly behavior: ExperienceRecordV0["behavior_artifact"];
       readonly behavior_delivery: BehaviorDeliveryRecordV0;
+      /**
+       * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — already-verified
+       * payload hashes, exposed so evidence consumers never re-read payloads.
+       */
+      readonly hashes: {
+        readonly episode: HashV1;
+        readonly experience: HashV1;
+        readonly event: HashV1;
+      };
     }
   | { readonly ok: false; readonly code: ExperienceReadFailureCodeV0; readonly detail: string };
 
@@ -127,7 +137,12 @@ export function createExperienceReaderV0(deps: {
 
     // ---- 3. experience record via the episode's experience reference ---------------
     const experienceRefsInEpisode = episode.references.filter((r) => refKind(r) === "experience");
-    if (experienceRefsInEpisode.length !== 1) {
+    if (experienceRefsInEpisode.length === 0) {
+      // A lawful ORDINARY episode: no experience linkage exists — this is not a
+      // tamper signal. Callers decide scene-evidence handling; never fail closed.
+      return fail("NOT_EXPERIENCE_EPISODE", "episode carries no experience reference (ordinary episode)");
+    }
+    if (experienceRefsInEpisode.length > 1) {
       return fail("EXPERIENCE_LINKAGE_INVALID", "episode must reference exactly one experience record");
     }
     const boundExperienceRef = experienceRefsInEpisode[0] as CanonicalRefV0;
@@ -242,7 +257,12 @@ export function createExperienceReaderV0(deps: {
       experience,
       event,
       behavior: artifactChecked.behavior,
-      behavior_delivery: delivery
+      behavior_delivery: delivery,
+      hashes: {
+        episode: episodeHash,
+        experience: experienceHash,
+        event: eventHash
+      }
     };
   };
 

@@ -41,7 +41,11 @@ import type {
   SubjectStateV0
 } from "@characteros-next/subject-core";
 import { hashEnvelope } from "@characteros-next/subject-core";
-import { isReservedRelationshipCoreDimensionIdV0 } from "@characteros-next/subject-core";
+import { isReservedRelationshipCoreDimensionIdV0, refKind } from "@characteros-next/subject-core";
+import type {
+  FactualMemoryEvidenceBundleV0,
+  FactualMemoryEvidenceResolverV0
+} from "./factual-memory-evidence.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
@@ -61,6 +65,7 @@ import {
   validateCognitionProposal,
   type BeliefStanceProjectionV0,
   type CognitiveContextProjectionV0,
+  type CognitiveContextProjectionV1,
   type CognitionActionInputV0,
   type CognitionProposalV0
 } from "./types.js";
@@ -72,7 +77,7 @@ export interface CognitionActionExecutionResultV0 {
   /** The validated provider proposal (workflow-level; never canonical). */
   readonly cognition: CognitionProposalV0;
   /** The exact projection the provider answered (audit/replay evidence). */
-  readonly projection: CognitiveContextProjectionV0;
+  readonly projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1;
   /**
    * RELATIONSHIP_FAMILIARITY_RETRIEVAL_ORCHESTRATION_V0 — deterministic
    * observation-only trace of the AUTOMATIC familiarity-priority retrieval
@@ -161,7 +166,25 @@ export async function buildCognitionActionProposal(params: {
 export async function buildCognitiveContextProjection(
   snapshot: SubjectStateV0
 ): Promise<CognitiveContextProjectionV0> {
-  return buildCognitiveContextProjectionInternal(snapshot, null);
+  return buildCognitiveContextProjectionInternal(snapshot, null) as Promise<CognitiveContextProjectionV0>;
+}
+
+/**
+ * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — explicit versioned
+ * cognition input: the V0 factual/context surface PLUS resolved factual memory
+ * evidence. The evidence joins the hashed body; never a silent V0 rehash.
+ */
+export async function buildCognitiveContextProjectionV1(
+  snapshot: SubjectStateV0,
+  additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null,
+  factualEvidence: FactualMemoryEvidenceBundleV0
+): Promise<CognitiveContextProjectionV1> {
+  const projection = await buildCognitiveContextProjectionInternal(
+    snapshot,
+    additionalRecentRetrievalRefs,
+    factualEvidence
+  );
+  return projection as CognitiveContextProjectionV1;
 }
 
 /**
@@ -172,8 +195,9 @@ export async function buildCognitiveContextProjection(
  */
 async function buildCognitiveContextProjectionInternal(
   snapshot: SubjectStateV0,
-  additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null
-): Promise<CognitiveContextProjectionV0> {
+  additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null,
+  factualEvidence: FactualMemoryEvidenceBundleV0 | null = null
+): Promise<CognitiveContextProjectionV0 | CognitiveContextProjectionV1> {
   // Interaction Familiarity Read Projection V0: the exact admitted governed
   // feature's semantic state surface per registered counterpart. Pure
   // derivation from the authoritative snapshot; a malformed canonical
@@ -271,13 +295,28 @@ async function buildCognitiveContextProjectionInternal(
     }),
     allowed_actions: [] as { action_type: string; target_ref: string | null }[]
   };
-  const projectionHash = await cognitiveProjectionHash(projectionBody);
-  const projection: CognitiveContextProjectionV0 = {
-    schema_version: "cognitive-context-projection-v0",
-    ...projectionBody,
-    allowed_actions: [],
-    projection_hash: projectionHash
-  } as unknown as CognitiveContextProjectionV0;
+  // EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0: the V1 projection adds
+  // the resolved factual memory evidence to the hashed body — the projection
+  // hash covers the FULL evidence content and authoritative hashes. The V0
+  // path (no evidence) stays byte-identical to the frozen schema.
+  const projectionHash = await cognitiveProjectionHash(
+    factualEvidence === null ? projectionBody : { ...projectionBody, factual_memory_evidence: factualEvidence }
+  );
+  const projection =
+    factualEvidence === null
+      ? ({
+          schema_version: "cognitive-context-projection-v0",
+          ...projectionBody,
+          allowed_actions: [],
+          projection_hash: projectionHash
+        } as unknown as CognitiveContextProjectionV0)
+      : ({
+          schema_version: "cognitive-context-projection-v1",
+          ...projectionBody,
+          factual_memory_evidence: factualEvidence,
+          allowed_actions: [],
+          projection_hash: projectionHash
+        } as unknown as CognitiveContextProjectionV1);
   // Frozen read-only view: the provider can inspect but never mutate it.
   deepFreeze(projection);
   return projection;
@@ -347,10 +386,40 @@ export class CognitionActionTransitionExecutor {
         ? await buildCognitiveContextProjectionInternal(snapshot, familiaritySelectedRefs)
         : projection;
 
+    // ---- EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 ------------------------
+    // Factual evidence resolution BEFORE provider invocation. Inputs are ONLY the
+    // canonical working refs and the already-validated retrieval selections this
+    // projection carries — never caller-supplied experience refs. With no
+    // resolver wired the input is byte-identical to the pre-slice V0 behavior;
+    // V1 is used ONLY when at least one factual evidence entry resolved (never
+    // default/fake evidence). Repository payload remains authority: the resolver
+    // fails closed on any malformed Experience episode.
+    let cognitionInputProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1 = evidenceProjection;
+    const factualResolver: FactualMemoryEvidenceResolverV0 | null = this.deps.factualEvidenceResolver;
+    if (factualResolver !== null) {
+      const candidateRefs = [...new Set<string>([
+        ...(evidenceProjection.memory_working_refs as readonly string[]),
+        ...(evidenceProjection.recent_retrieval_refs as readonly string[])
+      ])]
+        .filter((ref) => refKind(ref as CanonicalRefV0) === "episode")
+        .sort() as CanonicalRefV0[];
+      const factualBundle = await factualResolver.resolve({
+        repository_revision: snapshot.memory_state.repository_revision,
+        episode_refs: candidateRefs
+      });
+      if (factualBundle.entries.length > 0) {
+        cognitionInputProjection = await buildCognitiveContextProjectionInternal(
+          snapshot,
+          familiaritySelectedRefs.length > 0 ? familiaritySelectedRefs : null,
+          factualBundle
+        );
+      }
+    }
+
     // The action space is bound into the projection AFTER hashing the body: the
     // space is host-supplied per cycle, the hash covers the state evidence.
-    const projectionWithSpace: CognitiveContextProjectionV0 = {
-      ...evidenceProjection,
+    const projectionWithSpace: CognitiveContextProjectionV0 | CognitiveContextProjectionV1 = {
+      ...cognitionInputProjection,
       allowed_actions: input.allowed_actions
     };
 
@@ -374,7 +443,7 @@ export class CognitionActionTransitionExecutor {
       throw stageFailure("OBSERVATION", "INVALID_SCHEMA", "SS-SCHEMA-001", checked.error.detail);
     }
     const proposal = checked.value;
-    if (proposal.projection_hash !== evidenceProjection.projection_hash) {
+    if (proposal.projection_hash !== cognitionInputProjection.projection_hash) {
       throw stageFailure(
         "OBSERVATION",
         "INVALID_SCHEMA",
@@ -384,7 +453,7 @@ export class CognitionActionTransitionExecutor {
     }
 
     // ---- evidence grounding (§15): memory/context refs must come from the projection
-    const allowed = allowedEvidenceSet(evidenceProjection);
+    const allowed = allowedEvidenceSet(cognitionInputProjection);
     const unsupported = findUnsupportedEvidenceRef(
       [...proposal.evidence_refs, ...proposal.relevant_memory_refs, ...proposal.considered_context_refs],
       allowed
@@ -414,7 +483,7 @@ export class CognitionActionTransitionExecutor {
       stateRevision: anchored.state_revision as number,
       occurrenceLogicalTime: anchored.current_logical_time as number,
       causeRefs: [...input.cause_refs],
-      projectionHash: evidenceProjection.projection_hash,
+      projectionHash: cognitionInputProjection.projection_hash,
       allowedActions: input.allowed_actions
     });
 

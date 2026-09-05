@@ -39,8 +39,11 @@ import type {
 } from "../ports/index.js";
 import type { LearningSourceReadAuthority } from "../transitions/learning/learning-source-authority.js";
 import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
-import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/behavior-delivery-ledger.js";
-import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
+import { InMemoryConversationDeliveryLedger, type ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
+import { createExperienceReaderV0 } from "../transitions/conversation/experience-reader.js";
+import { FactualMemoryEvidenceResolverV0 } from "../transitions/cognition-action/factual-memory-evidence.js";
+import type { InMemoryMemoryRepository } from "@characteros-next/memory";
+import { InMemoryConversationIngressLedger, type ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 
 export interface RuntimeCompositionOptions {
   /** Required: canonical commit boundary + authoritative snapshot reads. */
@@ -56,6 +59,22 @@ export interface RuntimeCompositionOptions {
    * raw revision-minting surface is intentionally NOT part of this seam.
    */
   readonly memoryRepository: MemoryPreparationAuthority;
+  /**
+   * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — the CONCRETE memory
+   * repository exposing the stored-payload read face. When provided, the
+   * composition root wires the authoritative ExperienceReaderV0 (over the SAME
+   * composition-owned delivery ledger the feedback authority uses) and the
+   * factual memory evidence resolver. Omitted: cognition input stays exactly V0.
+   */
+  readonly experiencePayloadRepository?: InMemoryMemoryRepository;
+  /**
+   * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — pre-restored ledger
+   * instances (host called restoreState with its persisted export before
+   * composition). When provided, the reader/resolver/feedback authority all
+   * share THESE instances; otherwise fresh empty ledgers are constructed.
+   */
+  readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
+  readonly ingressLedger?: ConversationIngressLedgerAuthority;
   /** Required: deterministic retrieval seam. */
   readonly retrieval: RetrievalPort;
   /** Optional until their slices wire adapters. */
@@ -116,6 +135,17 @@ export class RuntimeCompositionRoot {
     if (options.retrieval === undefined) {
       throw new Error("composition error: retrieval capability is required");
     }
+    // Composition-owned durable stores + authoritative reader/resolver (§20):
+    // ONE delivery ledger instance feeds both the feedback authority and the
+    // experience reader. The reader requires the concrete payload-read face.
+    const deliveryLedger = options.deliveryLedger ?? new InMemoryConversationDeliveryLedger();
+    const ingressLedger = options.ingressLedger ?? new InMemoryConversationIngressLedger();
+    const experienceReader = options.experiencePayloadRepository !== undefined
+      ? createExperienceReaderV0({ repository: options.experiencePayloadRepository, deliveryLedger })
+      : null;
+    const factualEvidenceResolver = experienceReader !== null
+      ? new FactualMemoryEvidenceResolverV0({ reader: experienceReader, episodeContentReader: options.episodeContentReader ?? null, store: options.experiencePayloadRepository ?? null })
+      : null;
     const assembled: RuntimeDependencyContainer = {
       subjectCore: options.subjectCore,
       producerAuthorizationIssuer: options.producerAuthorizationIssuer,
@@ -143,8 +173,12 @@ export class RuntimeCompositionRoot {
       // BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — composition-owned durable ledgers:
       // constructed HERE (never accepted from options), so feedback execution
       // reads authoritative stored truth instead of caller-supplied receipts.
-      conversationDeliveryLedger: new InMemoryConversationDeliveryLedger(),
-      conversationIngressLedger: new InMemoryConversationIngressLedger()
+      conversationDeliveryLedger: deliveryLedger,
+      conversationIngressLedger: ingressLedger,
+      // EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — the reader uses the
+      // SAME composition-owned delivery ledger instance (one store, one truth).
+      experienceReader: experienceReader,
+      factualEvidenceResolver: factualEvidenceResolver
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

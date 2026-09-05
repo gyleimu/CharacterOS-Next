@@ -38,6 +38,53 @@ import {
 } from "@characteros-next/subject-core";
 import type { RelationshipInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 import type { RelationshipInteractionFamiliarityCognitionInfluenceV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
+import type { FactualMemoryEvidenceBundleV0 } from "./factual-memory-evidence.js";
+
+export const COGNITIVE_CONTEXT_PROJECTION_V1_SCHEMA_VERSION =
+  "cognitive-context-projection-v1" as const;
+
+/**
+ * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — versioned cognition input.
+ *
+ * EXTENSION of the frozen V0 projection (never an in-place mutation): identical
+ * V0 factual/context surface PLUS the resolved factual memory evidence bundle.
+ * The projection hash covers the FULL evidence content and authoritative hashes
+ * (the evidence joins the hashed body). A V0 object is never silently
+ * reinterpreted as V1 and vice versa; evidence-carrying input is always
+ * explicitly V1.
+ */
+export interface CognitiveContextProjectionV1 {
+  readonly schema_version: typeof COGNITIVE_CONTEXT_PROJECTION_V1_SCHEMA_VERSION;
+  readonly subject_id: IdentifierV0;
+  readonly current_logical_time: LogicalTimeV0;
+  readonly state_revision: StateRevisionV0;
+  readonly traits_dimensions: Readonly<Record<string, number>>;
+  readonly affect_channels: ReadonlyArray<{
+    readonly channel: string;
+    readonly strength: number;
+  }>;
+  readonly mood_baseline: number;
+  readonly regulation: {
+    readonly energy: number;
+    readonly stress: number;
+    readonly arousal: number;
+    readonly fatigue: number;
+  };
+  readonly context: CognitiveContextProjectionV0["context"];
+  readonly memory_working_refs: readonly CanonicalRefV0[];
+  readonly recent_retrieval_refs: readonly CanonicalRefV0[];
+  readonly belief_item_count: number;
+  readonly belief_items: CognitiveContextProjectionV0["belief_items"];
+  readonly relationship_counterpart_count: number;
+  readonly relationship_dimensions: CognitiveContextProjectionV0["relationship_dimensions"];
+  readonly interaction_familiarity: CognitiveContextProjectionV0["interaction_familiarity"];
+  readonly interaction_familiarity_cognition_influences: CognitiveContextProjectionV0["interaction_familiarity_cognition_influences"];
+  readonly allowed_actions: readonly AllowedActionV0[];
+  /** The resolved factual memory evidence (closed union; facts only). */
+  readonly factual_memory_evidence: FactualMemoryEvidenceBundleV0;
+  /** Content-addressed integrity of the exact V1 projection body (evidence included). */
+  readonly projection_hash: HashV1;
+}
 
 export const COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION =
   "cognitive-context-projection-v0" as const;
@@ -315,7 +362,7 @@ export function validateCognitionProposal(v: unknown): ValidationResult<Cognitio
  * (relationship_dimensions), which is visible but not citeable.
  */
 export function allowedEvidenceSet(
-  projection: CognitiveContextProjectionV0
+  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
 ): ReadonlySet<string> {
   const allowed = new Set<string>([
     ...projection.memory_working_refs,

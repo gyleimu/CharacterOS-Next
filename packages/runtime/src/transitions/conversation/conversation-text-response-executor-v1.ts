@@ -20,7 +20,7 @@ import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import { CognitionActionTransitionExecutor } from "../cognition-action/cognition-action-transition-executor.js";
-import { allowedEvidenceSet, type CognitiveContextProjectionV0 } from "../cognition-action/types.js";
+import { allowedEvidenceSet, type CognitiveContextProjectionV0, type CognitiveContextProjectionV1 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
 import type { LanguageEpisodeContentV0 } from "./language-realization-input.js";
@@ -121,7 +121,7 @@ export class ConversationTextResponseExecutorV1 {
       throw new TypeError("conversation cognition directive missing after successful cognition");
     }
     const directive: CommunicationDirectiveV0 = lastDirective;
-    const evidenceProjection: CognitiveContextProjectionV0 = cognitionResult.projection;
+    const evidenceProjection = cognitionResult.projection;
     const conversationProposalHash = await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
       schema_version: "conversation-cognition-proposal-v1",
       cognition: cognitionResult.cognition,
@@ -138,7 +138,7 @@ export class ConversationTextResponseExecutorV1 {
     snapshot: SubjectStateV0,
     sourceRevision: number,
     requestId: IdentifierV0,
-    evidenceProjection: CognitiveContextProjectionV0,
+    evidenceProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1,
     conversationProposalHash: string
   ): Promise<ConversationTextResponseResultV1> {
     const built = await buildClarificationBehaviorV0({
@@ -181,7 +181,7 @@ export class ConversationTextResponseExecutorV1 {
     snapshot: SubjectStateV0,
     sourceRevision: number,
     requestId: IdentifierV0,
-    evidenceProjection: CognitiveContextProjectionV0,
+    evidenceProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1,
     conversationProposalHash: string,
     directive: CommunicationDirectiveV0,
     conversationProvider: ConversationCognitionProviderV1,
@@ -288,7 +288,7 @@ export class ConversationTextResponseExecutorV1 {
   }
 }
 
-function lawfulEvidence(projection: CognitiveContextProjectionV0): ReadonlySet<string> {
+function lawfulEvidence(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): ReadonlySet<string> {
   return allowedEvidenceSet(projection);
 }
 

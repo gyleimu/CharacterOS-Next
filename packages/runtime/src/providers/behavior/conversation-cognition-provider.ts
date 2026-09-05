@@ -8,7 +8,7 @@
  */
 
 import type { ModelTransportV0 } from "../../transports/model-transport.js";
-import type { CognitiveContextProjectionV0 } from "../../transitions/cognition-action/types.js";
+import type { CognitiveContextProjectionV0, CognitiveContextProjectionV1 } from "../../transitions/cognition-action/types.js";
 import { validateCognitionProposal } from "../../transitions/cognition-action/types.js";
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
@@ -57,7 +57,7 @@ export class ConversationCognitionProviderV1 {
   }
 
   async propose(
-    projection: CognitiveContextProjectionV0
+    projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
   ): Promise<ConversationCognitionProposalV1> {
     const messages = [
       { role: "system" as const, content: CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 },
@@ -73,7 +73,7 @@ export class ConversationCognitionProviderV1 {
   }
 }
 
-function buildConversationSubjectData(projection: CognitiveContextProjectionV0): string {
+function buildConversationSubjectData(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): string {
   // Reuse the same SUBJECT DATA structure as the V0/V1 cognition prompts.
   // The system prompt already carries the schema + directive instructions.
   const affect = projection.affect_channels.length === 0
@@ -138,7 +138,7 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionV0):
 
 function parseConversationProposal(
   content: string,
-  projection: CognitiveContextProjectionV0
+  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
 ): ConversationCognitionProposalV1 {
   let parsed: unknown;
   try {

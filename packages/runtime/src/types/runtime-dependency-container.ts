@@ -26,6 +26,8 @@ import type { LearningSourceReadAuthority } from "../transitions/learning/learni
 import type { LearningAdoptionAuthority } from "../transitions/learning/learning-adoption-authority.js";
 import type { ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
 import type { ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
+import type { ExperienceReaderV0 } from "../transitions/conversation/experience-reader.js";
+import type { FactualMemoryEvidenceResolverV0 } from "../transitions/cognition-action/factual-memory-evidence.js";
 import type { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
 import type { EpisodeContentReaderV0 } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
@@ -104,4 +106,19 @@ export interface RuntimeDependencyContainer {
    * the feedback path fails closed.
    */
   readonly conversationIngressLedger: ConversationIngressLedgerAuthority | null;
+  /**
+   * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — authoritative
+   * Experience reader over the composition-owned delivery ledger (the SAME
+   * ledger instance the feedback authority uses/restores). null = host did
+   * not provide a payload-capable repository; the resolver stays unwired and
+   * cognition input stays exactly V0.
+   */
+  readonly experienceReader: ExperienceReaderV0 | null;
+  /**
+   * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — factual memory
+   * evidence resolver invoked by the cognition executor BEFORE provider
+   * invocation. Inputs derive only from canonical working refs and validated
+   * retrieval selections. null = not wired (V0 cognition input).
+   */
+  readonly factualEvidenceResolver: FactualMemoryEvidenceResolverV0 | null;
 }

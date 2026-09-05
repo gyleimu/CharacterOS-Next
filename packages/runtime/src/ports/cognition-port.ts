@@ -17,9 +17,16 @@
 
 import type {
   CognitiveContextProjectionV0,
+  CognitiveContextProjectionV1,
   CognitionProposalV0
 } from "../transitions/cognition-action/types.js";
 
+/**
+ * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0: the input side accepts the
+ * versioned projection union — V0 (frozen behavior, no evidence) or V1
+ * (explicit factual-memory-evidence input). Proposal OUTPUT schemas are
+ * unchanged (input-side-only change).
+ */
 export interface CognitionProviderV0 {
-  propose(projection: CognitiveContextProjectionV0): Promise<CognitionProposalV0>;
+  propose(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): Promise<CognitionProposalV0>;
 }

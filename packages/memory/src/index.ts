@@ -94,6 +94,14 @@ export {
   type InMemoryRetrievalServiceOptions
 } from "./retrieval/in-memory-retrieval-service.js";
 
+// --- EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 --------------------------------
+
+export {
+  RepositoryBackedMemoryRetrievalServiceV0,
+  createRepositoryBackedMemoryRetrievalServiceV0,
+  type RepositoryEpisodeSearchViewV0
+} from "./retrieval/repository-backed-retrieval-service.js";
+
 export {
   validateRehearsalFixture
 } from "./retrieval/validation.js";

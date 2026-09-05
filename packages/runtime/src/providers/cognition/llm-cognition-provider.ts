@@ -28,6 +28,7 @@ import {
   findUnsupportedEvidenceRef,
   validateCognitionProposal,
   type CognitiveContextProjectionV0,
+  type CognitiveContextProjectionV1,
   type CognitionProposalV0
 } from "../../transitions/cognition-action/types.js";
 import { buildCognitivePromptMessages } from "./cognitive-prompt-projection.js";
@@ -121,7 +122,7 @@ export class LlmCognitionProviderV0 implements CognitionProviderV0 {
     private readonly config: LlmCognitionProviderConfigV0 = { temperature: 0 }
   ) {}
 
-  async propose(projection: CognitiveContextProjectionV0): Promise<CognitionProposalV0> {
+  async propose(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): Promise<CognitionProposalV0> {
     // ---- deterministic prompt (projection-only; no raw internals) --------------
     const messages = buildCognitivePromptMessages(projection);
 

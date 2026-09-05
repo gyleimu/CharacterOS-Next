@@ -50,7 +50,7 @@ import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import { CognitionActionTransitionExecutor } from "../cognition-action/cognition-action-transition-executor.js";
-import { allowedEvidenceSet, type CognitiveContextProjectionV0 } from "../cognition-action/types.js";
+import { allowedEvidenceSet } from "../cognition-action/types.js";
 import {
   deriveLanguageRealizationInputHashV0,
   type LanguageEpisodeContentV0,
@@ -161,7 +161,7 @@ export class ConversationTextResponseExecutorV0 {
         "the conversational V0 action configuration requires action_intent null"
       );
     }
-    const evidenceProjection: CognitiveContextProjectionV0 = cognition.projection;
+    const evidenceProjection = cognition.projection;
 
     // ---- lawful Memory evidence: refs + validated episode contents -------------------
     const lawfulEvidence = allowedEvidenceSet(evidenceProjection);

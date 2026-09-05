@@ -1012,3 +1012,26 @@ export {
   BEHAVIOR_OUTCOME_FEEDBACK_TRANSITION_ID_PROJECTION,
   BEHAVIOR_OUTCOME_FEEDBACK_PREPARE_INTENT_PROJECTION
 } from "./transitions/conversation/conversation-feedback-identity.js";
+
+// --- EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 --------------------------------
+
+export {
+  FACTUAL_MEMORY_EVIDENCE_SCHEMA_VERSION,
+  FactualMemoryEvidenceResolverV0,
+  isFactualBehaviorOutcomeEvidenceV0,
+  isEpisodeRefV0,
+  type FactualMemoryEvidenceDepsV0,
+  type FactualMemoryEvidenceRequestV0,
+  type FactualMemoryEvidenceBundleV0,
+  type FactualMemoryEvidenceEntryV0,
+  type FactualBehaviorOutcomeEvidenceV0,
+  type FactualEpisodeSceneEvidenceV0
+} from "./transitions/cognition-action/factual-memory-evidence.js";
+export {
+  buildCognitiveContextProjectionV1
+} from "./transitions/cognition-action/cognition-action-transition-executor.js";
+export {
+  COGNITIVE_CONTEXT_PROJECTION_V1_SCHEMA_VERSION,
+  type CognitiveContextProjectionV1
+} from "./transitions/cognition-action/types.js";
+export { renderFactualMemoryEvidenceSectionV1 } from "./providers/cognition/cognitive-prompt-projection.js";
