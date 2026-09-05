@@ -116,6 +116,7 @@ describe("InMemoryMemoryRepository — effective visibility integration", () => 
   /** Real 4-revision chain built through lawful repository APIs. */
   async function buildChain(): Promise<{
     repo: InMemoryMemoryRepository;
+    refs: Record<string, string>;
     revisionIds: string[];
   }> {
     const repo = new InMemoryMemoryRepository();

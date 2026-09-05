@@ -1213,6 +1213,9 @@ describe("Suite-level graph invariants (RSR75)", () => {
       ...runtimePackage.devDependencies
     }).filter((name) => name.startsWith("@characteros-next/"));
     expect(workspaceDeps.sort()).toEqual([
+      // EXPERIENCE_APPRAISAL_INTEGRATION_V0: runtime consumes the shared
+      // Appraisal foundation for the Experience Appraisal lifecycle.
+      "@characteros-next/appraisal",
       "@characteros-next/behavior",
       "@characteros-next/influence-evidence",
       "@characteros-next/memory",

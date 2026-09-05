@@ -9,19 +9,26 @@ import type { CanonicalRefV0 } from "@characteros-next/subject-core";
 import {
   isRecord,
   isString,
-  validateRefArray,
-  validateUnitInterval
+  validateRefArray
 } from "@characteros-next/subject-core";
 import { fail, ok, type ValidationResult } from "@characteros-next/subject-core";
 import type {
   InterpretationProposalDraftV0
 } from "../../ports/interpretation-port.js";
 import type {
-  AppraisalAttributionV0,
   AppraisalProposalDraftV0
 } from "../../ports/appraisal-port.js";
+import { validateAppraisalDimensionsV0 } from "@characteros-next/appraisal";
 
 const SCHEMA_REASON = "SS-SCHEMA-001";
+
+const APPRAISAL_NUMERIC_FIELDS = [
+  "relevance",
+  "goal_congruence",
+  "controllability",
+  "uncertainty",
+  "intensity"
+] as const;
 
 function closedKeys(o: Record<string, unknown>, allowed: readonly string[], d: string): ValidationResult<void> {
   for (const key of Object.keys(o)) {
@@ -53,28 +60,6 @@ export function validateInterpretationProposal(v: unknown): ValidationResult<Int
   return ok(v as unknown as InterpretationProposalDraftV0);
 }
 
-const APPRAISAL_NUMERIC_FIELDS = [
-  "relevance",
-  "goal_congruence",
-  "controllability",
-  "uncertainty",
-  "intensity"
-] as const;
-
-/**
- * P2.3.5.0b — closed categorical attribution locus (commit aa2847a resolution):
- * exactly `"self" | "other" | "situation"`, case-sensitive, no coercion,
- * no trimming, no lowercasing, no aliases (numeric values retired).
- */
-const APPRAISAL_ATTRIBUTION_LITERALS: readonly AppraisalAttributionV0[] = [
-  "self",
-  "other",
-  "situation"
-];
-
-function isAttributionLiteral(v: unknown): v is AppraisalAttributionV0 {
-  return typeof v === "string" && (APPRAISAL_ATTRIBUTION_LITERALS as readonly string[]).includes(v);
-}
 
 /** Validates the closed six-field AppraisalV0 (§19) — no extra fields accepted. */
 export function validateAppraisalV0(v: unknown): ValidationResult<AppraisalProposalDraftV0> {
@@ -91,21 +76,18 @@ export function validateAppraisalV0(v: unknown): ValidationResult<AppraisalPropo
   if (!isString(v["appraisal_ref"])) {
     return fail("INVALID_SCHEMA", SCHEMA_REASON, "appraisal.appraisal_ref");
   }
-  for (const field of APPRAISAL_NUMERIC_FIELDS) {
-    const value = v[field];
-    if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1) {
-      return fail("INVALID_VALUE_RANGE", SCHEMA_REASON, `appraisal.${field}: UnitIntervalV0 required`);
-    }
-    const checked = validateUnitInterval(value, `appraisal.${field}`);
-    if (!checked.ok) return checked;
-  }
-  if (!isAttributionLiteral(v["attribution"])) {
-    return fail(
-      "INVALID_SCHEMA",
-      SCHEMA_REASON,
-      `appraisal.attribution: expected exactly "self" | "other" | "situation" (closed enum, no coercion)`
-    );
-  }
+  // EXPERIENCE_APPRAISAL_INTEGRATION_V0 — the six-dimension semantics are the
+  // SHARED appraisal foundation (packages/appraisal); the Observation path
+  // delegates dimension validation without behavior change.
+  const dimensions = validateAppraisalDimensionsV0({
+    relevance: v["relevance"],
+    goal_congruence: v["goal_congruence"],
+    attribution: v["attribution"],
+    controllability: v["controllability"],
+    uncertainty: v["uncertainty"],
+    intensity: v["intensity"]
+  });
+  if (!dimensions.ok) return dimensions;
   const evidence = validateRefArray(v["evidence_refs"], "appraisal.evidence_refs", { sorted: true });
   if (!evidence.ok) return evidence;
   return ok(v as unknown as AppraisalProposalDraftV0);

@@ -1279,6 +1279,9 @@ describe("Workspace graph (RPP98)", () => {
       .filter((name) => name.startsWith("@characteros-next/"))
       .sort();
     expect(workspaceDeps).toEqual([
+      // EXPERIENCE_APPRAISAL_INTEGRATION_V0: runtime consumes the shared
+      // Appraisal foundation for the Experience Appraisal lifecycle.
+      "@characteros-next/appraisal",
       "@characteros-next/behavior",
       "@characteros-next/influence-evidence",
       "@characteros-next/memory",

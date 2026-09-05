@@ -70,7 +70,7 @@ describe("repository revision manifest", () => {
 
     const badKind = {
       ...R0_MANIFEST,
-      record_hashes: [{ ref: "appraisal:a1", payload_hash: `sha256:${"a".repeat(64)}` }]
+      record_hashes: [{ ref: "audit:a1", payload_hash: `sha256:${"a".repeat(64)}` }]
     };
     expect(validateRepositoryManifest(badKind).ok).toBe(false);
 
@@ -112,20 +112,22 @@ describe("repository revision manifest", () => {
 });
 
 describe("memory reference guards", () => {
-  it("accepts the four memory-bound kinds and rejects others", () => {
+  it("accepts the five memory-bound kinds and rejects others", () => {
     for (const [kind, ref] of [
       ["memory", "memory:m1"],
       ["episode", "episode:e1"],
       ["event", "event:v1"],
-      ["experience", "experience:x1"]
+      ["experience", "experience:x1"],
+      ["appraisal", "appraisal:a1"]
     ] as const) {
       expect(isMemoryBoundRefKind(kind)).toBe(true);
       const parsed = parseMemoryBoundRef(ref, "t");
       expect(parsed.ok).toBe(true);
     }
-    expect(isMemoryBoundRefKind("appraisal")).toBe(false);
+    // EXPERIENCE_APPRAISAL_INTEGRATION_V0: appraisal is a lawful bound kind.
+    expect(isMemoryBoundRefKind("appraisal")).toBe(true);
     const appraisalAsBound = parseMemoryBoundRef("appraisal:a1", "t");
-    expect(appraisalAsBound.ok).toBe(false);
+    expect(appraisalAsBound.ok).toBe(true);
   });
 
   it("kind-specific guards reject foreign kinds", () => {

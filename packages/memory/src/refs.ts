@@ -14,7 +14,7 @@ import { refKind, validateRefElement } from "@characteros-next/subject-core";
 import { fail, ok, type ValidationResult } from "@characteros-next/subject-core";
 
 /** §8.5: the four ref kinds a repository revision manifest may bind. */
-export const MEMORY_BOUND_REF_KINDS = ["memory", "episode", "event", "experience"] as const;
+export const MEMORY_BOUND_REF_KINDS = ["memory", "episode", "event", "experience", "appraisal"] as const;
 
 export type MemoryBoundRefKind = (typeof MEMORY_BOUND_REF_KINDS)[number];
 

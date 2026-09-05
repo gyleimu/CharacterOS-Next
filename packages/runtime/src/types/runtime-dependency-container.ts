@@ -28,6 +28,8 @@ import type { ConversationDeliveryLedgerAuthority } from "../transitions/convers
 import type { ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 import type { ExperienceReaderV0 } from "../transitions/conversation/experience-reader.js";
 import type { FactualMemoryEvidenceResolverV0 } from "../transitions/cognition-action/factual-memory-evidence.js";
+import type { ExperienceAppraisalProviderV0 } from "../experience-appraisal/experience-appraisal-reader.js";
+import type { InMemoryMemoryRepository } from "@characteros-next/memory";
 import type { LanguageRealizationProviderV0 } from "../providers/behavior/language-realization-provider.js";
 import type { EpisodeContentReaderV0 } from "@characteros-next/memory";
 import type { ProducerAuthorizationIssuer } from "@characteros-next/subject-core";
@@ -121,4 +123,16 @@ export interface RuntimeDependencyContainer {
    * retrieval selections. null = not wired (V0 cognition input).
    */
   readonly factualEvidenceResolver: FactualMemoryEvidenceResolverV0 | null;
+  /**
+   * EXPERIENCE_APPRAISAL_INTEGRATION_V0 — Experience Appraisal provider port.
+   * Proposes ONLY dimensions/confidence/evidence over the frozen factual
+   * context. null = not wired; the appraisal executor fails closed.
+   */
+  readonly experienceAppraisalProvider: ExperienceAppraisalProviderV0 | null;
+  /**
+   * EXPERIENCE_APPRAISAL_INTEGRATION_V0 — the concrete memory repository
+   * (sealed-revision graph + payload face) backing the appraisal executor.
+   * null = not wired.
+   */
+  readonly experienceAppraisalStore: InMemoryMemoryRepository | null;
 }

@@ -42,6 +42,7 @@ import type { LearningAdoptionAuthority } from "../transitions/learning/learning
 import { InMemoryConversationDeliveryLedger, type ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { createExperienceReaderV0 } from "../transitions/conversation/experience-reader.js";
 import { FactualMemoryEvidenceResolverV0 } from "../transitions/cognition-action/factual-memory-evidence.js";
+import type { ExperienceAppraisalProviderV0 } from "../experience-appraisal/experience-appraisal-reader.js";
 import type { InMemoryMemoryRepository } from "@characteros-next/memory";
 import { InMemoryConversationIngressLedger, type ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 
@@ -75,6 +76,8 @@ export interface RuntimeCompositionOptions {
    */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
+  /** EXPERIENCE_APPRAISAL_INTEGRATION_V0 — the host-supplied provider port. */
+  readonly experienceAppraisalProvider?: ExperienceAppraisalProviderV0;
   /** Required: deterministic retrieval seam. */
   readonly retrieval: RetrievalPort;
   /** Optional until their slices wire adapters. */
@@ -178,7 +181,9 @@ export class RuntimeCompositionRoot {
       // EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — the reader uses the
       // SAME composition-owned delivery ledger instance (one store, one truth).
       experienceReader: experienceReader,
-      factualEvidenceResolver: factualEvidenceResolver
+      factualEvidenceResolver: factualEvidenceResolver,
+      experienceAppraisalProvider: options.experienceAppraisalProvider ?? null,
+      experienceAppraisalStore: options.experiencePayloadRepository ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

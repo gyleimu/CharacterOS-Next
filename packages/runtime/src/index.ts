@@ -1035,3 +1035,29 @@ export {
   type CognitiveContextProjectionV1
 } from "./transitions/cognition-action/types.js";
 export { renderFactualMemoryEvidenceSectionV1 } from "./providers/cognition/cognitive-prompt-projection.js";
+
+// --- EXPERIENCE_APPRAISAL_INTEGRATION_V0 — Experience Appraisal lifecycle -------------
+
+export {
+  ExperienceAppraisalContextBuilderV0,
+  EXPERIENCE_APPRAISAL_CONTEXT_SCHEMA_VERSION,
+  type ExperienceAppraisalContextProjectionV0,
+  type ExperienceAppraisalContextResultV0,
+  type ExperienceAppraisalContextDepsV0,
+  type ExperienceAppraisalContextFailureCodeV0
+} from "./experience-appraisal/experience-appraisal-context.js";
+export {
+  createExperienceAppraisalReaderV0,
+  findInitialExperienceAppraisalV0,
+  validateProviderProposalV0,
+  type ExperienceAppraisalProviderV0,
+  type ExperienceAppraisalReaderV0,
+  type ExperienceAppraisalReadResultV0,
+  type ExperienceAppraisalReadFailureCodeV0,
+  type FindInitialAppraisalResultV0
+} from "./experience-appraisal/experience-appraisal-reader.js";
+export {
+  ExperienceAppraisalLearningExecutorV0,
+  type ExperienceAppraisalInputV0,
+  type ExperienceAppraisalExecutionResultV0
+} from "./experience-appraisal/experience-appraisal-executor.js";

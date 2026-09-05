@@ -951,6 +951,9 @@ describe("Suite-level graph invariants (CR50)", () => {
     // Updated by RelationshipPlasticityProducer V0 (STRATEGY_A): runtime now
     // lawfully consumes memory-influence and influence-evidence as well.
     expect(workspaceDeps.sort()).toEqual([
+      // EXPERIENCE_APPRAISAL_INTEGRATION_V0: runtime consumes the shared
+      // Appraisal foundation for the Experience Appraisal lifecycle.
+      "@characteros-next/appraisal",
       "@characteros-next/behavior",
       "@characteros-next/influence-evidence",
       "@characteros-next/memory",
