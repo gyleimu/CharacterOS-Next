@@ -1,0 +1,16 @@
+{
+  "available": true,
+  "processes": [
+    {
+      "Id": 87716,
+      "ProcessName": "ollama",
+      "StartTime": "/Date(1788536087155)/"
+    },
+    {
+      "Id": 86776,
+      "ProcessName": "ollama app",
+      "StartTime": "/Date(1788536086085)/"
+    }
+  ],
+  "raw": "[\r\n    {\r\n        \"Id\":  87716,\r\n        \"ProcessName\":  \"ollama\",\r\n        \"StartTime\":  \"\\/Date(1788536087155)\\/\"\r\n    },\r\n    {\r\n        \"Id\":  86776,\r\n        \"ProcessName\":  \"ollama app\",\r\n        \"StartTime\":  \"\\/Date(1788536086085)\\/\"\r\n    }\r\n]"
+}

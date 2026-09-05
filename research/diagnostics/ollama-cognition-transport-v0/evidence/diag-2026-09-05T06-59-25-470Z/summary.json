@@ -1,0 +1,117 @@
+{
+  "schema_version": "ollama-cognition-transport-diagnostic-v0",
+  "transport": "ollama-native-cognition-transport-v0",
+  "call_count": 4,
+  "neutrality_law": "four byte-identical neutral requests; no cognition prompt, no experiment protocol, no canonical authority",
+  "authority_boundary": "diagnostic metadata only — never canonical state, never behavior evidence, never persistence",
+  "run_id": "diag-2026-09-05T06-59-25-470Z",
+  "started_at": "2026-09-05T06:59:25.552Z",
+  "finished_at": "2026-09-05T06:59:51.162Z",
+  "config": {
+    "transport": "OllamaNativeCognitionTransportV0",
+    "production_provider_wrapper": "LlmCognitionProviderV0 (diagnostic targets the transport layer directly; the provider wraps this transport in production)",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 120000,
+    "retries": 0,
+    "seed_field_sent": false
+  },
+  "provider_lock": {
+    "expected": {
+      "base_url": "http://127.0.0.1:11434",
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "actual": {
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "version_match": true,
+    "digest_match": true,
+    "checked_at": "2026-09-05T06:59:25.550Z"
+  },
+  "log_window": {
+    "available": true,
+    "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+    "reason": null,
+    "start_offset": 169567,
+    "end_offset": 213548,
+    "bytes": 43981,
+    "slice_file": "log-window.txt"
+  },
+  "fixture": {
+    "frozen_fixture_file": "research/diagnostics/ollama-cognition-transport-v0/fixture.ts",
+    "frozen_fixture_sha256": "sha256:617875c69613e843b9abb05432e0151bce34a4d771faabb8a7eb1421ff9c3e7a",
+    "runner_reference": "research/diagnostics/ollama-cognition-transport-v0/runner.ts",
+    "runner_sha256": "sha256:f6e846f7987f3d7b6d621dbdad7edbdd5008d19e84a0f2abda1c153c7be1ffb7"
+  },
+  "notes": [
+    "four byte-identical neutral requests; request_hash variance across traces would itself be diagnostic",
+    "the timeout timer guards ONLY the fetch await (body-read gap preserved by transport law)",
+    "orchestrator asserts nothing about outcomes; every value is observational",
+    "exactly 4 cognition calls, 0 language calls, 0 evaluator calls, no warm-up, no retries"
+  ],
+  "calls": [
+    {
+      "call": 1,
+      "outcome": "SUCCESS",
+      "terminal_stage": "COMPLETED",
+      "failure_code": null,
+      "elapsed_ms": 23663,
+      "fetch_ms": 23660,
+      "body_ms": 1,
+      "abort": false,
+      "ollama_eval_count": 2,
+      "ollama_total_duration": 23631542000
+    },
+    {
+      "call": 2,
+      "outcome": "SUCCESS",
+      "terminal_stage": "COMPLETED",
+      "failure_code": null,
+      "elapsed_ms": 121,
+      "fetch_ms": 120,
+      "body_ms": 0,
+      "abort": false,
+      "ollama_eval_count": 2,
+      "ollama_total_duration": 109049500
+    },
+    {
+      "call": 3,
+      "outcome": "SUCCESS",
+      "terminal_stage": "COMPLETED",
+      "failure_code": null,
+      "elapsed_ms": 120,
+      "fetch_ms": 119,
+      "body_ms": 0,
+      "abort": false,
+      "ollama_eval_count": 2,
+      "ollama_total_duration": 102686400
+    },
+    {
+      "call": 4,
+      "outcome": "SUCCESS",
+      "terminal_stage": "COMPLETED",
+      "failure_code": null,
+      "elapsed_ms": 115,
+      "fetch_ms": 114,
+      "body_ms": 0,
+      "abort": false,
+      "ollama_eval_count": 2,
+      "ollama_total_duration": 102216000
+    }
+  ],
+  "snapshots": [
+    "snapshot-prerun",
+    "snapshot-after-call-1",
+    "snapshot-after-call-2",
+    "snapshot-after-call-3",
+    "snapshot-after-call-4"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "available": true,
+  "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+  "reason": null,
+  "start_offset": 169567,
+  "end_offset": 213548,
+  "bytes": 43981,
+  "slice_file": "log-window.txt",
+  "captured_at": "2026-09-05T06:59:51.161Z"
+}

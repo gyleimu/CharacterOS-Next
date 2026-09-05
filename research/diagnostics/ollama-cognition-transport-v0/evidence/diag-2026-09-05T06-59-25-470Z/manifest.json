@@ -1,0 +1,60 @@
+{
+  "schema_version": "ollama-cognition-transport-diagnostic-manifest-v0",
+  "run_id": "diag-2026-09-05T06-59-25-470Z",
+  "started_at": "2026-09-05T06:59:25.552Z",
+  "protocol": {
+    "schema_version": "ollama-cognition-transport-diagnostic-v0",
+    "transport": "ollama-native-cognition-transport-v0",
+    "call_count": 4,
+    "neutrality_law": "four byte-identical neutral requests; no cognition prompt, no experiment protocol, no canonical authority",
+    "authority_boundary": "diagnostic metadata only — never canonical state, never behavior evidence, never persistence"
+  },
+  "config": {
+    "transport": "OllamaNativeCognitionTransportV0",
+    "production_provider_wrapper": "LlmCognitionProviderV0 (diagnostic targets the transport layer directly; the provider wraps this transport in production)",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 120000,
+    "retries": 0,
+    "seed_field_sent": false
+  },
+  "fixture": {
+    "frozen_fixture_file": "research/diagnostics/ollama-cognition-transport-v0/fixture.ts",
+    "frozen_fixture_sha256": "sha256:617875c69613e843b9abb05432e0151bce34a4d771faabb8a7eb1421ff9c3e7a",
+    "runner_reference": "research/diagnostics/ollama-cognition-transport-v0/runner.ts",
+    "runner_sha256": "sha256:f6e846f7987f3d7b6d621dbdad7edbdd5008d19e84a0f2abda1c153c7be1ffb7"
+  },
+  "provider_lock": {
+    "expected": {
+      "base_url": "http://127.0.0.1:11434",
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "actual": {
+      "version": "0.33.2",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "version_match": true,
+    "digest_match": true,
+    "checked_at": "2026-09-05T06:59:25.550Z"
+  },
+  "initial_residency_raw": {
+    "models": []
+  },
+  "log_window_start": {
+    "available": true,
+    "path": "C:\\Users\\26965\\AppData\\Local\\Ollama\\server.log",
+    "reason": null,
+    "start_offset": 169567
+  },
+  "host": {
+    "platform": "win32",
+    "node_version": "v24.19.0"
+  }
+}
