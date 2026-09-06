@@ -215,4 +215,3 @@ export function continueVariantRun(snapshot: VariantSnapshotE2A, events: readonl
     resumeFrom: { anchor_time: snapshot.anchor_time, anchor_state: snapshot.anchor_state, registry: snapshot.registry }
   });
 }
-
