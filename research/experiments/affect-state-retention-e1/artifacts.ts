@@ -17,8 +17,10 @@ export const git = (...args: string[]): string =>
 
 export const readJson = (path: string): unknown => JSON.parse(readFileSync(path, "utf8"));
 
-export const writeJson = (path: string, value: unknown): void =>
+export const writeJson = (path: string, value: unknown): void => {
+  mkdirSync(resolve(path, ".."), { recursive: true });
   writeFileSync(path, JSON.stringify(value, null, 2) + "\n", { flag: "wx" });
+};
 
 export function freshDirectory(path: string): string {
   const absolute = resolve(ROOT, path);
