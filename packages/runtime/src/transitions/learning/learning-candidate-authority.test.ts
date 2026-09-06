@@ -334,7 +334,9 @@ function candidateFor(bundle: AtomicCommitBundleAnyVersion, overrides: Record<st
   return {
     subject_id: bundle.subject_id,
     source_transition_id: bundle.transition_id,
-    observation_ref: bundle.trace_entry.cause_refs[0],
+    // Ad-hoc prefix selection is intentional here: the attack matrix feeds
+    // non-Observation bundles (no observation-kind cause ref) as candidates.
+    observation_ref: bundle.trace_entry.cause_refs.find((r) => r.startsWith("observation:")) as string,
     entity_refs: ["entity:e-1", "subject:s0"],
     event_refs: ["event:v-2"],
     occurrence_logical_time: bundle.logical_time_after,
@@ -641,7 +643,7 @@ describe("P2.3.5.3a trusted Learning input attack matrix", () => {
     const mixedObservation = await validateTrustedLearningExperience(
       readAuthority(),
       world.ctx as RuntimeContext,
-      candidateFor(bundleA, { observation_ref: bundleB.trace_entry.cause_refs[0] })
+      candidateFor(bundleA, { observation_ref: bundleB.trace_entry.cause_refs.find((r) => r.startsWith("observation:")) as string })
     );
     expect(mixedObservation.ok).toBe(false);
   });

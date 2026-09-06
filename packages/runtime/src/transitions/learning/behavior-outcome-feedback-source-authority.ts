@@ -195,6 +195,19 @@ export async function validateTrustedBehaviorOutcomeFeedback(
     );
   }
 
+  // CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§11): the Observation and the
+  // ingress must represent the SAME factual event — the verified ingress
+  // event_ref must also be a committed cause ref of that exact Observation.
+  // This rejects fixtures/workflows where the Observation was committed from
+  // unrelated sources or the ingress was merely inserted afterward.
+  if (!bundle.trace_entry.cause_refs.includes(ingress.event_ref)) {
+    return fail(
+      "UNSUPPORTED_EVIDENCE_REF",
+      "LLM-EVID-001",
+      `feedback ingress event_ref ${ingress.event_ref} is not a cause ref of the source Observation: Observation and ingress are not the same factual event`
+    );
+  }
+
   // ---- Step 7: temporal law (§19): reply occurrence >= delivered time -----------
   if (ingress.logical_time < delivery.delivered_logical_time) {
     return fail(

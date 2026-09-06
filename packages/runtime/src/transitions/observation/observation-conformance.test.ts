@@ -43,7 +43,9 @@ describe("A4 — proposal generation conformance", () => {
     // Round-3 B4: collision-safe identity — opaque hash suffix, frozen syntax.
     expect(bundle.transition_id).toMatch(/^t-obs-[0-9a-f]{64}$/);
     expect(bundle.trace_entry.transition_type).toBe("Observation");
-    expect(bundle.trace_entry.cause_refs).toEqual(["observation:o-77"]);
+    // CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§8): cause refs now carry the
+    // full source lineage (observation ref + source refs, canonical sort).
+    expect(bundle.trace_entry.cause_refs).toEqual(["event:v-2", "observation:o-77", "source:s-3"]);
   });
 });
 

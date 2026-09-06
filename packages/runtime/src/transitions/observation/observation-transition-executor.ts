@@ -101,7 +101,14 @@ export async function buildObservationProposal(params: {
       kind: "OCCURRENCE",
       occurrence_logical_time: params.observation.occurrence_logical_time
     },
-    cause_refs: [params.observation.observation_id],
+    // CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§8): the committed
+    // Observation durably carries its full source lineage — the observation
+    // ref AND every source ref (event-kind refs make verified conversation
+    // ingress events part of the committed cause set).
+    cause_refs: [...new Set<string>([
+      params.observation.observation_id as string,
+      ...(params.observation.source_refs as readonly string[])
+    ])].sort() as never,
     domain_deltas: sorted,
     external_refs: []
   } as unknown as CanonicalTransitionProposalV1;

@@ -46,7 +46,8 @@ import {
   fixedAffectProducer,
   fixedInterpretation,
   observationInput,
-  s0
+  s0,
+  observationCauseRefOf,
 } from "../observation/observation-fixtures.js";
 import {
   buildObservationProposal,
@@ -281,8 +282,13 @@ describe("factual evidence resolver and prompt boundary", () => {
     });
     const observationExecutor = new ObservationTransitionExecutor(observationRoot.dependencies());
     const snapshot = (await core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    // CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§5): O2 is committed AFTER the
+    // linked ingress is recorded, and its source lineage carries the authoritative
+    // ingress event_ref — the committed cause set proves Observation and ingress
+    // are the SAME factual event.
     const observation = observationInput({
       observation_id: "observation:o-resolver-1",
+      source_refs: [ingressOutcome.record.event_ref, "source:s-3"],
       entity_refs: [ALICE, "subject:s0"]
     });
     const affectDelta = await fixedAffectProducer().produceAffectDelta({
@@ -337,7 +343,7 @@ describe("factual evidence resolver and prompt boundary", () => {
           conversation_id: CONVERSATION_ID,
           source_event_id: "evt-resolver-1",
           observation_transition_id: bundle.transition_id,
-          observation_ref: bundle.trace_entry.cause_refs[0],
+          observation_ref: observationCauseRefOf(bundle),
           declared_salience: 0.5,
           host_adapter: "test-adapter"
         }
@@ -415,7 +421,7 @@ describe("factual evidence resolver and prompt boundary", () => {
         candidate: {
           subject_id: SUBJECT_ID,
           source_transition_id: bundle2.transition_id,
-          observation_ref: bundle2.trace_entry.cause_refs[0],
+          observation_ref: observationCauseRefOf(bundle2),
           entity_refs: [ALICE, "subject:s0"],
           event_refs: [],
           occurrence_logical_time: bundle2.logical_time_after,
@@ -657,10 +663,23 @@ async function runLife(replyText: string, sourceEventId: string, observationId: 
 
   // ---- the linked outcome: committed O2 + linked ingress + feedback commit -------
   const snapshot0 = (await core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+  const ingressOutcome = await ingressLedgerOf(container).recordIngressEvent({
+    schema_version: "conversation-ingress-input-v0",
+    subject_id: SUBJECT_ID,
+    conversation_id: CONVERSATION_ID,
+    actor_ref: ALICE,
+    text: replyText,
+    logical_time: 0,
+    source_event_id: sourceEventId,
+    in_reply_to_delivery_id: deliveryId,
+    host_adapter: "test-adapter"
+  });
+  if (ingressOutcome.kind !== "RECORDED") throw new Error("fixture invariant: ingress must record");
   const o2 = observationInput({
     observation_id: `${observationId}-o2`,
-    entity_refs: [ALICE, "subject:s0"],
-    source_refs: ["source:s-3"]
+    // §5: the committed O2 cause set must include the verified ingress event_ref.
+    source_refs: [ingressOutcome.record.event_ref, "source:s-3"],
+    entity_refs: [ALICE, "subject:s0"]
   });
   const affectDelta = await fixedAffectProducer().produceAffectDelta({
     context: {
@@ -700,18 +719,6 @@ async function runLife(replyText: string, sourceEventId: string, observationId: 
   );
   if (o2Outcome.kind !== "COMMITTED") throw new Error("fixture invariant: O2 must commit");
 
-  const ingressOutcome = await ingressLedgerOf(container).recordIngressEvent({
-    schema_version: "conversation-ingress-input-v0",
-    subject_id: SUBJECT_ID,
-    conversation_id: CONVERSATION_ID,
-    actor_ref: ALICE,
-    text: replyText,
-    logical_time: 0,
-    source_event_id: sourceEventId,
-    in_reply_to_delivery_id: deliveryId,
-    host_adapter: "test-adapter"
-  });
-  if (ingressOutcome.kind !== "RECORDED") throw new Error("fixture invariant: ingress must record");
 
   const feedbackOutcome = await feedbackExecutor.executeBehaviorOutcomeFeedback(
     {
@@ -725,7 +732,7 @@ async function runLife(replyText: string, sourceEventId: string, observationId: 
         conversation_id: CONVERSATION_ID,
         source_event_id: sourceEventId,
         observation_transition_id: o2Outcome.bundle.transition_id,
-        observation_ref: o2Outcome.bundle.trace_entry.cause_refs[0],
+        observation_ref: observationCauseRefOf(o2Outcome.bundle),
         declared_salience: 0.5,
         host_adapter: "test-adapter"
       }

@@ -37,7 +37,8 @@ import {
   capabilitiesFor,
   fixedAppraisal,
   fixedInterpretation,
-  observationInput
+  observationInput,
+  observationCauseRefOf,
 } from "../observation/observation-fixtures.js";
 import {
   buildObservationProposal,
@@ -262,7 +263,7 @@ function candidateFor(bundle: AtomicCommitBundleAnyVersion, overrides: Record<st
   return {
     subject_id: bundle.subject_id,
     source_transition_id: bundle.transition_id,
-    observation_ref: bundle.trace_entry.cause_refs[0],
+    observation_ref: observationCauseRefOf(bundle),
     entity_refs: ["entity:e-1", "subject:s0"],
     event_refs: ["event:v-2"],
     occurrence_logical_time: bundle.logical_time_after,
@@ -767,7 +768,7 @@ async function injectConcurrentMemoryRevision(): Promise<string> {
       kind: "OCCURRENCE",
       occurrence_logical_time: curSnapshot.runtime_metadata.logical_time
     },
-    cause_refs: [world.observationBundle.trace_entry.cause_refs[0]],
+    cause_refs: [observationCauseRefOf(world.observationBundle)],
     domain_deltas: [
       {
         producer: "memory",

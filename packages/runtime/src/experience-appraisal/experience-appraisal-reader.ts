@@ -195,9 +195,14 @@ export async function findInitialExperienceAppraisalV0(
     const payload = repository.readStoredPayload(entry.ref);
     if (payload === undefined || payload === null) continue;
     const recomputed = await hashEnvelope("characteros-next/memory/record-payload/v1", payload);
-    if (recomputed !== entry.payload_hash) continue; // tampered: not authoritative
+    if (recomputed !== entry.payload_hash) {
+      // §18: corruption is not absence — fail closed.
+      return { kind: "INTEGRITY_FAILURE", detail: `visible appraisal candidate ${entry.ref} payload hash mismatches its manifest entry` };
+    }
     const checked = validateExperienceAppraisalRecordV0(payload);
-    if (!checked.ok) continue; // malformed: not canonical (reader reports failures)
+    if (!checked.ok) {
+      return { kind: "INTEGRITY_FAILURE", detail: `visible appraisal candidate ${entry.ref} is malformed: ${checked.error.detail}` };
+    }
     const record = checked.value;
     if (record.subject_id !== subjectId) continue;
     if (record.experience_ref !== experienceRef) continue;

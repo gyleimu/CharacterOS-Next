@@ -65,6 +65,14 @@ import type { LearningSourceReadAuthority } from "../learning/learning-source-au
 import { createConversationDeliveryLedgerAuthorityV0 } from "../conversation/behavior-delivery-ledger.js";
 import { createConversationIngressLedgerAuthorityV0 } from "../conversation/conversation-ingress-ledger.js";
 
+/** CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 — cause refs now carry the full
+ * source lineage; the observation ref is the observation-kind entry. */
+function observationRefOf(bundle: { trace_entry: { cause_refs: readonly string[] } }): string {
+  const ref = bundle.trace_entry.cause_refs.find((r) => r.startsWith("observation:"));
+  if (ref === undefined) throw new Error("fixture invariant: observation cause ref missing");
+  return ref;
+}
+
 const SUBJECT_ID = "subject-s0";
 const CONVERSATION_ID = "conv-main";
 const ALICE = "entity:alice";
@@ -216,7 +224,8 @@ function permissiveEmptyRetrieval(): {
 /** Commits one lawful Observation through the minter pattern. */
 async function commitObservation(
   world: ChainWorld,
-  observationId: string
+  observationId: string,
+  extraSourceRefs: readonly string[] = []
 ): Promise<AtomicCommitBundleAnyVersion> {
   const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const ctx = {
@@ -227,7 +236,7 @@ async function commitObservation(
   const observation = observationInput({
     observation_id: observationId,
     entity_refs: [ALICE, "subject:s0"],
-    source_refs: ["source:s-3"]
+    source_refs: [...extraSourceRefs, "source:s-3"]
   });
   const affectDelta = await fixedAffectProducer().produceAffectDelta({
     context: ctx,
@@ -293,7 +302,8 @@ async function runFeedback(
   replyText: string,
   observationId: string
 ): Promise<{ experienceRef: string; episodeRef: string; eventRef: string; memoryRevision: string; payloadHashes: Record<string, string> }> {
-  const o2 = await commitObservation(world, observationId);
+  // §44 lawful order: delivery → ingress (canonical event_ref) → Observation
+  // carrying the verified event ref as source lineage → feedback.
   const deliveryId = await recordDelivery(world);
   const ingressLedger = world.container.conversationIngressLedger;
   if (ingressLedger === null) throw new Error("fixture invariant: ingress ledger wired");
@@ -309,6 +319,8 @@ async function runFeedback(
     host_adapter: "test-adapter"
   });
   if (ingressOutcome.kind !== "RECORDED") throw new Error("fixture invariant: ingress must record");
+  const eventRef = ingressOutcome.record.event_ref;
+  const o2 = await commitObservation(world, observationId, [eventRef]);
   const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const outcome = await world.feedbackExecutor.executeBehaviorOutcomeFeedback(
     {
@@ -322,7 +334,7 @@ async function runFeedback(
         conversation_id: CONVERSATION_ID,
         source_event_id: sourceEventId,
         observation_transition_id: o2.transition_id,
-        observation_ref: o2.trace_entry.cause_refs[0],
+        observation_ref: observationRefOf(o2),
         declared_salience: 0.5,
         host_adapter: "test-adapter"
       }
@@ -362,7 +374,7 @@ async function runOrdinaryLearning(
       candidate: {
         subject_id: SUBJECT_ID,
         source_transition_id: sourceBundle.transition_id,
-        observation_ref: sourceBundle.trace_entry.cause_refs[0],
+        observation_ref: observationRefOf(sourceBundle),
         entity_refs: [ALICE, "subject:s0"],
         event_refs: [],
         occurrence_logical_time: sourceBundle.logical_time_after,

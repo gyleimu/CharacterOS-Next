@@ -26,6 +26,7 @@ import type {
 } from "@characteros-next/subject-core";
 import {
   createInMemorySubjectCoreFacade,
+  hashEnvelope,
   proposalFingerprint,
   createPersistenceEnvelope,
   restoreFromEnvelope
@@ -39,7 +40,12 @@ import {
 import type { CharacterLanguageBehaviorV0 } from "@characteros-next/behavior";
 import { buildCharacterLanguageBehaviorV0 } from "@characteros-next/behavior";
 import type { ExperienceAppraisalProposalV0 } from "@characteros-next/appraisal";
-import type { ExperienceAppraisalProviderV0 } from "./experience-appraisal-reader.js";
+import {
+  createExperienceAppraisalReaderV0,
+  findInitialExperienceAppraisalV0,
+  type ExperienceAppraisalProviderV0,
+  type ExperienceAppraisalReaderV0
+} from "./experience-appraisal-reader.js";
 import { buildContextDelta, ReferenceContextProducer } from "../ports/context-producer-port.js";
 import {
   fixedAppraisal,
@@ -65,10 +71,6 @@ import {
   ExperienceAppraisalContextBuilderV0,
   type ExperienceAppraisalContextProjectionV0
 } from "./experience-appraisal-context.js";
-import {
-  createExperienceAppraisalReaderV0,
-  type ExperienceAppraisalReaderV0
-} from "./experience-appraisal-reader.js";
 import { ExperienceAppraisalLearningExecutorV0 } from "./experience-appraisal-executor.js";
 import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 
@@ -303,7 +305,7 @@ async function currentMemoryBindings(
   ] as never;
 }
 
-async function commitObservation(world: LifeWorld, observationId: string): Promise<AtomicCommitBundleAnyVersion> {
+async function commitObservation(world: LifeWorld, observationId: string, extraSourceRefs: readonly string[] = []): Promise<AtomicCommitBundleAnyVersion> {
   const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const ctx = {
     subject_id: SUBJECT_ID as never,
@@ -313,7 +315,7 @@ async function commitObservation(world: LifeWorld, observationId: string): Promi
   const observation = observationInput({
     observation_id: observationId,
     entity_refs: [ALICE, "subject:s0"],
-    source_refs: ["source:s-3"]
+    source_refs: [...extraSourceRefs, "source:s-3"]
   });
   const affectDelta = await fixedAffectProducer().produceAffectDelta({
     context: ctx, snapshot, transition_type: "Observation", appraisal: null, elapsed_ticks: null
@@ -355,10 +357,16 @@ async function deliver(world: LifeWorld, behavior: CharacterLanguageBehaviorV0):
 }
 
 /** Creates the authoritative Experience through the real feedback pipeline. */
+/** Selects the observation-kind cause ref (cause refs now carry full lineage). */
+function observationRefOf(bundle: { trace_entry: { cause_refs: readonly string[] } }): string {
+  const ref = bundle.trace_entry.cause_refs.find((r) => r.startsWith("observation:"));
+  if (ref === undefined) throw new Error("fixture invariant: observation cause ref missing");
+  return ref;
+}
+
 async function createExperience(world: LifeWorld): Promise<{
   episodeRef: string; experienceRef: string; eventRef: string; experiencePayloadHash: string; memoryRevision: string;
 }> {
-  const o2 = await commitObservation(world, "observation:o-appraisal");
   const behavior = await makeBehavior();
   const deliveryId = await deliver(world, behavior);
   const ingressLedger = world.container.conversationIngressLedger;
@@ -375,6 +383,7 @@ async function createExperience(world: LifeWorld): Promise<{
     host_adapter: "test-adapter"
   });
   if (ingressOutcome.kind !== "RECORDED") throw new Error("fixture invariant: ingress must record");
+  const o2 = await commitObservation(world, "observation:o-appraisal", [ingressOutcome.record.event_ref]);
   const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const outcome = await world.feedbackExecutor.executeBehaviorOutcomeFeedback(
     {
@@ -388,7 +397,7 @@ async function createExperience(world: LifeWorld): Promise<{
         conversation_id: CONVERSATION_ID,
         source_event_id: "evt-appraisal-1",
         observation_transition_id: o2.transition_id,
-        observation_ref: o2.trace_entry.cause_refs[0],
+        observation_ref: observationRefOf(o2),
         declared_salience: 0.5,
         host_adapter: "test-adapter"
       }
@@ -733,4 +742,429 @@ function recordFixtureForStray(): Record<string, unknown> {
 function seededStateWithNullTask(): SubjectStateV0 {
   const base = s0() as unknown as SubjectStateV0;
   return base; // s0 has context.task === null
+}
+
+// ----------------------------------------------------------------------------------
+// CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§17-§20) — hostile admission,
+// corrupted-INITIAL fail-closed law, bounded stale rebuild, and the §20
+// transition-identity regression (TRUE experience_ref, never appraisal_ref).
+// ----------------------------------------------------------------------------------
+
+/** Lawful echo proposal built from the real context; `mutate` corrupts it. */
+function hostileProvider(
+  world: LifeWorld,
+  mutate: (proposal: Record<string, unknown>) => unknown
+): ExperienceAppraisalProviderV0 {
+  return {
+    proposeExperienceAppraisal: async (context: ExperienceAppraisalContextProjectionV0) => {
+      world.providerCalls.count += 1;
+      world.providerCalls.captured.push(JSON.parse(JSON.stringify(context)) as Record<string, unknown>);
+      const lawful: Record<string, unknown> = {
+        schema_version: "experience-appraisal-proposal-v0",
+        status: "APPRAISED",
+        subject_id: context["subject_id"] as string,
+        experience_ref: context["experience_ref"] as string,
+        context_projection_hash: context["context_projection_hash"] as string,
+        dimensions: {
+          relevance: 0.9,
+          goal_congruence: 0.15,
+          attribution: "self",
+          controllability: 0.4,
+          uncertainty: 0.3,
+          intensity: 0.7
+        },
+        assessment_confidence: 0.8,
+        evidence_refs: [
+          context["experience_ref"] as string,
+          context["event_ref"] as string,
+          context["source_observation_ref"] as string
+        ].sort()
+      };
+      return mutate(lawful) as never;
+    }
+  } as never;
+}
+
+/** One unrelated committed Observation (no event cause) to advance the head. */
+async function advanceHeadForStale(world: LifeWorld): Promise<void> {
+  await commitObservation(
+    world,
+    `observation:o-unrelated-${world.core.storeRead.getCommittedBundles().length}`,
+    []
+  );
+}
+
+describe("EXPERIENCE_APPRAISAL_HOSTILE_ADMISSION_V0", () => {
+  it("17. hostile provider proposals fail closed before any store/prepare/commit", async () => {
+    const world = await buildWorld(TASK_A);
+    const exp = await createExperience(world);
+    const revisionsBefore = world.repo.revisionIds().join(",");
+
+    const cases: ReadonlyArray<{
+      readonly name: string;
+      readonly mutate: (proposal: Record<string, unknown>) => unknown;
+      readonly expected: RegExp;
+    }> = [
+      {
+        name: "extra provider field",
+        mutate: (p) => ({ ...p, rationale: "because the user seemed pleased" }),
+        expected: /unknown key rationale/
+      },
+      {
+        name: "NaN dimension",
+        mutate: (p) => ({ ...p, dimensions: { ...(p["dimensions"] as Record<string, unknown>), relevance: Number.NaN } }),
+        expected: /relevance: UnitIntervalV0 required/
+      },
+      {
+        name: "Infinity dimension",
+        mutate: (p) => ({ ...p, dimensions: { ...(p["dimensions"] as Record<string, unknown>), intensity: Number.POSITIVE_INFINITY } }),
+        expected: /intensity: UnitIntervalV0 required/
+      },
+      {
+        name: "out-of-range dimension",
+        mutate: (p) => ({ ...p, dimensions: { ...(p["dimensions"] as Record<string, unknown>), controllability: 1.5 } }),
+        expected: /controllability: UnitIntervalV0 required/
+      },
+      {
+        name: "invalid attribution",
+        mutate: (p) => ({ ...p, dimensions: { ...(p["dimensions"] as Record<string, unknown>), attribution: "world" } }),
+        expected: /attribution: expected exactly/
+      },
+      {
+        name: "invalid confidence",
+        mutate: (p) => ({ ...p, assessment_confidence: Number.NaN }),
+        expected: /assessment_confidence: UnitIntervalV0 required/
+      },
+      {
+        name: "missing Experience evidence",
+        mutate: (p) => ({
+          ...p,
+          evidence_refs: [p["evidence_refs"] as readonly string[]].flat().filter((r) => !r.startsWith("experience:"))
+        }),
+        expected: /mandatory experience_ref missing/
+      },
+      {
+        name: "unrelated evidence",
+        mutate: (p) => ({
+          ...p,
+          evidence_refs: ["episode:zzz-unrelated", ...(p["evidence_refs"] as readonly string[])].sort()
+        }),
+        expected: /outside the verified grounding allowlist/
+      },
+      {
+        name: "wrong subject",
+        mutate: (p) => ({ ...p, subject_id: "subject-other" }),
+        expected: /proposal subject does not match the runtime subject/
+      },
+      {
+        name: "wrong Experience",
+        mutate: (p) => ({ ...p, experience_ref: "experience:" + "f".repeat(64) }),
+        expected: /does not match the evaluated Experience/
+      },
+      {
+        name: "wrong context hash",
+        mutate: (p) => ({ ...p, context_projection_hash: "sha256:" + "a".repeat(64) }),
+        expected: /answers a different context projection/
+      }
+    ];
+
+    for (const testCase of cases) {
+      const callsBefore = world.providerCalls.count;
+      const executor = new ExperienceAppraisalLearningExecutorV0({
+        ...world.container,
+        experienceAppraisalProvider: hostileProvider(world, testCase.mutate)
+      });
+      const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+      await expect(
+        executor.appraiseExperience(
+          {
+            subject_id: SUBJECT_ID as never,
+            current_logical_time: snapshot.runtime_metadata.logical_time as never,
+            state_revision: snapshot.runtime_metadata.state_revision as never
+          },
+          appraiseInput(exp.episodeRef)
+        )
+      ).rejects.toThrow(testCase.expected);
+      // Provider invoked exactly once — no retry on a hostile admission path.
+      expect(world.providerCalls.count).toBe(callsBefore + 1);
+      // No canonical Appraisal store/prepare/commit happened.
+      expect(world.repo.revisionIds().join(",")).toBe(revisionsBefore);
+    }
+  });
+});
+
+describe("EXPERIENCE_APPRAISAL_CORRUPTED_INITIAL_V0", () => {
+  it("18. malformed visible INITIAL candidate fails closed: no none, no provider recall, no second INITIAL", async () => {
+    const world = await buildWorld(TASK_A);
+    const exp = await createExperience(world);
+    const callsAfterExperience = world.providerCalls.count;
+
+    // First (lawful) appraisal commits.
+    const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const committed = await world.appraisalExecutor.appraiseExperience(
+      {
+        subject_id: SUBJECT_ID as never,
+        current_logical_time: snapshot.runtime_metadata.logical_time as never,
+        state_revision: snapshot.runtime_metadata.state_revision as never
+      },
+      appraiseInput(exp.episodeRef)
+    );
+    expect(committed.kind).toBe("COMMITTED");
+    if (committed.kind !== "COMMITTED") return;
+    const revisionsBefore = world.repo.revisionIds().join(",");
+
+    // Narrow seam: replay the memory chain into a fresh repository with the
+    // committed appraisal payload MUTATED (self-consistent manifest hash) —
+    // a VISIBLE but malformed INITIAL candidate.
+    const corruptRepo = new InMemoryMemoryRepository();
+    await corruptRepo.prepareRevision({ parent_revision: null, records: [] });
+    for (const revision of world.repo.revisionIds()) {
+      if (revision === "R0") continue;
+      const manifest = await world.repo.readManifest(revision);
+      if (manifest === null) continue;
+      const entries = [];
+      for (const entry of manifest.record_hashes) {
+        const payload = world.repo.readStoredPayload(entry.ref as never);
+        if (payload === undefined) throw new Error("fixture invariant: payload must exist");
+        const mutated = JSON.parse(JSON.stringify(payload)) as Record<string, unknown>;
+        const isCommittedAppraisal = entry.ref === committed.appraisal_ref;
+        if (isCommittedAppraisal) {
+          (mutated["dimensions"] as Record<string, unknown>)["relevance"] = 5.5;
+        }
+        const hash = await corruptRepo.storePayload(entry.ref as never, mutated);
+        if (!isCommittedAppraisal && hash !== entry.payload_hash) {
+          throw new Error("fixture invariant: replayed hash must match");
+        }
+        entries.push({ ref: entry.ref, payload_hash: hash });
+      }
+      await corruptRepo.prepareRevision({ parent_revision: manifest.parent_revision, records: entries as never });
+    }
+
+    // Reader level: corruption is NOT absence — fail closed, never NOT_FOUND.
+    const corruptFind = await findInitialExperienceAppraisalV0(
+      corruptRepo, committed.memory_revision as never, SUBJECT_ID, exp.experienceRef
+    );
+    expect(corruptFind.kind).toBe("INTEGRITY_FAILURE");
+    if (corruptFind.kind === "INTEGRITY_FAILURE") {
+      expect(corruptFind.detail).toContain("is malformed");
+    }
+
+    // Executor level: the corrupted candidate fails closed BEFORE the provider.
+    const corruptExecutor = new ExperienceAppraisalLearningExecutorV0({
+      ...world.container,
+      experienceAppraisalStore: corruptRepo
+    });
+    const postSnapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    await expect(
+      corruptExecutor.appraiseExperience(
+        {
+          subject_id: SUBJECT_ID as never,
+          current_logical_time: postSnapshot.runtime_metadata.logical_time as never,
+          state_revision: postSnapshot.runtime_metadata.state_revision as never
+        },
+        appraiseInput(exp.episodeRef)
+      )
+    ).rejects.toThrow(/is malformed/);
+
+    // No provider recall, no second INITIAL, live store untouched.
+    expect(world.providerCalls.count).toBe(callsAfterExperience + 1);
+    expect(world.repo.revisionIds().join(",")).toBe(revisionsBefore);
+  });
+});
+
+describe("EXPERIENCE_APPRAISAL_STALE_REBUILD_V0", () => {
+  it("19. stale attempt 0: discard, rebuild context from the new head, provider again ⇒ COMMITTED", async () => {
+    const world = await buildWorld(TASK_A);
+    const exp = await createExperience(world);
+    const callsBefore = world.providerCalls.count;
+
+    let advanced = false;
+    const staleOnceProvider: ExperienceAppraisalProviderV0 = {
+      proposeExperienceAppraisal: async (context: ExperienceAppraisalContextProjectionV0) => {
+        world.providerCalls.count += 1;
+        world.providerCalls.captured.push(JSON.parse(JSON.stringify(context)) as Record<string, unknown>);
+        if (!advanced) {
+          advanced = true;
+          await advanceHeadForStale(world);
+        }
+        return await Promise.resolve(lawfulEchoProposal(context));
+      }
+    } as never;
+
+    const staleExecutor = new ExperienceAppraisalLearningExecutorV0({
+      ...world.container,
+      experienceAppraisalProvider: staleOnceProvider
+    });
+    const preSnapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const outcome = await staleExecutor.appraiseExperience(
+      {
+        subject_id: SUBJECT_ID as never,
+        current_logical_time: preSnapshot.runtime_metadata.logical_time as never,
+        state_revision: preSnapshot.runtime_metadata.state_revision as never
+      },
+      appraiseInput(exp.episodeRef)
+    );
+    expect(outcome.kind).toBe("COMMITTED");
+    if (outcome.kind !== "COMMITTED") return;
+
+    // Attempt 0 + rebuilt attempt 1: the provider ran again on the rebuild.
+    expect(world.providerCalls.count).toBe(callsBefore + 2);
+    // The rebuilt attempt answered from the NEW head (context rebuilt).
+    const firstContext = world.providerCalls.captured[callsBefore];
+    const secondContext = world.providerCalls.captured[callsBefore + 1];
+    if (firstContext === undefined || secondContext === undefined) throw new Error("fixture invariant: two provider captures");
+    expect(firstContext["state_hash"]).not.toBe(secondContext["state_hash"]);
+
+    // The committed Appraisal binds the POST-advance head, not the stale one.
+    const read = await world.appraisalReader.read({
+      repository_revision: outcome.memory_revision,
+      appraisal_ref: outcome.appraisal_ref
+    });
+    expect(read.ok).toBe(true);
+    if (!read.ok) return;
+    expect(read.record.source_state.state_revision).toBe(preSnapshot.runtime_metadata.state_revision + 1);
+    // Exactly one canonical INITIAL exists.
+    const find = await findInitialExperienceAppraisalV0(
+      world.repo, outcome.memory_revision as never, SUBJECT_ID, exp.experienceRef
+    );
+    expect(find.kind).toBe("FOUND");
+    if (find.kind === "FOUND") {
+      expect(find.appraisal_ref).toBe(outcome.appraisal_ref);
+    }
+  });
+
+  it("19. second stale: REBASE_REQUIRED terminal, no prepared Appraisal attached to the new head", async () => {
+    const world = await buildWorld(TASK_A);
+    const exp = await createExperience(world);
+    const callsBefore = world.providerCalls.count;
+    const revisionsBefore = world.repo.revisionIds().join(",");
+
+    // Every provider invocation advances the head — every attempt goes stale.
+    const alwaysStaleProvider: ExperienceAppraisalProviderV0 = {
+      proposeExperienceAppraisal: async (context: ExperienceAppraisalContextProjectionV0) => {
+        world.providerCalls.count += 1;
+        world.providerCalls.captured.push(JSON.parse(JSON.stringify(context)) as Record<string, unknown>);
+        await advanceHeadForStale(world);
+        return await Promise.resolve(lawfulEchoProposal(context));
+      }
+    } as never;
+    const staleExecutor = new ExperienceAppraisalLearningExecutorV0({
+      ...world.container,
+      experienceAppraisalProvider: alwaysStaleProvider
+    });
+    const preSnapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const outcome = await staleExecutor.appraiseExperience(
+      {
+        subject_id: SUBJECT_ID as never,
+        current_logical_time: preSnapshot.runtime_metadata.logical_time as never,
+        state_revision: preSnapshot.runtime_metadata.state_revision as never
+      },
+      appraiseInput(exp.episodeRef)
+    );
+    expect(outcome.kind).toBe("REBASE_REQUIRED");
+    if (outcome.kind === "REBASE_REQUIRED") {
+      expect(outcome.failure.error_code).toBe("STALE_STATE_REVISION");
+      expect(outcome.failure.reason).toBe("REBASE-STALE-001");
+    }
+    // Bounded: attempt 0 + the single permitted rebuild, then stop.
+    expect(world.providerCalls.count).toBe(callsBefore + 2);
+    // No old prepared Appraisal attached to the new head (prepare never ran).
+    expect(world.repo.revisionIds().join(",")).toBe(revisionsBefore);
+  });
+});
+
+describe("EXPERIENCE_APPRAISAL_TRANSITION_IDENTITY_V0", () => {
+  it("20. reuse path binds the TRUE experience_ref identity, never the appraisal_ref", async () => {
+    const world = await buildWorld(TASK_A);
+    const exp = await createExperience(world);
+    const callsBefore = world.providerCalls.count;
+
+    // Advance the canonical state exactly when the appraisal tries to reserve:
+    // attempt 0 commits stale (after a lawful prepare), the rebuild attaches
+    // the ALREADY-PREPARED revision through the reuse path.
+    let advanced = false;
+    const staleCommitCore: typeof world.core = {
+      ...world.core,
+      reserveAndRoute: async (proposal) => {
+        if (!advanced) {
+          advanced = true;
+          await advanceHeadForStale(world);
+        }
+        return world.core.reserveAndRoute(proposal);
+      }
+    };
+    const reuseExecutor = new ExperienceAppraisalLearningExecutorV0({
+      ...world.container,
+      subjectCore: staleCommitCore
+    });
+    const preSnapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const outcome = await reuseExecutor.appraiseExperience(
+      {
+        subject_id: SUBJECT_ID as never,
+        current_logical_time: preSnapshot.runtime_metadata.logical_time as never,
+        state_revision: preSnapshot.runtime_metadata.state_revision as never
+      },
+      appraiseInput(exp.episodeRef)
+    );
+    expect(outcome.kind).toBe("COMMITTED");
+    if (outcome.kind !== "COMMITTED") return;
+
+    // The reuse path attaches the prepared revision WITHOUT a provider recall.
+    expect(world.providerCalls.count).toBe(callsBefore + 1);
+
+    // DIRECT regression: the committed Learning transition identity is derived
+    // from the record's TRUE experience_ref — the appraisal_ref derivation
+    // yields a DIFFERENT identity (which the pre-repair bug produced). The
+    // reuse commit anchored at the post-advance, pre-commit head revision.
+    const reuseAnchorRevision = preSnapshot.runtime_metadata.state_revision + 1;
+    const learningBundle = world.core.storeRead.getCommittedBundles()
+      .filter((b) => b.transition_type === "Learning")
+      .at(-1);
+    if (learningBundle === undefined) throw new Error("fixture invariant: Learning bundle must exist");
+    const expectedFromExperience = await hashEnvelope(
+      "characteros-next/runtime/experience-appraisal-transition-id/v1",
+      {
+        subject_id: SUBJECT_ID,
+        experience_ref: exp.experienceRef,
+        expected_state_revision: reuseAnchorRevision,
+        rebuild_ordinal: 0
+      }
+    );
+    const expectedFromAppraisalRef = await hashEnvelope(
+      "characteros-next/runtime/experience-appraisal-transition-id/v1",
+      {
+        subject_id: SUBJECT_ID,
+        experience_ref: outcome.appraisal_ref,
+        expected_state_revision: reuseAnchorRevision,
+        rebuild_ordinal: 0
+      }
+    );
+    expect(learningBundle.transition_id).toBe(`t-learn-${expectedFromExperience.replace(/^sha256:/, "")}`);
+    expect(learningBundle.transition_id).not.toBe(`t-learn-${expectedFromAppraisalRef.replace(/^sha256:/, "")}`);
+  });
+});
+
+/** Lawful echo proposal helper shared by the stale-rebuild providers. */
+function lawfulEchoProposal(context: ExperienceAppraisalContextProjectionV0): ExperienceAppraisalProposalV0 {
+  return {
+    schema_version: "experience-appraisal-proposal-v0",
+    status: "APPRAISED",
+    subject_id: context["subject_id"] as never,
+    experience_ref: context["experience_ref"] as never,
+    context_projection_hash: context["context_projection_hash"] as never,
+    dimensions: {
+      relevance: 0.9,
+      goal_congruence: 0.15,
+      attribution: "self",
+      controllability: 0.4,
+      uncertainty: 0.3,
+      intensity: 0.7
+    },
+    assessment_confidence: 0.8,
+    evidence_refs: [
+      context["experience_ref"] as never,
+      context["event_ref"] as never,
+      context["source_observation_ref"] as never
+    ].sort()
+  } as never;
 }

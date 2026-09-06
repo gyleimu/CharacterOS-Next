@@ -28,6 +28,7 @@ import {
   observationInput
 } from "../observation/observation-fixtures.js";
 import { buildObservationProposal } from "../observation/observation-transition-executor.js";
+import { observationCauseRefOf } from "../observation/observation-fixtures.js";
 import { ReferenceFastEmaAffectProducer } from "../../producers/reference-fast-ema-affect-producer.js";
 import { ExperienceEncoderV0, type LearningEncodingContextV0 } from "./experience-encoder-v0.js";
 import {
@@ -73,7 +74,7 @@ function candidateFor(
   return {
     subject_id: bundle.subject_id,
     source_transition_id: bundle.transition_id,
-    observation_ref: bundle.trace_entry.cause_refs[0],
+    observation_ref: observationCauseRefOf(bundle),
     entity_refs: ["entity:e-1", "subject:s0"],
     event_refs: ["event:v-2"],
     occurrence_logical_time: bundle.logical_time_after,

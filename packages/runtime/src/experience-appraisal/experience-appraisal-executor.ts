@@ -34,9 +34,10 @@ import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 import {
   deriveExperienceAppraisalProposalHashV0,
   deriveExperienceAppraisalRefV0,
+  validateExperienceAppraisalProposalV0,
+  validateExperienceAppraisalRecordV0,
   EXPERIENCE_APPRAISAL_PROVIDER_CONTRACT_VERSION,
   type AppraisalDimensionsV0,
-  type ExperienceAppraisalProposalV0,
   type ExperienceAppraisalRecordV0
 } from "@characteros-next/appraisal";
 import type { RuntimeContext } from "../types/runtime-context.js";
@@ -214,13 +215,18 @@ export class ExperienceAppraisalLearningExecutorV0 {
     }
 
     // ---- provider invocation (input deep-frozen by construction) ----------------------
-    let proposal: ExperienceAppraisalProposalV0;
+    let rawProposal: unknown;
     try {
-      proposal = await provider.proposeExperienceAppraisal(context);
+      rawProposal = await provider.proposeExperienceAppraisal(context);
     } catch {
       throw stageFailure("OBSERVATION", "SERVICE_UNAVAILABLE", "FAIL-SERVICE-001", "experience appraisal provider failed");
     }
-    const validated = validateProposalOrThrow(proposal);
+    // §15/§16: the raw provider result is untrusted — closed validation BEFORE admission.
+    const checkedProposal = validateExperienceAppraisalProposalV0(rawProposal);
+    if (!checkedProposal.ok) {
+      throw stageFailure("OBSERVATION", "INVALID_SCHEMA", "SS-SCHEMA-001", `experience appraisal proposal rejected: ${checkedProposal.error.detail}`);
+    }
+    const validated = checkedProposal.value;
     if (validated.status !== "APPRAISED") {
       return { kind: "DONE", result: { kind: "INSUFFICIENT_CONTEXT", detail: "provider abstained (INSUFFICIENT_CONTEXT)" } };
     }
@@ -328,6 +334,16 @@ export class ExperienceAppraisalLearningExecutorV0 {
     };
     const appraisalRef = await deriveExperienceAppraisalRefV0(recordBody);
     const record = Object.freeze({ ...recordBody, appraisal_ref: appraisalRef }) as unknown as ExperienceAppraisalRecordV0;
+    // §17: validate the complete canonical record and require exact self-ref
+    // equality BEFORE repository storage — reader-time validation is not the
+    // first real check.
+    const recordChecked = validateExperienceAppraisalRecordV0(record);
+    if (!recordChecked.ok) {
+      throw stageFailure("OBSERVATION", "INVALID_SCHEMA", "SS-SCHEMA-001", `appraisal record invalid: ${recordChecked.error.detail}`);
+    }
+    if (recordChecked.value.appraisal_ref !== appraisalRef) {
+      throw stageFailure("OBSERVATION", "INVALID_SCHEMA", "SS-SCHEMA-001", "appraisal ref does not re-derive from the admitted body");
+    }
 
     // ---- repository payload + intent-driven prepare -------------------------------------
     const intentId = await deriveExperienceAppraisalIntentId({
@@ -516,9 +532,22 @@ export class ExperienceAppraisalLearningExecutorV0 {
       provenance_refs: []
     } as unknown as DomainDeltaV0;
 
+    // §20 transition-id bug repair: the identity must bind the EXPERIENCE
+    // identity (not the appraisal ref). Recover it from the prepared record —
+    // read via the executor's canonical repository face (the composition-owned
+    // preparation wrapper has no raw payload face).
+    const payloadRepository: InMemoryMemoryRepository = this.deps.experienceAppraisalStore as never;
+    const reusePayload = payloadRepository.readStoredPayload(appraisalRef);
+    if (reusePayload === undefined || reusePayload === null) {
+      throw stageFailure("OBSERVATION", "INVALID_MEMORY_REVISION", "MEM-REV-001", "attachable prepared revision has no appraisal payload");
+    }
+    const reuseChecked = validateExperienceAppraisalRecordV0(reusePayload);
+    if (!reuseChecked.ok) {
+      throw stageFailure("OBSERVATION", "INVALID_MEMORY_REVISION", "MEM-REV-001", "attachable prepared revision has a malformed appraisal record");
+    }
     const transitionId = await deriveExperienceAppraisalTransitionId({
       subject_id: ctx.subject_id as string,
-      experience_ref: appraisalRef,
+      experience_ref: reuseChecked.value.experience_ref,
       expected_state_revision: anchored.state_revision as number,
       rebuild_ordinal: 0
     });
@@ -603,9 +632,6 @@ function rebaseRequired(detail: string): ExperienceAppraisalExecutionResultV0 {
   };
 }
 
-function validateProposalOrThrow(proposal: ExperienceAppraisalProposalV0): ExperienceAppraisalProposalV0 {
-  return proposal; // already validated by validateExperienceAppraisalProposalV0 at the provider boundary
-}
 
 async function deriveExperienceAppraisalTransitionId(params: {
   readonly subject_id: string;

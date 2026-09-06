@@ -451,3 +451,17 @@ export function buildObservationHarness(
     initial
   };
 }
+
+/**
+ * CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§8) — committed Observation
+ * cause refs now carry the full source lineage (observation ref + source
+ * refs). Consumers that previously indexed cause_refs[0] must select the
+ * observation-kind entry explicitly.
+ */
+export function observationCauseRefOf(bundle: {
+  trace_entry: { cause_refs: readonly string[] };
+}): string {
+  const ref = bundle.trace_entry.cause_refs.find((r) => r.startsWith("observation:"));
+  if (ref === undefined) throw new Error("observation cause ref missing from bundle");
+  return ref;
+}

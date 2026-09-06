@@ -69,6 +69,14 @@ import {
 } from "../conversation/experience-reader.js";
 import { deriveBehaviorOutcomeExperienceRef } from "../conversation/conversation-feedback-identity.js";
 
+/** CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 — cause refs now carry the full
+ * source lineage; the observation ref is the observation-kind entry. */
+function observationRefOf(bundle: { trace_entry: { cause_refs: readonly string[] } }): string {
+  const ref = bundle.trace_entry.cause_refs.find((r) => r.startsWith("observation:"));
+  if (ref === undefined) throw new Error("fixture invariant: observation cause ref missing");
+  return ref;
+}
+
 const SUBJECT_ID = "subject-s0";
 const CONVERSATION_ID = "conv-1";
 const SOURCE_EVENT_ID = "evt-001";
@@ -199,7 +207,8 @@ let observationSequence = 0;
 /** Commits one lawful source Observation (O2) in the world's canonical store. */
 async function commitObservation(
   world: World,
-  observationId: string
+  observationId: string,
+  extraSourceRefs: readonly string[] = []
 ): Promise<AtomicCommitBundleAnyVersion> {
   const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   const ctx = {
@@ -207,7 +216,10 @@ async function commitObservation(
     current_logical_time: snapshot.runtime_metadata.logical_time as never,
     state_revision: snapshot.runtime_metadata.state_revision as never
   };
-  const observation = observationInput({ observation_id: observationId });
+  const observation = observationInput({
+    observation_id: observationId,
+    source_refs: [...extraSourceRefs, "source:s-3"] as never
+  });
   const affectDelta = await fixedAffectProducer().produceAffectDelta({
     context: ctx,
     snapshot,
@@ -357,13 +369,16 @@ async function setupLinkedFeedback(
   observationBundle: AtomicCommitBundleAnyVersion;
   preFeedbackSnapshot: SubjectStateV0;
 }> {
-  const observationBundle = await commitObservation(world, options.observationId ?? "observation:o-reply-1");
+  // CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 (§44): lawful order — record
+  // ingress, obtain the canonical event_ref, commit the Observation carrying
+  // that verified event ref as source lineage, then run feedback.
   const delivery = await deliver(world, options.deliveryOptions);
   const event = await ingress(world, {
     text: options.replyText ?? POSITIVE_REPLY,
     source_event_id: options.sourceEventId ?? SOURCE_EVENT_ID,
     in_reply_to_delivery_id: delivery.delivery_id
   });
+  const observationBundle = await commitObservation(world, options.observationId ?? "observation:o-reply-1", [event.event_ref as never]);
   const preFeedbackSnapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
   return { delivery_id: delivery.delivery_id, event_ref: event.event_ref, observationBundle, preFeedbackSnapshot };
 }
@@ -378,7 +393,7 @@ function candidateFor(
     conversation_id: CONVERSATION_ID,
     source_event_id: SOURCE_EVENT_ID,
     observation_transition_id: observationBundle.transition_id,
-    observation_ref: observationBundle.trace_entry.cause_refs[0],
+    observation_ref: observationRefOf(observationBundle),
     declared_salience: 0.5,
     host_adapter: "test-adapter",
     ...overrides
@@ -465,9 +480,11 @@ describe("delivery authority law", () => {
 
   it("7. temporal violation: reply before delivery is rejected", async () => {
     const world = buildWorld();
-    const bundle = await commitObservation(world, "observation:o-reply-1");
+    // Lawful order (§44): ingress first, then the Observation carrying the
+    // verified event ref, so the flow reaches the temporal check.
     const delivery = await deliver(world, { deliveredLogicalTime: 5 });
-    await ingress(world, { in_reply_to_delivery_id: delivery.delivery_id, logical_time: 0 });
+    const event = await ingress(world, { in_reply_to_delivery_id: delivery.delivery_id, logical_time: 0 });
+    const bundle = await commitObservation(world, "observation:o-reply-1", [event.event_ref as never]);
     await expect(runFeedback(world, candidateFor(bundle, delivery.delivery_id))).rejects.toThrow(
       /precedes the delivered parent/
     );
@@ -662,7 +679,7 @@ describe("canonical feedback commit", () => {
         candidate: {
           subject_id: SUBJECT_ID,
           source_transition_id: learningBundle.transition_id,
-          observation_ref: learningBundle.trace_entry.cause_refs[0],
+          observation_ref: observationRefOf(learningBundle),
           entity_refs: ["entity:e-1", "subject:s0"],
           event_refs: ["event:v-2"],
           occurrence_logical_time: learningBundle.logical_time_after,
