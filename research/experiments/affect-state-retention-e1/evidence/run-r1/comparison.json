@@ -1,0 +1,8182 @@
+[
+  {
+    "sequence_id": "S1",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S1#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00006709252558050392,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005367402046428,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990047194918176,
+        "absolute_valence_offset_auc": 29.990047194918176,
+        "activation_excess_auc": 23.992037755934632,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 795,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00006709252558050392,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005367402046428,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990047194918176,
+        "absolute_valence_offset_auc": 29.990047194918176,
+        "activation_excess_auc": 23.992037755934632,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 795,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S2",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S2#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        }
+      },
+      {
+        "event_id": "S2#1",
+        "time": 10,
+        "b3": {
+          "pre": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.2371013970063236,
+            "activation": 0.38968111760505897
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00007953865771910043,
+        "min_valence": -0.2371013970063236,
+        "peak_activation": 0.38968111760505897,
+        "min_activation": 0.2000636309261754,
+        "abs_peak_offset_valence": 0.2371013970063236,
+        "abs_peak_offset_activation": 0.18968111760505896,
+        "signed_valence_auc": -37.51320804594022,
+        "absolute_valence_offset_auc": 37.51320804594022,
+        "activation_excess_auc": 30.01056643675219,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 821,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00001677313139512598,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20001341850511617,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -9.36375871516312,
+        "absolute_valence_offset_auc": 9.36375871516312,
+        "activation_excess_auc": 7.491006972130541,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S2_CONTROL",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S2_CONTROL#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00006709252558050392,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005367402046428,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990047194918176,
+        "absolute_valence_offset_auc": 29.990047194918176,
+        "activation_excess_auc": 23.992037755934632,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 795,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00006709252558050392,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005367402046428,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990047194918176,
+        "absolute_valence_offset_auc": 29.990047194918176,
+        "activation_excess_auc": 23.992037755934632,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 795,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S3",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S3#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S3#1",
+        "time": 10,
+        "b3": {
+          "pre": {
+            "valence": -0.0467753492515809,
+            "activation": 0.2374202794012648
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.0967753492515809,
+            "activation": 0.2774202794012648
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0467753492515809,
+            "activation": 0.2374202794012648
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S3#2",
+        "time": 20,
+        "b3": {
+          "pre": {
+            "valence": -0.09053401520372831,
+            "activation": 0.2724272121629827
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.14053401520372832,
+            "activation": 0.31242721216298275
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0467753492515809,
+            "activation": 0.2374202794012648
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S3#3",
+        "time": 30,
+        "b3": {
+          "pre": {
+            "valence": -0.13147055285762743,
+            "activation": 0.305176442286102
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.18147055285762742,
+            "activation": 0.345176442286102
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0467753492515809,
+            "activation": 0.2374202794012648
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S3#4",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": -0.16976696977585987,
+            "activation": 0.33581357582068805
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.21976696977585986,
+            "activation": 0.3758135758206881
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0467753492515809,
+            "activation": 0.2374202794012648
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00007372360520718393,
+        "min_valence": -0.21976696977585986,
+        "peak_activation": 0.3758135758206881,
+        "min_activation": 0.20005897888416577,
+        "abs_peak_offset_valence": 0.21976696977585986,
+        "abs_peak_offset_activation": 0.17581357582068807,
+        "signed_valence_auc": -37.58908030704753,
+        "absolute_valence_offset_auc": 37.58908030704753,
+        "activation_excess_auc": 30.071264245638105,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 809,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00001677313139512598,
+        "min_valence": -0.05,
+        "peak_activation": 0.24000000000000002,
+        "min_activation": 0.20001341850511617,
+        "abs_peak_offset_valence": 0.05,
+        "abs_peak_offset_activation": 0.04000000000000001,
+        "signed_valence_auc": -9.438758715163123,
+        "absolute_valence_offset_auc": 9.438758715163123,
+        "activation_excess_auc": 7.5510069721305415,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S3_CONTROL",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S3_CONTROL#0",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": 0,
+        "min_valence": -0.05,
+        "peak_activation": 0.24000000000000002,
+        "min_activation": 0.2,
+        "abs_peak_offset_valence": 0.05,
+        "abs_peak_offset_activation": 0.04000000000000001,
+        "signed_valence_auc": -7.5225117987295445,
+        "absolute_valence_offset_auc": 7.5225117987295445,
+        "activation_excess_auc": 6.018009438983699,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": 0,
+        "min_valence": -0.05,
+        "peak_activation": 0.24000000000000002,
+        "min_activation": 0.2,
+        "abs_peak_offset_valence": 0.05,
+        "abs_peak_offset_activation": 0.04000000000000001,
+        "signed_valence_auc": -7.5225117987295445,
+        "absolute_valence_offset_auc": 7.5225117987295445,
+        "activation_excess_auc": 6.018009438983699,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S4",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S4#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#1",
+        "time": 10,
+        "b3": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.0064493014968382,
+            "activation": 0.35484055880252957
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#2",
+        "time": 20,
+        "b3": {
+          "pre": {
+            "valence": 0.006033366598867005,
+            "activation": 0.34485442432596536
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.093966633401133,
+            "activation": 0.4248544243259654
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#3",
+        "time": 30,
+        "b3": {
+          "pre": {
+            "valence": -0.08790644190666526,
+            "activation": 0.410352884572204
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.012093558093334747,
+            "activation": 0.490352884572204
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#4",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": 0.011313608070200312,
+            "activation": 0.471627151641376
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.0886863919297997,
+            "activation": 0.551627151641376
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#5",
+        "time": 50,
+        "b3": {
+          "pre": {
+            "valence": -0.08296673912757932,
+            "activation": 0.5289496564872793
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.017033260872420686,
+            "activation": 0.6089496564872794
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#6",
+        "time": 60,
+        "b3": {
+          "pre": {
+            "valence": 0.01593473452401531,
+            "activation": 0.5825752601701305
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.0840652654759847,
+            "activation": 0.6625752601701305
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#7",
+        "time": 70,
+        "b3": {
+          "pre": {
+            "valence": -0.07864364305132099,
+            "activation": 0.632742386991975
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.021356356948679017,
+            "activation": 0.7127423869919751
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#8",
+        "time": 80,
+        "b3": {
+          "pre": {
+            "valence": 0.01997902110031775,
+            "activation": 0.6796740845527778
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.08002097889968225,
+            "activation": 0.7596740845527779
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": -0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": -0.1,
+            "activation": 0.28
+          }
+        }
+      },
+      {
+        "event_id": "S4#9",
+        "time": 90,
+        "b3": {
+          "pre": {
+            "valence": -0.07486018470972046,
+            "activation": 0.7235790154403006
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.025139815290279546,
+            "activation": 0.8035790154403006
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.0935506985031618,
+            "activation": 0.27484055880252956
+          },
+          "impulse": {
+            "q": 0.4,
+            "u_v": 0.1,
+            "u_a": 0.08000000000000002
+          },
+          "post": {
+            "valence": 0.1,
+            "activation": 0.28
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": 0.025139815290279546,
+        "min_valence": -0.1,
+        "peak_activation": 0.8035790154403006,
+        "min_activation": 0.20020247820266643,
+        "abs_peak_offset_valence": 0.1,
+        "abs_peak_offset_activation": 0.6035790154403007,
+        "signed_valence_auc": 0.04873497503940767,
+        "absolute_valence_offset_auc": 8.621047272716536,
+        "activation_excess_auc": 120.33007260122795,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 961,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": 0.1,
+        "min_valence": -0.1,
+        "peak_activation": 0.28,
+        "min_activation": 0.20002683701023224,
+        "abs_peak_offset_valence": 0.1,
+        "abs_peak_offset_activation": 0.08000000000000002,
+        "signed_valence_auc": 14.124400139242308,
+        "absolute_valence_offset_auc": 23.7306347214101,
+        "activation_excess_auc": 18.984507777128048,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 691,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S5_A",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S5_A#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_A#1",
+        "time": 20,
+        "b3": {
+          "pre": {
+            "valence": -0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.0937586659521474,
+            "activation": 0.27500693276171795
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_A#2",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": -0.08205508287037987,
+            "activation": 0.26564406629630377
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.13205508287037987,
+            "activation": 0.3056440662963038
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_A#3",
+        "time": 60,
+        "b3": {
+          "pre": {
+            "valence": -0.1155710851721619,
+            "activation": 0.29245686813772936
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.1655710851721619,
+            "activation": 0.33245686813772934
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00005554291133652537,
+        "min_valence": -0.1655710851721619,
+        "peak_activation": 0.33245686813772934,
+        "min_activation": 0.20004443432906938,
+        "abs_peak_offset_valence": 0.1655710851721619,
+        "abs_peak_offset_activation": 0.13245686813772933,
+        "signed_valence_auc": -30.06677964347122,
+        "absolute_valence_offset_auc": 30.06677964347122,
+        "activation_excess_auc": 24.05342371477711,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 767,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00001677313139512598,
+        "min_valence": -0.05,
+        "peak_activation": 0.24000000000000002,
+        "min_activation": 0.20001341850511617,
+        "abs_peak_offset_valence": 0.05,
+        "abs_peak_offset_activation": 0.04000000000000001,
+        "signed_valence_auc": -10.315484523550742,
+        "absolute_valence_offset_auc": 10.315484523550742,
+        "activation_excess_auc": 8.252387618840613,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S5_B",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S5_B#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.05,
+            "activation": 0.24000000000000002
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_B#1",
+        "time": 20,
+        "b3": {
+          "pre": {
+            "valence": 0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.0937586659521474,
+            "activation": 0.27500693276171795
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_B#2",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": 0.08205508287037987,
+            "activation": 0.26564406629630377
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.13205508287037987,
+            "activation": 0.3056440662963038
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": 0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      },
+      {
+        "event_id": "S5_B#3",
+        "time": 60,
+        "b3": {
+          "pre": {
+            "valence": 0.1155710851721619,
+            "activation": 0.29245686813772936
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": 0.0655710851721619,
+            "activation": 0.33245686813772934
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0.04375866595214739,
+            "activation": 0.23500693276171797
+          },
+          "impulse": {
+            "q": 0.2,
+            "u_v": -0.05,
+            "u_a": 0.04000000000000001
+          },
+          "post": {
+            "valence": -0.05,
+            "activation": 0.24000000000000002
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": 0.13205508287037987,
+        "min_valence": 0.000021996648546273432,
+        "peak_activation": 0.33245686813772934,
+        "min_activation": 0.20004443432906938,
+        "abs_peak_offset_valence": 0.13205508287037987,
+        "abs_peak_offset_activation": 0.13245686813772933,
+        "signed_valence_auc": 15.021756046012147,
+        "absolute_valence_offset_auc": 15.021756046012147,
+        "activation_excess_auc": 24.05342371477711,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 733,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": 0.05,
+        "min_valence": -0.05,
+        "peak_activation": 0.24000000000000002,
+        "min_activation": 0.20001341850511617,
+        "abs_peak_offset_valence": 0.05,
+        "abs_peak_offset_activation": 0.04000000000000001,
+        "signed_valence_auc": -4.729539073908368,
+        "absolute_valence_offset_auc": 10.315484523550742,
+        "activation_excess_auc": 8.252387618840613,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 587,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S6",
+    "unsaturated": true,
+    "rows": [
+      {
+        "event_id": "S6#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 0.8,
+            "u_v": -0.2,
+            "u_a": 0.16000000000000003
+          },
+          "post": {
+            "valence": -0.2,
+            "activation": 0.36000000000000004
+          }
+        }
+      },
+      {
+        "event_id": "S6#1",
+        "time": 10,
+        "b3": {
+          "pre": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          },
+          "impulse": {
+            "q": 0,
+            "u_v": 0,
+            "u_a": 0
+          },
+          "post": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          },
+          "impulse": {
+            "q": 0,
+            "u_v": 0,
+            "u_a": 0
+          },
+          "post": {
+            "valence": -0.1871013970063236,
+            "activation": 0.349681117605059
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.00006276552632397393,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005021242105905,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990696247210543,
+        "absolute_valence_offset_auc": 29.990696247210543,
+        "activation_excess_auc": 23.99255699776852,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 785,
+        "saturation_fraction": 0
+      },
+      "b3_reset": {
+        "peak_valence": -0.00006276552632397393,
+        "min_valence": -0.2,
+        "peak_activation": 0.36000000000000004,
+        "min_activation": 0.20005021242105905,
+        "abs_peak_offset_valence": 0.2,
+        "abs_peak_offset_activation": 0.16000000000000003,
+        "signed_valence_auc": -29.990696247210543,
+        "absolute_valence_offset_auc": 29.990696247210543,
+        "activation_excess_auc": 23.99255699776852,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 785,
+        "saturation_fraction": 0
+      }
+    }
+  },
+  {
+    "sequence_id": "S7",
+    "unsaturated": false,
+    "rows": [
+      {
+        "event_id": "S7#0",
+        "time": 0,
+        "b3": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": 0,
+            "activation": 0.2
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#1",
+        "time": 1,
+        "b3": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.49833887656375864,
+            "activation": 0.5986711012510069
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#2",
+        "time": 2,
+        "b3": {
+          "pre": {
+            "valence": -0.49502766701555756,
+            "activation": 0.596022133612446
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.7450276670155576,
+            "activation": 0.796022133612446
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#3",
+        "time": 3,
+        "b3": {
+          "pre": {
+            "valence": -0.7400773353422464,
+            "activation": 0.7920618682737972
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.9900773353422464,
+            "activation": 0.9920618682737972
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#4",
+        "time": 4,
+        "b3": {
+          "pre": {
+            "valence": -0.9834987726805327,
+            "activation": 0.9867990181444262
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#5",
+        "time": 5,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#6",
+        "time": 6,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#7",
+        "time": 7,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#8",
+        "time": 8,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#9",
+        "time": 9,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#10",
+        "time": 10,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#11",
+        "time": 11,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#12",
+        "time": 12,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#13",
+        "time": 13,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#14",
+        "time": 14,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#15",
+        "time": 15,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#16",
+        "time": 16,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#17",
+        "time": 17,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#18",
+        "time": 18,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#19",
+        "time": 19,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#20",
+        "time": 20,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#21",
+        "time": 21,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#22",
+        "time": 22,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#23",
+        "time": 23,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#24",
+        "time": 24,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#25",
+        "time": 25,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#26",
+        "time": 26,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#27",
+        "time": 27,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#28",
+        "time": 28,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#29",
+        "time": 29,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#30",
+        "time": 30,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#31",
+        "time": 31,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#32",
+        "time": 32,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#33",
+        "time": 33,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#34",
+        "time": 34,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#35",
+        "time": 35,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#36",
+        "time": 36,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#37",
+        "time": 37,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#38",
+        "time": 38,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#39",
+        "time": 39,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#40",
+        "time": 40,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#41",
+        "time": 41,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#42",
+        "time": 42,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#43",
+        "time": 43,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#44",
+        "time": 44,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#45",
+        "time": 45,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#46",
+        "time": 46,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#47",
+        "time": 47,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#48",
+        "time": 48,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#49",
+        "time": 49,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#50",
+        "time": 50,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#51",
+        "time": 51,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#52",
+        "time": 52,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#53",
+        "time": 53,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#54",
+        "time": 54,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#55",
+        "time": 55,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#56",
+        "time": 56,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#57",
+        "time": 57,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#58",
+        "time": 58,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#59",
+        "time": 59,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#60",
+        "time": 60,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#61",
+        "time": 61,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#62",
+        "time": 62,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#63",
+        "time": 63,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#64",
+        "time": 64,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#65",
+        "time": 65,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#66",
+        "time": 66,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#67",
+        "time": 67,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#68",
+        "time": 68,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#69",
+        "time": 69,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#70",
+        "time": 70,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#71",
+        "time": 71,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#72",
+        "time": 72,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#73",
+        "time": 73,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#74",
+        "time": 74,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#75",
+        "time": 75,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#76",
+        "time": 76,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#77",
+        "time": 77,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#78",
+        "time": 78,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#79",
+        "time": 79,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#80",
+        "time": 80,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#81",
+        "time": 81,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#82",
+        "time": 82,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#83",
+        "time": 83,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#84",
+        "time": 84,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#85",
+        "time": 85,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#86",
+        "time": 86,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#87",
+        "time": 87,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#88",
+        "time": 88,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#89",
+        "time": 89,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#90",
+        "time": 90,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#91",
+        "time": 91,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#92",
+        "time": 92,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#93",
+        "time": 93,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#94",
+        "time": 94,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#95",
+        "time": 95,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#96",
+        "time": 96,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#97",
+        "time": 97,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#98",
+        "time": 98,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#99",
+        "time": 99,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#100",
+        "time": 100,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#101",
+        "time": 101,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#102",
+        "time": 102,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#103",
+        "time": 103,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#104",
+        "time": 104,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#105",
+        "time": 105,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#106",
+        "time": 106,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#107",
+        "time": 107,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#108",
+        "time": 108,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#109",
+        "time": 109,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#110",
+        "time": 110,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#111",
+        "time": 111,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#112",
+        "time": 112,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#113",
+        "time": 113,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#114",
+        "time": 114,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#115",
+        "time": 115,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#116",
+        "time": 116,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#117",
+        "time": 117,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#118",
+        "time": 118,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#119",
+        "time": 119,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#120",
+        "time": 120,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#121",
+        "time": 121,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#122",
+        "time": 122,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#123",
+        "time": 123,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#124",
+        "time": 124,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#125",
+        "time": 125,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#126",
+        "time": 126,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#127",
+        "time": 127,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#128",
+        "time": 128,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#129",
+        "time": 129,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#130",
+        "time": 130,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#131",
+        "time": 131,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#132",
+        "time": 132,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#133",
+        "time": 133,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#134",
+        "time": 134,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#135",
+        "time": 135,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#136",
+        "time": 136,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#137",
+        "time": 137,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#138",
+        "time": 138,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#139",
+        "time": 139,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#140",
+        "time": 140,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#141",
+        "time": 141,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#142",
+        "time": 142,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#143",
+        "time": 143,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#144",
+        "time": 144,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#145",
+        "time": 145,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#146",
+        "time": 146,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#147",
+        "time": 147,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#148",
+        "time": 148,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#149",
+        "time": 149,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#150",
+        "time": 150,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#151",
+        "time": 151,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#152",
+        "time": 152,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#153",
+        "time": 153,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#154",
+        "time": 154,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#155",
+        "time": 155,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#156",
+        "time": 156,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#157",
+        "time": 157,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#158",
+        "time": 158,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#159",
+        "time": 159,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#160",
+        "time": 160,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#161",
+        "time": 161,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#162",
+        "time": 162,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#163",
+        "time": 163,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#164",
+        "time": 164,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#165",
+        "time": 165,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#166",
+        "time": 166,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#167",
+        "time": 167,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#168",
+        "time": 168,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#169",
+        "time": 169,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#170",
+        "time": 170,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#171",
+        "time": 171,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#172",
+        "time": 172,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#173",
+        "time": 173,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#174",
+        "time": 174,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#175",
+        "time": 175,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#176",
+        "time": 176,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#177",
+        "time": 177,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#178",
+        "time": 178,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#179",
+        "time": 179,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#180",
+        "time": 180,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#181",
+        "time": 181,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#182",
+        "time": 182,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#183",
+        "time": 183,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#184",
+        "time": 184,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#185",
+        "time": 185,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#186",
+        "time": 186,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#187",
+        "time": 187,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#188",
+        "time": 188,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#189",
+        "time": 189,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#190",
+        "time": 190,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#191",
+        "time": 191,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#192",
+        "time": 192,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#193",
+        "time": 193,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#194",
+        "time": 194,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#195",
+        "time": 195,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#196",
+        "time": 196,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#197",
+        "time": 197,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#198",
+        "time": 198,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      },
+      {
+        "event_id": "S7#199",
+        "time": 199,
+        "b3": {
+          "pre": {
+            "valence": -0.9933555062550344,
+            "activation": 0.9946844050040275
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -1,
+            "activation": 1
+          }
+        },
+        "b3_reset": {
+          "pre": {
+            "valence": -0.2483388765637586,
+            "activation": 0.3986711012510069
+          },
+          "impulse": {
+            "q": 1,
+            "u_v": -0.25,
+            "u_a": 0.2
+          },
+          "post": {
+            "valence": -0.25,
+            "activation": 0.4
+          }
+        }
+      }
+    ],
+    "summary": {
+      "b3": {
+        "peak_valence": -0.0003354626279025208,
+        "min_valence": -1,
+        "peak_activation": 1,
+        "min_activation": 0.20026837010232196,
+        "abs_peak_offset_valence": 1,
+        "abs_peak_offset_activation": 0.8,
+        "signed_valence_auc": -347.8086798535134,
+        "absolute_valence_offset_auc": 347.8086798535134,
+        "activation_excess_auc": 278.2469438828114,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 1037,
+        "saturation_fraction": 0.14
+      },
+      "b3_reset": {
+        "peak_valence": -0.0000838656569756302,
+        "min_valence": -0.25,
+        "peak_activation": 0.4,
+        "min_activation": 0.20006709252558058,
+        "abs_peak_offset_valence": 0.25,
+        "abs_peak_offset_activation": 0.2,
+        "signed_valence_auc": -87.23755899364797,
+        "absolute_valence_offset_auc": 87.23755899364797,
+        "activation_excess_auc": 69.79004719491834,
+        "recovery_half_life_ticks": 104,
+        "settling_time_ticks": 829,
+        "saturation_fraction": 0
+      }
+    }
+  }
+]

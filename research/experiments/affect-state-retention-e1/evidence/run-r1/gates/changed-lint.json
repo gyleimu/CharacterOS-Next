@@ -1,0 +1,46 @@
+[
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\evals\\conformance\\affect-state-retention-e1.test.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\artifacts.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\cli.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\contract.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\fixtures.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\gates.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\manifest.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\mechanisms.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\metrics.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\plots.ts",
+    "messages": []
+  },
+  {
+    "file": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\affect-state-retention-e1\\runner.ts",
+    "messages": []
+  }
+]

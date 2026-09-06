@@ -1,0 +1,30 @@
+{
+  "restore_proofs": [
+    {
+      "mechanism": "B3",
+      "sequence_id": "S5_A",
+      "restore_time": 30,
+      "max_abs_error": 0,
+      "tolerance": 1e-12,
+      "pass": true
+    },
+    {
+      "mechanism": "B3_RESET",
+      "sequence_id": "S5_A",
+      "restore_time": 30,
+      "max_abs_error": 0,
+      "tolerance": 1e-12,
+      "pass": true
+    }
+  ],
+  "replay_proof": {
+    "replay_application": "REPLAY",
+    "replay_impulse": null,
+    "replay_delta": 0,
+    "trajectory_unchanged_vs_no_event": true,
+    "conflict_application": "CONFLICT",
+    "conflict_impulse": null,
+    "distinct_ids_both_applied": true,
+    "pass": true
+  }
+}

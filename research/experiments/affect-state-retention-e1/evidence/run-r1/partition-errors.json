@@ -1,0 +1,302 @@
+[
+  {
+    "mechanism": "B0",
+    "sequence_id": "S1",
+    "max_abs_error": 0,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S1",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S1",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S1",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S1",
+    "max_abs_error": 0,
+    "common_timestamps": 1
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S2",
+    "max_abs_error": 0,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S2",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S2",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S2",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S2",
+    "max_abs_error": 0,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S2_CONTROL",
+    "max_abs_error": 0,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S2_CONTROL",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S2_CONTROL",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S2_CONTROL",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S2_CONTROL",
+    "max_abs_error": 0,
+    "common_timestamps": 1
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S3",
+    "max_abs_error": 0,
+    "common_timestamps": 6
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S3",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 6
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S3",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 6
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S3",
+    "max_abs_error": 2.22044604925e-16,
+    "common_timestamps": 6
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S3",
+    "max_abs_error": 0,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S3_CONTROL",
+    "max_abs_error": 0,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S3_CONTROL",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S3_CONTROL",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S3_CONTROL",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S3_CONTROL",
+    "max_abs_error": 0,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S4",
+    "max_abs_error": 0,
+    "common_timestamps": 11
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S4",
+    "max_abs_error": 2.77555756156e-17,
+    "common_timestamps": 11
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S4",
+    "max_abs_error": 2.77555756156e-17,
+    "common_timestamps": 11
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S4",
+    "max_abs_error": 8.881784197e-16,
+    "common_timestamps": 11
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S4",
+    "max_abs_error": 0,
+    "common_timestamps": 10
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S5_A",
+    "max_abs_error": 0,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S5_A",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S5_A",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S5_A",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S5_A",
+    "max_abs_error": 0,
+    "common_timestamps": 4
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S5_B",
+    "max_abs_error": 0,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S5_B",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S5_B",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S5_B",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 5
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S5_B",
+    "max_abs_error": 0,
+    "common_timestamps": 4
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S6",
+    "max_abs_error": 0,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S6",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S6",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S6",
+    "max_abs_error": 1.38777878078e-16,
+    "common_timestamps": 3
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S6",
+    "max_abs_error": 0,
+    "common_timestamps": 2
+  },
+  {
+    "mechanism": "B0",
+    "sequence_id": "S7",
+    "max_abs_error": 0,
+    "common_timestamps": 201
+  },
+  {
+    "mechanism": "B1",
+    "sequence_id": "S7",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 201
+  },
+  {
+    "mechanism": "B3_RESET",
+    "sequence_id": "S7",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 201
+  },
+  {
+    "mechanism": "B3",
+    "sequence_id": "S7",
+    "max_abs_error": 5.55111512313e-17,
+    "common_timestamps": 201
+  },
+  {
+    "mechanism": "B2",
+    "sequence_id": "S7",
+    "max_abs_error": 0,
+    "common_timestamps": 200
+  }
+]

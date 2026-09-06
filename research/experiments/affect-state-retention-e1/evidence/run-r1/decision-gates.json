@@ -1,0 +1,60 @@
+{
+  "structural_law": {
+    "holds": true,
+    "detail": "B1==B3_RESET byte-equal; identical event records; common baseline start; B0 constant"
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "status": "PASS",
+      "evidence": "all B3 outputs finite and within [-1,1]x[0,1] across 10 sequences (incl. sensitivity + partitions)"
+    },
+    {
+      "id": "G2",
+      "status": "PASS",
+      "evidence": "post-event distance non-increasing and <= d0*exp(-8)+1e-12 at last_event+1200 for every B3 run"
+    },
+    {
+      "id": "G3",
+      "status": "PASS",
+      "evidence": "B3 max partition error across all sequences and strategies: 8.881784197e-16 <= 1e-12; per-mechanism/sequence errors recorded in partition_errors."
+    },
+    {
+      "id": "G4",
+      "status": "PASS",
+      "evidence": "Z impulse exactly 0 and S6 == S1 control within 1e-12 (B3, B3_RESET, B2 native)"
+    },
+    {
+      "id": "G5",
+      "status": "PASS",
+      "evidence": "B3 post-event == pre+u exactly (-0.2371013970063236), B3_RESET post-event == clamp(b+u) (-0.05), retention difference 0.1871013970063236, unsaturated=true"
+    },
+    {
+      "id": "G6",
+      "status": "PASS",
+      "evidence": "B3 repeated post=-0.219766969776 < B3 single-event control post=-0.05 < 0, unsaturated=true"
+    },
+    {
+      "id": "G7",
+      "status": "PASS",
+      "evidence": "pre-common-event |dv|=0.231142170344, post-common-event |dv|=0.231142170344, end-of-recovery |dv|=0.0000775395598828, B3_RESET post-common |dv|=0 (overwrite by construction), unsaturated=true"
+    },
+    {
+      "id": "G8",
+      "status": "PASS",
+      "evidence": "saturated during input=true, left boundary after input stopped=true, d0=1, dEnd=0.000335462627903 <= d0*exp(-8)+1e-12=0.000335462628903, finite=true"
+    },
+    {
+      "id": "G9",
+      "status": "PASS",
+      "evidence": "same id+payload -> REPLAY (impulse null, delta 0, trajectory unchanged=true); same id+changed payload -> CONFLICT; distinct ids same payload -> both APPLIED=true"
+    },
+    {
+      "id": "RESTORE",
+      "status": "PASS",
+      "evidence": "B3: max_abs_error=0 <= 1e-12; B3_RESET: max_abs_error=0 <= 1e-12"
+    }
+  ],
+  "verdict": "SUPPORTED_FOR_NEXT_STAGE",
+  "verdict_rationale": "All hard stability/integrity gates (G1-G4, G8, G9) PASS and all retention/accumulation/path-dependence gates (G5-G7) PASS."
+}

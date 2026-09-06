@@ -1,0 +1,50 @@
+[
+  {
+    "sequence_id": "S2",
+    "scale": 0.5,
+    "b3_peak_valence": -0.118550698503,
+    "b3_reset_peak_valence": -0.1
+  },
+  {
+    "sequence_id": "S2",
+    "scale": 2,
+    "b3_peak_valence": -0.474202794013,
+    "b3_reset_peak_valence": -0.4
+  },
+  {
+    "sequence_id": "S3",
+    "scale": 0.5,
+    "b3_peak_valence": -0.109883484888,
+    "b3_reset_peak_valence": -0.025
+  },
+  {
+    "sequence_id": "S3",
+    "scale": 2,
+    "b3_peak_valence": -0.439533939552,
+    "b3_reset_peak_valence": -0.1
+  },
+  {
+    "sequence_id": "S5_A",
+    "scale": 0.5,
+    "b3_peak_valence": -0.0827855425861,
+    "b3_reset_peak_valence": -0.025
+  },
+  {
+    "sequence_id": "S5_A",
+    "scale": 2,
+    "b3_peak_valence": -0.331142170344,
+    "b3_reset_peak_valence": -0.1
+  },
+  {
+    "sequence_id": "S5_B",
+    "scale": 0.5,
+    "b3_peak_valence": 0,
+    "b3_reset_peak_valence": -0.025
+  },
+  {
+    "sequence_id": "S5_B",
+    "scale": 2,
+    "b3_peak_valence": 0,
+    "b3_reset_peak_valence": -0.1
+  }
+]
