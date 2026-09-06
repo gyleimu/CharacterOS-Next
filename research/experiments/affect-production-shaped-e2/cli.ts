@@ -69,7 +69,8 @@ async function main(): Promise<void> {
       head,
       engineering_gates_dir: engineering.output,
       frozen_before_results: true,
-      run_identity: "run-r1",
+      run_identity: "run-r2",
+      artifact_serialization_rule: "corpus: S00 exemplar per family + exact per-lifetime sha256 index (full corpus regenerates from the frozen generator); representative trajectories and B2 checkpoints: round12 values, D8 decimated to every 10th tick (inspection artifacts; all metrics computed from the full in-run series)",
       amendment_policy: "Never amended after observing results; a code/protocol change invalidates this run identity and requires a new one."
     }
   };
@@ -81,7 +82,13 @@ async function main(): Promise<void> {
   const result = execution.result;
 
   // ---- corpus evidence ----------------------------------------------------------------
+  // Artifact serialization rule (§71 compact segmented artifacts; storage only
+  // — no computed metric depends on it): the S00 lifetime per family is the
+  // inspectable exemplar; every lifetime's exact canonical hash is bound in
+  // index.json; the full corpus regenerates deterministically from the frozen
+  // generator + seeds (Merkle root verified at execution).
   for (const life of execution.corpus) {
+    if (life.seed !== "E2-S00") continue;
     writeJson(join(output, `corpus/${life.family}/${life.seed}.json`), {
       family: life.family, seed: life.seed, T: life.T, quiet: life.quiet,
       balanced_weighted_signed_sum: round12(life.balanced_weighted_signed_sum),
@@ -105,16 +112,25 @@ async function main(): Promise<void> {
   writeJson(join(output, "metrics/d4d5-symmetry.json"), execution.d4d5_symmetry_max_error);
 
   // ---- representative trajectories + B2 native checkpoints ----------------------------------
+  // D8 (100k ticks) is decimated to every 10th tick on storage; every other
+  // representative keeps tick-level resolution. All metrics were computed from
+  // the full in-run series.
   for (const [k, outputs] of execution.representativeOutputs) {
-    writeJson(join(output, `trajectories/${k.replaceAll("|", "__")}.json`), { key: k, outputs });
+    const decimate = k.startsWith("D8") ? 10 : 1;
+    writeJson(join(output, `trajectories/${k.replaceAll("|", "__")}.json`), {
+      key: k, decimation: decimate,
+      outputs: outputs.filter((_, i) => i % decimate === 0)
+    });
   }
   for (const [k, outputs] of historyOutputsSnapshot()) {
     writeJson(join(output, `trajectories/history-${k.replaceAll("|", "__")}.json`), { key: k, outputs });
   }
   for (const [k, run] of execution.b2Representative) {
+    const decimate = run.T > 50000 ? 10 : 1;
     writeJson(join(output, `b2/${k.replaceAll("|", "__")}.json`), {
       corpus_id: run.corpus_id, counts: run.counts, routed_counts: run.routed_counts,
-      outputs: run.outputs.map((o) => o.map(round12))
+      decimation: decimate,
+      outputs: run.outputs.filter((_, i) => i % decimate === 0).map((o) => o.map(round12))
     });
   }
 
