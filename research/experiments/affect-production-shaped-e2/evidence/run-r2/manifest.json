@@ -1,0 +1,893 @@
+{
+  "experiment_id": "PRODUCTION_SHAPED_APPRAISAL_DYNAMICS_E2",
+  "schema_version": "production-shaped-appraisal-dynamics-manifest-e2",
+  "predecessor": {
+    "experiment": "STATE_RETENTION_AND_RECOVERY_E1",
+    "verdict": "SUPPORTED_FOR_NEXT_STAGE",
+    "frozen": true,
+    "law_reuse": "E2 imports the E1 B3 law (recovery, impulse, clamp, event order law) from the frozen E1 experiment modules; nothing is reimplemented and E1 is never modified."
+  },
+  "git_baseline": "1925bf465fc3d4e02b94384734a44f96b0568cbd",
+  "research_question": "Does the E1-supported B3 bounded state-retention mechanism remain stable, recoverable, useful as a recent-history carrier, and free from pathological accumulation when driven by contract-valid synthetic Appraisal sequences shaped more like plausible CharacterOS inputs?",
+  "production_shaped_status": "This is an engineering coverage distribution consistent with current canonical Appraisal contracts. It is NOT an observed, calibrated, representative, or provider-estimated production distribution.",
+  "frozen_law": {
+    "state": "valence [-1,1], activation [0,1]",
+    "baseline": "(0, 0.2)",
+    "tau": 150,
+    "recovery": "x(t+dt) = b + (x(t)-b) * exp(-dt/150) per axis",
+    "impulse": "q = relevance*intensity; u_v = 0.25*q*(2*goal_congruence-1); u_a = 0.20*q",
+    "b3_event": "x_after = clamp(x_before + u)",
+    "b3_reset_event": "x_after = clamp(b + u)",
+    "coefficient_changes": "none"
+  },
+  "mechanisms": {
+    "primary": [
+      "B0",
+      "B2",
+      "B3_RESET",
+      "B3"
+    ],
+    "b1": "NOT implemented (E1 established equivalence with B3_RESET for this purpose)",
+    "b2": "frozen production ReferenceFastEmaAffectProducer, imported lawfully, native reporting only, cannot decide the verdict"
+  },
+  "canonical_appraisal_shape": {
+    "fields": [
+      "relevance",
+      "goal_congruence",
+      "attribution",
+      "controllability",
+      "uncertainty",
+      "intensity",
+      "assessment_confidence"
+    ],
+    "validators": "every generated event passes validateExperienceAppraisalProposalV0; record fixtures pass validateExperienceAppraisalRecordV0",
+    "insufficient_context": "INSUFFICIENT_CONTEXT is represented as NO accepted appraisal event at that tick: no dimensions are fabricated and no Affect impulse exists. E2 families contain only accepted appraisals."
+  },
+  "generator": {
+    "formula": "U(F,S,K) = int(first_13_hex(SHA256(UTF8(GENERATOR_DOMAIN + F + '|' + S + '|' + K)))) / 2^52",
+    "first_13_hex": 13,
+    "divisor": 4503599627370496,
+    "range": "[0,1)",
+    "stateless": true,
+    "uniform": "Uniform[a,b) = a + (b-a) * U(F,S,K)",
+    "trimid": "TriMid[a,b) = a + (b-a) * (U(F,S,K+'|tri:1') + U(F,S,K+'|tri:2')) / 2"
+  },
+  "amplitude_classes": [
+    {
+      "id": "LOW",
+      "relevance": [
+        0.1,
+        0.3
+      ],
+      "intensity": [
+        0.1,
+        0.3
+      ]
+    },
+    {
+      "id": "MID",
+      "relevance": [
+        0.3,
+        0.7
+      ],
+      "intensity": [
+        0.3,
+        0.7
+      ]
+    },
+    {
+      "id": "STRONG",
+      "relevance": [
+        0.7,
+        0.95
+      ],
+      "intensity": [
+        0.7,
+        0.95
+      ]
+    },
+    {
+      "id": "EDGE",
+      "relevance": [
+        0.95,
+        1
+      ],
+      "intensity": [
+        0.95,
+        1
+      ]
+    }
+  ],
+  "amplitude_mixtures": {
+    "ordinary": {
+      "LOW": 0.55,
+      "MID": 0.35,
+      "STRONG": 0.09,
+      "EDGE": 0.01
+    },
+    "d1": {
+      "LOW": 0.8,
+      "MID": 0.19,
+      "STRONG": 0.01,
+      "EDGE": 0
+    },
+    "d6": {
+      "LOW": 0.7,
+      "MID": 0.3,
+      "STRONG": 0,
+      "EDGE": 0
+    },
+    "d7": {
+      "LOW": 0.4,
+      "MID": 0.45,
+      "STRONG": 0.14,
+      "EDGE": 0.01
+    }
+  },
+  "goal_rules": {
+    "delta_mixture": [
+      {
+        "p": 0.5,
+        "range": [
+          0,
+          0.1
+        ]
+      },
+      {
+        "p": 0.4,
+        "range": [
+          0.1,
+          0.35
+        ]
+      },
+      {
+        "p": 0.1,
+        "range": [
+          0.35,
+          0.5
+        ]
+      }
+    ],
+    "d2_cycle": [
+      0.4,
+      0.6,
+      0.45,
+      0.55,
+      0.48,
+      0.52,
+      0.5,
+      0.5
+    ],
+    "d6_cycle": [
+      0.4,
+      0.6,
+      0.45,
+      0.55,
+      0.48,
+      0.52,
+      0.5
+    ],
+    "shared_q_pairs": [
+      [
+        0,
+        1
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        4,
+        5
+      ]
+    ],
+    "field_rules": {
+      "attribution": "self/other/situation each 1/3",
+      "controllability": "TriMid[0,1)",
+      "uncertainty": "TriMid[0,1)",
+      "assessment_confidence": "90% TriMid[.50,1.00); 10% Uniform[0,.50)"
+    }
+  },
+  "families": [
+    {
+      "id": "D1",
+      "T": 12000,
+      "event_count": 18,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 2500,
+          "end": 3099
+        },
+        {
+          "start": 6500,
+          "end": 7699
+        },
+        {
+          "start": 10800,
+          "end": 11999
+        }
+      ],
+      "description": "quiet: 18 events from 9000 eligible ticks; D1 amplitude mix; balanced ordinary goal pairs",
+      "balanced": true
+    },
+    {
+      "id": "D2",
+      "T": 12000,
+      "event_count": 1080,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 10800,
+          "end": 11999
+        }
+      ],
+      "description": "chatter: 1080 LOW events in [0,10800) at rate .10; fixed 8-goal cycle; complementary entries share q",
+      "balanced": true
+    },
+    {
+      "id": "D3",
+      "T": 12000,
+      "event_count": 192,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 3600,
+          "end": 4199
+        },
+        {
+          "start": 7800,
+          "end": 8399
+        },
+        {
+          "start": 10800,
+          "end": 11999
+        }
+      ],
+      "description": "ordinary: 192 events from 9600 eligible ticks; ordinary amplitude mixture; strictly balanced goal pairs",
+      "balanced": true
+    },
+    {
+      "id": "D4",
+      "T": 4000,
+      "event_count": 60,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 1099,
+          "end": 3999
+        }
+      ],
+      "description": "negative burst: 10 D1-like background events in [0,1000) + 50 burst events every 2 ticks from t=1000; burst goal ~ U[0,.20)",
+      "balanced": false
+    },
+    {
+      "id": "D5",
+      "T": 4000,
+      "event_count": 60,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 1099,
+          "end": 3999
+        }
+      ],
+      "description": "positive burst: exact D4 timing/q with goal_D5 = 1 - goal_D4 (symmetry pair)",
+      "balanced": false
+    },
+    {
+      "id": "D6",
+      "T": 12000,
+      "event_count": 588,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 10567,
+          "end": 11999
+        }
+      ],
+      "description": "alternating: events at 0,18,...,10566; amplitude LOW .70 / MID .30; 7-goal cycle x 84; complementary entries share q",
+      "balanced": true
+    },
+    {
+      "id": "D7",
+      "T": 12000,
+      "event_count": 2700,
+      "seed_count": 32,
+      "quiet": [
+        {
+          "start": 10800,
+          "end": 11999
+        }
+      ],
+      "description": "high density stress: 2700 events in [0,10800) at rate .25; D7 amplitude mixture; strictly balanced goal pairs",
+      "balanced": true
+    },
+    {
+      "id": "D8",
+      "T": 100000,
+      "event_count": 2520,
+      "seed_count": 8,
+      "quiet": [],
+      "description": "long run: 10 cycles of 10000 ticks; per cycle 4 D1-like + 80 D3-like + 100 D2-like + 50 burst (every 2 ticks) + 18 D1-like; even-cycle bursts negative, odd-cycle bursts mirror with same q; per-cycle quiet [c+8800, c+9999]",
+      "balanced": true
+    }
+  ],
+  "seeds": {
+    "D1": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D2": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D3": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D4": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D5": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D6": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D7": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07",
+      "E2-S08",
+      "E2-S09",
+      "E2-S10",
+      "E2-S11",
+      "E2-S12",
+      "E2-S13",
+      "E2-S14",
+      "E2-S15",
+      "E2-S16",
+      "E2-S17",
+      "E2-S18",
+      "E2-S19",
+      "E2-S20",
+      "E2-S21",
+      "E2-S22",
+      "E2-S23",
+      "E2-S24",
+      "E2-S25",
+      "E2-S26",
+      "E2-S27",
+      "E2-S28",
+      "E2-S29",
+      "E2-S30",
+      "E2-S31"
+    ],
+    "D8": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07"
+    ]
+  },
+  "case_fixtures": {
+    "c1": {
+      "relevance": 0.9,
+      "goal_congruence": 0.15,
+      "attribution": "self",
+      "controllability": 0.4,
+      "uncertainty": 0.3,
+      "intensity": 0.7,
+      "assessment_confidence": 0.8
+    },
+    "c2": {
+      "relevance": 0.9,
+      "goal_congruence": 0.85,
+      "attribution": "other",
+      "controllability": 0.9,
+      "uncertainty": 0.3,
+      "intensity": 0.5,
+      "assessment_confidence": 0.8
+    },
+    "c3": {
+      "goals": [
+        0.4,
+        0.45,
+        0.48,
+        0.5,
+        0.52,
+        0.55,
+        0.6
+      ],
+      "common": {
+        "relevance": 0.6,
+        "intensity": 0.5,
+        "controllability": 0.5,
+        "uncertainty": 0.5,
+        "attribution": "situation",
+        "assessment_confidence": 0.8
+      }
+    },
+    "c4": {
+      "attribution": "self",
+      "controllability": 0,
+      "uncertainty": 0,
+      "assessment_confidence": 0
+    },
+    "c5": {
+      "attribution": "other",
+      "controllability": 1,
+      "uncertainty": 1,
+      "assessment_confidence": 1
+    },
+    "c4c5_common": {
+      "relevance": 0.6,
+      "goal_congruence": 0.45,
+      "intensity": 0.5
+    }
+  },
+  "history_pairs": {
+    "count": 16,
+    "shared_event_times_fixed": [
+      1220,
+      1260,
+      1300,
+      1340,
+      1380,
+      1420,
+      1460,
+      1490
+    ],
+    "hash_selected_ticks": 32,
+    "hash_tick_range": {
+      "min": 0,
+      "maxExclusive": 1200
+    },
+    "relevance_intensity": {
+      "min": 0.35,
+      "maxExclusive": 0.65
+    },
+    "delta": {
+      "min": 0.15,
+      "maxExclusive": 0.3
+    },
+    "common_final_event": {
+      "tick": 1500,
+      "relevance": 0.6,
+      "goal_congruence": 0.4,
+      "intensity": 0.5,
+      "attribution": "situation",
+      "controllability": 0.5,
+      "uncertainty": 0.5,
+      "assessment_confidence": 0.8
+    },
+    "end_tick": 2700,
+    "mechanisms": [
+      "B3_RESET",
+      "B3"
+    ],
+    "checkpoints": [
+      2100,
+      2700
+    ]
+  },
+  "probes": {
+    "partition": {
+      "families": [
+        "D2",
+        "D3",
+        "D7",
+        "D8"
+      ],
+      "seed": "E2-S00",
+      "mechanism": "B3",
+      "strategies": [
+        "tick1",
+        "tick10",
+        "direct"
+      ],
+      "tolerance": 1e-12
+    },
+    "restore": [
+      {
+        "family": "D2",
+        "seed": "E2-S00",
+        "time": 6000,
+        "mechanism": "B3"
+      },
+      {
+        "family": "D2",
+        "seed": "E2-S00",
+        "time": 6000,
+        "mechanism": "B3_RESET"
+      },
+      {
+        "family": "D7",
+        "seed": "E2-S00",
+        "time": 6000,
+        "mechanism": "B3"
+      },
+      {
+        "family": "D7",
+        "seed": "E2-S00",
+        "time": 6000,
+        "mechanism": "B3_RESET"
+      },
+      {
+        "family": "D8",
+        "seed": "E2-S00",
+        "time": 50000,
+        "mechanism": "B3"
+      },
+      {
+        "family": "D8",
+        "seed": "E2-S00",
+        "time": 50000,
+        "mechanism": "B3_RESET"
+      }
+    ],
+    "replay": "per mechanism (B0/B2/B3_RESET/B3): same id+payload -> REPLAY delta 0; same id changed payload -> CONFLICT; different id same payload -> APPLIED"
+  },
+  "run_accounting": {
+    "primary_corpus_lifetimes": 232,
+    "primary_mechanisms": [
+      "B0",
+      "B2",
+      "B3_RESET",
+      "B3"
+    ],
+    "primary_corpus_runs": 928,
+    "c_cases": 5,
+    "c_runs": 20,
+    "history_pair_runs": 64,
+    "partition_probe_runs": 8,
+    "restore_probe_runs": 6,
+    "replay_probe_runs": 4,
+    "total": 1030,
+    "completeness_tolerance": "exact equality required (§38)",
+    "counting_law": "replay/restore/partition sub-steps are probe internals, not separate probe executions; 928 + 20 + 64 + 8 + 6 + 4 = 1030"
+  },
+  "metrics": {
+    "base_distance": "d_t = max(|v_t|, |a_t - .2|)",
+    "epsilon": 1e-12,
+    "quantile": "nearest-rank Qp(z) = sorted(z)[ceil(p*n)-1], no interpolation",
+    "bound_occupancy": "O_v- = mean(v <= -1+eps); O_v+ = mean(v >= 1-eps); O_a- = mean(a <= eps); O_a+ = mean(a >= 1-eps)",
+    "near_bound_occupancy": "N_v = mean(|v| >= .9); N_a+ = mean(a >= .9); N_a- = mean(a <= .1)",
+    "baseline_metrics": "Q50/Q90/Q99(d_t); B_.05 = mean(d_t <= .05)",
+    "event_sensitivity": "J_i = max(|v_post - v_pre|, |a_post - a_pre|) per event; q buckets [0,.01) [.01,.04) [.04,.16) [.16,.36) [.36,1]; per bucket count/medianJ/p90J/clampFraction/J<.005 fraction/J>=.02 fraction",
+    "gain_checks": "unsaturated: Delta_a/q ~ .20 and Delta_v/(q*(2g-1)) ~ .25; max error recorded, never used for tuning",
+    "strong_debt": "mean(a >= .4 AND ticks_since_latest_event_with_q>=.25 >= 300); ticks_since = t - t_latest_strong with t_latest_strong = -1 when none exists (so ticks_since = t+1); an event AT t is 0 ticks ago",
+    "quiet_debt": "mean(a - .2 > .02 + 1e-12 AND no event in previous 600 ticks); previous-600 window is (t-600, t] inclusive of t",
+    "valence_drift": "mu_v = sum(v_t)/(T+1) over sampled ticks [0,T]",
+    "saturation_episodes": "exact-bound predicate (any of the four §41 bounds); maximal contiguous intervals; count, max duration, p95 duration nearest-rank",
+    "state_change_sparsity": "per q bucket: fractions of J < .005, .005 <= J < .02, J >= .02",
+    "recovery_window": "for each declared quiet window [s,e]: expected_v(t) = v_s*exp(-(t-s)/150), expected_a(t) = .2 + (a_s-.2)*exp(-(t-s)/150); max axis error, monotonicity violations (d_(t+1) <= d_t + 1e-15), d_e/d_s when d_s nonzero",
+    "activation_reconstruction": "after the latest activation-clamp anchor s (or 0 if never clamped): a_t-.2 = (a_s-.2)*exp(-(t-s)/150) + .20*sum(q_i*exp(-(t-t_i)/150)) while no further clamping occurs; reconstruction max error recorded",
+    "path_dependence": "D_pre/D_post = norm_inf of A-vs-B state difference at the common final event (pre/post); also recorded at t=2100 and t=2700",
+    "b2_native": "channel intensity bound/near-bound occupancy, replacement/upsert counts, routed emotion counts, ACTIVE/RELEASING phase occupancy, quiet recovery, mood occupancy at .25 and .225; no VA translation; no B3-vs-B2 winner"
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "statement": "Protocol integrity: frozen manifest binds baseline, source fingerprints, E1 law fingerprint, E1 evidence fingerprint, generator hash, all seeds, corpus Merkle root, formulas, parameters, gates, run count (1030), zero-model flag, production-diff law. All 232 lifetimes and probes validate; any mismatch invalidates the experiment.",
+      "classification": "PROTOCOL"
+    },
+    {
+      "id": "G2",
+      "statement": "Finite/bounded: all B3/B3_RESET samples finite, -1 <= v <= 1, 0 <= a <= 1; additionally B3 a >= .2 - 1e-12 so O_a- = 0 and N_a- = 0.",
+      "classification": "CORE"
+    },
+    {
+      "id": "G3",
+      "statement": "Time consistency: partition probes (D2-S00/D3-S00/D7-S00/D8-S00, B3, tick1/tick10/direct) max_abs_error <= 1e-12.",
+      "classification": "CORE"
+    },
+    {
+      "id": "G4",
+      "statement": "Restore/replay: 6 restore continuations max_abs_error <= 1e-12 with no historical rerun; replay REPLAY delta 0, changed-payload CONFLICT, different-ID APPLIED for all four mechanisms.",
+      "classification": "CORE"
+    },
+    {
+      "id": "G5",
+      "statement": "Ignored fields: C4 vs C5 B3 trajectories max_abs_error <= 1e-12 (payload hashes need not match).",
+      "classification": "CORE"
+    },
+    {
+      "id": "G6",
+      "statement": "Quiet recovery: every declared quiet window model_error <= 1e-12, d monotone (<= 1e-15 slack), at +600 d <= d_start*exp(-4)+1e-12 and at +1200 d <= d_start*exp(-8)+1e-12 (where the window extends that far), quiet_debt = 0; for D4/D5/D7 if exact-bound at final active input the first recovery tick must leave the exact bound.",
+      "classification": "CORE"
+    },
+    {
+      "id": "G7",
+      "statement": "Ordinary saturation: D1, D2, D3 separately Q95_seed(O_v- + O_v+) <= .005, Q95_seed(O_a+) <= .005, Q95_seed(N_v) <= .020, Q95_seed(N_a+) <= .020.",
+      "classification": "ACTIVATION_MAPPING_RISK"
+    },
+    {
+      "id": "G8",
+      "statement": "Micro-event accumulation (D2): Q95_seed(Q99_time(activation)) <= .75, Q95_seed(O_a+) <= .001, Q95_seed(strong_debt) <= .05.",
+      "classification": "ACTIVATION_MAPPING_RISK"
+    },
+    {
+      "id": "G9",
+      "statement": "Balanced valence drift: machine-checked |sum(q_i*(2g_i-1))| <= 1e-12 for every balanced distribution; outputs: D1/D2/D3/D6 |grand_mean(mu_v)| <= .01 and Q95_seed(|mu_v|) <= .05; D7 <= .02 / <= .10; D8 <= .02 / max_seed <= .05; D4/D5 symmetry |v_D4+v_D5| <= 1e-12 and |a_D4-a_D5| <= 1e-12 at all common checkpoints.",
+      "classification": "VALENCE_IMPULSE_MAPPING_RISK"
+    },
+    {
+      "id": "G10",
+      "statement": "Under-response (D3): pooled fraction(J >= .02) >= .25; pooled fraction(J < .005) <= .70; pooled unsaturated MID/STRONG/EDGE fraction(J + 1e-12 >= .02) >= .75; across seeds count(B_.05 > .95) <= 3 of 32.",
+      "classification": "RELEVANCE_INTENSITY_MAPPING_RISK"
+    },
+    {
+      "id": "G11",
+      "statement": "History retention: >= 15/16 pairs qualify (unsaturated, D_pre >= .05); every qualified pair: B3 |D_post - D_pre| <= 1e-12, B3_RESET D_post <= 1e-12, B3 at 2100 D <= D_post*exp(-4)+1e-12 and at 2700 D <= D_post*exp(-8)+1e-12. Instantaneous-retention failure is a core mechanism failure; too few qualifying histories is a mapping/coverage risk (distinguished).",
+      "classification": "RELEVANCE_INTENSITY_MAPPING_RISK"
+    },
+    {
+      "id": "G12",
+      "statement": "Cancellation activation (D6): Q95_seed(mean(|v| <= .05 AND a >= .6)) <= .05 and Q95_seed(strong_debt) <= .05.",
+      "classification": "ACTIVATION_MAPPING_RISK"
+    },
+    {
+      "id": "G13",
+      "statement": "D8 long run: EVERY seed O_v- + O_v+ <= .02, O_a+ <= .02, N_v <= .10, N_a+ <= .10, B_.05 >= .20 (n=8 so p95 = max; enforced per seed).",
+      "classification": "ACTIVATION_MAPPING_RISK"
+    },
+    {
+      "id": "G14",
+      "statement": "D7 stress: no saturation ceiling; require finite, bounded, saturation recorded, post-input recovery, and the quiet-recovery gate to pass for D7. B3 is not rejected merely for saturating under D7.",
+      "classification": "CONTEXTUAL"
+    }
+  ],
+  "verdict_rules": {
+    "order": [
+      "A. any protocol/integrity failure -> INVALID_EXPERIMENT",
+      "B. any core dynamics failure (finite/bounds, partition, restore/replay, recovery law, qualified-history immediate retention) -> MECHANISM_NOT_SUPPORTED_UNDER_PRODUCTION_SHAPED_INPUT",
+      "C. core good + distribution gate failures -> SUPPORTED_WITH_IDENTIFIED_MAPPING_RISK with all triggered sub-risk codes",
+      "D. all pass -> SUPPORTED_FOR_PRODUCTION_ARCHITECTURE_DESIGN"
+    ],
+    "sub_risk_codes": {
+      "ACTIVATION_MAPPING_RISK": "G7/G8/G12/G13 activation-side failures",
+      "RELEVANCE_INTENSITY_MAPPING_RISK": "G10 q/response failures or G11 too-few qualifying histories",
+      "VALENCE_IMPULSE_MAPPING_RISK": "G9 balanced drift failures",
+      "RECOVERY_TIMESCALE_RISK": "operational baseline/quiet problem with the exact law still correct"
+    }
+  },
+  "no_retune_law": "If E2 returns SUPPORTED_WITH_IDENTIFIED_MAPPING_RISK, no coefficient, tau, q rule, baseline, corpus or gate may change inside E2. The result is final evidence; follow-up work is E2A only (documented, not run).",
+  "e2a_design_only": {
+    "trigger_retention_failure": "replay saved impulses with only retain/reset switched",
+    "trigger_gain_risk": "0.5x / 1x / 2x impulse scale on the failing axis",
+    "trigger_activation_mapping_risk": "u_a in {0, 0.10q, 0.20q}",
+    "trigger_q_risk": "q in {r*i, sqrt(r*i), min(r,i)}",
+    "trigger_tau_risk": "tau in {75, 150, 300}",
+    "discipline": "same corpus hashes; one factor only; relevant family; first 8 seeds; new manifest; new verdict. NOT implemented or run by E2."
+  },
+  "performance_law": {
+    "allowed": [
+      "event-indexed sparse stepping",
+      "streaming metrics",
+      "segmented trajectory artifacts",
+      "avoiding unnecessary per-tick allocation"
+    ],
+    "forbidden": [
+      "reducing seeds",
+      "reducing T",
+      "sampling fewer ticks for tick-level metrics",
+      "changing formulas",
+      "approximating exponentials",
+      "dropping B2 runs",
+      "changing gates"
+    ],
+    "blocked_verdict": "BLOCKED_BY_E2_RESOURCE_LIMIT"
+  },
+  "zero_model_law": "No OpenAI, Ollama, DeepSeek, Qwen or any evaluator/LLM call exists anywhere in E2. Real model calls: 0.",
+  "production_isolation_law": "production source diff relative to the required baseline is empty; only research/experiments/affect-production-shaped-e2/ and evals/conformance/affect-production-shaped-e2.test.ts may change",
+  "freeze": {
+    "source_fingerprint": "51b78266fdbfd56accff8ae4a0db2c19eb145517cd39c3aae95c8fb95022f50c",
+    "built_fingerprint": "3affed2e233b64f3dcebdd864aec269ea2040ff3230913abed9458cdd7774d81",
+    "protocol_hash": "686b26f74992537bf2b676cd0ba867e517d141792a8e27d3de8501acb1227dc5",
+    "e1_law_fingerprint": "4f5c69ed64fd893729f449ea91dc7c80c495b3bbb63b676758a977faf2a23078",
+    "e1_evidence_fingerprint": "fc70710e50e55ec7eb46931b31a75b804b6849718981a72222659a71d3487477",
+    "corpus_merkle_root": "4999910c98fcebc88e00c59b08f0a8f5d088554a9aa1f950ad5afe75dd0445fd",
+    "corpus_lifetimes": 232,
+    "corpus_events": 170496,
+    "head": "78522220f85d91afcffbc6d319a73245b82002e2",
+    "engineering_gates_dir": "D:\\Documents\\CharacterOS-Next\\tmp\\affect-production-shaped-e2-gates",
+    "frozen_before_results": true,
+    "run_identity": "run-r2",
+    "artifact_serialization_rule": "corpus: S00 exemplar per family + exact per-lifetime sha256 index (full corpus regenerates from the frozen generator); representative trajectories and B2 checkpoints: round12 values, D8 decimated to every 10th tick (inspection artifacts; all metrics computed from the full in-run series)",
+    "amendment_policy": "Never amended after observing results; a code/protocol change invalidates this run identity and requires a new one."
+  }
+}

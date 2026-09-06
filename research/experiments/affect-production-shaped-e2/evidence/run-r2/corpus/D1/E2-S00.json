@@ -1,0 +1,220 @@
+{
+  "family": "D1",
+  "seed": "E2-S00",
+  "T": 12000,
+  "quiet": [
+    {
+      "start": 2500,
+      "end": 3099
+    },
+    {
+      "start": 6500,
+      "end": 7699
+    },
+    {
+      "start": 10800,
+      "end": 11999
+    }
+  ],
+  "balanced_weighted_signed_sum": -3.81639164715e-17,
+  "events": [
+    {
+      "tick": 220,
+      "event_id": "D1#E2-S00#1",
+      "relevance": 0.26257091921106235,
+      "goal_congruence": 0.4258347924509816,
+      "intensity": 0.2488267716373051,
+      "attribution": "other",
+      "controllability": 0.571635795048465,
+      "uncertainty": 0.09480222243245917,
+      "assessment_confidence": 0.27729673785784914
+    },
+    {
+      "tick": 3448,
+      "event_id": "D1#E2-S00#7",
+      "relevance": 0.2758314489514776,
+      "goal_congruence": 0.9245419672424946,
+      "intensity": 0.25174224698305825,
+      "attribution": "other",
+      "controllability": 0.24970992692095206,
+      "uncertainty": 0.5483045924791481,
+      "assessment_confidence": 0.6888778137626941
+    },
+    {
+      "tick": 3787,
+      "event_id": "D1#E2-S00#0",
+      "relevance": 0.26257091921106235,
+      "goal_congruence": 0.5741652075490185,
+      "intensity": 0.2488267716373051,
+      "attribution": "other",
+      "controllability": 0.6059485889561838,
+      "uncertainty": 0.4514237097357189,
+      "assessment_confidence": 0.6823013146969519
+    },
+    {
+      "tick": 3830,
+      "event_id": "D1#E2-S00#3",
+      "relevance": 0.28562376031662373,
+      "goal_congruence": 0.2719536015416999,
+      "intensity": 0.19849447195541664,
+      "attribution": "self",
+      "controllability": 0.4801220394624405,
+      "uncertainty": 0.3027351916789003,
+      "assessment_confidence": 0.844398249837401
+    },
+    {
+      "tick": 3921,
+      "event_id": "D1#E2-S00#10",
+      "relevance": 0.8609753176858523,
+      "goal_congruence": 0.498191370043387,
+      "intensity": 0.8227143566794966,
+      "attribution": "other",
+      "controllability": 0.24294561969222905,
+      "uncertainty": 0.827073353929383,
+      "assessment_confidence": 0.9262648225694723
+    },
+    {
+      "tick": 4235,
+      "event_id": "D1#E2-S00#13",
+      "relevance": 0.5342225027417402,
+      "goal_congruence": 0.7565955725775824,
+      "intensity": 0.6726795271842227,
+      "attribution": "other",
+      "controllability": 0.47681228948164867,
+      "uncertainty": 0.8534769716406642,
+      "assessment_confidence": 0.9581440891330101
+    },
+    {
+      "tick": 4595,
+      "event_id": "D1#E2-S00#11",
+      "relevance": 0.8609753176858523,
+      "goal_congruence": 0.501808629956613,
+      "intensity": 0.8227143566794966,
+      "attribution": "other",
+      "controllability": 0.6005146384106527,
+      "uncertainty": 0.30964907625292604,
+      "assessment_confidence": 0.19459906521790604
+    },
+    {
+      "tick": 4882,
+      "event_id": "D1#E2-S00#8",
+      "relevance": 0.25996231264541225,
+      "goal_congruence": 0.611172238812626,
+      "intensity": 0.20990703705007716,
+      "attribution": "situation",
+      "controllability": 0.6827336613789234,
+      "uncertainty": 0.4437900466866195,
+      "assessment_confidence": 0.8305482763785479
+    },
+    {
+      "tick": 5024,
+      "event_id": "D1#E2-S00#17",
+      "relevance": 0.889560482571986,
+      "goal_congruence": 0.7274627168572123,
+      "intensity": 0.783370164032632,
+      "attribution": "situation",
+      "controllability": 0.6513597237893731,
+      "uncertainty": 0.740401633781918,
+      "assessment_confidence": 0.7127071924138286
+    },
+    {
+      "tick": 5357,
+      "event_id": "D1#E2-S00#5",
+      "relevance": 0.21090733262992484,
+      "goal_congruence": 0.19343535616865554,
+      "intensity": 0.20810776329669486,
+      "attribution": "self",
+      "controllability": 0.3446382479617913,
+      "uncertainty": 0.20052291766897823,
+      "assessment_confidence": 0.7571115569686233
+    },
+    {
+      "tick": 5739,
+      "event_id": "D1#E2-S00#15",
+      "relevance": 0.29141938695597847,
+      "goal_congruence": 0.728432764567668,
+      "intensity": 0.11272093741695066,
+      "attribution": "situation",
+      "controllability": 0.8209761753956805,
+      "uncertainty": 0.7462350144053292,
+      "assessment_confidence": 0.875685184802427
+    },
+    {
+      "tick": 6061,
+      "event_id": "D1#E2-S00#9",
+      "relevance": 0.25996231264541225,
+      "goal_congruence": 0.38882776118737405,
+      "intensity": 0.20990703705007716,
+      "attribution": "other",
+      "controllability": 0.7013057618686552,
+      "uncertainty": 0.8339072257432758,
+      "assessment_confidence": 0.9195907488507712
+    },
+    {
+      "tick": 7793,
+      "event_id": "D1#E2-S00#12",
+      "relevance": 0.5342225027417402,
+      "goal_congruence": 0.24340442742241758,
+      "intensity": 0.6726795271842227,
+      "attribution": "self",
+      "controllability": 0.9225350940441068,
+      "uncertainty": 0.46592841569710464,
+      "assessment_confidence": 0.590145145203967
+    },
+    {
+      "tick": 8237,
+      "event_id": "D1#E2-S00#16",
+      "relevance": 0.889560482571986,
+      "goal_congruence": 0.27253728314278763,
+      "intensity": 0.783370164032632,
+      "attribution": "other",
+      "controllability": 0.6068675268170236,
+      "uncertainty": 0.6317223209291135,
+      "assessment_confidence": 0.6173770871533997
+    },
+    {
+      "tick": 8401,
+      "event_id": "D1#E2-S00#14",
+      "relevance": 0.29141938695597847,
+      "goal_congruence": 0.27156723543233197,
+      "intensity": 0.11272093741695066,
+      "attribution": "self",
+      "controllability": 0.5102233202196225,
+      "uncertainty": 0.59250079384036,
+      "assessment_confidence": 0.7637390477057665
+    },
+    {
+      "tick": 9153,
+      "event_id": "D1#E2-S00#6",
+      "relevance": 0.2758314489514776,
+      "goal_congruence": 0.0754580327575054,
+      "intensity": 0.25174224698305825,
+      "attribution": "other",
+      "controllability": 0.6120971650031928,
+      "uncertainty": 0.31947508492406784,
+      "assessment_confidence": 0.6528996819580284
+    },
+    {
+      "tick": 10241,
+      "event_id": "D1#E2-S00#2",
+      "relevance": 0.28562376031662373,
+      "goal_congruence": 0.7280463984583001,
+      "intensity": 0.19849447195541664,
+      "attribution": "self",
+      "controllability": 0.6110899079271536,
+      "uncertainty": 0.5228357271020418,
+      "assessment_confidence": 0.8206289055539457
+    },
+    {
+      "tick": 10736,
+      "event_id": "D1#E2-S00#4",
+      "relevance": 0.21090733262992484,
+      "goal_congruence": 0.8065646438313445,
+      "intensity": 0.20810776329669486,
+      "attribution": "self",
+      "controllability": 0.34218973659254737,
+      "uncertainty": 0.4916393476490505,
+      "assessment_confidence": 0.6809921230539482
+    }
+  ]
+}

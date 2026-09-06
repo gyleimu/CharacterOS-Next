@@ -1,0 +1,30 @@
+[
+  {
+    "family": "D2",
+    "errors": {
+      "tick10_vs_tick1": 1.11022302463e-15,
+      "direct_vs_tick1": 9.43689570931e-16
+    }
+  },
+  {
+    "family": "D3",
+    "errors": {
+      "tick10_vs_tick1": 9.43689570931e-16,
+      "direct_vs_tick1": 9.43689570931e-16
+    }
+  },
+  {
+    "family": "D7",
+    "errors": {
+      "tick10_vs_tick1": 3.77475828373e-15,
+      "direct_vs_tick1": 3.5527136788e-15
+    }
+  },
+  {
+    "family": "D8",
+    "errors": {
+      "tick10_vs_tick1": 4.10782519111e-15,
+      "direct_vs_tick1": 4.10782519111e-15
+    }
+  }
+]
