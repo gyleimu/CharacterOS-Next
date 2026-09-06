@@ -72,8 +72,8 @@ Everything is frozen in `contract.ts` + `manifest.ts` and hashed into
 G1 boundedness, G2 recovery (monotone + `d0*exp(−8)` at last_event+1200),
 G3 time consistency, G4 zero relevance, G5 state retention, G6 repeated
 accumulation, G7 history divergence, G8 saturation recovery, G9 replay —
-evaluated mechanically by `runner.ts`. Verdict classes: 
-`SUPPORTED_FOR_NEXT_STAGE` / `MECHANISM_NOT_SUPPORTED` / 
+evaluated mechanically by `runner.ts`. Verdict classes:
+`SUPPORTED_FOR_NEXT_STAGE` / `MECHANISM_NOT_SUPPORTED` /
 `INVALID_EXPERIMENT` / `BLOCKED` (§45). Larger AUC, longer excursions or
 bigger accumulation never count as success by themselves (§37).
 
