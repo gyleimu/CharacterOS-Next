@@ -1061,3 +1061,21 @@ export {
   type ExperienceAppraisalInputV0,
   type ExperienceAppraisalExecutionResultV0
 } from "./experience-appraisal/experience-appraisal-executor.js";
+export {
+  FactualEventAppraisalContextBuilderV0,
+  type FactualEventGroundingV0,
+  type FactualEventAppraisalContextResultV0
+} from "./factual-event-appraisal/factual-event-appraisal-context.js";
+export {
+  findInitialFactualEventAppraisalV0,
+  createFactualEventAppraisalReaderV0,
+  type FactualEventAppraisalReaderV0,
+  type TrustedFactualEventAppraisalV0,
+  type FindInitialFactualEventAppraisalResultV0,
+  type FactualEventAppraisalReadResultV0
+} from "./factual-event-appraisal/factual-event-appraisal-reader.js";
+export {
+  FactualEventAppraisalExecutorV0,
+  type FactualEventAppraisalInputV0,
+  type FactualEventAppraisalExecutionResultV0
+} from "./factual-event-appraisal/factual-event-appraisal-executor.js";

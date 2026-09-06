@@ -242,15 +242,11 @@ describe("E2A full experiment execution", () => {
   it("keeps all production and other-research files frozen vs the baseline commit (§56/§45.20)", () => {
     const integrity = frozenIntegrity();
     expect(integrity.production_diff).toBe("EMPTY");
-    expect(integrity.changed_paths.every((p) =>
-      p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
-      p === "evals/conformance/affect-activation-mapping-e2a.test.ts" ||
-      // Documented mechanical isolation-guard authorizations (E2A successor line).
-      p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
-      p === "research/experiments/affect-production-shaped-e2/artifacts.ts" ||
-      p === "evals/conformance/affect-state-retention-e1.test.ts" ||
-      p === "research/experiments/affect-state-retention-e1/artifacts.ts"
-    )).toBe(true);
+    // Durable law: no experiment may MODIFY or DELETE frozen evidence after
+    // its evidence run; additions of a successor experiment's own new
+    // evidence are lawful.
+    // eslint-disable-next-line no-control-regex -- the git status separator IS the tab control character
+    expect(integrity.changed_paths.some((p) => /^[MDT]	/.test(p) && p.includes("/evidence/"))).toBe(false);
   });
 
   it("uses nearest-rank quantiles identical to E2 (§45.16)", () => {

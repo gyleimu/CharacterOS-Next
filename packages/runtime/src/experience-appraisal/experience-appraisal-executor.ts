@@ -46,6 +46,7 @@ import { anchorContext, stageFailure, TransitionStageFailure } from "../transiti
 import {
   ExperienceAppraisalContextBuilderV0
 } from "./experience-appraisal-context.js";
+import { findInitialFactualEventAppraisalV0 } from "../factual-event-appraisal/factual-event-appraisal-reader.js";
 import {
   findInitialExperienceAppraisalV0,
   type ExperienceAppraisalProviderV0
@@ -74,6 +75,9 @@ export type ExperienceAppraisalExecutionResultV0 =
       readonly appraisal_ref: CanonicalRefV0;
       readonly payload_hash: HashV1;
       readonly record: ExperienceAppraisalRecordV0;
+      /** PRE_COGNITION_CANONICAL_APPRAISAL_V0 — "factual_event" when the
+       * resolved INITIAL is the event-grounded pre-cognition record (§27/§28). */
+      readonly grounding?: "experience" | "factual_event";
     }
   | {
       /** §11/§42: null task or provider abstention — zero canonical change. */
@@ -193,6 +197,29 @@ export class ExperienceAppraisalLearningExecutorV0 {
     const context = contextResult.context;
     if (context.subject_id !== (ctx.subject_id as string)) {
       throw stageFailure("OBSERVATION", "UNKNOWN_SUBJECT", "SS-AUTH-001", "appraisal context subject does not match the runtime subject");
+    }
+
+    // PRE_COGNITION_CANONICAL_APPRAISAL_V0 (§27/§28): if the grounding factual
+    // event already owns a canonical event-grounded INITIAL (created BEFORE
+    // cognition), the Experience path RESOLVES/REUSES it — never a second
+    // INITIAL, never a provider call (§37 replay law applies unchanged).
+    const eventGrounded = await findInitialFactualEventAppraisalV0(
+      repository, currentRevision as never, ctx.subject_id as string, context.event_ref as string
+    );
+    if (eventGrounded.kind === "INTEGRITY_FAILURE") {
+      throw stageFailure("OBSERVATION", "INVARIANT_VIOLATION", "SS-SCHEMA-001", eventGrounded.detail);
+    }
+    if (eventGrounded.kind === "FOUND") {
+      return {
+        kind: "DONE",
+        result: {
+          kind: "ALREADY_COMPLETED",
+          appraisal_ref: eventGrounded.appraisal_ref,
+          payload_hash: eventGrounded.payload_hash,
+          record: eventGrounded.record as unknown as ExperienceAppraisalRecordV0,
+          grounding: "factual_event"
+        }
+      };
     }
 
     // ---- §23/§48: existing canonical INITIAL ⇒ replay (+0), before provider ---------

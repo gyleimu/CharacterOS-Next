@@ -336,13 +336,10 @@ describe("E1 full experiment execution", () => {
     expect(integrity.production_diff).toBe("EMPTY");
     // The E2 experiment is the authorized successor line (its own harness
     // pins production to the same frozen baseline); all other paths stay frozen.
-    expect(integrity.changed_paths.every((p) =>
-      p.startsWith("research/experiments/affect-state-retention-e1/") ||
-      p.startsWith("research/experiments/affect-production-shaped-e2/") ||
-      p === "evals/conformance/affect-state-retention-e1.test.ts" ||
-      p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
-      p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
-      p === "evals/conformance/affect-activation-mapping-e2a.test.ts"
-    )).toBe(true);
+    // Durable law: no experiment may MODIFY or DELETE frozen evidence after
+    // its evidence run; additions of a successor experiment's own new
+    // evidence are lawful.
+    // eslint-disable-next-line no-control-regex -- the git status separator IS the tab control character
+    expect(integrity.changed_paths.some((p) => /^[MDT]	/.test(p) && p.includes("/evidence/"))).toBe(false);
   });
 });

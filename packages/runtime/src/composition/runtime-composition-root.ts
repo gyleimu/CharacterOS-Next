@@ -42,7 +42,10 @@ import type { LearningAdoptionAuthority } from "../transitions/learning/learning
 import { InMemoryConversationDeliveryLedger, type ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { createExperienceReaderV0 } from "../transitions/conversation/experience-reader.js";
 import { FactualMemoryEvidenceResolverV0 } from "../transitions/cognition-action/factual-memory-evidence.js";
+import { InMemoryConversationFactualEventAuthorityV0 } from "../authority/conversation-factual-event-authority-v0.js";
+import { createExperienceAppraisalReaderV0 } from "../experience-appraisal/experience-appraisal-reader.js";
 import type { ExperienceAppraisalProviderV0 } from "../experience-appraisal/experience-appraisal-reader.js";
+import type { FactualEventAppraisalProviderV0 } from "@characteros-next/appraisal";
 import type { InMemoryMemoryRepository } from "@characteros-next/memory";
 import { InMemoryConversationIngressLedger, type ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 
@@ -78,6 +81,12 @@ export interface RuntimeCompositionOptions {
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
   /** EXPERIENCE_APPRAISAL_INTEGRATION_V0 — the host-supplied provider port. */
   readonly experienceAppraisalProvider?: ExperienceAppraisalProviderV0;
+  /**
+   * PRE_COGNITION_CANONICAL_APPRAISAL_V0 — factual-event appraisal provider.
+   * Optional until the governed conversation path wires the pre-cognition
+   * stage; the factual-event executor fails closed when null.
+   */
+  readonly factualEventAppraisalProvider?: FactualEventAppraisalProviderV0;
   /** Required: deterministic retrieval seam. */
   readonly retrieval: RetrievalPort;
   /** Optional until their slices wire adapters. */
@@ -149,6 +158,20 @@ export class RuntimeCompositionRoot {
     const factualEvidenceResolver = experienceReader !== null
       ? new FactualMemoryEvidenceResolverV0({ reader: experienceReader, episodeContentReader: options.episodeContentReader ?? null, store: options.experiencePayloadRepository ?? null })
       : null;
+    // PRE_COGNITION_CANONICAL_APPRAISAL_V0 — the composition-owned factual
+    // event authority over the SAME ingress ledger + committed-transition
+    // read face + experience/appraisal readers (one store, one truth).
+    const appraisalReaderForAuthority = experienceReader !== null && options.experiencePayloadRepository !== undefined
+      ? createExperienceAppraisalReaderV0({ repository: options.experiencePayloadRepository, experienceReader })
+      : null;
+    const factualEventAuthority = ingressLedger !== null && experienceReader !== null && appraisalReaderForAuthority !== null
+      ? new InMemoryConversationFactualEventAuthorityV0(
+          ingressLedger,
+          { readCommittedBundle: async (id) => options.learningSourceAuthority?.readCommittedBundle(id) ?? null },
+          experienceReader,
+          appraisalReaderForAuthority
+        )
+      : null;
     const assembled: RuntimeDependencyContainer = {
       subjectCore: options.subjectCore,
       producerAuthorizationIssuer: options.producerAuthorizationIssuer,
@@ -183,7 +206,9 @@ export class RuntimeCompositionRoot {
       experienceReader: experienceReader,
       factualEvidenceResolver: factualEvidenceResolver,
       experienceAppraisalProvider: options.experienceAppraisalProvider ?? null,
-      experienceAppraisalStore: options.experiencePayloadRepository ?? null
+      experienceAppraisalStore: options.experiencePayloadRepository ?? null,
+      factualEventAuthority: factualEventAuthority,
+      factualEventAppraisalProvider: options.factualEventAppraisalProvider ?? null
     };
     // Freeze shell + runtime-created wrapper only; adapters stay live (see header).
     Object.freeze(assembled);

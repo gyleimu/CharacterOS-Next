@@ -194,6 +194,10 @@ export async function findInitialExperienceAppraisalV0(
     if (refKind(entry.ref) !== "appraisal") continue;
     const payload = repository.readStoredPayload(entry.ref);
     if (payload === undefined || payload === null) continue;
+    // PRE_COGNITION_CANONICAL_APPRAISAL_V0 — factual-event INITIAL records
+    // are a separate canonical contract scanned by their own reader; they are
+    // NOT malformed Experience appraisals.
+    if ((payload as { schema_version?: unknown })["schema_version"] === "factual-event-appraisal-record-v0") continue;
     const recomputed = await hashEnvelope("characteros-next/memory/record-payload/v1", payload);
     if (recomputed !== entry.payload_hash) {
       // §18: corruption is not absence — fail closed.

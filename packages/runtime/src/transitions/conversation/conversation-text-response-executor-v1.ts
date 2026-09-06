@@ -20,6 +20,10 @@ import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
 import { CognitionActionTransitionExecutor } from "../cognition-action/cognition-action-transition-executor.js";
+import { createMiclStageMinter } from "../../micl/micl-capabilities.js";
+import { InMemoryMiclWorkflowStore } from "../../micl/micl-workflow-store.js";
+import { computeRepositoryRevisionHash } from "@characteros-next/memory";
+import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/factual-event-appraisal-executor.js";
 import { allowedEvidenceSet, type CognitiveContextProjectionV0, type CognitiveContextProjectionV1 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
@@ -31,6 +35,13 @@ export const CONVERSATION_TEXT_RESPONSE_EXECUTOR_V1_SCHEMA_VERSION =
 export type RealizationSourceV0 = "HOST_CLARIFICATION_V0" | "LANGUAGE_PROVIDER_V0";
 
 export interface ConversationResponseTraceV1 {
+  /** PRE_COGNITION_CANONICAL_APPRAISAL_V0 — outcome of the pre-cognition
+   * factual-event INITIAL Appraisal stage when a factual_event binding was
+   * supplied. COMMITTED/ALREADY_COMPLETED/INSUFFICIENT_CONTEXT. */
+  readonly factual_appraisal?: {
+    readonly outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT";
+    readonly appraisal_ref: string;
+  };
   readonly communication_directive_kind: string;
   readonly conversation_cognition_proposal_hash: string;
   readonly cognition_projection_hash: string;
@@ -40,6 +51,7 @@ export interface ConversationResponseTraceV1 {
 
 export type ConversationResponseFailureStageV1 =
   | "REQUEST_INVALID"
+  | "APPRAISAL_FAILED"
   | "COGNITION_FAILED"
   | "MEMORY_EVIDENCE_FAILED"
   | "LANGUAGE_TRANSPORT_FAILED"
@@ -81,7 +93,59 @@ export class ConversationTextResponseExecutorV1 {
 
     const snapshot = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);
     if (snapshot === null) return failed("REQUEST_INVALID", `subject ${ctx.subject_id} not found`);
-    const sourceRevision = snapshot.runtime_metadata.state_revision;
+    let sourceRevision = snapshot.runtime_metadata.state_revision;
+
+    // ---- PRE_COGNITION_CANONICAL_APPRAISAL_V0 (§23/§53/§56) ----------------------
+    // Ordering law: the canonical factual-event INITIAL Appraisal lifecycle
+    // (provider + canonical commit) completes BEFORE cognition starts. A
+    // canonical-commit failure is the boundary: cognition never starts from an
+    // Appraisal that never became canonical (§59). INSUFFICIENT_CONTEXT is the
+    // completed abstention outcome: no record, no Affect eligibility, cognition
+    // proceeds (no fabricated neutral Appraisal, §18/§58).
+    let factualAppraisalTrace: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string } | undefined;
+    if (request.factual_event !== undefined) {
+      const appraisalExecutor = new FactualEventAppraisalExecutorV0(this.deps);
+      let appraisalOutcome;
+      try {
+        appraisalOutcome = await appraisalExecutor.appraiseIncomingEvent(ctx, {
+        subject_id: ctx.subject_id as string,
+        source_event_id: request.factual_event.source_event_id,
+        observation_transition_id: request.factual_event.observation_transition_id,
+        observation_ref: request.factual_event.observation_ref as never
+        });
+      } catch (error) {
+        return failed("APPRAISAL_FAILED", error instanceof Error ? error.message : String(error));
+      }
+      if (appraisalOutcome.kind === "COMMITTED") {
+        factualAppraisalTrace = { outcome: "COMMITTED", appraisal_ref: appraisalOutcome.appraisal_ref as string };
+      } else if (appraisalOutcome.kind === "ALREADY_COMPLETED") {
+        factualAppraisalTrace = { outcome: "ALREADY_COMPLETED", appraisal_ref: appraisalOutcome.appraisal_ref as string };
+      } else if (appraisalOutcome.kind === "INSUFFICIENT_CONTEXT") {
+        factualAppraisalTrace = { outcome: "INSUFFICIENT_CONTEXT", appraisal_ref: "" };
+      } else {
+        return failed(
+          "APPRAISAL_FAILED",
+          appraisalOutcome.kind === "REJECTED"
+            ? `appraisal rejected: ${appraisalOutcome.failure.error_code} ${appraisalOutcome.failure.detail}`
+            : `appraisal did not become canonical: ${appraisalOutcome.kind}`
+        );
+      }
+    }
+
+    // The appraisal commit may have advanced the canonical head; cognition
+    // anchors at the CURRENT head (§23 ordering: cognition starts after the
+    // appraisal lifecycle completed).
+    const cognitionCtx = (await (async () => {
+      if (request.factual_event === undefined) return ctx;
+      const freshSnapshot = await this.deps.subjectCore.readCurrentSnapshot(ctx.subject_id);
+      if (freshSnapshot === null) return ctx;
+      sourceRevision = freshSnapshot.runtime_metadata.state_revision;
+      return {
+        subject_id: ctx.subject_id,
+        current_logical_time: freshSnapshot.runtime_metadata.logical_time,
+        state_revision: freshSnapshot.runtime_metadata.state_revision
+      } as unknown as RuntimeContext;
+    })());
 
     // ---- shared cognition pipeline with ConversationCognitionProviderV1 -----------
     const conversationProvider = new ConversationCognitionProviderV1(conversationTransport);
@@ -91,17 +155,54 @@ export class ConversationTextResponseExecutorV1 {
         return convProposal.cognition;
       }
     };
-    const cognitionExecutor = new CognitionActionTransitionExecutor({
+    let cognitionExecutor = new CognitionActionTransitionExecutor({
       ...this.deps,
       cognitionProvider: wrappedV0Provider
     });
 
     let cognitionResult: Awaited<ReturnType<CognitionActionTransitionExecutor["execute"]>>;
     try {
+      // PRE_COGNITION_CANONICAL_APPRAISAL_V0: when the governed pre-cognition
+      // stage ran, the canonical head has lawfully advanced — mint FRESH
+      // cognition capabilities against the post-appraisal head (the caller's
+      // pre-appraisal sentinel bindings are stale by construction).
+      let cognitionCapabilities = capabilities;
+      if (request.factual_event !== undefined) {
+        const freshSnapshot = await this.deps.subjectCore.readCurrentSnapshot(cognitionCtx.subject_id);
+        if (freshSnapshot !== null && this.deps.experienceAppraisalStore !== null) {
+          const manifest = await this.deps.experienceAppraisalStore.readManifest(
+            freshSnapshot.memory_state.repository_revision as never
+          );
+          if (manifest !== null) {
+            const miclFingerprint = await hashEnvelope("characteros-next/runtime/conversation-factual-cognition-micl/v1", {
+              response_request_id: request.response_request_id,
+              state_revision: freshSnapshot.runtime_metadata.state_revision
+            });
+            const minter = createMiclStageMinter(this.deps.subjectCore, new InMemoryMiclWorkflowStore(), {
+              micl_id: `micl-conv-${request.response_request_id}` as never,
+              micl_request_fingerprint: miclFingerprint as never,
+              stage_key: "OBSERVATION"
+            });
+            cognitionCapabilities = minter.capabilities([
+              {
+                repository_revision: freshSnapshot.memory_state.repository_revision,
+                repository_revision_hash: await computeRepositoryRevisionHash(manifest)
+              }
+            ] as never) as never;
+            // Route cognition through the minting core so the reservation is
+            // reserved against the SAME minted workflow.
+            cognitionExecutor = new CognitionActionTransitionExecutor({
+              ...this.deps,
+              cognitionProvider: wrappedV0Provider,
+              subjectCore: minter.core()
+            });
+          }
+        }
+      }
       cognitionResult = await cognitionExecutor.execute(
-        ctx,
+        cognitionCtx,
         { cause_refs: [...(request.cause_refs ?? [])], allowed_actions: [] },
-        capabilities
+        cognitionCapabilities
       );
     } catch (error) {
       return failed("COGNITION_FAILED", error instanceof Error ? error.message : String(error));
@@ -129,9 +230,9 @@ export class ConversationTextResponseExecutorV1 {
     });
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
-      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash);
+      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, factualAppraisalTrace);
     }
-    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, directive, conversationProvider, lawfulEvidence(evidenceProjection));
+    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, directive, conversationProvider, lawfulEvidence(evidenceProjection), factualAppraisalTrace);
   }
 
   private async clarifyBranch(
@@ -139,7 +240,8 @@ export class ConversationTextResponseExecutorV1 {
     sourceRevision: number,
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1,
-    conversationProposalHash: string
+    conversationProposalHash: string,
+    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
     const built = await buildClarificationBehaviorV0({
       subject_id: snapshot.identity.subject_id,
@@ -168,6 +270,7 @@ export class ConversationTextResponseExecutorV1 {
       kind: "OUTPUT_READY",
       behavior: built.behavior,
       trace: {
+        ...(factualAppraisalTrace !== undefined ? { factual_appraisal: factualAppraisalTrace } : {}),
         communication_directive_kind: "CLARIFY_MISSING_CONTEXT",
         conversation_cognition_proposal_hash: conversationProposalHash,
         cognition_projection_hash: evidenceProjection.projection_hash,
@@ -185,7 +288,8 @@ export class ConversationTextResponseExecutorV1 {
     conversationProposalHash: string,
     directive: CommunicationDirectiveV0,
     conversationProvider: ConversationCognitionProviderV1,
-    lawfulEvidence: ReadonlySet<string>
+    lawfulEvidence: ReadonlySet<string>,
+    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
     const languageProvider = this.deps.languageRealizationProvider;
     if (languageProvider === null) return failed("REQUEST_INVALID", "language realization provider not wired");
@@ -278,6 +382,7 @@ export class ConversationTextResponseExecutorV1 {
       kind: "OUTPUT_READY",
       behavior: built.behavior,
       trace: {
+        ...(factualAppraisalTrace !== undefined ? { factual_appraisal: factualAppraisalTrace } : {}),
         communication_directive_kind: "REALIZE_CURRENT_INTENT",
         conversation_cognition_proposal_hash: conversationProposalHash,
         cognition_projection_hash: evidenceProjection.projection_hash,

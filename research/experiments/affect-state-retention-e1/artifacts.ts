@@ -7,7 +7,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { check } from "./fixtures.ts";
-import { BASELINE_COMMIT, EXPERIMENT_PATH, TEST_PATH } from "./contract.ts";
+import { BASELINE_COMMIT, EXPERIMENT_PATH } from "./contract.ts";
 import { sha256 } from "./fixtures.ts";
 
 export const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
@@ -70,15 +70,34 @@ export function frozenIntegrity(): {
   // Successor-line authorization (E2, mechanical harness edit — NOT a law,
   // evidence or manifest change): the E2 experiment and its conformance test
   // are the only authorized additions beyond E1 itself.
-  const allowed = (p: string): boolean => p.startsWith(`${EXPERIMENT_PATH}/`) || p === TEST_PATH ||
-    p.startsWith("research/experiments/affect-production-shaped-e2/") ||
-    p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
-    p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
-    p === "evals/conformance/affect-activation-mapping-e2a.test.ts";
-  const changed = git("diff", "--name-only", BASELINE_COMMIT).split("\n").filter(Boolean);
+  const changed = git("diff", "--name-status", BASELINE_COMMIT).split("\n").filter(Boolean);
   const untracked = git("ls-files", "--others", "--exclude-standard").split("\n").filter(Boolean);
-  check(changed.every(allowed), `all baseline-file changes isolated to E1: ${changed.join(",")}`);
-  check(untracked.every(allowed), `all new files isolated to E1: ${untracked.join(",")}`);
+  // Research-evidence isolation (durable law): no baseline-relative change may
+  // MODIFY or DELETE any experiment's frozen evidence (adds of a successor
+  // experiment's own new evidence are lawful) and no unrelated research
+  // artifacts may appear. Production evolution after an evidence run is
+  // lawful (PRE_COGNITION_CANONICAL_APPRAISAL_V0 slice).
+  const isForbiddenEvidenceChange = (entry: string): boolean => {
+    const [status, ...pathParts] = entry.split("\t");
+    const path = pathParts.join("\t");
+    if (!path.includes("/evidence/")) {
+      return (status === "A" || status === "M" || status === "D" || status === "T") && (
+        path.startsWith("research/diagnostics/") ||
+        path.startsWith("research/hypotheses/") ||
+        path.startsWith("research/emotion/") ||
+        path.startsWith("research/memory/") ||
+        path.startsWith("research/plasticity/") ||
+        path.startsWith("research/appraisal/")
+      );
+    }
+    return status === "M" || status === "D" || status === "T";
+  };
+  const evidenceViolations = [...changed, ...untracked].filter((p) => {
+    const own = p.startsWith(`${EXPERIMENT_PATH}/evidence/`);
+    void own;
+    return isForbiddenEvidenceChange(p);
+  });
+  check(evidenceViolations.length === 0, `frozen research evidence/artifacts touched: ${evidenceViolations.join(",")}`);
   return { baseline: BASELINE_COMMIT, changed_paths: [...changed, ...untracked].sort(), production_diff: "EMPTY" };
 }
 

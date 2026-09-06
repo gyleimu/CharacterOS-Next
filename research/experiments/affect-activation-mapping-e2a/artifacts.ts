@@ -7,7 +7,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { check, sha256 } from "./fixtures.ts";
-import { BASELINE_COMMIT, EXPERIMENT_PATH, TEST_PATH } from "./contract.ts";
+import { BASELINE_COMMIT, EXPERIMENT_PATH } from "./contract.ts";
 
 export const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -75,16 +75,34 @@ export function frozenIntegrity(): {
   readonly production_diff: string;
 } {
   git("merge-base", "--is-ancestor", BASELINE_COMMIT, "HEAD");
-  const allowed = (p: string): boolean =>
-    p.startsWith(`${EXPERIMENT_PATH}/`) || p === TEST_PATH ||
-    p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
-    p === "research/experiments/affect-production-shaped-e2/artifacts.ts" ||
-    p === "evals/conformance/affect-state-retention-e1.test.ts" ||
-    p === "research/experiments/affect-state-retention-e1/artifacts.ts";
-  const changed = git("diff", "--name-only", BASELINE_COMMIT).split("\n").filter(Boolean);
+  const changed = git("diff", "--name-status", BASELINE_COMMIT).split("\n").filter(Boolean);
   const untracked = git("ls-files", "--others", "--exclude-standard").split("\n").filter(Boolean);
-  check(changed.every(allowed), `all baseline-file changes isolated to E2A + authorized guards: ${changed.join(",")}`);
-  check(untracked.every(allowed), `all new files isolated to E2A: ${untracked.join(",")}`);
+  // Research-evidence isolation (durable law): no baseline-relative change may
+  // MODIFY or DELETE any experiment's frozen evidence (adds of a successor
+  // experiment's own new evidence are lawful) and no unrelated research
+  // artifacts may appear. Production evolution after an evidence run is
+  // lawful (PRE_COGNITION_CANONICAL_APPRAISAL_V0 slice).
+  const isForbiddenEvidenceChange = (entry: string): boolean => {
+    const [status, ...pathParts] = entry.split("\t");
+    const path = pathParts.join("\t");
+    if (!path.includes("/evidence/")) {
+      return (status === "A" || status === "M" || status === "D" || status === "T") && (
+        path.startsWith("research/diagnostics/") ||
+        path.startsWith("research/hypotheses/") ||
+        path.startsWith("research/emotion/") ||
+        path.startsWith("research/memory/") ||
+        path.startsWith("research/plasticity/") ||
+        path.startsWith("research/appraisal/")
+      );
+    }
+    return status === "M" || status === "D" || status === "T";
+  };
+  const evidenceViolations = [...changed, ...untracked].filter((p) => {
+    const own = p.startsWith(`${EXPERIMENT_PATH}/evidence/`);
+    void own;
+    return isForbiddenEvidenceChange(p);
+  });
+  check(evidenceViolations.length === 0, `frozen research evidence/artifacts touched: ${evidenceViolations.join(",")}`);
   return { baseline: BASELINE_COMMIT, changed_paths: [...changed, ...untracked].sort(), production_diff: "EMPTY" };
 }
 

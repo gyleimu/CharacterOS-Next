@@ -69,6 +69,16 @@ export interface ConversationResponseRequestV0 {
   readonly response_request_id: IdentifierV0;
   /** Optional cognition trigger refs when current transition law requires them. */
   readonly cause_refs?: readonly CanonicalRefV0[];
+  /** PRE_COGNITION_CANONICAL_APPRAISAL_V0 — optional pre-cognition binding:
+   * the governed incoming conversation event this response answers. Present ⇒
+   * the governed executor runs the canonical factual-event INITIAL Appraisal
+   * lifecycle BEFORE cognition (ordering law §23); absent ⇒ exactly the V0
+   * behavior. */
+  readonly factual_event?: {
+    readonly source_event_id: string;
+    readonly observation_transition_id: string;
+    readonly observation_ref: string;
+  };
 }
 
 /** Distinct failure stages (deliberately NOT collapsed into one service code). */
