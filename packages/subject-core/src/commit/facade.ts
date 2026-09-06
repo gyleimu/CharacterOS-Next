@@ -71,7 +71,7 @@ import {
   proposalFingerprint,
   proposalRef,
   snapshotHash,
-  stateHash
+  stateHashAnyVersion
 } from "../canonical/projections.js";
 import { deriveRef } from "../canonical/hash.js";
 import { canonicalJsonString } from "../canonical/json.js";
@@ -545,7 +545,7 @@ export class SubjectCoreFacade {
     }
 
     // Durable terminal NO_OP record (freeze §14.2/§14.3).
-    const stateHashBefore = await stateHash(currentState);
+    const stateHashBefore = await stateHashAnyVersion(currentState);
     const snapshotHashBefore = await snapshotHash({
       state_hash: stateHashBefore,
       subject_id: currentState.identity.subject_id,
@@ -680,7 +680,7 @@ export class SubjectCoreFacade {
     if (record === null) return;
     const current = await this.ports.stateReader.readCurrentSnapshot(record.subject_id);
     const revisionBefore = (current?.runtime_metadata.state_revision ?? 0) as StateRevisionV0;
-    const stateHashBefore = current === null ? ("sha256:" as HashV1) : await stateHash(current);
+    const stateHashBefore = current === null ? ("sha256:" as HashV1) : await stateHashAnyVersion(current);
     const status = errorCode === "SERVICE_UNAVAILABLE" ? "ABORTED" : "REJECTED";
     const auditRef = (await deriveRef("audit", AUDIT_ID_PROJECTION, {
       subject_id: record.subject_id,
@@ -713,7 +713,7 @@ export class SubjectCoreFacade {
   private async loadPositionFacts(subjectId: IdentifierV0): Promise<PositionFacts | null> {
     const current = await this.ports.stateReader.readCurrentSnapshot(subjectId);
     if (current === null) return null;
-    const stateHashValue = await stateHash(current);
+    const stateHashValue = await stateHashAnyVersion(current);
     return {
       revision: current.runtime_metadata.state_revision,
       logical_time: current.runtime_metadata.logical_time,

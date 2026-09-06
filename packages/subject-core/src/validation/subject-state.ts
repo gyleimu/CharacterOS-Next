@@ -101,7 +101,7 @@ function asCheck(r: ValidationResult<unknown>): Check {
   return r.ok ? ok(undefined) : fail(r.error.error_code, r.error.reason, r.error.detail);
 }
 
-function reqRecord(v: unknown, d: string): ValidationResult<Record<string, unknown>> {
+export function reqRecord(v: unknown, d: string): ValidationResult<Record<string, unknown>> {
   return isRecord(v) ? ok(v) : fail("INVALID_SCHEMA", SCHEMA, `${d}: expected object`);
 }
 
@@ -109,7 +109,7 @@ function reqArray(v: unknown, d: string): ValidationResult<unknown[]> {
   return Array.isArray(v) ? ok(v) : fail("INVALID_SCHEMA", SCHEMA, `${d}: expected array`);
 }
 
-function lit(v: unknown, want: string | number | boolean, d: string): Check {
+export function lit(v: unknown, want: string | number | boolean, d: string): Check {
   return v === want ? ok(undefined) : fail("INVALID_SCHEMA", SCHEMA, `${d}: expected ${String(want)}`);
 }
 
@@ -119,7 +119,7 @@ function oneOf(v: unknown, set: readonly string[], d: string): Check {
     : fail("INVALID_SCHEMA", SCHEMA, `${d}: invalid enum`);
 }
 
-function closedKeys(o: Record<string, unknown>, allowed: readonly string[], d: string): Check {
+export function closedKeys(o: Record<string, unknown>, allowed: readonly string[], d: string): Check {
   for (const key of Object.keys(o)) {
     if (!allowed.includes(key)) return fail("INVALID_SCHEMA", SCHEMA, `${d}.${key}: unknown key`);
   }
@@ -226,7 +226,7 @@ function validateRuntimeMetadata(v: unknown, d: string): ValidationResult<Runtim
   return ok({ state_revision: revision, logical_time: logicalTime });
 }
 
-function validateIdentity(v: unknown, d: string): Check {
+export function validateIdentity(v: unknown, d: string): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;
@@ -267,7 +267,7 @@ function validateIdentity(v: unknown, d: string): Check {
   });
 }
 
-function validateTraitsSeed(v: unknown, d: string): Check {
+export function validateTraitsSeed(v: unknown, d: string): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;
@@ -289,7 +289,7 @@ function validateTraitsSeed(v: unknown, d: string): Check {
   return ok(undefined);
 }
 
-function validateMemoryState(v: unknown, d: string, logicalTime: number): Check {
+export function validateMemoryState(v: unknown, d: string, logicalTime: number): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;
@@ -793,7 +793,7 @@ function validateTraceEntry(v: unknown, d: string): Check {
   return lit(o["outcome"], "COMMITTED", `${d}.outcome`);
 }
 
-function validateTraceWindow(v: unknown, d: string, stateRevision: number): Check {
+export function validateTraceWindow(v: unknown, d: string, stateRevision: number): Check {
   const r = reqRecord(v, d);
   if (!r.ok) return r;
   const o = r.value;

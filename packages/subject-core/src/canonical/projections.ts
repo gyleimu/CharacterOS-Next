@@ -16,6 +16,13 @@ import type {
 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateV4 } from "../types/subject-state-v4.js";
+import {
+  readSubjectStateSchemaVersion,
+  SUBJECT_STATE_V4_STATE_HASH_PROJECTION,
+  SUBJECT_STATE_V4_FULL_PERSISTENCE_PROJECTION,
+  subjectStateV4ProjectionValue
+} from "../types/subject-state-v4.js";
 import type { TraceCursorV1 } from "../types/trace.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
 import { canonicalJsonString } from "./json.js";
@@ -54,6 +61,32 @@ export function canonicalStateHashInput(snapshot: SubjectStateV0): string {
 /** §8.3 StateHash of a complete canonical snapshot. */
 export function stateHash(snapshot: SubjectStateV0): Promise<HashV1> {
   return hashEnvelope(STATE_PROJECTION, stateProjectionValue(snapshot));
+}
+
+/** CANONICAL_AFFECT_STATE_FOUNDATION_V0 — version-aware dispatch: v3 → /v1
+ * bytes (unchanged), v4 → /v2. Unknown version fails closed. */
+export function stateHashAnyVersion(snapshot: SubjectStateV0 | SubjectStateV4): Promise<HashV1> {
+  const version = readSubjectStateSchemaVersion(snapshot);
+  if (version === "subject-state-v4") {
+    return hashEnvelope(SUBJECT_STATE_V4_STATE_HASH_PROJECTION, subjectStateV4ProjectionValue(snapshot as never));
+  }
+  if (version === "subject-state-v3") {
+    return hashEnvelope(STATE_PROJECTION, stateProjectionValue(snapshot as SubjectStateV0));
+  }
+  return Promise.reject(new Error("stateHashAnyVersion: unknown subject-state schema_version"));
+}
+
+/** CANONICAL_AFFECT_STATE_FOUNDATION_V0 — version-aware full-persistence
+ * checksum: v3 → /v1 (unchanged), v4 → /v2. */
+export function fullSnapshotChecksumAnyVersion(snapshot: SubjectStateV0 | SubjectStateV4): Promise<HashV1> {
+  const version = readSubjectStateSchemaVersion(snapshot);
+  if (version === "subject-state-v4") {
+    return hashEnvelope(SUBJECT_STATE_V4_FULL_PERSISTENCE_PROJECTION, snapshot);
+  }
+  if (version === "subject-state-v3") {
+    return hashEnvelope(FULL_PERSISTENCE_PROJECTION, snapshot);
+  }
+  return Promise.reject(new Error("fullSnapshotChecksumAnyVersion: unknown subject-state schema_version"));
 }
 
 export interface SnapshotHashInput {

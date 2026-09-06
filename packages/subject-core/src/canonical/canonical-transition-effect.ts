@@ -38,7 +38,7 @@ import {
 import { validateProposal } from "../validation/proposal.js";
 import { validateSubjectState } from "../validation/subject-state.js";
 import { validateProposalComposition } from "../commit/composition.js";
-import { proposalRef, snapshotHash, stateHash } from "./projections.js";
+import { proposalRef, snapshotHash, stateHashAnyVersion } from "./projections.js";
 import { buildTraceEntry, lastTraceRef, nextTraceWindow } from "../trace/trace.js";
 
 // ---- prepare -----------------------------------------------------------------------
@@ -178,8 +178,8 @@ export async function finalizeCanonicalTransitionEffectV0(input: {
   const derived = input.derived;
   const nextRevision = derived.state_revision;
 
-  const stateHashBefore = await stateHash(cur);
-  const stateHashAfter = await stateHash(draft as unknown as SubjectStateV0);
+  const stateHashBefore = await stateHashAnyVersion(cur);
+  const stateHashAfter = await stateHashAnyVersion(draft as unknown as SubjectStateV0);
   const pref = await proposalRef(p);
   const traceEntry = await buildTraceEntry({
     proposal: p,

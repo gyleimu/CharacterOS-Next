@@ -1281,6 +1281,9 @@ describe("Workspace graph (RPP98)", () => {
     expect(workspaceDeps).toEqual([
       // EXPERIENCE_APPRAISAL_INTEGRATION_V0: runtime consumes the shared
       // Appraisal foundation for the Experience Appraisal lifecycle.
+      // CANONICAL_AFFECT_STATE_FOUNDATION_V0: runtime consumes the pure
+      // bounded-VA dynamics for the v4 Time foundation.
+      "@characteros-next/affect",
       "@characteros-next/appraisal",
       "@characteros-next/behavior",
       "@characteros-next/influence-evidence",

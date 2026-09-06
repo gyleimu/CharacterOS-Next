@@ -65,6 +65,29 @@ export type {
   RuntimeMetadataV0,
   EmptyClosedObjectV0
 } from "./types/subject-state.js";
+export {
+  CANONICAL_AFFECT_SCHEMA_VERSION,
+  SUBJECT_STATE_V4_SCHEMA_VERSION,
+  SUBJECT_STATE_V4_STATE_HASH_PROJECTION,
+  SUBJECT_STATE_V4_SNAPSHOT_HASH_PROJECTION,
+  SUBJECT_STATE_V4_FULL_PERSISTENCE_PROJECTION,
+  subjectStateV4ProjectionValue,
+  stateHashV4,
+  readSubjectStateSchemaVersion,
+  type SignedUnitIntervalV0,
+  type CanonicalAffectV0,
+  type AffectProfileV1,
+  type MechanismConfigV1,
+  type V4RuntimeMetadataV0,
+  type SubjectStateV3,
+  type SubjectStateV4,
+  type SubjectStateAnyVersionV0
+} from "./types/subject-state-v4.js";
+export { validateSubjectStateV4 } from "./validation/subject-state-v4.js";
+export {
+  validateCanonicalAffectShape,
+  validateMechanismConfigV1Shape
+} from "./validation/subject-state-v4-values.js";
 
 export {
   SUBJECT_STATE_SCHEMA_VERSION,
@@ -351,3 +374,17 @@ export type {
   PreparedGovernedWriterAuthorityTokenV0,
   ReservedRelationshipTargetChangeV0
 } from "./commit/writer-authority-membrane.js";
+
+export {
+  materializeSubjectStateV4V0,
+  type V4FoundationMode,
+  type SubjectStateV4GenesisSeedV0,
+  type V4PersistenceEnvelopeV0,
+  type SubjectStateV4GenesisResultV0
+} from "./genesis/subject-state-v4-genesis.js";
+
+export {
+  restoreSubjectStateV4FromEnvelopeV0,
+  type V4RestoreEnvelopeInputV0,
+  type V4RestoreResultV0
+} from "./restore/restore-v4.js";

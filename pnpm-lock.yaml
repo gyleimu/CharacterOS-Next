@@ -27,9 +27,20 @@ importers:
         specifier: 4.1.11
         version: 4.1.11(@types/node@24.13.3)(vite@8.2.1(@types/node@24.13.3))
 
-  packages/affect: {}
+  packages/affect:
+    dependencies:
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
 
-  packages/appraisal: {}
+  packages/appraisal:
+    dependencies:
+      '@characteros-next/memory':
+        specifier: workspace:*
+        version: link:../memory
+      '@characteros-next/subject-core':
+        specifier: workspace:*
+        version: link:../subject-core
 
   packages/behavior:
     dependencies:
@@ -93,6 +104,12 @@ importers:
 
   packages/runtime:
     dependencies:
+      '@characteros-next/affect':
+        specifier: workspace:*
+        version: link:../affect
+      '@characteros-next/appraisal':
+        specifier: workspace:*
+        version: link:../appraisal
       '@characteros-next/behavior':
         specifier: workspace:*
         version: link:../behavior
