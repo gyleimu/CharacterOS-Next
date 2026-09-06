@@ -270,7 +270,9 @@ describe("E2 full experiment execution", () => {
       p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
       // The E1 guard's own authorization edit (E2 successor line).
       p === "evals/conformance/affect-state-retention-e1.test.ts" ||
-      p === "research/experiments/affect-state-retention-e1/artifacts.ts"
+      p === "research/experiments/affect-state-retention-e1/artifacts.ts" ||
+      p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
+      p === "evals/conformance/affect-activation-mapping-e2a.test.ts"
     )).toBe(true);
   });
 });

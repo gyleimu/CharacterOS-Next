@@ -340,7 +340,9 @@ describe("E1 full experiment execution", () => {
       p.startsWith("research/experiments/affect-state-retention-e1/") ||
       p.startsWith("research/experiments/affect-production-shaped-e2/") ||
       p === "evals/conformance/affect-state-retention-e1.test.ts" ||
-      p === "evals/conformance/affect-production-shaped-e2.test.ts"
+      p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
+      p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
+      p === "evals/conformance/affect-activation-mapping-e2a.test.ts"
     )).toBe(true);
   });
 });

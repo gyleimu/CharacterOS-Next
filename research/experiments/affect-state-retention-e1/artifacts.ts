@@ -72,7 +72,9 @@ export function frozenIntegrity(): {
   // are the only authorized additions beyond E1 itself.
   const allowed = (p: string): boolean => p.startsWith(`${EXPERIMENT_PATH}/`) || p === TEST_PATH ||
     p.startsWith("research/experiments/affect-production-shaped-e2/") ||
-    p === "evals/conformance/affect-production-shaped-e2.test.ts";
+    p === "evals/conformance/affect-production-shaped-e2.test.ts" ||
+    p.startsWith("research/experiments/affect-activation-mapping-e2a/") ||
+    p === "evals/conformance/affect-activation-mapping-e2a.test.ts";
   const changed = git("diff", "--name-only", BASELINE_COMMIT).split("\n").filter(Boolean);
   const untracked = git("ls-files", "--others", "--exclude-standard").split("\n").filter(Boolean);
   check(changed.every(allowed), `all baseline-file changes isolated to E1: ${changed.join(",")}`);
