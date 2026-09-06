@@ -1,0 +1,6 @@
+{
+  "name": "e1-integrity-tests",
+  "exit_code": 0,
+  "stdout": "\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90mD:/Documents/CharacterOS-Next\u001b[39m\n\n \u001b[32m✓\u001b[39m evals/conformance/affect-state-retention-e1.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 335\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m20 passed\u001b[39m\u001b[22m\u001b[90m (20)\u001b[39m\n\u001b[2m   Start at \u001b[22m 02:09:18\n\u001b[2m   Duration \u001b[22m 1.75s\u001b[2m (transform 1.04s, setup 0ms, import 1.27s, tests 335ms, environment 0ms)\u001b[22m\n\n",
+  "stderr": ""
+}
