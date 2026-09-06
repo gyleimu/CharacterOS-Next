@@ -1,0 +1,211 @@
+{
+  "manifest_hash": "5eced9519fe0b47951e78dec7831cfc99c9df71b0f57482502824dbbcc87b583",
+  "e2_protocol_hash": "686b26f74992537bf2b676cd0ba867e517d141792a8e27d3de8501acb1227dc5",
+  "e2_corpus_root": "4999910c98fcebc88e00c59b08f0a8f5d088554a9aa1f950ad5afe75dd0445fd",
+  "sequence_hashes": {
+    "D2|E2-S00": "3a998e8f7b19daf296bf51278dbdf4a08624e112d7936244d66c935326488d6a",
+    "D2|E2-S01": "a9c2350daa1fdd7b7f99525beaeda3c3e32eb6c4a0df52edd594a5551a2bd94e",
+    "D2|E2-S02": "ea41fa7df59468b581e2dea664d432a8756f7f7dfd1edfd266778d464437188e",
+    "D2|E2-S03": "6b4590a096bbb6e8ef9e86987e41df4335c4c837641c1aec054a3fbc2b0bed0f",
+    "D2|E2-S04": "fb71bbf0d8bff236bdd9dd45ba47417fc134e96bd8aea1d09ac932b9679ad12c",
+    "D2|E2-S05": "dbc751c114592de7b335a1523eab314187f7936a3d3685dbbbd688fbb30f51e0",
+    "D2|E2-S06": "74b98e9cd6832a756cd1973b32b3eb918e5ab9836f814e7524ab13246830daf2",
+    "D2|E2-S07": "230a7b5a10899af3718c22209219e4474d6b10f35b38137188a1915b3b4d9336",
+    "D3|E2-S00": "e67a9e0835cb3dba477f84c1f60b06e681ee0b10081749308d99ffff4b1948c3",
+    "D3|E2-S01": "43cf02f9eef4d0fbd38ab45295b158f6d0083d505fab42c8231beb0955fb1335",
+    "D3|E2-S02": "561bf46e7ae5a40d1d13adfbb9de4d5295b7ccf3156ce7cfd51a5e581efb0da0",
+    "D3|E2-S03": "359fcb8d54e2bbb7d3c025ce548adafb4750ef0a27c171160e1efe55b78aced0",
+    "D3|E2-S04": "8dc881da1a9df936c5cfa2b287a5fb559a70945637de2c2387140be936dac9ef",
+    "D3|E2-S05": "f321cc0f75807f9410a860081bb90bc6ffa2bd228d94d7753ee05c3453f2bcf0",
+    "D3|E2-S06": "561117fc2231e7396858251b95b70ddefa44258b4ae0769ff890cf53288be852",
+    "D3|E2-S07": "a85b5d7eb7e0b9258b8d85e65a5715bf02ad57aff928a4c0ca4b0f2c262df5d3",
+    "D6|E2-S00": "c546620c14089b2a3b5e80451b459056a42abbdcf5ca2a2f71a756e867dd1abd",
+    "D6|E2-S01": "75a3fbe861a9f2a82d03ceb2d752e43733ca1a8a8e96d97c7b8d79b2a7192c5c",
+    "D6|E2-S02": "06983b6489efe45e1767f467da30755205dc2dc10a2f54d7b8f42420aed6b41a",
+    "D6|E2-S03": "004eb5118043d3d0dfa764a847879930b6a06415f88ded52bcb7adb9dc114e74",
+    "D6|E2-S04": "8b8c7a1f5ef246b2b6f85ef02caef78891e07a45ee7e5a2e10bba0063ba16df8",
+    "D6|E2-S05": "c40df5fc0bb85be5ed919a7f94499094db4e52c26e7dcf4346a3f1dd721da0ec",
+    "D6|E2-S06": "4b8e31adf6a1c6ef599044e83c67f434e1e5af8d2ec841636ebbfe481d27e714",
+    "D6|E2-S07": "fcf1e35e6023ee5789d09209c1e64296fda466f4a68ab637f9144712433ad292",
+    "D7|E2-S00": "e8ac1e79dbea165d18643b810a585e4ec34794c4b5368ca3b63b4805606419be",
+    "D7|E2-S01": "6fee5bc257366a9a7f28389d28ad37f80b7178a6ab788fd7268de12c3f06e58d",
+    "D7|E2-S02": "d251b50c6d19bd1d08d1aced038241ffb72354b92efdf18296e56ad3ed962b68",
+    "D7|E2-S03": "89d8cc26cdbff37175bd268fa4d87c6b1260d8e4b61fe9ceb123b32bf9829cb6",
+    "D7|E2-S04": "70aec52830fd183f8727ad8849d00febd1f084c49a9a94d28de3761365241061",
+    "D7|E2-S05": "c9383f3b6187ce2c1cffd1619c5832a52019954780cb9ceaab1dc80bec6c7370",
+    "D7|E2-S06": "493422d7ad95836bafa93714e29a7d0a5ffaecdcea221587b5bc7f8676c6d550",
+    "D7|E2-S07": "7f896ffb76dd65f71fb41fe28afb89af698153605070811bc1a7e45e5762528b"
+  },
+  "run_accounting": {
+    "primary_runs": 96,
+    "partition_probe_runs": 6,
+    "restore_probe_runs": 3,
+    "replay_probe_runs": 3,
+    "total": 108,
+    "counting_law": "restore counts the continuation run (uninterrupted reference is a sub-step); partition counts tick10+direct (tick1 reuses the primary run); replay counts the REPLAY execution per variant",
+    "measured_total": 108
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "status": "PASS",
+      "evidence": "frozen manifest 5eced9519fe0b479... binds E2 protocol hash 686b26f74992537b... and E2 corpus root 4999910c98fcebc8...; seed subset exactly S00-S07; accounting 108/108; zero model calls; production diff empty"
+    },
+    {
+      "id": "G2",
+      "status": "PASS",
+      "evidence": "32 sequence hashes persisted; all variants consume the byte-identical sequences per family+seed"
+    },
+    {
+      "id": "G3",
+      "status": "PASS",
+      "evidence": "0 bound/finite violations across all variant runs (incl. a >= .2 - 1e-12)"
+    },
+    {
+      "id": "G4",
+      "status": "PASS",
+      "evidence": "max |v_A0 - v_A10|, |v_A10 - v_A20| over all family/seed/common timestamps: 0 <= 1e-12"
+    },
+    {
+      "id": "G5",
+      "status": "PASS",
+      "evidence": "all variants/quiet windows: max model error 3.9968028886505635e-15 <= 1e-12; quiet_debt = 0"
+    },
+    {
+      "id": "G6a",
+      "status": "PASS",
+      "evidence": "A0: D6 Q95(debt)=0, D2 Q95(debt)=0, D2 Q95(Q99(a))=0.2, D6 Q95(cancel)=0 => PASS"
+    },
+    {
+      "id": "G6b",
+      "status": "PASS",
+      "evidence": "A10: D6 Q95(debt)=0.00133333333333, D2 Q95(debt)=0, D2 Q95(Q99(a))=0.295638819451, D6 Q95(cancel)=0 => PASS"
+    },
+    {
+      "id": "G6c",
+      "status": "FAIL",
+      "evidence": "A20: D6 Q95(debt)=0.312583333333, D2 Q95(debt)=0.0045, D2 Q95(Q99(a))=0.391277638903, D6 Q95(cancel)=0.00133333333333 => FAIL"
+    },
+    {
+      "id": "G6",
+      "status": "PASS",
+      "evidence": "per-variant debt gate results recorded as G6a (A0) / G6b (A10) / G6c (A20); see also G7/G8"
+    },
+    {
+      "id": "G7",
+      "status": "PASS",
+      "evidence": "per-variant D2 debt results recorded in G6a/G6b/G6c"
+    },
+    {
+      "id": "G8",
+      "status": "PASS",
+      "evidence": "per-variant D6 cancellation results recorded in G6a/G6b/G6c"
+    },
+    {
+      "id": "G9a",
+      "status": "FAIL",
+      "evidence": "A0 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=0 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=0 >= .25"
+    },
+    {
+      "id": "G10a",
+      "status": "FAIL",
+      "evidence": "A0 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0 >= .02"
+    },
+    {
+      "id": "G9b",
+      "status": "PASS",
+      "evidence": "A10 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=1 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=0.92578125 >= .25"
+    },
+    {
+      "id": "G10b",
+      "status": "PASS",
+      "evidence": "A10 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0.0353030599994 >= .02"
+    },
+    {
+      "id": "G9c",
+      "status": "PASS",
+      "evidence": "A20 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=1 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=1 >= .25"
+    },
+    {
+      "id": "G10c",
+      "status": "PASS",
+      "evidence": "A20 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0.0596001347047 >= .02"
+    },
+    {
+      "id": "G9",
+      "status": "PASS",
+      "evidence": "per-variant responsiveness recorded as G9a/G9b/G9c"
+    },
+    {
+      "id": "G10",
+      "status": "PASS",
+      "evidence": "per-variant strong event response recorded as G10a/G10b/G10c"
+    },
+    {
+      "id": "G11",
+      "status": "PASS",
+      "evidence": "D6-S00 all variants tick1/tick10/direct: max_abs_error 1.33226762955e-15 <= 1e-12 (both axes)"
+    },
+    {
+      "id": "G12",
+      "status": "PASS",
+      "evidence": "A0=0, A10=0, A20=0 <= 1e-12, no historical replay"
+    },
+    {
+      "id": "G13",
+      "status": "PASS",
+      "evidence": "A0=REPLAY/conflict=CONFLICT/differentId=APPLIED, A10=REPLAY/conflict=CONFLICT/differentId=APPLIED, A20=REPLAY/conflict=CONFLICT/differentId=APPLIED"
+    },
+    {
+      "id": "G14",
+      "status": "PASS",
+      "evidence": "A20 D6 subset strong_debts: E2-S00=0.227666666667, E2-S01=0.1955, E2-S02=0.294166666667, E2-S03=0.312583333333, E2-S04=0.242833333333, E2-S05=0.2805, E2-S06=0.156916666667, E2-S07=0.27675; seeds > .05: 8 (E2 risk REPRODUCED)"
+    },
+    {
+      "id": "G15",
+      "status": "PASS",
+      "evidence": "unsaturated identical events: max |Delta_a(A0)| and |Delta_a(A10) - .5*Delta_a(A20)| = 5.551115123125783e-17 <= 1e-12"
+    }
+  ],
+  "verdict": "ACTIVATION_GAIN_REDUCTION_SUPPORTED",
+  "verdict_rationale": "Case A: A10 passes all debt + responsiveness gates while A20 fails debt; candidate u_a = 0.10q.",
+  "comparison_table": {
+    "A0": {
+      "D2_Q95_strong_debt": 0,
+      "D2_Q95_Q99_activation": 0.2,
+      "D6_Q95_strong_debt": 0,
+      "D6_cancellation_occupancy": 0,
+      "D3_response_at_least_005": 0,
+      "D3_response_all_at_least_002": 0,
+      "strong_q025_median_delta_a": 0,
+      "D7_O_a_plus": 0,
+      "quiet_debt_max": 0
+    },
+    "A10": {
+      "D2_Q95_strong_debt": 0,
+      "D2_Q95_Q99_activation": 0.295638819451,
+      "D6_Q95_strong_debt": 0.00133333333333,
+      "D6_cancellation_occupancy": 0,
+      "D3_response_at_least_005": 1,
+      "D3_response_all_at_least_002": 0.92578125,
+      "strong_q025_median_delta_a": 0.043579239136,
+      "D7_O_a_plus": 0.0373125,
+      "quiet_debt_max": 0
+    },
+    "A20": {
+      "D2_Q95_strong_debt": 0.0045,
+      "D2_Q95_Q99_activation": 0.391277638903,
+      "D6_Q95_strong_debt": 0.312583333333,
+      "D6_cancellation_occupancy": 0.00133333333333,
+      "D3_response_at_least_005": 1,
+      "D3_response_all_at_least_002": 1,
+      "strong_q025_median_delta_a": 0.0871584782719,
+      "D7_O_a_plus": 0.119020833333,
+      "quiet_debt_max": 0
+    }
+  },
+  "effect_sizes": {
+    "D6_debt_reduction_ratio_A10_over_A20": 0.00426552919222,
+    "response_retention_ratio_median_strong": 0.5
+  }
+}

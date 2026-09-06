@@ -1,0 +1,286 @@
+{
+  "experiment_id": "ACTIVATION_MAPPING_ABLATION_E2A",
+  "schema_version": "activation-mapping-ablation-manifest-e2a",
+  "predecessor": {
+    "e1": {
+      "experiment": "STATE_RETENTION_AND_RECOVERY_E1",
+      "verdict": "SUPPORTED_FOR_NEXT_STAGE",
+      "frozen": true
+    },
+    "e2": {
+      "experiment": "PRODUCTION_SHAPED_APPRAISAL_DYNAMICS_E2",
+      "verdict": "SUPPORTED_WITH_IDENTIFIED_MAPPING_RISK",
+      "sub_risk": "ACTIVATION_MAPPING_RISK",
+      "frozen": true
+    },
+    "finding_isolated": "E2's only identified risk was ACTIVATION_MAPPING_RISK (D6 strong_debt Q95 = 0.320 > .05); valence cancellation itself passed."
+  },
+  "git_baseline": "bf6c2fe761a0ed5eee7e53d4b6697297e0271e1c",
+  "research_question": "What minimum activation gain preserves a measurable event-driven activation response while eliminating the E2 activation debt pathology under D2/D6? Secondary: if only u_a = 0 passes the debt gates, is positive-only activation injection structurally problematic rather than merely over-gained?",
+  "single_factor": {
+    "baseline": "(0, 0.2)",
+    "tau": 150,
+    "q": "relevance * intensity",
+    "u_v": "0.25 * q * (2*goal_congruence - 1)",
+    "event": "x_after = clamp(x_before + u)",
+    "recovery": "x(t+dt) = b + (x(t)-b) * exp(-dt/150) per axis",
+    "bounds": "valence [-1,1], activation [0,1]",
+    "only_difference": "u_a = activationGain * q",
+    "forbidden": [
+      "signed activation",
+      "goal-dependent activation",
+      "controllability-dependent activation",
+      "uncertainty-dependent activation",
+      "nonlinear activation",
+      "saturation-dependent gain",
+      "habituation",
+      "refractory periods"
+    ]
+  },
+  "variants": [
+    {
+      "id": "A0",
+      "activationGain": 0,
+      "role": "no event-driven activation (control for responsiveness)"
+    },
+    {
+      "id": "A10",
+      "activationGain": 0.1,
+      "role": "candidate reduced gain"
+    },
+    {
+      "id": "A20",
+      "activationGain": 0.2,
+      "role": "exact frozen E2 mapping (control); must reproduce the E2 D6 debt pattern"
+    }
+  ],
+  "corpus_reuse": {
+    "source": "E2 frozen generator and sequence definitions, imported (never regenerated with new semantics)",
+    "e2_protocol_hash": "686b26f74992537bf2b676cd0ba867e517d141792a8e27d3de8501acb1227dc5",
+    "e2_corpus_root": "4999910c98fcebc88e00c59b08f0a8f5d088554a9aa1f950ad5afe75dd0445fd",
+    "families": [
+      "D2",
+      "D3",
+      "D6",
+      "D7"
+    ],
+    "family_purposes": {
+      "D2": "chatter: repeated low-q accumulation (debt gate)",
+      "D3": "ordinary: activation responsiveness safety (responsiveness gate)",
+      "D6": "alternating: where E2 identified the ACTIVATION_MAPPING_RISK (primary)",
+      "D7": "high density stress: boundedness/recovery safety"
+    },
+    "seed_subset": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07"
+    ],
+    "sequence_hash_binding": "per-lifetime sha256 over canonical {family, seed, T, quiet, events}; asserted identical across variants"
+  },
+  "restore_probe": {
+    "family": "D6",
+    "seed": "E2-S00",
+    "tick": 9000,
+    "law": "deterministic midpoint before the final quiet recovery window; frozen before the run"
+  },
+  "metrics": {
+    "reuse": "E2 definitions exactly: O_a+, N_a+, activation quantiles, strong_debt, quiet_debt, saturation episodes, baseline occupancy, event sensitivity J, discounted-load reconstruction, quiet recovery, partition consistency, restore/replay",
+    "delta_a_event": "Delta_a_event = a_post - a_pre per event",
+    "observed_gain": "for unsaturated q>0 events: activation_gain_observed = Delta_a_event / q (A0 -> 0, A10 -> .10, A20 -> .20 within tolerance)",
+    "q_buckets": "[0,.01) [.01,.04) [.04,.16) [.16,.36) [.36,1] (E2 buckets)",
+    "activation_buckets": "per bucket: count, median Delta_a, p90 Delta_a, fraction Delta_a >= .005, fraction Delta_a >= .01, clamp fraction",
+    "expected_relation": "Delta_a(A10) ~= 0.5 * Delta_a(A20) and Delta_a(A0) = 0 for unsaturated identical events (implementation integrity check)"
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "statement": "Protocol integrity: frozen manifest binds E2 protocol hash, E2 corpus root, E2/E1 source fingerprints, sequence hashes, seed subset, variants, gates, accounting (108), zero-model, production isolation. All runs validate.",
+      "kind": "PROTOCOL"
+    },
+    {
+      "id": "G2",
+      "statement": "Input identity: for each family+seed the event sequences consumed by A0/A10/A20 are byte-identical (persisted sequence hash equality).",
+      "kind": "INVARIANT"
+    },
+    {
+      "id": "G3",
+      "statement": "Bounds/finite: all states finite, 0 <= a <= 1, and a >= .2 - 1e-12 (nonnegative impulses, baseline .2).",
+      "kind": "BOUNDS"
+    },
+    {
+      "id": "G4",
+      "statement": "Valence invariance: for every family/seed and common timestamp |v_A0 - v_A10| and |v_A10 - v_A20| <= 1e-12. Violation => INVALID_EXPERIMENT.",
+      "kind": "INVARIANT"
+    },
+    {
+      "id": "G5",
+      "statement": "Recovery invariant: during declared event-free windows each variant satisfies a(t) = .2 + (a_s-.2)*exp(-(t-s)/150) within 1e-12; quiet_debt = 0.",
+      "kind": "QUIET"
+    },
+    {
+      "id": "G6",
+      "statement": "D6 debt: Q95_seed(strong_debt) <= .05 (the original E2 failure criterion, authoritative).",
+      "kind": "DEBT"
+    },
+    {
+      "id": "G7",
+      "statement": "D2 debt: Q95_seed(strong_debt) <= .05 and Q95_seed(Q99_time(activation)) <= .75.",
+      "kind": "DEBT"
+    },
+    {
+      "id": "G8",
+      "statement": "D6 cancellation: Q95_seed(mean(|v| <= .05 AND a >= .6)) <= .05.",
+      "kind": "CANCELLATION"
+    },
+    {
+      "id": "G9",
+      "statement": "D3 responsiveness: unsaturated MID/STRONG/EDGE events fraction(Delta_a + 1e-12 >= .005) >= .75; pooled all-q>0 ordinary events fraction(Delta_a + 1e-12 >= .002) >= .25. Frozen before the official run; A0 is expected to fail this by construction.",
+      "kind": "RESPONSIVENESS"
+    },
+    {
+      "id": "G10",
+      "statement": "Strong event response: D3/D7 unsaturated events with q >= .25 have median Delta_a >= .02 for a variant to qualify as an activation candidate.",
+      "kind": "STRONG_EVENT"
+    },
+    {
+      "id": "G11",
+      "statement": "Partition equivalence: D6-S00 all variants tick1/tick10/direct max_abs_error <= 1e-12 on both axes.",
+      "kind": "INVARIANT"
+    },
+    {
+      "id": "G12",
+      "statement": "Restore equivalence: D6-S00 all variants restore continuation vs uninterrupted max_abs_error <= 1e-12, no historical replay.",
+      "kind": "INVARIANT"
+    },
+    {
+      "id": "G13",
+      "statement": "Replay law: same ID + same payload -> REPLAY delta 0; same ID + changed payload -> CONFLICT; different ID + same payload -> APPLIED (all variants).",
+      "kind": "INVARIANT"
+    },
+    {
+      "id": "G14",
+      "statement": "A20 reproduction: at least one A20 D6 seed has strong_debt > .05 (the E2 identified risk must reproduce on the reused subset); the aggregate subset result is reported.",
+      "kind": "REPRODUCTION"
+    },
+    {
+      "id": "G15",
+      "statement": "Gain identity: unsaturated identical events satisfy Delta_a(A10) ~= .5*Delta_a(A20) and Delta_a(A0) = 0 within 1e-12 (implementation integrity).",
+      "kind": "INVARIANT"
+    }
+  ],
+  "selection_logic": {
+    "debt_gates": "G6 (D6) and G7 (D2) — a variant 'passes debt' when both hold",
+    "responsiveness_gates": "G9 and G10 — a variant 'passes responsiveness' when both hold",
+    "case_A": "A10 passes debt + responsiveness and A20 fails debt => ACTIVATION_GAIN_REDUCTION_SUPPORTED (candidate u_a = .10q)",
+    "case_B": "A10 and A20 both fail debt while A0 passes debt but fails responsiveness => POSITIVE_ONLY_ACTIVATION_MAPPING_NOT_SUPPORTED",
+    "case_C": "A10 and A20 both pass debt => E2_ACTIVATION_RISK_NOT_REPRODUCED; if additionally A20 shows no D6 seed with strong_debt > .05 => INVALID_EXPERIMENT (corpus identity investigation)",
+    "case_D": "A10 passes debt but fails responsiveness => GAIN_REDUCTION_INSUFFICIENTLY_RESPONSIVE",
+    "case_E": "A0 passes responsiveness => INVALID_EXPERIMENT (protocol defect: u_a = 0 cannot respond)",
+    "case_F": "core integrity failure (G2-G5, G11-G13, G15) => INVALID_EXPERIMENT / MECHANISM_INTEGRITY_FAILURE; gain results are not interpreted",
+    "precedence": "F (integrity) > E (A0 anomaly) > C (not reproduced) > A/B/D (selection)"
+  },
+  "run_accounting": {
+    "primary_runs": 96,
+    "partition_probe_runs": 6,
+    "restore_probe_runs": 3,
+    "replay_probe_runs": 3,
+    "total": 108,
+    "counting_law": "restore counts the continuation run (uninterrupted reference is a sub-step); partition counts tick10+direct (tick1 reuses the primary run); replay counts the REPLAY execution per variant"
+  },
+  "discipline_law": {
+    "no_parameter_search": "only 0, .10, .20; no .05/.08/.12/.15, no binary search, no fitting",
+    "no_tau_ablation": true,
+    "no_q_ablation": true,
+    "no_valence_changes": true,
+    "no_contextual_activation": true,
+    "optimization_target": "responsive, bounded, recoverable, not dominated by event count, not persistently elevated after significance decayed — NOT maximum activation/AUC"
+  },
+  "zero_model_law": "No OpenAI, Ollama, DeepSeek, Qwen or any evaluator/LLM call exists anywhere in E2A. Real model calls: 0.",
+  "production_isolation_law": "Production source diff relative to the required baseline is empty; only research/experiments/affect-activation-mapping-e2a/ and evals/conformance/affect-activation-mapping-e2a.test.ts may change (plus the mechanical isolation-guard authorization edits in the E1/E2 harness files, documented in the manifest).",
+  "freeze": {
+    "source_fingerprint": "b258d07d0a5f488fb3b4d3e0227101dd02348a160e651f3ac0b87f228723790d",
+    "built_fingerprint": "3affed2e233b64f3dcebdd864aec269ea2040ff3230913abed9458cdd7774d81",
+    "protocol_hash": "5eced9519fe0b47951e78dec7831cfc99c9df71b0f57482502824dbbcc87b583",
+    "dependencies": {
+      "e1_law": "4f5c69ed64fd893729f449ea91dc7c80c495b3bbb63b676758a977faf2a23078",
+      "e2_generator": "24d9b4f09c508184d2d8b6eb8f2ce5a72bd6919c0d5841dd22d2590350b8d801",
+      "e2_metrics": "2a0ee0ec7d9ac9d3e4df47a63eda4360c0d1e36d18a9307f476c84746eb11233",
+      "e2_evidence_tree": "4313dae64efe90d96efd1ec28512ec63ea5e3bec4a8a19c807de40a6a26146d0",
+      "e1_evidence_tree": "fc70710e50e55ec7eb46931b31a75b804b6849718981a72222659a71d3487477"
+    },
+    "e2_protocol_hash": "686b26f74992537bf2b676cd0ba867e517d141792a8e27d3de8501acb1227dc5",
+    "e2_corpus_root": "4999910c98fcebc88e00c59b08f0a8f5d088554a9aa1f950ad5afe75dd0445fd",
+    "sequence_hashes": {
+      "D2|E2-S00": "3a998e8f7b19daf296bf51278dbdf4a08624e112d7936244d66c935326488d6a",
+      "D2|E2-S01": "a9c2350daa1fdd7b7f99525beaeda3c3e32eb6c4a0df52edd594a5551a2bd94e",
+      "D2|E2-S02": "ea41fa7df59468b581e2dea664d432a8756f7f7dfd1edfd266778d464437188e",
+      "D2|E2-S03": "6b4590a096bbb6e8ef9e86987e41df4335c4c837641c1aec054a3fbc2b0bed0f",
+      "D2|E2-S04": "fb71bbf0d8bff236bdd9dd45ba47417fc134e96bd8aea1d09ac932b9679ad12c",
+      "D2|E2-S05": "dbc751c114592de7b335a1523eab314187f7936a3d3685dbbbd688fbb30f51e0",
+      "D2|E2-S06": "74b98e9cd6832a756cd1973b32b3eb918e5ab9836f814e7524ab13246830daf2",
+      "D2|E2-S07": "230a7b5a10899af3718c22209219e4474d6b10f35b38137188a1915b3b4d9336",
+      "D3|E2-S00": "e67a9e0835cb3dba477f84c1f60b06e681ee0b10081749308d99ffff4b1948c3",
+      "D3|E2-S01": "43cf02f9eef4d0fbd38ab45295b158f6d0083d505fab42c8231beb0955fb1335",
+      "D3|E2-S02": "561bf46e7ae5a40d1d13adfbb9de4d5295b7ccf3156ce7cfd51a5e581efb0da0",
+      "D3|E2-S03": "359fcb8d54e2bbb7d3c025ce548adafb4750ef0a27c171160e1efe55b78aced0",
+      "D3|E2-S04": "8dc881da1a9df936c5cfa2b287a5fb559a70945637de2c2387140be936dac9ef",
+      "D3|E2-S05": "f321cc0f75807f9410a860081bb90bc6ffa2bd228d94d7753ee05c3453f2bcf0",
+      "D3|E2-S06": "561117fc2231e7396858251b95b70ddefa44258b4ae0769ff890cf53288be852",
+      "D3|E2-S07": "a85b5d7eb7e0b9258b8d85e65a5715bf02ad57aff928a4c0ca4b0f2c262df5d3",
+      "D6|E2-S00": "c546620c14089b2a3b5e80451b459056a42abbdcf5ca2a2f71a756e867dd1abd",
+      "D6|E2-S01": "75a3fbe861a9f2a82d03ceb2d752e43733ca1a8a8e96d97c7b8d79b2a7192c5c",
+      "D6|E2-S02": "06983b6489efe45e1767f467da30755205dc2dc10a2f54d7b8f42420aed6b41a",
+      "D6|E2-S03": "004eb5118043d3d0dfa764a847879930b6a06415f88ded52bcb7adb9dc114e74",
+      "D6|E2-S04": "8b8c7a1f5ef246b2b6f85ef02caef78891e07a45ee7e5a2e10bba0063ba16df8",
+      "D6|E2-S05": "c40df5fc0bb85be5ed919a7f94499094db4e52c26e7dcf4346a3f1dd721da0ec",
+      "D6|E2-S06": "4b8e31adf6a1c6ef599044e83c67f434e1e5af8d2ec841636ebbfe481d27e714",
+      "D6|E2-S07": "fcf1e35e6023ee5789d09209c1e64296fda466f4a68ab637f9144712433ad292",
+      "D7|E2-S00": "e8ac1e79dbea165d18643b810a585e4ec34794c4b5368ca3b63b4805606419be",
+      "D7|E2-S01": "6fee5bc257366a9a7f28389d28ad37f80b7178a6ab788fd7268de12c3f06e58d",
+      "D7|E2-S02": "d251b50c6d19bd1d08d1aced038241ffb72354b92efdf18296e56ad3ed962b68",
+      "D7|E2-S03": "89d8cc26cdbff37175bd268fa4d87c6b1260d8e4b61fe9ceb123b32bf9829cb6",
+      "D7|E2-S04": "70aec52830fd183f8727ad8849d00febd1f084c49a9a94d28de3761365241061",
+      "D7|E2-S05": "c9383f3b6187ce2c1cffd1619c5832a52019954780cb9ceaab1dc80bec6c7370",
+      "D7|E2-S06": "493422d7ad95836bafa93714e29a7d0a5ffaecdcea221587b5bc7f8676c6d550",
+      "D7|E2-S07": "7f896ffb76dd65f71fb41fe28afb89af698153605070811bc1a7e45e5762528b"
+    },
+    "seed_subset": [
+      "E2-S00",
+      "E2-S01",
+      "E2-S02",
+      "E2-S03",
+      "E2-S04",
+      "E2-S05",
+      "E2-S06",
+      "E2-S07"
+    ],
+    "variants": [
+      {
+        "id": "A0",
+        "activationGain": 0,
+        "role": "no event-driven activation (control for responsiveness)"
+      },
+      {
+        "id": "A10",
+        "activationGain": 0.1,
+        "role": "candidate reduced gain"
+      },
+      {
+        "id": "A20",
+        "activationGain": 0.2,
+        "role": "exact frozen E2 mapping (control); must reproduce the E2 D6 debt pattern"
+      }
+    ],
+    "head": "b4a62c85799de5713fc2e47fa540830e7213af86",
+    "head_baseline_commit": "bf6c2fe761a0ed5eee7e53d4b6697297e0271e1c",
+    "engineering_gates_dir": "D:\\Documents\\CharacterOS-Next\\tmp\\affect-activation-mapping-e2a-gates",
+    "frozen_before_results": true,
+    "run_identity": "run-r1",
+    "amendment_policy": "Never amended after observing results; a code/protocol change invalidates this run identity and requires a new one."
+  }
+}

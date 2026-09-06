@@ -1,0 +1,124 @@
+{
+  "gates": [
+    {
+      "id": "G1",
+      "status": "PASS",
+      "evidence": "frozen manifest 5eced9519fe0b479... binds E2 protocol hash 686b26f74992537b... and E2 corpus root 4999910c98fcebc8...; seed subset exactly S00-S07; accounting 108/108; zero model calls; production diff empty"
+    },
+    {
+      "id": "G2",
+      "status": "PASS",
+      "evidence": "32 sequence hashes persisted; all variants consume the byte-identical sequences per family+seed"
+    },
+    {
+      "id": "G3",
+      "status": "PASS",
+      "evidence": "0 bound/finite violations across all variant runs (incl. a >= .2 - 1e-12)"
+    },
+    {
+      "id": "G4",
+      "status": "PASS",
+      "evidence": "max |v_A0 - v_A10|, |v_A10 - v_A20| over all family/seed/common timestamps: 0 <= 1e-12"
+    },
+    {
+      "id": "G5",
+      "status": "PASS",
+      "evidence": "all variants/quiet windows: max model error 3.9968028886505635e-15 <= 1e-12; quiet_debt = 0"
+    },
+    {
+      "id": "G6a",
+      "status": "PASS",
+      "evidence": "A0: D6 Q95(debt)=0, D2 Q95(debt)=0, D2 Q95(Q99(a))=0.2, D6 Q95(cancel)=0 => PASS"
+    },
+    {
+      "id": "G6b",
+      "status": "PASS",
+      "evidence": "A10: D6 Q95(debt)=0.00133333333333, D2 Q95(debt)=0, D2 Q95(Q99(a))=0.295638819451, D6 Q95(cancel)=0 => PASS"
+    },
+    {
+      "id": "G6c",
+      "status": "FAIL",
+      "evidence": "A20: D6 Q95(debt)=0.312583333333, D2 Q95(debt)=0.0045, D2 Q95(Q99(a))=0.391277638903, D6 Q95(cancel)=0.00133333333333 => FAIL"
+    },
+    {
+      "id": "G6",
+      "status": "PASS",
+      "evidence": "per-variant debt gate results recorded as G6a (A0) / G6b (A10) / G6c (A20); see also G7/G8"
+    },
+    {
+      "id": "G7",
+      "status": "PASS",
+      "evidence": "per-variant D2 debt results recorded in G6a/G6b/G6c"
+    },
+    {
+      "id": "G8",
+      "status": "PASS",
+      "evidence": "per-variant D6 cancellation results recorded in G6a/G6b/G6c"
+    },
+    {
+      "id": "G9a",
+      "status": "FAIL",
+      "evidence": "A0 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=0 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=0 >= .25"
+    },
+    {
+      "id": "G10a",
+      "status": "FAIL",
+      "evidence": "A0 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0 >= .02"
+    },
+    {
+      "id": "G9b",
+      "status": "PASS",
+      "evidence": "A10 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=1 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=0.92578125 >= .25"
+    },
+    {
+      "id": "G10b",
+      "status": "PASS",
+      "evidence": "A10 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0.0353030599994 >= .02"
+    },
+    {
+      "id": "G9c",
+      "status": "PASS",
+      "evidence": "A20 D3 responsiveness: unsaturated MID/STRONG/EDGE fraction(Delta_a >= .005)=1 >= .75; pooled all-q>0 fraction(Delta_a >= .002)=1 >= .25"
+    },
+    {
+      "id": "G10c",
+      "status": "PASS",
+      "evidence": "A20 strong event response: median Delta_a over D3/D7 unsaturated q>=.25 events = 0.0596001347047 >= .02"
+    },
+    {
+      "id": "G9",
+      "status": "PASS",
+      "evidence": "per-variant responsiveness recorded as G9a/G9b/G9c"
+    },
+    {
+      "id": "G10",
+      "status": "PASS",
+      "evidence": "per-variant strong event response recorded as G10a/G10b/G10c"
+    },
+    {
+      "id": "G11",
+      "status": "PASS",
+      "evidence": "D6-S00 all variants tick1/tick10/direct: max_abs_error 1.33226762955e-15 <= 1e-12 (both axes)"
+    },
+    {
+      "id": "G12",
+      "status": "PASS",
+      "evidence": "A0=0, A10=0, A20=0 <= 1e-12, no historical replay"
+    },
+    {
+      "id": "G13",
+      "status": "PASS",
+      "evidence": "A0=REPLAY/conflict=CONFLICT/differentId=APPLIED, A10=REPLAY/conflict=CONFLICT/differentId=APPLIED, A20=REPLAY/conflict=CONFLICT/differentId=APPLIED"
+    },
+    {
+      "id": "G14",
+      "status": "PASS",
+      "evidence": "A20 D6 subset strong_debts: E2-S00=0.227666666667, E2-S01=0.1955, E2-S02=0.294166666667, E2-S03=0.312583333333, E2-S04=0.242833333333, E2-S05=0.2805, E2-S06=0.156916666667, E2-S07=0.27675; seeds > .05: 8 (E2 risk REPRODUCED)"
+    },
+    {
+      "id": "G15",
+      "status": "PASS",
+      "evidence": "unsaturated identical events: max |Delta_a(A0)| and |Delta_a(A10) - .5*Delta_a(A20)| = 5.551115123125783e-17 <= 1e-12"
+    }
+  ]
+}

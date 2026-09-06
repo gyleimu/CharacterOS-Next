@@ -1,0 +1,70 @@
+{
+  "partition_probe": [
+    {
+      "variant": "A0",
+      "errors": {
+        "tick10_vs_tick1": 1.04083408559e-17,
+        "direct_vs_tick1": 1.04083408559e-17
+      }
+    },
+    {
+      "variant": "A10",
+      "errors": {
+        "tick10_vs_tick1": 7.21644966006e-16,
+        "direct_vs_tick1": 7.21644966006e-16
+      }
+    },
+    {
+      "variant": "A20",
+      "errors": {
+        "tick10_vs_tick1": 1.33226762955e-15,
+        "direct_vs_tick1": 1.33226762955e-15
+      }
+    }
+  ],
+  "restore_proofs": [
+    {
+      "variant": "A0",
+      "max_abs_error": 0,
+      "pass": true
+    },
+    {
+      "variant": "A10",
+      "max_abs_error": 0,
+      "pass": true
+    },
+    {
+      "variant": "A20",
+      "max_abs_error": 0,
+      "pass": true
+    }
+  ],
+  "replay_proofs": [
+    {
+      "variant": "A0",
+      "replay_application": "REPLAY",
+      "replay_delta": 0,
+      "conflict_application": "CONFLICT",
+      "different_id_application": "APPLIED",
+      "pass": true
+    },
+    {
+      "variant": "A10",
+      "replay_application": "REPLAY",
+      "replay_delta": 0,
+      "conflict_application": "CONFLICT",
+      "different_id_application": "APPLIED",
+      "pass": true
+    },
+    {
+      "variant": "A20",
+      "replay_application": "REPLAY",
+      "replay_delta": 0,
+      "conflict_application": "CONFLICT",
+      "different_id_application": "APPLIED",
+      "pass": true
+    }
+  ],
+  "valence_invariance_max_error": 0,
+  "gain_identity_max_error": 5.55111512313e-17
+}

@@ -1,0 +1,206 @@
+{
+  "status": "PASS",
+  "source_fingerprint": "b258d07d0a5f488fb3b4d3e0227101dd02348a160e651f3ac0b87f228723790d",
+  "built_fingerprint": "3affed2e233b64f3dcebdd864aec269ea2040ff3230913abed9458cdd7774d81",
+  "commands": [
+    {
+      "name": "build:packages/affect",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/belief",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/regulation",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/relationship",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/subject-core",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/behavior",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/long-term-state-domain",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/memory",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/appraisal",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/memory-influence",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/influence-evidence",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/runtime",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:packages/personality",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "build:product/sandbox",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/affect",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/belief",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/regulation",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/relationship",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/subject-core",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/behavior",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/long-term-state-domain",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/memory",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/appraisal",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/memory-influence",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/influence-evidence",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/runtime",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:packages/personality",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "typecheck:product/sandbox",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "harness-typecheck",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "conformance-tests",
+      "exit_code": 0,
+      "stdout": "\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90mD:/Documents/CharacterOS-Next\u001b[39m\n\n \u001b[32m✓\u001b[39m evals/conformance/affect-activation-mapping-e2a.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 4828\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m19 passed\u001b[39m\u001b[22m\u001b[90m (19)\u001b[39m\n\u001b[2m   Start at \u001b[22m 03:17:28\n\u001b[2m   Duration \u001b[22m 7.50s\u001b[2m (transform 969ms, setup 0ms, import 2.53s, tests 4.83s, environment 0ms)\u001b[22m\n\n",
+      "stderr": ""
+    },
+    {
+      "name": "prior-line-regressions",
+      "exit_code": 0,
+      "stdout": "\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90mD:/Documents/CharacterOS-Next\u001b[39m\n\n \u001b[32m✓\u001b[39m evals/conformance/affect-state-retention-e1.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 330\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/affect-production-shaped-e2.test.ts \u001b[2m(\u001b[22m\u001b[2m22 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 100080\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m has exact event counts per family and no duplicate ticks \u001b[33m 1295\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m every generated event passes the REAL canonical proposal validator, and record fixtures validate (§9/§19/§74.8) \u001b[33m 866\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m derives the verdict with the frozen precedence (§68) \u001b[33m 16705\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m42 passed\u001b[39m\u001b[22m\u001b[90m (42)\u001b[39m\n\u001b[2m   Start at \u001b[22m 03:17:36\n\u001b[2m   Duration \u001b[22m 109.30s\u001b[2m (transform 1.90s, setup 0ms, import 10.25s, tests 100.41s, environment 0ms)\u001b[22m\n\n",
+      "stderr": ""
+    },
+    {
+      "name": "full-tests",
+      "exit_code": 0,
+      "stdout": "\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90mD:/Documents/CharacterOS-Next\u001b[39m\n\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/experience-cognition-integration.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 273\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/behavior-outcome-feedback.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 345\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/micl/micl-runtime.test.ts \u001b[2m(\u001b[22m\u001b[2m14 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 442\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/experience-appraisal/experience-appraisal-integration.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 445\u001b[2mms\u001b[22m\u001b[39m\n\u001b[90mstdout\u001b[2m | packages/runtime/src/transitions/relationship/relationship-adaptation-workflow.test.ts\u001b[2m > \u001b[22m\u001b[2mStale rebuild (RAWI80–RAWI93)\u001b[2m > \u001b[22m\u001b[2mRAWI80–RAWI93: one deterministic rebuild against the CURRENT revision; ordinals append-only; bound enforced\n\u001b[22m\u001b[39mDEBUG_RESULTB {\"kind\":\"COMPLETE_COMMITTED\",\"transition_id\":\"t-relationship-947be6672ff709846821a2fe0aca4e46a1a5ceb02056159e1cc11603e6392ca4\",\"commit_ref\":\"commit:b8045e4397837437619e7e7d359bafe43ca4b3d87ee60d2c130e6e5ffcf5d31c\",\"final_state_revision\":1,\"snapshot_hash\":\"sha256:7b2681621c61372e80f5d8ae992fe343db887a8d9aac4abec99e1f303a270d45\",\"canonical_commits\":1}\n\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-adaptation-workflow.test.ts \u001b[2m(\u001b[22m\u001b[2m41 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 511\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/multi-revision-visibility.test.ts \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 162\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/ollama-native-cognition-transport-trace.test.ts \u001b[2m(\u001b[22m\u001b[2m17 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 408\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief-adaptation-workflow.test.ts \u001b[2m(\u001b[22m\u001b[2m30 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 369\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-interaction-familiarity-cognition-influence.test.ts \u001b[2m(\u001b[22m\u001b[2m16 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 1825\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Arm A: 1 real qualifying experience → 1/32 → BASIC_CONTEXT_FIRST; Arm B: 16 → 16/32 → COUNTERPART_CONTEXT_SEARCH_FIRST \u001b[33m 887\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m strategies survive authoritative restore for both arms without manual reconstruction \u001b[33m 907\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-semantic-channel.test.ts \u001b[2m(\u001b[22m\u001b[2m53 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 271\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/affect-state-retention-e1.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 654\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/personality/src/personality-semantic-channel.test.ts \u001b[2m(\u001b[22m\u001b[2m36 tests\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[2m)\u001b[22m\u001b[33m 311\u001b[2mms\u001b[22m\u001b[39m\n\u001b[90mstdout\u001b[2m | packages/runtime/src/authority/restore-chain-authority.test.ts\u001b[2m > \u001b[22m\u001b[2mRestore chain authority integration V0\u001b[2m > \u001b[22m\u001b[2menforces the repository binding terminal projection\n\u001b[22m\u001b[39mPROBE_WH=REPOSITORY_BINDING_MISMATCH {}\n\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/restore-chain-authority.test.ts \u001b[2m(\u001b[22m\u001b[2m14 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 265\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/relationship-governed-write-authority.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 170\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-plasticity-producer.test.ts \u001b[2m(\u001b[22m\u001b[2m62 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 392\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-counterpart-registration.test.ts \u001b[2m(\u001b[22m\u001b[2m30 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 254\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/actions/outcome-reintegration.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 255\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/relationship-interaction-familiarity-authority.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 230\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/personality/personality.test.ts \u001b[2m(\u001b[22m\u001b[2m21 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 129\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-familiarity-retrieval-normal-execution.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 3246\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Arm B: real 16-experience history → SEARCH_FIRST → normal execution performs EXACTLY ONE exact-Alice retrieval \u001b[33m 861\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Empty control: high familiarity + no usable evidence → valid execution, ATTEMPTED_EMPTY, no invention \u001b[33m 720\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Restore: post-restore normal execution reproduces both arms without manual reconstruction \u001b[33m 1604\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/attribution-runtime-alignment.test.ts \u001b[2m(\u001b[22m\u001b[2m33 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 149\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/atomic-commit-v2-production-emission.test.ts \u001b[2m(\u001b[22m\u001b[2m8 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 214\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/belief-decision-arbitration-policy.test.ts \u001b[2m(\u001b[22m\u001b[2m39 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 234\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/observation-conformance.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 141\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/affect-event-authority-v0.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 190\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/observation-transition-executor.test.ts \u001b[2m(\u001b[22m\u001b[2m16 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 186\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/adversarial-regression.test.ts \u001b[2m(\u001b[22m\u001b[2m22 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 176\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 223\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 133\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/learning-transition-executor.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 333\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/ollama-native-cognition-provider.test.ts \u001b[2m(\u001b[22m\u001b[2m26 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 235\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/validation/atomic-commit-bundle.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 145\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/identity/round3-b3.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 98\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-interaction-familiarity-read-projection.test.ts \u001b[2m(\u001b[22m\u001b[2m11 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 125\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/atomic-commit-chain-validator.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 528\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-interaction-familiarity-retrieval-orchestration.test.ts \u001b[2m(\u001b[22m\u001b[2m8 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 4921\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Arm B: 16 real experiences → 16/32 → SEARCH_FIRST → EXACTLY ONE exact-Alice retrieval with validated evidence \u001b[33m 822\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m empty results are successful outcomes with no invented context and no familiarity mutation \u001b[33m 672\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 2/32 and 16/32 retrieve IDENTICALLY — one attempt, same categorical artifact \u001b[33m 1372\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m strategy and retrieval behavior survive authoritative restore for both arms \u001b[33m 1992\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/belief-decision-integration-policy.test.ts \u001b[2m(\u001b[22m\u001b[2m39 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 271\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/actions/closed-loop-continuity.test.ts \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 109\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/experience-encoder.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 95\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/commit.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 95\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-interaction-familiarity-ingestion.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 5269\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 32 credits reach 1; the 33rd qualifying episode produces NO familiarity commit \u001b[33m 5054\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/facade.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 79\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/producers/reference-fast-ema-integration.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 144\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief-semantic-target-resolution.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 93\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/time/time-transition-executor.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 83\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/personality/src/personality-plasticity-producer.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 156\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief-plasticity-producer.test.ts \u001b[2m(\u001b[22m\u001b[2m14 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 124\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief-semantic-ollama-provider.test.ts \u001b[2m(\u001b[22m\u001b[2m24 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 247\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/learning/learning-candidate-authority.test.ts \u001b[2m(\u001b[22m\u001b[2m35 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 155\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/belief-cognition-read-projection.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 77\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/restore/restore.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 84\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/scenarios/real-interaction-scenario.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 67\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 90\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/writer-authority-membrane.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 126\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/belief-decision-influence-relation-workflow.test.ts \u001b[2m(\u001b[22m\u001b[2m11 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 68\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-adaptation-e2e-proof.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 74\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/producers/reference-regulation-integration.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 107\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/belief/belief-adaptation-e2e-proof.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 70\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/belief-decision-influence-relation.test.ts \u001b[2m(\u001b[22m\u001b[2m16 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 94\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/round3-b1.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 63\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-governed-writer-authority.test.ts \u001b[2m(\u001b[22m\u001b[2m11 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 110\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/personality/src/personality-evidence-channel.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 88\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/conversation/conversation-text-response-executor-v1.test.ts \u001b[2m(\u001b[22m\u001b[2m11 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 66\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/repository/in-memory-memory-repository.test.ts \u001b[2m(\u001b[22m\u001b[2m14 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 51\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/llm-cognition-provider.test.ts \u001b[2m(\u001b[22m\u001b[2m29 tests\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[2m)\u001b[22m\u001b[32m 64\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/round3-b5.test.ts \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 72\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/tendency-scale-contract.test.ts \u001b[2m(\u001b[22m\u001b[2m29 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 54\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/canonical/canonical-transition-effect.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 54\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/conformance.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 60\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/cognition-action/cognition-proposal-v1.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 57\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/retrieval/repository-backed-retrieval-service.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 50\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-feature-decision-semantics.test.ts \u001b[2m(\u001b[22m\u001b[2m26 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 39\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/repository/effective-revision-visibility.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 67\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-interaction-familiarity-feature.test.ts \u001b[2m(\u001b[22m\u001b[2m24 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 42\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-familiarity-retrieved-evidence-integration.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 7602\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Arm B: SEARCH_FIRST → the exact validated Alice episode ref is in the SAME provider input \u001b[33m 846\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Citation law: citing the retrieved ref is lawful; citing a familiarity receipt ref is rejected \u001b[33m 738\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Empty control: SEARCH_FIRST + empty retrieval → strategy visible, no new evidence \u001b[33m 1387\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Tampered retrieval result never enters provider evidence context \u001b[33m 1869\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Restore: post-restore normal execution yields the same evidence context under the same revision \u001b[33m 2698\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/producers/reference-fast-ema-affect-producer.test.ts \u001b[2m(\u001b[22m\u001b[2m31 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 36\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/validation/validation.test.ts \u001b[2m(\u001b[22m\u001b[2m64 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 39\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/cognitive-prompt-projection.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 37\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/retrieval/in-memory-retrieval-service.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 29\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/memory-intent.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 33\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/records/episode-content-reader.test.ts \u001b[2m(\u001b[22m\u001b[2m5 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 39\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/historical-writer-authority-registry.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 41\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/composition/memory-authority-isolation.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 46\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory-influence/src/memory-influence.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 33\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/actions/action-runner.test.ts \u001b[2m(\u001b[22m\u001b[2m8 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 34\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/cognitive-prompt-projection-v1.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 41\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/appraisal/src/experience-appraisal-v0.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 27\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/retrieval/retrieval.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 21\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/memory/src/contract.test.ts \u001b[2m(\u001b[22m\u001b[2m13 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 25\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/providers/cognition/llm-cognition-relation-provider-v1.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 35\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/authority/trusted-canonical-history-boundary.test.ts \u001b[2m(\u001b[22m\u001b[2m6 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 35\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/long-term-state-domain/src/long-term-state-domain.test.ts \u001b[2m(\u001b[22m\u001b[2m38 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 20\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/behavior/src/behavior-contracts.test.ts \u001b[2m(\u001b[22m\u001b[2m9 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 19\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/canonical/canonical.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 22\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/identity/journal.test.ts \u001b[2m(\u001b[22m\u001b[2m17 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 18\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/observation-input.test.ts \u001b[2m(\u001b[22m\u001b[2m10 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 60\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/observation/round3-b4.test.ts \u001b[2m(\u001b[22m\u001b[2m7 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 37\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/producers/reference-regulation-v0-producer.test.ts \u001b[2m(\u001b[22m\u001b[2m14 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 18\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-semantic-ollama-provider.test.ts \u001b[2m(\u001b[22m\u001b[2m12 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 21\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-governed-dimension-namespace.test.ts \u001b[2m(\u001b[22m\u001b[2m15 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 18\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/subject-core/src/commit/v2-emission.test.ts \u001b[2m(\u001b[22m\u001b[2m4 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/influence-evidence/src/influence-evidence.test.ts \u001b[2m(\u001b[22m\u001b[2m16 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 14\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/composition/runtime-composition-root.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 6\u001b[2mms\u001b[22m\u001b[39m\n \u001b[2m\u001b[90m↓\u001b[39m\u001b[22m packages/runtime/src/transitions/relationship/relationship-adaptation-real-model-smoke.test.ts \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[2m)\u001b[22m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/relationship/relationship-familiarity-evidence-authority-boundary.test.ts \u001b[2m(\u001b[22m\u001b[2m3 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 10\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/affect-activation-mapping-e2a.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 8901\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m packages/runtime/src/transitions/conversation/conversation-text-response-executor.test.ts \u001b[2m(\u001b[22m\u001b[2m19 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 12478\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m Arm A-like: no familiarity evidence reaches the language stage; Arm B-like: actual canonical episode scene does \u001b[33m 1482\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'empty text' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 2187\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'whitespace-only text' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 3330\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'oversized text' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 691\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'control character in text' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 409\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'unknown field' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 439\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'wrong schema version' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 444\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'wrong input_hash' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 433\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'duplicate evidence refs' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 408\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'unsorted evidence refs' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 398\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'unsupported episode ref' → FAILED 'LANGUAGE_EVIDENCE_INVALID' \u001b[33m 388\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'familiarity receipt ref' → FAILED 'LANGUAGE_EVIDENCE_INVALID' \u001b[33m 410\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'oversized raw output' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 381\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m 'non-JSON output' → FAILED 'LANGUAGE_SCHEMA_INVALID' \u001b[33m 408\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m post-restore normal execution reproduces the same language input hash and behavior \u001b[33m 470\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/familiarity-causal-behavior-v1.test.ts \u001b[2m(\u001b[22m\u001b[2m52 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 21382\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m production Memory reader rejection prevents language call \u001b[33m 419\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m future runner respects order, separate map, production endpoint, complete counts and no significance claim \u001b[33m 3031\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m failed language trials never call evaluator or use cognition as behavior; denominator stays 16 \u001b[33m 2902\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m evaluator failure invalidates completeness without retry or replacing trials \u001b[33m 2876\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/familiarity-causal-behavior-v0.test.ts \u001b[2m(\u001b[22m\u001b[2m20 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 21874\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m rejects selected content tampering against the repository hash \u001b[33m 387\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m rejects fabricated episode refs and does not treat shape as membership \u001b[33m 400\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m rejects receipt refs as factual content and a modified scenario before generation \u001b[33m 407\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m rejects tampered restore payload bindings instead of re-ingesting history \u001b[33m 376\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m executes all 16 mock primary/evaluator calls, preserving inputs/raw results before scoring \u001b[33m 2919\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m retains every malformed primary output without retries or evaluating invented replies \u001b[33m 2873\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m normal cognition still rejects unsupported citation even in a syntactically valid envelope \u001b[33m 2871\u001b[2mms\u001b[22m\u001b[39m\n \u001b[32m✓\u001b[39m evals/conformance/affect-production-shaped-e2.test.ts \u001b[2m(\u001b[22m\u001b[2m22 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 99584\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m has exact event counts per family and no duplicate ticks \u001b[33m 1110\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m every generated event passes the REAL canonical proposal validator, and record fixtures validate (§9/§19/§74.8) \u001b[33m 1041\u001b[2mms\u001b[22m\u001b[39m\n     \u001b[33m\u001b[2m✓\u001b[22m\u001b[39m derives the verdict with the frozen precedence (§68) \u001b[33m 16636\u001b[2mms\u001b[22m\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m109 passed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[33m1 skipped\u001b[39m\u001b[90m (110)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1732 passed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[33m3 skipped\u001b[39m\u001b[90m (1735)\u001b[39m\n\u001b[2m   Start at \u001b[22m 03:19:26\n\u001b[2m   Duration \u001b[22m 117.23s\u001b[2m (transform 23.11s, setup 0ms, import 65.37s, tests 200.35s, environment 22ms)\u001b[22m\n\n",
+      "stderr": ""
+    },
+    {
+      "name": "diff-check",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "full_lint": []
+}
