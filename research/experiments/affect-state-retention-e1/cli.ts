@@ -86,7 +86,8 @@ async function main(): Promise<void> {
   writeJson(join(output, "decision-gates.json"), { structural_law: result.structural_law, gates: result.gates, verdict: result.verdict, verdict_rationale: result.verdict_rationale });
 
   // ---- deterministic plots (§40) ------------------------------------------------------
-  const plots = mkdirSync(join(output, "plots"), { recursive: true });
+  mkdirSync(join(output, "plots"), { recursive: true });
+  const plots = join(output, "plots");
   const runOf = (mechanism: string, seqId: string, partition = "tick1", scale = 1): { outputs: readonly (readonly number[])[] } => {
     const set = runSets.get(seqId);
     if (set === undefined) throw new Error(`missing run set ${seqId}`);
