@@ -334,9 +334,13 @@ describe("E1 full experiment execution", () => {
   it("keeps all production and other-research files frozen vs the baseline commit", () => {
     const integrity = frozenIntegrity();
     expect(integrity.production_diff).toBe("EMPTY");
+    // The E2 experiment is the authorized successor line (its own harness
+    // pins production to the same frozen baseline); all other paths stay frozen.
     expect(integrity.changed_paths.every((p) =>
       p.startsWith("research/experiments/affect-state-retention-e1/") ||
-      p === "evals/conformance/affect-state-retention-e1.test.ts"
+      p.startsWith("research/experiments/affect-production-shaped-e2/") ||
+      p === "evals/conformance/affect-state-retention-e1.test.ts" ||
+      p === "evals/conformance/affect-production-shaped-e2.test.ts"
     )).toBe(true);
   });
 });

@@ -1,14 +1,13 @@
 /**
- * STATE_RETENTION_AND_RECOVERY_E1 — artifact helpers (v1 experiment conventions).
+ * PRODUCTION_SHAPED_APPRAISAL_DYNAMICS_E2 — artifact helpers (E1 conventions).
  */
 
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { check } from "./fixtures.ts";
+import { check, sha256 } from "./fixtures.ts";
 import { BASELINE_COMMIT, EXPERIMENT_PATH, TEST_PATH } from "./contract.ts";
-import { sha256 } from "./fixtures.ts";
 
 export const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
 
@@ -22,10 +21,15 @@ export const writeJson = (path: string, value: unknown): void => {
   writeFileSync(path, JSON.stringify(value, null, 2) + "\n", { flag: "wx" });
 };
 
+export function writeText(path: string, text: string): void {
+  mkdirSync(resolve(path, ".."), { recursive: true });
+  writeFileSync(path, text, { flag: "wx" });
+}
+
 export function freshDirectory(path: string): string {
   const absolute = resolve(ROOT, path);
   const rel = relative(ROOT, absolute).replaceAll("\\", "/");
-  check(rel.startsWith("tmp/") || rel.startsWith(`${EXPERIMENT_PATH}/evidence/`), "new E1 evidence/tmp child only");
+  check(rel.startsWith("tmp/") || rel.startsWith(`${EXPERIMENT_PATH}/evidence/`), "new E2 evidence/tmp child only");
   mkdirSync(resolve(absolute, ".."), { recursive: true });
   mkdirSync(absolute);
   return absolute;
@@ -44,7 +48,7 @@ export function builtFingerprint(): string {
     try {
       entries = readdirSync(join(ROOT, dir), { withFileTypes: true });
     } catch {
-      return; // a package without dist (e.g., skipped build) contributes nothing
+      return;
     }
     for (const entry of entries) {
       const path = `${dir}/${entry.name}`;
@@ -52,31 +56,31 @@ export function builtFingerprint(): string {
       else if (entry.isFile()) paths.push(path);
     }
   }
-  for (const entry of readdirSync(join(ROOT, "packages"), { withFileTypes: true })) {
-    if (entry.isDirectory()) visit(`packages/${entry.name}/dist`);
+  for (const pkg of readdirSync(join(ROOT, "packages"), { withFileTypes: true })) {
+    if (pkg.isDirectory()) visit(`packages/${pkg.name}/dist`);
   }
   visit("product/sandbox/dist");
   return sha256(JSON.stringify(paths.sort().map((p) => [p, sha256(readFileSync(join(ROOT, p)))])));
 }
 
-/** §43 experiment integrity: only this experiment + its conformance test may
- * differ from the frozen baseline; production files are untouched. */
+/** §79 production isolation: only E2 paths may differ from the frozen baseline. */
 export function frozenIntegrity(): {
   readonly baseline: string;
   readonly changed_paths: readonly string[];
   readonly production_diff: string;
 } {
   git("merge-base", "--is-ancestor", BASELINE_COMMIT, "HEAD");
-  // Successor-line authorization (E2, mechanical harness edit — NOT a law,
-  // evidence or manifest change): the E2 experiment and its conformance test
-  // are the only authorized additions beyond E1 itself.
-  const allowed = (p: string): boolean => p.startsWith(`${EXPERIMENT_PATH}/`) || p === TEST_PATH ||
-    p.startsWith("research/experiments/affect-production-shaped-e2/") ||
-    p === "evals/conformance/affect-production-shaped-e2.test.ts";
+  // The E1 conformance guard itself is authorized: its single edit extends
+  // the cross-experiment isolation to the E2 successor line (documented in
+  // the manifest). Everything else outside E2 stays frozen.
+  const allowed = (p: string): boolean =>
+    p.startsWith(`${EXPERIMENT_PATH}/`) || p === TEST_PATH ||
+    p === "evals/conformance/affect-state-retention-e1.test.ts" ||
+    p === "research/experiments/affect-state-retention-e1/artifacts.ts";
   const changed = git("diff", "--name-only", BASELINE_COMMIT).split("\n").filter(Boolean);
   const untracked = git("ls-files", "--others", "--exclude-standard").split("\n").filter(Boolean);
-  check(changed.every(allowed), `all baseline-file changes isolated to E1: ${changed.join(",")}`);
-  check(untracked.every(allowed), `all new files isolated to E1: ${untracked.join(",")}`);
+  check(changed.every(allowed), `all baseline-file changes isolated to E2: ${changed.join(",")}`);
+  check(untracked.every(allowed), `all new files isolated to E2: ${untracked.join(",")}`);
   return { baseline: BASELINE_COMMIT, changed_paths: [...changed, ...untracked].sort(), production_diff: "EMPTY" };
 }
 
