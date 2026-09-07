@@ -26,13 +26,19 @@ import type {
 } from "@characteros-next/subject-core";
 import {
   fullSnapshotChecksum,
+  fullSnapshotChecksumAnyVersion,
   lastTraceRef,
   snapshotHash,
+  snapshotHashAnyVersion,
   stateHash,
+  stateHashAnyVersion,
   validateCommitHeadRule,
   validateRepositoryBindingSet,
   validateSubjectState,
-  type PersistedSubjectEnvelopeV1
+  validateSubjectStateV4,
+  type PersistedSubjectEnvelopeV1,
+  type SubjectStateAnyVersionV0,
+  type V4PersistenceEnvelopeV0
 } from "@characteros-next/subject-core";
 
 // ---- trusted head input ------------------------------------------------------------
@@ -59,11 +65,21 @@ export const TRUSTED_CANONICAL_HISTORY_BOUNDARY_SCHEMA_VERSION_V0 =
   "trusted-canonical-history-boundary-v0" as const;
 
 /** Opaque durable boundary evidence. Contents are frozen at mint time. */
-export interface TrustedCanonicalHistoryBoundaryReceiptV0 {
+export type TrustedCanonicalGenesisEnvelopeAnyVersionV0 =
+  | PersistedSubjectEnvelopeV1
+  | V4PersistenceEnvelopeV0;
+
+export interface TrustedCanonicalHistoryBoundaryReceiptV0<
+  TGenesis extends TrustedCanonicalGenesisEnvelopeAnyVersionV0 = PersistedSubjectEnvelopeV1
+> {
   readonly schema_version: typeof TRUSTED_CANONICAL_HISTORY_BOUNDARY_SCHEMA_VERSION_V0;
-  readonly genesis: PersistedSubjectEnvelopeV1;
+  readonly genesis: TGenesis;
   readonly head: TrustedCanonicalHeadInputV0;
 }
+
+export type TrustedCanonicalHistoryBoundaryAnyVersionReceiptV0 =
+  | TrustedCanonicalHistoryBoundaryReceiptV0
+  | TrustedCanonicalHistoryBoundaryReceiptV0<V4PersistenceEnvelopeV0>;
 
 const trustedBoundaries = new WeakSet<object>();
 
@@ -75,6 +91,13 @@ export interface MintTrustedCanonicalHistoryBoundaryInputV0 {
 
 export type MintTrustedCanonicalHistoryBoundaryOutcomeV0 =
   | { readonly kind: "MINTED"; readonly receipt: TrustedCanonicalHistoryBoundaryReceiptV0 }
+  | { readonly kind: "REJECTED"; readonly code: "INVALID_GENESIS" | "INVALID_TRUSTED_HEAD"; readonly detail: string };
+
+export type MintTrustedCanonicalHistoryBoundaryV4OutcomeV0 =
+  | {
+      readonly kind: "MINTED";
+      readonly receipt: TrustedCanonicalHistoryBoundaryReceiptV0<V4PersistenceEnvelopeV0>;
+    }
   | { readonly kind: "REJECTED"; readonly code: "INVALID_GENESIS" | "INVALID_TRUSTED_HEAD"; readonly detail: string };
 
 /**
@@ -107,8 +130,39 @@ export async function mintTrustedCanonicalHistoryBoundaryV0(
   return { kind: "MINTED", receipt };
 }
 
+/** Explicit v4 boundary issuer. A valid-looking v4 snapshot is insufficient:
+ * the exact materializer envelope, genesis baseline, R0 binding, /v2 hashes,
+ * and trusted repository verdict are all required. */
+export async function mintTrustedCanonicalHistoryBoundaryV4V0(input: {
+  readonly genesis: V4PersistenceEnvelopeV0;
+  readonly head: TrustedCanonicalHeadInputV0;
+  readonly reference_validator: (binding: V4PersistenceEnvelopeV0["repository_binding"]) => boolean | Promise<boolean>;
+}): Promise<MintTrustedCanonicalHistoryBoundaryV4OutcomeV0> {
+  const genesisCheck = await verifyGenesisEnvelopeV4V0(input.genesis, input.reference_validator);
+  if (!genesisCheck.ok) {
+    return { kind: "REJECTED", code: "INVALID_GENESIS", detail: genesisCheck.error.detail };
+  }
+  const headCheck = validateTrustedCanonicalHeadInputV0(input.head);
+  if (!headCheck.ok) {
+    return { kind: "REJECTED", code: "INVALID_TRUSTED_HEAD", detail: headCheck.error.detail };
+  }
+  if (headCheck.head.subject_id !== input.genesis.snapshot.identity.subject_id) {
+    return { kind: "REJECTED", code: "INVALID_TRUSTED_HEAD", detail: "trusted head subject does not match v4 genesis" };
+  }
+  const receipt: TrustedCanonicalHistoryBoundaryReceiptV0<V4PersistenceEnvelopeV0> = {
+    schema_version: TRUSTED_CANONICAL_HISTORY_BOUNDARY_SCHEMA_VERSION_V0,
+    genesis: input.genesis,
+    head: input.head
+  };
+  deepFreeze(receipt);
+  trustedBoundaries.add(receipt);
+  return { kind: "MINTED", receipt };
+}
+
 /** WeakSet admission: only issuer-minted receipts are trusted. */
-export function isTrustedCanonicalHistoryBoundaryReceiptV0(value: unknown): boolean {
+export function isTrustedCanonicalHistoryBoundaryReceiptV0(
+  value: unknown
+): value is TrustedCanonicalHistoryBoundaryAnyVersionReceiptV0 {
   return typeof value === "object" && value !== null && trustedBoundaries.has(value);
 }
 
@@ -179,6 +233,120 @@ export async function verifyGenesisEnvelopeV0(
     return { ok: false, error: { detail: "genesis snapshot_hash does not recompute" } };
   }
   return { ok: true };
+}
+
+/** Exact explicit-foundation v4 genesis law. */
+export async function verifyGenesisEnvelopeV4V0(
+  envelope: V4PersistenceEnvelopeV0,
+  referenceValidator?: (
+    binding: V4PersistenceEnvelopeV0["repository_binding"]
+  ) => boolean | Promise<boolean>
+): Promise<{ readonly ok: true } | { readonly ok: false; readonly error: { readonly detail: string } }> {
+  const failGenesis = (detail: string) => ({ ok: false as const, error: { detail } });
+  if (typeof envelope !== "object" || envelope === null) return failGenesis("v4 genesis envelope: expected object");
+  const keys = Object.keys(envelope).sort();
+  const expectedKeys = [
+    "full_checksum",
+    "mode",
+    "repository_binding",
+    "schema_version",
+    "snapshot",
+    "snapshot_hash",
+    "state_hash"
+  ];
+  if (keys.length !== expectedKeys.length || keys.some((key, index) => key !== expectedKeys[index])) {
+    return failGenesis("v4 genesis envelope: exact 7-field materializer shape required");
+  }
+  if (envelope.schema_version !== "subject-state-v4-persistence-envelope-v0") {
+    return failGenesis("v4 genesis envelope schema_version");
+  }
+  if (envelope.mode !== "EXPLICIT_V4_FOUNDATION_V0") {
+    return failGenesis("v4 genesis envelope mode");
+  }
+  const stateCheck = validateSubjectStateV4(envelope.snapshot);
+  if (!stateCheck.ok) return failGenesis(`v4 genesis snapshot: ${stateCheck.error.detail}`);
+  const snapshot = stateCheck.value;
+  const rm = snapshot.runtime_metadata;
+  const genesisLaw =
+    rm.state_revision === 0 &&
+    rm.logical_time === 0 &&
+    rm.created_at === 0 &&
+    rm.updated_at === 0 &&
+    rm.last_transition_time === null &&
+    rm.last_transition_type === null &&
+    rm.schema_lineage === "subject-state-v4" &&
+    snapshot.affect.schema_version === "canonical-affect-v0" &&
+    snapshot.affect.valence === 0 &&
+    snapshot.affect.activation === 0.2 &&
+    !("mood" in snapshot) &&
+    snapshot.mechanism_config.affect_profile.profile_id === "BOUNDED_AFFECT_DYNAMICS_V0" &&
+    snapshot.mechanism_config.affect_profile.timebase === "tick" &&
+    snapshot.trace_window.trace_window_schema_version === "trace-window-v1" &&
+    snapshot.trace_window.capacity === 64 &&
+    snapshot.trace_window.cursor.last_history_sequence === 0 &&
+    snapshot.trace_window.cursor.offloaded_through_sequence === 0 &&
+    snapshot.trace_window.cursor.offloaded_through_trace_ref === null &&
+    snapshot.trace_window.entries.length === 0;
+  if (!genesisLaw) return failGenesis("v4 genesis revision/time/baseline/profile/trace law failed");
+  if (
+    envelope.repository_binding.repository_revision !== "R0" ||
+    envelope.repository_binding.repository_revision !== snapshot.memory_state.repository_revision
+  ) {
+    return failGenesis("v4 genesis requires the exact snapshot R0 repository binding");
+  }
+  if (referenceValidator !== undefined && await referenceValidator(envelope.repository_binding) !== true) {
+    return failGenesis("v4 genesis R0 repository binding failed trusted validation");
+  }
+  const fullChecksum = await fullSnapshotChecksumAnyVersion(snapshot);
+  if (fullChecksum !== envelope.full_checksum) return failGenesis("v4 genesis full checksum does not recompute");
+  const stateHashValue = await stateHashAnyVersion(snapshot);
+  if (stateHashValue !== envelope.state_hash) return failGenesis("v4 genesis state hash does not recompute");
+  const snapshotHashValue = await snapshotHashAnyVersion(snapshot, {
+    state_hash: stateHashValue,
+    subject_id: snapshot.identity.subject_id,
+    state_revision: 0,
+    trace_cursor: snapshot.trace_window.cursor,
+    last_trace_ref: null
+  });
+  if (snapshotHashValue !== envelope.snapshot_hash) return failGenesis("v4 genesis snapshot hash does not recompute");
+  return { ok: true };
+}
+
+export async function verifyGenesisEnvelopeAnyVersionV0(
+  envelope: TrustedCanonicalGenesisEnvelopeAnyVersionV0
+): Promise<{ readonly ok: true } | { readonly ok: false; readonly error: { readonly detail: string } }> {
+  const snapshot = envelope.snapshot as SubjectStateAnyVersionV0;
+  if (snapshot.schema_version === "subject-state-v3") {
+    if (envelope.schema_version !== "subject-persistence-envelope-v1") {
+      return { ok: false, error: { detail: "v3 genesis requires subject-persistence-envelope-v1" } };
+    }
+    return verifyGenesisEnvelopeV0(envelope as PersistedSubjectEnvelopeV1);
+  }
+  if (snapshot.schema_version === "subject-state-v4") {
+    if (envelope.schema_version !== "subject-state-v4-persistence-envelope-v0") {
+      return { ok: false, error: { detail: "v4 genesis requires the explicit foundation envelope" } };
+    }
+    return verifyGenesisEnvelopeV4V0(envelope as V4PersistenceEnvelopeV0);
+  }
+  return { ok: false, error: { detail: "genesis snapshot schema_version is unsupported" } };
+}
+
+export function readTrustedGenesisIntegrityV0(
+  envelope: TrustedCanonicalGenesisEnvelopeAnyVersionV0
+): {
+  readonly snapshot: SubjectStateAnyVersionV0;
+  readonly full_snapshot_checksum: HashV1;
+  readonly state_hash: HashV1;
+  readonly snapshot_hash: HashV1;
+} {
+  return {
+    snapshot: envelope.snapshot,
+    full_snapshot_checksum: "full_snapshot_checksum" in envelope
+      ? envelope.full_snapshot_checksum
+      : envelope.full_checksum,
+    state_hash: envelope.state_hash,
+    snapshot_hash: envelope.snapshot_hash
+  };
 }
 
 /** Structural head law: closed 7-field shape + revision↔head-field coherence. */

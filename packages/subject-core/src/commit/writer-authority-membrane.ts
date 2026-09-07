@@ -34,7 +34,7 @@
 
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { HashV1, IdentifierV0, StateRevisionV0 } from "../types/scalars.js";
-import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type {
   CanonicalWriterClassV0,
   CanonicalWriterFamilyV0
@@ -80,7 +80,7 @@ function valuesDiffer(a: unknown, b: unknown): boolean {
 }
 
 function readReservedOccurrences(
-  state: SubjectStateV0,
+  state: SubjectStateAnyVersionV0,
   out: Map<string, { counterpart_ref: string; dimension_id: string; value: unknown }>
 ): { readonly ok: true } | { readonly ok: false; readonly detail: string } {
   const relationships = (state as unknown as Record<string, unknown>)["relationships"];
@@ -134,8 +134,8 @@ function readReservedOccurrences(
  * Ordinary non-reserved dimensions never appear in the result.
  */
 export function detectReservedRelationshipTargetChangesV0(
-  predecessor: SubjectStateV0,
-  candidate: SubjectStateV0
+  predecessor: SubjectStateAnyVersionV0,
+  candidate: SubjectStateAnyVersionV0
 ): { readonly ok: true; readonly changes: readonly ReservedRelationshipTargetChangeV0[] } | {
   readonly ok: false;
   readonly detail: string;

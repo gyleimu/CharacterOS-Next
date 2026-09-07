@@ -16,10 +16,10 @@ import type {
 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
-import type { SubjectStateV4 } from "../types/subject-state-v4.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import {
-  readSubjectStateSchemaVersion,
   SUBJECT_STATE_V4_STATE_HASH_PROJECTION,
+  SUBJECT_STATE_V4_SNAPSHOT_HASH_PROJECTION,
   SUBJECT_STATE_V4_FULL_PERSISTENCE_PROJECTION,
   subjectStateV4ProjectionValue
 } from "../types/subject-state-v4.js";
@@ -65,25 +65,23 @@ export function stateHash(snapshot: SubjectStateV0): Promise<HashV1> {
 
 /** CANONICAL_AFFECT_STATE_FOUNDATION_V0 — version-aware dispatch: v3 → /v1
  * bytes (unchanged), v4 → /v2. Unknown version fails closed. */
-export function stateHashAnyVersion(snapshot: SubjectStateV0 | SubjectStateV4): Promise<HashV1> {
-  const version = readSubjectStateSchemaVersion(snapshot);
-  if (version === "subject-state-v4") {
-    return hashEnvelope(SUBJECT_STATE_V4_STATE_HASH_PROJECTION, subjectStateV4ProjectionValue(snapshot as never));
+export function stateHashAnyVersion(snapshot: SubjectStateAnyVersionV0): Promise<HashV1> {
+  if (snapshot.schema_version === "subject-state-v4") {
+    return hashEnvelope(SUBJECT_STATE_V4_STATE_HASH_PROJECTION, subjectStateV4ProjectionValue(snapshot));
   }
-  if (version === "subject-state-v3") {
-    return hashEnvelope(STATE_PROJECTION, stateProjectionValue(snapshot as SubjectStateV0));
+  if (snapshot.schema_version === "subject-state-v3") {
+    return hashEnvelope(STATE_PROJECTION, stateProjectionValue(snapshot));
   }
   return Promise.reject(new Error("stateHashAnyVersion: unknown subject-state schema_version"));
 }
 
 /** CANONICAL_AFFECT_STATE_FOUNDATION_V0 — version-aware full-persistence
  * checksum: v3 → /v1 (unchanged), v4 → /v2. */
-export function fullSnapshotChecksumAnyVersion(snapshot: SubjectStateV0 | SubjectStateV4): Promise<HashV1> {
-  const version = readSubjectStateSchemaVersion(snapshot);
-  if (version === "subject-state-v4") {
+export function fullSnapshotChecksumAnyVersion(snapshot: SubjectStateAnyVersionV0): Promise<HashV1> {
+  if (snapshot.schema_version === "subject-state-v4") {
     return hashEnvelope(SUBJECT_STATE_V4_FULL_PERSISTENCE_PROJECTION, snapshot);
   }
-  if (version === "subject-state-v3") {
+  if (snapshot.schema_version === "subject-state-v3") {
     return hashEnvelope(FULL_PERSISTENCE_PROJECTION, snapshot);
   }
   return Promise.reject(new Error("fullSnapshotChecksumAnyVersion: unknown subject-state schema_version"));
@@ -115,6 +113,19 @@ export function canonicalSnapshotHashInput(input: SnapshotHashInput): string {
 /** §8.4 SnapshotHash — flat closed envelope; `projection` sits beside the fields (§9.2). */
 export function snapshotHash(input: SnapshotHashInput): Promise<HashV1> {
   return sha256HashV1(canonicalSnapshotHashInput(input));
+}
+
+/** Version-aware SnapshotHash dispatcher: v3 keeps the exact flat /v1 bytes;
+ * v4 uses the already-frozen /v2 hash-envelope contract. */
+export function snapshotHashAnyVersion(
+  snapshot: SubjectStateAnyVersionV0,
+  input: SnapshotHashInput
+): Promise<HashV1> {
+  if (snapshot.schema_version === "subject-state-v3") return snapshotHash(input);
+  if (snapshot.schema_version === "subject-state-v4") {
+    return hashEnvelope(SUBJECT_STATE_V4_SNAPSHOT_HASH_PROJECTION, snapshotValue(input));
+  }
+  return Promise.reject(new Error("snapshotHashAnyVersion: unknown subject-state schema_version"));
 }
 
 /** Full-persistence integrity checksum over the complete snapshot (incl. trace_window). */

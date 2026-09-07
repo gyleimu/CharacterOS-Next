@@ -38,20 +38,21 @@ import {
   hashEnvelope,
   lastTraceRef,
   nextTraceWindow,
-  stateHash,
-  validateAtomicCommitBundleAnyVersion,
-  type AtomicCommitBundleAnyVersion,
+  stateHashAnyVersion,
+  validateAtomicCommitBundleAnyStateVersionV0,
+  type AtomicCommitBundleAnyStateVersionV0,
   type AtomicCommitBundleV2,
   type CanonicalRefV0,
-  type SubjectStateV0
+  type SubjectStateAnyVersionV0
 } from "@characteros-next/subject-core";
 import { replayCanonicalTransitionEffectV0 } from "@characteros-next/subject-core";
 
 import {
   isTrustedCanonicalHistoryBoundaryReceiptV0,
+  readTrustedGenesisIntegrityV0,
   validateTrustedCanonicalHeadInputV0,
-  verifyGenesisEnvelopeV0,
-  type TrustedCanonicalHistoryBoundaryReceiptV0
+  verifyGenesisEnvelopeAnyVersionV0,
+  type TrustedCanonicalHistoryBoundaryAnyVersionReceiptV0
 } from "./trusted-canonical-history-boundary.js";
 import {
   classifyHistoricalWriterAuthorityStatusV0,
@@ -139,7 +140,7 @@ export async function deriveAtomicCommitChainValidationPolicyFingerprintV0(): Pr
 // ---- input / result types -----------------------------------------------------------
 
 export interface AtomicCommitChainValidationInputV0 {
-  readonly trusted_boundary: TrustedCanonicalHistoryBoundaryReceiptV0;
+  readonly trusted_boundary: TrustedCanonicalHistoryBoundaryAnyVersionReceiptV0;
   /** Candidate canonical path, oldest → newest. Array order is NOT chain authority. */
   readonly bundles: readonly unknown[];
 }
@@ -152,6 +153,7 @@ export type ChainValidationFailureCodeV0 =
   | "UNKNOWN_ATOMIC_COMMIT_VERSION"
   | "VERSION_DOWNGRADE"
   | "SUBJECT_MISMATCH"
+  | "STATE_SCHEMA_MISMATCH"
   | "REVISION_GAP"
   | "DUPLICATE_REVISION"
   | "PREDECESSOR_REF_MISMATCH"
@@ -243,7 +245,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * counting, and the general chain validity law are UNCHANGED.
  */
 async function classifyWriterAuthorityStatusV0(
-  writerAuthority: NonNullable<AtomicCommitBundleV2["writer_authority"]>
+  writerAuthority: NonNullable<AtomicCommitBundleV2<SubjectStateAnyVersionV0>["writer_authority"]>
 ): Promise<WriterAuthorityStatusV0> {
   return (await classifyHistoricalWriterAuthorityStatusV0(writerAuthority)).status;
 }
@@ -288,11 +290,11 @@ export async function validateAtomicCommitChainV0(
   const bundles: readonly unknown[] = [...input.bundles];
 
   // 2. Genesis law.
-  const genesisCheck = await verifyGenesisEnvelopeV0(boundary.genesis);
+  const genesisCheck = await verifyGenesisEnvelopeAnyVersionV0(boundary.genesis);
   if (!genesisCheck.ok) {
     return invalid("INVALID_GENESIS", null, null, genesisCheck.error.detail);
   }
-  const genesis = boundary.genesis;
+  const genesis = readTrustedGenesisIntegrityV0(boundary.genesis);
 
   // 3. Trusted-head structural validation.
   const headCheck = validateTrustedCanonicalHeadInputV0(boundary.head);
@@ -350,8 +352,8 @@ export async function validateAtomicCommitChainV0(
   let firstV2Revision: StateRevisionV0 | null = null;
 
   // Chain-held predecessor: genesis.snapshot or previous bundle.next_snapshot ONLY.
-  let predecessor: SubjectStateV0 = genesis.snapshot;
-  let predecessorBundle: AtomicCommitBundleAnyVersion | null = null;
+  let predecessor: SubjectStateAnyVersionV0 = genesis.snapshot;
+  let predecessorBundle: AtomicCommitBundleAnyStateVersionV0 | null = null;
 
   // 4-6. Per-bundle single-record + continuity + replay, lowest index first.
   for (let index = 0; index < bundles.length; index++) {
@@ -361,7 +363,7 @@ export async function validateAtomicCommitChainV0(
     if (!isRecord(raw)) {
       return invalid("INVALID_BUNDLE", index, null, "bundle must be a plain object");
     }
-    const single = await validateAtomicCommitBundleAnyVersion(raw);
+    const single = await validateAtomicCommitBundleAnyStateVersionV0(raw);
     if (!single.ok) {
       // Unknown bundle versions get their own closed vocabulary entry.
       const isUnknownVersion = single.error.detail.includes("unknown version");
@@ -373,7 +375,7 @@ export async function validateAtomicCommitChainV0(
         { code: single.error.error_code, reason: single.error.reason, detail: single.error.detail }
       );
     }
-    const bundle = single.value as AtomicCommitBundleAnyVersion;
+    const bundle = single.value;
     const bundleRef = bundle.commit_ref;
 
     // 5a. Version continuity (REUSED version-step primitive; no duplicated law).
@@ -399,6 +401,15 @@ export async function validateAtomicCommitChainV0(
         index,
         bundleRef,
         `bundle subject ${bundle.subject_id} does not match the chain subject ${subjectId}`
+      );
+    }
+
+    if (bundle.next_snapshot.schema_version !== predecessor.schema_version) {
+      return invalid(
+        "STATE_SCHEMA_MISMATCH",
+        index,
+        bundleRef,
+        `ordinary chain state schema ${predecessor.schema_version} -> ${bundle.next_snapshot.schema_version} is forbidden`
       );
     }
 
@@ -443,7 +454,7 @@ export async function validateAtomicCommitChainV0(
     }
 
     // 5e. Predecessor hash continuity: recompute from the chain-held predecessor.
-    const predecessorStateHash = await stateHash(predecessor);
+    const predecessorStateHash = await stateHashAnyVersion(predecessor);
     if (bundle.state_hash_before !== predecessorStateHash) {
       return invalid(
         "STATE_HASH_MISMATCH",
@@ -549,7 +560,7 @@ export async function validateAtomicCommitChainV0(
         // an earlier, already-consumed position is a literal chain loop.
         const earlierIndex = findEarlierBundleIndex(bundles, index, bundleRef);
         if (earlierIndex !== null) {
-          const earlier = bundles[earlierIndex] as AtomicCommitBundleAnyVersion;
+          const earlier = bundles[earlierIndex] as AtomicCommitBundleAnyStateVersionV0;
           if (earlier.next_revision === bundle.expected_revision) {
             return invalid("CYCLE_DETECTED", index, bundleRef, "bundle loops back onto an already-consumed chain position");
           }
@@ -666,7 +677,7 @@ export async function validateAtomicCommitChainV0(
   }
 
   // 7. Terminal trusted-head binding: exact six-field equality, no subset.
-  const terminal = bundles[bundles.length - 1] as AtomicCommitBundleAnyVersion;
+  const terminal = bundles[bundles.length - 1] as AtomicCommitBundleAnyStateVersionV0;
   if (terminal.next_revision !== head.revision) {
     return invalid(
       "TRUNCATED_HISTORY",
@@ -727,7 +738,7 @@ function findEarlierBundleIndex(
 }
 
 function buildReceipt(
-  boundary: TrustedCanonicalHistoryBoundaryReceiptV0,
+  boundary: TrustedCanonicalHistoryBoundaryAnyVersionReceiptV0,
   policyFingerprint: HashV1,
   bundleCount: number,
   v1Count: number,
@@ -740,9 +751,9 @@ function buildReceipt(
     unresolved: number;
     resolved_invalid: number;
   },
-  terminal?: AtomicCommitBundleAnyVersion
+  terminal?: AtomicCommitBundleAnyStateVersionV0
 ): ChainValidationReceiptV0 {
-  const genesis = boundary.genesis;
+  const genesis = readTrustedGenesisIntegrityV0(boundary.genesis);
   const receipt: ChainValidationReceiptV0 = {
     schema_version: "atomic-commit-chain-validation-receipt-v0",
     policy_id: ATOMIC_COMMIT_CHAIN_VALIDATOR_POLICY_ID_V0,

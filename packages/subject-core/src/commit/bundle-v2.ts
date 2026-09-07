@@ -27,6 +27,7 @@ import type { AuthoritativeTransitionRecordV1, TransitionAttemptV1 } from "../ty
 import type { HashV1, HistorySequenceV0, StateRevisionV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type { TraceEntryV1 } from "../types/trace.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
 import type { RepositoryRevisionBindingV1 } from "../types/persistence.js";
@@ -42,13 +43,15 @@ import {
   type PreparedGovernedWriterAuthorityTokenV0
 } from "./writer-authority-membrane.js";
 
-export interface AssembleCommitBundleV2Input {
+export interface AssembleCommitBundleV2Input<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
   /** Exact stable validated canonical proposal (ONE snapshot for the whole pipeline). */
   readonly proposal: CanonicalTransitionProposalV1;
   /** Authoritative current snapshot (trusted read). */
-  readonly currentState: SubjectStateV0;
+  readonly currentState: TState;
   /** Final candidate including the projected trace_window; deeply frozen by caller. */
-  readonly candidate: SubjectStateV0;
+  readonly candidate: TState;
   readonly state_hash_before: HashV1;
   readonly state_hash_after: HashV1;
   readonly snapshot_hash_before: HashV1;
@@ -93,9 +96,9 @@ function deepFreeze(value: unknown): void {
  * `writer_authority = null` (ordinary production commit; caller-supplied
  * writer authority is impossible by construction).
  */
-export async function assembleCommitBundleV2(
-  input: AssembleCommitBundleV2Input
-): Promise<AtomicCommitBundleV2> {
+export async function assembleCommitBundleV2<TState extends SubjectStateAnyVersionV0>(
+  input: AssembleCommitBundleV2Input<TState>
+): Promise<AtomicCommitBundleV2<TState>> {
   const p = input.proposal;
   const pref = await proposalRef(p);
   const payloadFingerprint = await proposalFingerprint(p);
@@ -200,7 +203,7 @@ export async function assembleCommitBundleV2(
     terminal_result_ref: canonicalResult.result_ref
   };
 
-  const partial: Omit<AtomicCommitBundleV2, "record_checksum"> = {
+  const partial: Omit<AtomicCommitBundleV2<TState>, "record_checksum"> = {
     commit_version: "atomic-commit-v2",
     serialization_version: "canonical-json-v1",
     canonical_proposal: p,
@@ -230,12 +233,12 @@ export async function assembleCommitBundleV2(
       previous_trace_ref: input.previous_trace_ref,
       current_trace_ref: input.trace_entry.trace_id
     },
-  transition_record: transitionRecord,
+    transition_record: transitionRecord,
     canonical_result: canonicalResult,
     repository_revision_bindings: [...input.repository_revision_bindings]
   };
 
-  const bundle: AtomicCommitBundleV2 = {
+  const bundle: AtomicCommitBundleV2<TState> = {
     ...partial,
     record_checksum: await deriveAtomicCommitRecordChecksumV2(partial)
   };

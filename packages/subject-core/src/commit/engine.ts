@@ -26,7 +26,8 @@ import type {
   RepositoryRevisionBindingV1
 } from "../types/persistence.js";
 import type {
-  AtomicCommitBundleAnyVersion
+  AtomicCommitBundleAnyStateVersionV0,
+  AtomicCommitBundleV2
 } from "../types/persistence-v2.js";
 import type { CanonicalCommitResultV1 } from "../types/result.js";
 import type { AuthoritativeTransitionRecordV1 } from "../types/identity.js";
@@ -37,8 +38,9 @@ import type {
 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
-import { validateSubjectState } from "../validation/subject-state.js";
+import { validateSubjectStateAnyVersionV0 } from "../validation/subject-state-any-version.js";
 import { validateHash } from "../validation/scalars.js";
 import type { ValidationFailure } from "../validation/result.js";
 import {
@@ -48,14 +50,13 @@ import {
 import { assembleCommitBundleV2 } from "./bundle-v2.js";
 import { productionCommitTargetVersionV0 } from "./version-policy.js";
 import { evaluateCommitBundleVersionStepV0 } from "../validation/atomic-commit-bundle.js";
-import { validateAtomicCommitBundleV2 } from "../validation/atomic-commit-bundle.js";
+import { validateAtomicCommitBundleV2AnyStateV0 } from "../validation/atomic-commit-bundle.js";
 import {
   detectReservedRelationshipTargetChangesV0,
   verifyPreparedGovernedWriterAuthorityTokenV0,
   type PreparedGovernedWriterAuthorityTokenV0
 } from "./writer-authority-membrane.js";
 import { proposalFingerprint, proposalRef } from "../canonical/projections.js";
-import type { AtomicCommitStorePort } from "./store.js";
 
 /** Verdict-only inverted capability (§15.1): existence/hash of one immutable revision. */
 export type ReferenceValidatorCapability = (
@@ -89,11 +90,13 @@ export interface PipelineStageObserver {
   readonly authorityPreparation?: () => void;
 }
 
-export interface CommitTransitionInput {
+export interface CommitTransitionInput<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
   /** Complete canonical proposal; syntax is re-validated defensively. */
   readonly proposal: CanonicalTransitionProposalV1;
   /** Current authoritative immutable snapshot (trusted read). */
-  readonly currentState: SubjectStateV0;
+  readonly currentState: TState;
   /** Exact OPEN journal record version consumed for this attempt (§14.1). */
   readonly identity_record_version_before: number;
   /** Journal-local first-seen sequence of this transition identity (§14.2). */
@@ -106,7 +109,7 @@ export interface CommitTransitionInput {
    * null exactly at revision 0; ref/checksum/version come from the SAME bundle
    * object. It must match the reread canonical state on subject/next_revision.
    */
-  readonly previous_bundle: AtomicCommitBundleAnyVersion | null;
+  readonly previous_bundle: AtomicCommitBundleAnyStateVersionV0 | null;
   /** Trusted prepared-record `workflow:` ref minted outside subject-core (§7.6). */
   readonly prepared_result_ref: CanonicalRefV0;
   readonly repository_bindings: readonly RepositoryRevisionBindingV1[];
@@ -126,10 +129,12 @@ export interface CommitTransitionInput {
   readonly prepared_governed_writer_authority?: PreparedGovernedWriterAuthorityTokenV0;
 }
 
-export type CommitTransitionOutcome =
+export type CommitTransitionOutcome<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> =
   | {
       readonly kind: "COMMITTED";
-      readonly bundle: AtomicCommitBundleAnyVersion;
+      readonly bundle: AtomicCommitBundleV2<TState>;
       readonly result: CanonicalCommitResultV1;
     }
   | {
@@ -140,7 +145,9 @@ export type CommitTransitionOutcome =
   | { readonly kind: "ABORTED"; readonly failure: ValidationFailure }
   | { readonly kind: "UNRESOLVED" };
 
-function rejected(failure: ValidationFailure): CommitTransitionOutcome {
+function rejected<TState extends SubjectStateAnyVersionV0>(
+  failure: ValidationFailure
+): CommitTransitionOutcome<TState> {
   return { kind: "REJECTED", failure };
 }
 
@@ -156,8 +163,8 @@ const SERVICE_UNAVAILABLE: ValidationFailure = {
  * expected revisions; every entry validates through the verdict-only capability.
  */
 async function validateRepositoryBindings(
-  currentState: SubjectStateV0,
-  candidate: SubjectStateV0,
+  currentState: SubjectStateAnyVersionV0,
+  candidate: Pick<SubjectStateV0, "memory_state">,
   proposal: CanonicalTransitionProposalV1,
   bindings: readonly RepositoryRevisionBindingV1[],
   referenceValidator?: ReferenceValidatorCapability
@@ -214,17 +221,31 @@ async function validateRepositoryBindings(
   return null;
 }
 
-export interface CommitEngine {
-  commitTransition(input: CommitTransitionInput): Promise<CommitTransitionOutcome>;
+export interface CommitEngine<TState extends SubjectStateAnyVersionV0 = SubjectStateV0> {
+  commitTransition(input: CommitTransitionInput<TState>): Promise<CommitTransitionOutcome<TState>>;
 }
 
-export function createCommitEngine(deps: {
-  readonly store: AtomicCommitStorePort;
+export interface AtomicCommitWritePortV0<TState extends SubjectStateAnyVersionV0> {
+  compareAndCommit(
+    expected_revision: number,
+    identity_record_version_before: number,
+    complete_bundle: AtomicCommitBundleV2<TState>
+  ): Promise<
+    | { readonly outcome: "COMMITTED"; readonly bundle: AtomicCommitBundleV2<TState> }
+    | { readonly outcome: "CONFLICT" }
+    | { readonly outcome: "FAILURE"; readonly certainty: "DEFINITE_NOT_COMMITTED" | "OUTCOME_UNKNOWN" }
+  >;
+}
+
+export function createCommitEngine<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+>(deps: {
+  readonly store: AtomicCommitWritePortV0<TState>;
   readonly pipelineObserver?: PipelineStageObserver;
-}): CommitEngine {
+}): CommitEngine<TState> {
   const observer = deps.pipelineObserver;
   return {
-    async commitTransition(input: CommitTransitionInput): Promise<CommitTransitionOutcome> {
+    async commitTransition(input: CommitTransitionInput<TState>): Promise<CommitTransitionOutcome<TState>> {
       // Layers 1–8 via the SHARED canonical transition-effect primitives
       // (ONE_SHARED_IMPLEMENTATION with V2 chain replay): envelope re-validation,
       // subject/revision guards, time resolution + NO_OP routing, required
@@ -247,7 +268,7 @@ export function createCommitEngine(deps: {
       observer?.referenceValidation?.();
       const bindingFailure = await validateRepositoryBindings(
         cur,
-        draft as unknown as SubjectStateV0,
+        draft,
         p,
         input.repository_bindings,
         input.reference_validator
@@ -260,7 +281,7 @@ export function createCommitEngine(deps: {
       );
       if (
         touchesContentRevision &&
-        (draft["memory_state"] as Record<string, unknown>)["repository_revision"] ===
+        draft.memory_state.repository_revision ===
           cur.memory_state.repository_revision
       ) {
         return rejected({
@@ -274,9 +295,7 @@ export function createCommitEngine(deps: {
       // be adopted when a trusted validator confirms it (verdict-only); a missing
       // validator fails closed. Proposals that do not change the binding never
       // touch this gate.
-      const draftMemoryRevision = (draft["memory_state"] as Record<string, unknown>)[
-        "repository_revision"
-      ] as RepositoryRevisionIdV0;
+      const draftMemoryRevision = draft.memory_state.repository_revision as RepositoryRevisionIdV0;
       if (draftMemoryRevision !== cur.memory_state.repository_revision) {
         if (input.memory_adoption_validator === undefined) {
           return rejected({
@@ -294,10 +313,8 @@ export function createCommitEngine(deps: {
           next_repository_revision: draftMemoryRevision,
           next_repository_revision_hash: adoptedBinding?.repository_revision_hash ?? null,
           candidate_memory_refs: [
-            ...((draft["memory_state"] as Record<string, unknown>)["working_refs"] as CanonicalRefV0[]),
-            ...((draft["memory_state"] as Record<string, unknown>)[
-              "active_episode_refs"
-            ] as CanonicalRefV0[])
+            ...draft.memory_state.working_refs,
+            ...draft.memory_state.active_episode_refs
           ]
         });
         if (verdict !== true) {
@@ -317,7 +334,7 @@ export function createCommitEngine(deps: {
       // the PREVIOUS revision here: the trace window projection is appended only
       // after this gate passes.
       observer?.wholeStateValidation?.();
-      const candidateValidation = validateSubjectState(draft, {
+      const candidateValidation = validateSubjectStateAnyVersionV0(draft, {
         preTraceWindowRevision: rm.state_revision
       });
       if (!candidateValidation.ok) return rejected(candidateValidation.error);
@@ -367,6 +384,13 @@ export function createCommitEngine(deps: {
             error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
             reason: "SS-RESTORE-001",
             detail: `predecessor bundle next_revision ${previousBundle.next_revision} does not match canonical state revision ${rm.state_revision}`
+          });
+        }
+        if (previousBundle.next_snapshot.schema_version !== cur.schema_version) {
+          return rejected({
+            error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",
+            reason: "SS-RESTORE-001",
+            detail: `predecessor bundle state schema ${previousBundle.next_snapshot.schema_version} does not match canonical ${cur.schema_version}`
           });
         }
         // §7: version monotonicity via the EXISTING version-step primitive —
@@ -519,7 +543,7 @@ export function createCommitEngine(deps: {
 
       // §14: PRE-CAS closed V2 validation. An invalid production bundle never
       // reaches the store CAS and never falls back to V1 — fail closed.
-      const preCas = await validateAtomicCommitBundleV2(bundle);
+      const preCas = await validateAtomicCommitBundleV2AnyStateV0(bundle);
       if (!preCas.ok) {
         return rejected({
           error_code: "COMMIT_CHAIN_INTEGRITY_FAILURE",

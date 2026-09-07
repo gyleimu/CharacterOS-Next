@@ -30,8 +30,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  canonicalJsonString,
   createInMemorySubjectCoreFacade,
   createPersistenceEnvelope,
+  sha256HashV1,
   type AtomicCommitBundleAnyVersion,
   type AtomicCommitBundleV2,
   type CanonicalTransitionProposalV1,
@@ -82,6 +84,7 @@ const WRONG_HASH = "sha256:22222222222222222222222222222222222222222222222222222
 // ---- §55 frozen ordinary fixture (captured BEFORE the membrane slice) ------------------
 
 const ORDINARY_V2_FROZEN_HASHES_V0 = {
+  canonical_json_hash: "sha256:7fa87fba030eaf6fef816283de6e68d00c713539e7c3b7bf81d6586b004ddbd3",
   commit_ref: "commit:463f6dbc511ec3d123ed055cfc3bed387be085aeec443215bcedc57b0c72ad25",
   result_ref: "result:5a943d8e3cc55731cd6f4c848fab06d1a6a16d73758ed457666734dc7fca3f65",
   record_checksum: "sha256:1f84ae1442864f72c8d5eb0858188a373ce6673978626f1a7c32f4c03b1936dc",
@@ -323,6 +326,9 @@ describe("§49/§50/§55 real production facade path", () => {
     expect(bundle.record_checksum).toBe(ORDINARY_V2_FROZEN_HASHES_V0.record_checksum);
     expect(bundle.state_hash_after).toBe(ORDINARY_V2_FROZEN_HASHES_V0.state_hash_after);
     expect(bundle.snapshot_hash_after).toBe(ORDINARY_V2_FROZEN_HASHES_V0.snapshot_hash_after);
+    expect(await sha256HashV1(canonicalJsonString(bundle))).toBe(
+      ORDINARY_V2_FROZEN_HASHES_V0.canonical_json_hash
+    );
   });
 
   it("§50 a governed reserved write WITHOUT authority fails closed through the real product path", async () => {

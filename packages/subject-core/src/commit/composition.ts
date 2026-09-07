@@ -9,6 +9,8 @@
  */
 
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
+import { readSubjectStateSchemaVersion } from "../types/subject-state-v4.js";
 import { fail, ok, type ValidationResult } from "../validation/result.js";
 
 const TR_ATOMIC = "TR-ATOMIC-001";
@@ -117,4 +119,48 @@ export function validateProposalComposition(
     default:
       return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `${base}: unknown transition type`);
   }
+}
+
+/** Version-aware bounded dispatcher. The public/default validator above stays
+ * byte-for-byte and behavior-for-behavior the frozen v3 composition law. */
+export function validateProposalCompositionForStateVersion(
+  predecessor: SubjectStateAnyVersionV0,
+  proposal: CanonicalTransitionProposalV1
+): ValidationResult<void> {
+  const version = readSubjectStateSchemaVersion(predecessor);
+  if (version === "subject-state-v3") return validateProposalComposition(proposal);
+  if (version !== "subject-state-v4") {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "composition predecessor schema_version is unsupported");
+  }
+  const base = `composition[${proposal.transition_type}:subject-state-v4]`;
+  if (proposal.transition_type !== "Time") {
+    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation supports only Time`);
+  }
+  if (proposal.time_input.kind === "ELAPSED" && proposal.time_input.elapsed_time.value === 0) {
+    return proposal.domain_deltas.length === 0
+      ? ok(undefined)
+      : fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: elapsed=0 must carry zero deltas`);
+  }
+  if (proposal.domain_deltas.length !== 2) {
+    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: positive Time requires exactly affect and regulation deltas`);
+  }
+  const affectDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "affect");
+  const regulationDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "regulation");
+  if (
+    affectDeltas.length !== 1 ||
+    affectDeltas[0]?.producer !== "affect" ||
+    affectDeltas[0].operations.length !== 1 ||
+    affectDeltas[0].operations[0]?.path !== "/affect"
+  ) {
+    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact affect/affect /affect replacement required`);
+  }
+  if (
+    regulationDeltas.length !== 1 ||
+    regulationDeltas[0]?.producer !== "regulation" ||
+    regulationDeltas[0].operations.length !== 1 ||
+    regulationDeltas[0].operations[0]?.path !== "/regulation"
+  ) {
+    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact regulation/regulation /regulation replacement required`);
+  }
+  return ok(undefined);
 }

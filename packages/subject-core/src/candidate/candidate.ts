@@ -13,6 +13,10 @@
 
 import type { LogicalTimeV0, StateRevisionV0 } from "../types/scalars.js";
 import type { RuntimeMetadataV0, SubjectStateV0 } from "../types/subject-state.js";
+import type {
+  SubjectStateAnyVersionV0,
+  V4RuntimeMetadataV0
+} from "../types/subject-state-v4.js";
 import type { TransitionType } from "../types/enums.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
 import { fail, ok, type ValidationResult } from "../validation/result.js";
@@ -30,11 +34,15 @@ function applyOperation(root: Record<string, unknown>, path: string, value: unkn
 }
 
 /** Unfrozen working copy of a snapshot; not canonical until freezeCandidate. */
-export type CandidateDraft = Record<string, unknown>;
+export type CandidateDraft<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> = { -readonly [K in keyof TState]: TState[K] } & Record<string, unknown>;
 
 /** Materializes an unfrozen deep clone of the current authoritative snapshot. */
-export function cloneStateForCandidate(state: SubjectStateV0): CandidateDraft {
-  return structuredClone(state) as unknown as CandidateDraft;
+export function cloneStateForCandidate<TState extends SubjectStateAnyVersionV0>(
+  state: TState
+): CandidateDraft<TState> {
+  return structuredClone(state) as CandidateDraft<TState>;
 }
 
 /**
@@ -43,8 +51,8 @@ export function cloneStateForCandidate(state: SubjectStateV0): CandidateDraft {
  * as validated by the P2.1.2 layer; application is plain assignment — no merging,
  * no last-wins across paths (uniqueness was already enforced upstream).
  */
-export function applyDeltaOperations(
-  draft: CandidateDraft,
+export function applyDeltaOperations<TState extends SubjectStateAnyVersionV0>(
+  draft: CandidateDraft<TState>,
   proposal: CanonicalTransitionProposalV1
 ): void {
   const root = draft as unknown as Record<string, unknown>;
@@ -71,7 +79,7 @@ export interface DerivedRuntimeMetadata {
  * `state_revision` always advances exactly +1; `created_at` is untouched.
  */
 export function deriveRuntimeMetadata(
-  current: RuntimeMetadataV0,
+  current: RuntimeMetadataV0 | V4RuntimeMetadataV0,
   transitionType: TransitionType,
   timing:
     | { readonly kind: "ELAPSED"; readonly ticks: number }
@@ -120,11 +128,11 @@ export function deriveRuntimeMetadata(
 }
 
 /** Writes derived core-owned runtime metadata onto the draft (created_at untouched). */
-export function withDerivedRuntimeMetadata(
-  draft: CandidateDraft,
+export function withDerivedRuntimeMetadata<TState extends SubjectStateAnyVersionV0>(
+  draft: CandidateDraft<TState>,
   derived: DerivedRuntimeMetadata
 ): void {
-  const current = structuredClone(draft["runtime_metadata"]) as RuntimeMetadataV0;
+  const current = structuredClone(draft["runtime_metadata"]) as RuntimeMetadataV0 | V4RuntimeMetadataV0;
   draft["runtime_metadata"] = {
     ...current,
     subject_version: "subject-v0",
@@ -145,7 +153,9 @@ function deepFreeze(value: unknown): void {
 }
 
 /** Freezes the candidate deeply; after this call it is an immutable revision N+1 body. */
-export function freezeCandidate(draft: CandidateDraft): SubjectStateV0 {
+export function freezeCandidate<TState extends SubjectStateAnyVersionV0>(
+  draft: CandidateDraft<TState>
+): TState {
   deepFreeze(draft);
-  return draft as unknown as SubjectStateV0;
+  return draft;
 }

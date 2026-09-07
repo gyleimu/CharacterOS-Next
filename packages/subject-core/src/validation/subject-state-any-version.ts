@@ -1,0 +1,113 @@
+/**
+ * Bounded SubjectState version dispatch and predecessor compatibility.
+ * `schema_version` is the sole discriminator; shape inference is forbidden.
+ */
+
+import type { SubjectStateV0 } from "../types/subject-state.js";
+import {
+  readSubjectStateSchemaVersion,
+  type SubjectStateAnyVersionV0,
+  type SubjectStateV4
+} from "../types/subject-state-v4.js";
+import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
+import { fail, ok, type ValidationResult } from "./result.js";
+import { validateSubjectState } from "./subject-state.js";
+import { validateSubjectStateV4 } from "./subject-state-v4.js";
+import { validateAffectShape } from "./values.js";
+import { validateCanonicalAffectShape } from "./subject-state-v4-values.js";
+
+const SCHEMA = "SS-SCHEMA-001";
+
+export function validateSubjectStateAnyVersionV0(
+  value: unknown,
+  options?: { readonly preTraceWindowRevision?: number }
+): ValidationResult<SubjectStateAnyVersionV0> {
+  const version = readSubjectStateSchemaVersion(value);
+  if (version === "subject-state-v3") return validateSubjectState(value, options);
+  if (version === "subject-state-v4") return validateSubjectStateV4(value, options);
+  return fail(
+    "INVALID_SCHEMA",
+    SCHEMA,
+    "subjectState.schema_version: expected subject-state-v3 or subject-state-v4"
+  );
+}
+
+export function validateSubjectStateV3OnlyV0(value: unknown): ValidationResult<SubjectStateV0> {
+  if (readSubjectStateSchemaVersion(value) !== "subject-state-v3") {
+    return fail("INVALID_SCHEMA", SCHEMA, "subjectState.schema_version: expected subject-state-v3");
+  }
+  return validateSubjectState(value);
+}
+
+export function validateSubjectStateV4OnlyV0(value: unknown): ValidationResult<SubjectStateV4> {
+  if (readSubjectStateSchemaVersion(value) !== "subject-state-v4") {
+    return fail("INVALID_SCHEMA", SCHEMA, "subjectState.schema_version: expected subject-state-v4");
+  }
+  return validateSubjectStateV4(value);
+}
+
+/**
+ * Proposal/state compatibility is distinct from proposal shape admission.
+ * The predecessor version grants authority for exactly one /affect schema.
+ */
+export function validateProposalCompatibilityWithPredecessorV0(
+  predecessor: SubjectStateAnyVersionV0,
+  proposal: CanonicalTransitionProposalV1
+): ValidationResult<void> {
+  const version = readSubjectStateSchemaVersion(predecessor);
+  if (version === null) {
+    return fail("INVALID_SCHEMA", SCHEMA, "predecessor has an unsupported schema_version");
+  }
+
+  if (version === "subject-state-v4" && proposal.transition_type !== "Time") {
+    return fail(
+      "INVALID_TRANSITION_COMPOSITION",
+      "TR-ATOMIC-001",
+      `subject-state-v4 foundation supports only Time, received ${proposal.transition_type}`
+    );
+  }
+
+  for (const delta of proposal.domain_deltas) {
+    for (const operation of delta.operations) {
+      if (operation.path === "/mood" && version === "subject-state-v4") {
+        return fail(
+          "INVALID_TRANSITION_COMPOSITION",
+          "TR-ATOMIC-001",
+          "subject-state-v4 forbids /mood replacement"
+        );
+      }
+      if (operation.path !== "/affect") continue;
+      const detail = `proposal /affect for ${version}`;
+      const shape = version === "subject-state-v3"
+        ? validateAffectShape(operation.value, detail)
+        : validateCanonicalAffectShape(operation.value, detail);
+      if (!shape.ok) {
+        return fail(
+          "INVALID_SCHEMA",
+          SCHEMA,
+          `${detail}: predecessor-compatible Affect schema required (${shape.error.detail})`
+        );
+      }
+    }
+  }
+  return ok(undefined);
+}
+
+export function validateOrdinaryStateSchemaContinuityV0(
+  predecessor: SubjectStateAnyVersionV0,
+  successor: SubjectStateAnyVersionV0
+): ValidationResult<void> {
+  const before = readSubjectStateSchemaVersion(predecessor);
+  const after = readSubjectStateSchemaVersion(successor);
+  if (before === null || after === null) {
+    return fail("INVALID_SCHEMA", SCHEMA, "ordinary transition contains an unsupported state schema");
+  }
+  if (before !== after) {
+    return fail(
+      "INVALID_TRANSITION_COMPOSITION",
+      "TR-ATOMIC-001",
+      `ordinary state schema transition ${before} -> ${after} is forbidden`
+    );
+  }
+  return ok(undefined);
+}

@@ -20,9 +20,13 @@
  * mutation of inputs, no wall clock.
  */
 
-import type { HashV1 } from "../types/scalars.js";
+import type { HashV1, RepositoryRevisionIdV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
+import {
+  readSubjectStateSchemaVersion,
+  type SubjectStateAnyVersionV0
+} from "../types/subject-state-v4.js";
 import type { CanonicalTransitionProposalV1 } from "../types/transition.js";
 import type { TraceEntryV1, TraceWindowV1 } from "../types/trace.js";
 import type { ValidationFailure } from "../validation/result.js";
@@ -36,22 +40,30 @@ import {
   type DerivedRuntimeMetadata
 } from "../candidate/candidate.js";
 import { validateProposal } from "../validation/proposal.js";
-import { validateSubjectState } from "../validation/subject-state.js";
-import { validateProposalComposition } from "../commit/composition.js";
-import { proposalRef, snapshotHash, stateHashAnyVersion } from "./projections.js";
+import {
+  validateOrdinaryStateSchemaContinuityV0,
+  validateProposalCompatibilityWithPredecessorV0,
+  validateSubjectStateAnyVersionV0
+} from "../validation/subject-state-any-version.js";
+import { validateProposalCompositionForStateVersion } from "../commit/composition.js";
+import { proposalRef, snapshotHashAnyVersion, stateHashAnyVersion } from "./projections.js";
 import { buildTraceEntry, lastTraceRef, nextTraceWindow } from "../trace/trace.js";
 
 // ---- prepare -----------------------------------------------------------------------
 
 /** The pre-trace canonical candidate plus its derived core-owned metadata. */
-export interface PreparedCanonicalTransitionEffectV0 {
+export interface PreparedCanonicalTransitionEffectV0<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
   /** Unfrozen deep-cloned draft with deltas + derived metadata applied. */
-  readonly draft: CandidateDraft;
+  readonly draft: CandidateDraft<TState>;
   readonly derived: DerivedRuntimeMetadata;
 }
 
-export type PrepareCanonicalTransitionEffectOutcomeV0 =
-  | { readonly kind: "PREPARED"; readonly effect: PreparedCanonicalTransitionEffectV0 }
+export type PrepareCanonicalTransitionEffectOutcomeV0<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> =
+  | { readonly kind: "PREPARED"; readonly effect: PreparedCanonicalTransitionEffectV0<TState> }
   | {
       /** Time elapsed=0 with zero deltas — terminalization is runtime-owned. */
       readonly kind: "NO_OP";
@@ -66,15 +78,28 @@ export type PrepareCanonicalTransitionEffectOutcomeV0 =
  * the caller so live-process gates keep their frozen position between draft
  * construction and canonical hash/trace work.
  */
-export async function prepareCanonicalTransitionEffectV0(input: {
-  readonly predecessor: SubjectStateV0;
+export async function prepareCanonicalTransitionEffectV0<TState extends SubjectStateAnyVersionV0>(input: {
+  readonly predecessor: TState;
   readonly proposal: CanonicalTransitionProposalV1;
-}): Promise<PrepareCanonicalTransitionEffectOutcomeV0> {
+}): Promise<PrepareCanonicalTransitionEffectOutcomeV0<TState>> {
   const syntax = validateProposal(input.proposal);
   if (!syntax.ok) return { kind: "REJECTED", failure: syntax.error };
   const p = input.proposal;
   const cur = input.predecessor;
   const rm = cur.runtime_metadata;
+
+  if (readSubjectStateSchemaVersion(cur) === null) {
+    return {
+      kind: "REJECTED",
+      failure: {
+        error_code: "INVALID_SCHEMA",
+        reason: "SS-SCHEMA-001",
+        detail: "predecessor schema_version is unsupported"
+      }
+    };
+  }
+  const compatibility = validateProposalCompatibilityWithPredecessorV0(cur, p);
+  if (!compatibility.ok) return { kind: "REJECTED", failure: compatibility.error };
 
   if (p.subject_id !== cur.identity.subject_id) {
     return {
@@ -112,7 +137,7 @@ export async function prepareCanonicalTransitionEffectV0(input: {
       if (p.domain_deltas.length === 0) {
         return { kind: "NO_OP" };
       }
-      const zeroDeltaComposition = validateProposalComposition(p);
+      const zeroDeltaComposition = validateProposalCompositionForStateVersion(cur, p);
       if (!zeroDeltaComposition.ok) {
         return { kind: "REJECTED", failure: zeroDeltaComposition.error };
       }
@@ -125,10 +150,10 @@ export async function prepareCanonicalTransitionEffectV0(input: {
       : ({ kind: "OCCURRENCE", occurrence: p.time_input.occurrence_logical_time } as const);
   const derived = deriveRuntimeMetadata(rm, p.transition_type, timing);
   if (!derived.ok) return { kind: "REJECTED", failure: derived.error };
-  const composition = validateProposalComposition(p);
+  const composition = validateProposalCompositionForStateVersion(cur, p);
   if (!composition.ok) return { kind: "REJECTED", failure: composition.error };
 
-  const draft: CandidateDraft = cloneStateForCandidate(cur);
+  const draft = cloneStateForCandidate(cur);
   applyDeltaOperations(draft, p);
   withDerivedRuntimeMetadata(draft, derived.value);
   return { kind: "PREPARED", effect: { draft, derived: derived.value } };
@@ -137,9 +162,11 @@ export async function prepareCanonicalTransitionEffectV0(input: {
 // ---- finalize ----------------------------------------------------------------------
 
 /** The complete committed canonical effect of one transition. */
-export interface FinalizedCanonicalTransitionEffectV0 {
+export interface FinalizedCanonicalTransitionEffectV0<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
   /** Frozen, trace-complete successor snapshot (revision N+1). */
-  readonly successor: SubjectStateV0;
+  readonly successor: TState;
   readonly state_hash_before: HashV1;
   readonly state_hash_after: HashV1;
   readonly snapshot_hash_before: HashV1;
@@ -154,8 +181,10 @@ export interface FinalizedCanonicalTransitionEffectV0 {
   readonly revision_after: number;
 }
 
-export type FinalizeCanonicalTransitionEffectOutcomeV0 =
-  | { readonly kind: "FINALIZED"; readonly effect: FinalizedCanonicalTransitionEffectV0 }
+export type FinalizeCanonicalTransitionEffectOutcomeV0<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> =
+  | { readonly kind: "FINALIZED"; readonly effect: FinalizedCanonicalTransitionEffectV0<TState> }
   | { readonly kind: "REJECTED"; readonly failure: ValidationFailure };
 
 /**
@@ -166,20 +195,26 @@ export type FinalizeCanonicalTransitionEffectOutcomeV0 =
  * only after every live-process authority gate has passed (engine) or in pure
  * replay (chain validation).
  */
-export async function finalizeCanonicalTransitionEffectV0(input: {
-  readonly predecessor: SubjectStateV0;
+export async function finalizeCanonicalTransitionEffectV0<TState extends SubjectStateAnyVersionV0>(input: {
+  readonly predecessor: TState;
   readonly proposal: CanonicalTransitionProposalV1;
-  readonly draft: CandidateDraft;
+  readonly draft: CandidateDraft<TState>;
   readonly derived: DerivedRuntimeMetadata;
-}): Promise<FinalizeCanonicalTransitionEffectOutcomeV0> {
+}): Promise<FinalizeCanonicalTransitionEffectOutcomeV0<TState>> {
   const cur = input.predecessor;
   const p = input.proposal;
   const draft = input.draft;
   const derived = input.derived;
   const nextRevision = derived.state_revision;
 
+  const preTraceValidation = validateSubjectStateAnyVersionV0(draft, {
+    preTraceWindowRevision: cur.runtime_metadata.state_revision
+  });
+  if (!preTraceValidation.ok) {
+    return { kind: "REJECTED", failure: preTraceValidation.error };
+  }
   const stateHashBefore = await stateHashAnyVersion(cur);
-  const stateHashAfter = await stateHashAnyVersion(draft as unknown as SubjectStateV0);
+  const stateHashAfter = await stateHashAnyVersion(preTraceValidation.value);
   const pref = await proposalRef(p);
   const traceEntry = await buildTraceEntry({
     proposal: p,
@@ -190,25 +225,25 @@ export async function finalizeCanonicalTransitionEffectV0(input: {
     state_hash_before: stateHashBefore,
     state_hash_after: stateHashAfter,
     memory_revision_before: cur.memory_state.repository_revision,
-    memory_revision_after: (draft["memory_state"] as Record<string, unknown>)[
-      "repository_revision"
-    ] as SubjectStateV0["memory_state"]["repository_revision"]
+    memory_revision_after: draft.memory_state.repository_revision as RepositoryRevisionIdV0
   });
   const nextWindow = nextTraceWindow(cur.trace_window, traceEntry, nextRevision);
   draft["trace_window"] = nextWindow;
   const candidate = freezeCandidate(draft);
 
-  const finalValidation = validateSubjectState(candidate);
+  const continuity = validateOrdinaryStateSchemaContinuityV0(cur, candidate);
+  if (!continuity.ok) return { kind: "REJECTED", failure: continuity.error };
+  const finalValidation = validateSubjectStateAnyVersionV0(candidate);
   if (!finalValidation.ok) return { kind: "REJECTED", failure: finalValidation.error };
 
-  const snapshotHashBefore = await snapshotHash({
+  const snapshotHashBefore = await snapshotHashAnyVersion(cur, {
     state_hash: stateHashBefore,
     subject_id: cur.identity.subject_id,
     state_revision: cur.runtime_metadata.state_revision,
     trace_cursor: cur.trace_window.cursor,
     last_trace_ref: lastTraceRef(cur.trace_window)
   });
-  const snapshotHashAfter = await snapshotHash({
+  const snapshotHashAfter = await snapshotHashAnyVersion(candidate, {
     state_hash: stateHashAfter,
     subject_id: cur.identity.subject_id,
     state_revision: nextRevision,
@@ -237,8 +272,10 @@ export async function finalizeCanonicalTransitionEffectV0(input: {
 
 // ---- replay ------------------------------------------------------------------------
 
-export type ReplayCanonicalTransitionEffectOutcomeV0 =
-  | { readonly kind: "REPLAYED"; readonly effect: FinalizedCanonicalTransitionEffectV0 }
+export type ReplayCanonicalTransitionEffectOutcomeV0<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> =
+  | { readonly kind: "REPLAYED"; readonly effect: FinalizedCanonicalTransitionEffectV0<TState> }
   | { readonly kind: "REJECTED"; readonly failure: ValidationFailure };
 
 /**
@@ -249,10 +286,10 @@ export type ReplayCanonicalTransitionEffectOutcomeV0 =
  * produced a bundle); if the persisted proposal classifies as NO_OP the replay
  * fails closed.
  */
-export async function replayCanonicalTransitionEffectV0(input: {
-  readonly predecessor: SubjectStateV0;
+export async function replayCanonicalTransitionEffectV0<TState extends SubjectStateAnyVersionV0>(input: {
+  readonly predecessor: TState;
   readonly proposal: CanonicalTransitionProposalV1;
-}): Promise<ReplayCanonicalTransitionEffectOutcomeV0> {
+}): Promise<ReplayCanonicalTransitionEffectOutcomeV0<TState>> {
   const prepared = await prepareCanonicalTransitionEffectV0({
     predecessor: input.predecessor,
     proposal: input.proposal
@@ -269,7 +306,7 @@ export async function replayCanonicalTransitionEffectV0(input: {
       }
     };
   }
-  const draftValidation = validateSubjectState(prepared.effect.draft as unknown as SubjectStateV0, {
+  const draftValidation = validateSubjectStateAnyVersionV0(prepared.effect.draft, {
     preTraceWindowRevision: input.predecessor.runtime_metadata.state_revision
   });
   if (!draftValidation.ok) return { kind: "REJECTED", failure: draftValidation.error };

@@ -25,14 +25,21 @@ import type {
   CanonicalTransitionProposalV1,
   CommitReservedOutcome,
   DomainDeltaV0,
-  SubjectStateV4
+  IdentifierV0,
+  LogicalTimeV0,
+  ProducerAuthorizationIssuer,
+  RepositoryRevisionBindingV1,
+  StateRevisionV0,
+  SubjectCoreFacade,
+  SubjectStateV4,
+  TransitionIdV0
 } from "@characteros-next/subject-core";
 import { validateCanonicalAffectShape, validateMechanismConfigV1Shape } from "@characteros-next/subject-core";
 import { AffectDynamicsContractErrorV0 } from "@characteros-next/affect";
 import type { RuntimeContext } from "../../types/runtime-context.js";
-import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { CanonicalAffectTimeProducerPortV0 } from "../../ports/canonical-affect-time-producer-port-v0.js";
-import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
+import type { RegulationProducerPort } from "../../ports/regulation-producer-port.js";
+import type { PreparedLogicalResultBindingV1 } from "@characteros-next/subject-core";
 import { admitElapsedTicks, anchorContext, stageFailure, TransitionStageFailure } from "../common.js";
 
 export const V4_TIME_FOUNDATION_MODE = "EXPLICIT_V4_FOUNDATION_V0" as const;
@@ -42,12 +49,17 @@ export interface CanonicalAffectTimeTransitionInputV0 {
   readonly elapsed_ticks: number;
 }
 
-export type CanonicalAffectTimeExecutionResultV0 = CommitReservedOutcome;
+export type CanonicalAffectTimeExecutionResultV0 = CommitReservedOutcome<SubjectStateV4>;
+
+export interface CanonicalAffectV4TimeTransitionCapabilitiesV0 {
+  readonly preparedBinding: PreparedLogicalResultBindingV1;
+  readonly repository_bindings: readonly RepositoryRevisionBindingV1[];
+}
 
 export interface CanonicalAffectV4TimeExecutorDepsV0 {
-  readonly subjectCore: RuntimeDependencyContainer["subjectCore"];
-  readonly producerAuthorizationIssuer: NonNullable<RuntimeDependencyContainer["producerAuthorizationIssuer"]>;
-  readonly regulationProducer: NonNullable<RuntimeDependencyContainer["regulationProducer"]>;
+  readonly subjectCore: SubjectCoreFacade<SubjectStateV4>;
+  readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
+  readonly regulationProducer: RegulationProducerPort;
   readonly canonicalAffectTimeProducer: CanonicalAffectTimeProducerPortV0;
 }
 
@@ -56,21 +68,21 @@ export function canonicalAffectTimeTransitionId(subjectId: string, revision: num
   return `t-time-v4-${subjectId}-r${revision}-e${ticks}`;
 }
 
-function buildV4TimeNoOpProposal(subjectId: string, stateRevision: number): CanonicalTransitionProposalV1 {
+export function buildV4TimeNoOpProposal(subjectId: string, stateRevision: number): CanonicalTransitionProposalV1 {
   return {
     schema_version: "canonical-transition-proposal-v1",
-    transition_id: canonicalAffectTimeTransitionId(subjectId, stateRevision, 0),
-    subject_id: subjectId,
+    transition_id: canonicalAffectTimeTransitionId(subjectId, stateRevision, 0) as TransitionIdV0,
+    subject_id: subjectId as IdentifierV0,
     transition_type: "Time",
-    expected_state_revision: stateRevision,
-    time_input: { kind: "ELAPSED", elapsed_time: { value: 0, unit: "tick" } },
+    expected_state_revision: stateRevision as StateRevisionV0,
+    time_input: { kind: "ELAPSED", elapsed_time: { value: 0 as LogicalTimeV0, unit: "tick" } },
     cause_refs: [],
     domain_deltas: [],
     external_refs: []
-  } as unknown as CanonicalTransitionProposalV1;
+  };
 }
 
-function buildV4TimeProposal(
+export function buildV4TimeProposal(
   subjectId: string,
   stateRevision: number,
   ticks: number,
@@ -79,19 +91,19 @@ function buildV4TimeProposal(
 ): CanonicalTransitionProposalV1 {
   return {
     schema_version: "canonical-transition-proposal-v1",
-    transition_id: canonicalAffectTimeTransitionId(subjectId, stateRevision, ticks),
-    subject_id: subjectId,
+    transition_id: canonicalAffectTimeTransitionId(subjectId, stateRevision, ticks) as TransitionIdV0,
+    subject_id: subjectId as IdentifierV0,
     transition_type: "Time",
-    expected_state_revision: stateRevision,
+    expected_state_revision: stateRevision as StateRevisionV0,
     time_input: {
       kind: "ELAPSED",
-      elapsed_time: { value: ticks, unit: "tick" }
+      elapsed_time: { value: ticks as LogicalTimeV0, unit: "tick" }
     },
     cause_refs: [],
     // raw-ASCII domain order: affect < regulation (identical to v3 Time)
     domain_deltas: [affectDelta, regulationDelta],
     external_refs: []
-  } as unknown as CanonicalTransitionProposalV1;
+  };
 }
 
 const STAGE = "TIME" as const;
@@ -120,7 +132,7 @@ export class CanonicalAffectV4TimeTransitionExecutorV0 {
   async execute(
     ctx: RuntimeContext,
     input: CanonicalAffectTimeTransitionInputV0,
-    capabilities: TransitionCapabilities
+    capabilities: CanonicalAffectV4TimeTransitionCapabilitiesV0
   ): Promise<CanonicalAffectTimeExecutionResultV0> {
     admitElapsedTicks(STAGE, input.elapsed_ticks);
 
@@ -129,12 +141,12 @@ export class CanonicalAffectV4TimeTransitionExecutorV0 {
       throw stageFailure(STAGE, "UNKNOWN_SUBJECT", "SS-AUTH-001", `subject ${ctx.subject_id} not found`);
     }
     // §38: predecessor must be subject-state-v4. Fail closed otherwise.
-    if ((snapshot as { schema_version?: unknown }).schema_version !== "subject-state-v4") {
+    if (snapshot.schema_version !== "subject-state-v4") {
       throw stageFailure(STAGE, "INVALID_SCHEMA", "SS-SCHEMA-001", "v4 Time requires a subject-state-v4 predecessor");
     }
     // §8 pairing law: v4 state must carry the BOUNDED_AFFECT_DYNAMICS_V0/tick profile.
-    const mech = (snapshot as { mechanism_config?: unknown }).mechanism_config;
-    if (!validateMechanismConfigV1Shape(mech, "predecessor.mechanism_config")) {
+    const mech = snapshot.mechanism_config;
+    if (!validateMechanismConfigV1Shape(mech, "predecessor.mechanism_config").ok) {
       throw stageFailure(STAGE, "INVALID_SCHEMA", "SS-SCHEMA-001", "predecessor mechanism_config is not the v4 pairing");
     }
     const anchored = anchorContext(ctx, snapshot, STAGE);
@@ -168,11 +180,10 @@ export class CanonicalAffectV4TimeTransitionExecutorV0 {
     }
 
     // ---- §45: affect recovery through advanceAffectTimeV0 (§40 adapter) --------
-    const v4Snapshot = snapshot as unknown as SubjectStateV4;
     let affectDelta: DomainDeltaV0;
     try {
       affectDelta = await this.deps.canonicalAffectTimeProducer.produceCanonicalAffectTimeDelta({
-        current_affect: v4Snapshot.affect,
+        current_affect: snapshot.affect,
         elapsed_ticks: input.elapsed_ticks
       });
     } catch (error) {
@@ -190,7 +201,7 @@ export class CanonicalAffectV4TimeTransitionExecutorV0 {
     // §30 predecessor-compatibility: the produced /affect replacement must
     // validate as CanonicalAffectV0 (predecessor is v4).
     const affectOp = affectDelta.operations.find((op) => op.path === "/affect");
-    if (affectOp !== undefined && !validateCanonicalAffectShape(affectOp.value, "affect")) {
+    if (affectOp === undefined || !validateCanonicalAffectShape(affectOp.value, "affect").ok) {
       throw stageFailure(STAGE, "INVALID_SCHEMA", "SS-SCHEMA-001", "produced /affect replacement is not a CanonicalAffectV0");
     }
 
@@ -250,7 +261,7 @@ export class CanonicalAffectV4TimeTransitionExecutorV0 {
         { producer: "regulation", domain: "regulation" }
       ]),
       preparedBinding: capabilities.preparedBinding,
-      repository_bindings: capabilities.repository_bindings as never
+      repository_bindings: capabilities.repository_bindings
     });
   }
 }

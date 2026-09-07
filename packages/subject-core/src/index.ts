@@ -85,6 +85,13 @@ export {
 } from "./types/subject-state-v4.js";
 export { validateSubjectStateV4 } from "./validation/subject-state-v4.js";
 export {
+  validateSubjectStateAnyVersionV0,
+  validateSubjectStateV3OnlyV0,
+  validateSubjectStateV4OnlyV0,
+  validateProposalCompatibilityWithPredecessorV0,
+  validateOrdinaryStateSchemaContinuityV0
+} from "./validation/subject-state-any-version.js";
+export {
   validateCanonicalAffectShape,
   validateMechanismConfigV1Shape
 } from "./validation/subject-state-v4-values.js";
@@ -227,6 +234,7 @@ export {
 
 export {
   createInMemorySubjectCoreFacade,
+  createInMemorySubjectCoreFacadeForExplicitV4V0,
   type InMemoryFacadeAssembly,
   type InMemoryFacadeOptions,
   type ReadOnlyStoreHandle
@@ -274,8 +282,11 @@ export {
 
 export {
   stateHash,
+  stateHashAnyVersion,
   snapshotHash,
+  snapshotHashAnyVersion,
   fullSnapshotChecksum,
+  fullSnapshotChecksumAnyVersion,
   proposalFingerprint,
   proposalRef,
   type SnapshotHashInput
@@ -316,6 +327,9 @@ export {
 export type {
   AtomicCommitBundleV2,
   AtomicCommitBundleAnyVersion,
+  AtomicCommitBundleForStateV0,
+  AtomicCommitBundleAnyStateVersionV0,
+  AtomicCommitBundleV4V0,
   AtomicCommitBundleVersionV0
 } from "./types/persistence-v2.js";
 export { ATOMIC_COMMIT_BUNDLE_VERSIONS_V0 } from "./types/persistence-v2.js";
@@ -345,7 +359,9 @@ export {
 export {
   validateAtomicCommitBundleV1,
   validateAtomicCommitBundleV2,
+  validateAtomicCommitBundleV2AnyStateV0,
   validateAtomicCommitBundleAnyVersion,
+  validateAtomicCommitBundleAnyStateVersionV0,
   evaluateCommitBundleVersionStepV0,
   type CommitBundleVersionStepVerdictV0
 } from "./validation/atomic-commit-bundle.js";

@@ -255,8 +255,9 @@ describe("candidate construction", () => {
     const draft = cloneStateForCandidate(current as unknown as SubjectStateV0);
     const proposal = observationProposal() as unknown as CanonicalTransitionProposalV1;
     applyDeltaOperations(draft, proposal);
-    draft["runtime_metadata"] = {
-      ...(draft["runtime_metadata"] as Record<string, unknown>),
+    const draftRecord = draft as unknown as Record<string, unknown>;
+    draftRecord["runtime_metadata"] = {
+      ...(draftRecord["runtime_metadata"] as Record<string, unknown>),
       state_revision: 1
     };
     const candidate = freezeCandidate(draft);

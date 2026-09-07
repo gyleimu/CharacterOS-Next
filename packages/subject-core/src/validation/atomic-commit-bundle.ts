@@ -29,8 +29,8 @@ import { deriveRef, hashEnvelope } from "../canonical/hash.js";
 import {
   proposalFingerprint,
   proposalRef,
-  snapshotHash,
-  stateHash
+  snapshotHashAnyVersion,
+  stateHashAnyVersion
 } from "../canonical/projections.js";
 import {
   deriveAtomicCommitRecordChecksumV2,
@@ -40,6 +40,7 @@ import {
 import type { CanonicalWriterAuthorityRecordV0 } from "../types/writer-authority.js";
 import type {
   AtomicCommitBundleAnyVersion,
+  AtomicCommitBundleAnyStateVersionV0,
   AtomicCommitBundleV2
 } from "../types/persistence-v2.js";
 import { ATOMIC_COMMIT_BUNDLE_VERSIONS_V0 } from "../types/persistence-v2.js";
@@ -51,7 +52,7 @@ import type {
 } from "../types/identity.js";
 import type { TraceEntryV1, TraceWindowV1 } from "../types/trace.js";
 import type { TransitionType } from "../types/enums.js";
-import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type { HashV1, StateRevisionV0 } from "../types/scalars.js";
 import type { IdentifierV0, TransitionIdV0, HistorySequenceV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
@@ -59,6 +60,9 @@ import { fail, ok, type ValidationResult } from "./result.js";
 import { isRecord, isString, validateHash, validateIdentifier, validateLogicalTime, validateRefElement, validateStateRevision } from "./scalars.js";
 import { validateProposal } from "./proposal.js";
 import { validateSubjectState } from "./subject-state.js";
+import { validateSubjectStateAnyVersionV0 } from "./subject-state-any-version.js";
+import { validateProposalCompatibilityWithPredecessorV0 } from "./subject-state-any-version.js";
+import { validateProposalCompositionForStateVersion } from "../commit/composition.js";
 import { lastTraceRef } from "../trace/trace.js";
 import {
   bundleClosedKeys,
@@ -129,7 +133,7 @@ interface ValidatedBundleCore {
   readonly next_revision: StateRevisionV0;
   readonly previous_commit_ref: CanonicalRefV0 | null;
   readonly previous_record_checksum: HashV1 | null;
-  readonly next_snapshot: SubjectStateV0;
+  readonly next_snapshot: SubjectStateAnyVersionV0;
   readonly trace_entry: TraceEntryV1;
   readonly trace_window: TraceWindowV1;
   readonly transition_record: AuthoritativeTransitionRecordV1;
@@ -142,7 +146,8 @@ interface ValidatedBundleCore {
  * and V2. The `commit_version` literal is checked by the caller.
  */
 async function validateBundleCore(
-  o: Record<string, unknown>
+  o: Record<string, unknown>,
+  stateMode: "V3_ONLY" | "ANY_STATE_VERSION"
 ): Promise<ValidationResult<ValidatedBundleCore>> {
   const d = "bundle";
 
@@ -189,11 +194,13 @@ async function validateBundleCore(
   const crc = validateHash(o["record_checksum"] as string, `${d}.record_checksum`);
   if (!crc.ok) return crc;
 
-  const snapshot = validateSubjectState(o["next_snapshot"]);
+  const snapshot = stateMode === "V3_ONLY"
+    ? validateSubjectState(o["next_snapshot"])
+    : validateSubjectStateAnyVersionV0(o["next_snapshot"]);
   if (!snapshot.ok) {
     return fail("INVALID_SCHEMA", SCHEMA, `${d}.next_snapshot: ${snapshot.error.detail}`);
   }
-  const nextSnapshot = o["next_snapshot"] as unknown as SubjectStateV0;
+  const nextSnapshot = snapshot.value;
 
   const traceEntry = validateTraceEntryShape(o["trace_entry"], `${d}.trace_entry`);
   if (!traceEntry.ok) return traceEntry;
@@ -219,11 +226,11 @@ async function validateBundleCore(
   if (nextSnapshot.runtime_metadata.logical_time !== lta.value) {
     return fail("INVALID_SCHEMA", SCHEMA, `${d}.next_snapshot.runtime_metadata.logical_time: must equal logical_time_after`);
   }
-  const recomputedStateHashAfter = await stateHash(nextSnapshot);
+  const recomputedStateHashAfter = await stateHashAnyVersion(nextSnapshot);
   if (recomputedStateHashAfter !== sha.value) {
     return fail("INVALID_SCHEMA", SCHEMA, `${d}.state_hash_after: does not match stateHash(next_snapshot)`);
   }
-  const recomputedSnapshotHashAfter = await snapshotHash({
+  const recomputedSnapshotHashAfter = await snapshotHashAnyVersion(nextSnapshot, {
     state_hash: sha.value,
     subject_id: sid.value,
     state_revision: next.value,
@@ -408,7 +415,7 @@ export async function validateAtomicCommitBundleV1(
   const sv = bundleLit(v["serialization_version"], "canonical-json-v1", "bundle.serialization_version");
   if (!sv.ok) return sv;
 
-  const core = await validateBundleCore(v);
+  const core = await validateBundleCore(v, "V3_ONLY");
   if (!core.ok) return core;
   const c = core.value;
 
@@ -446,9 +453,10 @@ export async function validateAtomicCommitBundleV1(
  * available inside the record, and (when non-null) the generic 11-field
  * writer-authority envelope binding. Structurally valid != authorized.
  */
-export async function validateAtomicCommitBundleV2(
-  v: unknown
-): Promise<ValidationResult<AtomicCommitBundleV2>> {
+async function validateAtomicCommitBundleV2Internal(
+  v: unknown,
+  stateMode: "V3_ONLY" | "ANY_STATE_VERSION"
+): Promise<ValidationResult<AtomicCommitBundleV2<SubjectStateAnyVersionV0>>> {
   if (!isRecord(v)) return fail("INVALID_SCHEMA", SCHEMA, "bundle: expected object");
   const closed = bundleClosedKeys(v, V2_BUNDLE_KEYS, "bundle");
   if (!closed.ok) return closed;
@@ -468,9 +476,22 @@ export async function validateAtomicCommitBundleV2(
     if (!authorityShape.ok) return authorityShape;
   }
 
-  const core = await validateBundleCore(v);
+  const core = await validateBundleCore(v, stateMode);
   if (!core.ok) return core;
   const c = core.value;
+
+  // A single V2 record has no predecessor body, but ordinary chain replay
+  // proves predecessor.schema_version === successor.schema_version. Therefore
+  // successor version is sufficient here to reject cross-schema Affect and
+  // composition before full predecessor replay supplies adjacency authority.
+  const compatibility = validateProposalCompatibilityWithPredecessorV0(c.next_snapshot, p);
+  if (!compatibility.ok) {
+    return fail("INVALID_SCHEMA", SCHEMA, `bundle.canonical_proposal: ${compatibility.error.detail}`);
+  }
+  const composition = validateProposalCompositionForStateVersion(c.next_snapshot, p);
+  if (!composition.ok) {
+    return fail("INVALID_SCHEMA", SCHEMA, `bundle.canonical_proposal: ${composition.error.detail}`);
+  }
 
   // Canonical proposal cross-bindings — V2 persists the full proposal, so
   // proposal_ref and payload_fingerprint are RECOMPUTED, not just formatted.
@@ -544,13 +565,31 @@ export async function validateAtomicCommitBundleV2(
   const bundleWithoutChecksum: Record<string, unknown> = { ...v };
   delete bundleWithoutChecksum["record_checksum"];
   const recomputedChecksum = await deriveAtomicCommitRecordChecksumV2(
-    bundleWithoutChecksum as unknown as Omit<AtomicCommitBundleV2, "record_checksum">
+    bundleWithoutChecksum as unknown as Omit<AtomicCommitBundleV2<SubjectStateAnyVersionV0>, "record_checksum">
   );
   if (recomputedChecksum !== v["record_checksum"]) {
     return fail("INVALID_SCHEMA", SCHEMA, "bundle.record_checksum: does not match the V2 record-checksum projection");
   }
 
-  return ok(v as unknown as AtomicCommitBundleV2);
+  // Single guarded validator cast after all 29 fields and every canonical
+  // cross-binding above have been checked from unknown input.
+  return ok(v as unknown as AtomicCommitBundleV2<SubjectStateAnyVersionV0>);
+}
+
+/** Legacy/default V2 validator remains strictly subject-state-v3. */
+export async function validateAtomicCommitBundleV2(
+  v: unknown
+): Promise<ValidationResult<AtomicCommitBundleV2>> {
+  const result = await validateAtomicCommitBundleV2Internal(v, "V3_ONLY");
+  if (!result.ok) return result;
+  return ok(v as AtomicCommitBundleV2);
+}
+
+/** Explicit authority validator for V2 records containing v3 or v4 state. */
+export function validateAtomicCommitBundleV2AnyStateV0(
+  v: unknown
+): Promise<ValidationResult<AtomicCommitBundleV2<SubjectStateAnyVersionV0>>> {
+  return validateAtomicCommitBundleV2Internal(v, "ANY_STATE_VERSION");
 }
 
 // ---- version dispatch + version-step policy ---------------------------------------
@@ -574,6 +613,23 @@ export async function validateAtomicCommitBundleAnyVersion(
     return validateAtomicCommitBundleV1(v);
   }
   return validateAtomicCommitBundleV2(v);
+}
+
+/** Explicit chain-authority dispatcher. V1 is forever v3-only; V2 dispatches
+ * its successor validator from next_snapshot.schema_version. */
+export async function validateAtomicCommitBundleAnyStateVersionV0(
+  v: unknown
+): Promise<ValidationResult<AtomicCommitBundleAnyStateVersionV0>> {
+  if (!isRecord(v)) return fail("INVALID_SCHEMA", SCHEMA, "bundle: expected object");
+  if (!isString(v["commit_version"])) {
+    return fail("INVALID_SCHEMA", SCHEMA, "bundle.commit_version: expected literal");
+  }
+  if (!(ATOMIC_COMMIT_BUNDLE_VERSIONS_V0 as readonly string[]).includes(v["commit_version"])) {
+    return fail("INVALID_SCHEMA", SCHEMA, `bundle.commit_version: unknown version ${v["commit_version"]}`);
+  }
+  return v["commit_version"] === "atomic-commit-v1"
+    ? validateAtomicCommitBundleV1(v)
+    : validateAtomicCommitBundleV2AnyStateV0(v);
 }
 
 export type CommitBundleVersionStepVerdictV0 = "ALLOWED" | "DOWNGRADE_FORBIDDEN";

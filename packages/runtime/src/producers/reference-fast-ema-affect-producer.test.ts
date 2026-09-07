@@ -147,6 +147,7 @@ function timeInputOf(elapsedTicks: number, snapshot: SubjectStateV0 = s0State())
 function affectOf(delta: DomainDeltaV0): AffectV0 {
   const op = delta.operations.find((o) => o.path === "/affect");
   if (op === undefined || op.path !== "/affect") throw new Error("missing /affect operation");
+  if (!("active_channels" in op.value)) throw new Error("expected legacy AffectV0 operation");
   return op.value;
 }
 

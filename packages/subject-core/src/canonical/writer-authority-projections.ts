@@ -12,6 +12,7 @@
  */
 
 import type { AtomicCommitBundleV2 } from "../types/persistence-v2.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type { CanonicalWriterAuthorityRecordV0 } from "../types/writer-authority.js";
 import type { HashV1, IdentifierV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
@@ -115,8 +116,10 @@ export async function deriveAtomicCommitRefV2(input: AtomicCommitRefV2Input): Pr
  * writer_authority (including authority_payload) and every V1-compatible
  * field.
  */
-export async function deriveAtomicCommitRecordChecksumV2(
-  bundle: Omit<AtomicCommitBundleV2, "record_checksum">
+export async function deriveAtomicCommitRecordChecksumV2<
+  TState extends SubjectStateAnyVersionV0
+>(
+  bundle: Omit<AtomicCommitBundleV2<TState>, "record_checksum">
 ): Promise<HashV1> {
   return hashEnvelope(RECORD_CHECKSUM_PROJECTION_V2, bundle) as Promise<HashV1>;
 }

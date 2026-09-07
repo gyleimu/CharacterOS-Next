@@ -3,7 +3,7 @@
  * failures (§23: stable structured failures; exception messages are never contract).
  */
 
-import type { ErrorCode, RequirementId, SubjectStateV0 } from "@characteros-next/subject-core";
+import type { ErrorCode, RequirementId, SubjectStateAnyVersionV0 } from "@characteros-next/subject-core";
 import type { RuntimeContext } from "../types/runtime-context.js";
 
 export type TransitionStageName = "TIME" | "OBSERVATION" | "LEARNING";
@@ -53,7 +53,7 @@ export function stageFailure(
  */
 export function anchorContext(
   ctx: RuntimeContext,
-  snapshot: SubjectStateV0,
+  snapshot: SubjectStateAnyVersionV0,
   stage: TransitionStageName
 ): RuntimeContext {
   const rm = snapshot.runtime_metadata;

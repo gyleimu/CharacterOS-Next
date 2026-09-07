@@ -44,16 +44,22 @@ import type {
   TransitionAttemptV1
 } from "../types/identity.js";
 import type { RepositoryRevisionBindingV1 } from "../types/persistence.js";
-import type { AtomicCommitBundleAnyVersion } from "../types/persistence-v2.js";
+import type {
+  AtomicCommitBundleAnyStateVersionV0,
+  AtomicCommitBundleAnyVersion,
+  AtomicCommitBundleForStateV0
+} from "../types/persistence-v2.js";
 import type { AtomicCommitStorePort } from "./store.js";
 import type {
   TransitionIdentityJournalPort,
   ReuseConflictInput
 } from "../identity/journal.js";
 import type { SubjectStateV0 } from "../types/subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "../types/subject-state-v4.js";
 import type { CanonicalRefV0 } from "../types/ref.js";
 import type { HashV1, IdentifierV0, StateRevisionV0, TransitionIdV0 } from "../types/scalars.js";
 import type { ErrorCode, RequirementId } from "../types/enums.js";
+import type { ValidationFailure } from "../validation/result.js";
 import type {
   ReferenceValidatorCapability,
   MemoryAdoptionValidatorCapability,
@@ -61,6 +67,7 @@ import type {
 } from "./engine.js";
 import {
   createCommitEngine,
+  type AtomicCommitWritePortV0,
   type CommitEngine,
   type CommitTransitionInput,
   type CommitTransitionOutcome
@@ -70,7 +77,7 @@ import { validateProposal } from "../validation/proposal.js";
 import {
   proposalFingerprint,
   proposalRef,
-  snapshotHash,
+  snapshotHashAnyVersion,
   stateHashAnyVersion
 } from "../canonical/projections.js";
 import { deriveRef } from "../canonical/hash.js";
@@ -80,8 +87,10 @@ import { lastTraceRef } from "../trace/trace.js";
 const AUDIT_ID_PROJECTION = "characteros-next/subject-core/audit-id/v1";
 const RESULT_ID_PROJECTION = "characteros-next/subject-core/result-id/v1";
 
-export interface StateReaderPort {
-  readCurrentSnapshot(subjectId: IdentifierV0): Promise<SubjectStateV0 | null>;
+export interface StateReaderPort<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
+  readCurrentSnapshot(subjectId: IdentifierV0): Promise<TState | null>;
 }
 
 /** Verdict-only inverted capability for the trusted prepared record binding (§7.6). */
@@ -97,10 +106,14 @@ export type ProducerAuthorizationVerifierCapability = (
   set: ProducerAuthorizationSetV1
 ) => boolean | Promise<boolean>;
 
-export interface SubjectCoreFacadePorts {
-  readonly store: AtomicCommitStorePort;
+export interface SubjectCoreFacadePorts<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
+  readonly store: AtomicCommitStorePort<AtomicCommitBundleForStateV0<TState>> &
+    AtomicCommitWritePortV0<TState> &
+    StoreReadSurface<AtomicCommitBundleForStateV0<TState>>;
   readonly journal: TransitionIdentityJournalPort;
-  readonly stateReader: StateReaderPort;
+  readonly stateReader: StateReaderPort<TState>;
   readonly preparedResultValidator: PreparedResultValidatorCapability;
   readonly producerAuthorizationVerifier: ProducerAuthorizationVerifierCapability;
   readonly referenceValidator?: ReferenceValidatorCapability;
@@ -117,9 +130,11 @@ export interface SubjectCoreFacadePorts {
   readonly pipelineObserver?: PipelineStageObserver;
 }
 
-export type ReserveAndRouteOutcome =
+export type ReserveAndRouteOutcome<
+  TBundle extends AtomicCommitBundleAnyStateVersionV0 = AtomicCommitBundleAnyVersion
+> =
   | { readonly kind: "CONTINUE"; readonly continuation: ReservedTransitionContinuationV1 }
-  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
+  | { readonly kind: "ALREADY_COMMITTED"; readonly bundle: TBundle }
   | { readonly kind: "TERMINAL_NO_OP" }
   | {
       readonly kind: "REUSE_CONFLICT";
@@ -127,7 +142,18 @@ export type ReserveAndRouteOutcome =
       readonly reason: "IDEM-REUSE-001";
     };
 
-export type CommitReservedOutcome = CommitTransitionOutcome;
+export type CommitReservedOutcome<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> =
+  | {
+      readonly kind: "COMMITTED";
+      readonly bundle: AtomicCommitBundleForStateV0<TState>;
+      readonly result: AtomicCommitBundleForStateV0<TState>["canonical_result"];
+    }
+  | { readonly kind: "NO_OP" }
+  | { readonly kind: "REJECTED"; readonly failure: ValidationFailure }
+  | { readonly kind: "ABORTED"; readonly failure: ValidationFailure }
+  | { readonly kind: "UNRESOLVED" };
 
 export interface TerminalizeNoOpInput {
   readonly proposal: CanonicalTransitionProposalV1;
@@ -153,9 +179,11 @@ export interface CommitReservedInput {
   readonly prepared_governed_writer_authority?: PreparedGovernedWriterAuthorityTokenV0;
 }
 
-export type ReconcileOutcome =
-  | { readonly kind: "COMMITTED"; readonly bundle: AtomicCommitBundleAnyVersion }
-  | { readonly kind: "COMMIT_CONFLICT"; readonly bundle: AtomicCommitBundleAnyVersion }
+export type ReconcileOutcome<
+  TBundle extends AtomicCommitBundleAnyStateVersionV0 = AtomicCommitBundleAnyVersion
+> =
+  | { readonly kind: "COMMITTED"; readonly bundle: TBundle }
+  | { readonly kind: "COMMIT_CONFLICT"; readonly bundle: TBundle }
   | { readonly kind: "TERMINAL_NO_OP" }
   | { readonly kind: "NOT_COMMITTED" };
 
@@ -170,18 +198,20 @@ interface PositionFacts {
   readonly snapshot_hash: HashV1;
 }
 
-interface StoreReadSurface {
-  readCommittedByTransitionId?(id: string): Promise<AtomicCommitBundleAnyVersion | null>;
-  getCommittedBundles?(): readonly AtomicCommitBundleAnyVersion[];
+interface StoreReadSurface<TBundle extends AtomicCommitBundleAnyStateVersionV0> {
+  readCommittedByTransitionId?(id: string): Promise<TBundle | null> | TBundle | null;
+  getCommittedBundles?(): readonly TBundle[];
   readCurrentCommitRef?(id: string): CanonicalRefV0 | null;
-  readCurrentBundle?(id: string): AtomicCommitBundleAnyVersion | null;
+  readCurrentBundle?(id: string): TBundle | null;
 }
 
-export class SubjectCoreFacade {
-  private readonly engine: CommitEngine;
+export class SubjectCoreFacade<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
+  private readonly engine: CommitEngine<TState>;
 
-  constructor(private readonly ports: SubjectCoreFacadePorts) {
-    this.engine = createCommitEngine({
+  constructor(private readonly ports: SubjectCoreFacadePorts<TState>) {
+    this.engine = createCommitEngine<TState>({
       store: ports.store,
       ...(ports.pipelineObserver !== undefined
         ? { pipelineObserver: ports.pipelineObserver }
@@ -189,7 +219,7 @@ export class SubjectCoreFacade {
     });
   }
 
-  async reserveAndRoute(proposal: CanonicalTransitionProposalV1): Promise<ReserveAndRouteOutcome> {
+  async reserveAndRoute(proposal: CanonicalTransitionProposalV1): Promise<ReserveAndRouteOutcome<AtomicCommitBundleForStateV0<TState>>> {
     const syntax = validateProposal(proposal);
     if (!syntax.ok) {
       throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
@@ -264,7 +294,7 @@ export class SubjectCoreFacade {
     }
   }
 
-  async commitReserved(input: CommitReservedInput): Promise<CommitReservedOutcome> {
+  async commitReserved(input: CommitReservedInput): Promise<CommitReservedOutcome<TState>> {
     // 1. Syntax gate: the second call never trusts the reserved parse (§13.4 (1)).
     const syntax = validateProposal(input.proposal);
     if (!syntax.ok) {
@@ -384,10 +414,10 @@ export class SubjectCoreFacade {
 
     // 8. Journal/store-derived facts. §6: the trusted current canonical
     // predecessor bundle read is the version/ref/checksum authority.
-    const store = this.ports.store as StoreReadSurface;
+    const store: StoreReadSurface<AtomicCommitBundleForStateV0<TState>> = this.ports.store;
     const previousBundle = store.readCurrentBundle?.(input.continuation.subject_id) ?? null;
 
-    const engineInput: CommitTransitionInput = {
+    const engineInput: CommitTransitionInput<TState> = {
       proposal: input.proposal,
       currentState,
       identity_record_version_before: record.record_version,
@@ -411,7 +441,7 @@ export class SubjectCoreFacade {
     return this.finalizeAfterCommit(outcome, record.record_version, input.continuation.transition_id);
   }
 
-  async terminalizeReservedNoOp(input: TerminalizeNoOpInput): Promise<CommitReservedOutcome> {
+  async terminalizeReservedNoOp(input: TerminalizeNoOpInput): Promise<CommitReservedOutcome<TState>> {
     const syntax = validateProposal(input.proposal);
     if (!syntax.ok) {
       throw admissionFailure("INVALID_SCHEMA", "SS-SCHEMA-001", syntax.error.detail);
@@ -533,6 +563,16 @@ export class SubjectCoreFacade {
         "stale authority cannot terminalize NO_OP"
       );
     }
+    if (
+      currentState.schema_version === "subject-state-v4" &&
+      input.proposal.transition_type !== "Time"
+    ) {
+      return this.rejected(
+        "INVALID_TRANSITION_COMPOSITION",
+        "TR-ATOMIC-001",
+        "subject-state-v4 foundation permits durable NO_OP only for Time"
+      );
+    }
     if (beliefNoOp) {
       const proposedBeliefs = input.proposal.domain_deltas[0]?.operations[0]?.value;
       if (canonicalJsonString(proposedBeliefs) !== canonicalJsonString(currentState.beliefs)) {
@@ -546,7 +586,7 @@ export class SubjectCoreFacade {
 
     // Durable terminal NO_OP record (freeze §14.2/§14.3).
     const stateHashBefore = await stateHashAnyVersion(currentState);
-    const snapshotHashBefore = await snapshotHash({
+    const snapshotHashBefore = await snapshotHashAnyVersion(currentState, {
       state_hash: stateHashBefore,
       subject_id: currentState.identity.subject_id,
       state_revision: currentState.runtime_metadata.state_revision,
@@ -607,7 +647,7 @@ export class SubjectCoreFacade {
     return { kind: "NO_OP" };
   }
 
-  async readCurrentSnapshot(subjectId: IdentifierV0): Promise<SubjectStateV0 | null> {
+  async readCurrentSnapshot(subjectId: IdentifierV0): Promise<TState | null> {
     return this.ports.stateReader.readCurrentSnapshot(subjectId);
   }
 
@@ -615,7 +655,7 @@ export class SubjectCoreFacade {
     transitionId: TransitionIdV0,
     subjectId: IdentifierV0,
     fingerprint: HashV1
-  ): Promise<ReconcileOutcome> {
+  ): Promise<ReconcileOutcome<AtomicCommitBundleForStateV0<TState>>> {
     const bundle = await this.readCommittedBundle(transitionId);
     if (bundle !== null) {
       // Committed truth wins ONLY when the caller's identity claim matches the
@@ -635,10 +675,10 @@ export class SubjectCoreFacade {
 
   // -------------------------------------------------------------------------------
   private async finalizeAfterCommit(
-    outcome: CommitTransitionOutcome,
+    outcome: CommitTransitionOutcome<TState>,
     expectedRecordVersion: number,
     transitionId: TransitionIdV0
-  ): Promise<CommitTransitionOutcome> {
+  ): Promise<CommitReservedOutcome<TState>> {
     if (outcome.kind !== "COMMITTED") {
       if (outcome.kind === "REJECTED" || outcome.kind === "ABORTED") {
         await this.appendRejectedAttempt(
@@ -718,7 +758,7 @@ export class SubjectCoreFacade {
       revision: current.runtime_metadata.state_revision,
       logical_time: current.runtime_metadata.logical_time,
       state_hash: stateHashValue,
-      snapshot_hash: await snapshotHash({
+      snapshot_hash: await snapshotHashAnyVersion(current, {
         state_hash: stateHashValue,
         subject_id: current.identity.subject_id,
         state_revision: current.runtime_metadata.state_revision,
@@ -728,20 +768,26 @@ export class SubjectCoreFacade {
     };
   }
 
-  private async readCommittedBundle(transitionId: string): Promise<AtomicCommitBundleAnyVersion | null> {
-    const store = this.ports.store as StoreReadSurface;
+  private async readCommittedBundle(
+    transitionId: string
+  ): Promise<AtomicCommitBundleForStateV0<TState> | null> {
+    const store: StoreReadSurface<AtomicCommitBundleForStateV0<TState>> = this.ports.store;
     if (typeof store.readCommittedByTransitionId === "function") {
       return await store.readCommittedByTransitionId(transitionId);
     }
     const bundles = store.getCommittedBundles?.() ?? [];
     for (let i = bundles.length - 1; i >= 0; i--) {
-      const bundle = bundles[i] as AtomicCommitBundleAnyVersion;
-      if (bundle.transition_id === transitionId) return bundle;
+      const bundle = bundles[i];
+      if (bundle !== undefined && bundle.transition_id === transitionId) return bundle;
     }
     return null;
   }
 
-  private rejected(errorCode: ErrorCode, reason: RequirementId, detail: string): CommitTransitionOutcome {
+  private rejected(
+    errorCode: ErrorCode,
+    reason: RequirementId,
+    detail: string
+  ): CommitReservedOutcome<TState> {
     return {
       kind: "REJECTED",
       failure: { error_code: errorCode, reason, detail }

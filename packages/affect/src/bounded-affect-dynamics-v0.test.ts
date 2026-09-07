@@ -11,16 +11,42 @@ import {
   advanceAffectTimeV0,
   applyAffectImpulseV0,
   createCanonicalAffectBaselineV0,
-  deriveAffectImpulseV0
+  deriveAffectImpulseV0,
+  type AffectImpulseV0
 } from "@characteros-next/affect";
-import type { CanonicalAffectV0 } from "@characteros-next/subject-core";
+import {
+  validateCanonicalAffectShape,
+  validateUnitInterval,
+  type CanonicalAffectV0,
+  type UnitIntervalV0
+} from "@characteros-next/subject-core";
 
 function affectOf(valence: number, activation: number): CanonicalAffectV0 {
-  return {
+  const checked = validateCanonicalAffectShape({
     schema_version: "canonical-affect-v0",
-    valence: (valence === 0 ? 0 : valence) as never,
-    activation: (activation === 0 ? 0 : activation) as never
+    valence: valence === 0 ? 0 : valence,
+    activation: activation === 0 ? 0 : activation
+  }, "test affect");
+  if (!checked.ok) throw new Error(checked.error.detail);
+  return checked.value;
+}
+
+function unitInterval(value: number): UnitIntervalV0 {
+  const checked = validateUnitInterval(value, "test unit interval");
+  if (!checked.ok) throw new Error(checked.error.detail);
+  return checked.value;
+}
+
+function impulseInput(relevance: number, goalCongruence: number, intensity: number) {
+  return {
+    relevance: unitInterval(relevance),
+    goal_congruence: unitInterval(goalCongruence),
+    intensity: unitInterval(intensity)
   };
+}
+
+function impulseOf(q: number, uV: number, uA: number): AffectImpulseV0 {
+  return { q: unitInterval(q), u_v: uV, u_a: uA };
 }
 
 describe("BOUNDED_AFFECT_DYNAMICS_V0 — impulse law (§60.1-§60.7)", () => {
@@ -33,45 +59,45 @@ describe("BOUNDED_AFFECT_DYNAMICS_V0 — impulse law (§60.1-§60.7)", () => {
   });
 
   it("2/3/4. exact q law, valence gain .25, activation gain .10", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 0.8, goal_congruence: 0.3, intensity: 0.5 });
+    const impulse = deriveAffectImpulseV0(impulseInput(0.8, 0.3, 0.5));
     expect(impulse.q).toBe(0.4);
     expect(impulse.u_v).toBeCloseTo(0.25 * 0.4 * (2 * 0.3 - 1), 15);
     expect(impulse.u_a).toBeCloseTo(0.1 * 0.4, 15);
-    const neg = deriveAffectImpulseV0({ relevance: 1, goal_congruence: 0, intensity: 0.8 });
+    const neg = deriveAffectImpulseV0(impulseInput(1, 0, 0.8));
     expect(neg.u_v).toBe(-0.2);
     expect(neg.u_a).toBeCloseTo(0.1 * 0.8, 15);
   });
 
   it("5. q = 0 → zero impulse", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 0, goal_congruence: 0.3, intensity: 0.9 });
+    const impulse = deriveAffectImpulseV0(impulseInput(0, 0.3, 0.9));
     expect(impulse.q).toBe(0);
     expect(impulse.u_v).toBe(0);
     expect(impulse.u_a).toBe(0);
   });
 
   it("6. goal = .5 → zero valence impulse", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 0.8, goal_congruence: 0.5, intensity: 0.5 });
+    const impulse = deriveAffectImpulseV0(impulseInput(0.8, 0.5, 0.5));
     expect(impulse.u_v).toBe(0);
     expect(impulse.u_a).toBeCloseTo(0.1 * 0.4, 15);
   });
 
   it("7. event is additive from the CURRENT state (retention, no reset)", () => {
     const current = affectOf(-0.5, 0.7);
-    const impulse = { q: 0.4, u_v: 0.1, u_a: 0.04 };
+    const impulse = impulseOf(0.4, 0.1, 0.04);
     const next = applyAffectImpulseV0(current, impulse);
     expect(next.valence).toBeCloseTo(-0.4, 15);
     expect(next.activation).toBeCloseTo(0.74, 15);
   });
 
   it("8/9/10. clamps: lower valence, upper valence, activation upper", () => {
-    expect(applyAffectImpulseV0(affectOf(-0.95, 0.2), { q: 0.4, u_v: -0.1, u_a: 0 }).valence).toBe(-1);
-    expect(applyAffectImpulseV0(affectOf(0.95, 0.2), { q: 0.4, u_v: 0.1, u_a: 0 }).valence).toBe(1);
-    expect(applyAffectImpulseV0(affectOf(0, 0.97), { q: 0.4, u_v: 0, u_a: 0.04 }).activation).toBe(1);
+    expect(applyAffectImpulseV0(affectOf(-0.95, 0.2), impulseOf(0.4, -0.1, 0)).valence).toBe(-1);
+    expect(applyAffectImpulseV0(affectOf(0.95, 0.2), impulseOf(0.4, 0.1, 0)).valence).toBe(1);
+    expect(applyAffectImpulseV0(affectOf(0, 0.97), impulseOf(0.4, 0, 0.04)).activation).toBe(1);
   });
 
   it("11. positive activation impulse never lowers activation", () => {
     const before = 0.4;
-    const after = applyAffectImpulseV0(affectOf(0, before), { q: 0.5, u_v: 0, u_a: 0.05 }).activation;
+    const after = applyAffectImpulseV0(affectOf(0, before), impulseOf(0.5, 0, 0.05)).activation;
     expect(after).toBeGreaterThanOrEqual(before);
   });
 });

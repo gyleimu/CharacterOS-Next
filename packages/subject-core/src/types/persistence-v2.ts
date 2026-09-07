@@ -24,6 +24,7 @@ import type { HashV1, IdentifierV0, LogicalTimeV0, StateRevisionV0, TransitionId
 import type { CanonicalRefV0 } from "./ref.js";
 import type { TransitionType } from "./enums.js";
 import type { SubjectStateV0 } from "./subject-state.js";
+import type { SubjectStateAnyVersionV0 } from "./subject-state-v4.js";
 import type { TraceEntryV1, TraceWindowV1 } from "./trace.js";
 import type { MutationHistoryLinkV1 } from "./persistence.js";
 import type { CanonicalTransitionProposalV1 } from "./transition.js";
@@ -35,7 +36,9 @@ import type { CanonicalWriterAuthorityRecordV0 } from "./writer-authority.js";
  * commits; a non-null record is durable EVIDENCE, never by itself a production
  * authorization.
  */
-export interface AtomicCommitBundleV2 {
+export interface AtomicCommitBundleV2<
+  TState extends SubjectStateAnyVersionV0 = SubjectStateV0
+> {
   readonly commit_version: "atomic-commit-v2";
   readonly serialization_version: "canonical-json-v1";
 
@@ -55,7 +58,7 @@ export interface AtomicCommitBundleV2 {
   readonly identity_record_version_before: number;
   readonly previous_commit_ref: CanonicalRefV0 | null;
   readonly previous_record_checksum: HashV1 | null;
-  readonly next_snapshot: SubjectStateV0;
+  readonly next_snapshot: TState;
   readonly logical_time_before: LogicalTimeV0;
   readonly logical_time_after: LogicalTimeV0;
   readonly state_hash_before: HashV1;
@@ -73,6 +76,21 @@ export interface AtomicCommitBundleV2 {
 
 /** Version-discriminated union over persisted atomic commit bundles. */
 export type AtomicCommitBundleAnyVersion = AtomicCommitBundleV1 | AtomicCommitBundleV2;
+
+/** State-preserving bundle family: V1 exists only for v3; V2 carries the
+ * exact generic successor state. */
+export type AtomicCommitBundleForStateV0<
+  TState extends SubjectStateAnyVersionV0
+> = AtomicCommitBundleV2<TState> | (TState extends SubjectStateV0 ? AtomicCommitBundleV1 : never);
+
+/** Explicit internal authority union. Legacy callers keep the v3-only alias above. */
+export type AtomicCommitBundleAnyStateVersionV0 =
+  | AtomicCommitBundleV1
+  | AtomicCommitBundleV2<SubjectStateAnyVersionV0>;
+
+export type AtomicCommitBundleV4V0 = AtomicCommitBundleV2<
+  Extract<SubjectStateAnyVersionV0, { readonly schema_version: "subject-state-v4" }>
+>;
 
 /** Any-version store outcome: the committed/replayed bundle may be V1 or V2. */
 export type AtomicCommitOutcomeAnyVersion =

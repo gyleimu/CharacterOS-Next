@@ -43,6 +43,7 @@ import {
   validateOwnership
 } from "./ownership.js";
 import { validateFieldValueForPath } from "./values.js";
+import { validateCanonicalAffectShape } from "./subject-state-v4-values.js";
 
 const SCHEMA = "SS-SCHEMA-001";
 const SS_AUTH = "SS-AUTH-001";
@@ -356,11 +357,21 @@ export function validateProposal(v: unknown): ValidationResult<CanonicalTransiti
     for (const op of opOrder) {
       // No ShapeContext: delta values carry no canonical logical time; timestamp
       // expectations against current state are commit-engine (P2.1.3) guards.
-      const res = validateFieldValueForPath(
-        op.path,
-        op.value,
-        `proposal.domain_deltas[${delta.index}].operations[${op.index}].value`
-      );
+      const detail = `proposal.domain_deltas[${delta.index}].operations[${op.index}].value`;
+      // Shape admission is deliberately broader than state-version authority:
+      // /affect may parse as either frozen legacy AffectV0 or CanonicalAffectV0.
+      // The authoritative predecessor decides which one is lawful later.
+      const legacyAffect = op.path === "/affect"
+        ? validateFieldValueForPath(op.path, op.value, detail)
+        : null;
+      const canonicalAffect = op.path === "/affect"
+        ? validateCanonicalAffectShape(op.value, detail)
+        : null;
+      const res = op.path === "/affect"
+        ? (legacyAffect?.ok === true || canonicalAffect?.ok === true
+            ? ok(undefined)
+            : legacyAffect ?? canonicalAffect ?? fail("INVALID_SCHEMA", SCHEMA, `${detail}: invalid affect shape`))
+        : validateFieldValueForPath(op.path, op.value, detail);
       if (!res.ok) return res;
     }
   }

@@ -22,6 +22,7 @@ import type {
   RelationshipStateV0,
   BeliefStateV0
 } from "./subject-state.js";
+import type { CanonicalAffectV0 } from "./subject-state-v4.js";
 
 /** §7.1 canonical time input — exactly one shape per transition class. */
 export type TimeInputV1 =
@@ -59,7 +60,7 @@ export interface DomainDeltaV0 {
 /** §7.2 FieldReplacementV0 — discriminated union; `value` must match the exact path type. */
 export type FieldReplacementV0 =
   | { readonly path: "/mood"; readonly value: MoodV0 }
-  | { readonly path: "/affect"; readonly value: AffectV0 }
+  | { readonly path: "/affect"; readonly value: AffectV0 | CanonicalAffectV0 }
   | { readonly path: "/regulation"; readonly value: RegulatoryStateV0 }
   | { readonly path: "/context"; readonly value: WorkingContextV0 }
   | { readonly path: "/memory_state/working_refs"; readonly value: readonly CanonicalRefV0[] }
