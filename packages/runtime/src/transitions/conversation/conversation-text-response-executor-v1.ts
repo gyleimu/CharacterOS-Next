@@ -122,6 +122,11 @@ export class ConversationTextResponseExecutorV1 {
         factualAppraisalTrace = { outcome: "ALREADY_COMPLETED", appraisal_ref: appraisalOutcome.appraisal_ref as string };
       } else if (appraisalOutcome.kind === "INSUFFICIENT_CONTEXT") {
         factualAppraisalTrace = { outcome: "INSUFFICIENT_CONTEXT", appraisal_ref: "" };
+      } else if (appraisalOutcome.kind === "ALREADY_DISPOSED") {
+        // DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0: the INITIAL for this
+        // event is durably abstained (terminal). Same downstream meaning as a
+        // fresh lawful abstention: no Affect eligibility, cognition proceeds.
+        factualAppraisalTrace = { outcome: "INSUFFICIENT_CONTEXT", appraisal_ref: "" };
       } else {
         return failed(
           "APPRAISAL_FAILED",

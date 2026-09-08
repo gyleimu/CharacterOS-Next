@@ -1079,3 +1079,8 @@ export {
   type FactualEventAppraisalInputV0,
   type FactualEventAppraisalExecutionResultV0
 } from "./factual-event-appraisal/factual-event-appraisal-executor.js";
+export {
+  resolveInitialAppraisalDispositionForFactualEventV0,
+  type InitialAppraisalDispositionV0,
+  type TrustedFactualEventAppraisalAbstentionV0
+} from "./factual-event-appraisal/factual-event-appraisal-disposition-reader.js";

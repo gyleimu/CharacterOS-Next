@@ -63,8 +63,13 @@ import {
   deriveFactualEventAppraisalRefV0,
   validateFactualEventAppraisalProposalV0,
   validateFactualEventAppraisalRecordV0,
+  deriveFactualEventAppraisalAbstentionRefV0,
+  deriveFactualEventAppraisalAbstentionProposalHashV0,
+  validateFactualEventAppraisalAbstentionRecordV0,
+  type FactualEventAppraisalAbstentionRecordV0,
   type FactualEventAppraisalRecordV0
 } from "@characteros-next/appraisal";
+import { resolveInitialAppraisalDispositionForFactualEventV0 } from "./factual-event-appraisal-disposition-reader.js";
 import { InMemoryAffectEventAuthorityV0 } from "../authority/affect-event-authority-v0.js";
 import { buildCharacterLanguageBehaviorV0 } from "@characteros-next/behavior";
 import { ConversationTextResponseExecutorV1 } from "../transitions/conversation/conversation-text-response-executor-v1.js";
@@ -154,10 +159,10 @@ function baseProposal(context: {
   };
 }
 
-async function buildWorld(standbyCount = 0): Promise<World> {
+async function buildWorld(standbyCount = 0, task: string | null = TASK): Promise<World> {
   const repo = new InMemoryMemoryRepository();
   await repo.prepareRevision({ parent_revision: null, records: [] });
-  const core = createCore({ ...s0(), context: { ...(s0() as unknown as SubjectStateV0).context, task: TASK } } as unknown as SubjectStateV0);
+  const core = createCore({ ...s0(), context: { ...(s0() as unknown as SubjectStateV0).context, task } } as unknown as SubjectStateV0);
 
   const provider: ProviderState = { count: { appraisal: 0 }, cognition: { count: 0, atRevision: [] }, advances: 0 };
   const standby: { eventRef: string; input: Parameters<FactualEventAppraisalExecutorV0["appraiseIncomingEvent"]>[1] }[] = [];
@@ -1197,6 +1202,766 @@ describe("FactualEventAppraisal validators", () => {
   it("rejects unknown keys, wrong schema, wrong episode and non-event refs", () => {
     expect(validateFactualEventAppraisalRecordV0({ schema_version: "other" }).ok).toBe(false);
     expect(validateFactualEventAppraisalProposalV0({ schema_version: "other" }).ok).toBe(false);
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0 — helpers
+// ----------------------------------------------------------------------------------
+
+/** Lawful provider-side INSUFFICIENT_CONTEXT proposal over a frozen context. */
+function insufficientProposal(context: {
+  readonly subject_id: string;
+  readonly factual_event_ref: string;
+  readonly context_projection_hash: string;
+}): Record<string, unknown> {
+  return {
+    schema_version: "factual-event-appraisal-proposal-v0",
+    status: "INSUFFICIENT_CONTEXT",
+    subject_id: context.subject_id,
+    factual_event_ref: context.factual_event_ref,
+    context_projection_hash: context.context_projection_hash,
+    missing_inputs: ["CURRENT_TASK"]
+  };
+}
+
+/** Counting provider that abstains for every event it is asked about. */
+function abstainingProvider(world: World, lastReturned?: { proposal?: Record<string, unknown> }): {
+  readonly proposeFactualEventAppraisal: (context: never) => Promise<Record<string, unknown>>;
+} {
+  return {
+    proposeFactualEventAppraisal: async (context: never) => {
+      world.provider.count.appraisal += 1;
+      const proposal = insufficientProposal(context as never);
+      if (lastReturned !== undefined) lastReturned.proposal = proposal;
+      return proposal;
+    }
+  };
+}
+
+/** Visible canonical abstention payloads for one factual event. */
+async function visibleAbstentionPayloads(world: World, eventRef: string): Promise<FactualEventAppraisalAbstentionRecordV0[]> {
+  const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+  const visible = await world.repo.readVisibleRecordHashes(snapshot.memory_state.repository_revision as never);
+  const found: FactualEventAppraisalAbstentionRecordV0[] = [];
+  for (const entry of visible) {
+    if (!entry.ref.startsWith("appraisal:")) continue;
+    const payload = world.repo.readStoredPayload(entry.ref as never) as
+      | { schema_version?: unknown; factual_event_ref?: unknown }
+      | undefined;
+    if (payload === undefined || payload === null) continue;
+    if (payload.schema_version !== "factual-event-appraisal-abstention-record-v0") continue;
+    if (payload.factual_event_ref !== eventRef) continue;
+    found.push(payload as FactualEventAppraisalAbstentionRecordV0);
+  }
+  return found;
+}
+
+function abstentionCommitCount(world: World, abstentionRef: string): number {
+  return world.core.storeRead.getCommittedBundles().filter(
+    (b) => (b.trace_entry.cause_refs as readonly string[]).includes(abstentionRef)
+  ).length;
+}
+
+/** Fresh-repository replay of every canonical revision (host persistence face). */
+async function replayRepoOnto(source: InMemoryMemoryRepository): Promise<InMemoryMemoryRepository> {
+  const freshRepo = new InMemoryMemoryRepository();
+  await freshRepo.prepareRevision({ parent_revision: null, records: [] });
+  for (const revision of source.revisionIds()) {
+    if (revision === "R0") continue;
+    const manifest = await source.readManifest(revision);
+    if (manifest === null) continue;
+    const entries = [];
+    for (const entry of manifest.record_hashes) {
+      const payload = source.readStoredPayload(entry.ref as never);
+      if (payload === undefined) throw new Error("payload must exist");
+      const hash = await freshRepo.storePayload(entry.ref as never, payload);
+      if (hash !== entry.payload_hash) throw new Error("replayed hash must match");
+      entries.push({ ref: entry.ref, payload_hash: hash });
+    }
+    await freshRepo.prepareRevision({ parent_revision: manifest.parent_revision, records: entries as never });
+  }
+  return freshRepo;
+}
+
+/** Ingress (with optional reply parent) + Observation + appraisal input. */
+async function eventWithObservation(
+  world: World,
+  sourceEventId: string,
+  text: string,
+  inReplyToDeliveryId: string | null = null
+): Promise<{ eventRef: string; input: Parameters<FactualEventAppraisalExecutorV0["appraiseIncomingEvent"]>[1] }> {
+  const eventRef = await ingressEvent(world, sourceEventId, text, inReplyToDeliveryId);
+  const o2 = await commitObservation(world, `observation:o-${sourceEventId}`, eventRef);
+  return {
+    eventRef,
+    input: {
+      subject_id: SUBJECT_ID as never,
+      source_event_id: sourceEventId,
+      observation_transition_id: o2.transition_id as never,
+      observation_ref: observationCauseRefOf(o2) as never
+    }
+  };
+}
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — context-stage terminality (§52)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION context-stage abstention (§52)", () => {
+  it("23-28. null task → lawful terminal abstention: provider 0, exactly one record, one Learning commit, only memory revision changes", async () => {
+    const world = await buildWorld(0, null);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const before = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const revisionsBefore = world.repo.revisionIds().length;
+    const outcome = await world.executor.appraiseIncomingEvent(await freshCtx(world), input);
+    // 23: null task causes the lawful abstention (terminal, not an error).
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // 24: the provider is never called on the context stage.
+    expect(world.provider.count.appraisal).toBe(0);
+    // 25: exactly one abstention payload persisted.
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    const abstention = abstentions[0] as FactualEventAppraisalAbstentionRecordV0;
+    expect(abstention.reason).toBe("INSUFFICIENT_CONTEXT");
+    expect(abstention.semantic_appraisal_episode).toBe("INITIAL");
+    expect(abstention.provenance.stage).toBe("CONTEXT_EVALUATION");
+    expect(abstention.factual_event_ref).toBe(eventRef);
+    const checked = validateFactualEventAppraisalAbstentionRecordV0(abstention);
+    expect(checked.ok).toBe(true);
+    expect(await deriveFactualEventAppraisalAbstentionRefV0(abstention)).toBe(abstention.abstention_ref);
+    // 26: exactly one repository revision prepared canonically.
+    expect(world.repo.revisionIds().length).toBe(revisionsBefore + 1);
+    // 27: exactly one Learning commit carries the abstention.
+    const commits = world.core.storeRead.getCommittedBundles().filter(
+      (b) => (b.trace_entry.cause_refs as readonly string[]).includes(abstention.abstention_ref)
+    );
+    expect(commits).toHaveLength(1);
+    expect(commits[0]?.transition_type).toBe("Learning");
+    // 28: only the memory repository revision changes (§22 isolation).
+    const after = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    expect(after.memory_state.repository_revision).not.toBe(before.memory_state.repository_revision);
+    expect(after.runtime_metadata.state_revision).toBe(before.runtime_metadata.state_revision + 1);
+    expect(JSON.stringify(after.affect)).toBe(JSON.stringify(before.affect));
+    expect(JSON.stringify(after.mood)).toBe(JSON.stringify(before.mood));
+    expect(JSON.stringify(after.relationships)).toBe(JSON.stringify(before.relationships));
+    expect(JSON.stringify(after.beliefs)).toBe(JSON.stringify(before.beliefs));
+    expect(JSON.stringify(after.personality)).toBe(JSON.stringify(before.personality));
+    expect(JSON.stringify(after.regulation)).toBe(JSON.stringify(before.regulation));
+    expect(JSON.stringify(after.context)).toBe(JSON.stringify(before.context));
+    expect(commits[0]?.trace_entry.domain_mutations.every((m) => m.domain === "memory-content")).toBe(true);
+  });
+
+  it("29-31. same-event retry → ALREADY_DISPOSED with provider 0, writes 0, commits 0; resolver agrees", async () => {
+    const world = await buildWorld(0, null);
+    const first = await fullFlow(world, "evt-x", "重做一下。");
+    expect(first.outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    const revisionsBefore = world.repo.revisionIds().length;
+    const commitsBefore = world.core.storeRead.getCommittedBundles().length;
+    const replay = await world.executor.appraiseIncomingEvent(await freshCtx(world), {
+      subject_id: SUBJECT_ID as never,
+      source_event_id: "evt-x",
+      observation_transition_id: first.o2.transition_id as never,
+      observation_ref: observationCauseRefOf(first.o2) as never
+    });
+    expect(replay.kind).toBe("ALREADY_DISPOSED");
+    if (replay.kind === "ALREADY_DISPOSED") {
+      expect(replay.disposition).toBe("ABSTAINED_INSUFFICIENT_CONTEXT");
+      expect(replay.abstention_ref.startsWith("appraisal:")).toBe(true);
+    }
+    expect(world.provider.count.appraisal).toBe(0);
+    expect(world.repo.revisionIds().length).toBe(revisionsBefore);
+    expect(world.core.storeRead.getCommittedBundles().length).toBe(commitsBefore);
+    const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const disposition = await resolveInitialAppraisalDispositionForFactualEventV0(
+      world.repo, snapshot.memory_state.repository_revision as never, SUBJECT_ID, first.eventRef
+    );
+    expect(disposition.kind).toBe("ABSTAINED_INSUFFICIENT_CONTEXT");
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — provider-stage terminality (§53)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION provider-stage abstention (§53)", () => {
+  it("32-35. lawful provider INSUFFICIENT_CONTEXT → terminal abstention with provider provenance", async () => {
+    const world = await buildWorld(0);
+    const lastReturned: { proposal?: Record<string, unknown> } = {};
+    const provider = abstainingProvider(world, lastReturned);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const outcome = await new FactualEventAppraisalExecutorV0(
+      { ...world.container, factualEventAppraisalProvider: provider } as never
+    ).appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // 33: provider called exactly once on the first attempt.
+    expect(world.provider.count.appraisal).toBe(1);
+    // 34: provider provenance persisted (stage PROVIDER + audit hash binding).
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    const abstention = abstentions[0] as FactualEventAppraisalAbstentionRecordV0;
+    expect(abstention.provenance.stage).toBe("PROVIDER");
+    if (abstention.provenance.stage === "PROVIDER") {
+      expect(abstention.provenance.provider_id).toBe("factual-event-appraisal-provider");
+      expect(abstention.provenance.provider_contract_version).toBe("factual-event-appraisal-provider-v0");
+      expect(abstention.provenance.proposal_hash).toBe(
+        await deriveFactualEventAppraisalAbstentionProposalHashV0(lastReturned.proposal as never)
+      );
+    }
+    // 35: exactly one abstention committed.
+    expect(abstentionCommitCount(world, abstention.abstention_ref)).toBe(1);
+  });
+
+  it("36-37. retry → ALREADY_DISPOSED; provider 0; writes/commits 0", async () => {
+    const world = await buildWorld(0);
+    const provider = abstainingProvider(world);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const executor = new FactualEventAppraisalExecutorV0(
+      { ...world.container, factualEventAppraisalProvider: provider } as never
+    );
+    const first = await executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(first.kind).toBe("INSUFFICIENT_CONTEXT");
+    const callsAfterFirst = world.provider.count.appraisal;
+    const revisionsBefore = world.repo.revisionIds().length;
+    const commitsBefore = world.core.storeRead.getCommittedBundles().length;
+    const replay = await executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(replay.kind).toBe("ALREADY_DISPOSED");
+    expect(world.provider.count.appraisal).toBe(callsAfterFirst);
+    expect(world.repo.revisionIds().length).toBe(revisionsBefore);
+    expect(world.core.storeRead.getCommittedBundles().length).toBe(commitsBefore);
+    void eventRef;
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — operational failures (§54)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION operational failure separation (§54)", () => {
+  it("38/39. provider timeout and exception remain operational — no abstention", async () => {
+    const world = await buildWorld(0);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const throwingProvider = {
+      proposeFactualEventAppraisal: async () => {
+        world.provider.count.appraisal += 1;
+        throw new Error("provider timeout");
+      }
+    };
+    const executor = new FactualEventAppraisalExecutorV0(
+      { ...world.container, factualEventAppraisalProvider: throwingProvider } as never
+    );
+    await expect(executor.appraiseIncomingEvent(await freshCtx(world), input)).rejects.toThrow(/provider timeout/);
+    expect(await visibleAbstentionPayloads(world, eventRef)).toHaveLength(0);
+  });
+
+  it("40/41. hostile abstention proposals fail closed — no abstention", async () => {
+    const world = await buildWorld(0);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const cases: readonly { readonly name: string; readonly respond: (context: never) => unknown }[] = [
+      { name: "malformed schema", respond: (context) => ({ ...insufficientProposal(context as never), schema_version: "other" }) },
+      { name: "foreign event echo", respond: (context) => ({ ...insufficientProposal(context as never), factual_event_ref: "event:" + "f".repeat(64) }) },
+      { name: "foreign subject echo", respond: (context) => ({ ...insufficientProposal(context as never), subject_id: "subject-other" }) },
+      { name: "foreign projection echo", respond: (context) => ({ ...insufficientProposal(context as never), context_projection_hash: "sha256:" + "1".repeat(64) }) }
+    ];
+    for (const testCase of cases) {
+      const provider = {
+        proposeFactualEventAppraisal: async (context: never) => {
+          world.provider.count.appraisal += 1;
+          return testCase.respond(context);
+        }
+      };
+      await expect(
+        new FactualEventAppraisalExecutorV0({ ...world.container, factualEventAppraisalProvider: provider } as never)
+          .appraiseIncomingEvent(await freshCtx(world), input)
+      ).rejects.toThrow();
+      expect(await visibleAbstentionPayloads(world, eventRef)).toHaveLength(0);
+    }
+  });
+
+  it("43. repository prepare failure → no canonical abstention", async () => {
+    const world = await buildWorld(0, null);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const hostileRepo = Object.create(world.repo) as InMemoryMemoryRepository;
+    (hostileRepo as { prepareRevisionForIntent: unknown }).prepareRevisionForIntent = async () => {
+      throw new Error("prepare down");
+    };
+    const revisionsBefore = world.repo.revisionIds().length;
+    await expect(
+      new FactualEventAppraisalExecutorV0({ ...world.container, experienceAppraisalStore: hostileRepo } as never)
+        .appraiseIncomingEvent(await freshCtx(world), input)
+    ).rejects.toThrow(/abstention repository prepare failed/);
+    expect(await visibleAbstentionPayloads(world, eventRef)).toHaveLength(0);
+    expect(world.repo.revisionIds().length).toBe(revisionsBefore);
+  });
+
+  it("44. integrity failure → no abstention synthesis (fail closed)", async () => {
+    const world = await buildWorld(0, null);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const first = await world.executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(first.kind).toBe("INSUFFICIENT_CONTEXT");
+    // Corrupt-copy the repository with a mutated abstention payload, then
+    // observe: the executor must fail closed and synthesize NOTHING.
+    const corruptRepo = new InMemoryMemoryRepository();
+    await corruptRepo.prepareRevision({ parent_revision: null, records: [] });
+    for (const revision of world.repo.revisionIds()) {
+      if (revision === "R0") continue;
+      const manifest = await world.repo.readManifest(revision);
+      if (manifest === null) continue;
+      const entries = [];
+      for (const entry of manifest.record_hashes) {
+        const payload = world.repo.readStoredPayload(entry.ref as never);
+        if (payload === undefined) throw new Error("payload must exist");
+        const mutated = JSON.parse(JSON.stringify(payload)) as Record<string, unknown>;
+        if (mutated["schema_version"] === "factual-event-appraisal-abstention-record-v0") {
+          mutated["evaluated_at_logical_time"] = 9999;
+        }
+        const hash = await corruptRepo.storePayload(entry.ref as never, mutated);
+        entries.push({ ref: entry.ref, payload_hash: hash });
+      }
+      await corruptRepo.prepareRevision({ parent_revision: manifest.parent_revision, records: entries as never });
+    }
+    const corruptRevisionsBefore = corruptRepo.revisionIds().length;
+    await expect(
+      new FactualEventAppraisalExecutorV0({ ...world.container, experienceAppraisalStore: corruptRepo } as never)
+        .appraiseIncomingEvent(await freshCtx(world), input)
+    ).rejects.toThrow(/INVARIANT_VIOLATION|is malformed/);
+    expect(corruptRepo.revisionIds().length).toBe(corruptRevisionsBefore);
+    void eventRef;
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — stale law (§55)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION stale law (§55)", () => {
+  /** Wraps commitReserved so each of the first `fuelCount` outer commits is
+   * preceded by one canonical head advance (deterministic stale fuel). The
+   * inner advance runs on the UNWRAPPED world core, so it always commits. */
+  function staleFuelCore(
+    world: World,
+    standbyInputs: readonly (Parameters<FactualEventAppraisalExecutorV0["appraiseIncomingEvent"]>[1] | undefined)[],
+    fuelCount: number
+  ): TestCore {
+    const originalCommit = world.core.commitReserved;
+    let consumed = 0;
+    const wrapped: TestCore = {
+      ...world.core,
+      commitReserved: async (input) => {
+        const standbyInput = standbyInputs[consumed];
+        if (consumed < fuelCount && standbyInput !== undefined) {
+          consumed += 1;
+          await world.executor.appraiseIncomingEvent(await freshCtx(world), standbyInput);
+        }
+        return originalCommit(input);
+      }
+    };
+    return wrapped;
+  }
+
+  it("45-47/51. context-stage stale does not persist; rebuild lands on the new head; one terminal disposition", async () => {
+    const world = await buildWorld(1, null); // null task + one standby as stale fuel
+    const standbyInput = world.standby[0]?.input;
+    if (standbyInput === undefined) throw new Error("fixture invariant: standby must exist");
+    const wrapped = staleFuelCore(world, [standbyInput], 1);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const outcome = await new FactualEventAppraisalExecutorV0(
+      { ...world.container, subjectCore: wrapped } as never
+    ).appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // The committed abstention binds the POST-advance rebuild anchor.
+    const head = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    expect(abstentions[0]?.subject_state.state_revision).toBe(head.runtime_metadata.state_revision - 1);
+    // 51: no duplicate terminal disposition; provider 0 throughout (the
+    // standby's inner advance also abstains lawfully in a null-task world).
+    expect(abstentionCommitCount(world, (abstentions[0] as FactualEventAppraisalAbstentionRecordV0).abstention_ref)).toBe(1);
+    expect(world.provider.count.appraisal).toBe(0);
+  });
+
+  it("48/46/47/51. provider-stage stale does not persist the old-grounded abstention; rebuild lands on the new head", async () => {
+    const world = await buildWorld(1); // non-null task + one standby as stale fuel
+    const standbyInput = world.standby[0]?.input;
+    if (standbyInput === undefined) throw new Error("fixture invariant: standby must exist");
+    const wrapped = staleFuelCore(world, [standbyInput], 1);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const provider = abstainingProvider(world);
+    const outcome = await new FactualEventAppraisalExecutorV0(
+      { ...world.container, subjectCore: wrapped, factualEventAppraisalProvider: provider } as never
+    ).appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // The stale attempt's abstention was DISCARDED; the committed record
+    // anchors the post-advance head (48/46: stale never persists).
+    const head = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    expect(abstentions[0]?.subject_state.state_revision).toBe(head.runtime_metadata.state_revision - 1);
+    expect(abstentionCommitCount(world, (abstentions[0] as FactualEventAppraisalAbstentionRecordV0).abstention_ref)).toBe(1);
+    // 47: rebuild used the latest state — provider ran twice for X
+    // (stale attempt + rebuild), plus once for the standby's appraisal.
+    expect(world.provider.count.appraisal).toBe(3);
+  });
+
+  it("49/50. second stale → REBASE_REQUIRED and NO abstention persists", async () => {
+    const world = await buildWorld(2); // two standby events: one advance per commit
+    const standby0 = world.standby[0]?.input;
+    const standby1 = world.standby[1]?.input;
+    if (standby0 === undefined || standby1 === undefined) throw new Error("fixture invariant: standbys must exist");
+    const wrapped = staleFuelCore(world, [standby0, standby1], 2);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const provider = abstainingProvider(world);
+    const outcome = await new FactualEventAppraisalExecutorV0(
+      { ...world.container, subjectCore: wrapped, factualEventAppraisalProvider: provider } as never
+    ).appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("REBASE_REQUIRED");
+    if (outcome.kind === "REBASE_REQUIRED") {
+      expect(outcome.failure.error_code).toBe("STALE_STATE_REVISION");
+      expect(outcome.failure.reason).toBe("REBASE-STALE-001");
+    }
+    // 50: no abstention grounded in obsolete context was persisted.
+    expect(await visibleAbstentionPayloads(world, eventRef)).toHaveLength(0);
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — concurrency (§56)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION concurrency (§56)", () => {
+  it("52-56. concurrent same-event context-stage abstention → exactly one record and one commit; terminal status observable", async () => {
+    const world = await buildWorld(0, null);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const ctx = await freshCtx(world);
+    const [a, b] = await Promise.all([
+      world.executor.appraiseIncomingEvent(ctx, input),
+      world.executor.appraiseIncomingEvent(ctx, input)
+    ]);
+    for (const result of [a, b]) {
+      // Under full interleaving the loser either resolves the terminal
+      // disposition or exhausts the bounded rebuild (REBASE_REQUIRED); the
+      // durable invariants below hold in every case.
+      expect(["INSUFFICIENT_CONTEXT", "ALREADY_DISPOSED", "REBASE_REQUIRED"]).toContain(result.kind);
+    }
+    // 53/54/56: exactly one Learning CAS success — one canonical abstention.
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    expect(abstentionCommitCount(world, (abstentions[0] as FactualEventAppraisalAbstentionRecordV0).abstention_ref)).toBe(1);
+    // 55: a later attempt observes the terminal status.
+    const retry = await world.executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(retry.kind).toBe("ALREADY_DISPOSED");
+  });
+
+  it("57. provider-stage same-event concurrency also yields exactly one terminal abstention", async () => {
+    const world = await buildWorld(0);
+    const { eventRef, input } = await eventWithObservation(world, "evt-x", "重做一下。");
+    const provider = abstainingProvider(world);
+    const executor = new FactualEventAppraisalExecutorV0(
+      { ...world.container, factualEventAppraisalProvider: provider } as never
+    );
+    const ctx = await freshCtx(world);
+    const [a, b] = await Promise.all([
+      executor.appraiseIncomingEvent(ctx, input),
+      executor.appraiseIncomingEvent(ctx, input)
+    ]);
+    for (const result of [a, b]) {
+      // Under full interleaving the loser either resolves the terminal
+      // disposition or exhausts the bounded rebuild (REBASE_REQUIRED); the
+      // durable invariants below hold in every case.
+      expect(["INSUFFICIENT_CONTEXT", "ALREADY_DISPOSED", "REBASE_REQUIRED"]).toContain(result.kind);
+    }
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    expect(abstentionCommitCount(world, (abstentions[0] as FactualEventAppraisalAbstentionRecordV0).abstention_ref)).toBe(1);
+    const retry = await executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(retry.kind).toBe("ALREADY_DISPOSED");
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — restore proof (§57/§49)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION restore proof (§57)", () => {
+  it("58-66. fresh process restore resolves the same terminal abstention; retry +0", async () => {
+    const world = await buildWorld(0, null);
+    const { eventRef, outcome } = await fullFlow(world, "evt-x", "重做一下。");
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // 58: the abstention is persisted.
+    const abstentions = await visibleAbstentionPayloads(world, eventRef);
+    expect(abstentions).toHaveLength(1);
+    const originalRef = (abstentions[0] as FactualEventAppraisalAbstentionRecordV0).abstention_ref;
+    // 59: authoritative state/history export (bundle chain + envelope).
+    const committedBundles = world.core.storeRead.getCommittedBundles();
+    const headBundle = committedBundles.at(-1);
+    if (headBundle === undefined) throw new Error("head bundle must exist");
+    const envelopeResult = await createPersistenceEnvelope({
+      snapshot: headBundle.next_snapshot,
+      repository_bindings: headBundle.repository_revision_bindings.filter(
+        (b) => b.repository_revision === headBundle.next_snapshot.memory_state.repository_revision
+      ),
+      commit_head: {
+        commit_ref: headBundle.commit_ref,
+        record_checksum: headBundle.record_checksum as never
+      }
+    });
+    if (!envelopeResult.ok) throw new Error(`envelope must build: ${envelopeResult.error.detail}`);
+    // 60: fresh runtime restore over a replayed repository.
+    const freshRepo = await replayRepoOnto(world.repo);
+    const restore = await restoreFromEnvelope(envelopeResult.value, {
+      referenceValidator: async (binding) =>
+        freshRepo.validateRevisionBinding(
+          binding as unknown as Parameters<MemoryPreparationAuthority["validateRevisionBinding"]>[0]
+        ),
+      commitChainVerifier: async (expected) =>
+        headBundle.commit_ref === expected.commit_ref &&
+        headBundle.record_checksum === expected.record_checksum &&
+        headBundle.snapshot_hash_after === expected.snapshot_hash
+    });
+    if (!restore.ok) throw new Error(`restore must succeed: ${restore.failure.detail}`);
+    // 61/65: the resolver finds the SAME terminal abstention (identical ref).
+    const restored = await resolveInitialAppraisalDispositionForFactualEventV0(
+      freshRepo, restore.snapshot.memory_state.repository_revision as never, SUBJECT_ID, eventRef
+    );
+    expect(restored.kind).toBe("ABSTAINED_INSUFFICIENT_CONTEXT");
+    if (restored.kind === "ABSTAINED_INSUFFICIENT_CONTEXT") {
+      expect(restored.abstention.abstention_ref).toBe(originalRef);
+    }
+    // 66: subject logical/state authority unchanged by the restore itself.
+    expect(restore.snapshot.runtime_metadata.logical_time).toBe(headBundle.next_snapshot.runtime_metadata.logical_time);
+    expect(restore.snapshot.runtime_metadata.state_revision).toBe(headBundle.next_snapshot.runtime_metadata.state_revision);
+    // Fresh runtime: retry observes the terminal disposition with 0/0/0.
+    const freshCore2 = createCore(restore.snapshot, committedBundles);
+    const freshIngressLedger = createConversationIngressLedgerAuthorityV0();
+    expect((await freshIngressLedger.restoreState(world.ingressLedger.exportState())).ok).toBe(true);
+    const freshRoot = new RuntimeCompositionRoot({
+      subjectCore: freshCore2,
+      producerAuthorizationIssuer: freshCore2.issuer,
+      memoryRepository: freshRepo,
+      retrieval: {
+        retrieve: async (query) => ({
+          schema_version: "memory-retrieval-result-v0",
+          subject_id: query.subject_id,
+          selected_memory_refs: [],
+          evidence: [],
+          retrieval_trace_ref: null,
+          deterministic_metadata: {
+            repository_revision: query.repository_revision,
+            candidate_count: 0,
+            computed_under_config: "MEMORY_RETRIEVAL_V0",
+            query_fingerprint: await retrievalQueryFingerprint(query)
+          }
+        })
+      },
+      interpretation: fixedInterpretation(),
+      appraisal: fixedAppraisal(0.9, undefined, "situation"),
+      affectProducer: fixedAffectProducer(),
+      contextProducer: new ReferenceContextProducer(),
+      learningSourceAuthority: {
+        readCommittedBundle: async (id) => freshCore2.storeRead.readCommittedByTransitionId(id)
+      } as LearningSourceReadAuthority,
+      learningAdoptionAuthority: {
+        markAdopted: (r) => void freshRepo.markAdopted(r),
+        isAdopted: (r) => freshRepo.isAdopted(r)
+      } as LearningAdoptionAuthority,
+      experiencePayloadRepository: freshRepo,
+      ingressLedger: freshIngressLedger,
+      factualEventAppraisalProvider: {
+        proposeFactualEventAppraisal: async () => {
+          throw new Error("FATAL: provider must never run for a restored abstention");
+        }
+      }
+    });
+    const freshExecutor = new FactualEventAppraisalExecutorV0(freshRoot.dependencies());
+    const observationBundle = committedBundles.find((b) => b.trace_entry.cause_refs.some((r) => r.startsWith("observation:")));
+    if (observationBundle === undefined) throw new Error("fixture invariant: Observation bundle must exist");
+    const o2 = freshCore2.storeRead.readCommittedByTransitionId(observationBundle.transition_id) as AtomicCommitBundleAnyVersion;
+    const revisionsBefore = freshRepo.revisionIds().length;
+    const commitsBefore = freshCore2.storeRead.getCommittedBundles().length;
+    // 62: provider calls 0 (it throws if ever invoked).
+    const replay = await freshExecutor.appraiseIncomingEvent(
+      {
+        subject_id: SUBJECT_ID as never,
+        current_logical_time: restore.snapshot.runtime_metadata.logical_time as never,
+        state_revision: restore.snapshot.runtime_metadata.state_revision as never
+      },
+      {
+        subject_id: SUBJECT_ID as never,
+        source_event_id: "evt-x",
+        observation_transition_id: o2.transition_id as never,
+        observation_ref: observationCauseRefOf(o2) as never
+      }
+    );
+    expect(replay.kind).toBe("ALREADY_DISPOSED");
+    // 63/64: writes 0, commits 0.
+    expect(freshRepo.revisionIds().length).toBe(revisionsBefore);
+    expect(freshCore2.storeRead.getCommittedBundles().length).toBe(commitsBefore);
+  });
+
+  it("49. ordering proof: X durably abstained resolves terminally after restore while Y stays independently appraised", async () => {
+    const world = await buildWorld(0);
+    // X: pre-cognition provider lawfully abstains (provider stage).
+    const xRef = await ingressEvent(world, "evt-x", "重做一下。");
+    const o2x = await commitObservation(world, "observation:o-x", xRef);
+    const xOutcome = await new FactualEventAppraisalExecutorV0({
+      ...world.container,
+      factualEventAppraisalProvider: {
+        proposeFactualEventAppraisal: async (context: never) => insufficientProposal(context as never)
+      }
+    } as never).appraiseIncomingEvent(await freshCtx(world), {
+      subject_id: SUBJECT_ID as never,
+      source_event_id: "evt-x",
+      observation_transition_id: o2x.transition_id as never,
+      observation_ref: observationCauseRefOf(o2x) as never
+    });
+    expect(xOutcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    // Y: a genuinely later event is independently appraised (X does not poison it).
+    const y = await fullFlow(world, "evt-y", "还是不对。");
+    expect(y.outcome.kind).toBe("COMMITTED");
+    // Restore, then resolve both dispositions from the restored surface.
+    const committedBundles = world.core.storeRead.getCommittedBundles();
+    const headBundle = committedBundles.at(-1);
+    if (headBundle === undefined) throw new Error("head bundle must exist");
+    const envelopeResult = await createPersistenceEnvelope({
+      snapshot: headBundle.next_snapshot,
+      repository_bindings: headBundle.repository_revision_bindings.filter(
+        (b) => b.repository_revision === headBundle.next_snapshot.memory_state.repository_revision
+      ),
+      commit_head: {
+        commit_ref: headBundle.commit_ref,
+        record_checksum: headBundle.record_checksum as never
+      }
+    });
+    if (!envelopeResult.ok) throw new Error(`envelope must build: ${envelopeResult.error.detail}`);
+    const freshRepo = await replayRepoOnto(world.repo);
+    const restore = await restoreFromEnvelope(envelopeResult.value, {
+      referenceValidator: async (binding) =>
+        freshRepo.validateRevisionBinding(
+          binding as unknown as Parameters<MemoryPreparationAuthority["validateRevisionBinding"]>[0]
+        ),
+      commitChainVerifier: async (expected) =>
+        headBundle.commit_ref === expected.commit_ref &&
+        headBundle.record_checksum === expected.record_checksum &&
+        headBundle.snapshot_hash_after === expected.snapshot_hash
+    });
+    if (!restore.ok) throw new Error(`restore must succeed: ${restore.failure.detail}`);
+    const xDisposition = await resolveInitialAppraisalDispositionForFactualEventV0(
+      freshRepo, restore.snapshot.memory_state.repository_revision as never, SUBJECT_ID, xRef
+    );
+    const yDisposition = await resolveInitialAppraisalDispositionForFactualEventV0(
+      freshRepo, restore.snapshot.memory_state.repository_revision as never, SUBJECT_ID, y.eventRef
+    );
+    expect(xDisposition.kind).toBe("ABSTAINED_INSUFFICIENT_CONTEXT");
+    expect(yDisposition.kind).toBe("APPRAISED");
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// DURABLE PRE-COGNITION APPRAISAL DISPOSITION — Experience same-fact (§34/§59)
+// ----------------------------------------------------------------------------------
+
+describe("DURABLE DISPOSITION Experience same-fact bridge (§34/§59)", () => {
+  /** Delivery + feedback-path fixture so one event grounds both lifecycles. */
+  async function feedbackPathFor(world: World, sourceEventId: string, text: string): Promise<{
+    episodeRef: string;
+    input: Parameters<FactualEventAppraisalExecutorV0["appraiseIncomingEvent"]>[1];
+  }> {
+    const behaviorBuilt = await buildCharacterLanguageBehaviorV0({
+      subject_id: SUBJECT_ID as never,
+      source_revision: ((await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0).runtime_metadata.state_revision as never,
+      response_request_id: `resp-${sourceEventId}` as never,
+      draft: {
+        schema_version: 'language-realization-draft-v0',
+        text: '好的，马上处理。',
+        input_hash: 'sha256:' + 'b'.repeat(64),
+        evidence_refs: []
+      } as never
+    });
+    if (!behaviorBuilt.ok) throw new Error('behavior must build');
+    const ledger = world.container.conversationDeliveryLedger;
+    if (ledger === null) throw new Error('delivery ledger wired');
+    const delivered = await ledger.recordConversationDelivery({
+      subject_id: SUBJECT_ID,
+      conversation_id: CONVERSATION_ID,
+      behavior: behaviorBuilt.behavior,
+      delivered_logical_time: 0,
+      status: 'DELIVERED',
+      host_adapter: 'test-adapter'
+    });
+    if (!delivered.ok) throw new Error('delivery must record');
+    // The feedback event replies to the delivered behavior — and its
+    // pre-cognition INITIAL stage runs first (factual_event grounding).
+    const { input } = await eventWithObservation(world, sourceEventId, text, delivered.record.delivery_id);
+    const feedbackOutcome = await new LearningTransitionExecutor(world.container).executeBehaviorOutcomeFeedback(
+      await freshCtx(world),
+      {
+        candidate: {
+          subject_id: SUBJECT_ID,
+          conversation_id: CONVERSATION_ID,
+          source_event_id: sourceEventId,
+          observation_transition_id: input.observation_transition_id,
+          observation_ref: input.observation_ref,
+          declared_salience: 0.5,
+          host_adapter: 'test-adapter'
+        }
+      } as never
+    );
+    if (feedbackOutcome.kind !== 'COMMITTED') {
+      throw new Error('feedback must commit: ' + JSON.stringify(feedbackOutcome).slice(0, 200));
+    }
+    const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const episodes = (await world.repo.readVisibleRecordHashes(snapshot.memory_state.repository_revision as never))
+      .filter((e) => e.ref.startsWith('episode:'));
+    const episodeRef = episodes.at(-1)?.ref;
+    if (episodeRef === undefined) throw new Error('episode must exist');
+    return { episodeRef, input };
+  }
+
+  it("78. same-fact Experience after APPRAISED resolves the event-grounded INITIAL (never a second INITIAL)", async () => {
+    const world = await buildWorld(0);
+    const { episodeRef, input } = await feedbackPathFor(world, "evt-f", "重做一下。");
+    // The feedback event's pre-cognition INITIAL was APPRAISED first.
+    const outcome = await world.executor.appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("COMMITTED");
+    const experienceExecutor = new ExperienceAppraisalLearningExecutorV0(world.container);
+    const resolved = await experienceExecutor.appraiseExperience(await freshCtx(world), {
+      subject_id: SUBJECT_ID as never,
+      episode_ref: episodeRef as never,
+      provider_id: 'test-bridge-provider' as never
+    });
+    expect(resolved.kind).toBe("ALREADY_COMPLETED");
+    if (resolved.kind === "ALREADY_COMPLETED") {
+      // §34/§27/§28: the Experience path RESOLVES the event-grounded INITIAL.
+      expect(resolved.grounding).toBe("factual_event");
+      if (outcome.kind === "COMMITTED") expect(resolved.appraisal_ref).toBe(outcome.appraisal_ref);
+    }
+  });
+
+  it("79. same-fact Experience after ABSTAINED creates no INITIAL (INITIAL is terminally closed)", async () => {
+    const world = await buildWorld(0);
+    const provider = abstainingProvider(world);
+    const { episodeRef, input } = await feedbackPathFor(world, "evt-f", "重做一下。");
+    // The feedback event's pre-cognition INITIAL was lawfully ABSTAINED.
+    const outcome = await new FactualEventAppraisalExecutorV0(
+      { ...world.container, factualEventAppraisalProvider: provider } as never
+    ).appraiseIncomingEvent(await freshCtx(world), input);
+    expect(outcome.kind).toBe("INSUFFICIENT_CONTEXT");
+    const experienceExecutor = new ExperienceAppraisalLearningExecutorV0(world.container);
+    const resolved = await experienceExecutor.appraiseExperience(await freshCtx(world), {
+      subject_id: SUBJECT_ID as never,
+      episode_ref: episodeRef as never,
+      provider_id: 'test-bridge-provider' as never
+    });
+    expect(resolved.kind).toBe("ALREADY_DISPOSED");
+    if (resolved.kind === "ALREADY_DISPOSED") {
+      expect(resolved.disposition).toBe("ABSTAINED_INSUFFICIENT_CONTEXT");
+      expect(resolved.abstention_ref.startsWith("appraisal:")).toBe(true);
+    }
+    // No INITIAL Appraisal of any grounding exists for the event.
+    const snapshot = (await world.core.readCurrentSnapshot(SUBJECT_ID as never)) as SubjectStateV0;
+    const visible = await world.repo.readVisibleRecordHashes(snapshot.memory_state.repository_revision as never);
+    const appraisalRecords = visible.filter((e) => e.ref.startsWith("appraisal:"));
+    expect(appraisalRecords).toHaveLength(1); // only the abstention record
   });
 });
 

@@ -50,3 +50,19 @@ export {
   type FactualEventAppraisalContextProjectionV0,
   type FactualEventAppraisalProviderV0
 } from "./factual-event-appraisal-v0.js";
+
+// --- DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0 — terminal INITIAL abstention ---
+
+export {
+  FACTUAL_EVENT_APPRAISAL_ABSTENTION_RECORD_SCHEMA_VERSION,
+  FACTUAL_EVENT_APPRAISAL_ABSTENTION_REASON_V0,
+  FACTUAL_EVENT_APPRAISAL_ABSTENTION_REF_PROJECTION,
+  FACTUAL_EVENT_APPRAISAL_ABSTENTION_PROPOSAL_HASH_PROJECTION,
+  FACTUAL_EVENT_APPRAISAL_ABSTENTION_PREPARE_INTENT_PROJECTION,
+  deriveFactualEventAppraisalAbstentionRefV0,
+  deriveFactualEventAppraisalAbstentionProposalHashV0,
+  deriveFactualEventAppraisalAbstentionIntentId,
+  validateFactualEventAppraisalAbstentionRecordV0,
+  type FactualEventAppraisalAbstentionProvenanceV0,
+  type FactualEventAppraisalAbstentionRecordV0
+} from "./factual-event-appraisal-abstention-v0.js";

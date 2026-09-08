@@ -46,7 +46,7 @@ import { anchorContext, stageFailure, TransitionStageFailure } from "../transiti
 import {
   ExperienceAppraisalContextBuilderV0
 } from "./experience-appraisal-context.js";
-import { findInitialFactualEventAppraisalV0 } from "../factual-event-appraisal/factual-event-appraisal-reader.js";
+import { resolveInitialAppraisalDispositionForFactualEventV0 } from "../factual-event-appraisal/factual-event-appraisal-disposition-reader.js";
 import {
   findInitialExperienceAppraisalV0,
   type ExperienceAppraisalProviderV0
@@ -83,6 +83,14 @@ export type ExperienceAppraisalExecutionResultV0 =
       /** §11/§42: null task or provider abstention — zero canonical change. */
       readonly kind: "INSUFFICIENT_CONTEXT";
       readonly detail: string;
+    }
+  | {
+      /** DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0 (§34): the grounding
+       * factual event's INITIAL is durably abstained (terminal) — the
+       * Experience path creates no INITIAL for it (+0). */
+      readonly kind: "ALREADY_DISPOSED";
+      readonly disposition: "ABSTAINED_INSUFFICIENT_CONTEXT";
+      readonly abstention_ref: CanonicalRefV0;
     }
   | { readonly kind: "NO_OP" }
   | {
@@ -199,25 +207,37 @@ export class ExperienceAppraisalLearningExecutorV0 {
       throw stageFailure("OBSERVATION", "UNKNOWN_SUBJECT", "SS-AUTH-001", "appraisal context subject does not match the runtime subject");
     }
 
-    // PRE_COGNITION_CANONICAL_APPRAISAL_V0 (§27/§28): if the grounding factual
-    // event already owns a canonical event-grounded INITIAL (created BEFORE
-    // cognition), the Experience path RESOLVES/REUSES it — never a second
-    // INITIAL, never a provider call (§37 replay law applies unchanged).
-    const eventGrounded = await findInitialFactualEventAppraisalV0(
+    // PRE_COGNITION_CANONICAL_APPRAISAL_V0 (§27/§28) +
+    // DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0 (§34): the Experience
+    // path resolves the factual event's durable INITIAL disposition. An
+    // existing canonical event-grounded INITIAL is RESOLVED/REUSED (never a
+    // second INITIAL, never a provider call); a durably ABSTAINED event has a
+    // terminally closed INITIAL — no INITIAL is created here either.
+    const eventDisposition = await resolveInitialAppraisalDispositionForFactualEventV0(
       repository, currentRevision as never, ctx.subject_id as string, context.event_ref as string
     );
-    if (eventGrounded.kind === "INTEGRITY_FAILURE") {
-      throw stageFailure("OBSERVATION", "INVARIANT_VIOLATION", "SS-SCHEMA-001", eventGrounded.detail);
+    if (eventDisposition.kind === "INTEGRITY_FAILURE") {
+      throw stageFailure("OBSERVATION", "INVARIANT_VIOLATION", "SS-SCHEMA-001", eventDisposition.reason);
     }
-    if (eventGrounded.kind === "FOUND") {
+    if (eventDisposition.kind === "APPRAISED") {
       return {
         kind: "DONE",
         result: {
           kind: "ALREADY_COMPLETED",
-          appraisal_ref: eventGrounded.appraisal_ref,
-          payload_hash: eventGrounded.payload_hash,
-          record: eventGrounded.record as unknown as ExperienceAppraisalRecordV0,
+          appraisal_ref: eventDisposition.appraisal.appraisal_ref,
+          payload_hash: eventDisposition.appraisal.payload_hash as HashV1,
+          record: eventDisposition.appraisal as unknown as ExperienceAppraisalRecordV0,
           grounding: "factual_event"
+        }
+      };
+    }
+    if (eventDisposition.kind === "ABSTAINED_INSUFFICIENT_CONTEXT") {
+      return {
+        kind: "DONE",
+        result: {
+          kind: "ALREADY_DISPOSED",
+          disposition: "ABSTAINED_INSUFFICIENT_CONTEXT",
+          abstention_ref: eventDisposition.abstention.abstention_ref
         }
       };
     }
