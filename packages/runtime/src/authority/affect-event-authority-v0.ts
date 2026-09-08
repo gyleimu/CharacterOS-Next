@@ -1,10 +1,11 @@
 /**
  * CANONICAL_AFFECT_EVENT_AUTHORITY_SHADOW_V0 — AffectEventAuthorityV0.
  *
- * Pure identity contract + trusted-history consumption authority for future
- * canonical Affect. This slice adds NO second Affect writer: the legacy
- * Observation path remains the only live Affect writer; the canonical
- * Appraisal path is shadow authority only.
+ * Pure identity contract + trusted-history consumption authority for canonical
+ * Affect. This authority adds NO second Affect writer itself: the legacy
+ * Observation path remains the only live v3 Affect writer; the canonical
+ * Appraisal path is shadow authority only; CANONICAL_AFFECT_APPLICATION_V0 is
+ * the one explicit-v4 impulse writer.
  *
  * ELIGIBILITY IDENTITY (§21):
  *   hash(subject_id, factual_event_ref, semantic_appraisal_episode = INITIAL)
@@ -14,7 +15,7 @@
  * been emotionally consumed?" Dynamics upgrades never reopen old events (§23).
  *
  * APPLICATION STATUS (§25/§26/§27/§33/§34): derived ONLY from trusted
- * committed AtomicCommitBundle history (JOURNAL_DERIVED — no receipts, no
+ * committed AtomicCommitBundle history (JOURNAL_DERIVED — no receipts store, no
  * SubjectState markers). A legacy Observation counts as Affect consumption
  * only if it is a committed Observation bundle for the exact subject with the
  * exact factual event cause AND a lawful Affect-domain write — magnitude is
@@ -22,15 +23,25 @@
  * Observations without verified event lineage are quarantined as
  * UNPROVEN_LEGACY_LINEAGE (potential under-application is safer than double
  * emotional application).
+ *
+ * CANONICAL_AFFECT_APPLICATION_V0: a committed AffectApplication bundle
+ * becomes CANONICAL_APPLIED only after the dedicated receipt history
+ * validator re-derives it from trusted history (§37-§40). More than one valid
+ * receipt, legacy+canonical mixing, or a malformed claimed receipt is an
+ * INTEGRITY_CONFLICT. Canonical application is never accepted from a caller
+ * boolean.
  */
 
 import type {
   AtomicCommitBundleAnyVersion,
   CanonicalRefV0,
   HashV1,
-  IdentifierV0
+  IdentifierV0,
+  RepositoryRevisionIdV0
 } from "@characteros-next/subject-core";
 import { hashEnvelope, refKind } from "@characteros-next/subject-core";
+import type { InMemoryMemoryRepository } from "@characteros-next/memory";
+import { validateAffectApplicationReceiptV0 } from "./affect-application-history-validator-v0.js";
 
 export const AFFECT_ELIGIBILITY_IDENTITY_PROJECTION =
   "characteros-next/affect/affect-eligibility-identity/v1" as const;
@@ -110,16 +121,29 @@ function causeRefsOf(bundle: AtomicCommitBundleAnyVersion): readonly string[] {
  * canonical head — never from raw journal arrays, prepared revisions, failed
  * attempts, provider calls, or Memory Appraisal records alone.
  */
+/** Optional trusted surfaces that let the authority re-derive canonical
+ * AffectApplication receipts from history. Required whenever an
+ * AffectApplication bundle exists for the eligibility; without them a claimed
+ * canonical receipt cannot be proven and the status fails closed. */
+export interface AffectReceiptValidationSurfaceV0 {
+  readonly repository: InMemoryMemoryRepository;
+  readonly repository_revision: RepositoryRevisionIdV0;
+}
+
 export class InMemoryAffectEventAuthorityV0 {
   constructor(private readonly trustedHistory: TrustedAffectHistoryReaderV0) {}
 
   async resolveApplicationStatus(input: {
     readonly subject_id: string;
     readonly factual_event_ref: CanonicalRefV0;
-    /** Whether a canonical INITIAL Appraisal exists for the event. */
+    /**
+     * CANONICAL_AFFECT_APPLICATION_V0 (§17): this flag MUST be derived from
+     * the verified durable disposition (`disposition === APPRAISED`) — never
+     * from raw caller assertion.
+     */
     readonly initial_appraisal_exists: boolean;
-    /** Whether a future canonical Affect application exists (always false in this slice). */
-    readonly canonical_affect_applied?: boolean;
+    /** Trusted surfaces for receipt re-derivation (§37/§41). */
+    readonly receipt_validation?: AffectReceiptValidationSurfaceV0 | null;
   }): Promise<AffectApplicationStatusResolutionV0> {
     const eligibilityIdentity = await deriveAffectEligibilityIdentityV0({
       subject_id: input.subject_id,
@@ -154,13 +178,67 @@ export class InMemoryAffectEventAuthorityV0 {
       }
     }
 
-    // ---- mixed-writer integrity (§34): legacy + canonical application --------------
-    if (legacyApplied !== null && input.canonical_affect_applied === true) {
+    // ---- canonical AffectApplication receipts (§37/§41): journal-derived, -----
+    // validated — never a caller boolean.
+    let canonicalApplied: AtomicCommitBundleAnyVersion | null = null;
+    const claimedReceipts = bundles.filter(
+      (bundle) =>
+        bundle.transition_type === "AffectApplication" &&
+        bundle.subject_id === input.subject_id &&
+        causeRefsOf(bundle).includes(input.factual_event_ref)
+    );
+    for (const claimed of claimedReceipts) {
+      if (input.receipt_validation === undefined || input.receipt_validation === null) {
+        return {
+          status: "INTEGRITY_CONFLICT",
+          eligibility_identity: eligibilityIdentity,
+          legacy_bundle_ref: null,
+          detail: "an AffectApplication bundle exists for this eligibility but no receipt validation surface is available (fail closed)"
+        };
+      }
+      const validated = await validateAffectApplicationReceiptV0({
+        bundle: claimed,
+        bundles,
+        subject_id: input.subject_id,
+        repository: input.receipt_validation.repository,
+        repository_revision: input.receipt_validation.repository_revision
+      });
+      if (!validated.ok) {
+        return {
+          status: "INTEGRITY_CONFLICT",
+          eligibility_identity: eligibilityIdentity,
+          legacy_bundle_ref: null,
+          detail: `malformed claimed AffectApplication receipt: ${validated.reason}`
+        };
+      }
+      if (canonicalApplied !== null) {
+        return {
+          status: "INTEGRITY_CONFLICT",
+          eligibility_identity: eligibilityIdentity,
+          legacy_bundle_ref: null,
+          detail: "multiple valid canonical AffectApplication receipts for one eligibility identity"
+        };
+      }
+      canonicalApplied = claimed;
+    }
+
+    // ---- mixed-writer integrity (§34/§19): legacy + canonical application ------
+    if (legacyApplied !== null && canonicalApplied !== null) {
       return {
         status: "INTEGRITY_CONFLICT",
         eligibility_identity: eligibilityIdentity,
         legacy_bundle_ref: legacyApplied.commit_ref,
         detail: "trusted history shows both legacy and canonical Affect application for this eligibility identity"
+      };
+    }
+
+    // ---- canonical consumption (§37) ---------------------------------------------
+    if (canonicalApplied !== null) {
+      return {
+        status: "CANONICAL_APPLIED",
+        eligibility_identity: eligibilityIdentity,
+        legacy_bundle_ref: null,
+        detail: "one valid canonical AffectApplication receipt exists in trusted history"
       };
     }
 

@@ -18,6 +18,19 @@ import { validateCanonicalAffectShape } from "./subject-state-v4-values.js";
 
 const SCHEMA = "SS-SCHEMA-001";
 
+/**
+ * CANONICAL_AFFECT_APPLICATION_V0 — the transitions a subject-state-v4
+ * predecessor lawfully admits. The governed pre-cognition admission prefix
+ * (Observation without legacy affect, Learning memory-content commits) plus
+ * the recovery writer (Time) and the impulse writer (AffectApplication).
+ */
+const V4_ALLOWED_TRANSITIONS: readonly string[] = [
+  "Time",
+  "Observation",
+  "Learning",
+  "AffectApplication"
+];
+
 export function validateSubjectStateAnyVersionV0(
   value: unknown,
   options?: { readonly preTraceWindowRevision?: number }
@@ -59,11 +72,11 @@ export function validateProposalCompatibilityWithPredecessorV0(
     return fail("INVALID_SCHEMA", SCHEMA, "predecessor has an unsupported schema_version");
   }
 
-  if (version === "subject-state-v4" && proposal.transition_type !== "Time") {
+  if (version === "subject-state-v4" && !V4_ALLOWED_TRANSITIONS.includes(proposal.transition_type)) {
     return fail(
       "INVALID_TRANSITION_COMPOSITION",
       "TR-ATOMIC-001",
-      `subject-state-v4 foundation supports only Time, received ${proposal.transition_type}`
+      `subject-state-v4 foundation supports only ${V4_ALLOWED_TRANSITIONS.join(", ")}, received ${proposal.transition_type}`
     );
   }
 

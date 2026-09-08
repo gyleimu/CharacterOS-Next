@@ -49,7 +49,7 @@ const OWNERSHIP: Readonly<
   Record<WritableFieldPathV0, { readonly producer: ProducerName; readonly domain: DomainName; readonly transitions: readonly TransitionType[] }>
 > = {
   "/mood": { producer: "affect", domain: "affect", transitions: ["Time", "Observation"] },
-  "/affect": { producer: "affect", domain: "affect", transitions: ["Time", "Observation"] },
+  "/affect": { producer: "affect", domain: "affect", transitions: ["Time", "Observation", "AffectApplication"] },
   "/regulation": { producer: "regulation", domain: "regulation", transitions: ["Time", "CognitionAction"] },
   "/context": { producer: "context", domain: "context", transitions: ["Observation", "CognitionAction"] },
   "/memory_state/working_refs": { producer: "memory", domain: "memory-retrieval", transitions: ["Observation"] },

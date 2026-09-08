@@ -34,7 +34,7 @@ import type {
   CanonicalTransitionProposalV1,
   CommitReservedOutcome
 } from "@characteros-next/subject-core";
-import { hashEnvelope, proposalFingerprint, stateHash } from "@characteros-next/subject-core";
+import { hashEnvelope, proposalFingerprint, stateHashAnyVersion } from "@characteros-next/subject-core";
 import type { InMemoryMemoryRepository, MemoryPrepareIntentV1 } from "@characteros-next/memory";
 import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 import {
@@ -265,7 +265,7 @@ export class FactualEventAppraisalExecutorV0 {
     }
 
     // ---- §17 context (null-task law) ---------------------------------------------------
-    const contextBuilder = new FactualEventAppraisalContextBuilderV0(stateHash);
+    const contextBuilder = new FactualEventAppraisalContextBuilderV0(stateHashAnyVersion);
     const contextResult = await contextBuilder.build({ grounding, snapshot });
     if (!contextResult.ok) {
       // DURABLE_PRE_COGNITION_APPRAISAL_DISPOSITION_V0: the lawful null-task
@@ -354,7 +354,7 @@ export class FactualEventAppraisalExecutorV0 {
     if (fresh === null) {
       return { kind: "STALE" };
     }
-    const preStateHash = await stateHash(snapshot);
+    const preStateHash = await stateHashAnyVersion(snapshot);
     if (await this.headMovedSince(fresh, snapshot, currentRevision)) {
       return { kind: "STALE" };
     }
@@ -559,9 +559,9 @@ export class FactualEventAppraisalExecutorV0 {
     snapshot: SubjectStateV0,
     currentRevision: string
   ): Promise<boolean> {
-    const freshStateHash = await stateHash(fresh);
+    const freshStateHash = await stateHashAnyVersion(fresh);
     return fresh.runtime_metadata.state_revision !== snapshot.runtime_metadata.state_revision ||
-      freshStateHash !== await stateHash(snapshot) ||
+      freshStateHash !== await stateHashAnyVersion(snapshot) ||
       fresh.memory_state.repository_revision !== currentRevision ||
       fresh.context.task !== snapshot.context.task ||
       fresh.identity.subject_id !== snapshot.identity.subject_id;
@@ -602,7 +602,7 @@ export class FactualEventAppraisalExecutorV0 {
 
     // ---- construct the canonical abstention record (system owns ALL authority
     // metadata; the grounding is the verified factual-event resolution) -----------
-    const abstentionStateHash = await stateHash(snapshot);
+    const abstentionStateHash = await stateHashAnyVersion(snapshot);
     const recordBody = {
       schema_version: "factual-event-appraisal-abstention-record-v0" as const,
       semantic_appraisal_episode: "INITIAL" as const,

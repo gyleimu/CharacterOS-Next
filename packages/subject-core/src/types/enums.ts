@@ -48,7 +48,8 @@ export type TransitionType =
   | "Learning"
   | "Personality"
   | "Relationship"
-  | "Belief";
+  | "Belief"
+  | "AffectApplication";
 
 export const TRANSITION_TYPES = [
   "Time",
@@ -57,7 +58,8 @@ export const TRANSITION_TYPES = [
   "Learning",
   "Personality",
   "Relationship",
-  "Belief"
+  "Belief",
+  "AffectApplication"
 ] as const;
 
 /** §7.1 canonical time input kinds. */

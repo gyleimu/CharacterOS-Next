@@ -49,7 +49,7 @@ async function abstentionFixture(eventRef: string, overrides: Record<string, unk
     provenance: { stage: "CONTEXT_EVALUATION" },
     ...overrides
   };
-  const ref = await deriveFactualEventAppraisalAbstentionRefV0(body);
+  const ref = await deriveFactualEventAppraisalAbstentionRefV0(body as never);
   return { ...body, abstention_ref: ref } as unknown as FactualEventAppraisalAbstentionRecordV0;
 }
 
@@ -81,7 +81,7 @@ async function appraisalFixture(eventRef: string, overrides: Record<string, unkn
     },
     ...overrides
   };
-  const ref = await deriveFactualEventAppraisalRefV0(body);
+  const ref = await deriveFactualEventAppraisalRefV0(body as never);
   const record = { ...body, appraisal_ref: ref };
   const checked = validateFactualEventAppraisalRecordV0(record);
   if (!checked.ok) throw new Error(`fixture invariant: appraisal fixture must validate: ${checked.error.detail}`);
@@ -90,7 +90,7 @@ async function appraisalFixture(eventRef: string, overrides: Record<string, unkn
 
 async function repoWithRecords(...records: readonly unknown[]): Promise<InMemoryMemoryRepository> {
   const repo = new InMemoryMemoryRepository();
-  await repo.prepareRevision({ parent_revision: null, records: [] });
+  await repo.prepareRevision({ parent_revision: null as never, records: [] });
   if (records.length === 0) return repo;
   const entries = [];
   for (const record of records) {
@@ -101,7 +101,7 @@ async function repoWithRecords(...records: readonly unknown[]): Promise<InMemory
     entries.push({ ref, payload_hash: hash });
   }
   entries.sort((a, b) => (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0));
-  await repo.prepareRevision({ parent_revision: "R0", records: entries as never });
+  await repo.prepareRevision({ parent_revision: "R0" as never, records: entries as never });
   return repo;
 }
 
@@ -203,7 +203,7 @@ describe("resolveInitialAppraisalDispositionForFactualEventV0 — resolver matri
     // An Experience-grounded Appraisal (different contract/schema) is visible
     // under the same `appraisal:` ref kind but is a different lifecycle.
     const repo = new InMemoryMemoryRepository();
-    await repo.prepareRevision({ parent_revision: null, records: [] });
+    await repo.prepareRevision({ parent_revision: null as never, records: [] });
     const experienceAppraisal = {
       schema_version: "experience-appraisal-record-v0",
       semantic_appraisal_episode: "INITIAL",
@@ -211,7 +211,7 @@ describe("resolveInitialAppraisalDispositionForFactualEventV0 — resolver matri
       subject_id: SUBJECT
     };
     const hash = await repo.storePayload("appraisal:" + "8".repeat(64) as never, experienceAppraisal);
-    await repo.prepareRevision({ parent_revision: "R0", records: [{ ref: "appraisal:" + "8".repeat(64) as never, payload_hash: hash }] });
+    await repo.prepareRevision({ parent_revision: "R0" as never, records: [{ ref: "appraisal:" + "8".repeat(64) as never, payload_hash: hash }] });
     const result = await resolveInitialAppraisalDispositionForFactualEventV0(repo, headRevision(repo) as never, SUBJECT, EVENT_A);
     expect(result.kind).toBe("PENDING");
   });

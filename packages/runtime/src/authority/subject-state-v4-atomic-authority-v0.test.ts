@@ -725,12 +725,18 @@ describe("SUBJECT_STATE_V4_ATOMIC_COMMIT — v3 goldens and isolation (12-20, 77
     );
   });
 
-  it("77-89 keeps AffectApplication/migration/Mood/cognition/default product out of this slice", () => {
-    expect(TRANSITION_TYPES).not.toContain("AffectApplication");
+  it("77-89 keeps migration/Mood/cognition/default product out of this slice; AffectApplication is the one lawful v4 writer addition", () => {
+    // CANONICAL_AFFECT_APPLICATION_V0: AffectApplication is now a registered
+    // transition type (the explicit-v4 impulse writer). Migration, Mood and
+    // the default v3 product remain out.
+    expect(TRANSITION_TYPES).toContain("AffectApplication");
+    expect(TRANSITION_TYPES).not.toContain("Mood");
+    expect(TRANSITION_TYPES).not.toContain("Migration");
     type DefaultSubjectCoreSnapshot = Awaited<ReturnType<SubjectCorePort["readCurrentSnapshot"]>>;
     const defaultPortRemainsV3: DefaultSubjectCoreSnapshot extends SubjectStateV0 | null ? true : false = true;
     expect(defaultPortRemainsV3).toBe(true);
     expect("CanonicalAffectV4TimeTransitionExecutorV0" in runtimeIndex).toBe(false);
+    expect("CanonicalAffectApplicationExecutorV0" in runtimeIndex).toBe(false);
     expect("createInMemorySubjectCoreFacadeForExplicitV4V0" in runtimeIndex).toBe(false);
   });
 });

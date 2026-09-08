@@ -133,34 +133,94 @@ export function validateProposalCompositionForStateVersion(
     return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "composition predecessor schema_version is unsupported");
   }
   const base = `composition[${proposal.transition_type}:subject-state-v4]`;
-  if (proposal.transition_type !== "Time") {
-    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation supports only Time`);
+  if (proposal.transition_type === "Time") {
+    if (proposal.time_input.kind === "ELAPSED" && proposal.time_input.elapsed_time.value === 0) {
+      return proposal.domain_deltas.length === 0
+        ? ok(undefined)
+        : fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: elapsed=0 must carry zero deltas`);
+    }
+    if (proposal.domain_deltas.length !== 2) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: positive Time requires exactly affect and regulation deltas`);
+    }
+    const affectDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "affect");
+    const regulationDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "regulation");
+    if (
+      affectDeltas.length !== 1 ||
+      affectDeltas[0]?.producer !== "affect" ||
+      affectDeltas[0].operations.length !== 1 ||
+      affectDeltas[0].operations[0]?.path !== "/affect"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact affect/affect /affect replacement required`);
+    }
+    if (
+      regulationDeltas.length !== 1 ||
+      regulationDeltas[0]?.producer !== "regulation" ||
+      regulationDeltas[0].operations.length !== 1 ||
+      regulationDeltas[0].operations[0]?.path !== "/regulation"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact regulation/regulation /regulation replacement required`);
+    }
+    return ok(undefined);
   }
-  if (proposal.time_input.kind === "ELAPSED" && proposal.time_input.elapsed_time.value === 0) {
-    return proposal.domain_deltas.length === 0
-      ? ok(undefined)
-      : fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: elapsed=0 must carry zero deltas`);
+  if (proposal.transition_type === "AffectApplication") {
+    // CANONICAL_AFFECT_APPLICATION_V0: the one impulse writer. Exactly one
+    // affect/affect delta carrying exactly the /affect replacement, applied at
+    // the current logical time (OCCURRENCE). No other domain may ride along.
+    if (proposal.time_input.kind !== "OCCURRENCE") {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: AffectApplication requires OCCURRENCE time input`);
+    }
+    if (proposal.domain_deltas.length !== 1) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: AffectApplication requires exactly one affect delta`);
+    }
+    const delta = proposal.domain_deltas[0];
+    if (
+      delta?.producer !== "affect" ||
+      delta.domain !== "affect" ||
+      delta.operations.length !== 1 ||
+      delta.operations[0]?.path !== "/affect"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact affect/affect /affect replacement required`);
+    }
+    return ok(undefined);
   }
-  if (proposal.domain_deltas.length !== 2) {
-    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: positive Time requires exactly affect and regulation deltas`);
+  if (proposal.transition_type === "Learning") {
+    // The governed pre-cognition Appraisal commit: memory-content only,
+    // identical required path to the v3 Learning law.
+    return requirePaths(
+      pathsForDomain(proposal, "memory-content"),
+      "memory-content",
+      ["/memory_state/repository_revision"],
+      base
+    );
   }
-  const affectDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "affect");
-  const regulationDeltas = proposal.domain_deltas.filter((delta) => delta.domain === "regulation");
-  if (
-    affectDeltas.length !== 1 ||
-    affectDeltas[0]?.producer !== "affect" ||
-    affectDeltas[0].operations.length !== 1 ||
-    affectDeltas[0].operations[0]?.path !== "/affect"
-  ) {
-    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact affect/affect /affect replacement required`);
+  if (proposal.transition_type === "Observation") {
+    // Event admission on v4: context is required; legacy affect/mood writes
+    // are FORBIDDEN (Time is the only recovery writer; AffectApplication is
+    // the only impulse writer on v4).
+    const context = requirePaths(pathsForDomain(proposal, "context"), "context", ["/context"], base);
+    if (!context.ok) return context;
+    for (const delta of proposal.domain_deltas) {
+      if (delta.domain === "affect") {
+        return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 Observation must not write legacy affect`);
+      }
+    }
+    const retrieval = pathsForDomain(proposal, "memory-retrieval");
+    if (retrieval.size > 0) {
+      const requiredRetrievalFields = [
+        "/memory_state/working_refs",
+        "/memory_state/recent_retrieval_trace",
+        "/memory_state/last_retrieval_at"
+      ];
+      const complete = requiredRetrievalFields.every((field) => retrieval.has(field));
+      if (!complete) {
+        return fail(
+          "INVALID_TRANSITION_COMPOSITION",
+          TR_ATOMIC,
+          `${base}: optional memory-retrieval delta must contain all three retrieval fields`
+        );
+      }
+    }
+    return ok(undefined);
   }
-  if (
-    regulationDeltas.length !== 1 ||
-    regulationDeltas[0]?.producer !== "regulation" ||
-    regulationDeltas[0].operations.length !== 1 ||
-    regulationDeltas[0].operations[0]?.path !== "/regulation"
-  ) {
-    return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact regulation/regulation /regulation replacement required`);
-  }
-  return ok(undefined);
+  return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation does not support ${proposal.transition_type}`);
 }

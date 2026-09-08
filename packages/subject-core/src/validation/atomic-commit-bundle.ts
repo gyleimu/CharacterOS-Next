@@ -155,7 +155,7 @@ async function validateBundleCore(
   if (!sid.ok) return sid;
   const tid = validateIdentifier(o["transition_id"] as string, `${d}.transition_id`);
   if (!tid.ok) return tid;
-  if (!isString(o["transition_type"]) || !["Time", "Observation", "CognitionAction", "Learning", "Personality", "Relationship", "Belief"].includes(o["transition_type"])) {
+  if (!isString(o["transition_type"]) || !["Time", "Observation", "CognitionAction", "Learning", "Personality", "Relationship", "Belief", "AffectApplication"].includes(o["transition_type"])) {
     return fail("INVALID_SCHEMA", SCHEMA, `${d}.transition_type: invalid enum`);
   }
   const transitionType = o["transition_type"] as TransitionType;
