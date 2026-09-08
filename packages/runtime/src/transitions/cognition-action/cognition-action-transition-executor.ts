@@ -38,7 +38,8 @@ import type {
   LogicalTimeV0,
   StateRevisionV0,
   TransitionIdV0,
-  SubjectStateV0
+  SubjectStateV0,
+  SubjectStateV4
 } from "@characteros-next/subject-core";
 import { hashEnvelope } from "@characteros-next/subject-core";
 import { isReservedRelationshipCoreDimensionIdV0, refKind } from "@characteros-next/subject-core";
@@ -63,13 +64,17 @@ import {
   cognitiveProjectionHash,
   findUnsupportedEvidenceRef,
   validateCognitionProposal,
+  COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION,
   type BeliefStanceProjectionV0,
+  type CognitiveContextProjectionAnyVersion,
   type CognitiveContextProjectionV0,
   type CognitiveContextProjectionV1,
+  type CognitiveContextProjectionV2,
   type CognitionActionInputV0,
   type CognitionProposalV0
 } from "./types.js";
 import { anchorContext, stageFailure, TransitionStageFailure } from "../common.js";
+import { projectCanonicalAffectForCognitionV0 } from "./canonical-affect-cognition-projection-v0.js";
 
 export interface CognitionActionExecutionResultV0 {
   /** Canonical outcome: a durable zero-delta NO_OP on success. */
@@ -77,7 +82,7 @@ export interface CognitionActionExecutionResultV0 {
   /** The validated provider proposal (workflow-level; never canonical). */
   readonly cognition: CognitionProposalV0;
   /** The exact projection the provider answered (audit/replay evidence). */
-  readonly projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1;
+  readonly projection: CognitiveContextProjectionAnyVersion;
   /**
    * RELATIONSHIP_FAMILIARITY_RETRIEVAL_ORCHESTRATION_V0 — deterministic
    * observation-only trace of the AUTOMATIC familiarity-priority retrieval
@@ -170,6 +175,17 @@ export async function buildCognitiveContextProjection(
 }
 
 /**
+ * CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — the explicit-v4 projection
+ * build: RAW_CANONICAL_VA replaces the legacy Affect/Mood sections. Fail
+ * closed on wrong v4 pairing or malformed affect.
+ */
+export async function buildCognitiveContextProjectionV2ForExplicitV4(
+  snapshot: SubjectStateV4
+): Promise<CognitiveContextProjectionV2> {
+  return buildCognitiveContextProjectionInternal(snapshot as unknown as SubjectStateV0, null) as Promise<CognitiveContextProjectionV2>;
+}
+
+/**
  * EXPERIENCE_MEMORY_FUTURE_COGNITION_INTEGRATION_V0 — explicit versioned
  * cognition input: the V0 factual/context surface PLUS resolved factual memory
  * evidence. The evidence joins the hashed body; never a silent V0 rehash.
@@ -188,6 +204,115 @@ export async function buildCognitiveContextProjectionV1(
 }
 
 /**
+ * CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — the explicit-v4 projection body:
+ * the V1 factual/context/evidence surface with the legacy Affect/Mood sections
+ * REPLACED by the exact committed CanonicalAffectV0 raw values. Fail closed on
+ * wrong v4 pairing (§12) or malformed affect; no rounding; no history; no
+ * dynamics config; no named emotions; no Mood.
+ */
+async function buildExplicitV4CognitiveContextProjection(
+  snapshot: SubjectStateV4,
+  factualEvidence: FactualMemoryEvidenceBundleV0 | null
+): Promise<CognitiveContextProjectionV2> {
+  const profile = (snapshot.mechanism_config as { affect_profile?: { profile_id?: string; timebase?: string } })
+    .affect_profile;
+  if (profile?.profile_id !== "BOUNDED_AFFECT_DYNAMICS_V0" || profile?.timebase !== "tick") {
+    throw new Error(
+      "cognitive context projection: v4 affect profile pairing mismatch — BOUNDED_AFFECT_DYNAMICS_V0/tick required"
+    );
+  }
+  const interactionFamiliarity = await Promise.all(
+    [...snapshot.relationships.counterparts]
+      .sort((a, b) => (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0))
+      .map(async (counterpart) => {
+        const derived = await deriveInteractionFamiliarityReadProjectionV0({
+          subjectState: snapshot as unknown as SubjectStateV0,
+          counterpart_ref: counterpart.counterpart_ref as never
+        });
+        if (!derived.ok) {
+          throw new Error(
+            `cognitive context projection: interaction familiarity read projection failed (${derived.code}: ${derived.detail})`
+          );
+        }
+        return derived.projection;
+      })
+  );
+  const projectionBody = {
+    subject_id: snapshot.identity.subject_id as string,
+    current_logical_time: snapshot.runtime_metadata.logical_time as number,
+    state_revision: snapshot.runtime_metadata.state_revision as number,
+    traits_dimensions: { ...snapshot.traits_seed.dimensions } as Record<string, number>,
+    // RAW_CANONICAL_VA: exact committed values, no transform (fail closed on
+    // malformed shapes; no affect_profile, no history, no named emotions).
+    canonical_affect: projectCanonicalAffectForCognitionV0(snapshot.affect),
+    regulation: {
+      energy: snapshot.regulation.energy as number,
+      stress: snapshot.regulation.stress as number,
+      arousal: snapshot.regulation.arousal as number,
+      fatigue: snapshot.regulation.fatigue as number
+    },
+    context: { ...snapshot.context },
+    memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
+    recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
+    belief_item_count: snapshot.beliefs.items.length,
+    belief_items: snapshot.beliefs.items
+      .map(
+        (item): BeliefStanceProjectionV0 => ({
+          proposition_id: item.proposition_id,
+          proposition_label: item.proposition_label,
+          credence: item.credence
+        })
+      )
+      .sort((a, b) =>
+        a.proposition_id < b.proposition_id ? -1 : a.proposition_id > b.proposition_id ? 1 : 0
+      )
+      .slice(0, BELIEF_COGNITION_MAX_ITEMS),
+    relationship_counterpart_count: snapshot.relationships.counterparts.length,
+    relationship_dimensions: snapshot.relationships.counterparts
+      .flatMap((counterpart) =>
+        counterpart.dimensions
+          .filter((dimension) => !isReservedRelationshipCoreDimensionIdV0(dimension.dimension_id))
+          .map((dimension) => ({
+            counterpart_ref: counterpart.counterpart_ref as string,
+            dimension_id: dimension.dimension_id as string,
+            value: dimension.value as number
+          }))
+      )
+      .sort(
+        (a, b) =>
+          (a.counterpart_ref < b.counterpart_ref ? -1 : a.counterpart_ref > b.counterpart_ref ? 1 : 0) ||
+          (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0)
+      ),
+    interaction_familiarity: interactionFamiliarity,
+    interaction_familiarity_cognition_influences: deriveInteractionFamiliarityCognitionInfluencesV0({
+      familiarityProjections: interactionFamiliarity,
+      activeEntityRefs: snapshot.context.active_entity_refs as never
+    }),
+    allowed_actions: [] as { action_type: string; target_ref: string | null }[]
+  };
+  const projectionHash = await cognitiveProjectionHash(
+    factualEvidence === null ? projectionBody : { ...projectionBody, factual_memory_evidence: factualEvidence }
+  );
+  const projection =
+    factualEvidence === null
+      ? ({
+          schema_version: COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION,
+          ...projectionBody,
+          allowed_actions: [],
+          projection_hash: projectionHash
+        } as unknown as CognitiveContextProjectionV2)
+      : ({
+          schema_version: COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION,
+          ...projectionBody,
+          factual_memory_evidence: factualEvidence,
+          allowed_actions: [],
+          projection_hash: projectionHash
+        } as unknown as CognitiveContextProjectionV2);
+  deepFreeze(projection);
+  return projection;
+}
+
+/**
  * MODULE-PRIVATE validated-evidence augmentation: NOT exported, NOT reachable
  * from the runtime root or any product surface. `additionalRecentRetrievalRefs`
  * is populated exclusively by the trusted executor from refs that already
@@ -197,7 +322,18 @@ async function buildCognitiveContextProjectionInternal(
   snapshot: SubjectStateV0,
   additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null,
   factualEvidence: FactualMemoryEvidenceBundleV0 | null = null
-): Promise<CognitiveContextProjectionV0 | CognitiveContextProjectionV1> {
+): Promise<CognitiveContextProjectionV0 | CognitiveContextProjectionV1 | CognitiveContextProjectionV2> {
+  // CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — explicit schema-version
+  // dispatch: v4 builds the RAW_CANONICAL_VA projection; the v3 path below is
+  // byte/behavior unchanged. Unknown schemas fail closed.
+  if ((snapshot as { schema_version?: string }).schema_version === "subject-state-v4") {
+    return buildExplicitV4CognitiveContextProjection(snapshot as unknown as SubjectStateV4, factualEvidence);
+  }
+  if ((snapshot as { schema_version?: string }).schema_version !== "subject-state-v3") {
+    throw new Error(
+      `cognitive context projection: unsupported subject-state schema ${String((snapshot as { schema_version?: unknown }).schema_version)}`
+    );
+  }
   // Interaction Familiarity Read Projection V0: the exact admitted governed
   // feature's semantic state surface per registered counterpart. Pure
   // derivation from the authoritative snapshot; a malformed canonical
@@ -394,7 +530,7 @@ export class CognitionActionTransitionExecutor {
     // V1 is used ONLY when at least one factual evidence entry resolved (never
     // default/fake evidence). Repository payload remains authority: the resolver
     // fails closed on any malformed Experience episode.
-    let cognitionInputProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1 = evidenceProjection;
+    let cognitionInputProjection: CognitiveContextProjectionAnyVersion = evidenceProjection;
     const factualResolver: FactualMemoryEvidenceResolverV0 | null = this.deps.factualEvidenceResolver;
     if (factualResolver !== null) {
       const candidateRefs = [...new Set<string>([
@@ -418,7 +554,7 @@ export class CognitionActionTransitionExecutor {
 
     // The action space is bound into the projection AFTER hashing the body: the
     // space is host-supplied per cycle, the hash covers the state evidence.
-    const projectionWithSpace: CognitiveContextProjectionV0 | CognitiveContextProjectionV1 = {
+    const projectionWithSpace: CognitiveContextProjectionAnyVersion = {
       ...cognitionInputProjection,
       allowed_actions: input.allowed_actions
     };

@@ -42,6 +42,7 @@
  */
 
 import type { IdentifierV0, SubjectStateV0, CanonicalRefV0 } from "@characteros-next/subject-core";
+import type { CognitiveContextProjectionV0 } from "../cognition-action/types.js";
 import type { CharacterLanguageBehaviorV0 } from "@characteros-next/behavior";
 import { buildCharacterLanguageBehaviorV0 } from "@characteros-next/behavior";
 import { validateIdentifier } from "@characteros-next/subject-core";
@@ -214,8 +215,10 @@ export class ConversationTextResponseExecutorV0 {
       current_observation_ref: evidenceProjection.context.current_observation_ref,
       belief_items: evidenceProjection.belief_items,
       traits_dimensions: evidenceProjection.traits_dimensions,
-      affect_channels: evidenceProjection.affect_channels,
-      mood_baseline: evidenceProjection.mood_baseline,
+      // v3-only executor: the cognition projection here is always V0/V1
+      // (the v4 RAW_CANONICAL_VA path never reaches this legacy surface).
+      affect_channels: (evidenceProjection as CognitiveContextProjectionV0).affect_channels,
+      mood_baseline: (evidenceProjection as CognitiveContextProjectionV0).mood_baseline,
       regulation: evidenceProjection.regulation,
       interaction_familiarity: evidenceProjection.interaction_familiarity,
       interaction_familiarity_cognition_influences:

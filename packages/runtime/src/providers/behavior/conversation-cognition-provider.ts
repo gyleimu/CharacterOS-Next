@@ -8,7 +8,7 @@
  */
 
 import type { ModelTransportV0 } from "../../transports/model-transport.js";
-import type { CognitiveContextProjectionV0, CognitiveContextProjectionV1 } from "../../transitions/cognition-action/types.js";
+import type { CognitiveContextProjectionAnyVersion, CognitiveContextProjectionV0, CognitiveContextProjectionV1, CognitiveContextProjectionV2 } from "../../transitions/cognition-action/types.js";
 import { validateCognitionProposal } from "../../transitions/cognition-action/types.js";
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
@@ -57,7 +57,7 @@ export class ConversationCognitionProviderV1 {
   }
 
   async propose(
-    projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+    projection: CognitiveContextProjectionAnyVersion
   ): Promise<ConversationCognitionProposalV1> {
     const messages = [
       { role: "system" as const, content: CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 },
@@ -73,12 +73,24 @@ export class ConversationCognitionProviderV1 {
   }
 }
 
-function buildConversationSubjectData(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): string {
+function buildConversationSubjectData(projection: CognitiveContextProjectionAnyVersion): string {
   // Reuse the same SUBJECT DATA structure as the V0/V1 cognition prompts.
   // The system prompt already carries the schema + directive instructions.
-  const affect = projection.affect_channels.length === 0
-    ? "(no active affect channels)"
-    : projection.affect_channels.map(c => `${c.channel}=${c.strength}`).join(", ");
+  // CANONICAL_AFFECT_COGNITION_INTEGRATION_V0: V2 renders ONE neutral canonical
+  // raw-VA line; V0/V1 rendering is byte-identical to the frozen baseline.
+  const schemaVersion = String(projection.schema_version);
+  if (schemaVersion !== "cognitive-context-projection-v0" && schemaVersion !== "cognitive-context-projection-v1" && schemaVersion !== "cognitive-context-projection-v2") {
+    throw new Error(`conversation cognition subject data: unsupported projection schema ${schemaVersion}`);
+  }
+  const isV2 = schemaVersion === "cognitive-context-projection-v2";
+  const legacyProjection = projection as CognitiveContextProjectionV0 | CognitiveContextProjectionV1;
+  const v2Projection = projection as CognitiveContextProjectionV2;
+  const affectLines: string[] = isV2
+    ? [`[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`]
+    : [
+        `[affect] ${legacyProjection.affect_channels.length === 0 ? "(no active affect channels)" : legacyProjection.affect_channels.map(c => `${c.channel}=${c.strength}`).join(", ")}`,
+        `[mood] baseline=${legacyProjection.mood_baseline}`
+      ];
   const beliefStances = projection.belief_items.length === 0
     ? "(none)"
     : projection.belief_items.map(item => `  ${JSON.stringify(item)}`).join("\n");
@@ -122,8 +134,7 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionV0 |
     `[active entity refs]\n${projection.context.active_entity_refs.length === 0 ? "  (none)" : projection.context.active_entity_refs.map(r => `  - ${r}`).join("\n")}`,
     `[environment refs]\n${projection.context.environment_refs.length === 0 ? "  (none)" : projection.context.environment_refs.map(r => `  - ${r}`).join("\n")}`,
     `[memory evidence (allowed refs)]\n${[...projection.memory_working_refs, ...projection.recent_retrieval_refs].length === 0 ? "  (none)" : [...projection.memory_working_refs, ...projection.recent_retrieval_refs].map(r => `  - ${r}`).join("\n")}`,
-    `[affect] ${affect}`,
-    `[mood] baseline=${projection.mood_baseline}`,
+    ...affectLines,
     `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,
     `[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing ${projection.belief_items.length} of ${projection.belief_item_count} canonical belief item(s)\n${beliefStances}`,
     `[relationships] ${relationships}`,
@@ -138,7 +149,7 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionV0 |
 
 function parseConversationProposal(
   content: string,
-  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+  projection: CognitiveContextProjectionAnyVersion
 ): ConversationCognitionProposalV1 {
   let parsed: unknown;
   try {

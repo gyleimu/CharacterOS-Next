@@ -24,7 +24,7 @@ import { createMiclStageMinter } from "../../micl/micl-capabilities.js";
 import { InMemoryMiclWorkflowStore } from "../../micl/micl-workflow-store.js";
 import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/factual-event-appraisal-executor.js";
-import { allowedEvidenceSet, type CognitiveContextProjectionV0, type CognitiveContextProjectionV1 } from "../cognition-action/types.js";
+import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitiveContextProjectionV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
 import type { LanguageEpisodeContentV0 } from "./language-realization-input.js";
@@ -155,7 +155,7 @@ export class ConversationTextResponseExecutorV1 {
     // ---- shared cognition pipeline with ConversationCognitionProviderV1 -----------
     const conversationProvider = new ConversationCognitionProviderV1(conversationTransport);
     const wrappedV0Provider = {
-      propose: async (projection: CognitiveContextProjectionV0) => {
+      propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = await conversationProvider.propose(projection);
         return convProposal.cognition;
       }
@@ -244,7 +244,7 @@ export class ConversationTextResponseExecutorV1 {
     snapshot: SubjectStateV0,
     sourceRevision: number,
     requestId: IdentifierV0,
-    evidenceProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1,
+    evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
@@ -289,7 +289,7 @@ export class ConversationTextResponseExecutorV1 {
     snapshot: SubjectStateV0,
     sourceRevision: number,
     requestId: IdentifierV0,
-    evidenceProjection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1,
+    evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
     directive: CommunicationDirectiveV0,
     conversationProvider: ConversationCognitionProviderV1,
@@ -340,8 +340,10 @@ export class ConversationTextResponseExecutorV1 {
       current_observation_ref: evidenceProjection.context.current_observation_ref,
       belief_items: evidenceProjection.belief_items,
       traits_dimensions: evidenceProjection.traits_dimensions,
-      affect_channels: evidenceProjection.affect_channels,
-      mood_baseline: evidenceProjection.mood_baseline,
+      // v3-only realization surface: the projection here is always V0/V1
+      // (the explicit-v4 RAW_CANONICAL_VA path never reaches this code).
+      affect_channels: (evidenceProjection as CognitiveContextProjectionV0).affect_channels,
+      mood_baseline: (evidenceProjection as CognitiveContextProjectionV0).mood_baseline,
       regulation: evidenceProjection.regulation,
       interaction_familiarity: evidenceProjection.interaction_familiarity,
       interaction_familiarity_cognition_influences: evidenceProjection.interaction_familiarity_cognition_influences,
@@ -398,7 +400,7 @@ export class ConversationTextResponseExecutorV1 {
   }
 }
 
-function lawfulEvidence(projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1): ReadonlySet<string> {
+function lawfulEvidence(projection: CognitiveContextProjectionAnyVersion): ReadonlySet<string> {
   return allowedEvidenceSet(projection);
 }
 

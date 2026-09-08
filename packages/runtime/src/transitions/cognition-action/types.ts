@@ -39,6 +39,7 @@ import {
 import type { RelationshipInteractionFamiliarityReadProjectionV0 } from "../../transitions/relationship/relationship-interaction-familiarity-read-projection.js";
 import type { RelationshipInteractionFamiliarityCognitionInfluenceV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import type { FactualMemoryEvidenceBundleV0 } from "./factual-memory-evidence.js";
+import type { CanonicalAffectCognitionProjectionV0 } from "./canonical-affect-cognition-projection-v0.js";
 
 export const COGNITIVE_CONTEXT_PROJECTION_V1_SCHEMA_VERSION =
   "cognitive-context-projection-v1" as const;
@@ -88,8 +89,61 @@ export interface CognitiveContextProjectionV1 {
 
 export const COGNITIVE_CONTEXT_PROJECTION_SCHEMA_VERSION =
   "cognitive-context-projection-v0" as const;
+export const COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION =
+  "cognitive-context-projection-v2" as const;
 export const COGNITIVE_CONTEXT_PROJECTION_HASH_PROJECTION =
   "characteros-next/runtime/cognitive-context-projection/v1" as const;
+
+/**
+ * CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — the v4 versioned cognition input.
+ *
+ * Follows the frozen V0 → V1 versioned-extension law: NEVER an in-place
+ * mutation of V0/V1. The v3-specific legacy Affect channel summaries and Mood
+ * baseline are REMOVED and replaced by the exact committed CanonicalAffectV0
+ * raw values (RAW_CANONICAL_VA — no named emotions, no Mood, no dynamics
+ * config, no history, no thresholds). The canonical Affect section joins the
+ * hashed body, so the projection hash binds the exact VA the provider saw.
+ * Dual affect authority is structurally impossible: V0/V1 carry legacy
+ * channels+Mood; V2 carries canonical VA — never both.
+ */
+export interface CognitiveContextProjectionV2 {
+  readonly schema_version: typeof COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION;
+  readonly subject_id: IdentifierV0;
+  readonly current_logical_time: LogicalTimeV0;
+  readonly state_revision: StateRevisionV0;
+  readonly traits_dimensions: Readonly<Record<string, number>>;
+  /** CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — exact raw canonical VA. */
+  readonly canonical_affect: CanonicalAffectCognitionProjectionV0;
+  readonly regulation: {
+    readonly energy: number;
+    readonly stress: number;
+    readonly arousal: number;
+    readonly fatigue: number;
+  };
+  readonly context: CognitiveContextProjectionV0["context"];
+  readonly memory_working_refs: readonly CanonicalRefV0[];
+  readonly recent_retrieval_refs: readonly CanonicalRefV0[];
+  /** Resolved factual memory evidence when the wired resolver produced entries. */
+  readonly factual_memory_evidence?: FactualMemoryEvidenceBundleV0;
+  readonly belief_item_count: number;
+  readonly belief_items: CognitiveContextProjectionV0["belief_items"];
+  readonly relationship_counterpart_count: number;
+  readonly relationship_dimensions: CognitiveContextProjectionV0["relationship_dimensions"];
+  readonly interaction_familiarity: CognitiveContextProjectionV0["interaction_familiarity"];
+  readonly interaction_familiarity_cognition_influences: CognitiveContextProjectionV0["interaction_familiarity_cognition_influences"];
+  readonly allowed_actions: readonly AllowedActionV0[];
+  /** Content-addressed integrity of the exact V2 projection body. */
+  readonly projection_hash: HashV1;
+}
+
+/**
+ * CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — the closed versioned cognition
+ * input union (§36). No optional dual-format fields.
+ */
+export type CognitiveContextProjectionAnyVersion =
+  | CognitiveContextProjectionV0
+  | CognitiveContextProjectionV1
+  | CognitiveContextProjectionV2;
 
 /** Typed declarative action space entry (§19): no executable strings, ever. */
 export interface AllowedActionV0 {
@@ -362,7 +416,7 @@ export function validateCognitionProposal(v: unknown): ValidationResult<Cognitio
  * (relationship_dimensions), which is visible but not citeable.
  */
 export function allowedEvidenceSet(
-  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+  projection: CognitiveContextProjectionAnyVersion
 ): ReadonlySet<string> {
   const allowed = new Set<string>([
     ...projection.memory_working_refs,

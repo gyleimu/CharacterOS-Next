@@ -565,12 +565,17 @@ export class SubjectCoreFacade<
     }
     if (
       currentState.schema_version === "subject-state-v4" &&
-      input.proposal.transition_type !== "Time"
+      input.proposal.transition_type !== "Time" &&
+      // CANONICAL_AFFECT_COGNITION_INTEGRATION_V0: v4 CognitionAction is a
+      // read-only consumer whose canonical footprint is exactly this durable
+      // zero-delta NO_OP terminal — never a state writer (the zero-delta
+      // shape check above is mandatory and unchanged).
+      input.proposal.transition_type !== "CognitionAction"
     ) {
       return this.rejected(
         "INVALID_TRANSITION_COMPOSITION",
         "TR-ATOMIC-001",
-        "subject-state-v4 foundation permits durable NO_OP only for Time"
+        "subject-state-v4 foundation permits durable NO_OP only for Time and CognitionAction"
       );
     }
     if (beliefNoOp) {

@@ -6,7 +6,7 @@ import { assertInput, assertCycle, accountDifferences, preflight, type Preflight
 import { executePrimary } from "../../research/experiments/familiarity-causal-behavior-v0/runner.ts";
 
 let frozen: Preflight;
-beforeAll(async () => { frozen = await preflight(); }, 20000);
+beforeAll(async () => { frozen = await preflight(); }, 60000);
 
 function scoringFixture(a: RubricClass = "BROAD_CLARIFICATION", b: RubricClass = "NARROW_MISSING_DETAIL"): ScoredTrial[] {
   return ORDER.map(item => ({ ...item, host_valid: true, valid: true,

@@ -22,7 +22,7 @@
  * authority the production validator enforces.
  */
 
-import type { CognitiveContextProjectionV0, CognitiveContextProjectionV1 } from "../../transitions/cognition-action/types.js";
+import type { CognitiveContextProjectionAnyVersion, CognitiveContextProjectionV0, CognitiveContextProjectionV1, CognitiveContextProjectionV2 } from "../../transitions/cognition-action/types.js";
 import type { FactualMemoryEvidenceBundleV0 } from "../../transitions/cognition-action/factual-memory-evidence.js";
 import { allowedEvidenceSet } from "../../transitions/cognition-action/types.js";
 import { renderInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
@@ -44,7 +44,7 @@ function renderRefList(refs: readonly string[], indent: string): string {
  * never an instruction, never a semantic classification.
  */
 export function renderFactualMemoryEvidenceSectionV1(
-  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+  projection: CognitiveContextProjectionAnyVersion
 ): string {
   const evidence = (projection as { factual_memory_evidence?: FactualMemoryEvidenceBundleV0 }).factual_memory_evidence;
   if (evidence === undefined || evidence.entries.length === 0) return "";
@@ -64,16 +64,34 @@ export function renderFactualMemoryEvidenceSectionV1(
   return lines.join("\n");
 }
 
-/** Deterministic SUBJECT DATA section rendered from the projection only. */
+/** Deterministic SUBJECT DATA section rendered from the projection only.
+ * CANONICAL_AFFECT_COGNITION_INTEGRATION_V0: V2 renders ONE neutral canonical
+ * raw-VA line and NO legacy affect-channel/Mood lines; V0/V1 rendering is
+ * byte-identical to the frozen baseline. Unknown versions fail closed. */
 export function renderCognitiveSubjectData(
-  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+  projection: CognitiveContextProjectionAnyVersion
 ): string {
-  const affect =
-    projection.affect_channels.length === 0
-      ? "(no active affect channels)"
-      : projection.affect_channels
-          .map((c) => `${c.channel}=${c.strength}`)
-          .join(", ");
+  const schemaVersion = String(projection.schema_version);
+  if (schemaVersion !== "cognitive-context-projection-v0" && schemaVersion !== "cognitive-context-projection-v1" && schemaVersion !== "cognitive-context-projection-v2") {
+    throw new Error(`cognitive prompt projection: unsupported projection schema ${schemaVersion}`);
+  }
+  const isV2 = schemaVersion === "cognitive-context-projection-v2";
+  const legacyProjection = projection as CognitiveContextProjectionV0 | CognitiveContextProjectionV1;
+  const v2Projection = projection as CognitiveContextProjectionV2;
+  const affectLines: string[] = isV2
+    ? [
+        `[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`
+      ]
+    : [
+        `[affect] ${
+          legacyProjection.affect_channels.length === 0
+            ? "(no active affect channels)"
+            : legacyProjection.affect_channels
+                .map((c) => `${c.channel}=${c.strength}`)
+                .join(", ")
+        }`,
+        `[mood] baseline=${legacyProjection.mood_baseline}`
+      ];
   const beliefStances =
     projection.belief_items.length === 0
       ? "(none)"
@@ -117,8 +135,7 @@ export function renderCognitiveSubjectData(
     `[environment refs]\n${renderRefList(projection.context.environment_refs, "  ")}`,
     `[memory evidence (allowed refs)]\n${renderRefList([...projection.memory_working_refs, ...projection.recent_retrieval_refs], "  ")}`,
     ...(renderFactualMemoryEvidenceSectionV1(projection) === "" ? [] : [renderFactualMemoryEvidenceSectionV1(projection)]),
-    `[affect] ${affect}`,
-    `[mood] baseline=${projection.mood_baseline}`,
+    ...affectLines,
     `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,
     beliefs,
     `[relationships] ${relationships}`,
@@ -153,7 +170,7 @@ export function renderCognitiveSystemRules(): string {
 
 /** Deterministic full prompt: [system rules, subject data]. Pure function. */
 export function buildCognitivePromptMessages(
-  projection: CognitiveContextProjectionV0 | CognitiveContextProjectionV1
+  projection: CognitiveContextProjectionAnyVersion
 ): readonly ModelTransportMessageV0[] {
   return [
     { role: "system", content: renderCognitiveSystemRules() },
