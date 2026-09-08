@@ -78,7 +78,7 @@ export interface EvidenceBundle {
   readonly baseline_commit: string;
   readonly phase: "DETERMINISTIC_HARNESS_VALIDATION";
   readonly real_model_calls: 0;
-  readonly real_provider: { readonly config: unknown; readonly reachable: false; readonly reason: string };
+  readonly real_provider: { readonly config: typeof REAL_PROVIDER_CONFIG; readonly reachable: false; readonly reason: string };
   readonly scenarios: readonly string[];
   readonly arms: { readonly prior_goal_congruence: Record<string, number>; readonly final_canonical_affect: Record<string, { valence: number; activation: number }> };
   readonly trials: readonly TrialRecord[];
@@ -251,25 +251,27 @@ export async function executeDeterministicPhase(): Promise<EvidenceBundle> {
     // §12 — EXPERIMENTAL_ABLATION_ONLY contrast: neutralize the affect
     // section at the provider-input boundary; arms must become
     // byte-identical (the provider cannot distinguish them at all).
-    const ablatedA = ablateProviderInput(a.provider_input);
-    const ablatedB = ablateProviderInput(b.provider_input);
+    const ablatedA = await ablateProviderInput(a.provider_input);
+    const ablatedB = await ablateProviderInput(b.provider_input);
     const identical = ablatedInputsIdentical(ablatedA, ablatedB);
     ablatedIdenticalAll = ablatedIdenticalAll && identical;
     trials.push(
       {
         ...a.trial,
-        condition: "ABLATED_A",
-        trial_id: `${scenario.id}-ABL-A-1`,
-        canonical_affect: { valence: ABLATION_NEUTRAL_AFFECT_SECTION.valence, activation: ABLATION_NEUTRAL_AFFECT_SECTION.activation },
-        provider_input_hash: sha256(canonicalJson(ablatedA)),
+         condition: "ABLATED_A",
+         trial_id: `${scenario.id}-ABL-A-1`,
+         canonical_affect: { valence: ABLATION_NEUTRAL_AFFECT_SECTION.valence, activation: ABLATION_NEUTRAL_AFFECT_SECTION.activation },
+         projection_hash: (ablatedA as { projection_hash: string }).projection_hash,
+         provider_input_hash: sha256(canonicalJson(ablatedA)),
         structured_output: { ...a.trial.structured_output }
       },
       {
         ...b.trial,
-        condition: "ABLATED_B",
-        trial_id: `${scenario.id}-ABL-B-1`,
-        canonical_affect: { valence: ABLATION_NEUTRAL_AFFECT_SECTION.valence, activation: ABLATION_NEUTRAL_AFFECT_SECTION.activation },
-        provider_input_hash: sha256(canonicalJson(ablatedB)),
+         condition: "ABLATED_B",
+         trial_id: `${scenario.id}-ABL-B-1`,
+         canonical_affect: { valence: ABLATION_NEUTRAL_AFFECT_SECTION.valence, activation: ABLATION_NEUTRAL_AFFECT_SECTION.activation },
+         projection_hash: (ablatedB as { projection_hash: string }).projection_hash,
+         provider_input_hash: sha256(canonicalJson(ablatedB)),
         structured_output: { ...b.trial.structured_output }
       }
     );

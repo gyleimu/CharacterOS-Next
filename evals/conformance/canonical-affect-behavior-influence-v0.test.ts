@@ -44,6 +44,14 @@ describe("CANONICAL_AFFECT_COGNITION_BEHAVIOR_INFLUENCE_EXPERIMENT_V0 — determ
       expect(trial.projection_hash).toMatch(/^sha256:[0-9a-f]{64}$/);
       expect(trial.provider).toBe("deterministic-fake-v0");
     }
+    for (const scenario of SCENARIOS) {
+      const ablatedA = bundle.trials.find((trial) => trial.scenario_id === scenario.id && trial.condition === "ABLATED_A");
+      const ablatedB = bundle.trials.find((trial) => trial.scenario_id === scenario.id && trial.condition === "ABLATED_B");
+      expect(ablatedA?.projection_hash).toBe(ablatedB?.projection_hash);
+      expect(ablatedA?.projection_hash).not.toBe(
+        bundle.trials.find((trial) => trial.scenario_id === scenario.id && trial.condition === "A")?.projection_hash
+      );
+    }
     // 12: failure classification pipeline present (0 failures this phase).
     expect(bundle.aggregate.failed_trials).toBe(0);
     // 13: restore reproduces the exact treatment input.

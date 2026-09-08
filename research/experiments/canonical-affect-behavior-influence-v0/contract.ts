@@ -25,6 +25,7 @@ export const BASELINE_COMMIT = "2e369c1ddfa961a5598594e8871893c6e7ab2924";
 export const SUBJECT = "subject-s0";
 export const ALICE = "entity:alice";
 export const TASK = "revise the update";
+export type Arm = "A" | "B";
 
 /** The one frozen law source: production dynamics are used as-is (§35). */
 export const DYNAMICS_LAW = Object.freeze({

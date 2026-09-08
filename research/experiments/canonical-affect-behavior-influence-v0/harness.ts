@@ -389,7 +389,7 @@ export async function constructArmHistory(world: World, arm: Arm, scenario: { re
  * ablated body, so arm-ablated inputs become byte-identical (the provider
  * cannot distinguish arms by any field, including the hash). Pure transform
  * over the captured provider input; production projection code untouched. */
-export function ablateProviderInput(providerInput: unknown): unknown {
+export async function ablateProviderInput(providerInput: unknown): Promise<unknown> {
   const projection = providerInput as Record<string, unknown>;
   check(projection["schema_version"] === COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION, "ablation requires a V2 projection");
   const neutralSection = projectCanonicalAffectForCognitionV0({
@@ -402,7 +402,7 @@ export function ablateProviderInput(providerInput: unknown): unknown {
   delete body["allowed_actions"];
   delete body["projection_hash"];
   body["canonical_affect"] = { ...neutralSection };
-  const ablatedHash = cognitiveProjectionHash(body);
+  const ablatedHash = await cognitiveProjectionHash(body);
   return Object.freeze({
     ...body,
     schema_version: projection["schema_version"],

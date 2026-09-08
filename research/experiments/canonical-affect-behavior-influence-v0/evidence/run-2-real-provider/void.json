@@ -1,0 +1,18 @@
+{
+  "schema_version": "canonical-affect-behavior-influence-void-attempt-v0",
+  "status": "VOID_PRE_ANALYSIS_REAL_PROVIDER_EXECUTION_BUG",
+  "included_in_principal_verdict": false,
+  "attempted_calls": 200,
+  "valid_calls": 90,
+  "failed_calls": 110,
+  "root_cause": "ablateProviderInput omitted await on async cognitiveProjectionHash, so ablated projection_hash was a Promise",
+  "observed_ablation_failure": {
+    "calls": 100,
+    "classification": "STALE",
+    "provider_code": "MODEL_PROJECTION_MISMATCH",
+    "serialized_expected_projection_hash": {},
+    "model_returned_projection_hash": "[object Promise]"
+  },
+  "corrected_run": "../run-3-real-provider",
+  "raw_evidence_preserved": true
+}
