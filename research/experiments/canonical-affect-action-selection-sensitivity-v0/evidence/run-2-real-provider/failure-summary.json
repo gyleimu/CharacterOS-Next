@@ -1,0 +1,1 @@
+{"attempted_calls":160,"by_status":{"INVALID_SCHEMA":0,"OTHER_RUNTIME_FAILURE":0,"PROVIDER_ERROR":0,"STALE":0,"TIMEOUT":0,"VALIDATION_REJECTED":0},"failed_calls":0,"failures":[],"model_action_not_allowed":0,"schema_version":"canonical-affect-action-selection-failure-summary-v0"}

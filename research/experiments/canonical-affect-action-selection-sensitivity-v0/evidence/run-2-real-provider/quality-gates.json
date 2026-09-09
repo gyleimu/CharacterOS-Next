@@ -1,0 +1,169 @@
+{
+  "schema_version": "canonical-affect-action-selection-sensitivity-quality-gates-v0",
+  "all_pass": true,
+  "baseline": {
+    "status": "PASS",
+    "required_commit": "b5a0437e4b5c5bae87f47bcc2c992e392d687afe",
+    "head_before_commit": "b5a0437e4b5c5bae87f47bcc2c992e392d687afe",
+    "origin_main_before_commit": "b5a0437e4b5c5bae87f47bcc2c992e392d687afe",
+    "branch": "main",
+    "initial_worktree_clean": true
+  },
+  "focused_tests": {
+    "status": "PASS",
+    "command": "pnpm exec vitest run evals/conformance/canonical-affect-action-selection-sensitivity-v0.test.ts evals/conformance/canonical-affect-behavior-influence-replication-v1.test.ts evals/conformance/canonical-affect-behavior-influence-v0.test.ts packages/runtime/src/transitions/affect-application/affect-application-v0.test.ts packages/runtime/src/transitions/cognition-action/canonical-affect-cognition-projection-v0.test.ts packages/runtime/src/transitions/cognition-action/canonical-affect-cognition-integration-v0.test.ts packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.test.ts packages/runtime/src/authority/restore-chain-authority.test.ts packages/subject-core/src/restore/restore.test.ts packages/runtime/src/authority/subject-state-v4-atomic-authority-v0.test.ts",
+    "test_files_passed": 10,
+    "tests_passed": 107,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "experiment_specific_recheck": {
+    "status": "PASS",
+    "command": "pnpm exec vitest run evals/conformance/canonical-affect-action-selection-sensitivity-v0.test.ts",
+    "test_files_passed": 1,
+    "tests_passed": 3,
+    "failed": 0,
+    "exit_code": 0
+  },
+  "full_suite": {
+    "status": "PASS",
+    "command": "pnpm test",
+    "test_files_passed": 122,
+    "test_files_skipped": 1,
+    "tests_passed": 1885,
+    "tests_skipped": 3,
+    "failed": 0,
+    "exit_code": 0,
+    "duration_seconds": 118.08
+  },
+  "build": {
+    "status": "PASS",
+    "command": "pnpm build",
+    "actual_command": "pnpm --recursive --workspace-concurrency=1 --if-present run build",
+    "workspace_projects_in_scope": "14 of 15",
+    "exit_code": 0
+  },
+  "workspace_typecheck": {
+    "status": "PASS",
+    "command": "pnpm typecheck",
+    "actual_command": "pnpm --recursive --workspace-concurrency=1 --if-present run typecheck",
+    "workspace_projects_in_scope": "14 of 15",
+    "exit_code": 0
+  },
+  "experiment_typecheck": {
+    "status": "PASS",
+    "command": "pnpm exec tsc -p research/experiments/canonical-affect-action-selection-sensitivity-v0/tsconfig.json",
+    "exit_code": 0
+  },
+  "lint": {
+    "status": "PASS",
+    "command": "pnpm lint",
+    "actual_command": "eslint . --max-warnings 0",
+    "warnings": 0,
+    "errors": 0,
+    "exit_code": 0,
+    "prior_attempt": {
+      "status": "FAIL",
+      "errors": 6,
+      "warnings": 1,
+      "correction": "Removed unused experiment-local imports/directive and replaced four non-null assertions with explicit four-arm validity narrowing; no metric, evidence, or production behavior changed."
+    }
+  },
+  "diff_check": {
+    "status": "PASS",
+    "commands": [
+      "git diff --check",
+      "git diff --cached --check"
+    ],
+    "errors": 0,
+    "exit_code": 0
+  },
+  "collection_integrity": {
+    "status": "PASS",
+    "conclusion_bearing_run": "run-2-real-provider",
+    "planned_calls": 160,
+    "actual_trials": 160,
+    "valid_trials": 160,
+    "failed_trials": 0,
+    "unique_trial_identities": 160,
+    "duplicate_trial_identities": 0,
+    "missing_planned_trial_identities": 0,
+    "post_hoc_extra_trial_identities": 0,
+    "common_full_valid_units": 40,
+    "scenario_manifest_matches_trials": true,
+    "action_order_manifest_matches_trials": true,
+    "lawful_va_matches_trials": true,
+    "execution_order_schedule_matches_preregistration": true,
+    "collection_complete_marker_valid": true,
+    "frozen_summary_sample_matches_trials": true,
+    "additional_real_provider_generation_calls_during_finalization": 0
+  },
+  "transport_recovery": {
+    "disclosure_status": "RECORDED_AND_EXCLUDED_FROM_SCIENTIFIC_METRICS",
+    "first_attempt": {
+      "directory": "run-1-real-provider",
+      "disposition": "TRANSPORT_INVALID",
+      "attempted_records": 160,
+      "valid_responses": 0,
+      "timeouts": 2,
+      "provider_connection_failures": 158,
+      "evidence_preserved": true,
+      "records_retried_in_place": false
+    },
+    "conclusion_bearing_attempt": {
+      "directory": "run-2-real-provider",
+      "disposition": "VALID_TRANSPORT_RECOVERY_RUN",
+      "attempted_calls": 160,
+      "valid_responses": 160,
+      "failed_calls": 0
+    },
+    "metric_denominators_use_only": "run-2-real-provider"
+  },
+  "production_isolation": {
+    "status": "PASS",
+    "production_behavior_changing_diff": 0,
+    "production_paths_changed": [],
+    "scope": "New experiment-local harness, frozen evidence, conformance test, and derived report only."
+  },
+  "changed_paths": [
+    "evals/conformance/canonical-affect-action-selection-sensitivity-v0.test.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/README.md",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/cli.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/contract.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/collection-complete.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/config.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/failure-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/history-construction.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/input-diff-audit.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/order-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/phase-a-complete.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/phase-a.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/provider-preflight.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/restore-controls.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/scenario-manifest.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/scenario-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-1-real-provider/trials.jsonl",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/REPORT.md",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/collection-complete.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/collection-integrity.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/config.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/failure-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/history-construction.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/input-diff-audit.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/order-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/phase-a-complete.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/phase-a.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/provider-preflight.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/quality-gates.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/restore-controls.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/scenario-manifest.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/scenario-summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/summary.json",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/evidence/run-2-real-provider/trials.jsonl",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/metrics.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/phase-a.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/real-runner.ts",
+    "research/experiments/canonical-affect-action-selection-sensitivity-v0/tsconfig.json"
+  ]
+}
