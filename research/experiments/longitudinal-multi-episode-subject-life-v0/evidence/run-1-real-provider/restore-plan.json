@@ -1,0 +1,14 @@
+{
+  "schema_version": "longitudinal-life-restore-plan-v0",
+  "boundary": "after Episode 3",
+  "mechanism": "mintTrustedCanonicalHistoryBoundaryV4V0 + createSubjectStateV4AuthoritativeRestoreEnvelopeV0 + restoreSubjectStateV4AuthoritativelyV0",
+  "fresh_runtime": "new assembly + new repository rebuilt from durable payloads + fresh delivery/ingress ledgers",
+  "cache_continuity_prohibited": true,
+  "pre_post_evidence": [
+    "pre_restore_head",
+    "post_restore_head",
+    "memory repository revision",
+    "episode refs",
+    "state hashes"
+  ]
+}

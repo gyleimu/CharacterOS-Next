@@ -1,0 +1,23 @@
+{
+  "schema_version": "longitudinal-life-quality-gates-v0",
+  "single_subject": true,
+  "no_control_arms": true,
+  "no_memory_ablation": true,
+  "completed_episodes": 4,
+  "memory_commits": 3,
+  "authoritative_restore": true,
+  "fresh_runtime_after_restore": true,
+  "cache_continuity": false,
+  "provider_actually_received_life_evidence": {
+    "E1": false,
+    "E2": true,
+    "E3": true,
+    "E4": true
+  },
+  "manual_injection_absent": true,
+  "retrieval_tuning": false,
+  "transcript_shortcut": false,
+  "new_psychology_fields": false,
+  "real_calls_within_budget": true,
+  "all_pass": true
+}

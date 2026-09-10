@@ -1,0 +1,89 @@
+{
+  "schema_version": "longitudinal-life-memory-provenance-graph-v0",
+  "edges": [
+    {
+      "from": "E1 behavior",
+      "to": "E1 outcome",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E1 outcome",
+      "to": "E1 Experience",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E1 Experience",
+      "to": "E1 Memory",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E1 Memory",
+      "to": "E2 cognition",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E2 behavior",
+      "to": "E2 outcome",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E2 outcome",
+      "to": "E2 Experience",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E2 Experience",
+      "to": "E2 Memory",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E1/E2 Memory",
+      "to": "E3 cognition",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E3 behavior",
+      "to": "E3 outcome",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E3 outcome",
+      "to": "E3 Experience",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E3 Experience",
+      "to": "E3 Memory",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E1/E2/E3 Memory",
+      "to": "RESTORE",
+      "status": "PROVEN"
+    },
+    {
+      "from": "restored E1/E2/E3 Memory",
+      "to": "E4 cognition",
+      "status": "PROVEN"
+    },
+    {
+      "from": "E4 behavior",
+      "to": "E4 outcome",
+      "status": "PROVEN"
+    }
+  ],
+  "retrieval_contribution": {
+    "E2": [
+      "FROM_E1"
+    ],
+    "E3": [
+      "FROM_E1",
+      "FROM_E2"
+    ],
+    "E4": [
+      "FROM_E1",
+      "FROM_E2",
+      "FROM_E3"
+    ]
+  }
+}

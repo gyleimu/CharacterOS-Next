@@ -1,0 +1,121 @@
+{
+  "schema_version": "longitudinal-multi-episode-subject-life-config-v0",
+  "experiment_version": "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0",
+  "baseline_commit": "a5c1e883b33b8635612ca3f4fdbd851834ab4299",
+  "prior_frozen_slices": {
+    "future_behavior_remeasure": "FUTURE_BEHAVIOR_DIVERGENCE_INPUT_EFFECT_ONLY",
+    "propagation_diagnostic": "MEMORY_GROUNDED_INTENT_SIGNAL_EXISTS_BUT_CURRENT_METRIC_CANNOT_CAPTURE_IT",
+    "provider_surface_repair": "DURABLE_MEMORY_COGNITION_PROVIDER_SURFACE_REPAIR_IMPLEMENTED_GREEN"
+  },
+  "subjects": 1,
+  "arms": 0,
+  "memory_ablation": false,
+  "control_experiment": false,
+  "episode_count": 4,
+  "restore_boundary": "between E3 and E4",
+  "design_frozen_before_real_provider_output": true,
+  "call_budget": {
+    "cognition_calls": 4,
+    "language_calls_max": 4,
+    "maximum_real_calls": 8,
+    "trial_repetitions": 0,
+    "clarification_branch_uses_fixed_behavior": true
+  },
+  "cognition_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "language_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "counterpart_policy": {
+    "policy_id": "DETERMINISTIC_COUNTERPART_WITH_EXPLICIT_TASK_STATE_V0",
+    "inputs": [
+      "delivered behavior text",
+      "explicit external task state"
+    ],
+    "forbidden_inputs": [
+      "affect",
+      "memory refs",
+      "current_intent",
+      "treatment labels",
+      "expected outcome"
+    ],
+    "question_pattern": "behavior text contains '?' or '？'",
+    "topic_extraction": "first sentence of the behavior text, trimmed, max 80 characters",
+    "question_reply_template": "Sure — about \"{topic}\": I have noted the open item on the shared checklist and will confirm it before the review.",
+    "statement_reply_template": "Thanks — about \"{topic}\": I have recorded that on the shared checklist and left one follow-up item for the review.",
+    "state_updates": [
+      "decision_recorded = first 120 characters of the behavior's first sentence (statement behaviors only)",
+      "open_item_raised = true when the behavior asks a question",
+      "exchange_count = exchange_count + 1"
+    ],
+    "world_state_is_external": true,
+    "world_state_is_subject_memory": false
+  },
+  "affect_policy": {
+    "interval_mechanism": "lawful v4 TimeTransition between episodes",
+    "manual_patch": false,
+    "equalization": false,
+    "affect_carries_across_episodes": true
+  },
+  "verdicts": [
+    "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_SUPPORTED",
+    "LONGITUDINAL_LIFE_SUPPORTED_WITH_PARTIAL_MULTI_EPISODE_RETRIEVAL",
+    "LONGITUDINAL_MEMORY_ACCUMULATES_BUT_COGNITION_VISIBILITY_PARTIAL",
+    "POST_RESTORE_LIFE_CONTINUITY_BLOCKED",
+    "LONGITUDINAL_LIFECYCLE_AUTHORITY_BLOCKED",
+    "REAL_PROVIDER_UNAVAILABLE",
+    "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_FAILED"
+  ],
+  "multi_episode_retrieval_verdicts": [
+    "MULTI_EPISODE_RETRIEVAL_SUPPORTED",
+    "MULTI_EPISODE_RETRIEVAL_PARTIAL",
+    "MULTI_EPISODE_RETRIEVAL_NOT_OBSERVED"
+  ],
+  "post_restore_verdicts": [
+    "POST_RESTORE_LIFE_CONTINUITY_SUPPORTED",
+    "POST_RESTORE_MEMORY_PRESENT_NOT_RETRIEVED",
+    "POST_RESTORE_LIFE_CONTINUITY_FAILED"
+  ],
+  "longitudinal_metrics": [
+    "number_of_completed_episodes",
+    "number_of_durable_memory_commits",
+    "number_of_later_episodes_with_prior_memory_retrieved",
+    "number_of_provider_requests_with_prior_life_factual_content",
+    "number_of_post_restore_episodes_retrieving_pre_restore_memory"
+  ],
+  "retrieval_contribution_classes": [
+    "FROM_E1",
+    "FROM_E2",
+    "FROM_E3",
+    "CURRENT_EPISODE_ONLY",
+    "OTHER_FROZEN_CONTEXT"
+  ],
+  "prompt_changes_after_phase_a": "PROHIBITED",
+  "scenario_edits_after_phase_a": "PROHIBITED",
+  "retrieval_tuning": "PROHIBITED",
+  "manual_memory_write": "PROHIBITED",
+  "manual_memory_ref_injection": "PROHIBITED",
+  "new_psychology_fields": "PROHIBITED",
+  "production_behavior_changing_diff": 0
+}

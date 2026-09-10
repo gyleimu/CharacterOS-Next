@@ -1,0 +1,15 @@
+{
+  "schema_version": "longitudinal-life-phase-a-v0",
+  "experiment_version": "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0",
+  "baseline_commit": "a5c1e883b33b8635612ca3f4fdbd851834ab4299",
+  "real_model_calls": 0,
+  "episode_chronology_frozen": "PASS",
+  "counterpart_policy_frozen": "PASS",
+  "no_treatment_control_labels": "PASS",
+  "authority_paths_understood": "PASS",
+  "restore_path_understood": "PASS",
+  "retrieval_unchanged": "PASS",
+  "call_budget_frozen": "PASS",
+  "verdict_vocabulary_frozen": "PASS",
+  "all_pass": true
+}

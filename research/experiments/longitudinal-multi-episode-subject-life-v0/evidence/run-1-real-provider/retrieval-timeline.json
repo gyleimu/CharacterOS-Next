@@ -1,0 +1,92 @@
+{
+  "schema_version": "longitudinal-life-retrieval-timeline-v0",
+  "per_episode": {
+    "E1": {
+      "selected_refs": [],
+      "working_episode_refs": [],
+      "evidence_origin": {
+        "classifications": [],
+        "classes": []
+      }
+    },
+    "E2": {
+      "selected_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065"
+      ],
+      "working_episode_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065"
+      ],
+      "evidence_origin": {
+        "classifications": [
+          {
+            "episode_ref": "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+            "class": "FROM_E1"
+          }
+        ],
+        "classes": [
+          "FROM_E1"
+        ]
+      }
+    },
+    "E3": {
+      "selected_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+        "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3"
+      ],
+      "working_episode_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+        "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3"
+      ],
+      "evidence_origin": {
+        "classifications": [
+          {
+            "episode_ref": "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+            "class": "FROM_E1"
+          },
+          {
+            "episode_ref": "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3",
+            "class": "FROM_E2"
+          }
+        ],
+        "classes": [
+          "FROM_E1",
+          "FROM_E2"
+        ]
+      }
+    },
+    "E4": {
+      "selected_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+        "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3",
+        "episode:fce58e10ea17834ddadfac62f103393494df85a1b94d0696b45eb6a17a84b81c"
+      ],
+      "working_episode_refs": [
+        "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+        "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3",
+        "episode:fce58e10ea17834ddadfac62f103393494df85a1b94d0696b45eb6a17a84b81c"
+      ],
+      "evidence_origin": {
+        "classifications": [
+          {
+            "episode_ref": "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+            "class": "FROM_E1"
+          },
+          {
+            "episode_ref": "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3",
+            "class": "FROM_E2"
+          },
+          {
+            "episode_ref": "episode:fce58e10ea17834ddadfac62f103393494df85a1b94d0696b45eb6a17a84b81c",
+            "class": "FROM_E3"
+          }
+        ],
+        "classes": [
+          "FROM_E1",
+          "FROM_E2",
+          "FROM_E3"
+        ]
+      }
+    }
+  },
+  "retrieval_service": "RepositoryBackedMemoryRetrievalServiceV0 (frozen; no pinning, no tuning)"
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "longitudinal-life-affect-timeline-v0",
+  "entries": [
+    {
+      "episode": "E1",
+      "before_interval": 0,
+      "interval_ticks": 0,
+      "after_interval_before_episode": 0,
+      "after_appraisal_application": 0.023999999999999994,
+      "after_episode": 0.03149999999999999,
+      "after_reply_appraisal": 0.03149999999999999,
+      "logical_time_after_interval": 0
+    },
+    {
+      "episode": "E2",
+      "before_interval": 0.03149999999999999,
+      "interval_ticks": 300,
+      "after_interval_before_episode": 0.004263061421953299,
+      "after_appraisal_application": 0.03926306142195329,
+      "after_episode": 0.046763061421953286,
+      "after_reply_appraisal": 0.046763061421953286,
+      "logical_time_after_interval": 300
+    },
+    {
+      "episode": "E3",
+      "before_interval": 0.046763061421953286,
+      "interval_ticks": 300,
+      "after_interval_before_episode": 0.006328692162551165,
+      "after_appraisal_application": 0.006328692162551165,
+      "after_episode": 0.013828692162551164,
+      "after_reply_appraisal": 0.013828692162551164,
+      "logical_time_after_interval": 600
+    },
+    {
+      "episode": "E4",
+      "before_interval": 0.013828692162551164,
+      "interval_ticks": 300,
+      "after_interval_before_episode": 0.0018715099706107879,
+      "after_appraisal_application": 0.0018715099706107879,
+      "after_episode": 0.0018715099706107879,
+      "after_reply_appraisal": null,
+      "logical_time_after_interval": 900
+    }
+  ],
+  "pre_restore_affect": {
+    "schema_version": "canonical-affect-v0",
+    "valence": 0.013828692162551164,
+    "activation": 0.2709206494118209
+  },
+  "post_restore_affect": {
+    "schema_version": "canonical-affect-v0",
+    "valence": 0.0018715099706107879,
+    "activation": 0.2095980661754733
+  },
+  "manual_patch": false,
+  "equalization": false
+}

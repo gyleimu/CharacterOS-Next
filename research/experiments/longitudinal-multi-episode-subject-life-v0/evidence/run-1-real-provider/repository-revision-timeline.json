@@ -1,0 +1,34 @@
+{
+  "schema_version": "longitudinal-life-repository-revision-timeline-v0",
+  "timeline": [
+    {
+      "episode": "E1",
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R3",
+      "state_revision_before": 0,
+      "state_revision_after": 8
+    },
+    {
+      "episode": "E2",
+      "repository_revision_before": "R3",
+      "repository_revision_after": "R6",
+      "state_revision_before": 9,
+      "state_revision_after": 17
+    },
+    {
+      "episode": "E3",
+      "repository_revision_before": "R6",
+      "repository_revision_after": "R9",
+      "state_revision_before": 18,
+      "state_revision_after": 26
+    },
+    {
+      "episode": "E4",
+      "repository_revision_before": "R9",
+      "repository_revision_after": "R9",
+      "state_revision_before": 27,
+      "state_revision_after": 29
+    }
+  ],
+  "memory_commits": 3
+}

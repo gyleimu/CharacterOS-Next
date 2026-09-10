@@ -1,0 +1,40 @@
+{
+  "schema_version": "longitudinal-life-contract-v0",
+  "experiment_version": "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0",
+  "single_subject": true,
+  "no_control_arms": true,
+  "no_memory_ablation": true,
+  "chronological_episodes": [
+    "E1",
+    "E2",
+    "E3",
+    "E4"
+  ],
+  "restore_boundary": "after E3, before E4 (frozen trusted v4 restore path)",
+  "history_enters_only_through": [
+    "production retrieval over the durable repository",
+    "resolved factual memory evidence rendered into the provider request"
+  ],
+  "forbidden": [
+    "manual Memory write",
+    "manual Memory ref injection",
+    "manual Experience injection",
+    "manual current_intent patch",
+    "manual behavior patch",
+    "manual Affect patch",
+    "prompt recap injection",
+    "treatment label leakage",
+    "retrieval tuning",
+    "chat transcript shortcut",
+    "new psychology fields"
+  ],
+  "success_conditions": [
+    "E1-E4 complete lawfully",
+    "E1-E3 each commit durable Experience->Memory",
+    "E2 and E3 retrieve prior lived evidence",
+    "E4 after restore retrieves pre-restore lived evidence",
+    "provider-facing factual memory content proven",
+    "no manual history/Memory injection",
+    "lifecycle authority valid"
+  ]
+}

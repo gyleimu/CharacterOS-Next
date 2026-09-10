@@ -1,0 +1,18 @@
+{
+  "schema_version": "longitudinal-life-retrieval-audit-plan-v0",
+  "recorded_per_episode": [
+    "candidate/selected refs",
+    "resolved factual evidence",
+    "rendered provider memory section",
+    "provider request hash vs transport trace"
+  ],
+  "contribution_classes": [
+    "FROM_E1",
+    "FROM_E2",
+    "FROM_E3",
+    "CURRENT_EPISODE_ONLY",
+    "OTHER_FROZEN_CONTEXT"
+  ],
+  "manual_ref_injection": false,
+  "retrieval_tuning": false
+}

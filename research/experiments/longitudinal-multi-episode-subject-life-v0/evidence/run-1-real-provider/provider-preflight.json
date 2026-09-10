@@ -1,0 +1,35 @@
+{
+  "schema_version": "longitudinal-life-provider-preflight-v0",
+  "endpoint": "http://127.0.0.1:11434",
+  "ollama_version": "0.33.3",
+  "model": "qwen3.5:9b",
+  "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "digest_matches_required": true,
+  "cognition_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "language_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "real_model_calls": 0
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "longitudinal-life-provider-plan-v0",
+  "cognition_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "language_settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "stage_code": "frozen downstream two-stage runner (cognition → directive → language)",
+  "repaired_provider_surface_required": true,
+  "call_budget": {
+    "cognition_calls": 4,
+    "language_calls_max": 4,
+    "maximum_real_calls": 8,
+    "trial_repetitions": 0,
+    "clarification_branch_uses_fixed_behavior": true
+  }
+}

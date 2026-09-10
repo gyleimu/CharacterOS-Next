@@ -1,0 +1,7 @@
+{
+  "schema_version": "longitudinal-life-phase-a-complete-v0",
+  "experiment_version": "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0",
+  "baseline_commit": "a5c1e883b33b8635612ca3f4fdbd851834ab4299",
+  "real_model_calls": 0,
+  "all_pass": true
+}

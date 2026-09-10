@@ -1,0 +1,25 @@
+{
+  "policy_id": "DETERMINISTIC_COUNTERPART_WITH_EXPLICIT_TASK_STATE_V0",
+  "inputs": [
+    "delivered behavior text",
+    "explicit external task state"
+  ],
+  "forbidden_inputs": [
+    "affect",
+    "memory refs",
+    "current_intent",
+    "treatment labels",
+    "expected outcome"
+  ],
+  "question_pattern": "behavior text contains '?' or '？'",
+  "topic_extraction": "first sentence of the behavior text, trimmed, max 80 characters",
+  "question_reply_template": "Sure — about \"{topic}\": I have noted the open item on the shared checklist and will confirm it before the review.",
+  "statement_reply_template": "Thanks — about \"{topic}\": I have recorded that on the shared checklist and left one follow-up item for the review.",
+  "state_updates": [
+    "decision_recorded = first 120 characters of the behavior's first sentence (statement behaviors only)",
+    "open_item_raised = true when the behavior asks a question",
+    "exchange_count = exchange_count + 1"
+  ],
+  "world_state_is_external": true,
+  "world_state_is_subject_memory": false
+}

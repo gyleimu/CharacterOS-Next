@@ -1,0 +1,100 @@
+{
+  "schema_version": "longitudinal-life-ledger-v0",
+  "columns": [
+    "episode",
+    "order",
+    "logical_time_after_interval",
+    "logical_time",
+    "current_event",
+    "affect_before",
+    "affect_after",
+    "retrieved_prior_episodes",
+    "current_intent",
+    "directive",
+    "behavior",
+    "counterpart_consequence",
+    "experience_ref",
+    "episode_ref",
+    "repository_revision",
+    "post_restore"
+  ],
+  "rows": [
+    {
+      "episode": "E1",
+      "order": 1,
+      "logical_time_after_interval": 0,
+      "current_event": "Alice asks how the review document should be organized: the implementation notes and the validation notes could stay separate or be merged before the review.",
+      "affect_before": 0,
+      "affect_after": 0.03149999999999999,
+      "retrieved_prior_episodes": [],
+      "current_intent": "Recommend merging implementation and validation notes for better document cohesion unless Alice specifies a need for separation.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "I recommend merging the implementation notes and validation notes into a single section for better document cohesion, unless you specify a need to keep them separate.",
+      "counterpart_consequence": "Thanks — about \"I recommend merging the implementation notes and validation notes into a single \": I have recorded that on the shared checklist and left one follow-up item for the review.",
+      "experience_ref": "experience:bf92f4aed02c15d7450b24c6828d16767ad5e4962e34e56e24db3efb0f46149d",
+      "episode_ref": "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+      "repository_revision": "R0 → R3",
+      "post_restore": false
+    },
+    {
+      "episode": "E2",
+      "order": 2,
+      "logical_time_after_interval": 300,
+      "current_event": "Alice asks where the review document stands now, some time after the organization question came up.",
+      "affect_before": 0.004263061421953299,
+      "affect_after": 0.046763061421953286,
+      "retrieved_prior_episodes": [
+        "FROM_E1"
+      ],
+      "current_intent": "Report the current status of the review document to Alice.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "The review document is currently under active assessment.",
+      "counterpart_consequence": "Thanks — about \"The review document is currently under active assessment\": I have recorded that on the shared checklist and left one follow-up item for the review.",
+      "experience_ref": "experience:07fd78314226e73e2e836993ee7be7dc932b5e69b0d0ffaaac26d9a39df96016",
+      "episode_ref": "episode:ae2f4effca354bc4cc3bed668a9738989a78ffa4e4c1c6bee4751aaad178acc3",
+      "repository_revision": "R3 → R6",
+      "post_restore": false
+    },
+    {
+      "episode": "E3",
+      "order": 3,
+      "logical_time_after_interval": 600,
+      "current_event": "Alice asks whether the outstanding item on the shared checklist can be closed before the review, and whether the earlier organization decision still holds.",
+      "affect_before": 0.006328692162551165,
+      "affect_after": 0.013828692162551164,
+      "retrieved_prior_episodes": [
+        "FROM_E1",
+        "FROM_E2"
+      ],
+      "current_intent": "Clarify the status of the outstanding checklist item and confirm that the organization decision is pending the review.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Alice, the outstanding checklist item cannot be closed before the review. The organization's decision is currently pending that review.",
+      "counterpart_consequence": "Thanks — about \"Alice, the outstanding checklist item cannot be closed before the review\": I have recorded that on the shared checklist and left one follow-up item for the review.",
+      "experience_ref": "experience:2c5554b0fa547db2b8e4612195631b1ae33b36e13198720fffd0b6f946b1aaf8",
+      "episode_ref": "episode:fce58e10ea17834ddadfac62f103393494df85a1b94d0696b45eb6a17a84b81c",
+      "repository_revision": "R6 → R9",
+      "post_restore": false
+    },
+    {
+      "episode": "E4",
+      "order": 4,
+      "logical_time_after_interval": 900,
+      "current_event": "Alice asks for a final confirmation before the review that reflects everything agreed so far.",
+      "affect_before": 0.0018715099706107879,
+      "affect_after": 0.0018715099706107879,
+      "retrieved_prior_episodes": [
+        "FROM_E1",
+        "FROM_E2",
+        "FROM_E3"
+      ],
+      "current_intent": "Provide final pre-review confirmation to Alice",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Alice, this is the final pre-review confirmation reflecting everything we've agreed upon so far.",
+      "counterpart_consequence": "Thanks — about \"Alice, this is the final pre-review confirmation reflecting everything we've agr\": I have recorded that on the shared checklist and left one follow-up item for the review.",
+      "experience_ref": null,
+      "episode_ref": null,
+      "repository_revision": "R9 → R9",
+      "post_restore": true
+    }
+  ]
+}

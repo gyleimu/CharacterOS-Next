@@ -1,0 +1,96 @@
+{
+  "schema_version": "longitudinal-life-episode-v0",
+  "experiment_version": "LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0",
+  "episode": "E1",
+  "order": 1,
+  "post_restore": false,
+  "scene": "Alice asks how the review document should be organized: the implementation notes and the validation notes could stay separate or be merged before the review.",
+  "task": "Decide how the review document should be organized and tell Alice.",
+  "interval": {
+    "valence_before": 0,
+    "valence_after": 0,
+    "activation_after": 0.2,
+    "logical_time_after": 0
+  },
+  "affect_before_episode": 0,
+  "affect_after_appraisal_application": 0.023999999999999994,
+  "affect_after_episode": 0.03149999999999999,
+  "state_revision_before": 0,
+  "state_revision_after": 8,
+  "repository_revision_before": "R0",
+  "repository_revision_after": "R3",
+  "factual_event_ref": "event:84365c4baf8eb7bd8a79b493f4e7f371c53c5837c94b65ba5f4c5a3c11f8ed43",
+  "appraisal_ref": "appraisal:a6baa77865eea4a73518b2d2afb618d39c29f684ff655b28eca9e5c43b0ae738",
+  "appraisal_dimensions": {
+    "relevance": 0.8,
+    "goal_congruence": 0.6,
+    "intensity": 0.6
+  },
+  "context_hash": "sha256:72d6a7b4ec458a47a5e88e5d8e920b1e9798386645622dc00c29f7e5bee05c01",
+  "retrieval": {
+    "selected_refs": [],
+    "working_episode_refs": [],
+    "evidence_origin": {
+      "classifications": [],
+      "classes": []
+    },
+    "resolved_evidence": {
+      "schema_version": "factual-memory-evidence-v0",
+      "repository_revision": "R1",
+      "entries": []
+    }
+  },
+  "provider_surface": {
+    "request_hash": "sha256:f60057ccf45ce695fefb7651359e785f3a8e8a820c9c9b7cb03c049a7488216c",
+    "trace_request_hash": "sha256:f60057ccf45ce695fefb7651359e785f3a8e8a820c9c9b7cb03c049a7488216c",
+    "request_identity_match": true,
+    "memory_section_present": false,
+    "memory_section": ""
+  },
+  "cognition": {
+    "status": "VALID",
+    "current_intent": "Recommend merging implementation and validation notes for better document cohesion unless Alice specifies a need for separation.",
+    "directive": "REALIZE_CURRENT_INTENT",
+    "considered_context_refs": [
+      "entity:alice",
+      "subject:s0"
+    ],
+    "evidence_refs": [
+      "entity:alice"
+    ],
+    "relevant_memory_refs": [],
+    "reasoning_summary": "Alice is asking for a decision on organizing the review document (separate vs merged notes). No prior factual memory or external evidence exists to resolve this preference. The current intent is to provide a recommendation based on standard documentation practices, acknowledging that merging often improves flow while separation aids detailed tracking, but ultimately deferring to her specific workflow needs if not specified.",
+    "latency_ms": 13224,
+    "prompt_tokens": 1052,
+    "completion_tokens": 249,
+    "total_tokens": 1301
+  },
+  "language": {
+    "call_required": true,
+    "status": "VALID",
+    "input_hash": "sha256:20740d2fddba2e6f147d34a0998ce0d32c793864ef2fb5276e4b5d7a7e916596",
+    "latency_ms": 3941,
+    "total_tokens": 1257
+  },
+  "behavior": {
+    "behavior_id": "sha256:c158b6487893a3952a2ab6d39bbca203f4d8a6a3d6d23cb6a3e368f3f6f8a5f7",
+    "text": "I recommend merging the implementation notes and validation notes into a single section for better document cohesion, unless you specify a need to keep them separate.",
+    "content_hash": "sha256:6dde9342a1592f17f000f63522e5a05359a5bd961cbcde0918495e6211ca4b8a"
+  },
+  "counterpart": {
+    "reply": "Thanks — about \"I recommend merging the implementation notes and validation notes into a single \": I have recorded that on the shared checklist and left one follow-up item for the review.",
+    "environment_state_after": {
+      "exchange_count": 1,
+      "decision_recorded": "I recommend merging the implementation notes and validation notes into a single section for better document cohesion, un",
+      "open_item_raised": false
+    }
+  },
+  "delivery_id": "dlv-5737c7655ca9cfdc0c66fa454b3a4d55eb6e36d05a8f06f9527c617d51c87a28",
+  "reply_event_ref": "event:c179c1026d91b0ffc66e74b5771b6e0ce00a58ea9a3f7ee8c89b765f52ce8775",
+  "reply_observation_ref": "observation:o-e1-reply",
+  "experience_ref": "experience:bf92f4aed02c15d7450b24c6828d16767ad5e4962e34e56e24db3efb0f46149d",
+  "episode_ref": "episode:132ff9d586d510b6f71fdadecf379c636e9093bf44078d61f20264fd501ca065",
+  "memory_event_ref": "event:c179c1026d91b0ffc66e74b5771b6e0ce00a58ea9a3f7ee8c89b765f52ce8775",
+  "reply_appraisal_ref": "appraisal:08286c9d66aefbf4be8eed33587b96ec884f8a2b384e6efa486f1cda7a9e05e9",
+  "affect_after_reply_appraisal": 0.03149999999999999
+}

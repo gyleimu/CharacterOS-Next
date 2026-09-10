@@ -1,0 +1,25 @@
+[
+  {
+    "attempt": 1,
+    "outcome": "ABORTED_BEFORE_EVIDENCE_PERSISTENCE",
+    "failure": "TypeError: Cannot read properties of undefined (reading 'normalize') at validateCharacterLanguageBehaviorV0 (delivery ledger) — reduced behavior record passed instead of the full artifact",
+    "stage": "E1 delivery (after E1 generation)",
+    "calls_consumed": {
+      "cognition": 1,
+      "language": "0 or 1 (not persisted by the aborted attempt)"
+    },
+    "evidence_persisted": false,
+    "reconstructed_from_execution_log": true
+  },
+  {
+    "attempt": 2,
+    "outcome": "ABORTED",
+    "started_from_episode": "E1",
+    "detail": "aborted before completion; its persisted call rows remain in model-calls.jsonl under this attempt number"
+  },
+  {
+    "attempt": 3,
+    "outcome": "COMPLETED",
+    "detail": "cognition 4, language 4"
+  }
+]

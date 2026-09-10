@@ -1,0 +1,17 @@
+{
+  "schema_version": "longitudinal-life-authority-path-audit-v0",
+  "paths": {
+    "factual_event": "conversation ingress ledger → factual event authority (frozen)",
+    "appraisal": "FactualEventAppraisalExecutorV0 (frozen; minimal scenario appraisal)",
+    "affect": "AffectApplication (frozen; lawful writer only)",
+    "interval": "v4 TimeTransition (frozen; only affect recovery writer)",
+    "retrieval": "RepositoryBackedMemoryRetrievalServiceV0 (frozen; no pinning, no tuning)",
+    "evidence": "production FactualMemoryEvidenceResolverV0 (frozen)",
+    "behavior": "frozen downstream two-stage runner (ConversationCognitionProviderV1 → directive → LanguageRealizationProviderV0)",
+    "delivery": "conversation delivery ledger (frozen)",
+    "experience": "executeBehaviorOutcomeFeedback + BEHAVIOR_OUTCOME encoder (frozen)",
+    "memory": "Learning commit binding /memory_state/repository_revision (frozen)",
+    "restore": "trusted v4 boundary + restoreSubjectStateV4AuthoritativelyV0 (frozen)"
+  },
+  "all_frozen_production": true
+}

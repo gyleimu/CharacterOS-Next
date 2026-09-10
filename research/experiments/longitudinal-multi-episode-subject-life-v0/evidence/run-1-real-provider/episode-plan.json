@@ -1,0 +1,57 @@
+{
+  "schema_version": "longitudinal-life-episode-plan-v0",
+  "episodes": [
+    {
+      "episode": "E1",
+      "order": 1,
+      "interval_ticks": 0,
+      "scene": "Alice asks how the review document should be organized: the implementation notes and the validation notes could stay separate or be merged before the review.",
+      "task": "Decide how the review document should be organized and tell Alice.",
+      "appraisal": {
+        "relevance": 0.8,
+        "goal_congruence": 0.6,
+        "intensity": 0.6
+      },
+      "requires_prior_evidence": false
+    },
+    {
+      "episode": "E2",
+      "order": 2,
+      "interval_ticks": 300,
+      "scene": "Alice asks where the review document stands now, some time after the organization question came up.",
+      "task": "Report the current status of the review document to Alice.",
+      "appraisal": {
+        "relevance": 0.7,
+        "goal_congruence": 0.7,
+        "intensity": 0.5
+      },
+      "requires_prior_evidence": true
+    },
+    {
+      "episode": "E3",
+      "order": 3,
+      "interval_ticks": 300,
+      "scene": "Alice asks whether the outstanding item on the shared checklist can be closed before the review, and whether the earlier organization decision still holds.",
+      "task": "Answer Alice about the outstanding checklist item and the organization decision.",
+      "appraisal": {
+        "relevance": 0.8,
+        "goal_congruence": 0.5,
+        "intensity": 0.6
+      },
+      "requires_prior_evidence": true
+    },
+    {
+      "episode": "E4",
+      "order": 4,
+      "interval_ticks": 300,
+      "scene": "Alice asks for a final confirmation before the review that reflects everything agreed so far.",
+      "task": "Give Alice the final pre-review confirmation.",
+      "appraisal": {
+        "relevance": 0.7,
+        "goal_congruence": 0.7,
+        "intensity": 0.4
+      },
+      "requires_prior_evidence": true
+    }
+  ]
+}
