@@ -16,7 +16,8 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "typecheck": "tsc -p tsconfig.typecheck.json"
+    "typecheck": "tsc -p tsconfig.typecheck.json",
+    "interactive": "node dist/cli.js"
   },
   "dependencies": {
     "@characteros-next/runtime": "workspace:*"

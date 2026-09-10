@@ -11,6 +11,7 @@
   "scripts": {
     "build": "pnpm --recursive --workspace-concurrency=1 --if-present run build",
     "governance": "node scripts/governance-check.mjs",
+    "interactive": "pnpm --filter @characteros-next/sandbox build && pnpm --filter @characteros-next/sandbox interactive",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
     "typecheck": "pnpm typecheck:workspaces",

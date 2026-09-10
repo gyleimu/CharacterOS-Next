@@ -1115,3 +1115,27 @@ export {
   type SessionRestoreOutcomeV0,
   type SubjectSessionStatusV0
 } from "./session/session-contracts-v0.js";
+
+// ---------------------------------------------------------------------------
+// INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — turn-based persistent subject
+// ---------------------------------------------------------------------------
+export {
+  InteractiveSubjectRuntimeV0,
+  createInteractiveSubjectRuntimeV0,
+  createInteractiveSubjectSeedV0,
+  type InteractiveSubjectRuntimeOptionsV0,
+  type InteractiveTurnOutcomeV0,
+  type InteractiveSubjectSnapshotV0,
+  type InteractiveSubjectStatusV0,
+  type PendingBehaviorOutcomeV0
+} from "./session/interactive-subject-runtime-v0.js";
+export {
+  captureSessionStoreImageV0,
+  rebuildSessionStoreSourceV0,
+  type SessionStoreImageV0,
+  type SessionRepositoryRevisionImageV0,
+  type RebuiltSessionStoreSourceV0
+} from "./session/session-store-image-v0.js";
+// Host-supplied appraisal provider contract (product host supplies a concrete
+// provider; the type is re-exported so the product shell needs no extra dep).
+export type { FactualEventAppraisalProviderV0 } from "@characteros-next/appraisal";

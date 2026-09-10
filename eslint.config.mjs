@@ -214,7 +214,18 @@ export default tseslint.config(
   ),
   packageBoundaryConfig(
     "product/sandbox/src/**/*.ts",
-    ["@characteros-next/sandbox", "@characteros-next/runtime"],
-    "sandbox composition must consume runtime through its public root."
+    [
+      "@characteros-next/sandbox",
+      "@characteros-next/runtime",
+      // Product CLI host: process I/O and local durable storage are legitimately
+      // owned by the product shell (readline, atomic snapshot files, paths).
+      "node:fs",
+      "node:path",
+      "node:readline",
+      "node:process",
+      "node:url",
+      "node:os"
+    ],
+    "sandbox composition must consume runtime through its public root (plus node built-ins for the local CLI host)."
   )
 );

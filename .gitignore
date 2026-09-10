@@ -12,6 +12,9 @@ tmp/
 *.log
 cerh/
 
+# product runtime data (local persistent subject state; never committed)
+product/sandbox/.data/
+
 # local secrets / credentials
 .env
 .env.*

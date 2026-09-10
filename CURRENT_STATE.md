@@ -2,10 +2,10 @@
 
 Status: ACTIVE
 Authority: 本文件是仓库“现在是什么、做到哪里、下一步是什么”的唯一实时状态入口。
-Last verified against commit: `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`（修复前的干净 baseline；本治理修复是其直接子提交，表内数字在该子提交的 worktree 上实测）
+Last verified against commit: `f9021567c30769cf2b7b33a4f9a71d9a7f94f880`（干净 baseline；`INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
 Workspace projects: 14
 Purpose: 记录可执行代码、当前测试与已提交冻结证据共同支持的最小事实；历史计划不能覆盖这些事实。
-Verified date: 2026-09-10
+Verified date: 2026-09-11
 
 > 权威顺序：当前可执行代码与测试 → 已提交冻结证据 → Git 历史 → 仍与实现一致的架构契约 → 项目状态叙述。README、ROADMAP、RESEARCH_STATE 与 NEXT_ACTIONS 不再各自维护一份完整阶段状态。
 
@@ -58,6 +58,7 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 | Persistence、durable history 与 restore | `IMPLEMENTED` / `MECHANICALLY_VERIFIED` | 当前长程验证的两次 authority restore 均 exact |
 | Longitudinal multi-episode life | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 冻结的四 episode 验证支持多 episode retrieval 与一次 post-restore continuity；不是任意时长证明 |
 | Long-horizon subject session orchestration | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 真实 8-interaction run 在显式 context budget 修复后完成 8/8，2/2 authoritative restore exact；结论受该模型/配置边界约束，不代表任意时长可扩展 |
+| Interactive persistent subject runtime | `IMPLEMENTED` / `SMOKE_VALIDATED` | `product/sandbox` 本地 CLI：真实用户文本经既有生产 lifecycle，completed turn 成为 durable lived history；真实进程重启后 authoritative restore 同一 subject（revision 连续），pre-restart factual Memory 经生产 retrieval 进入 post-restart provider-visible evidence。bounded real-provider smoke（`qwen3.5:9b`, 8192/2048），不代表长期可扩展或人格真实性 |
 
 `FROZEN` 描述已提交协议/证据的不可变性，不自动提升其结论等级。
 
@@ -88,7 +89,11 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 原 blocker（隐式 4096 context 导致 E7 截断）已通过 `COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0` 修复并被上述 revalidation 正面关闭。当前没有已知的 session-capability blocker。
 
-下一个产品/运行时 frontier 是 `INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0`：真实用户消息 → 持久 subject session → 自动 retrieval → cognition → 可观察响应 → Experience → durable Memory → 关闭 runtime → 重新打开 → 继续同一 lived subject。该 slice 未启动，也不由本文件授权启动。
+`INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0` 已实现并通过 bounded real-provider smoke：真实用户消息 → 持久 subject session → 自动 retrieval → cognition → 可观察响应 → delivery/feedback → Experience → durable Memory → 关闭进程 → 新进程 authoritative restore → 继续同一 lived subject。该 slice 的 primary acceptance 全部满足。
+
+已记录的 V0 限制（不是 blocker）：冻结 feedback 法只把「作为上一交付行为 counterpart reply 的用户消息」编码进 Experience/Memory，因此全新 subject 的第一条用户消息不会进入 Memory；host appraisal provider 使用固定最小 profile（Affect 不随内容变化）；某轮交付行为的 outcome Experience 在用户下一次发言时提交。
+
+下一个产品/运行时 frontier 是 `INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0`：判定 bare user factual event（无 prior delivered-behavior parent）能否经既有权威 lawful 编码为 Experience/Memory，或记录该架构缺口。该 slice 未启动，也不由本文件授权启动。
 
 长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
 
