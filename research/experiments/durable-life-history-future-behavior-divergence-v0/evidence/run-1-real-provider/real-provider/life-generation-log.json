@@ -1,0 +1,1 @@
+{"attempted_scenarios":["DLFV0-L1-figures"],"behavior_diverged":true,"budget":{"max_cognition_calls":4,"max_language_calls":4},"chosen_scenario":"DLFV0-L1-figures","real_calls":{"cognition":2,"language":2},"schema_version":"durable-life-history-future-behavior-life-generation-log-v0"}
