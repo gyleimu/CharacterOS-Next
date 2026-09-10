@@ -10,9 +10,13 @@
   },
   "scripts": {
     "build": "pnpm --recursive --workspace-concurrency=1 --if-present run build",
+    "governance": "node scripts/governance-check.mjs",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",
-    "typecheck": "pnpm --recursive --workspace-concurrency=1 --if-present run typecheck"
+    "typecheck": "pnpm typecheck:workspaces",
+    "typecheck:auxiliary": "tsc -p tsconfig.auxiliary.json",
+    "typecheck:workspaces": "tsc -p tsconfig.workspaces.json",
+    "verify": "pnpm governance && pnpm typecheck && pnpm build && pnpm typecheck:auxiliary && pnpm lint && pnpm test"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

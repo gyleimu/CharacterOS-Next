@@ -163,7 +163,7 @@ describe("LONGITUDINAL_MULTI_EPISODE_SUBJECT_LIFE_V0 — conformance", () => {
     expect(gates["transcript_shortcut"]).toBe(false);
     expect(gates["new_psychology_fields"]).toBe(false);
     expect(gates["retrieval_tuning"]).toBe(false);
-    const attempts = readJson("attempt-history.json") as readonly { attempt: number; outcome: string }[];
+    const attempts = readJson("attempt-history.json") as unknown as readonly { attempt: number; outcome: string }[];
     expect(attempts.some((entry) => entry.attempt === 1)).toBe(true);
     expect(attempts.some((entry) => entry.outcome === "COMPLETED")).toBe(true);
   });

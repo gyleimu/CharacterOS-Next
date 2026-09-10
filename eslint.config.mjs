@@ -4,6 +4,8 @@ import tseslint from "typescript-eslint";
 const workspacePackages = [
   "@characteros-next/subject-core",
   "@characteros-next/memory",
+  "@characteros-next/memory-influence",
+  "@characteros-next/influence-evidence",
   "@characteros-next/appraisal",
   "@characteros-next/affect",
   "@characteros-next/regulation",
@@ -45,7 +47,7 @@ const publicEntryOnly = [
   },
   {
     regex:
-      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|appraisal|affect|regulation|runtime|belief|personality|relationship|long-term-state-domain|behavior)|product/sandbox)(?:/|$)",
+      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|memory-influence|influence-evidence|appraisal|affect|regulation|runtime|belief|personality|relationship|long-term-state-domain|behavior)|product/sandbox)(?:/|$)",
     message: "Cross-package relative imports are forbidden; use a public package root."
   }
 ];
@@ -83,6 +85,14 @@ export default tseslint.config(
   js.configs.recommended,
   tseslint.configs.strict,
   {
+    // Node ESM tooling scripts: declare the Node runtime globals they rely on
+    // instead of disabling no-undef for the whole repository.
+    files: ["**/*.mjs"],
+    languageOptions: {
+      globals: { console: "readonly", process: "readonly" }
+    }
+  },
+  {
     files: ["**/*.ts"],
     rules: {
       "no-restricted-imports": restrictedImports([], [noEvaluationImports])
@@ -115,6 +125,24 @@ export default tseslint.config(
     "packages/memory/src/**/*.ts",
     ["@characteros-next/memory", "@characteros-next/subject-core"],
     "memory may consume only subject-core public readonly contracts."
+  ),
+  packageBoundaryConfig(
+    "packages/memory-influence/src/**/*.ts",
+    [
+      "@characteros-next/memory-influence",
+      "@characteros-next/memory",
+      "@characteros-next/subject-core"
+    ],
+    "memory-influence may consume only memory and subject-core public contracts."
+  ),
+  packageBoundaryConfig(
+    "packages/influence-evidence/src/**/*.ts",
+    [
+      "@characteros-next/influence-evidence",
+      "@characteros-next/memory-influence",
+      "@characteros-next/subject-core"
+    ],
+    "influence-evidence may consume only memory-influence and subject-core public contracts."
   ),
   packageBoundaryConfig(
     "packages/affect/src/**/*.ts",

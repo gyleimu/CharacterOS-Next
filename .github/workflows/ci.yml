@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate repository governance
+        run: pnpm governance
+
+      - name: Typecheck workspaces from source
+        run: pnpm typecheck
+
+      - name: Build all workspaces
+        run: pnpm build
+
+      - name: Typecheck conformance and research assets
+        run: pnpm typecheck:auxiliary
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test

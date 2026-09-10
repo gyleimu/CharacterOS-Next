@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "paths": {
+      "@characteros-next/affect": ["packages/affect/src/index.ts"],
+      "@characteros-next/appraisal": ["packages/appraisal/src/index.ts"],
+      "@characteros-next/behavior": ["packages/behavior/src/index.ts"],
+      "@characteros-next/belief": ["packages/belief/src/index.ts"],
+      "@characteros-next/influence-evidence": ["packages/influence-evidence/src/index.ts"],
+      "@characteros-next/long-term-state-domain": ["packages/long-term-state-domain/src/index.ts"],
+      "@characteros-next/memory": ["packages/memory/src/index.ts"],
+      "@characteros-next/memory-influence": ["packages/memory-influence/src/index.ts"],
+      "@characteros-next/personality": ["packages/personality/src/index.ts"],
+      "@characteros-next/regulation": ["packages/regulation/src/index.ts"],
+      "@characteros-next/relationship": ["packages/relationship/src/index.ts"],
+      "@characteros-next/runtime": ["packages/runtime/src/index.ts"],
+      "@characteros-next/subject-core": ["packages/subject-core/src/index.ts"],
+      "@characteros-next/sandbox": ["product/sandbox/src/index.ts"]
+    }
+  },
+  "include": ["packages/**/*.ts", "product/sandbox/**/*.ts"],
+  "exclude": ["packages/**/dist/**", "product/sandbox/dist/**", "**/node_modules/**"]
+}

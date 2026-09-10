@@ -24,7 +24,8 @@ import {
   HARD_CONTROL_SCENARIOS,
   PLANNED_COGNITION_CALLS,
   SCENARIOS,
-  VERDICT_RULE
+  VERDICT_RULE,
+  type Arm
 } from "./contract.ts";
 import { canonicalJson, check } from "./fixtures.ts";
 import { executePhaseA } from "./harness.ts";
@@ -274,7 +275,10 @@ if (command === "phase-a") {
   }
 
   const boundaryScenariosWithEffect = scenarioSummary.filter((s) =>
-    s.scenario_class === "BOUNDARY" && s.treatment_directive_disagreement > s.ablation_directive_disagreement).length;
+    s.scenario_class === "BOUNDARY"
+      && s.treatment_directive_disagreement !== null
+      && s.ablation_directive_disagreement !== null
+      && s.treatment_directive_disagreement > s.ablation_directive_disagreement).length;
 
   let verdict: string;
   if (boundaryUnits.length >= VERDICT_RULE.minimum_complete_boundary_four_arm_units

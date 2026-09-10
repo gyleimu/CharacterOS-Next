@@ -19,6 +19,9 @@ describe("CANONICAL_AFFECT_COGNITION_BEHAVIOR_INFLUENCE_EXPERIMENT_V0 — determ
     for (const scenario of SCENARIOS) {
       const a = bundle.arms.final_canonical_affect[`${scenario.id}-A`];
       const b = bundle.arms.final_canonical_affect[`${scenario.id}-B`];
+      if (a === undefined || b === undefined) {
+        throw new Error(`missing frozen affect pair for ${scenario.id}`);
+      }
       expect(a.valence).toBe(0.25);
       expect(b.valence).toBe(-0.25);
       // 34: equal activation — a pure valence contrast by construction.
@@ -31,7 +34,7 @@ describe("CANONICAL_AFFECT_COGNITION_BEHAVIOR_INFLUENCE_EXPERIMENT_V0 — determ
     // 6/7: the ONLY differing provider-input fields are canonical_affect and
     // its projection_hash binding.
     for (const audit of bundle.input_diff_audits) {
-      expect(audit.differing_fields.sort()).toStrictEqual(["canonical_affect", "projection_hash"]);
+      expect([...audit.differing_fields].sort()).toStrictEqual(["canonical_affect", "projection_hash"]);
       expect(audit.non_affect_provider_input_equal).toBe(true);
     }
     // 8/9: ablation makes the arm inputs byte-identical.

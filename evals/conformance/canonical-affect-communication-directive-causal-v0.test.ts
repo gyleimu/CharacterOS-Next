@@ -13,10 +13,32 @@ import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import { executePhaseA } from "../../research/experiments/canonical-affect-communication-directive-causal-v0/harness.ts";
-import { BOUNDARY_SCENARIOS, HARD_CONTROL_SCENARIOS, SCENARIOS } from "../../research/experiments/canonical-affect-communication-directive-causal-v0/contract.ts";
+import {
+  ARMS,
+  BOUNDARY_SCENARIOS,
+  HARD_CONTROL_SCENARIOS,
+  SCENARIOS,
+  type Arm
+} from "../../research/experiments/canonical-affect-communication-directive-causal-v0/contract.ts";
+import type { TrialRecord } from "../../research/experiments/canonical-affect-communication-directive-causal-v0/real-runner.ts";
 
 function roundValence(v: number): number {
   return Math.round(v * 1e6) / 1e6;
+}
+
+function stripAffectFields<
+  T extends { readonly canonical_affect: unknown; readonly projection_hash: unknown }
+>(input: T): Omit<T, "canonical_affect" | "projection_hash"> {
+  const { canonical_affect, projection_hash, ...rest } = input;
+  void canonical_affect;
+  void projection_hash;
+  return rest;
+}
+
+interface ReconciliationUnit {
+  readonly scenario_id: string;
+  readonly scenario_class: string;
+  readonly arms: Partial<Record<Arm, TrialRecord>>;
 }
 
 describe("CANONICAL_AFFECT_COMMUNICATION_DIRECTIVE_CAUSAL_EXPERIMENT_V0 — Phase A (§37)", () => {
@@ -36,13 +58,9 @@ describe("CANONICAL_AFFECT_COMMUNICATION_DIRECTIVE_CAUSAL_EXPERIMENT_V0 — Phas
       // Ablation equality: both ablated inputs identical.
       expect(cell.provider_inputs.ABL_A).toStrictEqual(cell.provider_inputs.ABL_B);
       // Non-Affect input equality between arms.
-      const strip = (input: Record<string, unknown>) => {
-        const { canonical_affect, projection_hash, ...rest } = input as Record<string, unknown>;
-        void canonical_affect;
-        void projection_hash;
-        return rest;
-      };
-      expect(strip(cell.provider_inputs.A)).toStrictEqual(strip(cell.provider_inputs.B));
+      expect(stripAffectFields(cell.provider_inputs.A)).toStrictEqual(
+        stripAffectFields(cell.provider_inputs.B)
+      );
     }
     // Scenario ingress: semantics present in the actual provider input.
     const ingress = phaseA.artifacts.scenario_ingress_audit as { rows: { scenario_id: string; semantics_present: boolean }[] };
@@ -73,16 +91,13 @@ describe("CANONICAL_AFFECT_COMMUNICATION_DIRECTIVE_CAUSAL_EXPERIMENT_V0 — Phas
     }
     const trials = readFileSync(join(evidenceDir, "trials.jsonl"), "utf8")
       .split("\n").filter((line) => line.trim().length > 0)
-      .map((line) => JSON.parse(line) as {
-        scenario_id: string; scenario_class: string; trial_ordinal: number; arm: string;
-        cognition: { status: string; current_intent: string | null; communication_directive: string | null };
-      });
+      .map((line) => JSON.parse(line) as TrialRecord);
     expect(trials.length).toBe(120);
     // Identity integrity.
     const ids = trials.map((t) => t.trial_id);
     expect(new Set(ids).size).toBe(120);
     // Stage-valid pair denominators.
-    const units = new Map<string, { scenario_class: string; arms: Record<string, typeof trials[number]> }>();
+    const units = new Map<string, ReconciliationUnit>();
     for (const t of trials) {
       const key = t.scenario_id + "|" + t.trial_ordinal;
       if (!units.has(key)) units.set(key, { scenario_id: t.scenario_id, scenario_class: t.scenario_class, arms: {} });
@@ -90,14 +105,14 @@ describe("CANONICAL_AFFECT_COMMUNICATION_DIRECTIVE_CAUSAL_EXPERIMENT_V0 — Phas
       void units.get(key)!.scenario_class;
     }
     const allUnits = [...units.values()];
-    const validPair = (u: { arms: Record<string, { cognition: { status: string; communication_directive: string | null; current_intent: string | null } }> }, x: string, y: string): boolean | null => {
+    const validPair = (u: ReconciliationUnit, x: Arm, y: Arm): boolean | null => {
       const a = u.arms[x]; const b = u.arms[y];
       if (!a || !b || a.cognition.status !== "VALID" || b.cognition.status !== "VALID") return null;
       return a.cognition.communication_directive !== b.cognition.communication_directive;
     };
     // Complete four-arm units: 25 (boundary 20, H1 0, H2 5).
     const complete = allUnits.filter((u) =>
-      ["A", "B", "ABL_A", "ABL_B"].every((arm) => u.arms[arm] && u.arms[arm].cognition.status === "VALID"));
+      ARMS.every((arm) => u.arms[arm]?.cognition.status === "VALID"));
     expect(complete.length).toBe(25);
     expect(complete.filter((u) => u.scenario_class === "BOUNDARY").length).toBe(20);
     expect(complete.filter((u) => u.scenario_id.includes("H1")).length).toBe(0);

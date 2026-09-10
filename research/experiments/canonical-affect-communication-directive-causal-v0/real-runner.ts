@@ -105,8 +105,8 @@ export interface ProviderPreflight {
   readonly parameter_size: string | null;
   readonly quantization_level: string | null;
   readonly cognition_settings: Record<string, unknown>;
-  readonly health_check_count: number;
-  readonly provider_health_stable: boolean;
+  readonly health_check_count: number | null;
+  readonly provider_health_stable: boolean | null;
   readonly generation_calls: 0;
   readonly failure: string | null;
 }
@@ -130,6 +130,9 @@ export async function probeProviderEnvironment(): Promise<ProviderPreflight> {
   // The v1 root probe is the single source of truth for server/model truth;
   // intermediate experiment wrappers re-wrap stale contract digests.
   const base = await probeV1Root();
+  const upstream = base as unknown as Record<string, unknown>;
+  const healthCheckCount = upstream["health_check_count"];
+  const providerHealthStable = upstream["provider_health_stable"];
   return {
     schema_version: "canonical-affect-communication-directive-provider-preflight-v0",
     endpoint: base.endpoint,
@@ -142,8 +145,8 @@ export async function probeProviderEnvironment(): Promise<ProviderPreflight> {
     parameter_size: base.primary_model?.parameter_size ?? null,
     quantization_level: base.primary_model?.quantization_level ?? null,
     cognition_settings: frozenSettings(COGNITION_SETTINGS),
-    health_check_count: base.health_check_count,
-    provider_health_stable: base.provider_health_stable,
+    health_check_count: typeof healthCheckCount === "number" ? healthCheckCount : null,
+    provider_health_stable: typeof providerHealthStable === "boolean" ? providerHealthStable : null,
     generation_calls: 0,
     failure: base.failure
   };
@@ -262,7 +265,9 @@ export async function executeCognitionDirectiveTrial(
     status = classifyCognitionFailure(error);
     failure = failureRecord(error);
   }
-  const trace = terminalTrace;
+  // The observer mutates this captured binding during native.complete(); the
+  // assertion widens TypeScript's pre-callback null narrowing to its declared type.
+  const trace = terminalTrace as ModelTransportTraceV0 | null;
   return {
     schema_version: "canonical-affect-communication-directive-trial-v0",
     experiment_version: EXPERIMENT_VERSION,

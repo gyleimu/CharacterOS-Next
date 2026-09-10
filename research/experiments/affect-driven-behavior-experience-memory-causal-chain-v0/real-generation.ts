@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-imports -- Bounded real-provider generation over the frozen downstream two-stage runner; probe uses the v1 ROOT probe (single source of truth). */
-
 import {
   executeCognitionStage,
   executePostCognitionStage,

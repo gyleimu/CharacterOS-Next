@@ -2,6 +2,9 @@
 
 import type {
   AtomicCommitBundleAnyVersion,
+  DomainDeltaV0,
+  InMemoryFacadeAssembly,
+  ProducerAuthorizationIssuer,
   SubjectStateV4
 } from "../../../packages/subject-core/dist/index.js";
 import {
@@ -29,16 +32,13 @@ import {
   ReferenceRegulationV0Producer
 } from "../../../packages/runtime/dist/producers/reference-regulation-v0-producer.js";
 import {
-  buildV4TimeProposal
-} from "../../../packages/runtime/dist/transitions/time/canonical-affect-v4-time-transition-executor-v0.js";
-import {
-  buildCognitiveContextProjectionV2ForExplicitV4,
   CognitionActionTransitionExecutor
 } from "../../../packages/runtime/dist/transitions/cognition-action/cognition-action-transition-executor.js";
 import { FactualMemoryEvidenceResolverV0 } from "../../../packages/runtime/dist/transitions/cognition-action/factual-memory-evidence.js";
 import { LearningTransitionExecutor } from "../../../packages/runtime/dist/transitions/learning/learning-transition-executor.js";
 import {
-  createConversationDeliveryLedgerAuthorityV0
+  createConversationDeliveryLedgerAuthorityV0,
+  type RuntimeDependencyContainer
 } from "../../../packages/runtime/dist/index.js";
 import type {
   ConversationDeliveryLedgerAuthority
@@ -62,20 +62,19 @@ import {
 import {
   canonicalJson,
   check,
-  equal,
-  hashJson,
-  round
+  hashJson
 } from "./fixtures.ts";
 import {
   COUNTERPART_POLICY,
   FUTURE_SCENARIO,
   SUBJECT,
   TIME_EQUALIZATION,
-  type Arm,
+  type TreatmentArm,
   type ScenarioV0
 } from "./contract.ts";
 
 export { buildWorld, readSnapshot };
+export type { World };
 
 function ctxOf(snapshot: SubjectStateV4) {
   return {
@@ -346,19 +345,22 @@ export async function commitFutureObservation(
     salience_constraints: { min_declared_score: null, max_candidates: 8 }
   };
   const retrievalResult = await retrievalService.retrieve(query);
-  const selected = [...retrievalResult.selected_memory_refs];
+  const selected: readonly string[] = [...retrievalResult.selected_memory_refs].map((ref: unknown) => {
+    check(typeof ref === "string", "retrieval selected-memory ref must be a string");
+    return ref;
+  });
   const traceRefs = retrievalResult.retrieval_trace_ref === null ? [] : [retrievalResult.retrieval_trace_ref as string];
   const lastRetrievalAt = snapshot.runtime_metadata.logical_time as never;
-  const memoryDelta = {
-    producer: "memory",
+  const memoryDelta: DomainDeltaV0 = {
+    producer: "memory" as never,
     domain: "memory-retrieval",
     expected_repository_revision: snapshot.memory_state.repository_revision,
     // set-like ops sorted by path (§5.1 rule); the trace ring carries
     // retrieval-trace refs while working_refs carries the selected episodes.
     operations: [
       { path: "/memory_state/last_retrieval_at", value: lastRetrievalAt },
-      { path: "/memory_state/recent_retrieval_trace", value: traceRefs },
-      { path: "/memory_state/working_refs", value: selected }
+      { path: "/memory_state/recent_retrieval_trace", value: traceRefs as never },
+      { path: "/memory_state/working_refs", value: selected as never }
     ],
     provenance_refs: []
   };
@@ -460,7 +462,7 @@ export async function buildFutureCognitionInput(
   await executor.execute(
     ctxOf(snapshot),
     { cause_refs: [], allowed_actions: [] } as never,
-    minter.capabilities(await currentBindings(restored.repo, snapshot)) as never
+    minter.capabilities(requireRepositoryBindings(await currentBindings(restored.repo, snapshot))) as never
   );
   check(captured.length === 1, "future cognition provider input must be captured once");
   return captured[0];
@@ -588,14 +590,24 @@ export async function runConsequenceChain(
   };
 }
 
-function buildFeedbackContainer(world: World): Record<string, unknown> {
+function buildFeedbackContainer(world: World): RuntimeDependencyContainer {
   const deliveryLedger = (world as { deliveryLedger?: ConversationDeliveryLedgerAuthority }).deliveryLedger!;
-  return {
-    subjectCore: world.assembly.facade,
-    producerAuthorizationIssuer: world.issuer,
+  const legacyFeedbackBindings = {
     memoryRepository: world.repo,
+    experiencePayloadRepository: world.repo
+  };
+  const dependencies: RuntimeDependencyContainer = {
+    ...legacyFeedbackBindings,
+    subjectCore: world.assembly.facade as unknown as RuntimeDependencyContainer["subjectCore"],
+    producerAuthorizationIssuer: world.issuer,
     memory: { repository: createMemoryPreparationAuthority(world.repo) },
-    experiencePayloadRepository: world.repo,
+    interpretation: null,
+    appraisal: null,
+    affectProducer: null,
+    regulationProducer: null,
+    contextProducer: null,
+    retrievalMetadataProducer: null,
+    cognitionProvider: null,
     learningSourceAuthority: {
       readCommittedBundle: async (id: string) =>
         world.assembly.storeRead.readCommittedByTransitionId(id) as unknown as AtomicCommitBundleAnyVersion | null
@@ -606,12 +618,37 @@ function buildFeedbackContainer(world: World): Record<string, unknown> {
     } as never,
     conversationDeliveryLedger: deliveryLedger,
     conversationIngressLedger: world.ingressLedger,
+    languageRealizationProvider: null,
+    episodeContentReader: null,
+    conversationCognitionTransport: null,
+    experienceReader: null,
+    factualEvidenceResolver: null,
+    experienceAppraisalProvider: null,
+    experienceAppraisalStore: null,
+    factualEventAuthority: null,
+    factualEventAppraisalProvider: null,
     retrieval: {
       retrieve: async () => {
         throw new Error("EXPERIMENT: feedback must not call retrieval");
       }
     }
   };
+  return dependencies;
+}
+
+function requireRepositoryBindings(
+  bindings: readonly Record<string, unknown>[]
+): readonly { readonly repository_revision: string; readonly repository_revision_hash: string }[] {
+  return bindings.map((binding) => {
+    const repositoryRevision = binding["repository_revision"];
+    const repositoryRevisionHash = binding["repository_revision_hash"];
+    check(typeof repositoryRevision === "string", "repository binding revision must be a string");
+    check(typeof repositoryRevisionHash === "string", "repository binding hash must be a string");
+    return {
+      repository_revision: repositoryRevision,
+      repository_revision_hash: repositoryRevisionHash
+    };
+  });
 }
 
 /** §14/§15 — frozen deterministic counterpart policy: acknowledges the

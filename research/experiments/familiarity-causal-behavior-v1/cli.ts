@@ -31,7 +31,7 @@ function verifyFrozen(manifest: Manifest, amendment?: ExecutionAmendmentV0) {
     current_source_fingerprint: sourceFingerprint(),
     current_built_fingerprint: builtFingerprint(),
     current_protocol_hash: objectHash(protocol()),
-    amendment
+    ...(amendment === undefined ? {} : { amendment })
   });
   frozenIntegrity();
 }
@@ -138,7 +138,7 @@ async function run(manifestPath: string, outputPath: string, authorization: stri
     current_source_fingerprint: sourceFingerprint(),
     current_built_fingerprint: builtFingerprint(),
     current_protocol_hash: objectHash(protocol()),
-    amendment: amendmentObj,
+    ...(amendmentObj === undefined ? {} : { amendment: amendmentObj }),
     gates_source_fingerprint: gates.source_fingerprint,
     gates_built_fingerprint: gates.built_fingerprint
   });

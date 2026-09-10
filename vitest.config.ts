@@ -8,7 +8,6 @@ export default defineConfig({
       "product/sandbox/src/**/*.test.ts",
       "evals/conformance/**/*.test.ts"
     ],
-    passWithNoTests: true,
     allowOnly: false
   }
 });

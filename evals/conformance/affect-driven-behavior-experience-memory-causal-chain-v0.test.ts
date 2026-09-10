@@ -19,11 +19,14 @@ const evidenceDir = join(
 
 interface TrialRow {
   readonly scenario_id: string;
-  readonly trial_ordinal: number;
-  readonly arm: string;
-  readonly cognition: { readonly status: string; readonly communication_directive: string | null };
-  readonly language: { readonly status: string } | null;
-  readonly behavior: { readonly text: string } | null;
+  readonly arm: "A" | "B";
+  readonly cognition_status: string;
+  readonly language_status: string;
+  readonly behavior_text: string;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 describe("AFFECT_DRIVEN_BEHAVIOR_EXPERIENCE_MEMORY_CAUSAL_CHAIN_V0 — persisted evidence conformance", () => {
@@ -85,9 +88,17 @@ describe("AFFECT_DRIVEN_BEHAVIOR_EXPERIENCE_MEMORY_CAUSAL_CHAIN_V0 — persisted
     // §23/§43: future Affect carryover negligible and bounded.
     const futureAffect = read("future-affect-control.json") as { ticks: number; manual_patch: boolean };
     expect(futureAffect.manual_patch).toBe(false);
-    const summaryFuture = summary.chain.future as { retrieval_differs: boolean; cognition_input_differs: boolean; affect_control: string; residual_valence_delta: number };
-    expect(summaryFuture.affect_control).toBe("FUTURE_AFFECT_DIFFERENCE_NEGLIGIBLE_AND_BOUNDED");
-    expect(summaryFuture.residual_valence_delta).toBeLessThan(0.001);
+    const summaryChain = summary["chain"];
+    if (!isRecord(summaryChain) || !isRecord(summaryChain["future"])) {
+      throw new Error("summary evidence must contain the frozen future-chain record");
+    }
+    const summaryFuture = summaryChain["future"];
+    if (typeof summaryFuture["affect_control"] !== "string" ||
+        typeof summaryFuture["residual_valence_delta"] !== "number") {
+      throw new Error("summary future-chain evidence has invalid affect-control fields");
+    }
+    expect(summaryFuture["affect_control"]).toBe("FUTURE_AFFECT_DIFFERENCE_NEGLIGIBLE_AND_BOUNDED");
+    expect(summaryFuture["residual_valence_delta"]).toBeLessThan(0.001);
 
     // §20/§27/§28: future retrieval + cognition input differ (memory-derived).
     const futureRetrieval = read("future-retrieval-evidence.json") as { retrieval_differs: boolean; resolved_evidence: { A: { entries: { exact_outcome_text: string }[] } | null; B: { entries: { exact_outcome_text: string }[] } | null } };
@@ -125,7 +136,13 @@ describe("AFFECT_DRIVEN_BEHAVIOR_EXPERIENCE_MEMORY_CAUSAL_CHAIN_V0 — persisted
     // call) and the other took the lawful fixed-clarification branch.
     const languageValid = trials.filter((t) => t.language_status === "VALID");
     expect(languageValid.length).toBe(1);
-    const byArm = { A: trials.find((t) => t.arm === "A")!, B: trials.find((t) => t.arm === "B")! };
-    expect(byArm.A.behavior_text).not.toBe(byArm.B.behavior_text);
+    const armA = trials.find((t) => t.arm === "A");
+    const armB = trials.find((t) => t.arm === "B");
+    expect(armA).toBeDefined();
+    expect(armB).toBeDefined();
+    if (armA === undefined || armB === undefined) {
+      throw new Error("frozen trial evidence must contain both treatment arms");
+    }
+    expect(armA.behavior_text).not.toBe(armB.behavior_text);
   });
 });

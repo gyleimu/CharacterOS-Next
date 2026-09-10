@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false
+  },
+  // Repository-level TypeScript outside the workspace packages: evaluation,
+  // research and root tooling. Workspace sources are covered by
+  // tsconfig.workspaces.json instead.
+  "include": ["evals/**/*.ts", "research/**/*.ts", "vitest.config.ts"],
+  // JUSTIFIED EXCLUSION — do not widen casually.
+  // A "durable law" conformance suite (affect-state-retention-e1,
+  // affect-activation-mapping-e2a, affect-production-shaped-e2,
+  // familiarity-causal-behavior-v1) asserts that every Git blob under
+  // research/experiments/familiarity-causal-behavior-v0/ is byte-identical to
+  // its frozen baseline commit. That experiment was frozen against an earlier
+  // production cognition-projection surface, so its adapter.ts no longer
+  // accepts the current CognitiveContextProjection union. Repairing it would
+  // break the frozen-blob law, and repairing the law would modify a frozen
+  // contract, so the frozen experiment is excluded here instead. It still
+  // executes for real: vitest runs evals/conformance/familiarity-causal-behavior-v0.test.ts,
+  // which imports the experiment directly. Reconciling frozen experiments with
+  // production type evolution is an explicit open research-infrastructure
+  // decision, not a typing fix.
+  "exclude": [
+    "research/experiments/familiarity-causal-behavior-v0/**",
+    "evals/conformance/familiarity-causal-behavior-v0.test.ts"
+  ]
+}

@@ -94,7 +94,7 @@ export function verifyFreezeBaselineV1(inputs: FreezeBaselineInputs & {
     manifest_protocol_hash: inputs.readiness_protocol_hash,
     gates_source_fingerprint: inputs.gates_source_fingerprint,
     gates_built_fingerprint: inputs.gates_built_fingerprint,
-    amendment: inputs.amendment
+    ...(inputs.amendment === undefined ? {} : { amendment: inputs.amendment })
   });
   verifyExecutionFreezeBaselineV1(inputs);
 }

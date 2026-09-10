@@ -14,19 +14,49 @@ import {
   createCanonicalAffectBaselineV0,
   deriveAffectImpulseV0
 } from "../../packages/affect/dist/index.js";
+import {
+  validateCanonicalAffectShape,
+  validateUnitInterval,
+  type CanonicalAffectV0,
+  type UnitIntervalV0
+} from "../../packages/subject-core/dist/index.js";
+
+function affectOf(valence: number, activation: number): CanonicalAffectV0 {
+  const checked = validateCanonicalAffectShape({
+    schema_version: "canonical-affect-v0",
+    valence,
+    activation
+  }, "conformance affect");
+  if (!checked.ok) throw new Error(checked.error.detail);
+  return checked.value;
+}
+
+function unitInterval(value: number): UnitIntervalV0 {
+  const checked = validateUnitInterval(value, "conformance unit interval");
+  if (!checked.ok) throw new Error(checked.error.detail);
+  return checked.value;
+}
+
+function impulseInput(relevance: number, goalCongruence: number, intensity: number) {
+  return {
+    relevance: unitInterval(relevance),
+    goal_congruence: unitInterval(goalCongruence),
+    intensity: unitInterval(intensity)
+  };
+}
 
 /** Canonical baseline: v=0, a=0.2. */
-const BASELINE = { schema_version: "canonical-affect-v0" as const, valence: 0 as never, activation: 0.2 as never };
+const BASELINE = affectOf(0, 0.2);
 void BASELINE;
 
 describe("Production dynamics vs frozen research vectors (§59)", () => {
   it("E1 S1 — single impulse N(0.8): u_v=-0.2, u_a=0.16; recovery half-life τ·ln(2)≈103.97", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 1, goal_congruence: 0, intensity: 0.8 });
+    const impulse = deriveAffectImpulseV0(impulseInput(1, 0, 0.8));
     expect(impulse.u_v).toBeCloseTo(-0.2, 12);
     expect(impulse.u_a).toBeCloseTo(0.08, 12);
     // Recovery after 1200 ticks from the post-event offset (d0_v = 0.2):
     const recovered = advanceAffectTimeV0(
-      { schema_version: "canonical-affect-v0", valence: -0.2 as never, activation: 0.36 as never },
+      affectOf(-0.2, 0.36),
       1200
     );
     const d0 = 0.2;
@@ -34,34 +64,34 @@ describe("Production dynamics vs frozen research vectors (§59)", () => {
   });
 
   it("E1 — partition consistency: Time+1200 direct ≡ 120×Time+10 (≤1e-12)", () => {
-    const start = { schema_version: "canonical-affect-v0" as const, valence: -0.2 as never, activation: 0.36 as never };
+    const start = affectOf(-0.2, 0.36);
     const direct = advanceAffectTimeV0(start, 1200);
-    let step = start as { valence: number; activation: number };
+    let step = start;
     for (let i = 0; i < 120; i += 1) step = advanceAffectTimeV0(step, 10);
     expect(Math.abs(direct.valence - step.valence)).toBeLessThanOrEqual(1e-12);
     expect(Math.abs(direct.activation - step.activation)).toBeLessThanOrEqual(1e-12);
   });
 
   it("E1 — q=0 produces zero impulse (§59 zero-relevance)", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 0, goal_congruence: 0.3, intensity: 0.9 });
+    const impulse = deriveAffectImpulseV0(impulseInput(0, 0.3, 0.9));
     expect(impulse.u_v).toBe(0);
     expect(impulse.u_a).toBe(0);
   });
 
   it("E1 — neutral goal (g=.5) produces zero valence impulse", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 0.8, goal_congruence: 0.5, intensity: 0.5 });
+    const impulse = deriveAffectImpulseV0(impulseInput(0.8, 0.5, 0.5));
     expect(impulse.u_v).toBe(0);
     expect(impulse.u_a).toBeCloseTo(0.1 * 0.4, 12);
   });
 
   it("E2A A10 — gain identity: Δ_a(A10)/q = .10 exactly", () => {
-    const impulse = deriveAffectImpulseV0({ relevance: 1, goal_congruence: 0.3, intensity: 0.5 });
+    const impulse = deriveAffectImpulseV0(impulseInput(1, 0.3, 0.5));
     expect(impulse.u_a / impulse.q).toBeCloseTo(0.1, 12);
   });
 
   it("E1 S7 — saturation: bounded output under sustained max input", () => {
     let state = createCanonicalAffectBaselineV0();
-    const impulse = deriveAffectImpulseV0({ relevance: 1, goal_congruence: 0, intensity: 1 });
+    const impulse = deriveAffectImpulseV0(impulseInput(1, 0, 1));
     for (let i = 0; i < 200; i += 1) {
       state = applyAffectImpulseV0(state, impulse);
       expect(state.valence).toBeGreaterThanOrEqual(-1);

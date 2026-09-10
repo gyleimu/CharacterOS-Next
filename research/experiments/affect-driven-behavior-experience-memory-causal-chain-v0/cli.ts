@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-imports, @typescript-eslint/no-non-null-assertion -- Isolated causal-chain experiment entrypoint over frozen built production roots; argv and frozen-record lookups are guarded by check() immediately before each read. */
+
 /**
  * AFFECT_DRIVEN_BEHAVIOR_EXPERIENCE_MEMORY_CAUSAL_CHAIN_V0 — entrypoint.
  *
@@ -21,16 +23,20 @@ import {
   REAL_CALL_BUDGET,
   SCENARIOS,
   SUBJECT,
-  TIME_EQUALIZATION
+  TIME_EQUALIZATION,
+  type ScenarioV0,
+  type TreatmentArm
 } from "./contract.ts";
 import { canonicalJson, check } from "./fixtures.ts";
-import { hashEnvelope } from "../../../packages/subject-core/dist/index.js";
+import {
+  hashEnvelope,
+  type SubjectStateV4
+} from "../../../packages/subject-core/dist/index.js";
 import {
   buildFutureCognitionInput,
   buildWorld,
   commitFutureObservation,
   constructArmHistory,
-  counterpartReply,
   equalizeAffect,
   restoreWorld,
   runConsequenceChain
@@ -53,6 +59,24 @@ function writeJson(path: string, value: unknown): void {
 
 function phaseACompletePath(): string {
   return resolve(outdir!, "phase-a-complete.json");
+}
+
+function requireProviderInputIdentity(
+  value: unknown,
+  scenarioId: string,
+  arm: TreatmentArm
+): { readonly state_revision: number; readonly projection_hash: string } {
+  check(typeof value === "object" && value !== null && !Array.isArray(value),
+    `${scenarioId}/${arm}: cognition provider input must be a record`);
+  const providerInput = value as Record<string, unknown>;
+  check(typeof providerInput["state_revision"] === "number",
+    `${scenarioId}/${arm}: cognition provider input state revision missing`);
+  check(typeof providerInput["projection_hash"] === "string",
+    `${scenarioId}/${arm}: cognition provider input projection hash missing`);
+  return {
+    state_revision: providerInput["state_revision"],
+    projection_hash: providerInput["projection_hash"]
+  };
 }
 
 if (command === "phase-a") {
@@ -142,7 +166,7 @@ if (command === "phase-a") {
   });
   console.log("PHASE A COMPLETE: preregistration frozen; real generation calls 0");
 } else if (command === "run") {
-  check(existsSync(phaseACompletePath(outdir!)), "phase-a-complete.json missing: run phase-a first");
+  check(existsSync(phaseACompletePath()), "phase-a-complete.json missing: run phase-a first");
   mkdirSync(join(outdir!, "real-provider"), { recursive: true });
 
   // ---- provider preflight --------------------------------------------------------
@@ -161,7 +185,7 @@ if (command === "phase-a") {
   writeJson(join(outdir!, "real-provider", "provider-preflight.json"), {
     schema_version: "affect-driven-behavior-experience-memory-provider-preflight-v0",
     endpoint: probe.endpoint,
-    ollama_version: probe.server_version,
+    ollama_version: probe.ollama_version,
     model: probe.model,
     digest: probe.digest,
     digest_matches_required: true,
@@ -173,16 +197,16 @@ if (command === "phase-a") {
   const primaryScenarios = SCENARIOS.filter((s) => s.role === "PRIMARY");
   const alternate = SCENARIOS.find((s) => s.role === "ALTERNATE");
   const realCalls = { cognition: 0, language: 0 };
-  const scenarioResults: Record<string, unknown> = {};
-  let chosenScenario: { readonly scenario_id: string; readonly current_factual_event: string; readonly current_task: string } | null = null;
-  let behaviorTexts: Record<string, string> | null = null;
+  let chosenScenario: ScenarioV0 | null = null;
+  let behaviorTexts: Record<TreatmentArm, string> | null = null;
   let diverged = false;
 
-  const buildTrial = async (scenario: { readonly scenario_id: string; readonly current_factual_event: string; readonly current_task: string }, arm: "A" | "B") => {
+  const buildTrial = async (scenario: ScenarioV0, arm: TreatmentArm) => {
     const world: World = await buildWorld(scenario.current_task);
     const metadata = await constructArmHistory(world, arm, scenario);
     const capture = await runCognitionCapture(world, []);
     const providerInput = capture.provider_input;
+    const providerInputIdentity = requireProviderInputIdentity(providerInput, scenario.scenario_id, arm);
     realCalls.cognition += 1;
     const item = {
       cell: {
@@ -213,7 +237,7 @@ if (command === "phase-a") {
     if (record.language.validated_draft !== null && record.language.validated_draft !== undefined) {
       fullBehavior = await buildCharacterLanguageBehaviorV0({
         subject_id: SUBJECT as never,
-        source_revision: providerInput.state_revision as never,
+        source_revision: providerInputIdentity.state_revision as never,
         response_request_id: item.response_request_id as never,
         draft: record.language.validated_draft as never
       });
@@ -226,15 +250,28 @@ if (command === "phase-a") {
       );
       fullBehavior = await buildClarificationBehaviorV0({
         subject_id: SUBJECT as never,
-        source_revision: providerInput.state_revision as never,
+        source_revision: providerInputIdentity.state_revision as never,
         response_request_id: item.response_request_id as never,
-        cognition_projection_hash: providerInput.projection_hash as never,
+        cognition_projection_hash: providerInputIdentity.projection_hash as never,
         conversation_cognition_proposal_hash: proposalHash as never
       });
     }
     check(fullBehavior.ok, `${scenario.scenario_id}/${arm}: behavior re-derivation failed: ${fullBehavior.ok ? "" : fullBehavior.detail}`);
     return { world, providerInput, record, behaviorText, fullBehavior: fullBehavior.ok ? fullBehavior.behavior : null };
   };
+
+  type BuiltTrial = Awaited<ReturnType<typeof buildTrial>>;
+  interface ScenarioResult {
+    readonly diverged: boolean;
+    readonly behavior_a: string;
+    readonly behavior_b: string;
+    readonly behavior_content_hash_a?: string | null;
+    readonly behavior_content_hash_b?: string | null;
+    readonly worlds: Record<TreatmentArm, World>;
+    readonly records: Record<TreatmentArm, BuiltTrial["record"]>;
+    readonly full_behaviors?: Record<TreatmentArm, BuiltTrial["fullBehavior"]>;
+  }
+  const scenarioResults: Record<string, ScenarioResult> = {};
 
   for (const scenario of primaryScenarios) {
     const armA = await buildTrial(scenario, "A");
@@ -275,15 +312,16 @@ if (command === "phase-a") {
   check(diverged && chosenScenario !== null && behaviorTexts !== null,
     "REAL_PROVIDER_BEHAVIOR_DIVERGENCE_NOT_AVAILABLE: no preregistered scenario produced A/B behavior divergence within the bounded attempt policy");
 
-  const pairTrials = scenarioResults[chosenScenario.scenario_id] as {
-    worlds: Record<string, World>;
-    records: Record<string, { behavior: { behavior_id: string; evidence_refs: string[] }; behavior_content_hash: string; language: { raw_response: { content: string } | null } }>;
-  };
+  const pairTrials = scenarioResults[chosenScenario.scenario_id];
+  check(pairTrials !== undefined, "chosen scenario result must exist");
   const behaviorA = pairTrials.records.A;
   const behaviorB = pairTrials.records.B;
-  const fullBehaviorA = pairTrials.full_behaviors.A;
-  const fullBehaviorB = pairTrials.full_behaviors.B;
+  const fullBehaviorA = pairTrials.full_behaviors?.A ?? null;
+  const fullBehaviorB = pairTrials.full_behaviors?.B ?? null;
   check(fullBehaviorA !== null && fullBehaviorB !== null, "full behavior artifacts must exist");
+  check(behaviorA.behavior !== null && behaviorB.behavior !== null, "reduced behavior records must exist");
+  check(behaviorA.behavior_content_hash !== null && behaviorB.behavior_content_hash !== null,
+    "behavior content hashes must exist");
 
   // ---- §13-§19 deterministic consequence chain per arm -----------------------------
   const chainByArm: Record<string, ReturnType<typeof runConsequenceChain> extends Promise<infer T> ? T : never> = {} as never;
@@ -303,7 +341,7 @@ if (command === "phase-a") {
   const restoredAffect: Record<string, { valence: number; activation: number }> = {};
   for (const arm of ["A", "B"] as const) {
     restoredByArm[arm] = await restoreWorld(pairTrials.worlds[arm] as World);
-    const snapshot = (await restoredByArm[arm].assembly.facade.readCurrentSnapshot(SUBJECT as never)) as SubjectStateV4Like;
+    const snapshot = (await restoredByArm[arm].assembly.facade.readCurrentSnapshot(SUBJECT as never)) as SubjectStateV4;
     restoredAffect[arm] = { valence: snapshot.affect.valence, activation: snapshot.affect.activation };
   }
   const residualValenceDelta = Math.abs(restoredAffect.A!.valence - restoredAffect.B!.valence);
@@ -364,20 +402,21 @@ if (command === "phase-a") {
   // Persist the real-provider trial rows (one per arm; each row records the
   // real cognition call and, when the directive was REALIZE, the real
   // language call).
-  const realTrialRows = ([A, "B"] as const).map((arm) => ({
+  const realTrialRows = (["A", "B"] as const).map((arm) => ({
     schema_version: "affect-driven-behavior-experience-memory-real-trial-v0",
     experiment_version: EXPERIMENT_VERSION,
     scenario_id: chosenScenario.scenario_id,
     arm,
     trial_id: `${EXPERIMENT_VERSION}/${chosenScenario.scenario_id}/1/${arm}`,
-    cognition_status: (pairTrials.records[arm] as { cognition: { status: string } }).cognition.status,
-    language_status: (pairTrials.records[arm] as { language: { status: string } }).language.status,
+    cognition_status: pairTrials.records[arm].cognition.status,
+    language_status: pairTrials.records[arm].language.status,
     behavior_text: behaviorTexts[arm],
-    behavior_content_hash: (pairTrials.records[arm] as { behavior_content_hash: string }).behavior_content_hash
+    behavior_content_hash: pairTrials.records[arm].behavior_content_hash
   }));
-  writeFileSync(join(outdir!, "real-provider", "trials.jsonl"), realTrialRows.map((r) => JSON.stringify(r)).join("
-") + "
-");
+  writeFileSync(
+    join(outdir!, "real-provider", "trials.jsonl"),
+    realTrialRows.map((r) => JSON.stringify(r)).join("\n") + "\n"
+  );
   writeJson(join(outdir!, "real-provider", "collection-complete.json"), {
     schema_version: "affect-driven-behavior-experience-memory-collection-complete-v0",
     planned_real_calls: REAL_CALL_BUDGET.cognition_calls_max + REAL_CALL_BUDGET.language_calls_max,
@@ -396,7 +435,11 @@ if (command === "phase-a") {
     behavior_id_b: behaviorB.behavior.behavior_id,
     raw_language_response_a: behaviorA.language.raw_response?.content ?? null,
     raw_language_response_b: behaviorB.language.raw_response?.content ?? null,
-    all_scenarios: Object.fromEntries(Object.entries(scenarioResults).map(([k, v]) => [k, { diverged: (v as { diverged: boolean }).diverged, behavior_a: (v as { behavior_a: string }).behavior_a, behavior_b: (v as { behavior_b: string }).behavior_b }]))
+    all_scenarios: Object.fromEntries(Object.entries(scenarioResults).map(([k, v]) => [k, {
+      diverged: v.diverged,
+      behavior_a: v.behavior_a,
+      behavior_b: v.behavior_b
+    }]))
   });
   writeJson(join(outdir!, "delivery-evidence.json"), {
     schema_version: "affect-driven-behavior-experience-memory-delivery-evidence-v0",
