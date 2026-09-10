@@ -1,0 +1,20 @@
+{
+  "schema_version": "long-horizon-quality-gates-v0",
+  "single_subject": true,
+  "no_control_arms": true,
+  "all_interactions_complete": true,
+  "memory_commits_at_least_six": true,
+  "two_restore_boundaries": true,
+  "environment_state_restored_exactly": true,
+  "provider_request_identity_all_verified": true,
+  "provider_request_identity_session_level_field": false,
+  "provider_request_identity_session_level_field_defect": true,
+  "no_context_truncation": true,
+  "provider_terminal_telemetry_persisted": true,
+  "no_manual_injection": true,
+  "no_transcript_bypass": true,
+  "no_new_psychology": true,
+  "retrieval_unchanged": true,
+  "real_calls_within_budget": true,
+  "all_pass": true
+}

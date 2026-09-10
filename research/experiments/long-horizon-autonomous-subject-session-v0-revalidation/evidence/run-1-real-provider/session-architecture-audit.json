@@ -1,0 +1,23 @@
+{
+  "schema_version": "long-horizon-session-architecture-audit-v0",
+  "baseline_commit": "1444d0d8c827a4b56d8e7ce9d47f322dcfd23464",
+  "reused_unchanged_from": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "phase_a_answers": {
+    "1_manually_composed_entrypoints": "identical to the frozen V0 harness (same composition root and authorities)",
+    "2_smallest_reusable_orchestrator": "LongHorizonSubjectSessionV0 (unchanged)",
+    "5_pending_appraisal_affect_queue": "frozen PRIOR_AFFECT_WORK_PENDING law unchanged",
+    "6_interaction_complete_boundary": "unchanged",
+    "7_fresh_runtime_without_live_authority": "unchanged (fresh authority rebuilt on every restore)",
+    "8_reusable_vs_validation": {
+      "reusable_runtime": [
+        "packages/runtime/src/session/* (unchanged)"
+      ],
+      "validation_only": [
+        "Alice review environment copy",
+        "8-interaction plan",
+        "evidence collection",
+        "conformance harness"
+      ]
+    }
+  }
+}

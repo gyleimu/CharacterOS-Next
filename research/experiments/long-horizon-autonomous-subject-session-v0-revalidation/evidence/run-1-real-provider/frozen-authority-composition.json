@@ -1,0 +1,7 @@
+{
+  "schema_version": "long-horizon-frozen-authority-composition-v0",
+  "composed_only": true,
+  "bypasses": [],
+  "identical_to_original": true,
+  "new_psychology": "NONE"
+}

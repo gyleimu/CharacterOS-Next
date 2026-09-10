@@ -1,0 +1,16 @@
+{
+  "schema_version": "long-horizon-revalidation-plan-identity-audit-v0",
+  "original_plan": "research/experiments/long-horizon-autonomous-subject-session-v0/evidence/run-1-real-provider/attempt-1/interaction-plan.json",
+  "revalidation_plan": "interaction-plan.json",
+  "interaction_plan_identity": "SAME",
+  "compared_fields": [
+    "interaction_count",
+    "interval_ticks",
+    "checkpoint_after",
+    "interactions",
+    "primary_appraisal_dimensions",
+    "reply_appraisal_dimensions"
+  ],
+  "environment_rules": "SAME (alice-environment.ts byte-identical copy)",
+  "restore_positions": "SAME (checkpoint after E3 and E6)"
+}

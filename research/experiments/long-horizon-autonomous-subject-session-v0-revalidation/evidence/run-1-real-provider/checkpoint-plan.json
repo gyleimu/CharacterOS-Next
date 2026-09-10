@@ -1,0 +1,8 @@
+{
+  "schema_version": "long-horizon-checkpoint-plan-v0",
+  "boundaries": [
+    3,
+    6
+  ],
+  "identical_to_original": true
+}

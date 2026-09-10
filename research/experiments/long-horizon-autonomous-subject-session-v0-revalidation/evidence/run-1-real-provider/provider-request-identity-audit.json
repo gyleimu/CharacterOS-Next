@@ -1,0 +1,281 @@
+{
+  "schema_version": "long-horizon-provider-request-identity-audit-v0",
+  "includes_num_ctx": true,
+  "primary_measurement": "per-call crash-safe ledger: rendered/accounting request hash == native transport request hash",
+  "per_interaction_session_field": [
+    {
+      "interaction": 1,
+      "provider_request_hash": "sha256:67719e9096e510d363beb9167d050e81b92c474658736d32aae5791c8f6d9306",
+      "transport_request_hash": "sha256:b1ce7a72ef86a51428f6b8927ba84b04f11123daf7e05c6c9a9ff38df52e4e18",
+      "match": false,
+      "memory_section_present": false
+    },
+    {
+      "interaction": 2,
+      "provider_request_hash": "sha256:bf32834d3105ac324a9fb16307df165254ecc8f6e0f5d3697abc30d56202290c",
+      "transport_request_hash": "sha256:1db9884098dbb00d203edb82e545cadcc368a8b8d323f87612c0bb8704e919aa",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 3,
+      "provider_request_hash": "sha256:5ce2e240b508ba3255a3232914b3c1270fab6fb5dadaa3d5e0b207cbd3276ab4",
+      "transport_request_hash": "sha256:ea6bfa25995a4de26d98bb9d0a2686a095cca60018a7719d181769b082c25822",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 4,
+      "provider_request_hash": "sha256:f16894e4d4a4266ed20a9d481e989fd818a6abab52b3e336e2225fdf7befd75a",
+      "transport_request_hash": "sha256:998648793882bc366a9a56b24cbda4e568e09901647ccb1b633458cdba0968fc",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 5,
+      "provider_request_hash": "sha256:99e319bde89b7a6ea7ac31afb9cb11c0b3bd3a80f6a3375c99bb9a6dc1102688",
+      "transport_request_hash": "sha256:78248468115b619fb8702803b2e6cdc677e60725c21ac0dc1bd8e22f66232bca",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 6,
+      "provider_request_hash": "sha256:e8349d6b820b28b0c99c40eff19e44d650642539fada47bc4262f1a1834da069",
+      "transport_request_hash": "sha256:ce6b8319b91b9390204af7b8ba0d6253016fdbd06208da5baf26d7d9306c99b8",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 7,
+      "provider_request_hash": "sha256:e9e72616bca3ae6c3b75450f26903a9c80859997d07705b89ecce54981eed378",
+      "transport_request_hash": "sha256:642c695ce7123ac10bfd991cb0aa962b961fab15d06ed18da9ad5a37bdfe9bb3",
+      "match": false,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 8,
+      "provider_request_hash": "sha256:5d56bdd3175751960b4deca4ad6e7165b884fdf261b74a1a5786a01cbc1f0caf",
+      "transport_request_hash": "sha256:8854af6aacf2fc9c572b6d2ecbf545735fa7ead1dfef81d3d11ee67cfefce6b9",
+      "match": false,
+      "memory_section_present": true
+    }
+  ],
+  "per_call": [
+    {
+      "interaction": 0,
+      "stage": "cognition",
+      "request_hash": "sha256:67719e9096e510d363beb9167d050e81b92c474658736d32aae5791c8f6d9306",
+      "transport_request_hash": "sha256:67719e9096e510d363beb9167d050e81b92c474658736d32aae5791c8f6d9306",
+      "request_bytes": 4519,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 0,
+      "stage": "language",
+      "request_hash": "sha256:b1ce7a72ef86a51428f6b8927ba84b04f11123daf7e05c6c9a9ff38df52e4e18",
+      "transport_request_hash": "sha256:b1ce7a72ef86a51428f6b8927ba84b04f11123daf7e05c6c9a9ff38df52e4e18",
+      "request_bytes": 3824,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 1,
+      "stage": "cognition",
+      "request_hash": "sha256:bf32834d3105ac324a9fb16307df165254ecc8f6e0f5d3697abc30d56202290c",
+      "transport_request_hash": "sha256:bf32834d3105ac324a9fb16307df165254ecc8f6e0f5d3697abc30d56202290c",
+      "request_bytes": 5581,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 1,
+      "stage": "language",
+      "request_hash": "sha256:1db9884098dbb00d203edb82e545cadcc368a8b8d323f87612c0bb8704e919aa",
+      "transport_request_hash": "sha256:1db9884098dbb00d203edb82e545cadcc368a8b8d323f87612c0bb8704e919aa",
+      "request_bytes": 4040,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 2,
+      "stage": "cognition",
+      "request_hash": "sha256:5ce2e240b508ba3255a3232914b3c1270fab6fb5dadaa3d5e0b207cbd3276ab4",
+      "transport_request_hash": "sha256:5ce2e240b508ba3255a3232914b3c1270fab6fb5dadaa3d5e0b207cbd3276ab4",
+      "request_bytes": 6428,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 2,
+      "stage": "language",
+      "request_hash": "sha256:ea6bfa25995a4de26d98bb9d0a2686a095cca60018a7719d181769b082c25822",
+      "transport_request_hash": "sha256:ea6bfa25995a4de26d98bb9d0a2686a095cca60018a7719d181769b082c25822",
+      "request_bytes": 4447,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 3,
+      "stage": "cognition",
+      "request_hash": "sha256:f16894e4d4a4266ed20a9d481e989fd818a6abab52b3e336e2225fdf7befd75a",
+      "transport_request_hash": "sha256:f16894e4d4a4266ed20a9d481e989fd818a6abab52b3e336e2225fdf7befd75a",
+      "request_bytes": 7268,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 3,
+      "stage": "language",
+      "request_hash": "sha256:998648793882bc366a9a56b24cbda4e568e09901647ccb1b633458cdba0968fc",
+      "transport_request_hash": "sha256:998648793882bc366a9a56b24cbda4e568e09901647ccb1b633458cdba0968fc",
+      "request_bytes": 4714,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 4,
+      "stage": "cognition",
+      "request_hash": "sha256:99e319bde89b7a6ea7ac31afb9cb11c0b3bd3a80f6a3375c99bb9a6dc1102688",
+      "transport_request_hash": "sha256:99e319bde89b7a6ea7ac31afb9cb11c0b3bd3a80f6a3375c99bb9a6dc1102688",
+      "request_bytes": 8249,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 4,
+      "stage": "language",
+      "request_hash": "sha256:78248468115b619fb8702803b2e6cdc677e60725c21ac0dc1bd8e22f66232bca",
+      "transport_request_hash": "sha256:78248468115b619fb8702803b2e6cdc677e60725c21ac0dc1bd8e22f66232bca",
+      "request_bytes": 5166,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 5,
+      "stage": "cognition",
+      "request_hash": "sha256:e8349d6b820b28b0c99c40eff19e44d650642539fada47bc4262f1a1834da069",
+      "transport_request_hash": "sha256:e8349d6b820b28b0c99c40eff19e44d650642539fada47bc4262f1a1834da069",
+      "request_bytes": 9105,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 5,
+      "stage": "language",
+      "request_hash": "sha256:ce6b8319b91b9390204af7b8ba0d6253016fdbd06208da5baf26d7d9306c99b8",
+      "transport_request_hash": "sha256:ce6b8319b91b9390204af7b8ba0d6253016fdbd06208da5baf26d7d9306c99b8",
+      "request_bytes": 5389,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 6,
+      "stage": "cognition",
+      "request_hash": "sha256:e9e72616bca3ae6c3b75450f26903a9c80859997d07705b89ecce54981eed378",
+      "transport_request_hash": "sha256:e9e72616bca3ae6c3b75450f26903a9c80859997d07705b89ecce54981eed378",
+      "request_bytes": 10030,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 6,
+      "stage": "language",
+      "request_hash": "sha256:642c695ce7123ac10bfd991cb0aa962b961fab15d06ed18da9ad5a37bdfe9bb3",
+      "transport_request_hash": "sha256:642c695ce7123ac10bfd991cb0aa962b961fab15d06ed18da9ad5a37bdfe9bb3",
+      "request_bytes": 5770,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 7,
+      "stage": "cognition",
+      "request_hash": "sha256:5d56bdd3175751960b4deca4ad6e7165b884fdf261b74a1a5786a01cbc1f0caf",
+      "transport_request_hash": "sha256:5d56bdd3175751960b4deca4ad6e7165b884fdf261b74a1a5786a01cbc1f0caf",
+      "request_bytes": 10986,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    },
+    {
+      "interaction": 7,
+      "stage": "language",
+      "request_hash": "sha256:8854af6aacf2fc9c572b6d2ecbf545735fa7ead1dfef81d3d11ee67cfefce6b9",
+      "transport_request_hash": "sha256:8854af6aacf2fc9c572b6d2ecbf545735fa7ead1dfef81d3d11ee67cfefce6b9",
+      "request_bytes": 6087,
+      "context_window_tokens": 8192,
+      "max_output_tokens": 2048,
+      "match": true
+    }
+  ],
+  "per_call_verified": 16,
+  "per_call_total": 16,
+  "per_call_all_match": true,
+  "session_level_field_verified": 0,
+  "session_level_field_total": 8,
+  "session_level_field_defect": {
+    "defect": "HARNESS_TRACE_WIRING_DEFECT_IN_RUN_OF_RECORD",
+    "cause": "the revalidation harness initially passed a SHARED cognition+language trace ledger as provider_identity.last_trace; the session therefore compared its rebuilt cognition request hash against the LANGUAGE call's trace (the last call of the interaction). The frozen V0 harness observed only the cognition transport, so this defect is new to the revalidation harness, not to the session capability.",
+    "applies_to": "the session-level provider_request_identity_match field only; the underlying request identity property is unaffected",
+    "evidence": [
+      {
+        "interaction": 1,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 2,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 3,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 4,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 5,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 6,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 7,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      },
+      {
+        "interaction": 8,
+        "session_provider_request_hash_equals_ledger_cognition_hash": true,
+        "session_transport_request_hash_equals_ledger_language_hash": true
+      }
+    ],
+    "resolution": "harness wiring corrected in this slice (cognition-only ledger for last_trace; combined ledger retained for evidence); the run-of-record was NOT rerun and its raw collected evidence was NOT modified",
+    "all_interactions_show_the_same_signature": true
+  },
+  "all_match": true,
+  "verified": 16
+}

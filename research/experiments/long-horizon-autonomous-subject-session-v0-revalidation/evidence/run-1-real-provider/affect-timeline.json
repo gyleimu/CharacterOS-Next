@@ -1,0 +1,63 @@
+{
+  "schema_version": "long-horizon-affect-timeline-v0",
+  "entries": [
+    {
+      "interaction": 1,
+      "logical_time_before": 0,
+      "logical_time_after": 300,
+      "affect_before": 0,
+      "affect_after": 0.014999999999999996
+    },
+    {
+      "interaction": 2,
+      "logical_time_before": 300,
+      "logical_time_after": 600,
+      "affect_before": 0.014999999999999996,
+      "affect_after": 0.054030029248549175
+    },
+    {
+      "interaction": 3,
+      "logical_time_before": 600,
+      "logical_time_after": 900,
+      "affect_before": 0.054030029248549175,
+      "affect_after": 0.022312169311634867
+    },
+    {
+      "interaction": 4,
+      "logical_time_before": 900,
+      "logical_time_after": 1200,
+      "affect_before": 0.022312169311634867,
+      "affect_after": 0.018019623753413358
+    },
+    {
+      "interaction": 5,
+      "logical_time_before": 1200,
+      "logical_time_after": 1500,
+      "affect_before": 0.018019623753413358,
+      "affect_after": 0.017438690884485387
+    },
+    {
+      "interaction": 6,
+      "logical_time_before": 1500,
+      "logical_time_after": 1800,
+      "affect_before": 0.017438690884485387,
+      "affect_after": 0.017360070170127563
+    },
+    {
+      "interaction": 7,
+      "logical_time_before": 1800,
+      "logical_time_after": 2100,
+      "affect_before": 0.017360070170127563,
+      "affect_after": 0.01734943001348168
+    },
+    {
+      "interaction": 8,
+      "logical_time_before": 2100,
+      "logical_time_after": 2400,
+      "affect_before": 0.01734943001348168,
+      "affect_after": 0.01734799002486833
+    }
+  ],
+  "manual_patch": false,
+  "equalization": false
+}

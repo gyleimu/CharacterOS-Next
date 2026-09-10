@@ -1,0 +1,9 @@
+{
+  "schema_version": "long-horizon-call-budget-v0",
+  "cognition_calls": 8,
+  "language_calls_max": 8,
+  "maximum_run_of_record_calls": 16,
+  "clarify_avoids_language_call": true,
+  "interaction_repetition": 0,
+  "crash_safe_accounting_required_before_first_call": true
+}

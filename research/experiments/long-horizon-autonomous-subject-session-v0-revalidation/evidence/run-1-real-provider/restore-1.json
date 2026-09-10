@@ -1,0 +1,47 @@
+{
+  "kind": "RESTORED",
+  "checkpoint_ref": "sha256:301b043a13c5598e9ceb9421033184cf46329da6d6c961272ce5960bbfdd44ae",
+  "restore_generation": 1,
+  "next_interaction_index": 3,
+  "pre": {
+    "subject_state_hash": "sha256:b4a315e339b3384baa1f0c3ed13f8aa72ed33a5fe1fd0c2b3e38421e4d4086d3",
+    "state_revision": 27,
+    "logical_time": 900,
+    "repository_revision": "R9",
+    "subject_head": {
+      "revision": 27,
+      "commit_ref": "commit:d39f0bd9685badeaf6501a19dccf71a92694be54f39a79387484b46461066a6e",
+      "record_checksum": "sha256:b9cc6063ba7e116ee2cd2e7cf0cd706b81060d1bee8921632d2827248cfdac37",
+      "state_hash": "sha256:e90bc0339e5407389b841d8067c9736af79dcb07c5894e4c33459d0234f8e2c7",
+      "snapshot_hash": "sha256:f8db4b45b8d1c5f5caad12fb3386f4d6d1379ad2e5e8045fa06020cdfc51711e"
+    },
+    "affect": {
+      "valence": 0.022312169311634867,
+      "activation": 0.2375869038949659
+    },
+    "episode_refs": []
+  },
+  "post": {
+    "subject_state_hash": "sha256:b4a315e339b3384baa1f0c3ed13f8aa72ed33a5fe1fd0c2b3e38421e4d4086d3",
+    "state_revision": 27,
+    "logical_time": 900,
+    "repository_revision": "R9",
+    "subject_head": {
+      "revision": 27,
+      "commit_ref": "commit:d39f0bd9685badeaf6501a19dccf71a92694be54f39a79387484b46461066a6e",
+      "record_checksum": "sha256:b9cc6063ba7e116ee2cd2e7cf0cd706b81060d1bee8921632d2827248cfdac37",
+      "state_hash": "sha256:e90bc0339e5407389b841d8067c9736af79dcb07c5894e4c33459d0234f8e2c7",
+      "snapshot_hash": "sha256:f8db4b45b8d1c5f5caad12fb3386f4d6d1379ad2e5e8045fa06020cdfc51711e"
+    },
+    "affect": {
+      "valence": 0.022312169311634867,
+      "activation": 0.2375869038949659
+    },
+    "episode_refs": []
+  },
+  "environment_state_hash_pre": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+  "environment_state_hash_post": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+  "identity_classification": "EXACT",
+  "detail": null,
+  "schema_version": "long-horizon-restore-v0"
+}

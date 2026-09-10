@@ -57,37 +57,42 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 | Behavior → Experience → Memory feedback | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 已有冻结的端到端因果链证据；结论受对应实验契约约束 |
 | Persistence、durable history 与 restore | `IMPLEMENTED` / `MECHANICALLY_VERIFIED` | 当前长程验证的两次 authority restore 均 exact |
 | Longitudinal multi-episode life | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 冻结的四 episode 验证支持多 episode retrieval 与一次 post-restore continuity；不是任意时长证明 |
-| Long-horizon subject session orchestration | `IMPLEMENTED` / `PARTIAL` | 离线能力与测试存在；真实长程运行只完成 6/8，不能标为全面支持 |
+| Long-horizon subject session orchestration | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 真实 8-interaction run 在显式 context budget 修复后完成 8/8，2/2 authoritative restore exact；结论受该模型/配置边界约束，不代表任意时长可扩展 |
 
 `FROZEN` 描述已提交协议/证据的不可变性，不自动提升其结论等级。
 
 ## 4. 已冻结但有边界的最新结果
 
-`LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0` 的真实运行结果：
+两项真实运行都必须同时保留：
 
-- reusable session capability：`IMPLEMENTED`；
-- offline deterministic tests：green；
+`LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0`（原始失败运行，永久不变）：
+
 - real-provider validation：第 7 次 interaction fail closed，完成 6/8；
-- durable Memory commits：6；
-- authoritative restores：2/2 `EXACT`；
+- durable Memory commits：6；authoritative restores：2/2 `EXACT`；
 - principal verdict：`LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_FAILED`；
-- subordinate verdicts：Memory continuity 与 autonomous orchestration 均为 `PARTIAL`。
+- 失败机制：隐式 Ollama `num_ctx = 4096`（prompt 3568 + generation 528 = 4096，provider `truncated = 1`）。
 
-失败机制是累计 session context 下 cognition provider 返回确定性复现的截断/无效 JSON。失败证据被保留，不得把 6/8 改写为完整成功。
+`LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0_REVALIDATION`（post-repair 运行）：
+
+- 同一冻结 8-interaction plan（plan identity `SAME`，`alice-environment.ts` 逐字节相同）；
+- 唯一变量：cognition provider 的显式 `context_window_tokens = 8192`（`num_predict` 仍为 2048）；
+- 8/8 interactions 完成、8 次 durable Memory commits、2/2 restore `EXACT`；
+- E7 prompt 与失败运行完全相同的 3568 tokens，但本次 generation 831 tokens、`done_reason = stop`、JSON 有效；
+- E8 total sequence 4933 / 8192，无截断；
+- principal verdict：`LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_REVALIDATED`；
+- 已登录限制：该 run-of-record 的 session-level `provider_request_identity_match` 字段因 revalidation harness 的 trace wiring 缺陷全为 false；request identity 性质本身由 crash-safe per-call ledger 直接验证（16/16 rendered == native transport，含 `num_ctx`）。缺陷已修复，run 未重跑，raw evidence 未改写。
+
+原始 6/8 失败证据不得被改写为完整成功；post-repair 8/8 也不得被外推为任意时长或跨模型能力。
 
 ## 5. 当前 blocker 与暂停项
 
-当前技术 blocker：
+原 blocker（隐式 4096 context 导致 E7 截断）已通过 `COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0` 修复并被上述 revalidation 正面关闭。当前没有已知的 session-capability blocker。
 
-`deterministic cognition-provider truncated/invalid JSON under accumulated session context`
+下一个产品/运行时 frontier 是 `INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0`：真实用户消息 → 持久 subject session → 自动 retrieval → cognition → 可观察响应 → Experience → durable Memory → 关闭 runtime → 重新打开 → 继续同一 lived subject。该 slice 未启动，也不由本文件授权启动。
 
-对应的下一项技术诊断是：
+长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
 
-`SUBJECT_SESSION_PROVIDER_OUTPUT_BUDGET_DIAGNOSTIC_V0`
-
-该诊断在 `REPOSITORY_GOVERNANCE_AND_ENGINEERING_REALITY_ALIGNMENT_V0` 期间明确暂停。治理修复只有在文档、工程门禁、CI、diff、commit/push 与 clean-worktree 验证全部封口后，才可判定 GREEN 并进入该诊断。
-
-同时不得在本 slice 中继续 `INTERACTIVE_SUBJECT_PRODUCT_RUNTIME_V0`、扩张 autonomous session、修改冻结心理/语义架构，或启动新的模型实验。
+本文件不授权启动上述任一 frontier slice；它只记录状态。启动新 slice 需要其自身的问题、边界、调用预算与批准点。
 
 ## 6. 研究与证据现实
 

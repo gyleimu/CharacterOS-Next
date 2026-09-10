@@ -1,0 +1,15 @@
+{
+  "schema_version": "long-horizon-revalidation-repair-reference-v0",
+  "slice": "COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0",
+  "commit": "1444d0d8c827a4b56d8e7ce9d47f322dcfd23464",
+  "explicit_context_window_tokens": 8192,
+  "num_predict": 2048,
+  "provider_terminal_telemetry": [
+    "prompt_eval_count",
+    "eval_count",
+    "done_reason",
+    "context_window_tokens",
+    "max_output_tokens"
+  ],
+  "truncation_classification": "done_reason=length -> MODEL_OUTPUT_TRUNCATED (production, unit-tested; not deliberately forced here)"
+}

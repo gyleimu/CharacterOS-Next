@@ -1,0 +1,7 @@
+{
+  "schema_version": "long-horizon-transcript-bypass-audit-v0",
+  "MANUAL_CONVERSATION_RECAP": "NO",
+  "RAW_TRANSCRIPT_CONTINUITY_BYPASS": "NO",
+  "evidence": "each interaction's provider request is rebuilt from the current projection only; no previous provider messages are carried forward",
+  "messages_per_call": 16
+}

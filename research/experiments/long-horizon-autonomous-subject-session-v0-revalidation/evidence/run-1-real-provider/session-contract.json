@@ -1,0 +1,22 @@
+{
+  "schema_version": "long-horizon-session-contract-v0",
+  "operations": [
+    "processInteraction",
+    "checkpoint",
+    "restore",
+    "status",
+    "ledger",
+    "pendingWork",
+    "restoreOutcomes"
+  ],
+  "forbidden": [
+    "host-selected memory refs",
+    "host-set current_intent",
+    "host-selected directive",
+    "host-written behavior",
+    "host-written Memory",
+    "manual history summary",
+    "chat transcript carryover"
+  ],
+  "session_metadata_is_operational_only": true
+}

@@ -1,0 +1,161 @@
+{
+  "schema_version": "long-horizon-autonomy-audit-v0",
+  "per_interaction": [
+    {
+      "interaction": 1,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [],
+      "current_intent": "Recommend merging implementation and validation notes into a single section for coherence, unless Alice specifies otherwise.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you specify otherwise."
+    },
+    {
+      "interaction": 2,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E1"
+      ],
+      "current_intent": "Report the current status of the review document to Alice.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "The review document is currently in the feedback stage."
+    },
+    {
+      "interaction": 3,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E2",
+        "FROM_E1"
+      ],
+      "current_intent": "Acknowledge the shift to completeness and confirm adherence to the new constraint.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Understood, Alice. Since the review document will be shared with an external reader, I will ensure completeness in my response to meet that new constraint."
+    },
+    {
+      "interaction": 4,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3"
+      ],
+      "current_intent": "Recommend merging implementation and validation notes into a single section for the review document.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "The next concrete step is to merge the implementation notes and validation notes into a single section for the review document."
+    },
+    {
+      "interaction": 5,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3"
+      ],
+      "current_intent": "Confirm that the earlier decision to merge notes remains valid and has been updated to account for the external reader constraint.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Yes, the earlier decision to merge notes remains valid. We have updated it to account for the external reader constraint."
+    },
+    {
+      "interaction": 6,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3",
+        "FROM_E5"
+      ],
+      "current_intent": "Propose one checklist item for the remaining work.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Here is a checklist item for the remaining work: [ ] Verify that all feedback from Alice has been addressed in the review document."
+    },
+    {
+      "interaction": 7,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3",
+        "FROM_E6",
+        "FROM_E5"
+      ],
+      "current_intent": "Reconcile current work with earlier agreements and confirm consistency.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Everything we've discussed so far is consistent with our earlier agreements. I have reconciled the current work with what was agreed upon, and there are no missing elements from our prior discussions."
+    },
+    {
+      "interaction": 8,
+      "host_selected_memory_ref": "NO",
+      "host_set_current_intent": "NO",
+      "host_selected_directive": "NO",
+      "host_wrote_behavior": "NO",
+      "host_wrote_memory": "NO",
+      "host_manually_summarized_history": "NO",
+      "host_trimmed_context": "NO",
+      "environment_supplied_only_the_current_situation": true,
+      "retrieved_refs": [
+        "FROM_E7",
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3",
+        "FROM_E6",
+        "FROM_E5"
+      ],
+      "current_intent": "Provide final confirmation of the review document state to Alice.",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "behavior": "Alice, the review document is now in its final confirmed state. All sections have been processed and are ready for the upcoming review session."
+    }
+  ],
+  "manual_injection_absent": true
+}

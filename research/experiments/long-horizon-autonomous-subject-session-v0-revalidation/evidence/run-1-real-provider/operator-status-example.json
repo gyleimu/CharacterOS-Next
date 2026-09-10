@@ -1,0 +1,27 @@
+{
+  "schema_version": "long-horizon-operator-status-example-v0",
+  "example_from_interaction": 8,
+  "session_id": "alice-review-session-1",
+  "subject_id": "subject-s0",
+  "interaction": "8/8",
+  "logical_time": 2400,
+  "memory_repository_revision": "R24",
+  "current_affect": {
+    "valence": 0.01734799002486833,
+    "activation": "see affect-timeline.json"
+  },
+  "current_intent": "Provide final confirmation of the review document state to Alice.",
+  "latest_directive": "REALIZE_CURRENT_INTENT",
+  "latest_behavior": "Alice, the review document is now in its final confirmed state. All sections have been processed and are ready for the upcoming review session.",
+  "retrieved_memories": [
+    "FROM_E7",
+    "FROM_E4",
+    "FROM_E2",
+    "FROM_E1",
+    "FROM_E3",
+    "FROM_E6",
+    "FROM_E5"
+  ],
+  "last_restore": "success",
+  "authority_tokens_exposed": "NONE"
+}

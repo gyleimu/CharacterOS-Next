@@ -1,0 +1,36 @@
+{
+  "schema_version": "long-horizon-memory-age-audit-v0",
+  "at_interaction": 8,
+  "retrieved": [
+    "FROM_E7",
+    "FROM_E4",
+    "FROM_E2",
+    "FROM_E1",
+    "FROM_E3",
+    "FROM_E6",
+    "FROM_E5"
+  ],
+  "bands": {
+    "E7_only": [
+      "FROM_E7"
+    ],
+    "recent_E5_E7": [
+      "FROM_E7",
+      "FROM_E6",
+      "FROM_E5"
+    ],
+    "older_E1_E4": [
+      "FROM_E4",
+      "FROM_E2",
+      "FROM_E1",
+      "FROM_E3"
+    ],
+    "pre_restore_episodes": [
+      "FROM_E2",
+      "FROM_E1",
+      "FROM_E3"
+    ]
+  },
+  "multiple_age_bands": true,
+  "retrieval_unchanged": true
+}

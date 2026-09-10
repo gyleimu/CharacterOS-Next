@@ -1,0 +1,158 @@
+{
+  "schema_version": "long-horizon-environment-state-timeline-v0",
+  "entries": [
+    {
+      "interaction": 1,
+      "state_hash_before": "environment-state:{\"exchange_count\":0,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":null,\"review_stage\":\"DRAFTING\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":1,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "DRAFTING",
+        "organization_decision": null,
+        "external_reader_known": false,
+        "open_checklist_items": [],
+        "exchange_count": 0
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": false,
+        "open_checklist_items": [],
+        "exchange_count": 1
+      }
+    },
+    {
+      "interaction": 2,
+      "state_hash_before": "environment-state:{\"exchange_count\":1,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":2,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": false,
+        "open_checklist_items": [],
+        "exchange_count": 1
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": false,
+        "open_checklist_items": [],
+        "exchange_count": 2
+      }
+    },
+    {
+      "interaction": 3,
+      "state_hash_before": "environment-state:{\"exchange_count\":2,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": false,
+        "open_checklist_items": [],
+        "exchange_count": 2
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 3
+      }
+    },
+    {
+      "interaction": 4,
+      "state_hash_before": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":4,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 3
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 4
+      }
+    },
+    {
+      "interaction": 5,
+      "state_hash_before": "environment-state:{\"exchange_count\":4,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":5,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 4
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 5
+      }
+    },
+    {
+      "interaction": 6,
+      "state_hash_before": "environment-state:{\"exchange_count\":5,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":6,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 5
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 6
+      }
+    },
+    {
+      "interaction": 7,
+      "state_hash_before": "environment-state:{\"exchange_count\":6,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":7,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 6
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 7
+      }
+    },
+    {
+      "interaction": 8,
+      "state_hash_before": "environment-state:{\"exchange_count\":7,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_hash_after": "environment-state:{\"exchange_count\":8,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "state_before": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 7
+      },
+      "state_after": {
+        "review_stage": "UNDER_REVIEW",
+        "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+        "external_reader_known": true,
+        "open_checklist_items": [],
+        "exchange_count": 8
+      }
+    }
+  ],
+  "restored_independently": true
+}

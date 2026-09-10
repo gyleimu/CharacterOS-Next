@@ -1,0 +1,7 @@
+{
+  "schema_version": "long-horizon-phase-a-complete-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0_REVALIDATION",
+  "baseline_commit": "1444d0d8c827a4b56d8e7ce9d47f322dcfd23464",
+  "real_model_calls": 0,
+  "all_pass": true
+}

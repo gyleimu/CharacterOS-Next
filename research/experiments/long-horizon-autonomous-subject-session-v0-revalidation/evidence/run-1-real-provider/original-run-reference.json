@@ -1,0 +1,14 @@
+{
+  "schema_version": "long-horizon-revalidation-original-run-reference-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "baseline_commit": "468589a3b06d9d3d5ff309e70621e2c76c8ea0a4",
+  "evidence_path": "research/experiments/long-horizon-autonomous-subject-session-v0/evidence/run-1-real-provider",
+  "principal_verdict": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_FAILED",
+  "completed_interactions": 6,
+  "restores_exact": 2,
+  "failure": {
+    "interaction": 7,
+    "mechanism": "context-window exhaustion: prompt 3568 + generated 528 = 4096 = implicit n_ctx, provider truncated = 1"
+  },
+  "immutable": true
+}

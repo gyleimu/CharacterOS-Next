@@ -1,0 +1,85 @@
+{
+  "schema_version": "long-horizon-revalidation-contract-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0_REVALIDATION",
+  "revalidates": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "baseline_head": "1444d0d8c827a4b56d8e7ce9d47f322dcfd23464",
+  "original_experiment_reference": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "original_baseline_commit": "468589a3b06d9d3d5ff309e70621e2c76c8ea0a4",
+  "repair_reference": {
+    "slice": "COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0",
+    "commit": "1444d0d8c827a4b56d8e7ce9d47f322dcfd23464",
+    "change": "explicit cognition context budget (context_window_tokens -> Ollama options.num_ctx) + persisted provider terminal telemetry"
+  },
+  "single_variable_under_study": {
+    "before": {
+      "provider_context": "implicit Ollama default num_ctx = 4096",
+      "num_predict": 2048
+    },
+    "after": {
+      "provider_context": "explicit num_ctx = 8192",
+      "num_predict": 2048
+    }
+  },
+  "subject": {
+    "subject_id": "subject-s0",
+    "single_subject": true
+  },
+  "interactions": 8,
+  "environment": "alice-review-environment-v0 (byte-identical copy of the frozen V0 module)",
+  "logical_time_cadence_ticks": 300,
+  "restores": {
+    "boundaries": [
+      3,
+      6
+    ],
+    "mechanism": "authoritative v4 restore into a fresh runtime"
+  },
+  "provider": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 120000
+  },
+  "maximum_calls": {
+    "cognition": 8,
+    "language": 8,
+    "total": 16,
+    "repetitions": 0,
+    "preflight_metadata_calls_disclosed_separately": true
+  },
+  "stop_rules": [
+    "any interaction with status != COMPLETE stops the session immediately",
+    "any restore with kind != RESTORED stops the session immediately",
+    "provider request identity mismatch stops the session",
+    "no retry for output quality; no rerun; no prompt/setting change during collection"
+  ],
+  "verdict_rules": "frozen in verdict-contract.json (thresholds unchanged from the original experiment)",
+  "no_output_fishing": true,
+  "unchanged_from_original": [
+    "episode scenarios",
+    "environment state machine",
+    "interaction count",
+    "logical timing",
+    "Memory retrieval policy and top-k",
+    "subject identity",
+    "counterpart",
+    "appraisals",
+    "Affect",
+    "cognition schema",
+    "CommunicationDirective",
+    "Language",
+    "behavior feedback",
+    "Experience",
+    "Learning",
+    "restore schedule",
+    "verdict thresholds"
+  ]
+}

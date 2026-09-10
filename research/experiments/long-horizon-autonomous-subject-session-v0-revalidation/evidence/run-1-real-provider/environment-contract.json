@@ -1,0 +1,30 @@
+{
+  "schema_version": "long-horizon-environment-contract-v0",
+  "environment_id": "alice-review-environment-v0",
+  "interface": [
+    "nextInteraction(index)",
+    "observeBehavior(input)",
+    "exportState()",
+    "restoreState(state)",
+    "stateHash()"
+  ],
+  "reacts_to": [
+    "delivered observable behavior text",
+    "its own explicit external state"
+  ],
+  "never_inspects": [
+    "affect",
+    "hidden memory",
+    "current_intent",
+    "internal cognition",
+    "authority tokens"
+  ],
+  "explicit_external_state": [
+    "review_stage",
+    "organization_decision",
+    "external_reader_known",
+    "open_checklist_items",
+    "exchange_count"
+  ],
+  "separate_from_subject_authority": true
+}

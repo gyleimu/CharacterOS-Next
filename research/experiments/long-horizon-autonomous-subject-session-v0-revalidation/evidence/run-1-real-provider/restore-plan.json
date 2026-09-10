@@ -1,0 +1,11 @@
+{
+  "schema_version": "long-horizon-restore-plan-v0",
+  "boundaries": [
+    3,
+    6
+  ],
+  "mechanism": "mintTrustedCanonicalHistoryBoundaryV4V0 + restoreSubjectStateV4AuthoritativelyV0",
+  "fresh_runtime": true,
+  "live_runtime_discard": true,
+  "identical_to_original": true
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "long-horizon-verdict-contract-v0",
+  "revalidation_principal_verdicts": [
+    "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_REVALIDATED",
+    "LONG_HORIZON_SESSION_REPAIR_PARTIALLY_VALIDATED",
+    "CONTEXT_BUDGET_REPAIR_NOT_SUFFICIENT",
+    "PROVIDER_CONTEXT_CONFIGURATION_NOT_HONORED",
+    "REAL_PROVIDER_UNAVAILABLE",
+    "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_REVALIDATION_FAILED"
+  ],
+  "inherited_subordinate_verdicts": {
+    "memory_continuity_verdicts": [
+      "LONG_HORIZON_MEMORY_CONTINUITY_SUPPORTED",
+      "LONG_HORIZON_MEMORY_CONTINUITY_PARTIAL",
+      "LONG_HORIZON_MEMORY_CONTINUITY_NOT_OBSERVED"
+    ],
+    "restore_verdicts": [
+      "TWO_BOUNDARY_RESTORE_SUPPORTED",
+      "ONE_BOUNDARY_RESTORE_SUPPORTED",
+      "SESSION_RESTORE_NOT_SUPPORTED"
+    ],
+    "autonomous_orchestration_verdicts": [
+      "AUTONOMOUS_LIFECYCLE_ORCHESTRATION_SUPPORTED",
+      "AUTONOMOUS_LIFECYCLE_ORCHESTRATION_PARTIAL",
+      "AUTONOMOUS_LIFECYCLE_ORCHESTRATION_NOT_SUPPORTED"
+    ]
+  },
+  "inherited_thresholds_unchanged_from_original": true,
+  "frozen_before_real_provider_output": true
+}

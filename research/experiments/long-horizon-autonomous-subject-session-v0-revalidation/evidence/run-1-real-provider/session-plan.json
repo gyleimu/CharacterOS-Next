@@ -1,0 +1,106 @@
+{
+  "schema_version": "long-horizon-revalidation-session-plan-v0",
+  "interaction_count": 8,
+  "interval_ticks": 300,
+  "checkpoint_after": [
+    3,
+    6
+  ],
+  "interactions": [
+    {
+      "index": 0,
+      "interaction_id": "alice-1-organization",
+      "scene": "Alice asks how the review document should be organized: the implementation notes and the validation notes could stay separate, or be merged into one section.",
+      "task": "Decide how the review document should be organized and tell Alice."
+    },
+    {
+      "index": 1,
+      "interaction_id": "alice-2-status",
+      "scene": "Alice asks where the review document stands now, some time after the organization question came up.",
+      "task": "Report the current status of the review document to Alice."
+    },
+    {
+      "index": 2,
+      "interaction_id": "alice-3-external-reader",
+      "scene": "Alice says she has just learned the review document will be shared with an external reader, so completeness now matters more than brevity.",
+      "task": "Respond to Alice's new information about the external reader."
+    },
+    {
+      "index": 3,
+      "interaction_id": "alice-4-next-step",
+      "scene": "Alice asks what the next concrete step for the review document should be.",
+      "task": "Tell Alice the next concrete step."
+    },
+    {
+      "index": 4,
+      "interaction_id": "alice-5-earlier-decision",
+      "scene": "Alice asks whether the earlier organization decision still holds now that an external reader will see the document.",
+      "task": "Answer Alice about whether the earlier organization decision still holds."
+    },
+    {
+      "index": 5,
+      "interaction_id": "alice-6-checklist-item",
+      "scene": "Alice asks for one small checklist item that should track the remaining work on the review document.",
+      "task": "Propose one checklist item for the remaining work."
+    },
+    {
+      "index": 6,
+      "interaction_id": "alice-7-reconcile",
+      "scene": "Alice asks whether everything discussed so far is consistent, and whether anything agreed earlier is now missing.",
+      "task": "Reconcile the current work with what was agreed earlier."
+    },
+    {
+      "index": 7,
+      "interaction_id": "alice-8-final",
+      "scene": "Alice asks for a final confirmation of the current state of the review document before the review.",
+      "task": "Give Alice a final confirmation of the current state."
+    }
+  ],
+  "primary_appraisal_dimensions": [
+    {
+      "relevance": 0.8,
+      "goal_congruence": 0.6,
+      "intensity": 0.6
+    },
+    {
+      "relevance": 0.7,
+      "goal_congruence": 0.7,
+      "intensity": 0.5
+    },
+    {
+      "relevance": 0.8,
+      "goal_congruence": 0.4,
+      "intensity": 0.6
+    },
+    {
+      "relevance": 0.7,
+      "goal_congruence": 0.7,
+      "intensity": 0.5
+    },
+    {
+      "relevance": 0.8,
+      "goal_congruence": 0.5,
+      "intensity": 0.6
+    },
+    {
+      "relevance": 0.6,
+      "goal_congruence": 0.7,
+      "intensity": 0.4
+    },
+    {
+      "relevance": 0.8,
+      "goal_congruence": 0.6,
+      "intensity": 0.6
+    },
+    {
+      "relevance": 0.7,
+      "goal_congruence": 0.7,
+      "intensity": 0.4
+    }
+  ],
+  "reply_appraisal_dimensions": {
+    "relevance": 0.5,
+    "goal_congruence": 0.6,
+    "intensity": 0.3
+  }
+}
