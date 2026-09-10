@@ -309,3 +309,22 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — CLI session (offline)", 
     expect(status.turn_index).toBe(0);
   });
 });
+
+describe("INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — product first-turn memory", () => {
+  it("a first-turn fact survives a real file restart after only ONE interaction", async () => {
+    const dir = makeTempDir();
+    const hostA = await InteractiveSubjectHostV0.open(config(dir), hostDeps(() => "CLARIFY", { requests: [] }));
+    const outcomeA = await hostA.send("My favorite color is teal.");
+    expect(outcomeA.status).toBe("COMPLETE");
+    expect(outcomeA.observational_experience_ref).toMatch(/^episode:/);
+
+    const recorderB: TransportRecorder = { requests: [] };
+    const hostB = await InteractiveSubjectHostV0.open(config(dir), hostDeps(() => "CLARIFY", recorderB));
+    expect(hostB.resolution()).toBe("SUBJECT_RESTORED");
+    const outcomeB = await hostB.send("I'm buying a notebook. Any color suggestions?");
+    expect(outcomeB.status).toBe("COMPLETE");
+    expect(outcomeB.provider_memory_section_present).toBe(true);
+    expect(outcomeB.working_episode_refs.length).toBeGreaterThan(0);
+    expect(recorderB.requests[0]?.messages[1]?.content ?? "").toContain("teal");
+  });
+});

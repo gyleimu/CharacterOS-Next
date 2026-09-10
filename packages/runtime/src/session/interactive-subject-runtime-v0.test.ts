@@ -275,3 +275,113 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — offline acceptance", () 
     ).rejects.toThrow(/configured subject/);
   });
 });
+
+// ============================================================================
+// INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — observation-sourced memory
+// ============================================================================
+
+interface StoredPayload {
+  readonly ref: string;
+  readonly payload: Record<string, unknown>;
+}
+
+function payloadsOf(snapshot: InteractiveSubjectSnapshotV0): StoredPayload[] {
+  return snapshot.store.revisions.flatMap((revision) =>
+    revision.payloads.map((entry) => ({
+      ref: entry.ref,
+      payload: entry.payload as Record<string, unknown>
+    }))
+  );
+}
+
+describe("INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — observation-sourced memory", () => {
+  const FACT = "My favorite color is teal.";
+
+  it("a new subject's first message forms an observation-sourced Experience without fake feedback", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY" }));
+    const turn = await runtime.submitUserText(FACT);
+    expect(turn.status).toBe("COMPLETE");
+    expect(turn.observational_experience_ref).toMatch(/^episode:/);
+    expect(turn.completed_prior_outcome).toBeNull();
+
+    // No synthetic delivery/behavior/reply parent: exactly the subject's own behavior was delivered.
+    const snapshot = await runtime.snapshot();
+    expect(snapshot.durable.delivery_ledger_state as readonly unknown[]).toHaveLength(1);
+    const payloads = payloadsOf(snapshot);
+    expect(payloads.some((entry) => entry.payload["schema_version"] === "experience-record-v0")).toBe(false);
+
+    const episode = payloads.find((entry) => entry.ref === turn.observational_experience_ref);
+    expect(episode).toBeDefined();
+    const provenance = episode?.payload["provenance"] as { readonly cause_refs: readonly string[] };
+    expect(provenance.cause_refs.some((ref) => ref.startsWith("dlv-"))).toBe(false);
+    expect(provenance.cause_refs.some((ref) => ref.startsWith("event:"))).toBe(true);
+    // Observation semantics: no appraisal/affect duplication and no outcome/reward surface.
+    expect(episode?.payload["appraisal_ref"]).toBeNull();
+    expect(episode?.payload["affect_snapshot_ref"]).toBeNull();
+    expect(Object.keys(episode?.payload ?? {})).not.toContain("outcome");
+    expect(Object.keys(episode?.payload ?? {})).not.toContain("behavior_artifact");
+  });
+
+  it("does not retrieve the current message into its own turn, then does retrieve it next turn", async () => {
+    const recorder = { requests: [] as { messages: readonly { role: string; content: string }[] }[] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY", recorder }));
+    const first = await runtime.submitUserText(FACT);
+    expect(first.provider_memory_section_present).toBe(false);
+    expect(recorder.requests).toHaveLength(1);
+    expect(recorder.requests[0]?.messages[1]?.content ?? "").not.toContain("[PRIOR FACTUAL MEMORY");
+
+    const second = await runtime.submitUserText("Please suggest a color for my notebook.");
+    expect(second.provider_memory_section_present).toBe(true);
+    expect(second.working_episode_refs.length).toBeGreaterThan(0);
+    expect(recorder.requests[1]?.messages[1]?.content ?? "").toContain("teal");
+  });
+
+  it("later user events are admitted exactly once through behavior-outcome feedback (no duplicate episode)", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY" }));
+    const first = await runtime.submitUserText(FACT);
+    const second = await runtime.submitUserText("Thanks, noted.");
+    expect(first.observational_experience_ref).not.toBeNull();
+    expect(second.observational_experience_ref).toBeNull();
+    expect(second.completed_prior_outcome).not.toBeNull();
+
+    const payloads = payloadsOf(await runtime.snapshot());
+    expect(payloads.filter((entry) => entry.ref.startsWith("episode:"))).toHaveLength(2);
+    expect(payloads.filter((entry) => entry.payload["schema_version"] === "experience-record-v0")).toHaveLength(1);
+  });
+
+  it("§40 restart after ONLY ONE user turn: the first-turn fact is retrieved post-restart", async () => {
+    const runtimeA = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY" }));
+    await runtimeA.submitUserText(FACT);
+    const parsed = JSON.parse(JSON.stringify(await runtimeA.snapshot())) as InteractiveSubjectSnapshotV0;
+
+    const recorderB = { requests: [] as { messages: readonly { role: string; content: string }[] }[] };
+    const runtimeB = await InteractiveSubjectRuntimeV0.restore(options({ mode: () => "CLARIFY", recorder: recorderB }), parsed);
+    const turnB = await runtimeB.submitUserText("I'm buying a notebook. Any color suggestions?");
+    expect(turnB.status).toBe("COMPLETE");
+    expect(turnB.provider_memory_section_present).toBe(true);
+    expect(turnB.working_episode_refs.length).toBeGreaterThan(0);
+    expect(recorderB.requests[0]?.messages[1]?.content ?? "").toContain("teal");
+  });
+
+  it("restore is idempotent for observation-sourced memory (no duplicate episode)", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY" }));
+    await runtime.submitUserText(FACT);
+    const snapshot = await runtime.snapshot();
+    const before = payloadsOf(snapshot).filter((entry) => entry.ref.startsWith("episode:")).length;
+
+    const restored = await InteractiveSubjectRuntimeV0.restore(
+      options({ mode: () => "CLARIFY" }),
+      JSON.parse(JSON.stringify(snapshot)) as InteractiveSubjectSnapshotV0
+    );
+    const after = payloadsOf(await restored.snapshot()).filter((entry) => entry.ref.startsWith("episode:")).length;
+    expect(after).toBe(before);
+  });
+
+  it("does not weaken the behavior-outcome law: no linked parent ⇒ no BEHAVIOR_OUTCOME record", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "CLARIFY" }));
+    const turn = await runtime.submitUserText(FACT);
+    expect(turn.observational_experience_ref).not.toBeNull();
+    const payloads = payloadsOf(await runtime.snapshot());
+    expect(payloads.filter((entry) => entry.payload["schema_version"] === "experience-record-v0")).toHaveLength(0);
+  });
+});

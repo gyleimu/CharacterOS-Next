@@ -82,10 +82,19 @@ service, no network beyond the configured local Ollama endpoint.
    that delivery and closes the prior behavior's Experience/Memory through the
    existing behavior→experience→feedback authority. Nothing is faked: a delivered
    reply whose outcome is not yet answered stays truthfully pending.
-5. On a later launch the durable snapshot is restored authoritatively. If the
+5. A user message that has NO behavior-outcome role — most importantly a brand-new
+   subject's FIRST message, which has no prior delivered behavior to answer — is
+   instead admitted as an **observation-sourced Experience** through the existing
+   generic Learning path (Observation → EpisodicMemory → durable Memory). The
+   subject durably remembers the external factual event it perceived, with no
+   fabricated delivery/behavior/reply parent, no reward or learning signal, and
+   no appraisal/affect duplication. Each user event is admitted exactly once.
+   The event is committed AFTER that turn's cognition, so a message is never
+   retrieved as "past memory" into the very turn answering it.
+6. On a later launch the durable snapshot is restored authoritatively. If the
    snapshot exists but cannot be validated/restored, the CLI FAILS CLOSED and
    never silently creates a new subject.
-6. Past interactions reach later cognition only through the existing
+7. Past interactions reach later cognition only through the existing
    Experience → Memory → retrieval path (rendered as untrusted factual evidence).
    There is no transcript replay and no manual memory injection.
 
@@ -98,6 +107,10 @@ service, no network beyond the configured local Ollama endpoint.
   you next speak — including after a restart, because the delivery ledger is
   durable. This is the truthful conversational consequence the frozen feedback
   authority requires; there is no delivery-receipt-only Experience path.
+- Observation-sourced memory records that the subject **perceived a factual
+  event** (e.g. "the user stated …"), not that the statement is objectively true.
+  It carries no reward, learning, trust or sentiment semantics, and it never
+  feeds behavior-outcome learning.
 - The host applies the SAME minimal appraisal profile to every factual event
   (see `product-appraisal-provider.ts`). It is not a sentiment/user-reaction
   model. Affect moves through the canonical dynamics, not through per-content

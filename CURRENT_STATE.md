@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 本文件是仓库“现在是什么、做到哪里、下一步是什么”的唯一实时状态入口。
-Last verified against commit: `f9021567c30769cf2b7b33a4f9a71d9a7f94f880`（干净 baseline；`INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
+Last verified against commit: `b0e503de63adfd5532e8a46fa30b1c5a84c668b6`（干净 baseline；`INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
 Workspace projects: 14
 Purpose: 记录可执行代码、当前测试与已提交冻结证据共同支持的最小事实；历史计划不能覆盖这些事实。
 Verified date: 2026-09-11
@@ -59,6 +59,7 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 | Longitudinal multi-episode life | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 冻结的四 episode 验证支持多 episode retrieval 与一次 post-restore continuity；不是任意时长证明 |
 | Long-horizon subject session orchestration | `IMPLEMENTED` / `EXPERIMENTALLY_SUPPORTED` | 真实 8-interaction run 在显式 context budget 修复后完成 8/8，2/2 authoritative restore exact；结论受该模型/配置边界约束，不代表任意时长可扩展 |
 | Interactive persistent subject runtime | `IMPLEMENTED` / `SMOKE_VALIDATED` | `product/sandbox` 本地 CLI：真实用户文本经既有生产 lifecycle，completed turn 成为 durable lived history；真实进程重启后 authoritative restore 同一 subject（revision 连续），pre-restart factual Memory 经生产 retrieval 进入 post-restart provider-visible evidence。bounded real-provider smoke（`qwen3.5:9b`, 8192/2048），不代表长期可扩展或人格真实性 |
+| First-turn / observation-sourced lived memory | `IMPLEMENTED` / `SMOKE_VALIDATED` | 全新 subject 的首条用户消息（无 delivered-behavior parent）经既有 generic Observation→Experience→Memory path 成为 durable lived history；无 fake delivery/behavior/reply parent，无 reward/learning 信号，无 appraisal/affect 重复；每个用户事件恰好编码一次；重启后 retrieval 命中并以 "user stated X" 形式进入 provider evidence |
 
 `FROZEN` 描述已提交协议/证据的不可变性，不自动提升其结论等级。
 
@@ -93,7 +94,9 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 已记录的 V0 限制（不是 blocker）：冻结 feedback 法只把「作为上一交付行为 counterpart reply 的用户消息」编码进 Experience/Memory，因此全新 subject 的第一条用户消息不会进入 Memory；host appraisal provider 使用固定最小 profile（Affect 不随内容变化）；某轮交付行为的 outcome Experience 在用户下一次发言时提交。
 
-下一个产品/运行时 frontier 是 `INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0`：判定 bare user factual event（无 prior delivered-behavior parent）能否经既有权威 lawful 编码为 Experience/Memory，或记录该架构缺口。该 slice 未启动，也不由本文件授权启动。
+`INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0` 已实现并通过 bounded real-provider smoke：全新 subject 的第一条用户消息经既有 generic Learning path（Observation → EpisodicMemoryRecordV0 → Memory）成为 durable lived history；单次 pre-restart 交互即可在重启后被 retrieval 命中，并以 "user stated X" 的观测语义进入 provider-visible evidence。每个用户事件恰好编码一次；无 fake feedback。
+
+下一个产品/运行时 frontier 是 `PERSISTENT_SUBJECT_CONFIGURATION_V0`：让用户以 lawful、产品化方式创建/配置唯一持久 subject（身份、显示名、identity anchors、storage），而非仅靠环境变量。该 slice 未启动，也不由本文件授权启动。
 
 长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
 

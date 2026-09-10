@@ -96,6 +96,59 @@ function ctxOf(snapshot: SubjectStateV4): RuntimeContext {
   } as unknown as RuntimeContext;
 }
 
+/**
+ * INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — build ONE Observation-
+ * sourced Learning candidate from an already-committed Observation bundle.
+ *
+ * Mirrors the existing production MICL internal handoff exactly: the trusted
+ * source is the COMMITTED Observation (never caller assertions); scene / focus /
+ * environment are copied from that bundle's committed context, the occurrence
+ * basis is the bundle's own logical time, and the appraisal ref (ref only) is
+ * read from the committed affect channels when present. No behavior/delivery/
+ * reply parent is required or invented.
+ */
+function buildObservationLearningCandidateV0(
+  bundle: {
+    readonly subject_id: string;
+    readonly transition_id: string;
+    readonly logical_time_after: number;
+    readonly trace_entry: { readonly cause_refs: readonly string[] };
+    readonly next_snapshot: unknown;
+  },
+  declaredSalience: number
+): Record<string, unknown> {
+  const causeRefs = bundle.trace_entry.cause_refs;
+  const observationRef = causeRefs.find((ref) => ref.startsWith("observation:"));
+  if (observationRef === undefined) {
+    throw new Error("observational experience: source Observation bundle carries no observation ref");
+  }
+  const committed = bundle.next_snapshot as {
+    readonly context: {
+      readonly scene: string;
+      readonly focus_refs: readonly string[];
+      readonly active_entity_refs: readonly string[];
+      readonly environment_refs: readonly string[];
+    };
+  };
+  return {
+    subject_id: bundle.subject_id,
+    source_transition_id: bundle.transition_id,
+    observation_ref: observationRef,
+    entity_refs: [...committed.context.active_entity_refs].sort(),
+    event_refs: causeRefs.filter((ref) => ref.startsWith("event:")).sort(),
+    occurrence_logical_time: bundle.logical_time_after,
+    // No appraisal linkage: an observation-sourced Experience is the subject
+    // perceiving a factual event, NOT an appraisal outcome. Null also keeps the
+    // generic Learning validator's appraisal-evidence step off this path, so no
+    // appraisal is duplicated and no affect is applied twice (§16/§44).
+    appraisal_ref: null,
+    scene: committed.context.scene,
+    focus_refs: [...committed.context.focus_refs],
+    environment_refs: [...committed.context.environment_refs],
+    declared_salience: declaredSalience
+  };
+}
+
 export class ExplicitV4SessionAuthorityV0 {
   private readonly repo: MemoryRepository;
   private readonly assembly: Assembly;
@@ -423,8 +476,22 @@ export class ExplicitV4SessionAuthorityV0 {
     return [{ repository_revision: revision, repository_revision_hash: await computeRepositoryRevisionHash(manifest) }];
   }
 
-  /** Admit an observable factual event (ingress → Observation). */
-  async admitFactualEvent(sourceEventId: string, text: string, interactionIndex: number): Promise<{ readonly event_ref: string; readonly observation_transition_id: string; readonly observation_ref: string }> {
+  /**
+   * Admit an observable factual event (ingress → Observation).
+   *
+   * `observableSituation` (INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0) is
+   * optional and additive: when supplied, the SAME committed `context` delta
+   * carries the observable scene/task, so the admission Observation is a lawful
+   * source for an observation-sourced Experience (the generic Learning path
+   * requires the candidate scene to equal the committed source context scene).
+   * Omitted ⇒ byte-identical to the frozen research-session behavior.
+   */
+  async admitFactualEvent(
+    sourceEventId: string,
+    text: string,
+    interactionIndex: number,
+    observableSituation?: { readonly scene: string; readonly task: string | null }
+  ): Promise<{ readonly event_ref: string; readonly observation_transition_id: string; readonly observation_ref: string }> {
     const recorded = await this.ingressLedger.recordIngressEvent({
       schema_version: "conversation-ingress-input-v0",
       subject_id: this.subjectIdValue as never,
@@ -445,7 +512,24 @@ export class ExplicitV4SessionAuthorityV0 {
       entity_refs: ["entity:alice", `subject:${this.subjectIdValue}`],
       occurrence_logical_time: snapshot.runtime_metadata.logical_time
     });
-    const contextDelta = await buildContextDelta(observation, snapshot as never);
+    const baseContextDelta = await buildContextDelta(observation, snapshot as never);
+    const baseOp = baseContextDelta.operations[0] as unknown as { path: string; value: Record<string, unknown> };
+    const contextDelta =
+      observableSituation === undefined
+        ? baseContextDelta
+        : ({
+            ...baseContextDelta,
+            operations: [
+              {
+                ...baseOp,
+                value: {
+                  ...baseOp.value,
+                  scene: observableSituation.scene,
+                  task: observableSituation.task
+                }
+              }
+            ]
+          } as typeof baseContextDelta);
     const proposal = await buildObservationProposal({
       subjectId: this.subjectIdValue as never,
       stateRevision: snapshot.runtime_metadata.state_revision as number,
@@ -721,6 +805,73 @@ export class ExplicitV4SessionAuthorityV0 {
       episode_ref: outcome.refs.episode_ref,
       event_ref: outcome.refs.event_ref
     };
+  }
+
+  /**
+   * INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — commit ONE
+   * observation-sourced lived Experience through the EXISTING generic Learning
+   * path (Observation → EpisodicMemoryRecordV0 → durable Memory).
+   *
+   * This is the pre-existing lawful path for "the subject perceived an external
+   * factual event" (the same path the production MICL Learning stage uses). It
+   * requires NO delivered-behavior parent, creates NO delivery/behavior/reply
+   * record, applies NO appraisal and NO affect, and adds NO learning/reward
+   * signal. The behavior-outcome feedback law is untouched and remains strict.
+   */
+  async recordObservationalExperience(input: {
+    readonly observationTransitionId: string;
+    readonly declaredSalience: number;
+  }): Promise<{ readonly episode_ref: string; readonly repository_revision: string }> {
+    const sourceAuthority = this.container.learningSourceAuthority;
+    const adoptionAuthority = this.container.learningAdoptionAuthority;
+    if (sourceAuthority === null || adoptionAuthority === null) {
+      throw new Error("session observational experience: learning authorities not wired");
+    }
+    const bundle = await sourceAuthority.readCommittedBundle(input.observationTransitionId);
+    if (bundle === null) {
+      throw new Error(
+        `session observational experience: source Observation ${input.observationTransitionId} is not committed`
+      );
+    }
+    if (bundle.subject_id !== (this.subjectIdValue as never)) {
+      throw new Error("session observational experience: source Observation belongs to a different subject");
+    }
+    if (bundle.transition_type !== "Observation") {
+      throw new Error(
+        `session observational experience: source must be a committed Observation, got ${bundle.transition_type}`
+      );
+    }
+    const candidate = buildObservationLearningCandidateV0(
+      bundle as unknown as {
+        readonly subject_id: string;
+        readonly transition_id: string;
+        readonly logical_time_after: number;
+        readonly trace_entry: { readonly cause_refs: readonly string[] };
+        readonly next_snapshot: unknown;
+      },
+      input.declaredSalience
+    );
+    const snapshot = await this.readSnapshot();
+    const executor = new LearningTransitionExecutor({
+      subjectCore: this.assembly.facade,
+      producerAuthorizationIssuer: this.issuer,
+      memoryRepository: this.repo,
+      memory: this.container.memory,
+      experiencePayloadRepository: this.repo,
+      learningSourceAuthority: sourceAuthority,
+      learningAdoptionAuthority: adoptionAuthority
+    } as never);
+    const outcome = await executor.execute(ctxOf(snapshot), { candidate } as never);
+    if (outcome.kind !== "COMMITTED") {
+      throw new Error(`session observational experience must commit: ${JSON.stringify(outcome).slice(0, 200)}`);
+    }
+    const revision = outcome.bundle.next_snapshot.memory_state.repository_revision as string;
+    const manifest = await this.repo.readManifest(revision as never);
+    const episodeRef = manifest?.record_hashes.find((record) => record.ref.startsWith("episode:"))?.ref;
+    if (episodeRef === undefined) {
+      throw new Error(`session observational experience: committed revision ${revision} carries no episode record`);
+    }
+    return { episode_ref: episodeRef, repository_revision: revision };
   }
 
   /** Capture the authoritative durable identity + host payloads for a checkpoint. */

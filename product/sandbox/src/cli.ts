@@ -117,6 +117,7 @@ async function main(): Promise<number> {
       subject_text: outcome.subject_text,
       delivery_id: outcome.delivery_id,
       completed_prior_outcome: outcome.completed_prior_outcome,
+      observational_experience_ref: outcome.observational_experience_ref,
       retrieved_refs: outcome.retrieved_refs,
       working_episode_refs: outcome.working_episode_refs,
       resolved_evidence_entry_count: outcome.resolved_evidence_entry_count,

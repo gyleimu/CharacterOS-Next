@@ -88,6 +88,12 @@ export interface InteractiveTurnOutcomeV0 {
     readonly episode_ref: string;
     readonly memory_event_ref: string;
   } | null;
+  /**
+   * Observation-sourced episode ref when THIS user event had no behavior-outcome
+   * role (e.g. a new subject's first message) and was admitted through the
+   * generic Learning path. Null when the event was admitted as a behavior outcome.
+   */
+  readonly observational_experience_ref: string | null;
   readonly retrieved_refs: readonly string[];
   readonly working_episode_refs: readonly string[];
   readonly resolved_evidence_entry_count: number;
@@ -389,14 +395,17 @@ export class InteractiveSubjectRuntimeV0 {
     const tag = `t${index}`;
     const sourceEventId = `turn-${index}`;
     const snapshotBefore = await this.authority.readSnapshot();
+    const pending = this.pendingBehaviorOutcome;
     let completedPriorOutcome: InteractiveTurnOutcomeV0["completed_prior_outcome"] = null;
+    let observationalExperienceRef: string | null = null;
 
     try {
       await this.authority.advanceTime(this.options.interval_ticks ?? 1, tag);
       await this.authority.completePendingLifecycleWork();
 
       // ---- this user message as the new primary factual event
-      const admitted = await this.authority.admitFactualEvent(sourceEventId, text, index);
+      const observableSituation = { scene: conversationalSceneV0(text), task: CONVERSATIONAL_TASK_V0 };
+      const admitted = await this.authority.admitFactualEvent(sourceEventId, text, index, observableSituation);
       this.authority.enqueuePending({
         event_ref: admitted.event_ref,
         observation_transition_id: admitted.observation_transition_id,
@@ -427,9 +436,21 @@ export class InteractiveSubjectRuntimeV0 {
       await this.authority.completePendingLifecycleWork();
       const deliveryId = await this.authority.recordDelivery(behavior);
 
-      // ---- deferred counterpart: this user text answers the PRIOR delivered behavior
-      const pending = this.pendingBehaviorOutcome;
-      if (pending !== null) {
+      // ---- Memory admission: the user event is admitted exactly ONCE.
+      // If it answers a prior delivered behavior, the existing behavior-outcome
+      // feedback path records that two-sided interaction (and thereby the user
+      // text). Otherwise — e.g. a brand-new subject's first message, which has
+      // no behavior parent — the SAME committed Observation is admitted as an
+      // observation-sourced Experience through the existing generic Learning
+      // path. Both run AFTER this turn's cognition, so the event never enters
+      // its own retrieval context.
+      if (pending === null) {
+        const observational = await this.authority.recordObservationalExperience({
+          observationTransitionId: admitted.observation_transition_id,
+          declaredSalience: 0.5
+        });
+        observationalExperienceRef = observational.episode_ref;
+      } else {
         const replySourceId = `${pending.turn_source_id}-reply`;
         const reply = await this.authority.recordReply(text, pending.delivery_id, replySourceId, pending.turn_index);
         this.authority.enqueuePending({
@@ -484,6 +505,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_call_required: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0",
         language_status: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0" ? "VALID" : "NOT_REQUIRED_CLARIFY",
         completed_prior_outcome: completedPriorOutcome,
+        observational_experience_ref: observationalExperienceRef,
         retrieved_refs: context.selected_refs,
         working_episode_refs: context.working_episode_refs,
         resolved_evidence_entry_count: evidence.entry_count,
@@ -527,6 +549,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_call_required: false,
         language_status: "NOT_REACHED",
         completed_prior_outcome: completedPriorOutcome,
+        observational_experience_ref: null,
         retrieved_refs: [],
         working_episode_refs: [],
         resolved_evidence_entry_count: 0,
