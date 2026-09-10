@@ -86,6 +86,43 @@ export interface CompletedLifecycleWorkV0 {
   readonly appraisal_ref: string;
 }
 
+// ---------------------------------------------------------------------------
+// INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0 — read-only lived-memory projection
+// ---------------------------------------------------------------------------
+
+/**
+ * Safe, non-authoritative factual view of ONE durable lived episode.
+ * `OBSERVATION` carries the stored observable scene exactly as recorded (for
+ * the product that is the framed counterpart utterance); `BEHAVIOR_OUTCOME`
+ * carries BOTH the delivered behavior text and the exact counterpart reply.
+ * No reward/sentiment/objective-truth interpretation is representable.
+ */
+export interface LivedMemoryObservationEntryV0 {
+  readonly kind: "OBSERVATION";
+  readonly occurrence_logical_time: number;
+  readonly scene: string;
+  readonly episode_ref: string;
+}
+
+export interface LivedMemoryBehaviorOutcomeEntryV0 {
+  readonly kind: "BEHAVIOR_OUTCOME";
+  readonly occurrence_logical_time: number;
+  readonly delivered_behavior_text: string;
+  readonly outcome_reply_text: string;
+  readonly episode_ref: string;
+}
+
+export type LivedMemoryEntryV0 = LivedMemoryObservationEntryV0 | LivedMemoryBehaviorOutcomeEntryV0;
+
+export interface LivedMemoryInspectionV0 {
+  readonly schema_version: "lived-memory-inspection-v0";
+  readonly repository_revision: string;
+  readonly total_episode_count: number;
+  readonly displayed_count: number;
+  /** Chronological (occurrence logical time), oldest of the displayed window first. */
+  readonly entries: readonly LivedMemoryEntryV0[];
+}
+
 type Assembly = ReturnType<typeof createInMemorySubjectCoreFacadeForExplicitV4V0>;
 
 function ctxOf(snapshot: SubjectStateV4): RuntimeContext {
@@ -94,6 +131,17 @@ function ctxOf(snapshot: SubjectStateV4): RuntimeContext {
     current_logical_time: snapshot.runtime_metadata.logical_time,
     state_revision: snapshot.runtime_metadata.state_revision
   } as unknown as RuntimeContext;
+}
+
+/** Detaches a read-only projection from any live internal object graph. */
+function deepFreezeValue(value: unknown): unknown {
+  if (value === null || typeof value !== "object") return value;
+  if (Object.isFrozen(value)) return value;
+  Object.freeze(value);
+  for (const key of Object.keys(value as Record<string, unknown>)) {
+    deepFreezeValue((value as Record<string, unknown>)[key]);
+  }
+  return value;
 }
 
 /**
@@ -657,6 +705,105 @@ export class ExplicitV4SessionAuthorityV0 {
     } catch (error) {
       return { entry_count: 0, bundle: { resolve_error: (error instanceof Error ? error.message : String(error)).slice(0, 300), refs } };
     }
+  }
+
+  /**
+   * INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0 — READ-ONLY factual projection of
+   * the subject's durable lived episodes. Pure read: no ingress, no Observation,
+   * no Experience/Memory write, no retrieval-state change, no revision/index
+   * advance, no provider call.
+   *
+   * Content comes ONLY from canonical durable records (repository visible
+   * episode refs) resolved through the EXISTING `FactualMemoryEvidenceResolverV0`
+   * + `ExperienceReaderV0`/`EpisodeContentReaderV0`. Missing/corrupt linked
+   * content propagates the resolver's fail-closed behavior; it is never skipped
+   * or fabricated. The returned projection is plain, deep-frozen, detached data.
+   */
+  async readLivedMemoryV0(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
+    const snapshot = await this.readSnapshot();
+    const revision = snapshot.memory_state.repository_revision as string;
+    const repo = this.repo as unknown as InMemoryMemoryRepository;
+    const visible = await repo.readVisibleRecordHashes(revision as never);
+    const episodeRefs = [...new Set(visible.map((record) => record.ref))].filter((ref) => ref.startsWith("episode:"));
+
+    const timed: { readonly ref: string; readonly occurrence: number; readonly recorded: number }[] = [];
+    for (const ref of episodeRefs) {
+      const payload = repo.readStoredPayload(ref as never) as
+        | { readonly occurrence_logical_time?: number; readonly recorded_at_logical_time?: number }
+        | null;
+      if (payload === null) {
+        throw new Error(`memory inspection: episode ${ref} has no repository-owned payload`);
+      }
+      timed.push({
+        ref,
+        occurrence: payload.occurrence_logical_time ?? 0,
+        recorded: payload.recorded_at_logical_time ?? 0
+      });
+    }
+    timed.sort(
+      (a, b) =>
+        a.occurrence - b.occurrence ||
+        a.recorded - b.recorded ||
+        (a.ref < b.ref ? -1 : a.ref > b.ref ? 1 : 0)
+    );
+
+    const total = timed.length;
+    const requested = input?.limit ?? 10;
+    const limit = Math.max(1, Math.min(100, Number.isSafeInteger(requested) ? requested : 10));
+    const selected = timed.slice(Math.max(0, total - limit));
+
+    const entries: LivedMemoryEntryV0[] = [];
+    if (selected.length > 0) {
+      const resolver = this.container.factualEvidenceResolver;
+      if (resolver === null) {
+        throw new Error("memory inspection: factual evidence resolver not wired");
+      }
+      const bundle = (await resolver.resolve({
+        repository_revision: revision,
+        episode_refs: [...selected.map((entry) => entry.ref)].sort()
+      } as never)) as {
+        readonly entries: readonly {
+          readonly kind: string;
+          readonly episode_ref: string;
+          readonly scene?: string;
+          readonly delivered_behavior_text?: string;
+          readonly exact_outcome_text?: string;
+          readonly outcome_logical_time?: number;
+        }[];
+      };
+      const byRef = new Map(bundle.entries.map((entry) => [entry.episode_ref, entry]));
+      for (const timedRef of selected) {
+        const evidence = byRef.get(timedRef.ref);
+        if (evidence === undefined) {
+          throw new Error(`memory inspection: no resolved evidence for episode ${timedRef.ref}`);
+        }
+        if (evidence.kind === "BEHAVIOR_OUTCOME") {
+          entries.push({
+            kind: "BEHAVIOR_OUTCOME",
+            occurrence_logical_time: evidence.outcome_logical_time ?? timedRef.occurrence,
+            delivered_behavior_text: evidence.delivered_behavior_text ?? "",
+            outcome_reply_text: evidence.exact_outcome_text ?? "",
+            episode_ref: timedRef.ref
+          });
+        } else {
+          entries.push({
+            kind: "OBSERVATION",
+            occurrence_logical_time: timedRef.occurrence,
+            scene: evidence.scene ?? "",
+            episode_ref: timedRef.ref
+          });
+        }
+      }
+    }
+
+    const projection: LivedMemoryInspectionV0 = {
+      schema_version: "lived-memory-inspection-v0",
+      repository_revision: revision,
+      total_episode_count: total,
+      displayed_count: entries.length,
+      entries
+    };
+    return deepFreezeValue(projection) as LivedMemoryInspectionV0;
   }
 
   /** The frozen production conversation path: appraisal → cognition → directive → behavior. */

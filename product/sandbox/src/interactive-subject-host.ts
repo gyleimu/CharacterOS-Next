@@ -19,6 +19,7 @@ import type {
   InteractiveSubjectSnapshotV0,
   InteractiveSubjectStatusV0,
   InteractiveTurnOutcomeV0,
+  LivedMemoryInspectionV0,
   ModelTransportTraceV0,
   ModelTransportV0
 } from "@characteros-next/runtime";
@@ -194,6 +195,11 @@ export class InteractiveSubjectHostV0 {
 
   async status(): Promise<InteractiveSubjectStatusV0> {
     return this.runtime.status();
+  }
+
+  /** Read-only durable lived-memory projection; performs no provider call. */
+  async livedMemory(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
+    return this.runtime.livedMemory(input);
   }
 
   async durableSnapshot(): Promise<InteractiveSubjectSnapshotV0> {

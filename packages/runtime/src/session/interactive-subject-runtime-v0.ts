@@ -35,6 +35,7 @@ import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-co
 import {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
+  type LivedMemoryInspectionV0,
   type SessionResponseResultV0
 } from "./explicit-v4-session-authority-v0.js";
 import {
@@ -594,6 +595,14 @@ export class InteractiveSubjectRuntimeV0 {
       store,
       saved_at: (this.options.clock ?? (() => new Date().toISOString()))()
     };
+  }
+
+  /**
+   * INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0 — read-only factual projection of
+   * durable lived episodes. Causes no subject-state change and no provider call.
+   */
+  async livedMemory(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
+    return this.authority.readLivedMemoryV0(input);
   }
 
   async status(): Promise<InteractiveSubjectStatusV0> {

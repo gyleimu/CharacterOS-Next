@@ -82,12 +82,45 @@ subject).
 ```
 /help     show help
 /status   show subject + runtime status (read-only)
+/memory   show recent durable lived memories (read-only)
 /exit     finish the current turn, verify no mandatory pending work, save, quit
 ```
 
 Anything else is sent to the subject as a natural-language message. Ctrl+C
 requests a graceful shutdown (finish the current turn, then exit); pressing it
 again forces immediate exit.
+
+### Inspecting lived memory (`/memory`)
+
+`/memory` shows the subject's durable lived history as a safe factual
+projection of actual CharacterOS evidence — never fabricated prose, never an
+LLM summary, and never retrieval ranking:
+
+```text
+Alice remembers 3 lived episodes:
+
+1. The user says: "My favorite color is teal."
+
+2. Alice said:
+   "Try keeping only today's items on your desk."
+   You replied:
+   "That was helpful; keeping only today's items on the desk works for me."
+```
+
+- Observation memories are the stored counterpart utterance; behavior-outcome
+  memories preserve BOTH the delivered behavior text and the exact user reply.
+- It preserves the epistemic boundary: it shows what was *said*, not an
+  objective-truth rewrite, and adds no reward/sentiment/trust interpretation.
+- It is strictly read-only: no ingress, no Observation, no Experience/Memory
+  write, no Affect/Belief/Relationship change, no revision or interaction-index
+  advance, and no provider call. Internal refs/payloads/prompts/reasoning are
+  never shown (debug mode may show durable episode refs).
+- `/memory [count]` bounds the display to the most recent N episodes (default
+  10, max 100). This is a presentation bound only — nothing is deleted or
+  de-prioritized, and retrieval is unchanged. Very long text is visibly
+  truncated for display only; the durable record keeps the full text.
+- If canonical memory cannot be read/resolved, it prints "Memory inspection
+  failed." and changes nothing.
 
 ## Where state lives
 

@@ -1094,7 +1094,11 @@ export {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
   type SessionResponseResultV0,
-  type CompletedLifecycleWorkV0
+  type CompletedLifecycleWorkV0,
+  type LivedMemoryInspectionV0,
+  type LivedMemoryEntryV0,
+  type LivedMemoryObservationEntryV0,
+  type LivedMemoryBehaviorOutcomeEntryV0
 } from "./session/explicit-v4-session-authority-v0.js";
 export {
   LongHorizonSubjectSessionV0,

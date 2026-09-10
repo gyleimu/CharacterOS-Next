@@ -8,7 +8,7 @@
  */
 
 import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
-import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
+import type { InteractiveTurnOutcomeV0, LivedMemoryEntryV0, LivedMemoryInspectionV0 } from "@characteros-next/runtime";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
@@ -31,9 +31,30 @@ export const PRODUCT_CLI_HELP_LINES: readonly string[] = Object.freeze([
   "Commands:",
   "  /help     show this help",
   "  /status   show subject + runtime status",
+  "  /memory   show recent durable lived memories (read-only)",
   "  /exit     finish the current turn, save, and quit",
   "Anything else is sent to the subject as a natural-language message."
 ]);
+
+const DEFAULT_MEMORY_LIMIT_V0 = 10;
+const MAX_MEMORY_LIMIT_V0 = 100;
+const MAX_DISPLAY_TEXT_LENGTH_V0 = 600;
+
+/**
+ * Read-only presentation sanitization: never alters canonical content; only
+ * replaces terminal-unsafe control characters and caps the DISPLAYED length
+ * with an explicit marker. The structured projection retains full text.
+ */
+function sanitizeDisplayTextV0(text: string): string {
+  let out = "";
+  for (const character of text) {
+    const code = character.codePointAt(0) ?? 0;
+    out += code < 0x20 || code === 0x7f ? " " : character;
+  }
+  return out.length > MAX_DISPLAY_TEXT_LENGTH_V0
+    ? `${out.slice(0, MAX_DISPLAY_TEXT_LENGTH_V0)} …[truncated for display]`
+    : out;
+}
 
 export class ProductCliSessionV0 {
   private exiting = false;
@@ -59,7 +80,8 @@ export class ProductCliSessionV0 {
   }
 
   private async handleCommand(line: string): Promise<ProductCliLineResultV0> {
-    const command = line.split(/\s+/, 1)[0] ?? line;
+    const [command = line, ...rest] = line.split(/\s+/);
+    const argument = rest.join(" ").trim();
     if (command === "/exit") {
       this.exiting = true;
       const pending = this.deps.host.pendingLifecycleWork();
@@ -81,8 +103,58 @@ export class ProductCliSessionV0 {
       await this.printStatus();
       return { kind: "HANDLED" };
     }
+    if (command === "/memory") {
+      await this.printLivedMemory(argument);
+      return { kind: "HANDLED" };
+    }
     this.deps.write(`Unknown command "${command}". Type /help for commands.`);
     return { kind: "HANDLED" };
+  }
+
+  /** Read-only lived-memory inspection. No provider call, no subject mutation. */
+  private async printLivedMemory(argument: string): Promise<void> {
+    let limit = DEFAULT_MEMORY_LIMIT_V0;
+    if (argument.length > 0) {
+      const parsed = Number.parseInt(argument, 10);
+      if (!Number.isSafeInteger(parsed) || parsed <= 0 || String(parsed) !== argument) {
+        this.deps.write("Usage: /memory [count] — count is a positive integer (default 10).");
+        return;
+      }
+      limit = Math.min(MAX_MEMORY_LIMIT_V0, parsed);
+    }
+    let inspection: LivedMemoryInspectionV0;
+    try {
+      inspection = await this.deps.host.livedMemory({ limit });
+    } catch (error) {
+      this.deps.write("Memory inspection failed.");
+      if (this.deps.debug) this.deps.write(`[debug] ${error instanceof Error ? error.message : String(error)}`);
+      return;
+    }
+    const label = this.label();
+    if (inspection.total_episode_count === 0) {
+      this.deps.write(`${label} has no durable lived memories yet.`);
+      return;
+    }
+    const noun = inspection.total_episode_count === 1 ? "episode" : "episodes";
+    this.deps.write(
+      inspection.total_episode_count > inspection.displayed_count
+        ? `${label} remembers ${inspection.total_episode_count} lived ${noun}. Showing the ${inspection.displayed_count} most recent:`
+        : `${label} remembers ${inspection.total_episode_count} lived ${noun}:`
+    );
+    this.deps.write("");
+    inspection.entries.forEach((entry: LivedMemoryEntryV0, index: number) => {
+      const position = index + 1;
+      if (entry.kind === "OBSERVATION") {
+        this.deps.write(`${position}. ${sanitizeDisplayTextV0(entry.scene)}`);
+      } else {
+        this.deps.write(`${position}. ${label} said:`);
+        this.deps.write(`   "${sanitizeDisplayTextV0(entry.delivered_behavior_text)}"`);
+        this.deps.write("   You replied:");
+        this.deps.write(`   "${sanitizeDisplayTextV0(entry.outcome_reply_text)}"`);
+      }
+      if (this.deps.debug) this.deps.write(`   [${entry.episode_ref}]`);
+      if (position < inspection.entries.length) this.deps.write("");
+    });
   }
 
   private async handleUserMessage(text: string): Promise<void> {
