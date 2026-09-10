@@ -32,6 +32,7 @@ import {
   type CognitionProposalV0
 } from "../../transitions/cognition-action/types.js";
 import { buildCognitivePromptMessages } from "./cognitive-prompt-projection.js";
+import { canonicalizeSetLikeRefFields } from "./wire-format-canonicalization.js";
 import {
   ModelTransportErrorV0,
   type ModelTransportV0
@@ -81,40 +82,13 @@ function parseModelJson(content: string): unknown {
 
 /**
  * The CognitionProposalV0 set-like ref collections whose frozen canonical
- * order is lexicographic. ONLY these fields are wire-format canonicalized:
- * representation (array order) is normalized; the member set is untouched —
- * no refs are added, removed, renamed, prefixed, or dropped here. Bare or
- * hallucinated refs still reach the frozen validation and are rejected there.
+ * order is lexicographic are canonicalized at this provider boundary through
+ * the shared single-source law (see wire-format-canonicalization.ts). ONLY
+ * these fields are wire-format canonicalized: representation (array order) is
+ * normalized; the member set is untouched. Bare or hallucinated refs still
+ * reach the frozen validation and are rejected there.
  */
-const SET_LIKE_REF_FIELDS: readonly string[] = [
-  "relevant_memory_refs",
-  "considered_context_refs",
-  "evidence_refs"
-];
-
-/**
- * Wire-format canonicalization (LIVE-SMOKE REPAIR, qwen3:8b evidence):
- * models emit semantically valid ref arrays in non-canonical order. Sorting a
- * set-like field is a pure representation transform — membership, provenance
- * and semantics are unchanged. This layer is NOT a trust boundary: every
- * substantive gate (closed schema, projection binding, evidence grounding,
- * action space) still runs afterwards on the canonicalized object.
- */
-function canonicalizeWireFormat(parsed: unknown): unknown {
-  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
-    return parsed;
-  }
-  const out: Record<string, unknown> = { ...(parsed as Record<string, unknown>) };
-  for (const field of SET_LIKE_REF_FIELDS) {
-    const value = out[field];
-    if (Array.isArray(value)) {
-      out[field] = [...(value as unknown[])].sort((a, b) =>
-        String(a) < String(b) ? -1 : String(a) > String(b) ? 1 : 0
-      );
-    }
-  }
-  return out;
-}
+const canonicalizeWireFormat = canonicalizeSetLikeRefFields;
 
 export class LlmCognitionProviderV0 implements CognitionProviderV0 {
   constructor(

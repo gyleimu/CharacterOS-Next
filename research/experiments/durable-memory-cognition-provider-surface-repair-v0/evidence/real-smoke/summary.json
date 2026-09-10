@@ -1,0 +1,52 @@
+{
+  "schema_version": "durable-memory-cognition-provider-surface-repair-smoke-summary-v0",
+  "repair_version": "DURABLE_MEMORY_COGNITION_PROVIDER_SURFACE_REPAIR_V0",
+  "provider": "OLLAMA_NATIVE",
+  "model": "qwen3.5:9b",
+  "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "cognition_calls": 4,
+  "language_calls": 0,
+  "schema_accepted": 4,
+  "schema_rejected": 0,
+  "all_schema_accepted": true,
+  "requests_with_memory_section": "2/4 (the ablated arms intentionally render no memory section)",
+  "factual_text_present_in_every_request_with_memory_section": true,
+  "rows": [
+    {
+      "arm": "MEM_A",
+      "status": "VALID",
+      "latency_ms": 20363,
+      "projection_hash": "sha256:f51d6d2e696eb08b0b7c7175a6ed956fdfb02abebc88fa083ba0632ff9d67b20",
+      "factual_text_present": true,
+      "memory_section_present": true,
+      "detail": null
+    },
+    {
+      "arm": "MEM_B",
+      "status": "VALID",
+      "latency_ms": 12928,
+      "projection_hash": "sha256:b41c6ac13a7df5570e10b518bce52892be25fe784194ec72ba6a59310585d4ad",
+      "factual_text_present": true,
+      "memory_section_present": true,
+      "detail": null
+    },
+    {
+      "arm": "MEM_ABL_A",
+      "status": "VALID",
+      "latency_ms": 9285,
+      "projection_hash": "sha256:0083103162b154b9e999db436fac0457388f196fa82aea48ffca32197b9e01ef",
+      "factual_text_present": false,
+      "memory_section_present": false,
+      "detail": null
+    },
+    {
+      "arm": "MEM_ABL_B",
+      "status": "VALID",
+      "latency_ms": 6601,
+      "projection_hash": "sha256:9619d06810bda438c3f447219666ec7598f6ba1666367d6d3e6c385452a11ff4",
+      "factual_text_present": false,
+      "memory_section_present": false,
+      "detail": null
+    }
+  ]
+}

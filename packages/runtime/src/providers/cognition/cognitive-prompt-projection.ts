@@ -42,6 +42,15 @@ function renderRefList(refs: readonly string[], indent: string): string {
  * rendering is unchanged). Exact historical text is UNTRUSTED DATA embedded
  * inside the same untrusted SUBJECT DATA boundary with safe JSON escaping —
  * never an instruction, never a semantic classification.
+ *
+ * DURABLE_MEMORY_COGNITION_PROVIDER_SURFACE_REPAIR_V0 — additive completion of
+ * the SAME section, so every provider surface that renders it follows one law:
+ * each entry also renders its own authoritative identity (the exact refs the
+ * evidence entry already carries) and, for BEHAVIOR_OUTCOME entries, the
+ * subject's exact delivered behavior text. No new field, no summary, no
+ * interpretation, no paraphrase — only existing factual schema fields — so two
+ * different lived histories are visibly different to the provider. Payload
+ * hashes are deliberately NOT rendered (identity is carried by the refs).
  */
 export function renderFactualMemoryEvidenceSectionV1(
   projection: CognitiveContextProjectionAnyVersion
@@ -55,9 +64,15 @@ export function renderFactualMemoryEvidenceSectionV1(
   for (const entry of evidence.entries) {
     if (entry.kind === "BEHAVIOR_OUTCOME") {
       lines.push("- A delivered behavior was followed by this actor's exact reply:");
-      lines.push("  " + JSON.stringify(entry.exact_outcome_text));
+      lines.push("  episode_ref: " + JSON.stringify(entry.episode_ref));
+      lines.push("  experience_ref: " + JSON.stringify(entry.experience_ref));
+      lines.push("  event_ref: " + JSON.stringify(entry.event_ref));
+      lines.push("  actor_ref: " + JSON.stringify(entry.actor_ref));
+      lines.push("  delivered_behavior_text: " + JSON.stringify(entry.delivered_behavior_text));
+      lines.push("  outcome_reply_text: " + JSON.stringify(entry.exact_outcome_text));
     } else {
       lines.push("- Past episode record (scene: " + JSON.stringify(entry.scene) + ")");
+      lines.push("  episode_ref: " + JSON.stringify(entry.episode_ref));
     }
   }
   lines.push("[END HISTORICAL FACTUAL CONTENT]");
