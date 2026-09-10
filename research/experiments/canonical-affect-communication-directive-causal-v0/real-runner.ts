@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports, @typescript-eslint/no-non-null-assertion -- Isolated experiment runner over frozen built production roots; cognition-only, no language calls. */
+/* eslint-disable no-restricted-imports -- Isolated experiment runner over frozen built production roots; cognition-only, no language calls. */
 
 import { MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0, ModelTransportErrorV0, OllamaNativeCognitionTransportV0, type ModelTransportResponseV0, type ModelTransportTraceV0, type ModelTransportV0 } from "../../../packages/runtime/dist/index.js";
 import { ConversationCognitionProviderV1 } from "../../../packages/runtime/dist/providers/behavior/conversation-cognition-provider.js";

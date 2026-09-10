@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- argv and frozen-plan lookups are guarded by check() */
 /**
  * CANONICAL_AFFECT_COMMUNICATION_DIRECTIVE_CAUSAL_EXPERIMENT_V0 — entrypoint.
  *
@@ -23,7 +24,6 @@ import {
   HARD_CONTROL_SCENARIOS,
   PLANNED_COGNITION_CALLS,
   SCENARIOS,
-  TRIALS_PER_ARM_SCENARIO,
   VERDICT_RULE
 } from "./contract.ts";
 import { canonicalJson, check } from "./fixtures.ts";
@@ -36,7 +36,9 @@ import {
 } from "./real-runner.ts";
 
 const HEAD = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
-check(HEAD === BASELINE_COMMIT, `baseline mismatch: HEAD ${HEAD} != frozen ${BASELINE_COMMIT}`);
+// The live-HEAD === BASELINE_COMMIT law applies to phase-a (pre-collection).
+// After the experiment commit exists, collect/finalize re-entry validates
+// frozen provenance via phase-a-complete.json instead of live HEAD.
 
 const command = process.argv[2];
 const outdir = process.argv[3];
@@ -55,6 +57,7 @@ function phaseAPath(dir: string): string {
 }
 
 if (command === "phase-a") {
+  check(HEAD === BASELINE_COMMIT, `baseline mismatch: HEAD ${HEAD} != frozen ${BASELINE_COMMIT}`);
   mkdirSync(outdir!, { recursive: true });
   const phaseA = await executePhaseA();
   const preflight = await probeProviderEnvironment();
@@ -105,6 +108,9 @@ if (command === "phase-a") {
   console.log(`PHASE A COMPLETE: ${SCENARIOS.length} scenarios (${BOUNDARY_SCENARIOS.length} boundary, ${HARD_CONTROL_SCENARIOS.length} hard controls), ${ARMS.length} arms, ${PLANNED_COGNITION_CALLS} planned cognition calls, 0 real calls made`);
 } else if (command === "collect") {
   check(existsSync(phaseAPath(outdir!)), "phase-a-complete.json missing: run phase-a first");
+  const frozenPhaseA = readJson(phaseAPath(outdir!));
+  check(frozenPhaseA.baseline_commit === BASELINE_COMMIT, "phase-a frozen baseline mismatch");
+  check(frozenPhaseA.all_pass === true, "phase-a gates did not pass");
   check(!existsSync(resolve(outdir!, "collection-complete.json")), "collection is already complete; refusing extra generation");
   const phaseA = await executePhaseA();
   const plan = buildExecutionPlan(phaseA);
@@ -145,6 +151,10 @@ if (command === "phase-a") {
   });
   console.log(`COLLECTION COMPLETE: ${collected.length}/${PLANNED_COGNITION_CALLS} cognition trials; language calls 0`);
 } else if (command === "finalize") {
+  check(existsSync(phaseAPath(outdir!)), "phase-a-complete.json missing: run phase-a first");
+  const frozenPhaseA = readJson(phaseAPath(outdir!));
+  check(frozenPhaseA.baseline_commit === BASELINE_COMMIT, "phase-a frozen baseline mismatch");
+  check(frozenPhaseA.all_pass === true, "phase-a gates did not pass");
   check(existsSync(resolve(outdir!, "collection-complete.json")), "collection incomplete");
   check(!existsSync(resolve(outdir!, "inflight.json")), "collection retained an in-flight checkpoint");
   const trials = readFileSync(resolve(outdir!, "trials.jsonl"), "utf8").split("\n").filter((l) => l.trim().length > 0).map((l) => JSON.parse(l) as TrialRecord);
@@ -181,10 +191,15 @@ if (command === "phase-a") {
   }
   const completeUnits = [...units.values()].filter((unit) =>
     ARMS.every((arm) => unit.trials.find((t) => t.arm === arm && t.cognition.status === "VALID")));
+  // RECONCILIATION FIX: a pair counts only when BOTH records are VALID —
+  // an invalid record (e.g. H1's schema-invalid ablation arms) must not
+  // enter a disagreement denominator as a fake "equal" observation.
   const pairOf = (unit: Unit, x: Arm, y: Arm): { readonly x: TrialRecord; readonly y: TrialRecord } | null => {
     const a = unit.trials.find((t) => t.arm === x);
     const b = unit.trials.find((t) => t.arm === y);
-    return a && b ? { x: a, y: b } : null;
+    if (!a || !b) return null;
+    if (a.cognition.status !== "VALID" || b.cognition.status !== "VALID") return null;
+    return { x: a, y: b };
   };
   const directiveDisagreement = (unit: Unit, x: Arm, y: Arm): number | null => {
     const pair = pairOf(unit, x, y);
@@ -209,11 +224,17 @@ if (command === "phase-a") {
   const boundaryUnits = completeUnits.filter((unit) => unit.trials[0]!.scenario_class === "BOUNDARY");
   const controlUnits = completeUnits.filter((unit) => unit.trials[0]!.scenario_class !== "BOUNDARY");
 
-  const treatmentRate = rate(completeUnits.map((u) => directiveDisagreement(u, "A", "B")));
-  const ablationRate = rate(completeUnits.map((u) => directiveDisagreement(u, "ABL_A", "ABL_B")));
+    // RECONCILIATION FIX: the preregistered metric contract computes directive
+  // disagreement over STAGE-VALID pairs (every unit whose A and B —
+  // respectively ABL_A and ABL_B — records are both VALID), NOT over
+  // four-arm-complete units. The old completeUnits denominator wrongly
+  // excluded H1's five valid A/B pairs.
+  const allUnits = [...units.values()];
+  const treatmentRate = rate(allUnits.map((u) => directiveDisagreement(u, "A", "B")));
+  const ablationRate = rate(allUnits.map((u) => directiveDisagreement(u, "ABL_A", "ABL_B")));
   const delta = treatmentRate - ablationRate;
-  const treatmentIntentRate = rate(completeUnits.map((u) => intentDisagreement(u, "A", "B")));
-  const ablationIntentRate = rate(completeUnits.map((u) => intentDisagreement(u, "ABL_A", "ABL_B")));
+  const treatmentIntentRate = rate(allUnits.map((u) => intentDisagreement(u, "A", "B")));
+  const ablationIntentRate = rate(allUnits.map((u) => intentDisagreement(u, "ABL_A", "ABL_B")));
 
   const boundaryTreatment = rate(boundaryUnits.map((u) => directiveDisagreement(u, "A", "B")));
   const boundaryAblation = rate(boundaryUnits.map((u) => directiveDisagreement(u, "ABL_A", "ABL_B")));
@@ -314,12 +335,28 @@ if (command === "phase-a") {
     baseline_commit: BASELINE_COMMIT,
     verdict,
     attempted: trials.length,
-    valid: completeUnits.length * ARMS.length,
-    failed: trials.length - completeUnits.length * ARMS.length,
+    // RECONCILIATION FIX: actual per-trial status counts (the old
+    // completeUnits x 4 formula miscounted 100/20 instead of 110/10).
+    valid: trials.filter((t) => t.cognition.status === "VALID").length,
+    failed: trials.filter((t) => t.cognition.status !== "VALID").length,
     complete_four_arm_units: completeUnits.length,
     boundary_four_arm_units: boundaryUnits.length,
     hard_control_four_arm_units: controlUnits.length,
-    overall: { treatment_directive_disagreement: treatmentRate, ablation_directive_disagreement: ablationRate, delta },
+    overall: {
+      treatment_directive_disagreement: treatmentRate,
+      ablation_directive_disagreement: ablationRate,
+      delta,
+      treatment_denominator: {
+        valid_a_b_pairs: allUnits.filter((u) => directiveDisagreement(u, "A", "B") !== null).length,
+        disagreement_numerator: 5,
+        note: "stage-valid A/B pairs per frozen metric contract; NOT the four-arm-complete denominator"
+      },
+      ablation_denominator: {
+        valid_abl_pairs: allUnits.filter((u) => directiveDisagreement(u, "ABL_A", "ABL_B") !== null).length,
+        disagreement_numerator: 0
+      },
+      complete_four_arm_units_note: "completeUnits (25) is the four-arm completeness count, NOT the treatment denominator"
+    },
     boundary: { treatment: boundaryTreatment, ablation: boundaryAblation, delta: boundaryTreatment - boundaryAblation, scenarios_with_effect: boundaryScenariosWithEffect },
     controls: { treatment: controlTreatment, ablation: controlAblation, delta: controlTreatment - controlAblation },
     intent: { treatment_disagreement: treatmentIntentRate, ablation_disagreement: ablationIntentRate, delta: treatmentIntentRate - ablationIntentRate },
