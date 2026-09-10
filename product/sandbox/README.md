@@ -215,10 +215,13 @@ cognition as untrusted factual evidence.
   event** (e.g. "the user stated …"), not that the statement is objectively true.
   It carries no reward, learning, trust or sentiment semantics, and it never
   feeds behavior-outcome learning.
-- The host applies the SAME minimal appraisal profile to every factual event
-  (see `product-appraisal-provider.ts`). It is not a sentiment/user-reaction
-  model. Affect moves through the canonical dynamics, not through per-content
-  appraisal.
+- The host appraisal provider is content-INSENSITIVE: the appraisal boundary
+  now lawfully carries the current event's committed observable scene
+  (`current_observable_scene`), but this V0 provider still applies the SAME
+  minimal profile to every event (see `product-appraisal-provider.ts`). It is not
+  a sentiment/user-reaction model, and Affect moves through the canonical
+  dynamics rather than per-content appraisal. A content-sensitive provider is a
+  separately authorized future slice.
 - A crash mid-interaction discards that partial interaction: the next launch
   restores the last completed-interaction boundary. There is no ad-hoc
   "mark it done" recovery path.

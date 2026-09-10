@@ -495,6 +495,17 @@ export interface FactualEventAppraisalContextProjectionV0 {
   readonly logical_time: LogicalTimeV0;
   /** §17: current subject task; null triggers INSUFFICIENT_CONTEXT law. */
   readonly current_task: string | null;
+  /**
+   * APPRAISAL_CONTENT_BOUNDARY_V0: the COMMITTED observable scene of the
+   * CURRENT factual event exactly as canonical context records it (for
+   * conversation, the framed counterpart utterance). It is UNTRUSTED observable
+   * content — never an objective world fact and never host interpretation. It
+   * carries the current event ONLY: never a transcript, never Memory contents,
+   * never hidden cognition. Adding this field changes `context_projection_hash`
+   * for newly built contexts; the appraisal record/proposal schemas and every
+   * dimension/equation stay unchanged.
+   */
+  readonly current_observable_scene: string;
   readonly context_projection_hash: HashV1;
 }
 

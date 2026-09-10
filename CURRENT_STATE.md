@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 本文件是仓库“现在是什么、做到哪里、下一步是什么”的唯一实时状态入口。
-Last verified against commit: `c7b2b005d4095c021f246d963260ad18c05ba7ab`（干净 baseline；`INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
+Last verified against commit: `8aaf9e47c06f79709eb1489ea841558ad91f84fc`（干净 baseline；`INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
 Workspace projects: 14
 Purpose: 记录可执行代码、当前测试与已提交冻结证据共同支持的最小事实；历史计划不能覆盖这些事实。
 Verified date: 2026-09-11
@@ -63,6 +63,7 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 | Persistent subject configuration | `IMPLEMENTED` / `SMOKE_VALIDATED` | `product/sandbox` CLI 首次运行交互式创建唯一持久 subject（确定性 filesystem-safe subject_id、canonical display_name/anchors）；原子 `subject-config.json` 仅作目标标识，canonical snapshot/restore 才是 authority；config/snapshot 冲突、malformed/unsupported、`PRESENT` 但 snapshot 缺失均 FAIL CLOSED；setup 不产生 Memory；display name 不进入 provider prompt |
 | Explicit counterpart feedback ingestion | `CONFIRMED` / `SMOKE_VALIDATED` | 显式用户反馈（"that fixed it" / "that didn't solve it" / 纠正）经既有 BehaviorOutcomeFeedback 路径成为事实证据：绑定 DELIVERED delivery + delivered behavior 全文 + 精确 reply 文本 + 时间；closed schema 无 reward/sentiment/trust；不修改 Affect/Belief/Relationship/Personality；无新 Experience kind / Memory schema；无 `/feedback` 命令 |
 | Read-only lived memory inspection | `IMPLEMENTED` / `SMOKE_VALIDATED` | `/memory` 输出 canonical durable episodes 的安全事实投影（复用既有 evidence resolver），按 occurrence 时序，默认最近 10 条（`/memory N`，上限 100）；observation 显示 counterpart 语句原文，behavior-outcome 同时显示 delivered behavior 文本与精确 user reply；严格只读（无写入、无 revision/index 变化、0 provider generation call）；不暴露内部 ref/payload/prompt；读取失败 fail safely |
+| Appraisal content availability | `LEVEL_1` / `PROVIDER_CONTENT_INSENSITIVE` | provider input projection 追加式新增 `current_observable_scene`（当前事件 committed observable scene）；Level 1 达成（不同内容 → 不同 provider input/hash；相同内容 → 确定性相同；仅当前事件，无 transcript/Memory dump）；canonical Appraisal record/proposal schema、dimensions、equations、Affect 路径不变；产品 provider 仍为 content-insensitive 常量 profile（Level 2 未达成）；0 新 model call |
 
 `FROZEN` 描述已提交协议/证据的不可变性，不自动提升其结论等级。
 
@@ -105,7 +106,9 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 `INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0` 已实现并通过 bounded real smoke（0 generation calls）：`/memory` 以只读方式暴露 subject durable lived history 的安全事实投影，输出前后 repository revision / state revision / interaction index / episode count 与 snapshot/log 字节完全一致。
 
-下一个产品/运行时 frontier 是 `INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0`：判定 host appraisal provider 的 content-free 输入边界能否/如何 lawful 地感知事件内容，使 Affect 能（经 canonical dynamics）随事件不同而变化。该 slice 未启动，也不由本文件授权启动。
+`INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0` 已实现（Level 1 content availability）：appraisal provider input 现在携带当前事件的 committed observable scene，且确定、无 transcript/Memory 泄漏；产品 provider 仍 content-insensitive。
+
+下一个产品/运行时 frontier 是 `CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0`：在冻结 dimensions/equations/canonical 语义下实现一个 lawful 的 content-sensitive host appraisal provider。该 slice 未启动，也不由本文件授权启动。
 
 长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
 

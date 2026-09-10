@@ -11,6 +11,13 @@
  * or feedback model — the user's actual next message remains separate factual
  * evidence. Affect therefore moves through the canonical AffectApplication and
  * Time dynamics, not through per-content appraisal.
+ *
+ * APPRAISAL_CONTENT_BOUNDARY_V0: the provider input now DOES carry the current
+ * event's committed observable scene (`current_observable_scene`), so the
+ * appraisal boundary is content-available and deterministic. This provider
+ * deliberately remains content-INSENSITIVE (Level 1 content availability, not
+ * Level 2 content-sensitive appraisal); a lawful content-sensitive provider is
+ * the separately authorized next slice. No sentiment/reward classifier exists.
  */
 
 import type { FactualEventAppraisalProviderV0 } from "@characteros-next/runtime";

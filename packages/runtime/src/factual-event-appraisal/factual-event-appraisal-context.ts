@@ -65,6 +65,10 @@ export class FactualEventAppraisalContextBuilderV0 {
     }
     const stateHashValue = await this.stateHashOf(snapshot);
     const revision = (snapshot.memory_state as unknown as { repository_revision: string }).repository_revision as string;
+    const observableScene = (snapshot.context as unknown as { scene: unknown }).scene;
+    if (typeof observableScene !== "string") {
+      throw new Error("factual appraisal context: committed context.scene must be a string");
+    }
     const projectionWithoutHash = {
       schema_version: FACTUAL_EVENT_APPRAISAL_CONTEXT_PROJECTION_VERSION,
       subject_id: input.grounding.subject_id,
@@ -77,7 +81,10 @@ export class FactualEventAppraisalContextBuilderV0 {
       state_hash: stateHashValue,
       repository_revision: revision,
       logical_time: snapshot.runtime_metadata.logical_time as number,
-      current_task: currentTask as string
+      current_task: currentTask as string,
+      // APPRAISAL_CONTENT_BOUNDARY_V0: the committed observable scene of the
+      // CURRENT event — untrusted observable content, never an objective fact.
+      current_observable_scene: observableScene
     };
     const contextHash = await hashEnvelope("characteros-next/runtime/factual-event-appraisal-context/v1", projectionWithoutHash);
     const context: FactualEventAppraisalContextProjectionV0 = {
