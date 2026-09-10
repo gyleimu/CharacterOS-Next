@@ -10,7 +10,7 @@
 
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
-import type { CognitiveContextProjectionV0, CognitionProposalV0 } from "../cognition-action/types.js";
+import type { CognitiveContextProjectionAnyVersion, CognitionProposalV0 } from "../cognition-action/types.js";
 import { validateCognitionProposal } from "../cognition-action/types.js";
 import { isRecord } from "@characteros-next/subject-core";
 
@@ -33,7 +33,7 @@ export interface ConversationCognitionProposalV1 {
  */
 export function validateConversationCognitionProposalV1(
   v: unknown,
-  projection: CognitiveContextProjectionV0
+  projection: CognitiveContextProjectionAnyVersion
 ): { ok: true; proposal: ConversationCognitionProposalV1 } | { ok: false; detail: string } {
   if (!isRecord(v)) return { ok: false, detail: "conversation proposal: expected object" };
   const keys = Object.keys(v).sort();

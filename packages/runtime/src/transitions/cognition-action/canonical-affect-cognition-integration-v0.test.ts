@@ -22,6 +22,7 @@ import { describe, expect, it } from "vitest";
 import {
   canonicalJsonString,
   createInMemorySubjectCoreFacadeForExplicitV4V0,
+  hashEnvelope,
   materializeSubjectStateV4V0,
   proposalFingerprint,
   validateSubjectState,
@@ -32,7 +33,7 @@ import {
   type SubjectStateV4,
   type V4PersistenceEnvelopeV0
 } from "@characteros-next/subject-core";
-import { computeRepositoryRevisionHash, InMemoryMemoryRepository } from "@characteros-next/memory";
+import { computeRepositoryRevisionHash, createEpisodeContentReaderV0, InMemoryMemoryRepository } from "@characteros-next/memory";
 import { observationInput, observationCauseRefOf, s0 } from "../observation/observation-fixtures.js";
 import { buildContextDelta } from "../../ports/context-producer-port.js";
 import { buildObservationProposal } from "../observation/observation-transition-executor.js";
@@ -57,6 +58,11 @@ import {
 import { renderCognitiveSubjectData } from "../../providers/cognition/cognitive-prompt-projection.js";
 import { createSubjectStateV4AuthoritativeRestoreEnvelopeV0, restoreSubjectStateV4AuthoritativelyV0 } from "../../authority/restore-chain-authority-v4.js";
 import { mintTrustedCanonicalHistoryBoundaryV4V0, type TrustedCanonicalHeadInputV0 } from "../../authority/trusted-canonical-history-boundary.js";
+import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
+import { ConversationTextResponseExecutorV1 } from "../conversation/conversation-text-response-executor-v1.js";
+import { buildLanguageRealizationInputV1 } from "../conversation/language-realization-input.js";
+import type { ModelTransportRequestV0, ModelTransportV0 } from "../../transports/model-transport.js";
+import type { CognitiveContextProjectionV2, CognitionProposalV0 } from "./types.js";
 
 const SUBJECT = "subject-s0";
 const ALICE = "entity:alice";
@@ -413,6 +419,179 @@ function withoutAffectAndHash(projection: unknown): unknown {
   return rest;
 }
 
+interface DownstreamProofResult {
+  readonly result: Awaited<ReturnType<ConversationTextResponseExecutorV1["execute"]>>;
+  readonly cognition_intent: string | null;
+  readonly cognition_request: ModelTransportRequestV0;
+  readonly language_request: ModelTransportRequestV0;
+  readonly language_input: Record<string, unknown>;
+  readonly bundles_before: number;
+  readonly bundles_after: number;
+}
+
+function inputObjectFromLanguageRequest(request: ModelTransportRequestV0): Record<string, unknown> {
+  const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+  const jsonStart = user.indexOf("{");
+  const jsonEnd = user.lastIndexOf("\ninput_hash:");
+  if (jsonStart < 0 || jsonEnd < 0) throw new Error("language request input JSON missing");
+  const parsed = JSON.parse(user.slice(jsonStart, jsonEnd)) as Record<string, unknown>;
+  const { input_hash: ignoredInputHash, ...input } = parsed;
+  void ignoredInputHash;
+  return input;
+}
+
+function cognitionPromptWithoutAffectAndHash(request: ModelTransportRequestV0): string {
+  const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+  return user
+    .replace(/^\[affect \(canonical\)\].*$/m, "[affect (canonical)] <controlled divergence>")
+    .replace(/^\[projection_hash\].*$/m, "[projection_hash] <derived divergence>");
+}
+
+/**
+ * DETERMINISTIC_INTEGRATION_PROOF harness. Both provider seams are fake; no
+ * current_intent or language input is patched between cognition and language.
+ */
+async function executeDownstreamProof(
+  world: World,
+  intentForValence: (valence: number) => string | null,
+  responseRequestId: string
+): Promise<DownstreamProofResult> {
+  const cognitionRequests: ModelTransportRequestV0[] = [];
+  const languageRequests: ModelTransportRequestV0[] = [];
+  let cognitionIntent: string | null = null;
+  const conversationTransport: ModelTransportV0 = {
+    complete: async (request) => {
+      cognitionRequests.push(request);
+      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+      const projectionHash = /\[projection_hash\] (sha256:[0-9a-f]{64})/.exec(user)?.[1];
+      const valenceText = /\[affect \(canonical\)\] valence=([^ ]+) activation=/.exec(user)?.[1];
+      if (projectionHash === undefined || valenceText === undefined) {
+        throw new Error("fake cognition did not receive canonical V2 projection");
+      }
+      cognitionIntent = intentForValence(Number(valenceText));
+      return {
+        model: "fake-canonical-cognition",
+        content: JSON.stringify({
+          schema_version: "conversation-cognition-proposal-v1",
+          cognition: {
+            schema_version: "cognition-proposal-v0",
+            projection_hash: projectionHash,
+            reasoning_summary: "deterministic provider seam summary",
+            relevant_memory_refs: [],
+            considered_context_refs: [],
+            current_intent: cognitionIntent,
+            confidence: 0.8,
+            uncertainty: 0.2,
+            action_intent: null,
+            evidence_refs: []
+          },
+          communication_directive: { kind: "REALIZE_CURRENT_INTENT" }
+        })
+      };
+    }
+  };
+  const languageTransport: ModelTransportV0 = {
+    complete: async (request) => {
+      languageRequests.push(request);
+      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+      const inputHash = /input_hash: (sha256:[0-9a-f]{64})/.exec(user)?.[1];
+      if (inputHash === undefined) throw new Error("fake language did not receive input hash");
+      const input = inputObjectFromLanguageRequest(request);
+      const binding = input["cognition_proposal_binding"] as { current_intent: string | null };
+      return {
+        model: "fake-language-realizer",
+        content: JSON.stringify({
+          schema_version: "language-realization-draft-v0",
+          input_hash: inputHash,
+          text: `deterministic behavior: ${binding.current_intent ?? "<null>"}`,
+          evidence_refs: []
+        })
+      };
+    }
+  };
+  const root = new RuntimeCompositionRoot({
+    subjectCore: world.assembly.facade as never,
+    producerAuthorizationIssuer: world.issuer,
+    memoryRepository: world.repo,
+    retrieval: {
+      retrieve: async () => {
+        throw new Error("downstream proof must not retrieve");
+      }
+    } as never,
+    cognitionProvider: {
+      propose: async () => {
+        throw new Error("ordinary cognition provider must not be called");
+      }
+    } as never,
+    conversationCognitionTransport: conversationTransport,
+    languageTransport,
+    episodeContentReader: createEpisodeContentReaderV0(world.repo)
+  });
+  const snapshot = await readSnapshot(world);
+  const minter = createMiclStageMinter(world.assembly.facade as never, new InMemoryMiclWorkflowStore(), {
+    micl_id: `micl-downstream-${responseRequestId}` as never,
+    micl_request_fingerprint: "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd" as never,
+    stage_key: "OBSERVATION"
+  });
+  const executor = new ConversationTextResponseExecutorV1({
+    ...root.dependencies(),
+    subjectCore: minter.core()
+  });
+  const bundlesBefore = world.assembly.storeRead.getCommittedBundles().length;
+  const result = await executor.execute(
+    ctxOf(snapshot),
+    { response_request_id: responseRequestId as never, cause_refs: [] },
+    minter.capabilities(await currentBindings(world.repo, snapshot)) as never
+  );
+  const cognitionRequest = cognitionRequests[0];
+  const languageRequest = languageRequests[0];
+  if (cognitionRequests.length !== 1 || languageRequests.length !== 1 || cognitionRequest === undefined || languageRequest === undefined) {
+    throw new Error("downstream proof expected exactly one call at each fake provider seam");
+  }
+  return {
+    result,
+    cognition_intent: cognitionIntent,
+    cognition_request: cognitionRequest,
+    language_request: languageRequest,
+    language_input: inputObjectFromLanguageRequest(languageRequest),
+    bundles_before: bundlesBefore,
+    bundles_after: world.assembly.storeRead.getCommittedBundles().length
+  };
+}
+
+async function deterministicHandoffFromProjection(projection: CognitiveContextProjectionV2) {
+  const cognition: CognitionProposalV0 = {
+    schema_version: "cognition-proposal-v0",
+    projection_hash: projection.projection_hash,
+    reasoning_summary: "restore-stable fake cognition",
+    relevant_memory_refs: [],
+    considered_context_refs: [],
+    current_intent: projection.canonical_affect.valence >= 0
+      ? "preserve the restored positive-pole response intent"
+      : "preserve the restored negative-pole response intent",
+    confidence: 0.8,
+    uncertainty: 0.2,
+    action_intent: null,
+    evidence_refs: []
+  };
+  const directive = { kind: "REALIZE_CURRENT_INTENT" as const };
+  const proposalHash = await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
+    schema_version: "conversation-cognition-proposal-v1",
+    cognition,
+    communication_directive: directive
+  });
+  return buildLanguageRealizationInputV1({
+    subject_id: projection.subject_id,
+    source_revision: projection.state_revision,
+    response_request_id: "response-restore-v4" as never,
+    projection,
+    cognition,
+    conversation_cognition_proposal_hash: proposalHash,
+    communication_directive: directive,
+    memory_episode_contents: []
+  });
+}
+
 // ----------------------------------------------------------------------------------
 // NO_OP + write isolation (§48)
 // ----------------------------------------------------------------------------------
@@ -594,6 +773,8 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — restore invariance (§51
     await admitAppraiseApply(world, "evt-x", "重做一下。");
     const before = await readSnapshot(world);
     const projectionBefore = await buildCognitiveContextProjectionV2ForExplicitV4(before);
+    const handoffBefore = await deterministicHandoffFromProjection(projectionBefore);
+    if (!handoffBefore.ok) throw new Error(handoffBefore.detail);
 
     const bundles = world.assembly.storeRead.getCommittedBundles().filter((b) => b.subject_id === SUBJECT) as unknown as readonly AtomicCommitBundleAnyVersion[];
     const headBundle = bundles.at(-1);
@@ -648,6 +829,13 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — restore invariance (§51
     expect(canonicalJsonString(projectionAfter)).toBe(canonicalJsonString(projectionBefore));
     expect(projectionAfter.projection_hash).toBe(projectionBefore.projection_hash);
     expect(projectionAfter.canonical_affect).toStrictEqual(projectionBefore.canonical_affect);
+    const handoffAfter = await deterministicHandoffFromProjection(projectionAfter);
+    if (!handoffAfter.ok) throw new Error(handoffAfter.detail);
+    expect(handoffAfter.input.cognition_proposal_binding.current_intent).toBe(
+      handoffBefore.input.cognition_proposal_binding.current_intent
+    );
+    expect(canonicalJsonString(handoffAfter.input)).toBe(canonicalJsonString(handoffBefore.input));
+    expect(handoffAfter.input_hash).toBe(handoffBefore.input_hash);
   });
 });
 
@@ -708,5 +896,148 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — north-star two-subject p
     expect(affectSectionB.valence).toBe((await readSnapshot(worldB)).affect.valence);
     // 87: fixed provider output — no requirement of different output.
     // 88: real model calls 0 (all providers deterministic fakes).
+  });
+});
+
+// ----------------------------------------------------------------------------------
+// Canonical Affect downstream language behavior integration
+// ----------------------------------------------------------------------------------
+
+describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETERMINISTIC_INTEGRATION_PROOF", () => {
+  it("lawful history → Affect → cognition intent → V2 input → distinct existing behavior artifacts", async () => {
+    const worldA = await buildWorld();
+    const aPrior = await admitEvent(worldA, "evt-downstream-prior", "重做一下。");
+    worldA.dimensionOverrides.set(aPrior.eventRef, { relevance: 1, goal_congruence: 1, intensity: 1 });
+    expect(await appraiseAdmitted(worldA, "evt-downstream-prior", aPrior)).toBe(true);
+    expect((await worldA.writer.applyForEvent(ctxOf(await readSnapshot(worldA)), {
+      factual_event_ref: aPrior.eventRef
+    })).kind).toBe("COMMITTED");
+
+    const worldB = await buildWorld();
+    const bPrior = await admitEvent(worldB, "evt-downstream-prior", "重做一下。");
+    worldB.dimensionOverrides.set(bPrior.eventRef, { relevance: 1, goal_congruence: 0, intensity: 1 });
+    expect(await appraiseAdmitted(worldB, "evt-downstream-prior", bPrior)).toBe(true);
+    expect((await worldB.writer.applyForEvent(ctxOf(await readSnapshot(worldB)), {
+      factual_event_ref: bPrior.eventRef
+    })).kind).toBe("COMMITTED");
+
+    expect((await readSnapshot(worldA)).affect.valence).not.toBe((await readSnapshot(worldB)).affect.valence);
+    await admitAppraiseApply(worldA, "evt-downstream-current", "现在感觉怎么样？");
+    await admitAppraiseApply(worldB, "evt-downstream-current", "现在感觉怎么样？");
+
+    const intentForValence = (valence: number) =>
+      valence >= 0
+        ? "answer the current question with open constructive engagement"
+        : "answer the current question with measured guarded restraint";
+    const resultA = await executeDownstreamProof(worldA, intentForValence, "response-downstream");
+    const resultB = await executeDownstreamProof(worldB, intentForValence, "response-downstream");
+
+    expect(resultA.result.kind).toBe("OUTPUT_READY");
+    expect(resultB.result.kind).toBe("OUTPUT_READY");
+    if (resultA.result.kind !== "OUTPUT_READY" || resultB.result.kind !== "OUTPUT_READY") return;
+    expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
+    const bindingA = resultA.language_input["cognition_proposal_binding"] as Record<string, unknown>;
+    const bindingB = resultB.language_input["cognition_proposal_binding"] as Record<string, unknown>;
+    expect(bindingA["current_intent"]).toBe(resultA.cognition_intent);
+    expect(bindingB["current_intent"]).toBe(resultB.cognition_intent);
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v2");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v2");
+    for (const input of [resultA.language_input, resultB.language_input]) {
+      expect(input).not.toHaveProperty("canonical_affect");
+      expect(input).not.toHaveProperty("affect_channels");
+      expect(input).not.toHaveProperty("mood_baseline");
+      expect(input).not.toHaveProperty("reasoning_summary");
+    }
+    expect(resultA.result.trace.realization_input_hash).not.toBe(resultB.result.trace.realization_input_hash);
+    expect(resultA.result.behavior.schema_version).toBe("character-language-behavior-v0");
+    expect(resultB.result.behavior.schema_version).toBe("character-language-behavior-v0");
+    expect(resultA.result.behavior.text).not.toBe(resultB.result.behavior.text);
+    expect(resultA.result.behavior.behavior_id).not.toBe(resultB.result.behavior.behavior_id);
+    expect(cognitionPromptWithoutAffectAndHash(resultA.cognition_request)).toBe(
+      cognitionPromptWithoutAffectAndHash(resultB.cognition_request)
+    );
+    expect(resultA.bundles_after).toBe(resultA.bundles_before);
+    expect(resultB.bundles_after).toBe(resultB.bundles_before);
+    expect(resultA.result.trace.communication_directive_kind).toBe("REALIZE_CURRENT_INTENT");
+    expect(resultA.result.trace.realization_source).toBe("LANGUAGE_PROVIDER_V0");
+  });
+
+  it("explicit v4 preserves lawful null through REALIZE without inventing an intent", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-downstream-null", "现在感觉怎么样？");
+    const result = await executeDownstreamProof(world, () => null, "response-downstream-null");
+    expect(result.result.kind).toBe("OUTPUT_READY");
+    const binding = result.language_input["cognition_proposal_binding"] as Record<string, unknown>;
+    expect(result.cognition_intent).toBeNull();
+    expect(binding["current_intent"]).toBeNull();
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v2");
+    expect(result.bundles_after).toBe(result.bundles_before);
+  });
+
+  it("explicit v4 CLARIFY remains the fixed host behavior and never calls language", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-downstream-clarify", "按以前那样处理。");
+    let languageCalls = 0;
+    const conversationTransport: ModelTransportV0 = {
+      complete: async (request) => {
+        const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+        const projectionHash = /\[projection_hash\] (sha256:[0-9a-f]{64})/.exec(user)?.[1];
+        if (projectionHash === undefined) throw new Error("projection hash missing");
+        return {
+          model: "fake-canonical-cognition",
+          content: JSON.stringify({
+            schema_version: "conversation-cognition-proposal-v1",
+            cognition: {
+              schema_version: "cognition-proposal-v0",
+              projection_hash: projectionHash,
+              reasoning_summary: "clarification is required",
+              relevant_memory_refs: [],
+              considered_context_refs: [],
+              current_intent: "proceed as if the missing context were known",
+              confidence: 0.8,
+              uncertainty: 0.2,
+              action_intent: null,
+              evidence_refs: []
+            },
+            communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
+          })
+        };
+      }
+    };
+    const root = new RuntimeCompositionRoot({
+      subjectCore: world.assembly.facade as never,
+      producerAuthorizationIssuer: world.issuer,
+      memoryRepository: world.repo,
+      retrieval: { retrieve: async () => { throw new Error("no retrieval"); } } as never,
+      cognitionProvider: { propose: async () => { throw new Error("wrong provider"); } } as never,
+      conversationCognitionTransport: conversationTransport,
+      languageTransport: {
+        complete: async () => {
+          languageCalls += 1;
+          throw new Error("language must not be called for CLARIFY");
+        }
+      },
+      episodeContentReader: createEpisodeContentReaderV0(world.repo)
+    });
+    const snapshot = await readSnapshot(world);
+    const minter = createMiclStageMinter(world.assembly.facade as never, new InMemoryMiclWorkflowStore(), {
+      micl_id: "micl-downstream-clarify" as never,
+      micl_request_fingerprint: "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" as never,
+      stage_key: "OBSERVATION"
+    });
+    const executor = new ConversationTextResponseExecutorV1({
+      ...root.dependencies(),
+      subjectCore: minter.core()
+    });
+    const result = await executor.execute(
+      ctxOf(snapshot),
+      { response_request_id: "response-downstream-clarify" as never, cause_refs: [] },
+      minter.capabilities(await currentBindings(world.repo, snapshot)) as never
+    );
+    expect(result.kind).toBe("OUTPUT_READY");
+    if (result.kind !== "OUTPUT_READY") return;
+    expect(result.behavior.text).toBe("Could you clarify what you mean?");
+    expect(result.trace.realization_source).toBe("HOST_CLARIFICATION_V0");
+    expect(languageCalls).toBe(0);
   });
 });

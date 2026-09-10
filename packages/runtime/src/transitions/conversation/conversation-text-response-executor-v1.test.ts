@@ -160,6 +160,14 @@ function buildV1World(
   const memory = new InMemoryMemoryRepository();
   void memory.prepareRevision({ parent_revision: null, records: [] });
   const retrieval = new InMemoryRetrievalService({ rehearsals: [] }) as never;
+  const languageRequests: ModelTransportRequestV0[] = [];
+  const selectedLanguageTransport = languageTransport ?? hostileLanguageTransport;
+  const capturingLanguageTransport: ModelTransportV0 = {
+    complete: async (request) => {
+      languageRequests.push(request);
+      return selectedLanguageTransport.complete(request);
+    }
+  };
 
   const root = new RuntimeCompositionRoot({
     subjectCore: core,
@@ -168,12 +176,12 @@ function buildV1World(
     retrieval,
     cognitionProvider: { propose: async () => { throw new Error("V0 cognition must not be called in V1 conversation path"); } } as never,
     conversationCognitionTransport: conversation.transport as never,
-    languageTransport: languageTransport ?? hostileLanguageTransport as never,
+    languageTransport: capturingLanguageTransport,
     episodeContentReader: (() => { throw new Error("episode reader must not be called for CLARIFY"); }) as never
   });
 
   return {
-    languageRequests: [],
+    languageRequests,
     conversationRequests: conversation.requests,
     coreBundles: () => assembly.storeRead.getCommittedBundles(),
     execute: async () => {
@@ -255,6 +263,42 @@ describe("call counts and state boundary", () => {
     expect(world.conversationRequests).toHaveLength(1);
     expect(world.languageRequests).toHaveLength(0);
     expect(world.coreBundles().length).toBe(bundlesBefore);
+  });
+
+  it("REALIZE on v3 preserves the frozen V1/null language handoff", async () => {
+    const languageTransport: ModelTransportV0 = {
+      complete: async (request) => {
+        const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+        const hash = /input_hash: (sha256:[0-9a-f]{64})/.exec(user)?.[1];
+        if (hash === undefined) throw new Error("missing language input hash");
+        expect(user).toContain('"schema_version": "language-realization-input-v1"');
+        expect(user).toContain('"current_intent": null');
+        expect(user).toContain('"affect_channels": []');
+        expect(user).toContain('"mood_baseline": 0');
+        return {
+          model: "fake-language",
+          content: JSON.stringify({
+            schema_version: "language-realization-draft-v0",
+            input_hash: hash,
+            text: "Frozen v3 realization.",
+            evidence_refs: []
+          })
+        };
+      }
+    };
+    const world = buildV1World(
+      seedState(),
+      "REALIZE_CURRENT_INTENT",
+      "non-null v3 cognition remains intentionally masked on this frozen path",
+      languageTransport
+    );
+    const result = await world.execute();
+    expect(result.kind).toBe("OUTPUT_READY");
+    if (result.kind !== "OUTPUT_READY") return;
+    expect(result.behavior.text).toBe("Frozen v3 realization.");
+    expect(result.trace.realization_source).toBe("LANGUAGE_PROVIDER_V0");
+    expect(world.conversationRequests).toHaveLength(1);
+    expect(world.languageRequests).toHaveLength(1);
   });
 });
 

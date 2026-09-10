@@ -27,7 +27,11 @@ import {
   type LanguageRealizationDraftV0
 } from "@characteros-next/behavior";
 import type {
-  LanguageRealizationInputV0
+  LanguageRealizationInputAnyVersion
+} from "../../transitions/conversation/language-realization-input.js";
+import {
+  deriveLanguageRealizationInputHashAnyVersion,
+  validateLanguageRealizationInputAnyVersion
 } from "../../transitions/conversation/language-realization-input.js";
 
 /** Maximum raw provider response accepted for parsing (fail before processing). */
@@ -63,14 +67,14 @@ export class LanguageRealizationRejectionErrorV0 extends Error {
 }
 
 export interface LanguageRealizationRequestV0 {
-  readonly input: LanguageRealizationInputV0;
+  readonly input: LanguageRealizationInputAnyVersion;
   readonly input_hash: HashV1;
   /** The lawful behavior evidence allowlist for THIS execution (authority base). */
   readonly lawful_evidence_refs: ReadonlySet<string>;
 }
 
 function deterministicUserContent(
-  input: LanguageRealizationInputV0,
+  input: LanguageRealizationInputAnyVersion,
   inputHash: string
 ): string {
   return [
@@ -85,6 +89,17 @@ export class LanguageRealizationProviderV0 {
   constructor(private readonly transport: ModelTransportV0) {}
 
   async realize(request: LanguageRealizationRequestV0): Promise<LanguageRealizationDraftV0> {
+    const inputCheck = validateLanguageRealizationInputAnyVersion(request.input);
+    if (!inputCheck.ok) {
+      throw new LanguageRealizationRejectionErrorV0("MODEL_SCHEMA_INVALID", inputCheck.detail);
+    }
+    const expectedInputHash = await deriveLanguageRealizationInputHashAnyVersion(inputCheck.input);
+    if (expectedInputHash !== request.input_hash) {
+      throw new LanguageRealizationRejectionErrorV0(
+        "INPUT_HASH_MISMATCH",
+        "request.input_hash does not bind the exact validated language input"
+      );
+    }
     const messages = [
       { role: "system" as const, content: LANGUAGE_REALIZATION_SYSTEM_PROMPT_V0 },
       {

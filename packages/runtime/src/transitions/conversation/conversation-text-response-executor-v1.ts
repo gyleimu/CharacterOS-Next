@@ -24,10 +24,10 @@ import { createMiclStageMinter } from "../../micl/micl-capabilities.js";
 import { InMemoryMiclWorkflowStore } from "../../micl/micl-workflow-store.js";
 import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/factual-event-appraisal-executor.js";
-import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitiveContextProjectionV0 } from "../cognition-action/types.js";
+import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
-import type { LanguageEpisodeContentV0 } from "./language-realization-input.js";
+import { buildLanguageRealizationInputV1, type LanguageEpisodeContentV0 } from "./language-realization-input.js";
 
 export const CONVERSATION_TEXT_RESPONSE_EXECUTOR_V1_SCHEMA_VERSION =
   "conversation-text-response-executor-v1" as const;
@@ -237,7 +237,7 @@ export class ConversationTextResponseExecutorV1 {
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
       return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, factualAppraisalTrace);
     }
-    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, directive, conversationProvider, lawfulEvidence(evidenceProjection), factualAppraisalTrace);
+    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, cognitionResult.cognition, conversationProposalHash, directive, lawfulEvidence(evidenceProjection), factualAppraisalTrace);
   }
 
   private async clarifyBranch(
@@ -290,9 +290,9 @@ export class ConversationTextResponseExecutorV1 {
     sourceRevision: number,
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
+    cognition: CognitionProposalV0,
     conversationProposalHash: string,
     directive: CommunicationDirectiveV0,
-    conversationProvider: ConversationCognitionProviderV1,
     lawfulEvidence: ReadonlySet<string>,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
@@ -316,42 +316,19 @@ export class ConversationTextResponseExecutorV1 {
       episodeContents = read.contents;
     }
 
-    const languageInput = {
-      schema_version: "language-realization-input-v1" as const,
+    const builtInput = await buildLanguageRealizationInputV1({
       subject_id: snapshot.identity.subject_id,
-      source_revision: sourceRevision,
+      source_revision: sourceRevision as never,
       response_request_id: requestId,
-      cognition_projection_hash: evidenceProjection.projection_hash,
-      cognition_proposal_binding: {
-        schema_version: cognitionResultSchemaVersion(),
-        projection_hash: evidenceProjection.projection_hash,
-        current_intent: null
-      },
-      communication_binding: {
-        schema_version: "conversation-cognition-proposal-v1" as const,
-        proposal_hash: conversationProposalHash,
-        directive: { kind: "REALIZE_CURRENT_INTENT" as const }
-      },
-      scene: evidenceProjection.context.scene,
-      task: evidenceProjection.context.task,
-      focus_refs: evidenceProjection.context.focus_refs,
-      active_entity_refs: evidenceProjection.context.active_entity_refs,
-      environment_refs: evidenceProjection.context.environment_refs,
-      current_observation_ref: evidenceProjection.context.current_observation_ref,
-      belief_items: evidenceProjection.belief_items,
-      traits_dimensions: evidenceProjection.traits_dimensions,
-      // v3-only realization surface: the projection here is always V0/V1
-      // (the explicit-v4 RAW_CANONICAL_VA path never reaches this code).
-      affect_channels: (evidenceProjection as CognitiveContextProjectionV0).affect_channels,
-      mood_baseline: (evidenceProjection as CognitiveContextProjectionV0).mood_baseline,
-      regulation: evidenceProjection.regulation,
-      interaction_familiarity: evidenceProjection.interaction_familiarity,
-      interaction_familiarity_cognition_influences: evidenceProjection.interaction_familiarity_cognition_influences,
-      evidence_refs: memoryEvidenceRefs as unknown as readonly CanonicalRefV0[],
-      memory_episode_contents: episodeContents,
-      constraints: { max_text_code_points: 4096 as const, evidence_refs_only: true as const, no_new_evidence_authority: true as const }
-    };
-    const inputHash = await hashEnvelope("characteros-next/runtime/language-realization-input-v1/v1", languageInput) as never;
+      projection: evidenceProjection,
+      cognition,
+      conversation_cognition_proposal_hash: conversationProposalHash as never,
+      communication_directive: directive,
+      memory_episode_contents: episodeContents
+    });
+    if (!builtInput.ok) return failed("LANGUAGE_SCHEMA_INVALID", builtInput.detail);
+    const languageInput = builtInput.input;
+    const inputHash = builtInput.input_hash;
 
     let draft;
     try {
@@ -402,8 +379,4 @@ export class ConversationTextResponseExecutorV1 {
 
 function lawfulEvidence(projection: CognitiveContextProjectionAnyVersion): ReadonlySet<string> {
   return allowedEvidenceSet(projection);
-}
-
-function cognitionResultSchemaVersion(): string {
-  return "cognition-proposal-v0";
 }
