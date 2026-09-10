@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `63fde7b3d7c8800c15e9443daa7b21983a6d3e1c`（干净 baseline；本次 `PERSISTENT_SUBJECT_CONFIGURATION_V0` 是其直接子提交）
+Last verified against commit: `00e978bebc5c3ffdd27e56b5a246b4842a495cb3`（干净 baseline；本次 `REAL_COUNTERPART_FEEDBACK_INGESTION_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -11,50 +11,52 @@ CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁�
 
 已完成并冻结的当前 slice：
 
-`PERSISTENT_SUBJECT_CONFIGURATION_V0` — 用户无需 env/JSON 手改即可经 CLI 创建并配置唯一持久 subject。
+`REAL_COUNTERPART_FEEDBACK_INGESTION_V0` — 显式真实用户反馈（"That fixed it, thanks." / "That didn't solve it." / "No, I meant the blue one."）已被现有 BehaviorOutcomeFeedback 路径 lawful 表示为**事实证据**，无需新类型。
 
-- 首次运行交互式要求 display name → 确定性派生 filesystem-safe `subject_id` → 现有 explicit-v4 genesis → 原子写 `subject-config.json` → 交互；
-- 后续运行读取 config → authoritative restore 同一 subject，不再询问 setup；
-- config 只是“目标标识”，canonical snapshot/restore 才是 subject reality；config/snapshot 身份冲突、config malformed/unsupported、`durable_state PRESENT` 但 snapshot 缺失均 FAIL CLOSED；
-- snapshot 存在而 config 缺失时按 canonical identity 确定性恢复 config；
-- setup 不产生任何 Memory，display name 不进入 provider prompt，无 psychology setter / rename / delete。
+- 判定：`EXISTING_COUNTERPART_FEEDBACK_PATH_SUFFICIENT` —— 未新增 production semantics；
+- 现有 `ExperienceRecordV0(BEHAVIOR_OUTCOME)` 已绑定：delivered behavior 全文 artifact + `behavior_delivery_id`(DELIVERED) + 精确 counterpart reply 文本 + reply ingress event + delivered/outcome logical time；
+- 无 reward/score/sentiment/trust/punish 字段（closed schema），不修改 Affect/Belief/Relationship/Personality；
+- 每个 linked reply 恰好一次 durable admission（role-based single-admission 法不变）；当前 reply 不进入其自身轮次 retrieval；
+- 重启后 retrieval 将 delivered behavior 与精确用户回复一并作为 provider-visible factual evidence 暴露。
 
 此前能力保持 GREEN/FROZEN：
 
 ```text
 INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0          FROZEN / GREEN
 INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0  FROZEN / GREEN
+PERSISTENT_SUBJECT_CONFIGURATION_V0                FROZEN / GREEN
 long-horizon session                               IMPLEMENTED / EXPERIMENTALLY_SUPPORTED
 provider diagnostic / repair / revalidation        COMPLETE / FROZEN
 ```
 
 ## CURRENT BLOCKER
 
-当前没有已知的 interactive-runtime / subject-configuration blocker。
+当前没有已知的 interactive-runtime / subject-configuration / counterpart-feedback blocker。
 
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
 1. 仍只有单一 subject 身份 per data root；无多 subject 选择、删除、克隆、重命名。
 2. host appraisal provider 对每个事实事件使用同一最小 profile；Affect 经 canonical dynamics 变化，不随内容变化。
 3. 某轮交付行为的 outcome Experience 会在用户下一次发言时提交（包括重启后）——冻结 feedback law 要求的真实对话后果。
-4. 用户只能以“事实回复”参与；没有 explicit feedback ingestion，subject 无法把「这次回答是否有帮助」作为 lawful 证据接收。
+4. 用户无法查看 subject 记住了什么；没有 read-only 的 lived-memory 汇总入口。
 
 ## NEXT EXACT SLICE
 
 只启动：
 
-`REAL_COUNTERPART_FEEDBACK_INGESTION_V0`
+`INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0`
 
-问题边界：在不发明 sentiment/reward、不修改 frozen Experience/Learning semantics 的前提下，判定用户能否、以及如何把**显式反馈**（如「这次回答有帮助 / 没帮助」）作为 lawful factual evidence 交给 subject；若现有 ingress/feedback 契约不能表达，则记录架构缺口并给出最小边界方案。不得引入 `/set-*`、rating UI、sentiment model 或 importance 阈值。
+问题边界：让用户/operator 能以 read-only、安全的方式查看 subject 当前 durable lived memory 的事实摘要（例如经既有 factual evidence resolver 的投影），从而验证「subject 记住了什么」，而不暴露内部 authority、原始 payload、hidden reasoning 或 provider prompt；不得引入 memory editor、importance 阈值、retrieval 改写或 GUI。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `REAL_COUNTERPART_FEEDBACK_INGESTION_V0`：必须先确认其问题、边界与预算；
+- 自动开始 `INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0`：必须先确认其问题、边界与预算；
 - GUI、Electron/Tauri、mobile、voice、vision、avatar、websocket、multi-user、accounts、cloud sync、auth、plugins、tool execution、autonomous world simulation、multi-character；
 - 多 subject 选择器、subject 删除/克隆/重命名；
-- personality/relationship/belief/mood/memory 配置或 `/set-*` god-mode setter、memory editor、backstory generation；
+- `/feedback`、rating UI、reward/sentiment/trust 标量，或任何 Affect/Belief/Relationship/Personality setter；
+- personality/relationship/belief/mood 配置、memory editor、backstory generation；
 - 新 Experience kind / Memory schema、retrieval semantics 或 persistence/restore authority；
 - 对 frozen experiment source、raw output、result、report 或 evidence 的改写；
 - 把 bounded V0 smoke 包装成通用长期主体、任意时长可扩展或人格真实性证明。

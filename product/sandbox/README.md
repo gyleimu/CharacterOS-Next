@@ -146,6 +146,25 @@ service, no network beyond the configured local Ollama endpoint.
    Experience → Memory → retrieval path (rendered as untrusted factual evidence).
    There is no transcript replay and no manual memory injection.
 
+### Explicit feedback is ordinary conversation
+
+There is deliberately no `/feedback` command and no reward/sentiment model. When
+you answer the subject's last reply, your message is already recorded as the
+counterpart response to that delivered behavior through the existing
+behavior→experience→feedback authority, preserving the exact delivered behavior
+text, your exact reply text, the delivery identity and the logical times.
+
+```text
+Subject > Try restarting the service.
+You     > That fixed it, thanks.
+```
+
+Memory then holds the fact that the subject delivered that behavior and that the
+user replied exactly that — nothing more. Explicit feedback like "that was
+helpful" or "that didn't solve it" is factual evidence, not a reward score, not
+an Affect/Relationship/Belief mutation. Later retrieval exposes both sides to
+cognition as untrusted factual evidence.
+
 ## Known limitations (V0)
 
 - ONE subject identity per data directory; no character creation UI, subject
