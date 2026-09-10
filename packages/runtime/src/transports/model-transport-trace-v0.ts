@@ -58,6 +58,22 @@ export interface OllamaInferenceMetadataV0 {
   readonly done_reason: string | null;
 }
 
+/**
+ * The generation budget CharacterOS asked the provider to honour for this call.
+ * CharacterOS-side configuration, NOT provider-reported: `context_window_tokens`
+ * is the total sequence budget (prompt + generation) and `max_output_tokens` is
+ * the requested generation cap. They are deliberately distinct — a provider that
+ * silently applies its own default context while honouring `max_output_tokens`
+ * is exactly the failure mode this field exists to make visible.
+ *
+ * Diagnostic/operational metadata ONLY: never canonical state, never cognition
+ * proposal, never prompt content.
+ */
+export interface ModelTransportBudgetV0 {
+  readonly context_window_tokens: number;
+  readonly max_output_tokens: number;
+}
+
 /** Complete diagnostic trace for one transport invocation. */
 export interface ModelTransportTraceV0 {
   readonly schema_version: typeof MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0;
@@ -85,6 +101,15 @@ export interface ModelTransportTraceV0 {
   readonly raw_error_message: string | null;
   readonly raw_error_cause_code: string | null;
   readonly ollama: OllamaInferenceMetadataV0;
+  /**
+   * Configured budget for this call. Additive diagnostic extension of the v0
+   * trace: the schema_version string is intentionally NOT bumped because the
+   * trace is observation-only (never protocol, never authority) and because the
+   * frozen long-horizon session harness discriminates traces on
+   * MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0 — a bump would silently disable its
+   * capture. Historical v0 records simply lack this key.
+   */
+  readonly budget: ModelTransportBudgetV0;
 }
 
 /** Observer receives partial events during execution and the final trace. */

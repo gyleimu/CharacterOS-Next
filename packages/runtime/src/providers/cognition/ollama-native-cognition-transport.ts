@@ -17,10 +17,19 @@
  * `message.thinking` / `reasoning` / any vendor reasoning field.
  *
  * Fixed request policy (NONE caller-controlled): stream = false, think = false,
- * options.temperature = 0, options.num_predict = configured output budget.
- * Exactly one request; no retry, no fallback, no repair, no format field
+ * options.temperature = 0, options.num_predict = configured output budget,
+ * options.num_ctx = configured context budget. Exactly one request; no retry, no
+ * fallback, no repair, no format field
  * (OLLAMA_FORMAT_MODE NONE — the frozen prompt + parser remain the authority),
  * no Authorization header (native local Ollama needs no fake OpenAI auth).
+ *
+ * CONTEXT BUDGET MIGRATION POLICY (COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0):
+ * every construction of this transport now sends an explicit `num_ctx`. Making
+ * the field mandatory would have forced edits to frozen historical experiment
+ * harnesses and diagnostics, so it is optional and backed by a CharacterOS-owned
+ * constant — never by "whatever Ollama happens to use". Callers that care about
+ * the exact budget (new sessions, revalidations) should pass it explicitly and
+ * keep it in step with any request-identity reconstruction they perform.
  *
  * OLLAMA_COGNITION_TRANSPORT_INSTRUMENTATION_V0: an optional host-supplied
  * `trace_observer` receives partial ModelTransportTraceEventV0 progress events
@@ -65,6 +74,26 @@ export const OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS = 120_000;
  */
 export const OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT = 2048;
 
+/**
+ * Default total sequence budget mapped to Ollama `options.num_ctx` (prompt +
+ * generation). CharacterOS-owned, deliberately explicit.
+ *
+ * Why 8192: the long-horizon session failed at interaction 7 because `num_ctx`
+ * was never sent, so Ollama silently served every call from its own default of
+ * 4096 while the model trains for 262144. That run's cognition prompt reached
+ * 3568 tokens and then had only 528 tokens of generation room left — not enough
+ * to finish the proposal. 8192 is the smallest value that clears the
+ * demonstrated horizon with substantial reserve: prompt growth was linear at
+ * ~420 tokens/interaction, so a full 8-interaction run needs roughly 4000 prompt
+ * + ~900 output ≈ 4900 tokens (about 1.7x headroom). It is NOT 262144 because
+ * the KV cache is f16 at ~32 KiB/token on this runtime: 4096 cells already cost
+ * 128 MiB, so 8192 adds 128 MiB (projected GPU self-use ~5115 MiB against the
+ * ~5128 MiB fit budget observed on the 8 GiB laptop GPU), while 16384+ would
+ * exceed it and force CPU offload. Raise it explicitly per host when the
+ * machine and horizon justify it.
+ */
+export const OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS = 8192;
+
 /** Explicit host-owned configuration. No ambient defaults, no env magic. */
 export interface OllamaNativeCognitionTransportConfigV0 {
   /** Ollama-native base URL, e.g. "http://127.0.0.1:11434". */
@@ -74,6 +103,13 @@ export interface OllamaNativeCognitionTransportConfigV0 {
   readonly timeout_ms?: number;
   /** Output-token budget → native `options.num_predict`. */
   readonly num_predict?: number;
+  /**
+   * Total sequence budget (prompt + generation) → native `options.num_ctx`.
+   * Deliberately distinct from `num_predict`: the model's trained context is NOT
+   * the runtime context. When omitted, the CharacterOS-owned default is sent
+   * explicitly so the call never inherits a provider default silently.
+   */
+  readonly context_window_tokens?: number;
   /**
    * Optional diagnostic-only observer. Receives trace events during execution
    * and exactly one final trace per `complete()` invocation. Observer
@@ -152,12 +188,37 @@ export class OllamaNativeCognitionTransportV0 implements ModelTransportV0 {
         "config.num_predict: positive integer required"
       );
     }
+    if (
+      config.context_window_tokens !== undefined &&
+      (!Number.isInteger(config.context_window_tokens) || config.context_window_tokens <= 0)
+    ) {
+      throw new ModelTransportErrorV0(
+        "MODEL_CONNECTION_FAILURE",
+        null,
+        "config.context_window_tokens: positive integer required"
+      );
+    }
+    // Mechanically meaningful budget relationship, checked on the EFFECTIVE
+    // values so an override cannot be paired with a silently smaller default:
+    // generation cannot consume the whole sequence budget.
+    const effectiveNumPredict = config.num_predict ?? OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT;
+    const effectiveContextWindow =
+      config.context_window_tokens ?? OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS;
+    if (effectiveNumPredict >= effectiveContextWindow) {
+      throw new ModelTransportErrorV0(
+        "MODEL_CONNECTION_FAILURE",
+        null,
+        "config.num_predict: must be smaller than config.context_window_tokens"
+      );
+    }
     this.traceObserver = config.trace_observer ?? null;
   }
 
   async complete(request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> {
     const timeoutMs = this.config.timeout_ms ?? OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS;
     const numPredict = this.config.num_predict ?? OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT;
+    const numCtx =
+      this.config.context_window_tokens ?? OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS;
     const base = this.config.base_url.replace(/\/$/, "");
     const endpoint = `${base}/api/chat`;
     const observer = this.traceObserver;
@@ -176,7 +237,8 @@ export class OllamaNativeCognitionTransportV0 implements ModelTransportV0 {
       stream: false,
       options: {
         temperature: 0,
-        num_predict: numPredict
+        num_predict: numPredict,
+        num_ctx: numCtx
       }
     });
     const requestBytes = new TextEncoder().encode(requestBody).length;
@@ -243,7 +305,8 @@ export class OllamaNativeCognitionTransportV0 implements ModelTransportV0 {
         raw_error_name: rawErrorName,
         raw_error_message: rawErrorMessage,
         raw_error_cause_code: rawErrorCauseCode,
-        ollama: { ...ollama }
+        ollama: { ...ollama },
+        budget: { context_window_tokens: numCtx, max_output_tokens: numPredict }
       });
     };
 
@@ -376,6 +439,25 @@ export class OllamaNativeCognitionTransportV0 implements ModelTransportV0 {
         "MODEL_EMPTY_RESPONSE",
         response.status,
         "ollama native message.content is missing, empty or whitespace-only (thinking-only responses fail closed)"
+      );
+    }
+
+    // Provider-reported truncation is a provider failure, not a candidate
+    // proposal: `done_reason: "length"` means generation was cut by a token
+    // limit (the configured num_predict, or the context ceiling before it), so
+    // the content is incomplete by construction. Classifying it here keeps the
+    // failure attributable to the provider budget instead of surfacing only as a
+    // downstream JSON parse error — and closes the hole where a truncation
+    // landing on a closing brace could parse as valid, incomplete cognition.
+    // CognitionProposal validation is NOT weakened or bypassed by this.
+    if (ollama.done_reason === "length") {
+      terminalStage = "MODEL_RESPONSE_RECEIVED";
+      failureCode = "MODEL_OUTPUT_TRUNCATED";
+      emitTerminalTrace();
+      throw new ModelTransportErrorV0(
+        "MODEL_OUTPUT_TRUNCATED",
+        response.status,
+        `ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=${ollama.prompt_eval_count ?? "unknown"}, eval_count=${ollama.eval_count ?? "unknown"}, num_ctx=${numCtx}, num_predict=${numPredict})`
       );
     }
 

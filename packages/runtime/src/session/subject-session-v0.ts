@@ -49,6 +49,13 @@ export interface LongHorizonSubjectSessionOptionsV0 extends ExplicitV4SessionAut
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
+    /**
+     * Total sequence budget the cognition transport sends as `options.num_ctx`.
+     * Must match the transport config exactly: the identity audit hashes a
+     * request body rebuilt from these values, so a mismatch is a shadow identity
+     * failure rather than a silently passing audit.
+     */
+    readonly context_window_tokens?: number;
     readonly last_trace?: () => ModelTransportTraceV0 | null;
   };
   readonly clock?: () => string;
@@ -235,7 +242,8 @@ export class LongHorizonSubjectSessionV0 {
 
       const snapshotAfter = await this.authority.readSnapshot();
       const identity = cognitionExchange === null ? null : await this.requestIdentity(cognitionExchange);
-      const traceHash = this.options.provider_identity?.last_trace?.()?.request_hash ?? null;
+      const terminalTrace = this.options.provider_identity?.last_trace?.() ?? null;
+      const traceHash = terminalTrace?.request_hash ?? null;
       const outcome: SessionInteractionOutcomeV0 = {
         schema_version: "subject-session-interaction-v0",
         session_id: base.sessionId,
@@ -268,6 +276,7 @@ export class LongHorizonSubjectSessionV0 {
         provider_request_hash: identity?.request_hash ?? null,
         transport_request_hash: traceHash,
         provider_request_identity_match: identity !== null && traceHash !== null && identity.request_hash === traceHash,
+        provider_terminal_trace: terminalTrace,
         current_intent: (rawCognition?.["current_intent"] as string | null | undefined) ?? null,
         directive: response.cognitionTrace?.communication_directive_kind ?? null,
         considered_context_refs: rawCognition === null ? null : asRefArray(rawCognition["considered_context_refs"]),
@@ -347,6 +356,10 @@ export class LongHorizonSubjectSessionV0 {
       provider_request_hash: null,
       transport_request_hash: null,
       provider_request_identity_match: false,
+      // The transport still emits a terminal trace for a failed call, so a
+      // failed interaction remains diagnosable (finish reason, token counts,
+      // configured budget) instead of collapsing to placeholders.
+      provider_terminal_trace: this.options.provider_identity?.last_trace?.() ?? null,
       current_intent: null,
       directive: null,
       considered_context_refs: null,
@@ -390,6 +403,13 @@ export class LongHorizonSubjectSessionV0 {
   private async requestIdentity(exchange: CapturedExchange): Promise<{ readonly request_hash: string } | null> {
     const identity = this.options.provider_identity;
     if (identity === undefined) return null;
+    // Must stay byte-identical to OllamaNativeCognitionTransportV0's wire body
+    // (same key order, same options) or the identity audit reports a shadow
+    // mismatch. `num_ctx` is therefore included whenever it is configured.
+    const options: Record<string, number> = { temperature: 0, num_predict: identity.num_predict };
+    if (identity.context_window_tokens !== undefined) {
+      options["num_ctx"] = identity.context_window_tokens;
+    }
     const body = JSON.stringify({
       model: identity.model,
       messages: [
@@ -398,7 +418,7 @@ export class LongHorizonSubjectSessionV0 {
       ],
       think: false,
       stream: false,
-      options: { temperature: 0, num_predict: identity.num_predict }
+      options
     });
     return { request_hash: await sha256HashV1(body) };
   }

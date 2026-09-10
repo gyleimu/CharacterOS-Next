@@ -184,6 +184,7 @@ export {
   OllamaNativeCognitionTransportV0,
   OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS,
   OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS,
   type OllamaNativeCognitionTransportConfigV0
 } from "./providers/cognition/ollama-native-cognition-transport.js";
 
@@ -197,6 +198,7 @@ export {
   type ModelTransportTerminalStageV0,
   type ModelTransportTraceEventV0,
   type OllamaInferenceMetadataV0,
+  type ModelTransportBudgetV0,
   type ModelTransportTraceV0,
   type ModelTransportTraceObserverV0
 } from "./transports/model-transport-trace-v0.js";

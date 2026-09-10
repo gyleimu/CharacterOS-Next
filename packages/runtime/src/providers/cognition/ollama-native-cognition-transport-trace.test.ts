@@ -20,6 +20,8 @@ import { sha256Hex } from "@characteros-next/subject-core";
 
 import {
   OllamaNativeCognitionTransportV0,
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS,
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
   type OllamaNativeCognitionTransportConfigV0
 } from "./ollama-native-cognition-transport.js";
 import {
@@ -250,6 +252,85 @@ describe("instrumentation — Ollama inference metadata", () => {
     const trace = traceOf(recording);
     expect(trace.ollama.eval_count).toBe(7);
     expect(trace.outcome).toBe("FAILURE");
+  });
+});
+
+// ============================================================================
+// Generation budget: explicit num_ctx, deliberately distinct from num_predict
+// ============================================================================
+
+describe("instrumentation — generation budget", () => {
+  it("sends an explicit num_ctx and records the configured budget on the trace", async () => {
+    const { recording, observer } = collect();
+    const { calls } = stubFetch(() => okJson(ollamaBody("pong", { done_reason: "stop" })));
+    await tracedTransport(recording, observer).complete(REQUEST);
+    const body = JSON.parse(bodyOf(calls)) as { options: Record<string, unknown> };
+    expect(body.options["num_ctx"]).toBe(OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS);
+    expect(body.options["num_predict"]).toBe(OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT);
+    expect(traceOf(recording).budget).toEqual({
+      context_window_tokens: OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS,
+      max_output_tokens: OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT
+    });
+  });
+
+  it("records an explicit override so no provider-side default is relied upon", async () => {
+    const { recording, observer } = collect();
+    const { calls } = stubFetch(() => okJson(ollamaBody("pong", { done_reason: "stop" })));
+    await tracedTransport(recording, observer, { context_window_tokens: 16384, num_predict: 1024 }).complete(REQUEST);
+    const body = JSON.parse(bodyOf(calls)) as { options: Record<string, unknown> };
+    expect(body.options["num_ctx"]).toBe(16384);
+    expect(traceOf(recording).budget).toEqual({ context_window_tokens: 16384, max_output_tokens: 1024 });
+  });
+
+  it("changes the request identity when the context budget changes under an identical prompt", async () => {
+    const smaller = collect();
+    const larger = collect();
+    stubFetch(() => okJson(ollamaBody("pong", { done_reason: "stop" })));
+    await tracedTransport(smaller.recording, smaller.observer, { context_window_tokens: 8192 }).complete(REQUEST);
+    await tracedTransport(larger.recording, larger.observer, { context_window_tokens: 16384 }).complete(REQUEST);
+    expect(traceOf(larger.recording).request_hash).not.toBe(traceOf(smaller.recording).request_hash);
+  });
+});
+
+// ============================================================================
+// Provider truncation classification (context/output exhaustion)
+// ============================================================================
+
+describe("instrumentation — provider truncation classification", () => {
+  it("classifies done_reason=length as MODEL_OUTPUT_TRUNCATED with token evidence preserved", async () => {
+    const { recording, observer } = collect();
+    // The frozen E7 shape: prompt 3568 + generated 528 = the configured 4096.
+    stubFetch(() =>
+      okJson(ollamaBody('{"partial":', { done_reason: "length", prompt_eval_count: 3568, eval_count: 528 }))
+    );
+    await expect(
+      tracedTransport(recording, observer, { context_window_tokens: 4096, num_predict: 2048 }).complete(REQUEST)
+    ).rejects.toMatchObject({ code: "MODEL_OUTPUT_TRUNCATED" });
+    const trace = traceOf(recording);
+    expect(trace.outcome).toBe("FAILURE");
+    expect(trace.terminal_stage).toBe("MODEL_RESPONSE_RECEIVED");
+    expect(trace.failure_code).toBe("MODEL_OUTPUT_TRUNCATED");
+    expect(trace.ollama.done_reason).toBe("length");
+    expect(trace.ollama.prompt_eval_count).toBe(3568);
+    expect(trace.ollama.eval_count).toBe(528);
+    expect(trace.budget).toEqual({ context_window_tokens: 4096, max_output_tokens: 2048 });
+  });
+
+  it("does not classify a natural stop as truncation even when token counts are present", async () => {
+    const { recording, observer } = collect();
+    stubFetch(() => okJson(ollamaBody("pong", { done_reason: "stop", prompt_eval_count: 3157, eval_count: 778 })));
+    const response = await tracedTransport(recording, observer).complete(REQUEST);
+    expect(response.content).toBe("pong");
+    expect(traceOf(recording).outcome).toBe("SUCCESS");
+    expect(traceOf(recording).failure_code).toBeNull();
+  });
+
+  it("does not classify an absent or non-string done_reason as truncation (no invented value)", async () => {
+    const { recording, observer } = collect();
+    stubFetch(() => okJson(ollamaBody("pong")));
+    const response = await tracedTransport(recording, observer).complete(REQUEST);
+    expect(response.content).toBe("pong");
+    expect(traceOf(recording).ollama.done_reason).toBeNull();
   });
 });
 

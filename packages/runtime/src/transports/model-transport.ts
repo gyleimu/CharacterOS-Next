@@ -61,7 +61,8 @@ export type ModelTransportFailureCode =
   | "MODEL_TIMEOUT"
   | "MODEL_CONNECTION_FAILURE"
   | "MODEL_HTTP_FAILURE"
-  | "MODEL_EMPTY_RESPONSE";
+  | "MODEL_EMPTY_RESPONSE"
+  | "MODEL_OUTPUT_TRUNCATED";
 
 export class ModelTransportErrorV0 extends Error {
   readonly code: ModelTransportFailureCode;

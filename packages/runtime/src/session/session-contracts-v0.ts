@@ -7,6 +7,8 @@
  * external world state and is deliberately separate from subject state.
  */
 
+import type { ModelTransportTraceV0 } from "../transports/model-transport-trace-v0.js";
+
 /** A single observable external situation supplied by the environment. */
 export interface EnvironmentInteractionV0 {
   /** Environment-owned stable interaction id (observable; never an authority). */
@@ -145,6 +147,17 @@ export interface SessionInteractionOutcomeV0 {
   readonly provider_request_hash: string | null;
   readonly transport_request_hash: string | null;
   readonly provider_request_identity_match: boolean;
+  /**
+   * Provider terminal trace for this interaction's cognition call: finish reason,
+   * prompt/generation token counts and the configured generation budget. This is
+   * what makes provider budget exhaustion diagnosable from CharacterOS evidence
+   * alone, without reading a rotating OS-level provider log.
+   *
+   * Operational/provider evidence ONLY: never canonical state, never Memory,
+   * never prompt content, never behavior. Null when no transport trace was
+   * available (the call never reached the transport).
+   */
+  readonly provider_terminal_trace: ModelTransportTraceV0 | null;
   readonly current_intent: string | null;
   readonly directive: string | null;
   readonly considered_context_refs: readonly string[] | null;

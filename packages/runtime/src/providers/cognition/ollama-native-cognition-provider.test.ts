@@ -42,6 +42,7 @@ import type {
 import { buildCognitivePromptMessages } from "./cognitive-prompt-projection.js";
 import { LlmCognitionProviderV0 } from "./llm-cognition-provider.js";
 import {
+  OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS,
   OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
   OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS,
   OllamaNativeCognitionTransportV0,
@@ -153,7 +154,11 @@ describe("OllamaNativeCognitionTransportV0 — native request envelope", () => {
     const body = bodyOf(calls);
     expect(body["stream"]).toBe(false);
     expect(body["think"]).toBe(false);
-    expect(body["options"]).toEqual({ temperature: 0, num_predict: OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT });
+    expect(body["options"]).toEqual({
+      temperature: 0,
+      num_predict: OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
+      num_ctx: OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS
+    });
   });
 
   it("never requests the OpenAI-compatible endpoint", async () => {
@@ -189,12 +194,44 @@ describe("OllamaNativeCognitionTransportV0 — native request envelope", () => {
     const projection = await buildProjection();
     const { calls } = stubFetch(() => okJson(ollamaBody(validProposalJson(projection))));
     await nativeProvider({ num_predict: 4096 }).propose(projection);
-    expect(bodyOf(calls)["options"]).toEqual({ temperature: 0, num_predict: 4096 });
+    expect(bodyOf(calls)["options"]).toEqual({
+      temperature: 0,
+      num_predict: 4096,
+      num_ctx: OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS
+    });
   });
 
-  it("exposes explicit defaults: num_predict 2048, timeout 120000 ms", () => {
+  it("maps an explicit context_window_tokens override into options.num_ctx (distinct from num_predict)", async () => {
+    const projection = await buildProjection();
+    const { calls } = stubFetch(() => okJson(ollamaBody(validProposalJson(projection))));
+    await nativeProvider({ num_predict: 512, context_window_tokens: 16384 }).propose(projection);
+    const options = bodyOf(calls)["options"] as Record<string, number>;
+    expect(options).toEqual({ temperature: 0, num_predict: 512, num_ctx: 16384 });
+    // The two budgets are conceptually separate fields, not aliases.
+    expect(options["num_ctx"]).not.toBe(options["num_predict"]);
+  });
+
+  it("exposes explicit defaults: num_predict 2048, context window 8192, timeout 120000 ms", () => {
     expect(OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT).toBe(2048);
+    expect(OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS).toBe(8192);
     expect(OLLAMA_NATIVE_COGNITION_TRANSPORT_TIMEOUT_MS).toBe(120000);
+    // The context window must comfortably exceed the failed implicit Ollama
+    // default of 4096 and leave generation reserve beyond num_predict.
+    expect(OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS).toBeGreaterThan(4096);
+    expect(OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS)
+      .toBeGreaterThan(OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT);
+  });
+
+  it("rejects invalid context configuration fail-closed (no ambient fallback)", () => {
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: 0 }))).toThrow("MODEL_TRANSPORT_");
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: -4096 }))).toThrow("MODEL_TRANSPORT_");
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: 8192.5 }))).toThrow("MODEL_TRANSPORT_");
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: Number.NaN }))).toThrow("MODEL_TRANSPORT_");
+    // Generation may not consume the whole sequence budget (checked on effective values).
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: 2048, num_predict: 2048 }))).toThrow("MODEL_TRANSPORT_");
+    expect(() => new OllamaNativeCognitionTransportV0(config({ context_window_tokens: 2048, num_predict: 4096 }))).toThrow("MODEL_TRANSPORT_");
+    // An override that collides with the DEFAULT context is rejected too.
+    expect(() => new OllamaNativeCognitionTransportV0(config({ num_predict: 8192 }))).toThrow("MODEL_TRANSPORT_");
   });
 
   it("rejects invalid configuration fail-closed (no ambient fallback)", () => {
@@ -375,7 +412,7 @@ describe("OllamaNativeCognitionTransportV0 — transport failures", () => {
 // ============================================================================
 
 describe("OllamaNativeCognitionTransportV0 — determinism and immutability", () => {
-  it("identical input twice yields byte-identical requests (stream/think/temperature/model/messages/num_predict stable)", async () => {
+  it("identical input twice yields byte-identical requests (stream/think/temperature/model/messages/budget stable)", async () => {
     const projection = await buildProjection();
     const { calls } = stubFetch(() => okJson(ollamaBody(validProposalJson(projection))));
     const provider = nativeProvider();
@@ -390,7 +427,11 @@ describe("OllamaNativeCognitionTransportV0 — determinism and immutability", ()
     expect(body["stream"]).toBe(false);
     expect(body["think"]).toBe(false);
     expect(body["model"]).toBe(MODEL);
-    expect(body["options"]).toEqual({ temperature: 0, num_predict: OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT });
+    expect(body["options"]).toEqual({
+      temperature: 0,
+      num_predict: OLLAMA_NATIVE_COGNITION_TRANSPORT_NUM_PREDICT,
+      num_ctx: OLLAMA_NATIVE_COGNITION_TRANSPORT_CONTEXT_WINDOW_TOKENS
+    });
   });
 
   it("deep-frozen projection input survives the invocation unchanged", async () => {
