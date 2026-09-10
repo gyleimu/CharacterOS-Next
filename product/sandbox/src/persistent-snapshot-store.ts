@@ -7,9 +7,10 @@
  * silently becomes a new subject.
  */
 
-import { mkdirSync, readFileSync, renameSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { InteractiveSubjectSnapshotV0 } from "@characteros-next/runtime";
+import { writeJsonAtomicV0 } from "./atomic-json-file.js";
 
 export type SnapshotLoadResultV0 =
   | { readonly kind: "NONE" }
@@ -54,7 +55,7 @@ function snapshotFileName(subjectId: string): string {
  */
 export class FileInteractiveSnapshotStoreV0 implements InteractiveSnapshotStoreV0 {
   private readonly path: string;
-  constructor(private readonly rootDir: string, subjectId: string) {
+  constructor(rootDir: string, subjectId: string) {
     this.path = join(rootDir, snapshotFileName(subjectId));
   }
   location(): string {
@@ -78,9 +79,6 @@ export class FileInteractiveSnapshotStoreV0 implements InteractiveSnapshotStoreV
     return { kind: "SNAPSHOT", snapshot: parsed as InteractiveSubjectSnapshotV0 };
   }
   async save(snapshot: InteractiveSubjectSnapshotV0): Promise<void> {
-    mkdirSync(this.rootDir, { recursive: true });
-    const tempPath = `${this.path}.tmp`;
-    writeFileSync(tempPath, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
-    renameSync(tempPath, this.path);
+    writeJsonAtomicV0(this.path, snapshot);
   }
 }

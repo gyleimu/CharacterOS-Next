@@ -31,6 +31,10 @@ import { FileInteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
 
 export interface InteractiveSubjectHostConfigV0 {
   readonly subject_id: string;
+  /** Canonical human-visible identity field (never used for storage paths). */
+  readonly display_name: string;
+  /** Canonical identity anchors (V0: empty). */
+  readonly identity_anchors?: readonly string[];
   readonly session_id: string;
   /** Deterministic local directory holding durable subject data. */
   readonly storage_root: string;
@@ -49,6 +53,11 @@ export interface InteractiveSubjectHostDepsV0 {
   };
   /** Override for tests; defaults to the file-backed store under storage_root. */
   readonly snapshotStore?: InteractiveSnapshotStoreV0;
+  /**
+   * Called after a durable snapshot has been persisted (used by the product
+   * layer to mark the subject config durable_state PRESENT). Idempotent.
+   */
+  readonly onSnapshotPersisted?: () => Promise<void>;
   readonly clock?: () => string;
 }
 
@@ -67,7 +76,9 @@ export class InteractiveSubjectHostV0 {
   private constructor(
     private readonly runtime: InteractiveSubjectRuntimeV0,
     private readonly store: InteractiveSnapshotStoreV0,
-    private readonly resolutionValue: SubjectResolutionV0
+    private readonly resolutionValue: SubjectResolutionV0,
+    private readonly displayNameValue: string,
+    private readonly onSnapshotPersisted: (() => Promise<void>) | undefined
   ) {}
 
   static async open(
@@ -79,8 +90,16 @@ export class InteractiveSubjectHostV0 {
     const loaded = await store.load();
     const runtimeOptions: InteractiveSubjectRuntimeOptionsV0 = {
       session_id: config.session_id,
-      subject: { subject_id: config.subject_id, display_name: "", identity_anchors: [] },
-      v3_source: createInteractiveSubjectSeedV0(config.subject_id),
+      subject: {
+        subject_id: config.subject_id,
+        display_name: config.display_name,
+        identity_anchors: [...(config.identity_anchors ?? [])]
+      },
+      v3_source: createInteractiveSubjectSeedV0(
+        config.subject_id,
+        config.display_name,
+        config.identity_anchors ?? []
+      ),
       conversationCognitionTransport: deps.conversationCognitionTransport,
       languageTransport: deps.languageTransport,
       factualEventAppraisalProvider: deps.appraisalProvider,
@@ -90,16 +109,32 @@ export class InteractiveSubjectHostV0 {
     };
     if (loaded.kind === "NONE") {
       const runtime = await InteractiveSubjectRuntimeV0.create(runtimeOptions);
-      return new InteractiveSubjectHostV0(runtime, store, "NEW_SUBJECT_CREATED");
+      return new InteractiveSubjectHostV0(
+        runtime,
+        store,
+        "NEW_SUBJECT_CREATED",
+        config.display_name,
+        deps.onSnapshotPersisted
+      );
     }
     // Durable history exists: authoritative restore ONLY. A restore failure
     // propagates and must never fall back to a fresh subject.
     const runtime = await InteractiveSubjectRuntimeV0.restore(runtimeOptions, loaded.snapshot);
-    return new InteractiveSubjectHostV0(runtime, store, "SUBJECT_RESTORED");
+    return new InteractiveSubjectHostV0(
+      runtime,
+      store,
+      "SUBJECT_RESTORED",
+      config.display_name,
+      deps.onSnapshotPersisted
+    );
   }
 
   resolution(): SubjectResolutionV0 {
     return this.resolutionValue;
+  }
+
+  displayName(): string {
+    return this.displayNameValue;
   }
 
   storageLocation(): string | null {
@@ -152,6 +187,9 @@ export class InteractiveSubjectHostV0 {
   async save(): Promise<void> {
     const snapshot = await this.runtime.snapshot();
     await this.store.save(snapshot);
+    if (this.onSnapshotPersisted !== undefined) {
+      await this.onSnapshotPersisted();
+    }
   }
 
   async status(): Promise<InteractiveSubjectStatusV0> {

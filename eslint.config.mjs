@@ -224,7 +224,8 @@ export default tseslint.config(
       "node:readline",
       "node:process",
       "node:url",
-      "node:os"
+      "node:os",
+      "node:crypto"
     ],
     "sandbox composition must consume runtime through its public root (plus node built-ins for the local CLI host)."
   )

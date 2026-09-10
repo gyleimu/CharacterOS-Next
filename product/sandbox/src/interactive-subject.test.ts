@@ -98,8 +98,14 @@ function hostDeps(mode: () => Mode, recorder: TransportRecorder, snapshotStore?:
   };
 }
 
-function config(storageRoot: string): InteractiveSubjectHostConfigV0 {
-  return { subject_id: SUBJECT_ID, session_id: "sess-product-test", storage_root: storageRoot, interval_ticks: 1 };
+function config(storageRoot: string, displayName = ""): InteractiveSubjectHostConfigV0 {
+  return {
+    subject_id: SUBJECT_ID,
+    display_name: displayName,
+    session_id: "sess-product-test",
+    storage_root: storageRoot,
+    interval_ticks: 1
+  };
 }
 
 const tempDirs: string[] = [];
@@ -258,7 +264,7 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — CLI session (offline)", 
     expect(after.repository_revision).toBe(before.repository_revision);
     expect(after.state_revision).toBe(before.state_revision);
     expect(after.turn_index).toBe(before.turn_index);
-    expect(lines.some((line) => line.startsWith("Subject: "))).toBe(true);
+    expect(lines.some((line) => line.startsWith("Subject ID: "))).toBe(true);
   });
 
   it("/exit creates no interaction and ends the session", async () => {

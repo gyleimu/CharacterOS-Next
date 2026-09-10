@@ -12,6 +12,8 @@ import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
+  /** Conversation prefix label (display name); defaults to "Subject". */
+  readonly subjectLabel?: string;
   readonly model: string;
   readonly providerLabel: string;
   readonly contextWindowTokens: number;
@@ -40,6 +42,11 @@ export class ProductCliSessionV0 {
 
   isExiting(): boolean {
     return this.exiting;
+  }
+
+  private label(): string {
+    const configured = this.deps.subjectLabel?.trim();
+    return configured !== undefined && configured.length > 0 ? configured : "Subject";
   }
 
   /** Exactly one submitted line → at most one command or one turn. */
@@ -91,7 +98,7 @@ export class ProductCliSessionV0 {
       if (this.deps.debug && outcome.failure !== null) this.deps.write(`[debug] ${outcome.failure}`);
       return;
     }
-    this.deps.write(`Subject > ${outcome.subject_text}`);
+    this.deps.write(`${this.label()} > ${outcome.subject_text}`);
     if (this.deps.debug) this.deps.write(this.debugTurnLine(outcome));
     if (this.deps.host.isFailed()) {
       this.deps.write("Warning: the reply was produced but durable state could not be saved. Relaunch to resume.");
@@ -114,8 +121,10 @@ export class ProductCliSessionV0 {
 
   private async printStatus(): Promise<void> {
     const status = await this.deps.host.status();
+    const displayName = this.deps.host.displayName();
     const lines = [
-      `Subject: ${status.subject_id}`,
+      `Display name: ${displayName.length > 0 ? displayName : "(unset)"}`,
+      `Subject ID: ${status.subject_id}`,
       `Status: ${status.origin === "NEW_SUBJECT" ? "NEW" : "RESTORED"}`,
       `Turns: ${status.completed_turns} completed (next index ${status.turn_index})`,
       `Repository revision: ${status.repository_revision}`,

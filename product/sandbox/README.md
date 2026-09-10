@@ -31,7 +31,34 @@ pnpm interactive
 metadata-only availability probe first (no generation call); if the provider or
 model is unavailable it exits non-zero with a concise message.
 
-Configuration is environment-only (sensible local defaults):
+### First run (`PERSISTENT_SUBJECT_CONFIGURATION_V0`)
+
+If no subject is configured yet, the CLI asks for a display name and creates the
+subject through CharacterOS itself — no environment variables, JSON editing, or
+SubjectState construction required:
+
+```text
+CharacterOS-Next
+No subject configured.
+Create a persistent subject.
+Display name: Alice
+
+Subject created.
+Subject ID: alice-781a9164
+...
+```
+
+Later launches detect the persisted configuration and restore the same subject
+with no setup questions. The subject id is derived deterministically from the
+display name (filesystem-safe, stable across retries); the display name is a
+canonical identity field and never controls storage paths.
+
+This is identity configuration only: no persona/personality/belief/memory editor,
+no backstory generation, and setup inputs never become Memory. The display name
+is immutable in V0 (no `/rename`).
+
+Runtime/provider settings are application configuration, not subject identity:
+they remain environment variables.
 
 | Variable | Default | Meaning |
 |---|---|---|
@@ -40,9 +67,15 @@ Configuration is environment-only (sensible local defaults):
 | `CHARACTEROS_CONTEXT_WINDOW_TOKENS` | `8192` | total sequence budget (`num_ctx`) |
 | `CHARACTEROS_NUM_PREDICT` | `2048` | generation budget (`num_predict`) |
 | `CHARACTEROS_TIMEOUT_MS` | `120000` | per provider call timeout |
-| `CHARACTEROS_SUBJECT_ID` | `alice` | the ONE persistent subject identity |
 | `CHARACTEROS_DATA_DIR` | `product/sandbox/.data` | local durable subject data |
+| `CHARACTEROS_SUBJECT_ID` | unset | explicit dev/automation override (must match persisted config in the same data root) |
+| `CHARACTEROS_DISPLAY_NAME` | unset | non-interactive creation display name |
 | `CHARACTEROS_DEBUG` | unset | `1` prints per-turn operational evidence |
+
+Precedence: explicit env override → persisted subject config → first-run
+creation. An override that conflicts with the persisted subject in the same data
+root FAILS CLOSED (use a separate `CHARACTEROS_DATA_DIR` to run a different
+subject).
 
 ## Commands
 
@@ -60,6 +93,9 @@ again forces immediate exit.
 
 Durable subject state is written to `product/sandbox/.data/`:
 
+- `subject-config.json` — product subject configuration: schema version,
+  `subject_id`, `display_name`, `identity_anchors`, and a `durable_state` marker.
+  It identifies the target subject; it is NOT canonical SubjectState authority.
 - `subject-<id>.snapshot.json` — the authoritative durable snapshot (canonical
   subject state + Memory repository revisions/payloads + commit chain + ledgers),
   written atomically (temp file + rename) after every completed interaction.
@@ -67,13 +103,25 @@ Durable subject state is written to `product/sandbox/.data/`:
   index, directive, revision, provider token counts, finish reason). Optional;
   logging failures never break a conversation.
 
+All three are written atomically (temp file + rename). Storage paths derive only
+from the validated canonical `subject_id`, never from the display name.
+
+Failure handling: a malformed/unsupported config fails closed; a config whose
+`subject_id` disagrees with the durable snapshot fails closed; a config marked
+`durable_state: PRESENT` with a missing snapshot fails closed (never silently
+recreated). If a durable snapshot exists but the config is missing, the config is
+recovered deterministically from the snapshot's canonical identity.
+
 This directory is `.gitignore`d and is never committed. No telemetry, no cloud
 service, no network beyond the configured local Ollama endpoint.
 
 ## How persistence works (high level)
 
 1. On first launch the subject is created through the existing production
-   explicit-v4 genesis factory (`NEW` / `NEW_SUBJECT_CREATED`).
+   explicit-v4 genesis factory (`NEW` / `NEW_SUBJECT_CREATED`) from the
+   configured identity; the config is written first (creation commit point), so
+   an interrupted creation deterministically re-creates the SAME identity rather
+   than a second subject. Setup itself contributes no Memory.
 2. Each user message is admitted as a factual event and processed by the frozen
    production lifecycle: appraisal → canonical Affect → retrieval → cognition →
    directive → language realization → delivered reply.
@@ -100,7 +148,11 @@ service, no network beyond the configured local Ollama endpoint.
 
 ## Known limitations (V0)
 
-- ONE subject identity per data directory; no character creation.
+- ONE subject identity per data directory; no character creation UI, subject
+  selector, deletion, cloning or rename.
+- Subject configuration is identity metadata only (id, display name, anchors) —
+  no personality, belief, relationship, mood or memory configuration. The
+  display name is immutable in V0 and is never injected into provider prompts.
 - ONE process / one subject / one interaction at a time. Input is serialized in
   order; concurrent turns are refused.
 - The last delivered reply of a session has its outcome Experience committed when
