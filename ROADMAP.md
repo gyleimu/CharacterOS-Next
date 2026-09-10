@@ -1,111 +1,83 @@
 # ROADMAP.md — CharacterOS-Next 路线图
 
-**状态:** P2.0 Runtime Bootstrap、P2.1 Planning、P2.1 Contract Freeze — **COMPLETE**。P2.1 coding **READY FOR EXPLICIT AUTHORIZATION / NOT STARTED**。
+Status: ACTIVE ROADMAP
+Authority: 只记录历史里程碑与未来方向；当前实现、blocker 与下一 exact slice 以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为唯一权威。
+Last verified against commit: `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`
+Purpose: 保存阶段历史并定义未来工作的准入顺序，不复制实时状态。
 
----
+## 1. 如何阅读本路线图
 
-## 1. 阶段总览
+早期 `P0`–`P5+` 编号是仓库建立时的规划语言，不是当前实现状态机。实现已经依法越过旧文档所写的“P2.1 NOT STARTED”。本文件保留这些阶段作为历史，不用新的数字夸大进度，也不要求回退有效代码来匹配旧计划。
 
-| 阶段 | 名称 | 内容 | 状态 |
-|---|---|---|---|
-| **P0** | Architecture Foundation | 骨架、架构宪法、研究状态、迁移地图、SubjectState V0 概念模型、canonical transition system | **COMPLETE** |
-| **P0.5** | Architecture Correction | P0 宪法修订（MemoryState ownership、transition runtime、time 一等语义、FAST+EMA 身份、证据标签、MICL 术语） | **COMPLETE** |
-| **P1** | Formal Design | SubjectState V0 spec + transition contracts + MICL 设计（NEXT_ACTIONS #1–3，纯设计） | **COMPLETE** |
-| **P1.5** | Engineering Acceptance / Evaluation Contract | 定义 A1–A13 工程行为契约；不运行科学实验 | **COMPLETE** |
-| **P2.0** | Runtime Bootstrap | TypeScript workspace、package/tooling/boundary/conceptual placeholder skeleton；无 domain/runtime behavior | **COMPLETE** |
-| **P2.1 Plan** | Subject Core Implementation Planning | schema、responsibility、delta、commit、validation、trace/hash/restore、acceptance 与 phase plan；纯文档 | **COMPLETE** |
-| **P2.1 Freeze** | Subject Core Contract Freeze | G1–G11、49 MUST、65 fixtures、Golden S0/hash、machine schema、trace/restore/status/identity/ports；纯文档 | **COMPLETE** |
-| **P2.1 Implementation** | Subject Core | canonical state authority、validation、atomic commit、revision、trace、hash、restore | **READY FOR EXPLICIT AUTHORIZATION / NOT STARTED** |
-| **P2.2–P2.5** | Remaining Minimal Runtime | Memory 至 full conformance，服从 P2 plan 与 entry gates | **NOT STARTED / REQUIRES EXPLICIT AUTHORIZATION** |
-| **P3** | Controlled Migration | 按 MIGRATION_MAP 逐项执行（每项独立审批） | 未授权 |
-| **P4** | Empirical Evaluation / Benchmarks | evals/ 三组 baseline + longitudinal/ablation/regression | 未授权 |
-| **P5+** | Triggered Research | 仅当研究触发条件命中（§3）才开放对应研究/实验 | 未授权 |
+实时状态只在 `CURRENT_STATE.md` 更新。本文件仅在历史归档发生变化或未来路线改变时更新。
 
----
+## 2. 历史阶段
 
-## 2. P0 / P0.5 完成标准（历史完成标准）
-
-1. 七个根文档（README/VISION/ARCHITECTURE/ROADMAP/RESEARCH_STATE/MIGRATION_MAP/NEXT_ACTIONS）完整且互相一致。`[DESIGN DECISION]`
-2. SubjectState V0 概念模型已定义（含 MemoryState ownership + runtime metadata；不做实现）。`[DESIGN DECISION]`
-3. canonical transition system 已定义（Time / Observation / Cognition-Action / Learning 四类 transition + 不变量）。`[DESIGN DECISION]`
-4. LLM boundary 已定义为宪法规则（B1–B6）。`[DESIGN DECISION]`
-5. 迁移分类体系 + 迁移表完成（只写计划）。`[DESIGN DECISION]`
-6. 全部结论带 VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN 标签。
-7. 未创建任何实现代码、未启动任何实验、未移动任何旧文件。
-
----
-
-## 3. 研究触发条件（Emotion 审计 B 的 8 条，逐字继承）
-
-以下任何一条真实产品现象出现，才允许为对应机制问题开放研究（Phase 0 + 预注册 + 审批链）；在此之前，纯 Dynamics 研究保持 PAUSE。
-
-| # | 产品现象 | 对应研究问题 |
+| 历史阶段 | 原始意图 | 当前历史判定 |
 |---|---|---|
-| T1 | state resets across sessions | 外部状态 vs 内存检索重算的连续性质 |
-| T2 | history compression destroys emotion continuity | 状态在压缩下的不变量；Emotion × Memory |
-| T3 | one event overwrites long history | 冲突历史结构（替代单标量 EMA） |
-| T4 | multimodal behavior inconsistency | 多通道共享状态的因果价值 |
-| T5 | memory/state divergence | 状态↔记忆同步机制 |
-| T6 | prompt injection overrides state | 外部状态权威的增量价值 |
-| T7 | long-horizon instability | 多时间尺度 |
-| T8 | context distinction demand | context 区分 |
+| P0 / P0.5 | 架构基础与纠偏 | COMPLETE；形成 SubjectState ownership、transition、time、LLM boundary 与证据标签 |
+| P1 | SubjectState、transition contracts、MICL formal design | COMPLETE；保留为架构历史 |
+| P1.5 | A1–A13 engineering acceptance contract | COMPLETE；后续实现/测试已使用这些约束，但不等于所有未来 evaluation 已实现 |
+| P2.0 | TypeScript/pnpm workspace 与 package-boundary bootstrap | COMPLETE |
+| P2.1 Plan / Freeze | Subject Core 计划与 `FREEZE-G1`–`FREEZE-G11` contract freeze | COMPLETE；是历史 implementation contract，不是当前进度 |
+| P2.1–P2.5 原计划 | Subject Core、Memory、MICL 与 minimal runtime | 原来的 “NOT STARTED” 已被后续实现与测试取代 |
+| P3 原计划 | controlled legacy migration | 未作为一次 bulk migration 执行；任何未来迁移仍需单项来源与范围审查 |
+| P4 原计划 | baselines、longitudinal、ablation、regression evaluation | 目录仍为 reserved/not implemented；实验目录中的专项验证不等同于完整 P4 infrastructure |
+| P5+ 原计划 | product-evidence-triggered research | 不作为任意实验授权；新研究仍需明确问题、边界、批准与冻结协议 |
 
-`[VERIFIED — 约束 B / Emotion 审计 NEXT_DIRECTION_DECISION §3]`
+## 3. 已交付的实现里程碑
 
----
+以下使用具体能力与 Git 历史，不再创造新的阶段编号：
 
-## 4. 硬性门禁（违反即 STOP/REPORT）
+- SubjectState schema、validation、canonical commit、trace/hash 与 restore authority；
+- versioned Memory repository、retrieval、Experience encoding 与 Learning path；
+- MICL runtime workflow 与 runtime composition；
+- Appraisal、Canonical Affect、Time/Regulation reference producers；
+- cognition provider、language realization 与 behavior delivery；
+- behavior → Experience → Memory feedback；
+- provider-readable factual Memory 与 durable life history；
+- longitudinal multi-episode subject life；
+- reusable long-horizon subject-session orchestration。
 
-| 门禁 | 内容 |
-|---|---|
-| G1 | **NO DEV_004**：禁止任何新实验编号，直到 T1–T8 之一被产品证据触发且独立 Phase 0 完成 |
-| G2 | **NO new dynamics experiment**：本仓库不产生任何新动力学实验 |
-| G3 | **NO bulk code migration**：任何旧代码进入本仓库必须按 MIGRATION_MAP 单项审批 + 来源 SHA 记录 |
-| G4 | **NO product feature development**：P0/P0.5/P1 阶段不开发产品功能 |
-| G5 | **NO claim of achieved long-lived agency**：长期主体是愿景，不是现状 |
-| G6 | 任何机制进入实现前必须声明其 baseline 策略（FAST+EMA / LINEAR-G / Memory+LLM 每轮重算，择对应问题形态） |
-| G7 | **Evaluation/Acceptance contract 先于实现**：P2 实现前必须完成 P1.5（A1–A13，见 docs/evaluation/p1-5-engineering-acceptance-contract.md） |
+这些里程碑的当前成熟度与最新失败边界见 `CURRENT_STATE.md`，对应实验的允许结论见其冻结 report/contract。
 
----
+## 4. Gate namespace
 
-## 5. P1.5 Engineering Acceptance Contract（A1–A13）
+仓库历史上存在两个不同的 `G*` 命名空间。今后在 active 文档中必须写全名：
 
-> 这是**工程行为契约**，不是研究 benchmark。它在 P2 实现前强制完成，且不运行科学实验。完整正式规格见 `docs/evaluation/p1-5-engineering-acceptance-contract.md`。
+- `ROADMAP-G1`–`ROADMAP-G7`：早期路线图的阶段/研究门禁；
+- `FREEZE-G1`–`FREEZE-G11`：`docs/implementation/p2-1-contract-freeze.md` 的机器级 Subject Core freeze gates。
 
-| # | 契约 | 含义 |
-|---|---|---|
-| A1 | Determinism | same state + same input + same time → same transition result |
-| A2 | Memory ownership | restored subject references same canonical memory revision |
-| A3 | Retrieval relevance | different relevant memory histories can produce different retrieved context |
-| A4 | Appraisal dependency | Appraisal cannot bypass Retrieval / Current SubjectState inputs |
-| A5 | Persistent affect continuity | session restore / time advance preserves valid persistent affect semantics |
-| A6 | State authority | LLM output cannot directly mutate canonical state |
-| A7 | Cause trace | all canonical writes have trace/provenance |
-| A8 | Time semantics | state can evolve through time without requiring an external observation |
-| A9 | Optional action | tick can legally complete with no external action |
-| A10 | Failure semantics | a failed LLM proposal does not corrupt canonical state |
-| A11 | Atomic multi-domain commit | one transition = one atomic commit；any delta invalid → none committed |
-| A12 | Idempotency / resume | duplicate transition/micl retry does not double-apply delta or memory |
-| A13 | Learning stale rebase safety | stale after prepare → reload + revalidate + rebase，not just change expected revision |
+历史冻结文档中的短名保持不变；不得为了消歧重写 frozen contracts 或 evidence。裸写 `G3`、`G6` 等不再允许出现在新的 active governance prose 中。
 
-`[DESIGN DECISION — P0-6：evaluation/acceptance contract 前移到 implementation 之前；A11–A13 为 P1.5 正式扩展]`
+早期 `ROADMAP-G1`–`ROADMAP-G7` 的主题分别是：DEV_004/新 dynamics 实验限制、禁止 bulk migration、早期产品开发范围、long-lived-agency no-overclaim、baseline 声明和 acceptance-before-implementation。它们说明当时的治理背景，不构成“当前仓库仍无实现/实验”的事实陈述。仍适用的研究限制由 `RESEARCH_STATE.md` 表述，当前执行禁止项由 `NEXT_ACTIONS.md` 表述。
 
----
+## 5. 未来路线
 
-## 6. 每阶段的准入证据
+### Repository governance seal
 
-- **P0.5 准入** = P0 骨架完成。
-- **P1 准入** = P0.5 验收完成（§2）。
-- **P1.5 准入** = P1 设计文档（SubjectState V0 spec + transition contracts + MICL design）完成。
-- **P2.0 准入** = P1.5 COMPLETE + P2 runtime plan COMPLETE + **显式 P2.0 bootstrap 授权**（已满足；P2.0 COMPLETE）。
-- **P2.1 planning 准入** = P2.0 COMPLETE + 本轮显式 planning 授权（已满足；产物 `docs/implementation/p2-1-subject-core-plan.md` COMPLETE）。
-- **P2.1 implementation 准入** = P2.0 bootstrap validation + contract freeze G1–G11 closure（已满足）+ **单独显式授权**（当前唯一未满足项）。
-- **P3 准入** = P2 MICL 在 sandbox 可运行 + 每项迁移单独审批。
-- **研究触发（T1–T8）准入** = 真实产品现象证据 + 独立 Phase 0 + 预注册 + 审批链（继承 CERH 纪律）。
+对齐 live docs、package/command truth、dependency-boundary guard、CI 与 lint，并以完整本地 gates、clean diff、commit/push 结果封口。只有所有要求通过，`REPOSITORY_GOVERNANCE_AND_ENGINEERING_REALITY_ALIGNMENT_V0` 才可判定 GREEN。
 
----
+### Provider output-budget diagnostic
 
-## 7. 路线图与两个审计的关系
+治理 GREEN 后的下一 exact slice 是：
 
-- 约束 A（旧仓库 7 缺口）→ 全部进入 P1/P2 设计范围（顺序、持久化、闭环由 transition 组合实现、自传记忆、关系一等状态、时间尺度分层）。
-- 约束 B（Emotion 审计）→ P0/P0.5 已固化（目标重定义、FAST+EMA reference identity、LLM 边界、no-overclaim）；T1–T8 决定未来研究是否重开。
+`SUBJECT_SESSION_PROVIDER_OUTPUT_BUDGET_DIAGNOSTIC_V0`
+
+目标仅是定位长程累计上下文下的 provider truncated/invalid JSON；它不是新心理机制实验。治理 slice 内不得执行。
+
+### Subject-session continuation
+
+只有诊断给出可验证结果后，才决定是否恢复 `INTERACTIVE_SUBJECT_PRODUCT_RUNTIME_V0` 或进一步 long-horizon validation。不得把当前 6/8 partial run 当作产品扩张授权。
+
+### Evaluation infrastructure
+
+`evals/baselines`、`evals/longitudinal`、`evals/ablation` 与 `evals/regression` 保持 `RESERVED / NOT IMPLEMENTED`，直到一个具体 evaluation slice 定义 comparator、fixtures、metrics、claim boundary 与 cost。禁止用空目录或无意义 fixture 宣称 infrastructure 完成。
+
+### Triggered research
+
+新的研究必须来自具体产品/机制问题，并先声明可证伪命题、比较器、评价方法、外部效度边界、调用预算和批准点。repository-local pre-call freeze 不得称为外部 preregistration。未命中这些条件时，不自动开新实验线。
+
+## 6. 路线变更原则
+
+未来路线只能因以下事实改变：当前能力的新可执行证据、冻结实验的新结论、明确的产品需求、已批准的架构决策，或已证明的治理/工程缺口。单纯更新阶段编号、填充空目录或复述旧授权不构成进展。

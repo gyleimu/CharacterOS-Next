@@ -1,123 +1,81 @@
 # CharacterOS-Next
 
-**状态: P2.0 BOOTSTRAP — COMPLETE；P2.1 PLAN — COMPLETE；P2.1 CONTRACT FREEZE — COMPLETE；P2.1 CODING READY / NOT STARTED** — G1–G11 已通过 docs-only closure 全部关闭。当前仓库仍只有工程骨架与冻结文档；**没有 SubjectState、commit、memory、transition、MICL、affect、LLM 或其他 domain/runtime behavior，没有实验资产，也未复制旧仓库源码。** P2.1 Subject Core Implementation requires separate explicit authorization。
+Status: ACTIVE ENTRY POINT
+Authority: 项目介绍与使用入口；实时仓库状态以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
+Last verified against commit: `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`
+Purpose: 解释项目、架构不变量、目录、研究证据边界与本地工程门禁。
 
-CharacterOS-Next 是 CharacterOS 从"旧单项目 / 单研究线"升级为**长期人工主体（long-lived agent）总工程体系**的伞形仓库，统一承载：
+CharacterOS-Next is a strict-ESM TypeScript/pnpm workspace for building and evaluating a long-lived artificial subject whose canonical state remains outside the language model. The repository combines reusable runtime packages, a sandbox composition, conformance tests, research harnesses, diagnostics, and immutable evidence from bounded experiments. It is an implemented research runtime, but not yet a production-mature long-lived agent.
 
-- **core engine**（`packages/`：subject-core、memory、appraisal、affect、belief、personality、relationship、regulation、behavior、runtime）
-- **research / experiments**（`research/`：仅假设与设计，当前禁止实验）
-- **evaluation / benchmarks**（`evals/`：llm-prompt / fast-ema / characteros-v1 三组 baseline + longitudinal / ablation / regression）
-- **product development**（`product/`：sandbox、prototypes）
-- **architecture / docs / roadmap**（`docs/`：vision、theory、architecture、adr、roadmap）
-- **legacy migration**（`archive/` + 根目录 `MIGRATION_MAP.md`：只写计划，不移动文件）
+## Current frontier
 
----
+The repository already implements SubjectState/commit authority, Memory and retrieval, Appraisal, Canonical Affect, cognition and language providers, behavior-to-experience-to-memory feedback, persistence/restore, longitudinal episodes, and a reusable long-horizon subject session.
 
-## 1. 最高约束（Constitution，不可被本仓库任何后续文档覆盖）
+The latest real-provider session validation did **not** fully pass: it completed 6/8 interactions, preserved 6 durable Memory commits, and restored authority exactly at 2/2 boundaries, then failed closed at interaction 7 on deterministically reproduced truncated/invalid cognition JSON under accumulated context.
 
-本仓库的一切设计与决策以**两个已完成审计**的结论为最高约束：
+`SUBJECT_SESSION_PROVIDER_OUTPUT_BUDGET_DIAGNOSTIC_V0` is the next technical slice after repository-governance alignment is GREEN. It is paused during the governance repair. Exact maturity labels, gate counts, and blocker state live only in [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
-### 约束 A — CharacterOS 现有仓库审计结论（外部已完成审计，本仓库直接继承为给定输入）
+## Architectural invariants
 
-> 旧 CharacterOS 是成熟的 deterministic psychological simulation kernel，不是废弃项目。其核心当前仍偏 event-centric state transition。
-> 主要架构缺口（必须在新体系中修复）：
-> 1. Event → Emotion → Interpretation 顺序错误，应转为 **Retrieval/Appraisal 后再 Affect**；
-> 2. Emotion 不是 persistent state；
-> 3. Life state 未完整跨 tick 持久化；
-> 4. Behavior 未形成 **Action → World → Consequence → Experience** 闭环；
-> 5. Memory retrieval 不够 autobiographical / context-sensitive；
-> 6. Relationship 尚非一等长期状态；
-> 7. Personality / trust / attachment / fear 等存在时间尺度混层。
->
-> 旧仓库定位：legacy implementation + baseline + mechanism library + test/evaluation asset + migration source。
+1. `SubjectState` is canonical; core transition/commit authority is its only write boundary.
+2. `MemoryState` belongs to the subject. A `MemoryRepository` is storage infrastructure, not a second subject-state authority.
+3. Time may change valid state without an external observation.
+4. An interaction need not produce an external action.
+5. Model output is an untrusted proposal until deterministic validation; the model cannot directly mutate canonical state.
+6. Retrieval and Appraisal precede Canonical Affect application on the relevant observation path.
+7. FAST+EMA is a bounded reference persistence mechanism and research baseline, not a canonical emotion theory.
 
-### 约束 B — CharacterOS Emotion 全路线审计结论（审计产物位于 `<external-audit-workspace>/CharacterOS-Research-Direction-Audit`，六个文档）
+The detailed contract remains in [`ARCHITECTURE.md`](ARCHITECTURE.md) and its referenced specifications. Current implementation takes precedence over stale phase prose; frozen evidence takes precedence over retrospective summaries of an experiment.
 
-> - 最终路线状态：**B — DIRECTION_VALID_BUT_REFRAMED**
-> - Pure Dynamics 研究：**PAUSE_UNTIL_PRODUCT_EVIDENCE**（8 条具体产品触发条件见 `RESEARCH_STATE.md`）
-> - **DEV_004：NO_DEV_004_JUSTIFIED**
-> - FAST+EMA：research identity = **BASELINE_ONLY**；product identity = **minimal state persistence implementation**
-> - 不再要求 Emotion Dynamics 在语言质量上击败 LLM+Prompt
-> - 核心目标改为：**长期存在、由真实事件持续改变、可被语言/动作/表情/决策/记忆共享的内部状态系统**
-> - **state authority 必须位于 LLM 之外**
-> - LLM 仅作为 appraisal / semantic understanding / expression / deep reasoning component
-> - Level 2–4（learned adapter / hidden steering / modified architecture）价值仍无充分证据，不得 overclaim
-> - 不得启动新 Dynamics 实验，除非未来满足已定义 trigger 条件
+## Repository layout
 
----
+- `packages/` — 13 reusable workspaces: `subject-core`, `runtime`, `memory`, `appraisal`, `affect`, `behavior`, `belief`, `relationship`, `regulation`, `personality`, `influence-evidence`, `memory-influence`, and `long-term-state-domain`.
+- `product/sandbox/` — the fourteenth workspace and reference composition boundary.
+- `evals/conformance/` — active offline conformance and frozen-evidence regression tests.
+- `evals/baselines/`, `evals/longitudinal/`, `evals/ablation/`, `evals/regression/` — reserved evaluation surfaces; currently not implemented.
+- `research/experiments/` — tracked experiment harnesses, contracts, reports, and experiment-local frozen evidence.
+- `research/diagnostics/` — tracked provider/environment diagnostics and their evidence.
+- `research/README.md` — the research tree guide, the artifact-isolation law, and the prospective hypothesis registry.
+- `research/appraisal/`, `research/emotion/`, `research/memory/`, `research/plasticity/`, `research/hypotheses/` — deliberately empty placeholders for future domain-research documents; the artifact-isolation law refuses additions there.
+- `docs/architecture/` and `docs/implementation/` — architecture and historical implementation contracts.
+- `docs/adr/` — prospective architecture-decision records; no retrospective ADR history is implied.
+- `tmp/` — ignored local/generated state, never frozen evidence.
 
-## 2. 架构宪法五问（本仓库全部文档必须一致回答）
+At the verified baseline the repository contains 14 workspaces. Exact current counts for TypeScript files, tests, experiments, and diagnostics live in [`CURRENT_STATE.md`](CURRENT_STATE.md); they are evidence of repository size, not scientific or production readiness.
 
-| # | 问题 | 一致答案 |
-|---|---|---|
-| Q1 | 这个"人"的权威状态在哪里？ | **SubjectState**（canonical，单写入口 = Core transition rules） |
-| Q2 | 记忆属于谁？ | **MemoryState 属于 SubjectState**；MemoryRepository 只是持久化/存储设施 |
-| Q3 | 没有外部事件时，这个人会不会继续变化？ | **会**，经 TimeTransition（regulation / decay / settling / baseline） |
-| Q4 | 每个 tick 必须行动吗？ | **不必须**。Action 是 optional；无外部动作的 tick 合法 |
-| Q5 | FAST+EMA 是 CharacterOS 的情绪理论吗？ | **不是**。它是 V0 reference persistence implementation + research baseline，不是 canonical affect theory |
+## Research and evidence policy
 
----
+Committed experiment/diagnostic evidence is a first-class repository asset and remains immutable after its run is frozen. New summaries may clarify the current interpretation but must not rewrite raw outputs or enlarge an experiment's allowed claim.
 
-## 3. 结论标注纪律（本仓库全部文档强制）
+Most model-backed studies here are bounded engineering/research experiments. A repository-local Phase-A or pre-call freeze is not an external preregistration service; temperature zero without an exposed seed is not a universal determinism guarantee; a blinded same-model evaluator is not independent human ground truth; and statistical significance or cross-model/general-population validity is not implied unless a frozen contract explicitly establishes it. See [`RESEARCH_STATE.md`](RESEARCH_STATE.md).
 
-所有结论必须携带以下四类标签之一，不得混用：
+## Local gates
 
-| 标签 | 含义 |
-|---|---|
-| `VERIFIED` | 已观察事实 / 已有实验结果 / 已完成审计确认的历史结论 / 旧仓库代码实际结构（注明来源：Audit A / Audit B / legacy evidence） |
-| `DESIGN DECISION` | CharacterOS-Next **选择的架构**（注明约束依据，不冒充科学结论）：如 state authority 在 LLM 外、Retrieval 先于 Appraisal、MemoryState 归属、transition 模型、时间尺度分离 |
-| `HYPOTHESIS` | 可证伪但尚无证据的命题（注明证伪条件与触发重测条件）：如"外部状态提升长期连续性"、"affect-congruent retrieval 有价值" |
-| `UNKNOWN` | 未被验证、也未形成明确假设的事实 |
+Requirements are pinned in `package.json`, `.node-version`, and `pnpm-lock.yaml`. The ordered gate sequence is:
 
-> 纪律：**"审计 B 说应该这样做" ≠ "科学上已 VERIFIED 这就是正确架构"。** 审计结论记为 `VERIFIED: Audit B concluded X`；架构采用则另记为 `DESIGN DECISION: CharacterOS-Next adopts X`。
+```text
+pnpm install --frozen-lockfile
+pnpm governance           # repository invariants: docs, package boundaries, gate wiring
+pnpm typecheck            # cold, source-mapped workspace typecheck
+pnpm build                # all workspaces
+pnpm typecheck:auxiliary  # evals/research/root tooling, against built workspace roots
+pnpm lint                 # eslint --max-warnings 0
+pnpm test                 # vitest run
+```
 
----
+`pnpm verify` runs that whole sequence in order, and `pnpm governance` fails if either `pnpm verify` or `.github/workflows/ci.yml` omits a gate or reorders it. `pnpm typecheck` must pass on a tree with no `dist/` output — the cold-start property that `scripts/cold-typecheck-regression.ps1` protects — while `pnpm typecheck:auxiliary` resolves built workspace roots and therefore runs after `pnpm build`. Current pass/fail state for every gate is recorded in [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
-## 4. 本阶段边界（硬性禁止）
+## Document authority
 
-**当前阶段状态 = P2.0 Runtime Bootstrap、P2.1 Planning 与 P2.1 Contract Freeze 均 COMPLETE；P2.1 coding READY FOR EXPLICIT AUTHORIZATION / implementation NOT STARTED。**
+- [`CURRENT_STATE.md`](CURRENT_STATE.md) — current repository truth, blocker, and next slice.
+- [`ROADMAP.md`](ROADMAP.md) — historical milestones and future direction.
+- [`NEXT_ACTIONS.md`](NEXT_ACTIONS.md) — immediate execution boundary only.
+- [`RESEARCH_STATE.md`](RESEARCH_STATE.md) — current research claims, limitations, and open questions.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — architecture and dependency intent.
+- [`MIGRATION_MAP.md`](MIGRATION_MAP.md) — historical migration classifications; not current-state authority.
 
-已完成且不再扩张的 P2.0 边界：strict ESM TypeScript/pnpm workspace、build/lint/typecheck/test tooling、package skeleton、conceptual type-only placeholders、automated import-boundary rules、`evals/conformance` README-only skeleton。P2.1 当前只完成 implementation plan 与 docs-only contract freeze；未写或启动 Subject Core。
+Historical P0/P1/P2 planning documents remain audit records. Their pre-implementation status language describes an earlier repository moment and does not override current code, tests, Git history, or frozen evidence.
 
-- ❌ NO DEV_004（以及任何新实验编号）
-- ❌ NO new dynamics experiment
-- ❌ NO bulk code migration（迁移只写计划）
-- ❌ NO product feature development
-- ❌ NO claim that CharacterOS-Next already achieves long-lived agency（本仓库当前**没有**实现长期主体，只有定义与计划）
-- ❌ 禁止修改以下任何旧仓库：`CharacterOS`、`CharacterOS emotion`、`CharacterOS-CERH-DEV-001/002/003`、外部审计 workspace
-- ❌ NO domain/runtime behavior：无 SubjectState、commit、memory、retrieval、transition、MICL、affect、LLM、API、UI、database、embedding、vector DB 或 agent implementation
-- ❌ NO P2.1 Subject Core implementation without explicit authorization
+## License
 
----
-
-## 5. 核心文档索引
-
-| 文档 | 内容 |
-|---|---|
-| `VISION.md` | 总愿景、非目标、长期主体的可操作定义 |
-| `ARCHITECTURE.md` | canonical transition system（Time/Observation/Cognition-Action/Learning）、multi-timescale state、**SubjectState V0 概念模型**、LLM boundary、包映射 |
-| `ROADMAP.md` | 阶段划分（含 P0.5/P1.5）、门禁、研究触发条件 |
-| `RESEARCH_STATE.md` | 两个审计结论的合并状态、开放问题、研究纪律 |
-| `MIGRATION_MAP.md` | 迁移分类体系（KEEP/ADAPT/REWRITE/BASELINE_ONLY/RESEARCH_HYPOTHESIS/ARCHIVE）+ 旧资产迁移表（只写计划） |
-| `NEXT_ACTIONS.md` | P1 三个历史设计动作 + 当前 P2.0/P2.1 授权交接 |
-| `docs/architecture/p0-architecture-correction.md` | P0 架构修订记录（问题清单 + 修改 + 前后对照） |
-| `docs/architecture/subjectstate-v0-spec.md` | SubjectState V0 正式规格（P1 Action 1 · COMPLETE） |
-| `docs/architecture/transition-contracts.md` | Canonical transition contracts（P1 Action 2 · COMPLETE） |
-| `docs/architecture/micl-design.md` | MICL — Minimal Internal Continuity Loop 正式设计（P1 Action 3 · COMPLETE） |
-| `docs/evaluation/p1-5-engineering-acceptance-contract.md` | P1.5 工程验收契约（A1–A13 + fixture/oracle + conformance matrix · COMPLETE） |
-| `docs/implementation/p2-runtime-plan.md` | P2.0–P2.5 工程实施计划；P2.0 bootstrap 已完成，P2.1+ implementation 未授权 |
-| `docs/implementation/p2-1-subject-core-plan.md` | P2.1 Subject Core schema/commit/validation/trace/hash/restore/conformance 实施计划；planning COMPLETE |
-| `docs/implementation/p2-1-contract-freeze.md` | G1–G11 machine-level contract freeze；49 MUST、Golden S0/vectors、schema/trace/restore/status/identity/atomic ports；COMPLETE，implementation NOT STARTED |
-
----
-
-## 6. 目录说明（当前状态）
-
-- `docs/` — vision / theory / architecture / adr / roadmap / evaluation（architecture 下已有 p0-correction、subjectstate-v0-spec、transition-contracts、micl-design；evaluation 下有 p1-5 acceptance contract）
-- `research/` — emotion / memory / appraisal / plasticity / hypotheses / experiments（当前为空骨架；**experiments 目录仅为未来形态占位，不代表任何实验被授权**）
-- `evals/` — baselines + longitudinal / ablation / regression 保持空骨架；`conformance/` 仅含 A1–A13 未来测试位置说明，当前无 fixture/test/runner
-- `packages/` — 十个 strict ESM workspace package skeleton；active 包只导出 opaque type markers，deferred 包为空导出，全部无 domain/runtime behavior
-- `product/` — `sandbox` 是空的 workspace composition boundary，无 executable/API/UI/MICL wiring；`prototypes` 仍为空骨架
-- `archive/` — 未来接收归档资产；**本阶段不移动任何旧文件进来**
-
-> 说明：P2.0 工程骨架与 P2.1 计划文档都不构成 Subject Runtime 或 MICL 实现，也不授权 P2.1 coding、实验或迁移。任何后续内容必须通过 `ROADMAP.md` 对应门禁并获得显式授权。
+No public license is currently declared. Choosing one is a user/legal decision and is outside this governance repair.

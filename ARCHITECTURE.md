@@ -1,7 +1,8 @@
 # ARCHITECTURE.md — CharacterOS-Next 架构宪法
 
-**状态:** 设计文档（Formal Design）。定义架构，不实现。全部结论带标签（VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN）。
-**本文件的层级:** 本文件是 CharacterOS-Next 的架构宪法；任何 ADR（docs/adr/）不得违反本文件，只能细化。
+**状态:** ACTIVE ARCHITECTURE。记录当前架构边界、实现 ownership 与仍然有效的设计约束；不把历史 V0 草图当作当前实现状态。
+**权威分工:** 当前仓库健康与门禁状态以 `CURRENT_STATE.md` 为唯一权威；本文件是 CharacterOS-Next 的架构宪法，任何 ADR（`docs/adr/`）不得违反本文件，只能细化。
+**最近机械核对基线:** `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`（2026-09-10）；全部结论继续使用 VERIFIED / DESIGN DECISION / HYPOTHESIS / UNKNOWN 标签。
 **修订:** P0-1 起，本文件采用 **canonical transition system（多 transition Subject Runtime）** 取代早期的"单一 15 阶段强制 tick"。修订记录见 `docs/architecture/p0-architecture-correction.md`。
 
 ---
@@ -97,7 +98,7 @@ Previous SubjectState
 (10) Outcome                           结果（仅当 (8) 发生）
 (11) Experience Encoding               经历编码（事件+结果+当时状态）
 (12) Memory Consolidation              记忆巩固（短期→长期、摘要、遗忘）
-(13) Belief / Relationship / Plasticity 长期结构更新（未来 owning domain 产 delta；subject-core 仅通用校验/提交）
+(13) Belief / Relationship / Personality 长期结构更新（当前 owning producer 产 bounded delta；subject-core 仅通用校验/提交）
 (14) Future SubjectState               形成下一状态的 SubjectState
 ```
 
@@ -111,16 +112,16 @@ Previous SubjectState
 
 | 阶段 | 包（packages/） | V0 状态 |
 |---|---|---|
-| (1) Perception | runtime | 设计占位（文本输入）；多模态 = UNKNOWN |
-| (2) Memory Retrieval | memory（MemoryRepository 设施 + 读 MemoryState） | MICL 核心之一（见 NEXT_ACTIONS #3） |
-| (3) Interpretation | appraisal（InterpretationProposal + evidence validation）+ runtime（projection/orchestration） | 设计占位 |
-| (4) Appraisal | appraisal | MICL 核心之一 |
-| (5) Affective Dynamics | affect | MICL 核心之一（V0 = FAST+EMA-derived reference persistence） |
-| (6)–(7) Cognition/Motivation/Policy | behavior (+subject-core) | 设计占位 |
-| (8)–(10) Action/Environment/Outcome | runtime (+product sandbox) | 设计占位（optional） |
-| (11)–(12) Experience/Memory | memory | 设计占位 |
-| (13) Belief/Relationship/Plasticity | belief / relationship / affect | 设计占位 |
-| (14) SubjectState | subject-core | 核心（SubjectState V0） |
+| (1) Perception | runtime | **当前实现**：文本 observation / conversation ingress；多模态仍为 UNKNOWN |
+| (2) Memory Retrieval | memory + runtime | **当前实现**：repository-backed retrieval 与 runtime orchestration |
+| (3) Interpretation | appraisal + runtime | **当前实现**：proposal/validation 与受控 projection/orchestration |
+| (4) Appraisal | appraisal + runtime | **当前实现**：Experience 与 factual-event appraisal lifecycle |
+| (5) Affective Dynamics | affect + runtime | **当前实现**：bounded canonical affect dynamics、application 与 time advance |
+| (6)–(7) Cognition/Motivation/Policy | behavior + runtime | **当前实现**：纯 behavior contracts 位于 behavior；provider、policy 与 trusted execution 位于 runtime |
+| (8)–(10) Action/Environment/Outcome | runtime + product/sandbox | **当前实现（host-bounded）**：action runner、sandbox world、outcome reintegration 与薄产品适配；外部世界集成由 host 提供 |
+| (11)–(12) Experience/Memory | memory + runtime | **当前实现**：Experience encoding、repository/revision、feedback 与 retrieval；不等同于完整长期记忆理论 |
+| (13) Personality/Belief/Relationship plasticity | personality + runtime + memory-influence + influence-evidence + long-term-state-domain | **当前实现（bounded engineering contracts）**：见 §7 的实际 ownership；不构成心理学外部有效性声明 |
+| (14) SubjectState | subject-core | **当前实现**：versioned canonical SubjectState、validation、atomic commit、persistence/restore |
 
 ---
 
@@ -131,13 +132,13 @@ Previous SubjectState
 | 层 | 内容 | 时间尺度 | transition producer（域模块） | 主要读取者 | V0 |
 |---|---|---|---|---|---|
 | **Identity** | 我是谁：subject_id、名字、origin metadata、identity anchors、稳定 self-schema 种子（**不含**自传历史） | 终身（几乎不变） | subject-core init only；V0 无更新 producer | 全部 | 静态种子（只读） |
-| **Traits / temperament** | 气质与稳定特质 | 年（缓慢漂移） | V0 无 producer；未来需独立 domain proposal | Appraisal、Policy、Expression | 静态种子（只读） |
+| **Traits / temperament** | `traits_seed`（先天气质种子，只读）与独立的 acquired `personality` state | 年（慢变量） | `traits_seed` 无更新 producer；personality 包产生 evidence-bound bounded proposal，runtime 执行受控 transition | Appraisal、Policy、Expression | **当前实现**：seed 只读；acquired personality 可受控更新 |
 | **MemoryState** | 主体的 canonical 记忆状态：working memory references、active episode references、autobiographical index state、long-term store revision、consolidation cursor、retrieval bias/config、recent retrieval trace、memory lifecycle metadata | 混合（index 长期、working 短期） | memory 包产 partition-authorized delta；subject-core generic validation/commit | Retrieval、Interpretation、Appraisal | **V0 实现（reference/index/working set）** |
-| **Beliefs / values** | 信念与价值观 | 月–年 | V0 无 producer；未来需独立 evidence-bound domain proposal | Interpretation、Appraisal、Policy | 结构定义，无更新规则 |
-| **Relationship models** | 对他人/群体的关系模型（一等状态） | 周–年 | V0 无 producer；未来需独立 relationship domain proposal | Retrieval、Interpretation、Appraisal | 结构定义，无更新规则 |
+| **Beliefs / values** | 信念与价值观 | 月–年 | runtime 中的 evidence-bound belief proposal / plasticity / transition workflow | Interpretation、Appraisal、Policy | **当前实现（bounded engineering contract）** |
+| **Relationship models** | 对他人/群体的关系模型（一等状态） | 周–年 | runtime 中的 counterpart registration、familiarity、bounded relationship proposal / transition workflow | Retrieval、Interpretation、Appraisal | **当前实现（bounded engineering contract）** |
 | **Mood / affective baseline** | 情绪基线（慢变量） | 小时–天 | affect 包（经 ObservationTransition/TimeTransition） | Appraisal、Expression、Policy | **V0 实现（FAST+EMA-derived slow）** |
 | **Current affect** | 当前情绪 episode（快变量） | 秒–分钟 | affect 包（经 ObservationTransition） | Expression、Policy、Verbalizer | **V0 实现（FAST episode）** |
-| **Regulatory state** | 调节状态（能量/压力/注意力预算） | 分钟–小时 | regulation 包（经 TimeTransition/Cognition） | Policy、Appraisal | 结构定义（标量占位，支持未来 TimeTransition） |
+| **Regulatory state** | 调节状态（energy / stress / arousal / fatigue） | 分钟–小时 | runtime 的 `RegulationProducerPort` / `ReferenceRegulationV0Producer`，经 TimeTransition orchestration | Policy、Appraisal | **当前实现（reference producer）**；regulation 同名包仍为兼容壳 |
 | **Working context** | 当前任务/场景/焦点 | 秒–小时 | context producer（经 Observation/CognitionAction）；subject-core commit | 全部 | **V0 实现（上下文切片）** |
 | **Mechanism config（机制配置，原 plasticity）** | 学习率/衰减率/阈值/特性开关等元参数 | 参数（偶尔调整） | subject-core init/config authority；V0 readonly | Affect、Memory、Belief | **V0 实现（常量配置）** |
 
@@ -151,9 +152,9 @@ Previous SubjectState
 
 ---
 
-## 5. SubjectState V0 概念模型（只定义，不实现）
+## 5. 历史 SubjectState V0 概念模型（非当前实现状态）
 
-> V0 的唯一目的：支撑 **MICL（Minimal Internal Continuity Loop）**——Memory Retrieval + Appraisal + persistent Affect 的内部连续性。V0 明确**不包含**完整十层动态，也**不包含** Action/World 闭环。
+> 本节保留最初 V0 设计边界及其演进依据，供追溯而非宣告当前能力。当前精确 schema、validator、transition 与 ownership 以 production source、`docs/architecture/subjectstate-v0-spec.md`、后续 contract-freeze 文档及 §7 为准。最初 V0 的唯一目的，是支撑 **MICL（Minimal Internal Continuity Loop）**——Memory Retrieval + Appraisal + persistent Affect；当时明确不包含完整十层动态或 Action/World 闭环。
 
 ### 5.1 MemoryState 与 MemoryRepository（P0-1）
 
@@ -175,7 +176,7 @@ MemoryRepository           （infrastructure，不属于 canonical state）
 > 原则：**MemoryRepository is infrastructure；MemoryState belongs to the subject。** `[DESIGN DECISION — P0-1]`
 > 这**不**要求把长文本 memory payload 塞进一个巨大 JSON；payload 存 MemoryRepository，canonical 状态只存引用/索引/版本/游标/配置/检索痕迹。
 
-### 5.2 V0 范围决策
+### 5.2 历史 V0 范围决策
 
 | 层 | V0 形态 | 说明 |
 |---|---|---|
@@ -235,7 +236,7 @@ SubjectStateV0 {
 > P2.1 exact schema/hash/trace closure 见 `docs/implementation/p2-1-contract-freeze.md`；上图中的旧 profile string、trace array 和简写字段不再是可实现 schema。
 > `legacy_reference_defaults`（tHold=60/α=0.06/τ=150/clamp=0.25）来源 `VERIFIED`（Plasticity Phase 1），但"是否适合作为 CharacterOS-Next 默认参数"是 `DESIGN DECISION`/`HYPOTHESIS`，不是 VERIFIED 科学真值。
 
-### 5.4 V0 写规则（单写入口的 V0 版本）
+### 5.4 历史 V0 写规则（单写入口的 V0 版本）
 
 | 变化 | 唯一允许路径 |
 |---|---|
@@ -243,7 +244,7 @@ SubjectStateV0 {
 | episode 完成 → mood | affect producer按reference persistence计算delta → subject-core只校验/commit |
 | 时间推进 → decay | affect/regulation producers消费normalized duration并计算delta → subject-core只校验/commit |
 | 记忆引用/revision/cursor | memory producer产生partition-authorized delta（payload写MemoryRepository）→ subject-core只校验/commit |
-| 任何其他层 | V0 禁止写（只读种子/占位） |
+| 任何其他层 | 在该历史 V0 scope 中禁止写（只读种子/占位）；这不是当前实现状态声明 |
 | LLM 直接写任何层 | **禁止**（见 §6） |
 
 > 说明：上表"写入"= 域模块（producer）产出 delta 后，由 **subject-core（canonical mutator）** 校验并提交；域模块不直接 mutate 状态。`[DESIGN DECISION — Producer != Mutator]`
@@ -284,25 +285,59 @@ LLM 可产出:  { type: "appraisal_proposal", event_ref, dimensions: {relevance,
              → subject-core generic validation + atomic commit
 ```
 
-`[DESIGN DECISION — 提案协议的具体字段为 HYPOTHESIS，待 NEXT_ACTIONS #2/#3 裁定]`
+> 以上仅是早期概念草图，不是当前 wire schema。当前可执行 proposal schema、validator 与 transition contract 位于 `packages/appraisal`、`packages/behavior`、`packages/runtime` 及其对应 contract-freeze 文档；字段是否具有心理学外部有效性仍为 `HYPOTHESIS`。
 
 ---
 
-## 7. 包映射与依赖规则
+## 7. 当前工作区映射与依赖规则
 
-| 包 | 责任（未来实现） | 依赖 |
-|---|---|---|
-| subject-core | **唯一 canonical commit authority**；closed SubjectState schema、generic field authority/invariant validation、revision/trace/hash、atomic commit（**不含 appraisal/affect/memory/regulation formula，不负责 orchestration**） | 无（最底层） |
-| memory | MemoryDelta production + retrieval/encoding/consolidation 逻辑 + MemoryRepository 设施（infrastructure）；**NO canonical mutation** | subject-core（只读投影） |
-| appraisal | Interpretation/Appraisal proposal production + appraisal-package deterministic schema/evidence validation；**NO canonical mutation** | subject-core readonly contracts、memory retrieval contracts |
-| affect | AffectDelta / MoodDelta production + reference mechanism evaluation；**NO canonical mutation** | subject-core |
-| belief / personality / relationship / regulation | 对应状态层的 delta production（V0 之后）；**NO canonical mutation** | subject-core |
-| behavior | Cognition/Motivation/Policy、动作生成（可调用 LLM deep reasoning）；**NO canonical mutation** | 全部只读 |
-| runtime | Perception、Time 推进、Action/Environment 适配、调度 | behavior、subject-core |
+> **现实快照：** 本表由 `pnpm-workspace.yaml` 与各 workspace `package.json` 在基线
+> `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441` 机械核对。当前共有 **13 个
+> `packages/*` workspace + 1 个 `product/sandbox` workspace**。表中的依赖是当前
+> `package.json` 声明，不把理想化未来 ownership 伪装成已经完成的迁移。
 
-**依赖纪律：** 只允许"上层读下层投影"，不允许反向依赖；subject-core 不依赖任何其他包。`[DESIGN DECISION]`
-**Producer != Mutator（P9）：** 上表所有非 subject-core 包都是 **transition producer**（计算 delta），**不直接 mutate** canonical SubjectState；canonical commit 永远由 subject-core 执行。`[DESIGN DECISION — SubjectState V0 spec §5 / transition-contracts §5]`
-**Memory 拆分：** `memory` 包承载三件事——MemoryDelta production（content 子域，LearningTransition owner）+ retrieval 子域 delta（ObservationTransition owner）+ MemoryRepository 存储（infrastructure）。边界见 §5.1 与 transition-contracts §18。`[DESIGN DECISION]`
+| Workspace | 分类 / authority level | 当前责任 | 当前声明的 workspace 依赖 |
+|---|---|---|---|
+| `@characteros-next/subject-core` | production / **唯一 canonical commit authority** | versioned SubjectState schema、generic validation/invariants、identity、revision/trace/hash、atomic commit、persistence/restore；不拥有 domain formula 或 orchestration | 无（最底层） |
+| `@characteros-next/memory` | production / domain + infrastructure | memory records、refs、repository/revision、retrieval contracts 与实现；产生/准备 memory 数据但不直接 canonical mutate SubjectState | `subject-core` |
+| `@characteros-next/memory-influence` | production / evidence infrastructure | 对 immutable episodic records 的 domain-neutral、read-only influence projection 与显式 policy；无 canonical write、LLM 或 wall clock | `memory`, `subject-core` |
+| `@characteros-next/influence-evidence` | production / evidence infrastructure | 对显式 MemoryInfluence projection 集合做 domain-neutral aggregation/eligibility；不选择语义分组，不获得写 authority | `memory-influence`, `subject-core` |
+| `@characteros-next/appraisal` | production / domain | Experience 与 factual-event appraisal proposal、schema/evidence validation；runtime 负责 lifecycle orchestration；无 canonical mutation | `memory`, `subject-core` |
+| `@characteros-next/affect` | production / domain | bounded canonical affect impulse/time dynamics 与纯 delta computation；无 canonical mutation | `subject-core` |
+| `@characteros-next/behavior` | production / domain contracts | LanguageRealization、CommunicationDirective、CharacterLanguageBehavior 的纯 contracts/validators/identity；trusted executor 在 runtime | `subject-core` |
+| `@characteros-next/long-term-state-domain` | production / domain boundary contract | 明确 PERSONALITY/BELIEF/RELATIONSHIP 的 applicability 与 target grammar；本身不授权 update | `subject-core` |
+| `@characteros-next/personality` | production / domain producer | evidence channel、semantic routing 与 bounded personality plasticity proposal production；canonical transition executor 当前仍在 runtime | `influence-evidence`, `memory`, `memory-influence`, `runtime`, `subject-core` |
+| `@characteros-next/belief` | compatibility shell / deferred package ownership | 当前 public surface 为空；canonical schema 在 subject-core，实际 belief producer/executor/semantic workflow 在 runtime | 无 |
+| `@characteros-next/relationship` | compatibility shell / deferred package ownership | 当前 public surface 为空；canonical schema 在 subject-core，实际 relationship producer/executor/semantic/familiarity workflow 在 runtime | 无 |
+| `@characteros-next/regulation` | compatibility shell / type marker | 仅保留 placeholder type surface；canonical schema 在 subject-core，实际 RegulationProducerPort、reference producer 与 Time orchestration 在 runtime | 无 |
+| `@characteros-next/runtime` | production / trusted orchestration + transition implementation | composition root、ports、Observation/Time/Cognition/Action/Learning transitions、providers、authority adapters，以及当前 belief/relationship/regulation transition 实现；只 mint/route domain deltas，最终 canonical commit 仍由 subject-core 执行 | `affect`, `appraisal`, `behavior`, `influence-evidence`, `memory`, `memory-influence`, `subject-core` |
+| `@characteros-next/sandbox` | product / thin adapter | conversation response、delivery/ingress receipt 与 feedback 的薄 host-facing adapter；不绕过 runtime/subject-core authority | `runtime` |
+
+**当前依赖纪律：** workspace import 必须走 public package root，并同时满足 `package.json`
+声明与 `eslint.config.mjs` 的 per-package allowlist。`subject-core` 不依赖其他 workspace；
+evaluation/research 资产不得成为 production source dependency。`[DESIGN DECISION]`
+
+**Producer != Mutator（P9）：** 非 `subject-core` 模块可以验证 proposal、计算 delta 或执行
+orchestration，但不得直接 mutate canonical SubjectState；canonical commit 永远由
+`subject-core` 执行。`[DESIGN DECISION — SubjectState V0 spec §5 / transition-contracts §5]`
+
+### 7.1 当前 ownership drift（记录现实，不在本 slice 搬迁）
+
+- **Belief：** `@characteros-next/belief` 是空壳；production transition、plasticity、semantic
+  target resolution/provider 与 workflow 当前位于 `runtime/src/transitions/belief/`。
+- **Relationship：** `@characteros-next/relationship` 是空壳；production transition、plasticity、
+  semantic/familiarity 与 governed-write orchestration 当前位于
+  `runtime/src/transitions/relationship/` 和 `runtime/src/authority/`。
+- **Regulation：** `@characteros-next/regulation` 仅暴露 placeholder types；实际 port、reference
+  producer 与 TimeTransition integration 当前位于 `runtime`。
+
+以上是 **CURRENT IMPLEMENTATION**，不是理想化 dependency direction。将实现移动到同名 domain
+package、改变 public exports/dependency graph、或改变 Belief/Relationship/Regulation 语义均属于未来
+cleanup，**NOT AUTHORIZED IN THIS GOVERNANCE SLICE**。
+
+**Memory 拆分：** `memory` 承载 records/repository/revision/retrieval；`memory-influence` 只做
+read-time influence projection；`influence-evidence` 只做显式集合 aggregation/eligibility。
+三者均无 canonical SubjectState mutation authority。边界见 §5.1 与 transition-contracts §18。
 
 ---
 
