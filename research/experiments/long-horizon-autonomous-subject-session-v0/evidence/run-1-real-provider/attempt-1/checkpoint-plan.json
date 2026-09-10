@@ -1,0 +1,17 @@
+{
+  "schema_version": "long-horizon-checkpoint-plan-v0",
+  "boundaries": [
+    3,
+    6
+  ],
+  "contents": [
+    "session_id",
+    "next_interaction_index",
+    "completed_interactions",
+    "explicit environment state",
+    "durable subject identity (head/state hash/repository revision)",
+    "v4 genesis envelope",
+    "delivery + ingress ledger exports"
+  ],
+  "ref": "content-addressed checkpoint_ref (hashEnvelope over the above)"
+}

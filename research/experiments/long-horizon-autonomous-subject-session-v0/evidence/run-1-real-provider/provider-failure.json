@@ -1,0 +1,46 @@
+{
+  "schema_version": "long-horizon-provider-failure-record-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "run_outcome": "FAILED_AT_INTERACTION_7",
+  "completed_interactions": 6,
+  "interactions_planned": 8,
+  "failure": {
+    "interaction": 7,
+    "interaction_id": "alice-7-reconcile",
+    "surface_stage": "COGNITION",
+    "surfaced_error": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (PARTIAL_INTERACTION_REQUIRES_OPERATOR_RECOVERY)",
+    "actual_mechanism": "the provider returned INVALID/TRUNCATED JSON: the response ends mid-hash inside considered_context_refs at position 1112 with an unterminated string",
+    "raw_response_length_chars": 1112,
+    "raw_response_tail": "\",\"environment:room-1\",\"episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192\",\"episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57",
+    "request_bytes": 10015,
+    "session_behavior": "fail closed: the interaction was NOT marked complete, the interaction index did NOT advance, and PARTIAL_INTERACTION_REQUIRES_OPERATOR_RECOVERY was exposed (no unsafe replay, per §19)"
+  },
+  "reproducibility": {
+    "attempts": 2,
+    "identical_outcome": true,
+    "byte_identical_response": true,
+    "response_length_attempt_1": 1112,
+    "response_length_attempt_2": 1112,
+    "request_bytes_identical": true,
+    "note": "temperature 0 with the same prompt produced the same truncated output; this is a deterministic provider-output failure at the largest accumulated prompt, not sampling noise"
+  },
+  "provider_configuration_investigated": {
+    "model": "qwen3.5:9b",
+    "model_context_length_supported": 262144,
+    "num_ctx_in_modelfile": false,
+    "frozen_settings": { "temperature": 0, "think": false, "stream": false, "retries": 0, "seed": null, "num_predict": 2048, "timeout_ms": 120000 },
+    "conclusion": "not a simple context-window cap; the exact upstream cause (output cap / stop behaviour / prompt-size interaction) requires a dedicated bounded diagnostic with per-call trace persistence, which this slice did not perform"
+  },
+  "what_succeeded_before_the_failure": {
+    "interactions_completed": 6,
+    "durable_memory_commits": 6,
+    "restore_boundaries_completed": 2,
+    "restore_identity_classification": "EXACT",
+    "provider_request_identity_verified": 6,
+    "interactions_with_prior_lived_evidence_retrieved": 5
+  },
+  "interaction_repetition_for_output_quality": 0,
+  "prompt_or_setting_changes_after_phase_a": 0,
+  "retrieval_tuning": 0,
+  "manual_injection": 0
+}

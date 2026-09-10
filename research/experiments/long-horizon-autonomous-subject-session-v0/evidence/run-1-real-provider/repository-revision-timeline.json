@@ -1,0 +1,55 @@
+{
+  "schema_version": "long-horizon-repository-revision-timeline-v0",
+  "entries": [
+    {
+      "interaction": 1,
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R3",
+      "state_revision_before": 0,
+      "state_revision_after": 9
+    },
+    {
+      "interaction": 2,
+      "repository_revision_before": "R3",
+      "repository_revision_after": "R6",
+      "state_revision_before": 9,
+      "state_revision_after": 18
+    },
+    {
+      "interaction": 3,
+      "repository_revision_before": "R6",
+      "repository_revision_after": "R9",
+      "state_revision_before": 18,
+      "state_revision_after": 27
+    },
+    {
+      "interaction": 4,
+      "repository_revision_before": "R9",
+      "repository_revision_after": "R12",
+      "state_revision_before": 27,
+      "state_revision_after": 36
+    },
+    {
+      "interaction": 5,
+      "repository_revision_before": "R12",
+      "repository_revision_after": "R15",
+      "state_revision_before": 36,
+      "state_revision_after": 45
+    },
+    {
+      "interaction": 6,
+      "repository_revision_before": "R15",
+      "repository_revision_after": "R18",
+      "state_revision_before": 45,
+      "state_revision_after": 54
+    },
+    {
+      "interaction": 7,
+      "repository_revision_before": "R18",
+      "repository_revision_after": "R19",
+      "state_revision_before": 54,
+      "state_revision_after": 58
+    }
+  ],
+  "memory_commits": 6
+}

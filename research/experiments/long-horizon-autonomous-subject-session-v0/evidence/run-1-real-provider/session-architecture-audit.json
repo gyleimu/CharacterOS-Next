@@ -1,0 +1,44 @@
+{
+  "schema_version": "long-horizon-session-architecture-audit-v0",
+  "baseline_commit": "468589a3b06d9d3d5ff309e70621e2c76c8ea0a4",
+  "phase_a_answers": {
+    "1_manually_composed_entrypoints": [
+      "materializeSubjectStateV4V0 + createInMemorySubjectCoreFacadeForExplicitV4V0 (genesis/composition)",
+      "conversation ingress ledger + conversation-factual-event authority (admission)",
+      "FactualEventAppraisalExecutorV0 (pre-cognition appraisal)",
+      "createCanonicalAffectApplicationV0ForExplicitV4 (AffectApplication)",
+      "RepositoryBackedMemoryRetrievalServiceV0 + governed context Observation (context+retrieval)",
+      "ConversationTextResponseExecutorV1 (cognition → directive → language/clarification)",
+      "conversation delivery ledger (delivery)",
+      "executeBehaviorOutcomeFeedback + LearningTransitionExecutor (Experience/Learning/Memory)",
+      "trusted v4 boundary + restore chain (checkpoint/restore)",
+      "BoundedAffectTimeProducerV0 + ReferenceRegulationV0Producer (Time)"
+    ],
+    "2_smallest_reusable_orchestrator": "LongHorizonSubjectSessionV0 (processInteraction/checkpoint/restore/status) over ExplicitV4SessionAuthorityV0, wired through the existing RuntimeCompositionRoot",
+    "3_already_authoritative_durable_state": [
+      "canonical subject snapshot + commit chain",
+      "Memory repository revisions",
+      "delivery/ingress ledgers"
+    ],
+    "4_operational_state_needing_session_persistence": [
+      "interaction index",
+      "checkpoint refs",
+      "explicit external environment state",
+      "restore generation"
+    ],
+    "5_pending_appraisal_affect_queue": "the frozen PRIOR_AFFECT_WORK_PENDING law is exposed as an explicit session work queue (enqueue on admission; completePendingLifecycleWork drives every admitted event to a terminal Appraisal + AffectApplication)",
+    "6_interaction_complete_boundary": "current event admitted; Appraisal terminal; AffectApplication terminal; cognition complete; behavior complete; delivery complete; environment consequence admitted; feedback complete; Experience+Memory durable; work queue empty",
+    "7_fresh_runtime_without_live_authority": "restore rebuilds a FRESH repository from durable payloads + a fresh facade + fresh ledgers restored from their exported state; the previous authority object is discarded and never consulted",
+    "8_reusable_vs_validation": {
+      "reusable_runtime": [
+        "packages/runtime/src/session/* (orchestrator, authority, contracts)"
+      ],
+      "validation_only": [
+        "Alice review environment",
+        "8-interaction plan",
+        "evidence collection",
+        "conformance harness"
+      ]
+    }
+  }
+}

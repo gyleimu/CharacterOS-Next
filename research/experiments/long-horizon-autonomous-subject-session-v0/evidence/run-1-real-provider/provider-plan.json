@@ -1,0 +1,19 @@
+{
+  "schema_version": "long-horizon-provider-plan-v0",
+  "settings": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "retries": 0,
+    "seed": null,
+    "num_predict": 2048,
+    "timeout_ms": 120000
+  },
+  "session_layer_call_authority": "the session calls the frozen production ConversationTextResponseExecutorV1 exactly once per interaction",
+  "provider_identity_audit": "rendered_request_hash == transport_request_hash (request body reproduced from the exact messages + frozen options)",
+  "no_prompt_optimization": true
+}

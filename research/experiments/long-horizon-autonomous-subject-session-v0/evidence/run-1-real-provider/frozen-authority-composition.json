@@ -1,0 +1,20 @@
+{
+  "schema_version": "long-horizon-frozen-authority-composition-v0",
+  "composed_only": true,
+  "bypasses": [],
+  "authorities": {
+    "genesis": "materializeSubjectStateV4V0 (EXPLICIT_V4_FOUNDATION_V0)",
+    "composition": "RuntimeCompositionRoot",
+    "admission": "conversation ingress ledger + InMemoryConversationFactualEventAuthorityV0",
+    "appraisal": "FactualEventAppraisalExecutorV0 + host appraisal provider",
+    "affect": "createCanonicalAffectApplicationV0ForExplicitV4 (AffectApplication)",
+    "time": "BoundedAffectTimeProducerV0 + ReferenceRegulationV0Producer + v4 Time transition",
+    "retrieval": "RepositoryBackedMemoryRetrievalServiceV0",
+    "evidence": "FactualMemoryEvidenceResolverV0 (composition-owned)",
+    "behavior": "ConversationTextResponseExecutorV1 (ConversationCognitionProviderV1 → directive → LanguageRealizationProviderV0 / fixed clarification)",
+    "delivery": "conversation delivery ledger",
+    "feedback": "LearningTransitionExecutor.executeBehaviorOutcomeFeedback",
+    "restore": "mintTrustedCanonicalHistoryBoundaryV4V0 + restoreSubjectStateV4AuthoritativelyV0"
+  },
+  "new_psychology": "NONE"
+}

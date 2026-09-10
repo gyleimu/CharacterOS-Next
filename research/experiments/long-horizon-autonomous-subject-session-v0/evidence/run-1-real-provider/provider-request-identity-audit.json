@@ -1,0 +1,56 @@
+{
+  "schema_version": "long-horizon-provider-request-identity-audit-v0",
+  "per_interaction": [
+    {
+      "interaction": 1,
+      "provider_request_hash": "sha256:a0851d07ff1d800b271779bcbc9dd95638599f308913831faaaf4b5ff858588b",
+      "transport_request_hash": "sha256:a0851d07ff1d800b271779bcbc9dd95638599f308913831faaaf4b5ff858588b",
+      "match": true,
+      "memory_section_present": false
+    },
+    {
+      "interaction": 2,
+      "provider_request_hash": "sha256:36856d3069b7081cf86c9b109c4d0a9db9b865633b99c177ea0c067d8b3b260f",
+      "transport_request_hash": "sha256:36856d3069b7081cf86c9b109c4d0a9db9b865633b99c177ea0c067d8b3b260f",
+      "match": true,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 3,
+      "provider_request_hash": "sha256:cac24d0bb373b413f16b8ffa59417c2b4d9c4e160cfe8f4200a0db5f30fbe71c",
+      "transport_request_hash": "sha256:cac24d0bb373b413f16b8ffa59417c2b4d9c4e160cfe8f4200a0db5f30fbe71c",
+      "match": true,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 4,
+      "provider_request_hash": "sha256:05b82e55cb2bcd7858125343dd86810aeba391dd7f5dffaf5d393b15a14eb097",
+      "transport_request_hash": "sha256:05b82e55cb2bcd7858125343dd86810aeba391dd7f5dffaf5d393b15a14eb097",
+      "match": true,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 5,
+      "provider_request_hash": "sha256:163aae42379f9b89467a62c32926b4816ffff6ff186af68822085181c5d18e6d",
+      "transport_request_hash": "sha256:163aae42379f9b89467a62c32926b4816ffff6ff186af68822085181c5d18e6d",
+      "match": true,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 6,
+      "provider_request_hash": "sha256:267b99be77d975bb61e45852062469e964d0727c502c80e06a4ee6baa5a5e93f",
+      "transport_request_hash": "sha256:267b99be77d975bb61e45852062469e964d0727c502c80e06a4ee6baa5a5e93f",
+      "match": true,
+      "memory_section_present": true
+    },
+    {
+      "interaction": 7,
+      "provider_request_hash": null,
+      "transport_request_hash": null,
+      "match": false,
+      "memory_section_present": false
+    }
+  ],
+  "all_match": false,
+  "verified": 6
+}

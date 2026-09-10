@@ -1,0 +1,125 @@
+{
+  "schema_version": "long-horizon-interaction-v0",
+  "session_id": "alice-review-session-1",
+  "subject_id": "subject-s0",
+  "interaction_index": 2,
+  "interaction_id": "alice-3-external-reader",
+  "scene": "Alice says she has just learned the review document will be shared with an external reader, so completeness now matters more than brevity.",
+  "task": "Respond to Alice's new information about the external reader.",
+  "environment_state_hash_before": "environment-state:{\"exchange_count\":2,\"external_reader_known\":false,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+  "environment_state_before": {
+    "review_stage": "UNDER_REVIEW",
+    "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+    "external_reader_known": false,
+    "open_checklist_items": [],
+    "exchange_count": 2
+  },
+  "environment_state_hash_after": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+  "environment_state_after": {
+    "review_stage": "UNDER_REVIEW",
+    "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+    "external_reader_known": true,
+    "open_checklist_items": [],
+    "exchange_count": 3
+  },
+  "logical_time_before": 600,
+  "logical_time_after": 900,
+  "affect_before": 0.054030029248549175,
+  "affect_after": 0.022312169311634867,
+  "state_revision_before": 18,
+  "state_revision_after": 27,
+  "repository_revision_before": "R6",
+  "repository_revision_after": "R9",
+  "factual_event_ref": "event:d88543dfdff0fd79ac446c94be68efb8d5120307cbfaf066426a05f8c1c6d4b5",
+  "appraisal_ref": "appraisal:44507df93dd136ed4fad9106e1cb4c857121cd72b5983ee538b4d101f1172a79",
+  "reply_appraisal_ref": "appraisal:0396f8660257bb2c3d37531d8c2c7829b3e3c023d8ee54db5a7485235f08dc7c",
+  "retrieved_refs": [
+    "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+    "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+  ],
+  "working_episode_refs": [
+    "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+    "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+  ],
+  "resolved_evidence_entry_count": 2,
+  "resolved_evidence": {
+    "schema_version": "factual-memory-evidence-v0",
+    "repository_revision": "R6",
+    "entries": [
+      {
+        "kind": "BEHAVIOR_OUTCOME",
+        "episode_ref": "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "repository_revision": "R6",
+        "episode_payload_hash": "sha256:bd632374a576b483bd9970f3fc250e143088a52ad57602499ccb650ee435ed33",
+        "experience_ref": "experience:00f93110399f7eca9e813e2b5ad5c1701f43a3153fb96ce0b226e80b09773df9",
+        "experience_payload_hash": "sha256:2d6f878dc155419ed6d3177f6096f7de76055d7452d34db30b5a26a6594611e7",
+        "event_ref": "event:9cc5763206e6c8dfacd7d5f9c7deb3ef5198d12cf505ed324c6c2ee49db95f20",
+        "event_payload_hash": "sha256:da3f580c9f794bf1717d2a6230124fa59da7adebba819ac20c6a743788e91307",
+        "actor_ref": "entity:alice",
+        "delivered_behavior_text": "The review document is currently in the feedback stage.",
+        "exact_outcome_text": "Thanks — about \"The review document is currently in the feedback stage.\": I have recorded that on the shared checklist and updated the review stage.",
+        "delivered_logical_time": 600,
+        "outcome_logical_time": 600
+      },
+      {
+        "kind": "BEHAVIOR_OUTCOME",
+        "episode_ref": "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "repository_revision": "R6",
+        "episode_payload_hash": "sha256:8c83151b3cf91b558169d122a1b0fd916271823545d91eae218e7345b74eec86",
+        "experience_ref": "experience:e4d5f75ad8761f7e0d9b11986aeabfa6137f96d860e362b7f1242e52d330cfb3",
+        "experience_payload_hash": "sha256:e897835aa1b6e542f719f344ed25dae621f83eb1d2277a360fbe3c7ad06cf9a5",
+        "event_ref": "event:b60254eded7dc577afdc0c0824d80581f5703ba598e0b6873c532f408822a756",
+        "event_payload_hash": "sha256:05256bb5fa5b58521abb86859e6d414d20fc12d9cb93305489def0743b1c39b7",
+        "actor_ref": "entity:alice",
+        "delivered_behavior_text": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you specify otherwise.",
+        "exact_outcome_text": "Thanks — about \"I recommend merging the implementation notes and validation notes into a single \": I have recorded that on the shared checklist and updated the review stage.",
+        "delivered_logical_time": 300,
+        "outcome_logical_time": 300
+      }
+    ]
+  },
+  "provider_memory_section_present": true,
+  "provider_memory_section_hash": "sha256:19c0d709f2706c73eebbada5319bea719d8c3803b45b120e8dfbc7edfa8f3cdc",
+  "provider_request_hash": "sha256:cac24d0bb373b413f16b8ffa59417c2b4d9c4e160cfe8f4200a0db5f30fbe71c",
+  "transport_request_hash": "sha256:cac24d0bb373b413f16b8ffa59417c2b4d9c4e160cfe8f4200a0db5f30fbe71c",
+  "provider_request_identity_match": true,
+  "current_intent": "Acknowledge the shift to completeness and confirm adherence to the new constraint.",
+  "directive": "REALIZE_CURRENT_INTENT",
+  "considered_context_refs": [
+    "entity:alice",
+    "environment:room-1",
+    "subject:subject-s0"
+  ],
+  "relevant_memory_refs": [
+    "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+    "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+  ],
+  "evidence_refs_cited": [
+    "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+    "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+  ],
+  "reasoning_summary": "Alice's new context (external reader) shifts the priority from brevity to completeness. Historical evidence shows Alice consistently records and updates the shared checklist upon receiving information. The current intent is to acknowledge this shift and confirm that the response will now prioritize comprehensive detail over conciseness.",
+  "cognition_status": "VALID",
+  "language_call_required": true,
+  "language_status": "VALID",
+  "language_input_hash": "sha256:dc433fab9ba7b3bba81ce0e23b4f2a1a1f5df96665bc4ba1469ab9aed02f3b6f",
+  "behavior_id": "sha256:418201146679df04280cd49f8900d4d911d60c07191bf1d5ebe073ef3d71eb00",
+  "behavior_text": "Understood, Alice. Since the review document will be shared with an external reader, I will ensure completeness in my response to meet that new constraint.",
+  "behavior_content_hash": "sha256:1e2acf986d1ed3373ce589bbbc4eabb432e0aff7296330e2e369f89725cd50ef",
+  "counterpart_reply": "Thanks — about \"Understood, Alice. Since the review document will be shared with an external rea\": I have recorded that on the shared checklist and updated the review stage.",
+  "delivery_id": "dlv-3cbbb80be8521abbb97b7687a4c5b376bf9efe85d20041b2fa20e3dad4140959",
+  "reply_event_ref": "event:54319749469b35432e5624e52f8d500541d56b6fbc9e6617e2c12c4a890cefef",
+  "reply_observation_ref": "observation:o-alice-3-external-reader-reply-reply-i2",
+  "experience_ref": "experience:6f43e9bf8844c66c882ca1d29a45a9d1fa605d935706fa46115d26bab47c2be9",
+  "episode_ref": "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6",
+  "memory_event_ref": "event:54319749469b35432e5624e52f8d500541d56b6fbc9e6617e2c12c4a890cefef",
+  "cognition_latency_ms": 0,
+  "cognition_total_tokens": null,
+  "language_total_tokens": null,
+  "raw_cognition_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:a032bf92eda1c1b5f0b8b357eb5f6ac347554b96fda8811335c99902b8076b12\",\"reasoning_summary\":\"Alice's new context (external reader) shifts the priority from brevity to completeness. Historical evidence shows Alice consistently records and updates the shared checklist upon receiving information. The current intent is to acknowledge this shift and confirm that the response will now prioritize comprehensive detail over conciseness.\",\"relevant_memory_refs\":[\"episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7\",\"episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192\"],\"considered_context_refs\":[\"entity:alice\",\"environment:room-1\",\"subject:subject-s0\"],\"current_intent\":\"Acknowledge the shift to completeness and confirm adherence to the new constraint.\",\"confidence\":0.95,\"uncertainty\":0.05,\"action_intent\":null,\"evidence_refs\":[\"episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7\",\"episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+  "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:dc433fab9ba7b3bba81ce0e23b4f2a1a1f5df96665bc4ba1469ab9aed02f3b6f\",\n  \"text\": \"Understood, Alice. Since the review document will be shared with an external reader, I will ensure completeness in my response to meet that new constraint.\",\n  \"evidence_refs\": [\n    \"episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7\",\n    \"episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192\"\n  ]\n}",
+  "status": "COMPLETE",
+  "failure": null,
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "conversation_id": "conv-alice-review-session-v0"
+}

@@ -1,0 +1,122 @@
+{
+  "schema_version": "long-horizon-retrieval-timeline-v0",
+  "per_interaction": [
+    {
+      "interaction": 1,
+      "selected_refs": [],
+      "working_episode_refs": [],
+      "evidence_origin": [],
+      "resolved_evidence_entry_count": 0,
+      "provider_memory_section_present": false
+    },
+    {
+      "interaction": 2,
+      "selected_refs": [
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+      ],
+      "working_episode_refs": [
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+      ],
+      "evidence_origin": [
+        "FROM_E1"
+      ],
+      "resolved_evidence_entry_count": 1,
+      "provider_memory_section_present": true
+    },
+    {
+      "interaction": 3,
+      "selected_refs": [
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+      ],
+      "working_episode_refs": [
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+      ],
+      "evidence_origin": [
+        "FROM_E2",
+        "FROM_E1"
+      ],
+      "resolved_evidence_entry_count": 2,
+      "provider_memory_section_present": true
+    },
+    {
+      "interaction": 4,
+      "selected_refs": [
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+      ],
+      "working_episode_refs": [
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+      ],
+      "evidence_origin": [
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3"
+      ],
+      "resolved_evidence_entry_count": 3,
+      "provider_memory_section_present": true
+    },
+    {
+      "interaction": 5,
+      "selected_refs": [
+        "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+      ],
+      "working_episode_refs": [
+        "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+      ],
+      "evidence_origin": [
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3"
+      ],
+      "resolved_evidence_entry_count": 4,
+      "provider_memory_section_present": true
+    },
+    {
+      "interaction": 6,
+      "selected_refs": [
+        "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6",
+        "episode:d93473360642fe8d25adb9fcf4f8948eab28cb33d51a915d5537f5ff4a0a7b00"
+      ],
+      "working_episode_refs": [
+        "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6",
+        "episode:d93473360642fe8d25adb9fcf4f8948eab28cb33d51a915d5537f5ff4a0a7b00"
+      ],
+      "evidence_origin": [
+        "FROM_E4",
+        "FROM_E2",
+        "FROM_E1",
+        "FROM_E3",
+        "FROM_E5"
+      ],
+      "resolved_evidence_entry_count": 5,
+      "provider_memory_section_present": true
+    },
+    {
+      "interaction": 7,
+      "selected_refs": [],
+      "working_episode_refs": [],
+      "evidence_origin": [],
+      "resolved_evidence_entry_count": 0,
+      "provider_memory_section_present": false
+    }
+  ],
+  "retrieval_service": "RepositoryBackedMemoryRetrievalServiceV0 (frozen; no pinning, no tuning)"
+}

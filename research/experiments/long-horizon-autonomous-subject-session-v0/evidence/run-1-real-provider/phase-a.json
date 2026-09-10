@@ -1,0 +1,14 @@
+{
+  "schema_version": "long-horizon-phase-a-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "baseline_commit": "468589a3b06d9d3d5ff309e70621e2c76c8ea0a4",
+  "real_model_calls": 0,
+  "session_capability_understood": "PASS",
+  "authority_composition_frozen": "PASS",
+  "environment_contract_frozen": "PASS",
+  "interaction_plan_frozen": "PASS",
+  "restore_plan_frozen": "PASS",
+  "call_budget_frozen": "PASS",
+  "verdict_vocabulary_frozen": "PASS",
+  "all_pass": true
+}

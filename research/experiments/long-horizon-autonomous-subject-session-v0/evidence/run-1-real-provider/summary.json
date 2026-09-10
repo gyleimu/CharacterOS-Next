@@ -1,0 +1,132 @@
+{
+  "schema_version": "long-horizon-summary-v0",
+  "experiment_version": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0",
+  "baseline_commit": "468589a3b06d9d3d5ff309e70621e2c76c8ea0a4",
+  "verdict": "LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_FAILED",
+  "memory_continuity_verdict": "LONG_HORIZON_MEMORY_CONTINUITY_PARTIAL",
+  "restore_verdict": "TWO_BOUNDARY_RESTORE_SUPPORTED",
+  "autonomous_orchestration_verdict": "AUTONOMOUS_LIFECYCLE_ORCHESTRATION_PARTIAL",
+  "metrics": {
+    "completed_interactions": 6,
+    "durable_memory_commits": 6,
+    "interactions_with_prior_lived_evidence_retrieved": 5,
+    "provider_requests_with_prior_life_factual_content": 5,
+    "provider_request_identity_verified": 6,
+    "restores_completed": 2,
+    "environment_state_restored_exactly": 2,
+    "post_restore_1_prior_evidence": true,
+    "post_restore_2_prior_evidence": false
+  },
+  "retrieval_contribution": {
+    "1": [],
+    "2": [
+      "FROM_E1"
+    ],
+    "3": [
+      "FROM_E2",
+      "FROM_E1"
+    ],
+    "4": [
+      "FROM_E2",
+      "FROM_E1",
+      "FROM_E3"
+    ],
+    "5": [
+      "FROM_E4",
+      "FROM_E2",
+      "FROM_E1",
+      "FROM_E3"
+    ],
+    "6": [
+      "FROM_E4",
+      "FROM_E2",
+      "FROM_E1",
+      "FROM_E3",
+      "FROM_E5"
+    ],
+    "7": []
+  },
+  "restores": [
+    {
+      "checkpoint_ref": "sha256:301b043a13c5598e9ceb9421033184cf46329da6d6c961272ce5960bbfdd44ae",
+      "kind": "RESTORED",
+      "classification": "EXACT",
+      "pre_head": {
+        "revision": 27,
+        "commit_ref": "commit:d39f0bd9685badeaf6501a19dccf71a92694be54f39a79387484b46461066a6e",
+        "record_checksum": "sha256:b9cc6063ba7e116ee2cd2e7cf0cd706b81060d1bee8921632d2827248cfdac37",
+        "state_hash": "sha256:e90bc0339e5407389b841d8067c9736af79dcb07c5894e4c33459d0234f8e2c7",
+        "snapshot_hash": "sha256:f8db4b45b8d1c5f5caad12fb3386f4d6d1379ad2e5e8045fa06020cdfc51711e"
+      },
+      "post_head": {
+        "revision": 27,
+        "commit_ref": "commit:d39f0bd9685badeaf6501a19dccf71a92694be54f39a79387484b46461066a6e",
+        "record_checksum": "sha256:b9cc6063ba7e116ee2cd2e7cf0cd706b81060d1bee8921632d2827248cfdac37",
+        "state_hash": "sha256:e90bc0339e5407389b841d8067c9736af79dcb07c5894e4c33459d0234f8e2c7",
+        "snapshot_hash": "sha256:f8db4b45b8d1c5f5caad12fb3386f4d6d1379ad2e5e8045fa06020cdfc51711e"
+      },
+      "pre_state_hash": "sha256:b4a315e339b3384baa1f0c3ed13f8aa72ed33a5fe1fd0c2b3e38421e4d4086d3",
+      "post_state_hash": "sha256:b4a315e339b3384baa1f0c3ed13f8aa72ed33a5fe1fd0c2b3e38421e4d4086d3",
+      "pre_repository_revision": "R9",
+      "post_repository_revision": "R9",
+      "environment_state_hash_pre": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "environment_state_hash_post": "environment-state:{\"exchange_count\":3,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "next_interaction_index": 3
+    },
+    {
+      "checkpoint_ref": "sha256:5fb6a010ec119896ed0335e5495d3edc5c1f9ab20bcf78eb6e47f7a67d8a56c1",
+      "kind": "RESTORED",
+      "classification": "EXACT",
+      "pre_head": {
+        "revision": 54,
+        "commit_ref": "commit:015a134ebdb4337496c918eb0774ac19a105f0105a8d9eec0846195b759ac77b",
+        "record_checksum": "sha256:425a47c819b08a70002bd90c4e03f2047bf0af5fb9d9b246e24c45c8f9b5b1ff",
+        "state_hash": "sha256:fa16928f1c0bf2759a028d0ef056896af24979fd909edb4ce4df411f59c41abf",
+        "snapshot_hash": "sha256:4b3ab9911ce4e837bf9a8e6d7b58d1240f3b545ae5052eee34a82e4957fe2a54"
+      },
+      "post_head": {
+        "revision": 54,
+        "commit_ref": "commit:015a134ebdb4337496c918eb0774ac19a105f0105a8d9eec0846195b759ac77b",
+        "record_checksum": "sha256:425a47c819b08a70002bd90c4e03f2047bf0af5fb9d9b246e24c45c8f9b5b1ff",
+        "state_hash": "sha256:fa16928f1c0bf2759a028d0ef056896af24979fd909edb4ce4df411f59c41abf",
+        "snapshot_hash": "sha256:4b3ab9911ce4e837bf9a8e6d7b58d1240f3b545ae5052eee34a82e4957fe2a54"
+      },
+      "pre_state_hash": "sha256:86aa6f91f94c25c7bccc235fb725e72165aed70fc822b71dafb2c39d0613ae7f",
+      "post_state_hash": "sha256:86aa6f91f94c25c7bccc235fb725e72165aed70fc822b71dafb2c39d0613ae7f",
+      "pre_repository_revision": "R18",
+      "post_repository_revision": "R18",
+      "environment_state_hash_pre": "environment-state:{\"exchange_count\":6,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "environment_state_hash_post": "environment-state:{\"exchange_count\":6,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+      "next_interaction_index": 6
+    }
+  ],
+  "tokens": {
+    "schema_version": "long-horizon-token-report-v0",
+    "run_of_record_attempt": 2,
+    "total_cognition_calls": 7,
+    "total_language_calls": 6,
+    "cognition_output_tokens_estimated": 2317,
+    "language_output_tokens_estimated": 660,
+    "input_tokens": "unavailable from the frozen transport trace (prompt_eval_count is carried only in the trace, not persisted per call)",
+    "total_tokens_estimated": 2977,
+    "external_api_monetary_cost": "0 (local Ollama; no external API calls)",
+    "all_attempts": {
+      "attempts": [
+        1,
+        2
+      ],
+      "outcomes": [
+        "FAILED",
+        "FAILED"
+      ],
+      "calls_persisted": 52
+    }
+  },
+  "real_calls": {
+    "cognition": 7,
+    "language": 6,
+    "maximum": 16,
+    "repetitions": 0
+  },
+  "production_behavior_changing_diff": 0
+}

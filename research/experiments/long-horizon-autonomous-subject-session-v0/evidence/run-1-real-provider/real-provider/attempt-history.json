@@ -1,0 +1,14 @@
+[
+  {
+    "attempt": 1,
+    "outcome": "FAILED",
+    "started_at": "2026-09-10T12:52:17.518Z",
+    "detail": "PARTIAL_INTERACTION_REQUIRES_OPERATOR_RECOVERY: conversation response failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+  },
+  {
+    "attempt": 2,
+    "outcome": "FAILED",
+    "started_at": "2026-09-10T12:58:58.338Z",
+    "detail": "PARTIAL_INTERACTION_REQUIRES_OPERATOR_RECOVERY: conversation response failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+  }
+]

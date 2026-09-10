@@ -1,0 +1,19 @@
+{
+  "schema_version": "long-horizon-operator-status-example-v0",
+  "example_from_interaction": 8,
+  "session_id": "alice-review-session-1",
+  "subject_id": "subject-s0",
+  "interaction": "6/7",
+  "logical_time": 1800,
+  "memory_repository_revision": "R18",
+  "current_affect": {
+    "valence": 0.017360070170127563,
+    "activation": "see affect-timeline.json"
+  },
+  "current_intent": "Propose one checklist item for the remaining work.",
+  "latest_directive": "REALIZE_CURRENT_INTENT",
+  "latest_behavior": "Here is a checklist item for the remaining work: [ ] Verify that all feedback from Alice has been addressed in the review document.",
+  "retrieved_memories": [],
+  "last_restore": "success",
+  "authority_tokens_exposed": "NONE"
+}

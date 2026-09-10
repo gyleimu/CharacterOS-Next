@@ -1084,3 +1084,32 @@ export {
   type InitialAppraisalDispositionV0,
   type TrustedFactualEventAppraisalAbstentionV0
 } from "./factual-event-appraisal/factual-event-appraisal-disposition-reader.js";
+
+// ---------------------------------------------------------------------------
+// LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0 — reusable bounded subject session
+// ---------------------------------------------------------------------------
+export {
+  ExplicitV4SessionAuthorityV0,
+  type ExplicitV4SessionAuthorityOptionsV0,
+  type SessionResponseResultV0,
+  type CompletedLifecycleWorkV0
+} from "./session/explicit-v4-session-authority-v0.js";
+export {
+  LongHorizonSubjectSessionV0,
+  createLongHorizonSubjectSessionV0,
+  type LongHorizonSubjectSessionOptionsV0
+} from "./session/subject-session-v0.js";
+export {
+  type SubjectEnvironmentV0,
+  type EnvironmentInteractionV0,
+  type EnvironmentObservationInputV0,
+  type EnvironmentConsequenceV0,
+  type EnvironmentStateV0,
+  type PendingLifecycleWorkV0,
+  type SessionCheckpointV0,
+  type SessionDurableIdentityV0,
+  type SessionDurableStateV0,
+  type SessionInteractionOutcomeV0,
+  type SessionRestoreOutcomeV0,
+  type SubjectSessionStatusV0
+} from "./session/session-contracts-v0.js";

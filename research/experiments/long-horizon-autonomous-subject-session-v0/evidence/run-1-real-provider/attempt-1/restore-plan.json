@@ -1,0 +1,18 @@
+{
+  "schema_version": "long-horizon-restore-plan-v0",
+  "boundaries": [
+    3,
+    6
+  ],
+  "mechanism": "mintTrustedCanonicalHistoryBoundaryV4V0 + restoreSubjectStateV4AuthoritativelyV0",
+  "fresh_runtime": "new assembly + new repository rebuilt from durable payloads + fresh ledgers restored from export",
+  "live_runtime_discard": true,
+  "identity_audit": [
+    "pre/post subject head",
+    "pre/post state hash",
+    "pre/post repository revision",
+    "pre/post environment state hash",
+    "next interaction index",
+    "classification EXACT|EXPECTED_RECONSTRUCTED_IDENTITY|FAILURE"
+  ]
+}

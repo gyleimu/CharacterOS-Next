@@ -1,0 +1,465 @@
+{
+  "schema_version": "long-horizon-checkpoint-v0",
+  "session_id": "alice-review-session-1",
+  "subject_id": "subject-s0",
+  "next_interaction_index": 6,
+  "completed_interactions": 6,
+  "environment_state": {
+    "schema_version": "subject-environment-state-v0",
+    "state_hash": "environment-state:{\"exchange_count\":6,\"external_reader_known\":true,\"open_checklist_items\":[],\"organization_decision\":\"I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you\",\"review_stage\":\"UNDER_REVIEW\"}",
+    "payload": {
+      "review_stage": "UNDER_REVIEW",
+      "organization_decision": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you",
+      "external_reader_known": true,
+      "open_checklist_items": [],
+      "exchange_count": 6
+    }
+  },
+  "durable": {
+    "schema_version": "subject-session-durable-state-v0",
+    "identity": {
+      "subject_state_hash": "sha256:86aa6f91f94c25c7bccc235fb725e72165aed70fc822b71dafb2c39d0613ae7f",
+      "state_revision": 54,
+      "logical_time": 1800,
+      "repository_revision": "R18",
+      "subject_head": {
+        "revision": 54,
+        "commit_ref": "commit:015a134ebdb4337496c918eb0774ac19a105f0105a8d9eec0846195b759ac77b",
+        "record_checksum": "sha256:425a47c819b08a70002bd90c4e03f2047bf0af5fb9d9b246e24c45c8f9b5b1ff",
+        "state_hash": "sha256:fa16928f1c0bf2759a028d0ef056896af24979fd909edb4ce4df411f59c41abf",
+        "snapshot_hash": "sha256:4b3ab9911ce4e837bf9a8e6d7b58d1240f3b545ae5052eee34a82e4957fe2a54"
+      },
+      "affect": {
+        "valence": 0.017360070170127563,
+        "activation": 0.23470269628360424
+      },
+      "episode_refs": [
+        "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+        "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+        "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6",
+        "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+        "episode:d93473360642fe8d25adb9fcf4f8948eab28cb33d51a915d5537f5ff4a0a7b00",
+        "episode:d67c8324cee05153d1fdd30f5b50efa06e3745031925b6eb02f665adc111a95e"
+      ]
+    },
+    "genesis_envelope": {
+      "schema_version": "subject-state-v4-persistence-envelope-v0",
+      "mode": "EXPLICIT_V4_FOUNDATION_V0",
+      "snapshot": {
+        "schema_version": "subject-state-v4",
+        "identity": {
+          "subject_id": "subject-s0",
+          "display_name": "",
+          "origin_metadata": {
+            "creation_source": null,
+            "seed_version": null
+          },
+          "identity_anchors": [],
+          "self_schema_seed_refs": []
+        },
+        "traits_seed": {
+          "dimensions": {}
+        },
+        "personality": {
+          "schema_version": "personality-state-v0",
+          "dimensions": []
+        },
+        "memory_state": {
+          "working_refs": [],
+          "active_episode_refs": [],
+          "autobiographical_index_revision": null,
+          "repository_revision": "R0",
+          "consolidation_cursor": null,
+          "retrieval_config": {
+            "profile_id": "RETRIEVAL_V0",
+            "affect_congruence_enabled": false,
+            "recent_trace_capacity": 64
+          },
+          "recent_retrieval_trace": [],
+          "lifecycle_metadata": {},
+          "pending_encoding_refs": [],
+          "last_retrieval_at": null
+        },
+        "beliefs": {
+          "schema_version": "belief-state-v0",
+          "items": []
+        },
+        "relationships": {
+          "schema_version": "relationship-state-v0",
+          "counterparts": []
+        },
+        "affect": {
+          "schema_version": "canonical-affect-v0",
+          "valence": 0,
+          "activation": 0.2
+        },
+        "regulation": {
+          "energy": 1,
+          "stress": 0,
+          "arousal": 0.5,
+          "fatigue": 0,
+          "last_update": null
+        },
+        "context": {
+          "scene": "idle",
+          "task": "Decide how the review document should be organized and tell Alice.",
+          "focus_refs": [],
+          "active_entity_refs": [],
+          "environment_refs": [
+            "environment:room-1"
+          ],
+          "current_observation_ref": null
+        },
+        "mechanism_config": {
+          "affect_profile": {
+            "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+            "timebase": "tick"
+          },
+          "feature_flags": {},
+          "thresholds": {}
+        },
+        "trace_window": {
+          "trace_window_schema_version": "trace-window-v1",
+          "capacity": 64,
+          "cursor": {
+            "last_history_sequence": 0,
+            "offloaded_through_sequence": 0,
+            "offloaded_through_trace_ref": null
+          },
+          "entries": []
+        },
+        "runtime_metadata": {
+          "subject_version": "subject-v0",
+          "schema_lineage": "subject-state-v4",
+          "state_revision": 0,
+          "logical_time": 0,
+          "last_transition_time": null,
+          "last_transition_type": null,
+          "created_at": 0,
+          "updated_at": 0
+        }
+      },
+      "state_hash": "sha256:03199a0765b56d937a52b6fa1b70e5014d94031ba0926f3b9d8d34f4b2cade59",
+      "snapshot_hash": "sha256:1ac40cfed8c5fd65c7f61e3850f12630d4d198c610cf574c14ef9db993e6d7f6",
+      "full_checksum": "sha256:6780d1fc99220dd8fd986fd5a3b34cbe7d855c76088d0d053257c7200514f5d1",
+      "repository_binding": {
+        "repository_revision": "R0",
+        "repository_revision_hash": "sha256:85755634de984070ca6c12d5dd01fb545e0efea635000e0e0044c589f3fcbb00"
+      }
+    },
+    "delivery_ledger_state": [
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-238d32046904ba3582d09ee4b7a29a1e2c1209dd2960282deb801817096ff360",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:0497a295aba22df15d066aa94bb0c339f6d474168a7cff8215e120e5652a619b",
+          "subject_id": "subject-s0",
+          "source_revision": 4,
+          "response_request_id": "alice-review-session-1-i0",
+          "input_hash": "sha256:b0501b9d037ee5688531804aba5e46cab1d3fa9b464be60f6c86615a4e5a5208",
+          "text": "I recommend merging the implementation notes and validation notes into a single section for better coherence, unless you specify otherwise.",
+          "evidence_refs": []
+        },
+        "behavior_payload_hash": "sha256:e5f99aeec300314fa2a742fc440f2d9a1135b0fddd98977d01bf9fb1b06cad5b",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 300,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-bb541f5fb858e2d0f11876bc2db90a4f3febfa269d10cc4050f50e7f1092ebc0",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:ac7bb5f5612151efa2a1ea9a545b8790c42fd9f00ee58d3ea37dd8b835dbab3c",
+          "subject_id": "subject-s0",
+          "source_revision": 13,
+          "response_request_id": "alice-review-session-1-i1",
+          "input_hash": "sha256:5d51f56f90993143f47ebdeeb95881a6eff89116be3ba2baf100978960ac5259",
+          "text": "The review document is currently in the feedback stage.",
+          "evidence_refs": [
+            "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+          ]
+        },
+        "behavior_payload_hash": "sha256:1b9dd3e5e1bc952264ca5340363ae5c68f37491b36f3ac330b0ef48e6d25d5ef",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 600,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-3cbbb80be8521abbb97b7687a4c5b376bf9efe85d20041b2fa20e3dad4140959",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:418201146679df04280cd49f8900d4d911d60c07191bf1d5ebe073ef3d71eb00",
+          "subject_id": "subject-s0",
+          "source_revision": 22,
+          "response_request_id": "alice-review-session-1-i2",
+          "input_hash": "sha256:dc433fab9ba7b3bba81ce0e23b4f2a1a1f5df96665bc4ba1469ab9aed02f3b6f",
+          "text": "Understood, Alice. Since the review document will be shared with an external reader, I will ensure completeness in my response to meet that new constraint.",
+          "evidence_refs": [
+            "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+            "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192"
+          ]
+        },
+        "behavior_payload_hash": "sha256:d801f90aa0569a25ee14d7bf33767e3b23dc25f99396602b7e64814bf78fead2",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 900,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-3e15946042d45b601f4e6d5591d4a08684ec0fc8dfc7e7a9c93f5dcfe2f62834",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:44e125c5e885341d82a19a2d521fee1be0c76f28a6cf406304e55ade64e14067",
+          "subject_id": "subject-s0",
+          "source_revision": 31,
+          "response_request_id": "alice-review-session-1-i3",
+          "input_hash": "sha256:f3faf515e968067891e5830c1a2fd7e849598be4872c4f924e453a88b5a37a24",
+          "text": "The next concrete step is to merge the implementation notes and validation notes into a single section for the review document.",
+          "evidence_refs": [
+            "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+            "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+            "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+          ]
+        },
+        "behavior_payload_hash": "sha256:9c66602cba14f655708cbda1371e21f3f6a0ea31a4654fcb4ac37259e72411bc",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 1200,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-a35ad7a50e3abd318c50aeb488a595eb2cbef4622d0f5494d02c3a5944072976",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:4b31501a63114715e262bc60cb41739aa51fdc05c7da019480bbeea19c10b590",
+          "subject_id": "subject-s0",
+          "source_revision": 40,
+          "response_request_id": "alice-review-session-1-i4",
+          "input_hash": "sha256:012dd250036037447df1dd0379868b853731064d5cb59ce7aec0743399c8bd2b",
+          "text": "Yes, the earlier decision to merge notes remains valid. We have updated it to account for the external reader constraint.",
+          "evidence_refs": [
+            "episode:79baf457876883da58067b735ddadb57e48641fb422b77f76c09c537d3618290",
+            "episode:a4a1979b83a4993a30f1de136d05614c02a225fe5e28a642837abd428b028df7",
+            "episode:b60d6651e6d1f78df66a4b23a7fb79eadbf6818eb9877cd4da70ff2c9d553192",
+            "episode:c9b410ce914983951a11f2964a25daeba2195fced4805af821d57e5a52dd10c6"
+          ]
+        },
+        "behavior_payload_hash": "sha256:f01f4e6d99018683301b1b37d0defb2f20a0d22cf93b4c8ff180a33ac28093bd",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 1500,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "behavior-delivery-record-v0",
+        "delivery_id": "dlv-2437e07ed23e685ab3188bd4cfb6b6666ffceae8f786c3b8d043a7c7e204fc1b",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "behavior": {
+          "schema_version": "character-language-behavior-v0",
+          "behavior_id": "sha256:daa4bc795f311a3539ca5bbf7d91ec8b00feb74dc631709c9a9261be9e6dd1a3",
+          "subject_id": "subject-s0",
+          "source_revision": 49,
+          "response_request_id": "alice-review-session-1-i5",
+          "input_hash": "sha256:290ebed3d151ea725494f39ba5fae5b7ec7da09b8b6a1777d023e0f6607a7b38",
+          "text": "Here is a checklist item for the remaining work: [ ] Verify that all feedback from Alice has been addressed in the review document.",
+          "evidence_refs": []
+        },
+        "behavior_payload_hash": "sha256:3f054b9493624bae9c6fe747d0af1fba01f397eb4adb60267d646872678c05c2",
+        "cognition_projection_hash": null,
+        "conversation_cognition_proposal_hash": null,
+        "realization_input_hash": null,
+        "source_observation_ref": null,
+        "source_transition_id": null,
+        "delivered_logical_time": 1800,
+        "status": "DELIVERED",
+        "host_adapter": "subject-session-v0"
+      }
+    ],
+    "ingress_ledger_state": [
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:ac52f979797e9c01e6f25e63a7bea604c6d675244df50a7079dfad9a42a77ad7",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice asks how the review document should be organized: the implementation notes and the validation notes could stay separate, or be merged into one section.",
+        "logical_time": 300,
+        "source_event_id": "alice-1-organization",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:b60254eded7dc577afdc0c0824d80581f5703ba598e0b6873c532f408822a756",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"I recommend merging the implementation notes and validation notes into a single \": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 300,
+        "source_event_id": "alice-1-organization-reply",
+        "in_reply_to_delivery_id": "dlv-238d32046904ba3582d09ee4b7a29a1e2c1209dd2960282deb801817096ff360",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:3f8932b3b3f9d9fc0a61e0b0a0b36c4ed6dd425fec8b98a0d79e1d2c965e470d",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice asks where the review document stands now, some time after the organization question came up.",
+        "logical_time": 600,
+        "source_event_id": "alice-2-status",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:9cc5763206e6c8dfacd7d5f9c7deb3ef5198d12cf505ed324c6c2ee49db95f20",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"The review document is currently in the feedback stage.\": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 600,
+        "source_event_id": "alice-2-status-reply",
+        "in_reply_to_delivery_id": "dlv-bb541f5fb858e2d0f11876bc2db90a4f3febfa269d10cc4050f50e7f1092ebc0",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:d88543dfdff0fd79ac446c94be68efb8d5120307cbfaf066426a05f8c1c6d4b5",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice says she has just learned the review document will be shared with an external reader, so completeness now matters more than brevity.",
+        "logical_time": 900,
+        "source_event_id": "alice-3-external-reader",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:54319749469b35432e5624e52f8d500541d56b6fbc9e6617e2c12c4a890cefef",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"Understood, Alice. Since the review document will be shared with an external rea\": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 900,
+        "source_event_id": "alice-3-external-reader-reply",
+        "in_reply_to_delivery_id": "dlv-3cbbb80be8521abbb97b7687a4c5b376bf9efe85d20041b2fa20e3dad4140959",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:9041ddf60d257ae0aeabdaaf1971e44ef43e0fc1a769975956f798c906f71d46",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice asks what the next concrete step for the review document should be.",
+        "logical_time": 1200,
+        "source_event_id": "alice-4-next-step",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:3c2272d3d5fc84596e00e1e11146a4fdfdf78ca9e25d5d825d0517910e224153",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"The next concrete step is to merge the implementation notes and validation notes\": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 1200,
+        "source_event_id": "alice-4-next-step-reply",
+        "in_reply_to_delivery_id": "dlv-3e15946042d45b601f4e6d5591d4a08684ec0fc8dfc7e7a9c93f5dcfe2f62834",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:190d6750a0408ad8c3ab594ea46cab0132571546836d26e7be017a9f6f1e7e27",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice asks whether the earlier organization decision still holds now that an external reader will see the document.",
+        "logical_time": 1500,
+        "source_event_id": "alice-5-earlier-decision",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:bf7a8757885c6542fd658fe90db23f87443220dd2841818899888c6551cc831e",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"Yes, the earlier decision to merge notes remains valid. We have updated it to ac\": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 1500,
+        "source_event_id": "alice-5-earlier-decision-reply",
+        "in_reply_to_delivery_id": "dlv-a35ad7a50e3abd318c50aeb488a595eb2cbef4622d0f5494d02c3a5944072976",
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:8f15b9b34773d0cb1f4039f1218668611c73f74ab5361484b9cb6c6baa0e4975",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Alice asks for one small checklist item that should track the remaining work on the review document.",
+        "logical_time": 1800,
+        "source_event_id": "alice-6-checklist-item",
+        "in_reply_to_delivery_id": null,
+        "host_adapter": "subject-session-v0"
+      },
+      {
+        "schema_version": "conversation-ingress-event-record-v0",
+        "event_ref": "event:b80ce9bded032c555c688ca8a3ba71c141f240ab6ac0abd76151c3cdb6ac2359",
+        "subject_id": "subject-s0",
+        "conversation_id": "conv-subject-s0",
+        "actor_ref": "entity:alice",
+        "text": "Thanks — about \"Here is a checklist item for the remaining work: [ ] Verify that all feedback fr\": I have recorded that on the shared checklist and updated the review stage.",
+        "logical_time": 1800,
+        "source_event_id": "alice-6-checklist-item-reply",
+        "in_reply_to_delivery_id": "dlv-2437e07ed23e685ab3188bd4cfb6b6666ffceae8f786c3b8d043a7c7e204fc1b",
+        "host_adapter": "subject-session-v0"
+      }
+    ]
+  },
+  "created_at": "2026-09-10T12:54:55.285Z",
+  "checkpoint_ref": "sha256:5fb6a010ec119896ed0335e5495d3edc5c1f9ab20bcf78eb6e47f7a67d8a56c1"
+}
