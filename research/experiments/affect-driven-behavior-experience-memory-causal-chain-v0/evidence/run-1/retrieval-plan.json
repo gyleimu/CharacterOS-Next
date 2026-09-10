@@ -1,0 +1,1 @@
+{"evidence_resolution":"production FactualMemoryEvidenceResolverV0 over working/recent episode refs","query_source":"future observation context/entities (no manual refs)","retrieval":"RepositoryBackedMemoryRetrievalServiceV0 over the restored repository","schema_version":"affect-driven-behavior-experience-memory-retrieval-plan-v0"}

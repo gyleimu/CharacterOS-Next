@@ -1,0 +1,7 @@
+{
+ "schema_version": "affect-driven-behavior-experience-memory-collection-complete-v0",
+ "experiment_version": "AFFECT_DRIVEN_BEHAVIOR_EXPERIENCE_MEMORY_CAUSAL_CHAIN_V0",
+ "cognition_calls": 2,
+ "language_calls": 1,
+ "no_further_generation": true
+}
