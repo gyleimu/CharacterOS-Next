@@ -217,6 +217,12 @@ export default tseslint.config(
     [
       "@characteros-next/sandbox",
       "@characteros-next/runtime",
+      // PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — the composition root is
+      // the ONLY layer allowed to bridge runtime and the personality domain: the
+      // session accepts an opaque PersonalityAdaptationPortV0 (dependency
+      // inversion, no runtime→personality cycle), and the sandbox constructs the
+      // concrete wiring here.
+      "@characteros-next/personality",
       // Product CLI host: process I/O and local durable storage are legitimately
       // owned by the product shell (readline, atomic snapshot files, paths).
       "node:fs",
@@ -227,6 +233,6 @@ export default tseslint.config(
       "node:os",
       "node:crypto"
     ],
-    "sandbox composition must consume runtime through its public root (plus node built-ins for the local CLI host)."
+    "sandbox composition may consume the runtime public root and the personality domain package (to build the personality-adaptation port), plus node built-ins for the local CLI host."
   )
 );

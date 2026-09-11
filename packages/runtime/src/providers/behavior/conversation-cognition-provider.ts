@@ -160,6 +160,13 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionAnyV
     `[interaction familiarity — read-only subjective state; the bounded, policy-defined degree of credited firsthand interaction history with this exact counterpart; UNSIGNED magnitude: higher is NOT better, and familiarity does NOT imply trust, liking, safety, intimacy, affection, agreement, compliance, disclosure willingness, reliability or predictability; STATE_VISIBLE_NOT_CITEABLE]\n${familiarity}`,
     `[interaction familiarity cognition influence — context-resolution ordering ONLY; NOT factual evidence; does NOT imply trust, liking or safety]\n${influences}`,
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
+    // CURRENT acquired Personality P(t): authoritative current disposition,
+    // explicitly distinct from the immutable genesis prior above.
+    ...(isV2
+      ? [
+          `[current acquired personality (read-only; P(t), distinct from the immutable traits seed above)] ${JSON.stringify(v2Projection.personality_dimensions)}`
+        ]
+      : []),
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n${citeable}`,
     `[ALLOWED ACTION SPACE]\n${actionSpace}`,
     `[projection_hash] ${projection.projection_hash}`

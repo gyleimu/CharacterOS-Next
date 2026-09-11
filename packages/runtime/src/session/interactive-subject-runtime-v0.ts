@@ -104,6 +104,12 @@ export interface InteractiveTurnOutcomeV0 {
    */
   readonly belief_adaptation: BeliefAdaptationTurnReportV0 | null;
   /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — opaque personality-adaptation
+   * report for this turn's committed lived evidence. Null when the port is
+   * disabled or no lived episode was committed.
+   */
+  readonly personality_adaptation: unknown;
+  /**
    * Observation-sourced episode ref when THIS user event had no behavior-outcome
    * role (e.g. a new subject's first message) and was admitted through the
    * generic Learning path. Null when the event was admitted as a behavior outcome.
@@ -435,6 +441,7 @@ export class InteractiveSubjectRuntimeV0 {
     let completedPriorOutcome: InteractiveTurnOutcomeV0["completed_prior_outcome"] = null;
     let observationalExperienceRef: string | null = null;
     let beliefAdaptation: BeliefAdaptationTurnReportV0 | null = null;
+    let personalityAdaptation: unknown = null;
 
     try {
       await this.authority.advanceTime(this.options.interval_ticks ?? 1, tag);
@@ -537,6 +544,17 @@ export class InteractiveSubjectRuntimeV0 {
           ? await this.authority.runLivedEvidenceBeliefAdaptation(beliefEpisodeRefs)
           : { status: "EVIDENCE_UNAVAILABLE", resumed: [], current: null, failure: "no lived episode committed this turn" };
 
+      // ---- PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: the SAME newly
+      // committed lived evidence is offered to the frozen Personality
+      // plasticity chain, strictly AFTER this turn's cognition/delivery/Memory
+      // and after belief, so Turn N's learned Personality can only influence
+      // Turn N+1 (§ no same-turn self-causation). Failure never corrupts the
+      // completed turn: Personality remains unchanged, fail closed.
+      personalityAdaptation =
+        beliefEpisodeRefs.length > 0
+          ? await this.authority.runLivedEvidencePersonalityAdaptation(beliefEpisodeRefs)
+          : null;
+
       const snapshotAfter = await this.authority.readSnapshot();
       const cognitionExchange = this.readCapture("cognition");
       const parsedRaw = cognitionExchange === null ? null : safeParse(cognitionExchange.response);
@@ -560,6 +578,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_status: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0" ? "VALID" : "NOT_REQUIRED_CLARIFY",
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
+        personality_adaptation: personalityAdaptation,
         observational_experience_ref: observationalExperienceRef,
         retrieved_refs: context.selected_refs,
         working_episode_refs: context.working_episode_refs,
@@ -605,6 +624,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_status: "NOT_REACHED",
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
+        personality_adaptation: personalityAdaptation,
         observational_experience_ref: null,
         retrieved_refs: [],
         working_episode_refs: [],

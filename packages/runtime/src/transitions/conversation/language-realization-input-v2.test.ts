@@ -23,6 +23,7 @@ function projection(overrides: Partial<CognitiveContextProjectionV2> = {}): Cogn
     current_logical_time: 4 as never,
     state_revision: 4 as never,
     traits_dimensions: {},
+    personality_dimensions: {},
     canonical_affect: { schema_version: "canonical-affect-cognition-projection-v0", valence: 0.25, activation: 0.5 } as never,
     regulation: { energy: 1, stress: 0, arousal: 0.5, fatigue: 0 },
     context: {

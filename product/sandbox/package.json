@@ -20,6 +20,7 @@
     "interactive": "node dist/cli.js"
   },
   "dependencies": {
+    "@characteros-next/personality": "workspace:*",
     "@characteros-next/runtime": "workspace:*"
   }
 }

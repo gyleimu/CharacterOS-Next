@@ -23,12 +23,18 @@ import type {
   BeliefSemanticTargetResolutionProviderV0,
   ModelTransportTraceV0,
   ModelTransportV0,
+  PersonalityAdaptationFactoryV0,
   PersonalityGenesisPriorV0
 } from "@characteros-next/runtime";
 import {
   InteractiveSubjectRuntimeV0,
   createInteractiveSubjectSeedV0
 } from "@characteros-next/runtime";
+import {
+  InMemoryPersonalityAdaptationStoreV0,
+  PersonalityAdaptationWiringV0,
+  type PersonalitySemanticChannelProviderV0
+} from "@characteros-next/personality";
 import type { InteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
 import { FileInteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
 
@@ -62,6 +68,12 @@ export interface InteractiveSubjectHostDepsV0 {
    * provider calls occur.
    */
   readonly beliefSemanticProvider?: BeliefSemanticTargetResolutionProviderV0;
+  /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: the personality semantic
+   * bearing provider. Omitted ⇒ personality adaptation stays DISABLED: lived
+   * evidence is never offered to personality plasticity, no provider calls occur.
+   */
+  readonly personalitySemanticProvider?: PersonalitySemanticChannelProviderV0;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -121,6 +133,22 @@ export class InteractiveSubjectHostV0 {
             config.display_name,
             config.identity_anchors ?? []
           );
+    const personalitySemanticProvider = deps.personalitySemanticProvider;
+    // The factory receives THIS session's subject-scoped authorities, so a
+    // personality-adaptation ledger and its evidence membership can never cross
+    // subjects; the store is rebuilt on restore from the durable ledger image.
+    const personalityAdaptationFactory: PersonalityAdaptationFactoryV0 | undefined =
+      personalitySemanticProvider === undefined
+        ? undefined
+        : (authorities) =>
+            new PersonalityAdaptationWiringV0({
+              subjectCore: authorities.subjectCore,
+              memoryRepository: authorities.memoryRepository,
+              producerAuthorizationIssuer: authorities.producerAuthorizationIssuer,
+              readEpisodePayload: authorities.readEpisodePayload,
+              semanticProvider: personalitySemanticProvider,
+              store: new InMemoryPersonalityAdaptationStoreV0()
+            });
     const runtimeOptions: InteractiveSubjectRuntimeOptionsV0 = {
       session_id: config.session_id,
       subject: {
@@ -133,6 +161,7 @@ export class InteractiveSubjectHostV0 {
       languageTransport: deps.languageTransport,
       factualEventAppraisalProvider: deps.appraisalProvider,
       ...(deps.beliefSemanticProvider === undefined ? {} : { beliefSemanticProvider: deps.beliefSemanticProvider }),
+      ...(personalityAdaptationFactory === undefined ? {} : { personalityAdaptationFactory }),
       ...(config.interval_ticks === undefined ? {} : { interval_ticks: config.interval_ticks }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })

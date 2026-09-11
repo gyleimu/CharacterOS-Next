@@ -265,6 +265,14 @@ export type {
   LearningAdoptionRevision
 } from "./transitions/learning/learning-adoption-authority.js";
 
+// --- PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 (dependency-inversion port) --------
+
+export type {
+  PersonalityAdaptationAuthoritiesV0,
+  PersonalityAdaptationFactoryV0,
+  PersonalityAdaptationPortV0
+} from "./session/personality-adaptation-port-v0.js";
+
 // --- P2-next PersonalityState V0 Foundation ------------------------------------------
 
 export {

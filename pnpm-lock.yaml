@@ -130,6 +130,9 @@ importers:
 
   product/sandbox:
     dependencies:
+      '@characteros-next/personality':
+        specifier: workspace:*
+        version: link:../../packages/personality
       '@characteros-next/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime

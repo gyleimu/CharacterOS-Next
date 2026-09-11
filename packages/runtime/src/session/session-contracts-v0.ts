@@ -91,6 +91,12 @@ export interface SessionDurableStateV0 {
    * and restore with an empty store.
    */
   readonly belief_workflow_store_state?: unknown;
+  /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: serialized durable
+   * personality-adaptation idempotency ledger (INFRASTRUCTURE state only —
+   * never canonical subject state). Additive and optional.
+   */
+  readonly personality_adaptation_state?: unknown;
 }
 
 export interface SessionCheckpointV0 {

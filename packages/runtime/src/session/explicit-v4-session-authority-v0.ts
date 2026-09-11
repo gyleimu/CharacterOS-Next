@@ -63,6 +63,10 @@ import {
   type BeliefAdaptationTurnReportV0
 } from "./belief-adaptation-wiring-v0.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
+import type {
+  PersonalityAdaptationFactoryV0,
+  PersonalityAdaptationPortV0
+} from "./personality-adaptation-port-v0.js";
 
 export interface ExplicitV4SessionAuthorityOptionsV0 {
   readonly subject: { readonly subject_id: string; readonly display_name: string; readonly identity_anchors: readonly string[] };
@@ -78,6 +82,13 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
    * stays DISABLED (no store writes, no provider calls).
    */
   readonly beliefSemanticProvider?: BeliefSemanticTargetResolutionProviderV0;
+  /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: composition-layer factory that
+   * builds the concrete personality-adaptation port from session authorities.
+   * Omitted ⇒ personality adaptation stays DISABLED (no store writes, no
+   * provider calls).
+   */
+  readonly personalityAdaptationFactory?: PersonalityAdaptationFactoryV0;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -224,6 +235,7 @@ export class ExplicitV4SessionAuthorityV0 {
   private readonly affectWriter: ReturnType<typeof createCanonicalAffectApplicationV0ForExplicitV4>;
   private readonly beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
   private readonly beliefWiring: BeliefAdaptationWiringV0;
+  private readonly personalityAdaptation: PersonalityAdaptationPortV0 | null;
   private pending: PendingLifecycleWorkV0[] = [];
   private subjectIdValue: string;
 
@@ -239,6 +251,7 @@ export class ExplicitV4SessionAuthorityV0 {
     genesisEnvelope: unknown;
     beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
     beliefWiring: BeliefAdaptationWiringV0;
+    personalityAdaptation: PersonalityAdaptationPortV0 | null;
   }) {
     this.repo = input.repo;
     this.assembly = input.assembly;
@@ -251,6 +264,7 @@ export class ExplicitV4SessionAuthorityV0 {
     this.subjectIdValue = input.subjectId;
     this.beliefWorkflowStore = input.beliefWorkflowStore;
     this.beliefWiring = input.beliefWiring;
+    this.personalityAdaptation = input.personalityAdaptation;
     this.retrieval = new RepositoryBackedMemoryRetrievalServiceV0(this.repo as never);
     this.appraisalExecutor = new FactualEventAppraisalExecutorV0(this.container);
     const trustedHistory = {
@@ -391,7 +405,8 @@ export class ExplicitV4SessionAuthorityV0 {
       issuer: assembly.producerAuthorizationIssuer,
       options,
       genesisEnvelope: durable.genesis_envelope,
-      beliefWorkflowStoreState: durable.belief_workflow_store_state
+      beliefWorkflowStoreState: durable.belief_workflow_store_state,
+      personalityAdaptationState: durable.personality_adaptation_state
     });
     return { authority, detail: null };
   }
@@ -404,6 +419,8 @@ export class ExplicitV4SessionAuthorityV0 {
     genesisEnvelope: unknown;
     /** Restored belief workflow store image (absent for a fresh session). */
     beliefWorkflowStoreState?: unknown;
+    /** Restored personality-adaptation ledger image (absent for a fresh session). */
+    personalityAdaptationState?: unknown;
   }): Promise<ExplicitV4SessionAuthorityV0> {
     const deliveryLedger = input.options.deliveryLedger ?? new InMemoryConversationDeliveryLedger();
     const ingressLedger = input.options.ingressLedger ?? new InMemoryConversationIngressLedger();
@@ -423,6 +440,30 @@ export class ExplicitV4SessionAuthorityV0 {
       readEpisodePayload: async (ref: string) =>
         (input.repo as unknown as { readStoredPayload(r: string): unknown }).readStoredPayload(ref) ?? null
     });
+    // PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — composition-layer factory
+    // receives THIS session's subject-scoped authorities (same subject core,
+    // same memory repository), so evidence membership can never cross subjects.
+    const personalityAdaptation =
+      input.options.personalityAdaptationFactory === undefined
+        ? null
+        : input.options.personalityAdaptationFactory({
+            subjectCore: input.assembly.facade as never,
+            memoryRepository: input.repo as never,
+            producerAuthorizationIssuer: input.issuer,
+            readEpisodePayload: async (ref: string) =>
+              (input.repo as unknown as { readStoredPayload(r: string): unknown }).readStoredPayload(ref) ??
+              null
+          });
+    if (personalityAdaptation !== null) {
+      const personalityRestore = await personalityAdaptation.restoreState(
+        input.personalityAdaptationState ?? null
+      );
+      if (!personalityRestore.ok) {
+        throw new Error(
+          `session authority: personality adaptation ledger restore failed (${personalityRestore.detail})`
+        );
+      }
+    }
     const root = new RuntimeCompositionRoot({
       subjectCore: input.assembly.facade as never,
       producerAuthorizationIssuer: input.issuer,
@@ -454,7 +495,8 @@ export class ExplicitV4SessionAuthorityV0 {
       subjectId: input.options.subject.subject_id,
       genesisEnvelope: input.genesisEnvelope,
       beliefWorkflowStore,
-      beliefWiring
+      beliefWiring,
+      personalityAdaptation
     });
   }
 
@@ -1087,7 +1129,8 @@ export class ExplicitV4SessionAuthorityV0 {
       genesis_envelope: this.genesisEnvelope,
       delivery_ledger_state: (this.deliveryLedger as unknown as { exportState(): unknown }).exportState(),
       ingress_ledger_state: (this.ingressLedger as unknown as { exportState(): unknown }).exportState(),
-      belief_workflow_store_state: this.beliefWorkflowStore.exportState()
+      belief_workflow_store_state: this.beliefWorkflowStore.exportState(),
+      personality_adaptation_state: this.personalityAdaptation?.exportState() ?? null
     };
   }
 
@@ -1101,6 +1144,21 @@ export class ExplicitV4SessionAuthorityV0 {
     episodeRefs: readonly string[]
   ): Promise<BeliefAdaptationTurnReportV0> {
     return this.beliefWiring.runForEpisodeRefs({
+      subject_id: this.subjectIdValue,
+      episode_refs: episodeRefs
+    });
+  }
+
+  /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — offers this turn's newly
+   * committed canonical episodes to the personality plasticity chain. Never
+   * throws; Personality remains unchanged on any failure. Opaque report.
+   */
+  async runLivedEvidencePersonalityAdaptation(episodeRefs: readonly string[]): Promise<unknown> {
+    if (this.personalityAdaptation === null) {
+      return { status: "DISABLED" };
+    }
+    return this.personalityAdaptation.runForEpisodeRefs({
       subject_id: this.subjectIdValue,
       episode_refs: episodeRefs
     });

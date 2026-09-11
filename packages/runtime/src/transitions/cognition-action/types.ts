@@ -111,7 +111,15 @@ export interface CognitiveContextProjectionV2 {
   readonly subject_id: IdentifierV0;
   readonly current_logical_time: LogicalTimeV0;
   readonly state_revision: StateRevisionV0;
+  /** Immutable authored genesis prior P0 (read-only evidence; never current). */
   readonly traits_dimensions: Readonly<Record<string, number>>;
+  /**
+   * PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — CURRENT acquired Personality
+   * P(t) as canonical numeric values. Distinct from the immutable genesis prior
+   * `traits_dimensions`: after lived plasticity this is the authoritative current
+   * disposition, not a second equal vote. Empty ⇒ no acquired dimensions.
+   */
+  readonly personality_dimensions: Readonly<Record<string, number>>;
   /** CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — exact raw canonical VA. */
   readonly canonical_affect: CanonicalAffectCognitionProjectionV0;
   readonly regulation: {

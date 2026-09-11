@@ -77,6 +77,29 @@ export {
 } from "./personality-semantic-channel.js";
 
 export {
+  PERSONALITY_PRODUCTION_CHANNEL_POLICY_ID,
+  PERSONALITY_PRODUCTION_SEMANTIC_CATALOG_ID,
+  buildPersonalityProductionChannelPolicyV0,
+  buildPersonalityProductionSemanticCatalogV0
+} from "./personality-production-channels-v0.js";
+
+export {
+  PERSONALITY_ADAPTATION_STORE_SCHEMA_VERSION,
+  PERSONALITY_ADAPTATION_TERMINALS_V0,
+  InMemoryPersonalityAdaptationStoreV0,
+  type PersonalityAdaptationRecordV0,
+  type PersonalityAdaptationStoreStateV0,
+  type PersonalityAdaptationTerminalV0
+} from "./personality-adaptation-store-v0.js";
+
+export {
+  PersonalityAdaptationWiringV0,
+  type PersonalityAdaptationReportV0,
+  type PersonalityAdaptationStatusV0,
+  type PersonalityAdaptationWiringDepsV0
+} from "./personality-adaptation-wiring-v0.js";
+
+export {
   PERSONALITY_SEMANTIC_PROMPT_PROJECTION_VERSION,
   PERSONALITY_SEMANTIC_PROVIDER_MAX_OUTPUT_TOKENS,
   OpenAICompatiblePersonalitySemanticChannelProviderV0,

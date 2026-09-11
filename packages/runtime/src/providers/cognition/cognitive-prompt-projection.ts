@@ -156,6 +156,13 @@ export function renderCognitiveSubjectData(
     `[relationships] ${relationships}`,
     familiarityInfluences,
     `[traits seed (read-only evidence)] ${JSON.stringify(projection.traits_dimensions)}`,
+    // CURRENT acquired Personality P(t): authoritative current disposition,
+    // explicitly distinct from the immutable genesis prior above.
+    ...(isV2
+      ? [
+          `[current acquired personality (read-only; P(t), distinct from the immutable traits seed above)] ${JSON.stringify(v2Projection.personality_dimensions)}`
+        ]
+      : []),
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):`,
     citeable,
     `[ALLOWED ACTION SPACE]\n${actionSpace}`,

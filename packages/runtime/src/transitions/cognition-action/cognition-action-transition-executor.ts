@@ -242,6 +242,14 @@ async function buildExplicitV4CognitiveContextProjection(
     current_logical_time: snapshot.runtime_metadata.logical_time as number,
     state_revision: snapshot.runtime_metadata.state_revision as number,
     traits_dimensions: { ...snapshot.traits_seed.dimensions } as Record<string, number>,
+    // PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: CURRENT acquired Personality
+    // P(t) — canonical numeric values, deterministically ordered. Distinct from
+    // the immutable genesis prior above.
+    personality_dimensions: Object.fromEntries(
+      [...snapshot.personality.dimensions]
+        .sort((a, b) => (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0))
+        .map((dimension) => [dimension.dimension_id as string, dimension.value as number])
+    ) as Record<string, number>,
     // RAW_CANONICAL_VA: exact committed values, no transform (fail closed on
     // malformed shapes; no affect_profile, no history, no named emotions).
     canonical_affect: projectCanonicalAffectForCognitionV0(snapshot.affect),
