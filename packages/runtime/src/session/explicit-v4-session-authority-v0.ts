@@ -67,6 +67,49 @@ import type {
   PersonalityAdaptationFactoryV0,
   PersonalityAdaptationPortV0
 } from "./personality-adaptation-port-v0.js";
+import {
+  RELATIONSHIP_COUNTERPART_REGISTRATION_PROPOSAL_SCHEMA_VERSION,
+  deriveCounterpartRegistrationEvidenceMemberSetFingerprint
+} from "../transitions/relationship/relationship-counterpart-registration-proposal.js";
+import { RelationshipCounterpartRegistrationExecutor } from "../transitions/relationship/relationship-counterpart-registration-executor.js";
+import {
+  processInteractionExperience,
+  type RelationshipInteractionQualifyingAdmissionProviderV0
+} from "../transitions/relationship/relationship-interaction-familiarity-ingestion.js";
+
+/**
+ * RELATIONSHIP_LIVED_DEVELOPMENT_V0 — the ONE canonical interactive-session
+ * counterpart identity.
+ *
+ * The interactive session has exactly one human interlocutor. Every ingress
+ * event, observation entity set and relationship registration/ingestion path
+ * derives that counterpart from THIS constant, so those values can never
+ * silently diverge. It is an IDENTITY only: it asserts no familiarity value,
+ * no qualifying class and no relationship semantics.
+ */
+export const SESSION_COUNTERPART_REF_V0 = "entity:alice" as const;
+
+/** Sorted canonical entity set for a session observation (counterpart + subject). */
+function sessionObservationEntityRefs(subjectId: string): string[] {
+  return [SESSION_COUNTERPART_REF_V0, `subject:${subjectId}`].sort();
+}
+
+/** Observation facts of one episode's familiarity offering (never authority). */
+export interface RelationshipFamiliarityEpisodeReportV0 {
+  readonly episode_ref: string;
+  readonly registration: "REGISTERED" | "ALREADY_REGISTERED" | "NOT_ATTEMPTED";
+  readonly outcome: "COMMITTED" | "REPLAYED" | "SATURATED" | "ABSTAINED" | "REJECTED" | "SKIPPED";
+  readonly qualifying_class: string | null;
+  readonly familiarity_next: number | null;
+  readonly detail: string | null;
+}
+
+/** The turn's whole familiarity offering. Opaque observations only. */
+export interface RelationshipFamiliarityTurnReportV0 {
+  readonly status: "APPLIED" | "DISABLED" | "NO_APPLICABLE_EPISODE";
+  readonly counterpart_ref: string;
+  readonly episodes: readonly RelationshipFamiliarityEpisodeReportV0[];
+}
 
 export interface ExplicitV4SessionAuthorityOptionsV0 {
   readonly subject: { readonly subject_id: string; readonly display_name: string; readonly identity_anchors: readonly string[] };
@@ -89,6 +132,13 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
    * provider calls).
    */
   readonly personalityAdaptationFactory?: PersonalityAdaptationFactoryV0;
+  /**
+   * RELATIONSHIP_LIVED_DEVELOPMENT_V0: the qualifying-interaction admission
+   * provider for the FROZEN familiarity ingestion path. Omitted ⇒ relationship
+   * familiarity stays DISABLED (no registration, no ingestion, no provider
+   * calls); the session still runs unchanged.
+   */
+  readonly relationshipFamiliarityAdmissionProvider?: RelationshipInteractionQualifyingAdmissionProviderV0;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -236,6 +286,7 @@ export class ExplicitV4SessionAuthorityV0 {
   private readonly beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
   private readonly beliefWiring: BeliefAdaptationWiringV0;
   private readonly personalityAdaptation: PersonalityAdaptationPortV0 | null;
+  private readonly relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
   private pending: PendingLifecycleWorkV0[] = [];
   private subjectIdValue: string;
 
@@ -252,6 +303,7 @@ export class ExplicitV4SessionAuthorityV0 {
     beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
     beliefWiring: BeliefAdaptationWiringV0;
     personalityAdaptation: PersonalityAdaptationPortV0 | null;
+    relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
   }) {
     this.repo = input.repo;
     this.assembly = input.assembly;
@@ -265,6 +317,7 @@ export class ExplicitV4SessionAuthorityV0 {
     this.beliefWorkflowStore = input.beliefWorkflowStore;
     this.beliefWiring = input.beliefWiring;
     this.personalityAdaptation = input.personalityAdaptation;
+    this.relationshipFamiliarityAdmissionProvider = input.relationshipFamiliarityAdmissionProvider;
     this.retrieval = new RepositoryBackedMemoryRetrievalServiceV0(this.repo as never);
     this.appraisalExecutor = new FactualEventAppraisalExecutorV0(this.container);
     const trustedHistory = {
@@ -496,7 +549,9 @@ export class ExplicitV4SessionAuthorityV0 {
       genesisEnvelope: input.genesisEnvelope,
       beliefWorkflowStore,
       beliefWiring,
-      personalityAdaptation
+      personalityAdaptation,
+      relationshipFamiliarityAdmissionProvider:
+        input.options.relationshipFamiliarityAdmissionProvider ?? null
     });
   }
 
@@ -626,7 +681,7 @@ export class ExplicitV4SessionAuthorityV0 {
       schema_version: "conversation-ingress-input-v0",
       subject_id: this.subjectIdValue as never,
       conversation_id: this.conversationId,
-      actor_ref: "entity:alice",
+      actor_ref: SESSION_COUNTERPART_REF_V0,
       text,
       logical_time: (await this.readSnapshot()).runtime_metadata.logical_time as never,
       source_event_id: sourceEventId,
@@ -639,7 +694,7 @@ export class ExplicitV4SessionAuthorityV0 {
     const observation = observationInput({
       observation_id: `observation:o-${sourceEventId}-i${interactionIndex}`,
       source_refs: [eventRef, "source:s-3"],
-      entity_refs: ["entity:alice", `subject:${this.subjectIdValue}`],
+      entity_refs: sessionObservationEntityRefs(this.subjectIdValue),
       occurrence_logical_time: snapshot.runtime_metadata.logical_time
     });
     const baseContextDelta = await buildContextDelta(observation, snapshot as never);
@@ -699,7 +754,7 @@ export class ExplicitV4SessionAuthorityV0 {
     const observation = observationInput({
       observation_id: `observation:o-session-${input.tag}`,
       source_refs: ["source:s-3"],
-      entity_refs: ["entity:alice", `subject:${this.subjectIdValue}`],
+      entity_refs: sessionObservationEntityRefs(this.subjectIdValue),
       occurrence_logical_time: snapshot.runtime_metadata.logical_time
     });
     const baseContextDelta = await buildContextDelta(observation, snapshot as never);
@@ -952,7 +1007,7 @@ export class ExplicitV4SessionAuthorityV0 {
       schema_version: "conversation-ingress-input-v0",
       subject_id: this.subjectIdValue as never,
       conversation_id: this.conversationId,
-      actor_ref: "entity:alice",
+      actor_ref: SESSION_COUNTERPART_REF_V0,
       text,
       logical_time: snapshot.runtime_metadata.logical_time as never,
       source_event_id: sourceEventId,
@@ -965,7 +1020,7 @@ export class ExplicitV4SessionAuthorityV0 {
     const observation = observationInput({
       observation_id: `observation:o-${sourceEventId}-reply-i${interactionIndex}`,
       source_refs: [eventRef, "source:s-3"],
-      entity_refs: ["entity:alice", `subject:${this.subjectIdValue}`],
+      entity_refs: sessionObservationEntityRefs(this.subjectIdValue),
       occurrence_logical_time: fresh.runtime_metadata.logical_time
     });
     const contextDelta = await buildContextDelta(observation, fresh as never);
@@ -1162,6 +1217,177 @@ export class ExplicitV4SessionAuthorityV0 {
       subject_id: this.subjectIdValue,
       episode_refs: episodeRefs
     });
+  }
+
+  /**
+   * RELATIONSHIP_LIVED_DEVELOPMENT_V0 — offers this turn's newly committed
+   * canonical episodes to the FROZEN familiarity chain.
+   *
+   * Registration precedes familiarity: an episode that structurally references
+   * the session counterpart registers that counterpart through the existing
+   * evidence-bound registration executor (creation only; registration can never
+   * happen on a turn that produced no counterpart-referencing episode). Only
+   * after registration does the existing ingestion workflow derive an admission
+   * + accrual + governed commit.
+   *
+   * Never throws: any per-episode failure is reported and Relationship remains
+   * unchanged (fail closed). Replay/restart idempotency is the ingestion's own
+   * deterministic transition identity + durable receipts — this method adds no
+   * ledger of its own.
+   */
+  async runLivedEvidenceRelationshipFamiliarity(
+    episodeRefs: readonly string[]
+  ): Promise<RelationshipFamiliarityTurnReportV0> {
+    const provider = this.relationshipFamiliarityAdmissionProvider;
+    if (provider === null) {
+      return { status: "DISABLED", counterpart_ref: SESSION_COUNTERPART_REF_V0, episodes: [] };
+    }
+    const episodes: RelationshipFamiliarityEpisodeReportV0[] = [];
+    for (const episodeRef of [...new Set(episodeRefs)].sort()) {
+      episodes.push(await this.applyRelationshipFamiliarityForEpisode(episodeRef, provider));
+    }
+    return {
+      status: episodes.some((episode) => episode.outcome !== "SKIPPED") ? "APPLIED" : "NO_APPLICABLE_EPISODE",
+      counterpart_ref: SESSION_COUNTERPART_REF_V0,
+      episodes
+    };
+  }
+
+  /**
+   * One episode's registration + ingestion. Registration/ingestion failures are
+   * observations, never thrown: the completed canonical turn is never corrupted.
+   */
+  private async applyRelationshipFamiliarityForEpisode(
+    episodeRef: string,
+    provider: RelationshipInteractionQualifyingAdmissionProviderV0
+  ): Promise<RelationshipFamiliarityEpisodeReportV0> {
+    const skip = (detail: string, registration: RelationshipFamiliarityEpisodeReportV0["registration"] = "NOT_ATTEMPTED"): RelationshipFamiliarityEpisodeReportV0 => ({
+      episode_ref: episodeRef,
+      registration,
+      outcome: "SKIPPED",
+      qualifying_class: null,
+      familiarity_next: null,
+      detail
+    });
+    const payload = (this.repo as unknown as { readStoredPayload(ref: string): unknown }).readStoredPayload(
+      episodeRef
+    );
+    if (payload === null || typeof payload !== "object") {
+      return skip("episode payload is unavailable in the canonical repository");
+    }
+    const references = (payload as { references?: unknown }).references;
+    if (!Array.isArray(references) || !references.includes(SESSION_COUNTERPART_REF_V0)) {
+      return skip("episode does not structurally reference the session counterpart");
+    }
+
+    // Registration law: counterpart registration must precede familiarity, and
+    // is creation-only (an already-registered counterpart is never rewritten).
+    let snapshot = await this.readSnapshot();
+    const registered = (
+      snapshot as unknown as { relationships: { counterparts: readonly { counterpart_ref: string }[] } }
+    ).relationships.counterparts.some(
+      (counterpart) => counterpart.counterpart_ref === SESSION_COUNTERPART_REF_V0
+    );
+    let registration: RelationshipFamiliarityEpisodeReportV0["registration"] = "ALREADY_REGISTERED";
+    if (!registered) {
+      const memberRefs = [episodeRef];
+      const fingerprint = await deriveCounterpartRegistrationEvidenceMemberSetFingerprint(
+        memberRefs as never
+      );
+      const result = await new RelationshipCounterpartRegistrationExecutor({
+        subjectCore: this.assembly.facade as never,
+        issuer: this.issuer,
+        memoryRepository: this.repo as never
+      }).execute(ctxOf(snapshot), {
+        schema_version: RELATIONSHIP_COUNTERPART_REGISTRATION_PROPOSAL_SCHEMA_VERSION,
+        subject_id: this.subjectIdValue,
+        expected_state_revision: snapshot.runtime_metadata.state_revision,
+        counterpart_ref: SESSION_COUNTERPART_REF_V0,
+        dimensions: [],
+        evidence_binding: { member_refs: memberRefs, member_set_fingerprint: fingerprint }
+      } as never);
+      if (result.kind === "COMMITTED" || result.kind === "ALREADY_COMMITTED") {
+        registration = "REGISTERED";
+        snapshot = await this.readSnapshot();
+      } else {
+        return {
+          episode_ref: episodeRef,
+          registration: "NOT_ATTEMPTED",
+          outcome: "REJECTED",
+          qualifying_class: null,
+          familiarity_next: null,
+          detail: `registration ${result.kind}: ${"detail" in result ? result.detail : ""}`
+        };
+      }
+    }
+
+    const outcome = await processInteractionExperience(
+      {
+        memory: this.repo as never,
+        assembly: this.assembly as never,
+        admissionProvider: provider,
+        repositoryBindings: (await this.repositoryBindings(snapshot)) as never,
+        readGenesisSnapshot: async () => null,
+        // The subject's genesis is a v4 foundation envelope, which cannot be
+        // re-expressed as the v3 snapshot wrap: hand the trusted-history
+        // boundary the exact envelope (v4 mint) and the R0 repository verdict.
+        readGenesisEnvelope: async (subjectId: string) =>
+          subjectId === this.subjectIdValue ? (this.genesisEnvelope as never) : null,
+        genesisReferenceValidator: async (binding) => {
+          const manifest = await this.repo.readManifest(binding.repository_revision as never);
+          return (
+            manifest !== null &&
+            (await computeRepositoryRevisionHash(manifest)) === binding.repository_revision_hash
+          );
+        }
+      },
+      {
+        subject_id: this.subjectIdValue as never,
+        counterpart_ref: SESSION_COUNTERPART_REF_V0,
+        episode: payload as never
+      } as never
+    );
+
+    switch (outcome.kind) {
+      case "QUALIFIED_AND_COMMITTED":
+        return {
+          episode_ref: episodeRef,
+          registration,
+          outcome: outcome.replayed ? "REPLAYED" : "COMMITTED",
+          qualifying_class: outcome.qualifying_class,
+          familiarity_next: outcome.familiarity.next,
+          detail: null
+        };
+      case "QUALIFIED_BUT_SATURATED":
+        return {
+          episode_ref: episodeRef,
+          registration,
+          outcome: "SATURATED",
+          qualifying_class: outcome.qualifying_class,
+          familiarity_next: outcome.familiarity_current,
+          detail: null
+        };
+      case "NOT_QUALIFIED_ABSTAINED":
+        return {
+          episode_ref: episodeRef,
+          registration,
+          outcome: "ABSTAINED",
+          qualifying_class: null,
+          familiarity_next: null,
+          detail: null
+        };
+      default:
+        return outcome.code === "EPISODE_DOES_NOT_REFERENCE_COUNTERPART"
+          ? skip(outcome.detail, registration)
+          : {
+              episode_ref: episodeRef,
+              registration,
+              outcome: "REJECTED",
+              qualifying_class: null,
+              familiarity_next: null,
+              detail: `${outcome.code}: ${outcome.detail}`
+            };
+    }
   }
 
   /** The concrete durable store face needed to rebuild a fresh authority. */

@@ -37,6 +37,17 @@ const SCHEMA = "SS-SCHEMA-001";
  * the v4 foundation admits the established Personality transition type exactly
  * like the other admitted writers. One explicit incremental admission; the
  * allowlist remains closed and no other composition law changes.
+ *
+ * RELATIONSHIP_LIVED_DEVELOPMENT_V0 — the governed Relationship writer
+ * (counterpart registration + interaction familiarity): its closed composition
+ * (exactly one relationship/relationship delta carrying /relationships) and
+ * ownership entry already exist version-agnostically in commit/composition.ts +
+ * validation/ownership.ts, `RelationshipStateV0` is already a first-class block
+ * of every v4 state, and the FROZEN governed-write authorities already emit
+ * `transition_type: "Relationship"`. The v4 foundation therefore admits the
+ * established Relationship transition type exactly like the other admitted
+ * writers. One explicit incremental admission; the allowlist remains closed and
+ * no other composition law changes.
  */
 const V4_ALLOWED_TRANSITIONS: readonly string[] = [
   "Time",
@@ -44,7 +55,8 @@ const V4_ALLOWED_TRANSITIONS: readonly string[] = [
   "Learning",
   "AffectApplication",
   "Belief",
-  "Personality"
+  "Personality",
+  "Relationship"
 ];
 
 export function validateSubjectStateAnyVersionV0(

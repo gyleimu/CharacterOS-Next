@@ -24,7 +24,8 @@ import type {
   ModelTransportTraceV0,
   ModelTransportV0,
   PersonalityAdaptationFactoryV0,
-  PersonalityGenesisPriorV0
+  PersonalityGenesisPriorV0,
+  RelationshipInteractionQualifyingAdmissionProviderV0
 } from "@characteros-next/runtime";
 import {
   InteractiveSubjectRuntimeV0,
@@ -74,6 +75,13 @@ export interface InteractiveSubjectHostDepsV0 {
    * evidence is never offered to personality plasticity, no provider calls occur.
    */
   readonly personalitySemanticProvider?: PersonalitySemanticChannelProviderV0;
+  /**
+   * RELATIONSHIP_LIVED_DEVELOPMENT_V0: the qualifying-interaction admission
+   * provider for the FROZEN familiarity chain (e.g.
+   * ModelRelationshipFamiliarityQualifyingAdmissionProviderV0 over the existing
+   * cognition transport). Omitted ⇒ relationship familiarity stays DISABLED.
+   */
+  readonly relationshipFamiliarityAdmissionProvider?: RelationshipInteractionQualifyingAdmissionProviderV0;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -162,6 +170,9 @@ export class InteractiveSubjectHostV0 {
       factualEventAppraisalProvider: deps.appraisalProvider,
       ...(deps.beliefSemanticProvider === undefined ? {} : { beliefSemanticProvider: deps.beliefSemanticProvider }),
       ...(personalityAdaptationFactory === undefined ? {} : { personalityAdaptationFactory }),
+      ...(deps.relationshipFamiliarityAdmissionProvider === undefined
+        ? {}
+        : { relationshipFamiliarityAdmissionProvider: deps.relationshipFamiliarityAdmissionProvider }),
       ...(config.interval_ticks === undefined ? {} : { interval_ticks: config.interval_ticks }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })

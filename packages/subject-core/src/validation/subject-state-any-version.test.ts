@@ -36,11 +36,11 @@ describe("PERSONALITY_V4_TRANSITION_ADMISSION_V0 — closed V4 allowlist", () =>
   });
 
   it("keeps the allowlist closed: an unadmitted transition type is still rejected", () => {
-    const result = validateProposalCompatibilityWithPredecessorV0(v4, proposal("Relationship"));
+    const result = validateProposalCompatibilityWithPredecessorV0(v4, proposal("CognitionAction"));
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.error.error_code).toBe("INVALID_TRANSITION_COMPOSITION");
-    expect(result.error.detail).toContain("received Relationship");
+    expect(result.error.detail).toContain("received CognitionAction");
     expect(result.error.detail).toContain("Personality");
   });
 
@@ -48,6 +48,42 @@ describe("PERSONALITY_V4_TRANSITION_ADMISSION_V0 — closed V4 allowlist", () =>
     for (const type of ["Personality", "Relationship", "CognitionAction"] as const) {
       expect(validateProposalCompatibilityWithPredecessorV0(v3, proposal(type)).ok).toBe(true);
     }
+  });
+});
+
+describe("RELATIONSHIP_LIVED_DEVELOPMENT_V0 — Relationship admitted to the closed V4 allowlist", () => {
+  it("admits the established Relationship transition on v4", () => {
+    expect(validateProposalCompatibilityWithPredecessorV0(v4, proposal("Relationship")).ok).toBe(true);
+  });
+
+  it("relationship/relationship owns exactly /relationships for the Relationship transition", () => {
+    expect(validateOwnership("relationship", "relationship", "/relationships", "Relationship", "t").ok).toBe(true);
+  });
+
+  it("rejects a Relationship-shaped path written by the wrong producer", () => {
+    const result = validateOwnership("belief", "relationship", "/relationships", "Relationship", "t");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.error_code).toBe("UNAUTHORIZED_PRODUCER");
+  });
+
+  it("rejects a Relationship transition touching another domain's path", () => {
+    for (const path of ["/beliefs", "/personality", "/affect", "/mood"] as const) {
+      const result = validateOwnership("relationship", "relationship", path, "Relationship", "t");
+      expect(result.ok).toBe(false);
+      if (result.ok) continue;
+      expect(
+        result.error.error_code === "INVALID_TRANSITION_OWNER" ||
+          result.error.error_code === "FORBIDDEN_DIRECT_MUTATION"
+      ).toBe(true);
+    }
+  });
+
+  it("rejects /relationships written by a non-Relationship transition type", () => {
+    const result = validateOwnership("relationship", "relationship", "/relationships", "Personality", "t");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.error_code).toBe("INVALID_TRANSITION_OWNER");
   });
 });
 

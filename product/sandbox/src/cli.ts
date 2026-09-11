@@ -23,7 +23,10 @@ import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 
 import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
-import { OllamaBeliefSemanticProviderV0 } from "@characteros-next/runtime";
+import {
+  ModelRelationshipFamiliarityQualifyingAdmissionProviderV0,
+  OllamaBeliefSemanticProviderV0
+} from "@characteros-next/runtime";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
@@ -90,6 +93,14 @@ async function main(): Promise<number> {
     model: env("CHARACTEROS_BELIEF_SEMANTIC_MODEL") ?? model
   });
 
+  // RELATIONSHIP_LIVED_DEVELOPMENT_V0: one bounded model-backed qualifying-
+  // interaction admission call per counterpart-referencing lived episode,
+  // accounted separately from cognition/language/appraisal/belief. The frozen
+  // provider emits only the closed qualifying/ABSTAIN vocabulary; the ingestion
+  // chain derives every number itself (no magnitude ever comes from the model).
+  const relationshipFamiliarityAdmissionProvider =
+    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: transports.cognition });
+
   // ---- readline + startup gates ----------------------------------------------
   // The line handler is attached BEFORE any await, and every queued line waits
   // for startup: in piped/non-TTY mode readline can emit lines immediately, so
@@ -137,6 +148,7 @@ async function main(): Promise<number> {
         languageTransport: transports.language,
         appraisalProvider: appraisal.provider,
         beliefSemanticProvider,
+        relationshipFamiliarityAdmissionProvider,
         provider_identity: {
           model,
           num_predict: numPredict,

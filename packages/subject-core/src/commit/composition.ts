@@ -262,5 +262,25 @@ export function validateProposalCompositionForStateVersion(
     }
     return ok(undefined);
   }
+  if (proposal.transition_type === "Relationship") {
+    // RELATIONSHIP_LIVED_DEVELOPMENT_V0: the governed Relationship writer on v4
+    // (counterpart registration + interaction familiarity) — exactly one
+    // relationship/relationship delta carrying exactly the /relationships
+    // replacement (the shape the frozen registration executor and governed
+    // familiarity ingestion both construct). No other domain may ride along.
+    if (proposal.domain_deltas.length !== 1) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: Relationship requires exactly one relationship delta`);
+    }
+    const delta = proposal.domain_deltas[0];
+    if (
+      delta?.producer !== "relationship" ||
+      delta.domain !== "relationship" ||
+      delta.operations.length !== 1 ||
+      delta.operations[0]?.path !== "/relationships"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact relationship/relationship /relationships replacement required`);
+    }
+    return ok(undefined);
+  }
   return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation does not support ${proposal.transition_type}`);
 }

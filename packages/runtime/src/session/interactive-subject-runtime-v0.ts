@@ -41,6 +41,7 @@ import {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
   type LivedMemoryInspectionV0,
+  type RelationshipFamiliarityTurnReportV0,
   type SessionResponseResultV0
 } from "./explicit-v4-session-authority-v0.js";
 import {
@@ -109,6 +110,14 @@ export interface InteractiveTurnOutcomeV0 {
    * disabled or no lived episode was committed.
    */
   readonly personality_adaptation: unknown;
+  /**
+   * RELATIONSHIP_LIVED_DEVELOPMENT_V0 — observable report of offering this
+   * turn's newly committed lived evidence to the FROZEN relationship-familiarity
+   * chain (registration + qualifying admission + governed write; runs AFTER
+   * this turn's cognition, so changed familiarity reaches only FUTURE turns).
+   * Null when the step was never reached or the chain is DISABLED.
+   */
+  readonly relationship_familiarity: RelationshipFamiliarityTurnReportV0 | null;
   /**
    * Observation-sourced episode ref when THIS user event had no behavior-outcome
    * role (e.g. a new subject's first message) and was admitted through the
@@ -442,6 +451,7 @@ export class InteractiveSubjectRuntimeV0 {
     let observationalExperienceRef: string | null = null;
     let beliefAdaptation: BeliefAdaptationTurnReportV0 | null = null;
     let personalityAdaptation: unknown = null;
+    let relationshipFamiliarity: RelationshipFamiliarityTurnReportV0 | null = null;
 
     try {
       await this.authority.advanceTime(this.options.interval_ticks ?? 1, tag);
@@ -555,6 +565,17 @@ export class InteractiveSubjectRuntimeV0 {
           ? await this.authority.runLivedEvidencePersonalityAdaptation(beliefEpisodeRefs)
           : null;
 
+      // ---- RELATIONSHIP_LIVED_DEVELOPMENT_V0: the SAME newly committed lived
+      // evidence is offered to the FROZEN familiarity chain, strictly AFTER
+      // cognition/delivery/Memory and after belief/personality. Registration
+      // (creation only) precedes familiarity ingestion; a failure or abstention
+      // leaves Relationship unchanged and can never fail the completed turn.
+      // A changed familiarity reaches only FUTURE turns' cognition.
+      relationshipFamiliarity =
+        beliefEpisodeRefs.length > 0
+          ? await this.authority.runLivedEvidenceRelationshipFamiliarity(beliefEpisodeRefs)
+          : null;
+
       const snapshotAfter = await this.authority.readSnapshot();
       const cognitionExchange = this.readCapture("cognition");
       const parsedRaw = cognitionExchange === null ? null : safeParse(cognitionExchange.response);
@@ -579,6 +600,7 @@ export class InteractiveSubjectRuntimeV0 {
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
         personality_adaptation: personalityAdaptation,
+        relationship_familiarity: relationshipFamiliarity,
         observational_experience_ref: observationalExperienceRef,
         retrieved_refs: context.selected_refs,
         working_episode_refs: context.working_episode_refs,
@@ -625,6 +647,7 @@ export class InteractiveSubjectRuntimeV0 {
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
         personality_adaptation: personalityAdaptation,
+        relationship_familiarity: relationshipFamiliarity,
         observational_experience_ref: null,
         retrieved_refs: [],
         working_episode_refs: [],

@@ -1123,7 +1123,10 @@ export {
 // ---------------------------------------------------------------------------
 export {
   ExplicitV4SessionAuthorityV0,
+  SESSION_COUNTERPART_REF_V0,
   type ExplicitV4SessionAuthorityOptionsV0,
+  type RelationshipFamiliarityEpisodeReportV0,
+  type RelationshipFamiliarityTurnReportV0,
   type SessionResponseResultV0,
   type CompletedLifecycleWorkV0,
   type LivedMemoryInspectionV0,

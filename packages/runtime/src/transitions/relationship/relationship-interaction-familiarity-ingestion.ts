@@ -94,7 +94,11 @@ import {
   mintRelationshipGovernedTrustedHistoryCapabilityV0,
   lookupLatestRelationshipGovernedAuthorityV0
 } from "../../authority/relationship-governed-trusted-history.js";
-import { mintTrustedCanonicalHistoryBoundaryV0 } from "../../authority/trusted-canonical-history-boundary.js";
+import {
+  mintTrustedCanonicalHistoryBoundaryV0,
+  mintTrustedCanonicalHistoryBoundaryV4V0,
+  type TrustedCanonicalGenesisEnvelopeAnyVersionV0
+} from "../../authority/trusted-canonical-history-boundary.js";
 import {
   deriveRelationshipGovernedFeatureAuthorizationGateFingerprintV0,
   deriveRelationshipGovernedFeatureWritePolicyFingerprintV0,
@@ -184,6 +188,24 @@ export interface InteractionFamiliarityIngestionDepsV0 {
   readonly repositoryBindings: readonly RepositoryRevisionBindingV1[];
   /** Genesis (revision-0) snapshot reader for the trusted-history boundary. */
   readonly readGenesisSnapshot: (subjectId: string) => Promise<SubjectStateV0 | null>;
+  /**
+   * RELATIONSHIP_LIVED_DEVELOPMENT_V0 — optional VERSION-EXACT genesis envelope
+   * reader. A subject-state-v4 subject's genesis is a
+   * `subject-state-v4-persistence-envelope-v0`, which cannot be re-expressed as
+   * the v3 `subject-persistence-envelope-v1` the snapshot fallback builds. When
+   * supplied, this envelope is used DIRECTLY for the trusted-history boundary
+   * (v3 → v3 mint, v4 → v4 mint) instead of wrapping `readGenesisSnapshot`.
+   */
+  readonly readGenesisEnvelope?: (
+    subjectId: string
+  ) => Promise<TrustedCanonicalGenesisEnvelopeAnyVersionV0 | null>;
+  /**
+   * Required only on the v4 branch: the v4 boundary mint validates the genesis
+   * repository binding (R0) against the repository's own verdict.
+   */
+  readonly genesisReferenceValidator?: (
+    binding: RepositoryRevisionBindingV1
+  ) => boolean | Promise<boolean>;
 }
 
 export type InteractionFamiliarityIngestionOutcomeV0 =
@@ -506,35 +528,66 @@ export async function processInteractionExperience(
       "the trusted-history capability requires a positive canonical head; no commit exists yet"
     );
   }
-  const genesis = await deps.readGenesisSnapshot(request.subject_id);
-  if (genesis === null) {
-    return rejected("CANONICAL_HISTORY_UNAVAILABLE", "the genesis snapshot is unavailable for the trusted-history boundary");
-  }
-  const genesisEnvelope = await createPersistenceEnvelope({
-    snapshot: genesis,
-    repository_bindings: deps.repositoryBindings,
-    commit_head: null
-  });
-  if (!genesisEnvelope.ok) {
-    return rejected("CANONICAL_HISTORY_UNAVAILABLE", "genesis envelope creation failed");
-  }
-  const boundary = await mintTrustedCanonicalHistoryBoundaryV0({
-    genesis: genesisEnvelope.value,
-    head: {
-      schema_version: "trusted-canonical-head-v0",
-      subject_id: head.subject_id,
-      revision: head.next_revision,
-      commit_ref: head.commit_ref,
-      record_checksum: head.record_checksum,
-      state_hash: head.state_hash_after,
-      snapshot_hash: head.snapshot_hash_after
-    } as never
-  });
-  if (boundary.kind !== "MINTED") {
-    return rejected("CANONICAL_HISTORY_UNAVAILABLE", `trusted-history boundary mint failed: ${boundary.detail}`);
+  const headInput = {
+    schema_version: "trusted-canonical-head-v0",
+    subject_id: head.subject_id,
+    revision: head.next_revision,
+    commit_ref: head.commit_ref,
+    record_checksum: head.record_checksum,
+    state_hash: head.state_hash_after,
+    snapshot_hash: head.snapshot_hash_after
+  } as never;
+  // Version-exact genesis: prefer the subject's own persistence envelope when
+  // the composition supplies it (required for v4); otherwise fall back to the
+  // v3-shaped snapshot wrap (byte-identical to the frozen behavior).
+  let boundaryReceiptValue: unknown;
+  const providedGenesis =
+    deps.readGenesisEnvelope === undefined ? null : await deps.readGenesisEnvelope(request.subject_id);
+  if (providedGenesis !== null) {
+    if (providedGenesis.snapshot.schema_version === "subject-state-v4") {
+      const mintedV4 = await mintTrustedCanonicalHistoryBoundaryV4V0({
+        genesis: providedGenesis as never,
+        head: headInput,
+        reference_validator: deps.genesisReferenceValidator ?? (() => false)
+      });
+      if (mintedV4.kind !== "MINTED") {
+        return rejected("CANONICAL_HISTORY_UNAVAILABLE", `trusted-history v4 boundary mint failed: ${mintedV4.detail}`);
+      }
+      boundaryReceiptValue = mintedV4.receipt;
+    } else {
+      const mintedV3 = await mintTrustedCanonicalHistoryBoundaryV0({
+        genesis: providedGenesis as never,
+        head: headInput
+      });
+      if (mintedV3.kind !== "MINTED") {
+        return rejected("CANONICAL_HISTORY_UNAVAILABLE", `trusted-history boundary mint failed: ${mintedV3.detail}`);
+      }
+      boundaryReceiptValue = mintedV3.receipt;
+    }
+  } else {
+    const genesis = await deps.readGenesisSnapshot(request.subject_id);
+    if (genesis === null) {
+      return rejected("CANONICAL_HISTORY_UNAVAILABLE", "the genesis snapshot is unavailable for the trusted-history boundary");
+    }
+    const genesisEnvelope = await createPersistenceEnvelope({
+      snapshot: genesis,
+      repository_bindings: deps.repositoryBindings,
+      commit_head: null
+    });
+    if (!genesisEnvelope.ok) {
+      return rejected("CANONICAL_HISTORY_UNAVAILABLE", "genesis envelope creation failed");
+    }
+    const boundary = await mintTrustedCanonicalHistoryBoundaryV0({
+      genesis: genesisEnvelope.value,
+      head: headInput
+    });
+    if (boundary.kind !== "MINTED") {
+      return rejected("CANONICAL_HISTORY_UNAVAILABLE", `trusted-history boundary mint failed: ${boundary.detail}`);
+    }
+    boundaryReceiptValue = boundary.receipt;
   }
   const capabilityMint = await mintRelationshipGovernedTrustedHistoryCapabilityV0({
-    trusted_boundary: boundary.receipt,
+    trusted_boundary: boundaryReceiptValue as never,
     bundles,
     current_head: headFactsOf(head)
   });
