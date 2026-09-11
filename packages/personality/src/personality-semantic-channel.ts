@@ -10,7 +10,6 @@
 import {
   computeMemoryRecordPayloadHash,
   validateEpisodicMemoryRecord,
-  validateRepositoryManifest,
   type EpisodeRef,
   type EpisodicMemoryRecordV0,
   type MemoryPreparationAuthority
@@ -27,6 +26,7 @@ import {
   validateRepositoryRevision,
   validateSubjectState,
   validateSubjectStateV4,
+  type CanonicalRefV0,
   type HashV1,
   type IdentifierV0,
   type LogicalTimeV0,
@@ -287,10 +287,16 @@ export type PersonalitySemanticChannelRunResultV0 =
       readonly detail: string;
     };
 
-/** The runner needs one immutable manifest read and has no memory-write capability. */
+/**
+ * The runner needs only read-only membership/authority verdicts and has no
+ * memory-write capability. Membership is revision-bounded historical visibility
+ * (`validateRefsBelong`, the canonical MEMORY_REVISION_LONG_TERM_VISIBILITY_V0
+ * ancestry law), and content identity is the repository-owned canonical payload
+ * hash (`payloadHashOf`) — never a scan of one delta manifest.
+ */
 export type PersonalitySemanticEvidenceRepositoryV0 = Pick<
   MemoryPreparationAuthority,
-  "readManifest"
+  "validateRefsBelong" | "payloadHashOf"
 >;
 
 export interface PersonalitySemanticChannelRunnerInputV0 {
@@ -514,30 +520,6 @@ async function verifyAndProjectEvidence(
     return { ok: false, detail: `evidence view invalid: ${viewChecked.error.detail}` };
   }
   const repositoryRevision = viewChecked.value.repository_revision;
-  let manifestRaw: Awaited<ReturnType<PersonalitySemanticEvidenceRepositoryV0["readManifest"]>>;
-  try {
-    manifestRaw = await input.repository.readManifest(repositoryRevision);
-  } catch (error) {
-    return {
-      ok: false,
-      detail: `bound repository manifest read failed: ${error instanceof Error ? error.message : "unknown failure"}`
-    };
-  }
-  if (manifestRaw === null) {
-    return { ok: false, detail: `bound repository revision ${repositoryRevision} does not exist` };
-  }
-  const manifestChecked = validateRepositoryManifest(manifestRaw);
-  if (!manifestChecked.ok) {
-    return { ok: false, detail: `bound repository manifest invalid: ${manifestChecked.error.detail}` };
-  }
-  const manifest = manifestChecked.value;
-  if (manifest.repository_revision !== repositoryRevision) {
-    return {
-      ok: false,
-      detail: `manifest revision ${manifest.repository_revision} does not match bound revision ${repositoryRevision}`
-    };
-  }
-  const hashes = new Map(manifest.record_hashes.map((entry) => [entry.ref, entry.payload_hash]));
 
   const verified: EpisodicMemoryRecordV0[] = [];
   for (let i = 0; i < input.selected_records.length; i++) {
@@ -561,11 +543,50 @@ async function verifyAndProjectEvidence(
       return { ok: false, detail: `duplicate selected episode_ref ${record.episode_ref}` };
     }
     previousRef = record.episode_ref;
-    const expectedHash = hashes.get(record.episode_ref);
-    if (expectedHash === undefined) {
+  }
+
+  // MEMORY_REVISION_LONG_TERM_VISIBILITY_V0 — revision-bounded historical
+  // visibility is the canonical repository membership law. A record introduced
+  // by an ANCESTOR revision is visible at the bound revision; a future or
+  // sibling record is not. This is not weakened validation: content identity is
+  // still proven against the repository-owned canonical payload below.
+  let belongs: boolean;
+  try {
+    belongs = await input.repository.validateRefsBelong(
+      repositoryRevision,
+      verified.map((record) => record.episode_ref) as unknown as readonly CanonicalRefV0[]
+    );
+  } catch (error) {
+    return {
+      ok: false,
+      detail: `bound repository membership check failed: ${
+        error instanceof Error ? error.message : "unknown failure"
+      }`
+    };
+  }
+  if (!belongs) {
+    return {
+      ok: false,
+      detail: `selected evidence is not visible at bound repository revision ${repositoryRevision}`
+    };
+  }
+
+  for (const record of verified) {
+    let expectedHash: HashV1 | null;
+    try {
+      expectedHash = await input.repository.payloadHashOf(record.episode_ref);
+    } catch (error) {
       return {
         ok: false,
-        detail: `episode_ref ${record.episode_ref} is absent from bound revision ${repositoryRevision}`
+        detail: `episode_ref ${record.episode_ref} canonical payload read failed: ${
+          error instanceof Error ? error.message : "unknown failure"
+        }`
+      };
+    }
+    if (expectedHash === null) {
+      return {
+        ok: false,
+        detail: `episode_ref ${record.episode_ref} has no repository-owned canonical payload`
       };
     }
     let suppliedHash: HashV1;
@@ -582,7 +603,7 @@ async function verifyAndProjectEvidence(
     if (suppliedHash !== expectedHash) {
       return {
         ok: false,
-        detail: `episode_ref ${record.episode_ref} payload hash does not match bound revision ${repositoryRevision}`
+        detail: `episode_ref ${record.episode_ref} payload hash does not match the canonical repository record`
       };
     }
   }

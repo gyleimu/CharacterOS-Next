@@ -1168,3 +1168,113 @@ describe("PERSONALITY_SEMANTIC_EVIDENCE_V4_STATE_ADMISSION_V0 — narrow version
     expect(bridged.channel_result.kind).toBe("UNKNOWN_TARGET_DIMENSION");
   });
 });
+
+describe("PERSONALITY_EVIDENCE_MEMBERSHIP_AUTHORITY_ISOLATION_V0 — revision-bounded historical membership", () => {
+  let crossCounter = 0;
+
+  async function appendRevision(
+    repository: InMemoryMemoryRepository,
+    parent: string,
+    entries: readonly { readonly ref: string; readonly payload: unknown }[]
+  ): Promise<string> {
+    const hashes: { ref: string; payload_hash: HashV1 }[] = [];
+    for (const entry of entries) {
+      hashes.push({
+        ref: entry.ref,
+        payload_hash: await repository.storePayload(entry.ref as never, entry.payload)
+      });
+    }
+    const prepared = await repository.prepareRevisionForIntent({
+      intent_id: id(`cross_${crossCounter++}`) as never,
+      parent_revision: parent as never,
+      records: hashes as never
+    });
+    return prepared.repository_revision as string;
+  }
+
+  function viewFor(revision: string) {
+    return requireBrand(
+      validatePersonalitySemanticEvidenceViewV0({
+        schema_version: "personality-semantic-evidence-view-v0",
+        repository_revision: requireBrand(validateRepositoryRevision(revision, "cross.revision"))
+      })
+    );
+  }
+
+  /** R0(genesis) → R1(A) → R2(marker) → R3(B) → R4(marker) → R5(C) → R6(marker, BOUND). */
+  async function crossRevisionHistory() {
+    const repository = new InMemoryMemoryRepository();
+    await repository.prepareRevision({ parent_revision: null, records: [] });
+    const A = recordFixture(EP_A, "alpha exploration", 1);
+    const B = recordFixture(EP_B, "beta exploration", 2);
+    const C = recordFixture(EP_C, "gamma exploration", 3);
+    let rev = "R0";
+    rev = await appendRevision(repository, rev, [{ ref: A.episode_ref, payload: A }]);
+    rev = await appendRevision(repository, rev, [{ ref: `appraisal:${"1".repeat(64)}`, payload: { marker: 1 } }]);
+    rev = await appendRevision(repository, rev, [{ ref: B.episode_ref, payload: B }]);
+    rev = await appendRevision(repository, rev, [{ ref: `appraisal:${"2".repeat(64)}`, payload: { marker: 2 } }]);
+    rev = await appendRevision(repository, rev, [{ ref: C.episode_ref, payload: C }]);
+    rev = await appendRevision(repository, rev, [{ ref: `appraisal:${"3".repeat(64)}`, payload: { marker: 3 } }]);
+    return { repository, A, B, C, bound: rev };
+  }
+
+  async function runCross(
+    repository: InMemoryMemoryRepository,
+    bound: string,
+    selected: readonly unknown[]
+  ) {
+    return runPersonalitySemanticChannelProposalV0({
+      evidence_view: viewFor(bound),
+      selected_records: selected,
+      repository,
+      channel_policy: policyFixture(),
+      semantic_catalog: await catalogFixture(),
+      provider: new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) })
+    });
+  }
+
+  it("HJ1/HJ2/HJ3: three ancestor episodes are visible at one bound revision (minMemberCount=3 reachable)", async () => {
+    const { repository, A, B, C, bound } = await crossRevisionHistory();
+    const result = await runCross(repository, bound, [A, B, C]);
+    expect(result.kind).toBe("ACCEPTED");
+    if (result.kind !== "ACCEPTED") return;
+    expect(result.proposal.evidence_refs).toHaveLength(3);
+    expect(result.audit.repository_revision).toBe(bound);
+  });
+
+  it("HJ4: a single ancestor episode remains valid (existing single-revision case)", async () => {
+    const { repository, A, bound } = await crossRevisionHistory();
+    const result = await runCross(repository, bound, [A]);
+    expect(result.kind).toBe("ACCEPTED");
+    if (result.kind !== "ACCEPTED") return;
+    expect(result.proposal.evidence_refs).toEqual([A.episode_ref]);
+  });
+
+  it("HJ5: a future episode introduced after the bound revision is rejected", async () => {
+    const { repository, A, B, C, bound } = await crossRevisionHistory();
+    const D = recordFixture(EP_X, "delta after binding", 4);
+    await appendRevision(repository, bound, [{ ref: D.episode_ref, payload: D }]);
+    const result = await runCross(repository, bound, [A, B, C, D]);
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
+  it("HJ6: a duplicate evidence ref is rejected (no silent weighting)", async () => {
+    const { repository, A, bound } = await crossRevisionHistory();
+    const result = await runCross(repository, bound, [A, A]);
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
+  it("HJ7: a visible ref with a forged payload is rejected (content authority preserved)", async () => {
+    const { repository, A, B, bound } = await crossRevisionHistory();
+    const forged = { ...A, context: { ...A.context, scene: "FORGED cross-revision content" } };
+    const result = await runCross(repository, bound, [forged, B]);
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
+  it("HJ8: an unknown ref is rejected", async () => {
+    const { repository, A, bound } = await crossRevisionHistory();
+    const unknown = recordFixture(EP_X, "never stored", 5);
+    const result = await runCross(repository, bound, [A, unknown]);
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+});

@@ -496,4 +496,40 @@ describe("PersonalityState V0 Foundation", () => {
     );
     expect(applied?.value).toBe(0.9);
   });
+
+  it("EA-HIST1: an episode from an ANCESTOR revision is admissible at a later bound revision", async () => {
+    // R0 genesis → R1 (EPISODE_A) → R2 (EPISODE_B); bind the subject to R2.
+    const memory = new InMemoryMemoryRepository();
+    void memory.prepareRevision({ parent_revision: null, records: [] });
+    void memory.prepareRevision({
+      parent_revision: "R0" as never,
+      records: [{ ref: EPISODE_A, payload_hash: `sha256:${"b".repeat(60)}0001` }] as never
+    });
+    void memory.prepareRevision({
+      parent_revision: "R1" as never,
+      records: [{ ref: EPISODE_B, payload_hash: `sha256:${"b".repeat(60)}0002` }] as never
+    });
+    const base = fixtureState();
+    const state: SubjectStateV0 = {
+      ...base,
+      memory_state: { ...base.memory_state, repository_revision: "R2" as never }
+    };
+    const core = createTestCore(state, memory);
+    const executor = new PersonalityTransitionExecutor({
+      subjectCore: core,
+      issuer: core.issuer,
+      memoryRepository: memory
+    });
+    const result = await executor.execute(personalityCtx(0), await makeProposal({ member_refs: [EPISODE_A] }));
+    expect(result.kind).toBe("COMMITTED");
+  });
+
+  it("EA-HIST2: duplicate evidence member refs fail closed (no silent weighting)", async () => {
+    const world = buildWorld();
+    const result = await world.executor.execute(
+      personalityCtx(0),
+      await makeProposal({ member_refs: [EPISODE_A, EPISODE_A] })
+    );
+    expect(result.kind).toBe("REJECTED_UNVERIFIED_EVIDENCE_MEMBER");
+  });
 });

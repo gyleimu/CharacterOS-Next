@@ -17,6 +17,7 @@
 
 import type {
   AtomicCommitBundleAnyVersion,
+  CanonicalRefV0,
   CanonicalTransitionProposalV1,
   DomainDeltaV0,
   IdentifierV0,
@@ -126,27 +127,29 @@ export class PersonalityTransitionExecutor {
       );
     }
 
-    // ---- evidence membership: every cited episode MUST exist in the memory
-    // revision currently bound by the canonical SubjectState (repository head
-    // is NOT an authority). Nonexistent / unbound-revision episodes fail closed.
+    // ---- evidence membership: MEMORY_REVISION_LONG_TERM_VISIBILITY_V0.
+    // Membership is revision-bounded historical visibility at the revision
+    // currently bound by the canonical SubjectState (repository head is NOT an
+    // authority): an episode introduced by an ANCESTOR revision is visible; a
+    // future or sibling episode is not. Duplicate members are rejected (no
+    // silent weighting); forged/non-visible sets fail closed.
     const boundRevisionForEvidence = snapshot.memory_state.repository_revision;
-    const evidenceManifest = await this.deps.memoryRepository.readManifest(boundRevisionForEvidence);
-    if (evidenceManifest === null) {
+    const memberRefs = proposal.evidence_binding.member_refs;
+    if (new Set(memberRefs).size !== memberRefs.length) {
       return rejected(
         "REJECTED_UNVERIFIED_EVIDENCE_MEMBER",
-        `missing manifest for bound revision ${boundRevisionForEvidence}`
+        "duplicate evidence member refs are not admissible"
       );
     }
-    const boundEpisodeRefs = new Set<string>(
-      evidenceManifest.record_hashes.map((r) => r.ref)
+    const belongs = await this.deps.memoryRepository.validateRefsBelong(
+      boundRevisionForEvidence,
+      memberRefs as unknown as readonly CanonicalRefV0[]
     );
-    for (const ref of proposal.evidence_binding.member_refs) {
-      if (!boundEpisodeRefs.has(ref)) {
-        return rejected(
-          "REJECTED_UNVERIFIED_EVIDENCE_MEMBER",
-          `evidence episode ${ref} is not present in the bound repository revision ${boundRevisionForEvidence}`
-        );
-      }
+    if (!belongs) {
+      return rejected(
+        "REJECTED_UNVERIFIED_EVIDENCE_MEMBER",
+        `evidence member set is not visible at the bound repository revision ${boundRevisionForEvidence}`
+      );
     }
 
     // ---- deterministic identity -------------------------------------------------
