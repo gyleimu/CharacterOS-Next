@@ -28,13 +28,23 @@ const SCHEMA = "SS-SCHEMA-001";
  * already exists version-agnostically in commit/composition.ts, so the v4
  * foundation now admits the established Belief transition type exactly like
  * the other admitted writers. No other composition law changes.
+ *
+ * PERSONALITY_V4_TRANSITION_ADMISSION_V0 — the acquired slow-disposition writer
+ * (Personality): its closed composition (exactly one personality/personality
+ * delta carrying the /personality replacement) and ownership entry already
+ * exist version-agnostically in commit/composition.ts + validation/ownership.ts,
+ * and `PersonalityStateV0` is already a first-class block of every v4 state, so
+ * the v4 foundation admits the established Personality transition type exactly
+ * like the other admitted writers. One explicit incremental admission; the
+ * allowlist remains closed and no other composition law changes.
  */
 const V4_ALLOWED_TRANSITIONS: readonly string[] = [
   "Time",
   "Observation",
   "Learning",
   "AffectApplication",
-  "Belief"
+  "Belief",
+  "Personality"
 ];
 
 export function validateSubjectStateAnyVersionV0(

@@ -242,5 +242,25 @@ export function validateProposalCompositionForStateVersion(
     }
     return ok(undefined);
   }
+  if (proposal.transition_type === "Personality") {
+    // PERSONALITY_V4_TRANSITION_ADMISSION_V0: the acquired slow-disposition
+    // writer on v4 — exactly one personality/personality delta carrying exactly
+    // the /personality replacement (the shape the frozen
+    // PersonalityTransitionExecutor constructs). No other domain may ride
+    // along; traits_seed is a readonly path and can never appear here.
+    if (proposal.domain_deltas.length !== 1) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: Personality requires exactly one personality delta`);
+    }
+    const delta = proposal.domain_deltas[0];
+    if (
+      delta?.producer !== "personality" ||
+      delta.domain !== "personality" ||
+      delta.operations.length !== 1 ||
+      delta.operations[0]?.path !== "/personality"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact personality/personality /personality replacement required`);
+    }
+    return ok(undefined);
+  }
   return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation does not support ${proposal.transition_type}`);
 }
