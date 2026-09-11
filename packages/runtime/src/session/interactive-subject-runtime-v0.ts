@@ -31,6 +31,10 @@ import type { ModelTransportTraceV0 } from "../transports/model-transport-trace-
 import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
 import { s0 } from "../transitions/observation/observation-fixtures.js";
+import {
+  buildGenesisPersonalityFromPriorV0,
+  type PersonalityGenesisPriorV0
+} from "../transitions/personality/index.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
 import type { BeliefAdaptationTurnReportV0 } from "./belief-adaptation-wiring-v0.js";
 import {
@@ -220,19 +224,30 @@ function readCurrentIntent(parsed: Record<string, unknown> | null): string | nul
 /**
  * The smallest lawful default v3 source for a product subject: the canonical
  * reference v3 subject state with ONLY the identity fields set to the requested
- * subject. No persona prompt, no scripted history, no fabricated memories, and
- * no fabricated personality genesis prior (PERSONALITY_GENESIS_PRIOR_AUTHORITY_V0:
- * traits_seed stays empty and personality stays empty until an explicit lawful
- * genesis-prior admission exists). No Memory/Experience/Belief/Relationship is
- * created here.
+ * subject.
+ *
+ * PERSONALITY_GENESIS_PRIOR_ADMISSION_V0: when an explicit, validated
+ * `personalityGenesisPrior` is supplied, genesis admits it as P0 —
+ * `traits_seed = canonical P0` (immutable) and `personality(t=0) = P0` (mutable
+ * copy). When it is omitted, genesis stays honestly empty:
+ * `traits_seed = { dimensions: {} }`, `personality = { dimensions: [] }`. There
+ * is no default value, no 0.5 fallback, no randomness, and no model inference.
+ * The prior is creation-time authority only: it is never consulted by restore.
+ * No Memory/Experience/Belief/Relationship is created here.
  */
 export function createInteractiveSubjectSeedV0(
   subjectId: string,
   displayName = "",
-  identityAnchors: readonly string[] = []
+  identityAnchors: readonly string[] = [],
+  personalityGenesisPrior?: PersonalityGenesisPriorV0
 ): SubjectStateV0 {
   const base = s0() as unknown as Record<string, unknown>;
   const identity = { ...(base["identity"] as Record<string, unknown>) };
+  // Fail-closed before any state is built: an invalid prior creates no subject.
+  const genesisPersonality =
+    personalityGenesisPrior === undefined
+      ? null
+      : buildGenesisPersonalityFromPriorV0(personalityGenesisPrior);
   const raw = {
     ...base,
     identity: {
@@ -240,7 +255,13 @@ export function createInteractiveSubjectSeedV0(
       subject_id: subjectId,
       display_name: displayName,
       identity_anchors: [...identityAnchors]
-    }
+    },
+    ...(genesisPersonality === null
+      ? {}
+      : {
+          traits_seed: genesisPersonality.traits_seed,
+          personality: genesisPersonality.personality
+        })
   } as unknown as SubjectStateV0;
   const checked = validateSubjectState(raw);
   if (!checked.ok) {

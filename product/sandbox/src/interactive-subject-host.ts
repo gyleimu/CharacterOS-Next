@@ -22,7 +22,8 @@ import type {
   LivedMemoryInspectionV0,
   BeliefSemanticTargetResolutionProviderV0,
   ModelTransportTraceV0,
-  ModelTransportV0
+  ModelTransportV0,
+  PersonalityGenesisPriorV0
 } from "@characteros-next/runtime";
 import {
   InteractiveSubjectRuntimeV0,
@@ -41,6 +42,13 @@ export interface InteractiveSubjectHostConfigV0 {
   /** Deterministic local directory holding durable subject data. */
   readonly storage_root: string;
   readonly interval_ticks?: number;
+  /**
+   * PERSONALITY_GENESIS_PRIOR_ADMISSION_V0 — explicit authoring of this
+   * character's starting Personality P0. Creation-only: it is consulted ONLY
+   * when no durable subject exists. On restore, canonical stored state always
+   * wins and this input is never applied. Omitted ⇒ honest empty genesis.
+   */
+  readonly personality_genesis_prior?: PersonalityGenesisPriorV0;
 }
 
 export interface InteractiveSubjectHostDepsV0 {
@@ -97,6 +105,22 @@ export class InteractiveSubjectHostV0 {
     const store =
       deps.snapshotStore ?? new FileInteractiveSnapshotStoreV0(config.storage_root, config.subject_id);
     const loaded = await store.load();
+    // Creation-only authoring: the explicit genesis prior is consulted ONLY when
+    // no durable subject exists. A restore never applies (or validates) it, so a
+    // later-supplied prior can never rewrite an existing subject's personality.
+    const v3Source =
+      loaded.kind === "NONE"
+        ? createInteractiveSubjectSeedV0(
+            config.subject_id,
+            config.display_name,
+            config.identity_anchors ?? [],
+            config.personality_genesis_prior
+          )
+        : createInteractiveSubjectSeedV0(
+            config.subject_id,
+            config.display_name,
+            config.identity_anchors ?? []
+          );
     const runtimeOptions: InteractiveSubjectRuntimeOptionsV0 = {
       session_id: config.session_id,
       subject: {
@@ -104,11 +128,7 @@ export class InteractiveSubjectHostV0 {
         display_name: config.display_name,
         identity_anchors: [...(config.identity_anchors ?? [])]
       },
-      v3_source: createInteractiveSubjectSeedV0(
-        config.subject_id,
-        config.display_name,
-        config.identity_anchors ?? []
-      ),
+      v3_source: v3Source,
       conversationCognitionTransport: deps.conversationCognitionTransport,
       languageTransport: deps.languageTransport,
       factualEventAppraisalProvider: deps.appraisalProvider,

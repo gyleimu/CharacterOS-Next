@@ -30,6 +30,14 @@ export {
 } from "./personality-dimension-registry-v0.js";
 
 export {
+  PERSONALITY_GENESIS_PRIOR_SCHEMA_VERSION,
+  buildGenesisPersonalityFromPriorV0,
+  traitsSeedFromPersonalityGenesisPriorV0,
+  validatePersonalityGenesisPriorV0,
+  type PersonalityGenesisPriorV0
+} from "./personality-genesis-prior-v0.js";
+
+export {
   PersonalityTransitionExecutor,
   type PersonalityExecutionResult
 } from "./personality-transition-executor.js";
