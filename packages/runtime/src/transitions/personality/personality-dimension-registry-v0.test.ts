@@ -1,28 +1,36 @@
 /**
- * PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0 — canonical dimension contract.
+ * PERSONALITY_GENESIS_PRIOR_AUTHORITY_V0 — dimension admission vs value authority.
  *
- * These tests seal the closed V0 registry and the genesis initialization law:
- * a fresh subject starts from the immutable P0 disposition (traits_seed) with
- * the mutable personality initialized as its exact copy, and nothing else.
+ * These tests seal the corrected contract:
+ * - the registry admits dimension IDS and qualitative semantics only;
+ * - it carries NO numeric genesis prior, NO default disposition, NO 0.5 and NO
+ *   randomness;
+ * - a fresh production subject therefore starts with empty traits_seed and
+ *   empty personality until an explicit lawful genesis-prior admission exists;
+ * - the dimension law is independent of any particular subject's P0 values.
  */
 
 import { describe, expect, it } from "vitest";
+import type { SubjectStateV0, TraitsSeedV0 } from "@characteros-next/subject-core";
 
 import { createInteractiveSubjectSeedV0 } from "../../session/interactive-subject-runtime-v0.js";
+import { initializePersonalityFromTraitsSeed } from "./personality-init.js";
+import * as registryModule from "./personality-dimension-registry-v0.js";
 import {
-  ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION,
   PERSONALITY_DIMENSION_DOMAIN,
   PERSONALITY_DIMENSION_IDS_V0,
   PERSONALITY_DIMENSION_REGISTRY_SCHEMA_VERSION,
   PERSONALITY_DIMENSION_REGISTRY_V0,
-  canonicalGenesisTraitsSeedV0,
-  initializeCanonicalGenesisPersonalityV0,
   isCanonicalPersonalityDimensionV0
 } from "./personality-dimension-registry-v0.js";
 
 const EXPECTED_IDS = ["agreeableness", "conscientiousness", "extraversion", "openness"] as const;
 
-describe("PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0 — canonical registry", () => {
+function freshSubject(subjectId = "alice", displayName = "Alice"): SubjectStateV0 {
+  return createInteractiveSubjectSeedV0(subjectId, displayName, []);
+}
+
+describe("PERSONALITY_GENESIS_PRIOR_AUTHORITY_V0 — admission without value authority", () => {
   it("A. registry is closed, frozen, versioned, and admits exactly the V0 set", () => {
     expect(PERSONALITY_DIMENSION_REGISTRY_SCHEMA_VERSION).toBe("personality-dimension-registry-v0");
     expect(Object.isFrozen(PERSONALITY_DIMENSION_REGISTRY_V0)).toBe(true);
@@ -46,14 +54,15 @@ describe("PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0 — canonical registry", (
     expect([...ids].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))).toEqual(ids);
   });
 
-  it("C. no universal 0.5 neutral: semantics and anchors are qualitative and distinct", () => {
+  it("C. semantics are qualitative with distinct poles and no numeric fields", () => {
     for (const definition of PERSONALITY_DIMENSION_REGISTRY_V0) {
       expect(definition.domain).toBe(PERSONALITY_DIMENSION_DOMAIN);
       expect(definition.description.length).toBeGreaterThan(0);
       expect(definition.low_anchor).not.toBe(definition.high_anchor);
-      expect(definition.low_anchor.length).toBeGreaterThan(0);
-      expect(definition.high_anchor.length).toBeGreaterThan(0);
       expect(definition.plasticity_admissible).toBe(true);
+      for (const value of Object.values(definition)) {
+        expect(typeof value).not.toBe("number");
+      }
     }
   });
 
@@ -78,54 +87,48 @@ describe("PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0 — canonical registry", (
     }
   });
 
-  it("E. genesis disposition is explicit, bounded, and not all-0.5", () => {
-    const keys = Object.keys(ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION).sort((a, b) =>
-      a < b ? -1 : a > b ? 1 : 0
-    );
-    expect(keys).toEqual([...EXPECTED_IDS]);
-    const values = Object.values(ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION);
-    for (const value of values) {
-      expect(Number.isFinite(value)).toBe(true);
-      expect(value).toBeGreaterThanOrEqual(0);
-      expect(value).toBeLessThanOrEqual(1);
-    }
-    expect(values.every((value) => value === 0.5)).toBe(false);
-    expect(Object.isFrozen(ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION)).toBe(true);
+  it("E. the module exposes NO numeric genesis/value authority whatsoever", () => {
+    const exports = registryModule as unknown as Record<string, unknown>;
+    expect(exports["ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION"]).toBeUndefined();
+    expect(exports["canonicalGenesisTraitsSeedV0"]).toBeUndefined();
+    expect(exports["initializeCanonicalGenesisPersonalityV0"]).toBeUndefined();
   });
 
-  it("F. canonical genesis traits_seed P0 is deterministic and frozen", () => {
-    const first = canonicalGenesisTraitsSeedV0();
-    const second = canonicalGenesisTraitsSeedV0();
+  it("F. dimension law is independent of any subject's P0 values", () => {
+    const registryBefore = PERSONALITY_DIMENSION_REGISTRY_V0;
+    const idsBefore = PERSONALITY_DIMENSION_IDS_V0;
+    // Two arbitrary, mutually contradictory subject-specific priors.
+    const priorA: TraitsSeedV0 = { dimensions: { openness: 0.9 as never } };
+    const priorB: TraitsSeedV0 = { dimensions: { agreeableness: 0.1 as never, extraversion: 0.4 as never } };
+    const personalityA = initializePersonalityFromTraitsSeed(priorA);
+    const personalityB = initializePersonalityFromTraitsSeed(priorB);
+    expect(personalityA.dimensions.map((d) => d.dimension_id)).toEqual(["openness"]);
+    expect(personalityB.dimensions.map((d) => d.dimension_id)).toEqual(["agreeableness", "extraversion"]);
+    // Introducing subject-specific values does not add/remove/reorder dimension law.
+    expect(PERSONALITY_DIMENSION_REGISTRY_V0).toBe(registryBefore);
+    expect(PERSONALITY_DIMENSION_IDS_V0).toBe(idsBefore);
+    expect(PERSONALITY_DIMENSION_IDS_V0).toEqual([...EXPECTED_IDS]);
+  });
+
+  it("G. a fresh production subject has empty P0: no 0.5 fallback, no fabricated prior", () => {
+    const subject = freshSubject();
+    expect(subject.traits_seed.dimensions).toEqual({});
+    expect(subject.personality.dimensions).toEqual([]);
+    // Absence is not midpoint: nothing is silently set to 0.5.
+    expect(Object.keys(subject.traits_seed.dimensions)).toHaveLength(0);
+    expect(subject.personality.dimensions).toHaveLength(0);
+  });
+
+  it("H. genesis is deterministic: no randomness, no hidden value source", () => {
+    const first = freshSubject("alice", "Alice");
+    const second = freshSubject("alice", "Alice");
+    expect(first.traits_seed).toEqual(second.traits_seed);
+    expect(first.personality).toEqual(second.personality);
     expect(first).toEqual(second);
-    expect(Object.keys(first.dimensions)).toEqual([...EXPECTED_IDS]);
-    expect(Object.isFrozen(first.dimensions)).toBe(true);
-    for (const id of EXPECTED_IDS) {
-      expect(first.dimensions[id]).toBe(ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION[id]);
-    }
   });
 
-  it("G. personality(t=0) is exactly P0 (traits_seed only read)", () => {
-    const seed = canonicalGenesisTraitsSeedV0();
-    const personality = initializeCanonicalGenesisPersonalityV0();
-    expect(personality.schema_version).toBe("personality-state-v0");
-    expect(personality.dimensions.map((dimension) => dimension.dimension_id)).toEqual([...EXPECTED_IDS]);
-    for (const dimension of personality.dimensions) {
-      expect(dimension.value).toBe(seed.dimensions[dimension.dimension_id as string]);
-    }
-    // The seed is never mutated by initialization.
-    expect(seed.dimensions).toEqual(canonicalGenesisTraitsSeedV0().dimensions);
-  });
-
-  it("H. a fresh product subject is admitted with P0 and no fake lived history", () => {
-    const subject = createInteractiveSubjectSeedV0("alice", "Alice", []);
-    expect(subject.identity.subject_id).toBe("alice");
-    expect(subject.identity.display_name).toBe("Alice");
-    expect(Object.keys(subject.traits_seed.dimensions)).toEqual([...EXPECTED_IDS]);
-    expect(subject.personality.dimensions.map((dimension) => dimension.dimension_id)).toEqual([...EXPECTED_IDS]);
-    for (const dimension of subject.personality.dimensions) {
-      expect(dimension.value).toBe(subject.traits_seed.dimensions[dimension.dimension_id as string]);
-    }
-    // Genesis is disposition only: no Memory, Experience, Belief or Relationship.
+  it("I. genesis creates no fake Memory/Experience/Belief/Relationship", () => {
+    const subject = freshSubject();
     expect(subject.memory_state.working_refs).toEqual([]);
     expect(subject.memory_state.active_episode_refs).toEqual([]);
     expect(subject.memory_state.recent_retrieval_trace).toEqual([]);
@@ -134,13 +137,30 @@ describe("PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0 — canonical registry", (
     expect(subject.relationships.counterparts).toEqual([]);
   });
 
-  it("I. the admitted canonical set is targetable by the existing dimension contract", () => {
-    // The registry exposes exactly the string ids the frozen
-    // PersonalityUpdateProposal / producer contract already consumes; no
-    // producer mathematics or transition executor semantics change here.
-    for (const id of PERSONALITY_DIMENSION_IDS_V0) {
-      expect(typeof id).toBe("string");
-      expect(id).toMatch(/^[a-z][a-z0-9_]{0,63}$/);
+  it("J. cognition genesis input is exactly the empty genesis law (traits_seed is authoritative G)", () => {
+    // Cognition projects `snapshot.traits_seed.dimensions` verbatim. With the
+    // empty genesis law this is deterministically `{}` for every fresh subject,
+    // for every subject id / display name / anchor set.
+    for (const [id, name] of [
+      ["alice", "Alice"],
+      ["bob", ""],
+      ["subject-1", "Some Name"]
+    ] as const) {
+      expect(freshSubject(id, name).traits_seed.dimensions).toEqual({});
     }
+  });
+
+  it("K. acquire/persist separation: traits_seed stays frozen, personality is a mutable copy", () => {
+    // The genesis law itself carries no values; the frozen traits_seed →
+    // personality mapping still produces an independent mutable structure.
+    const seed: TraitsSeedV0 = { dimensions: Object.freeze({ openness: 0.7 as never }) };
+    const personality = initializePersonalityFromTraitsSeed(seed);
+    expect(personality.dimensions).toEqual([{ dimension_id: "openness", value: 0.7 }]);
+    const mutable = [...personality.dimensions] as { dimension_id: string; value: number }[];
+    const first = mutable[0];
+    expect(first).toBeDefined();
+    if (first !== undefined) first.value = 0.2;
+    // The immutable seed is untouched by mutating the derived acquired copy.
+    expect(seed.dimensions["openness"]).toBe(0.7);
   });
 });

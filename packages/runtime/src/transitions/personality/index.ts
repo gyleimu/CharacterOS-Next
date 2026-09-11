@@ -25,9 +25,6 @@ export {
   PERSONALITY_DIMENSION_IDS_V0,
   PERSONALITY_DIMENSION_REGISTRY_SCHEMA_VERSION,
   PERSONALITY_DIMENSION_REGISTRY_V0,
-  ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION,
-  canonicalGenesisTraitsSeedV0,
-  initializeCanonicalGenesisPersonalityV0,
   isCanonicalPersonalityDimensionV0,
   type PersonalityDimensionDefinitionV0
 } from "./personality-dimension-registry-v0.js";

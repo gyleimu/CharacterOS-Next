@@ -31,10 +31,6 @@ import type { ModelTransportTraceV0 } from "../transports/model-transport-trace-
 import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
 import { s0 } from "../transitions/observation/observation-fixtures.js";
-import {
-  canonicalGenesisTraitsSeedV0,
-  initializeCanonicalGenesisPersonalityV0
-} from "../transitions/personality/personality-dimension-registry-v0.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
 import type { BeliefAdaptationTurnReportV0 } from "./belief-adaptation-wiring-v0.js";
 import {
@@ -223,11 +219,12 @@ function readCurrentIntent(parsed: Record<string, unknown> | null): string | nul
 
 /**
  * The smallest lawful default v3 source for a product subject: the canonical
- * reference v3 subject state with the identity fields set to the requested
- * subject and the canonical personality genesis disposition
- * (PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0) as P0. No persona prompt, no
- * scripted history, no fabricated memories, no lived history: traits_seed is
- * the immutable genesis prior and personality is its mutable t=0 copy.
+ * reference v3 subject state with ONLY the identity fields set to the requested
+ * subject. No persona prompt, no scripted history, no fabricated memories, and
+ * no fabricated personality genesis prior (PERSONALITY_GENESIS_PRIOR_AUTHORITY_V0:
+ * traits_seed stays empty and personality stays empty until an explicit lawful
+ * genesis-prior admission exists). No Memory/Experience/Belief/Relationship is
+ * created here.
  */
 export function createInteractiveSubjectSeedV0(
   subjectId: string,
@@ -236,11 +233,6 @@ export function createInteractiveSubjectSeedV0(
 ): SubjectStateV0 {
   const base = s0() as unknown as Record<string, unknown>;
   const identity = { ...(base["identity"] as Record<string, unknown>) };
-  // PERSONALITY_DIMENSION_SEMANTIC_ADMISSION_V0: a fresh subject starts from the
-  // canonical genesis disposition P0 (immutable traits_seed) with the acquired
-  // mutable personality initialized as its exact copy. No lived history, no
-  // Memory/Experience/Belief/Relationship is created here.
-  const traitsSeed = canonicalGenesisTraitsSeedV0();
   const raw = {
     ...base,
     identity: {
@@ -248,9 +240,7 @@ export function createInteractiveSubjectSeedV0(
       subject_id: subjectId,
       display_name: displayName,
       identity_anchors: [...identityAnchors]
-    },
-    traits_seed: traitsSeed,
-    personality: initializeCanonicalGenesisPersonalityV0()
+    }
   } as unknown as SubjectStateV0;
   const checked = validateSubjectState(raw);
   if (!checked.ok) {

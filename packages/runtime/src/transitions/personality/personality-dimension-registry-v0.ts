@@ -1,11 +1,22 @@
 /**
- * PersonalityDimensionRegistryV0 — canonical personality dimension admission.
+ * PersonalityDimensionRegistryV0 — canonical personality dimension ADMISSION.
  *
  * This module is the SINGLE closed semantic contract that answers "which
  * persistent subject-global properties may count as personality in
- * CharacterOS-Next V0?". It defines the admitted dimension vocabulary plus an
- * explicit, transparent genesis disposition; it performs NO plasticity, NO
- * runtime wiring, NO cognition projection, and NO canonical mutation.
+ * CharacterOS-Next V0?". It defines the admitted dimension vocabulary and its
+ * qualitative semantics ONLY.
+ *
+ * AUTHORITY SEPARATION (PERSONALITY_GENESIS_PRIOR_AUTHORITY_V0):
+ *   dimension admission   — THIS module (which ids may exist)
+ *   dimension value assignment — NOT authorized here (no genesis prior,
+ *   no default disposition, no numeric authority of any kind)
+ *
+ * A registry that says "openness is a Personality dimension" does NOT thereby
+ * say "every new subject has openness = X". The genesis P0 value authority is a
+ * distinct, currently-unresolved authority: this module deliberately ships NO
+ * default values, NO fallback (no universal 0.5), and NO randomness. A fresh
+ * production subject therefore starts with `traits_seed = {}` and
+ * `personality = []` until an explicit lawful genesis-prior admission exists.
  *
  * DOMAIN LAW (each admitted dimension satisfies all):
  * - subject-global (not tied to one counterpart or one proposition)
@@ -16,29 +27,14 @@
  * - potentially plastic over long lived history
  * - behavior/cognition relevance is interpretable without a 0.5 "neutral human"
  *
- * ENGINEERING_REFERENCE_V0: the genesis values below are explicit, transparent
- * engineering starting points for a fresh subject. They are NOT a validated
- * model of a typical human, NOT a universality claim, and NOT historical
- * acquisition inference. There is deliberately NO universal 0.5 "neutral
- * human": absence of a dimension is distinct from any numeric value.
- *
  * The registry is closed and frozen: adding a dimension is a schema admission
- * decision (a new slice), never a runtime/plasticity action. Existing
- * `PersonalityStateV0` updates may only target dimensions registered from this
- * registry (or another explicit genesis admission); plasticity never creates
- * dimensions spontaneously.
+ * decision (a new slice), never a runtime/plasticity action.
  */
 
 import {
   validateIdentifier,
-  validateUnitInterval,
-  type IdentifierV0,
-  type PersonalityStateV0,
-  type TraitsSeedV0,
-  type UnitIntervalV0
+  type IdentifierV0
 } from "@characteros-next/subject-core";
-
-import { initializePersonalityFromTraitsSeed } from "./personality-init.js";
 
 export const PERSONALITY_DIMENSION_REGISTRY_SCHEMA_VERSION =
   "personality-dimension-registry-v0" as const;
@@ -48,8 +44,8 @@ export const PERSONALITY_DIMENSION_DOMAIN = "PERSONALITY" as const;
 
 /**
  * One admitted canonical personality dimension. Purely qualitative semantic
- * metadata (no numeric cross-domain weights, no affect/belief/relationship
- * semantics).
+ * metadata (no numeric values, no cross-domain weights, no affect/belief/
+ * relationship semantics).
  */
 export interface PersonalityDimensionDefinitionV0 {
   readonly dimension_id: IdentifierV0;
@@ -137,12 +133,6 @@ function toIdentifier(value: string, label: string): IdentifierV0 {
   return checked.value;
 }
 
-function toUnitInterval(value: number, label: string): UnitIntervalV0 {
-  const checked = validateUnitInterval(value, label);
-  if (!checked.ok) failInvariant(`${label}: ${checked.error.reason} ${checked.error.detail}`);
-  return checked.value;
-}
-
 function buildRegistry(
   raw: readonly RawDimensionDefinitionV0[]
 ): readonly PersonalityDimensionDefinitionV0[] {
@@ -178,7 +168,7 @@ function buildRegistry(
   return Object.freeze(definitions);
 }
 
-/** Closed, frozen canonical V0 personality dimension registry. */
+/** Closed, frozen canonical V0 personality dimension registry (admission only). */
 export const PERSONALITY_DIMENSION_REGISTRY_V0: readonly PersonalityDimensionDefinitionV0[] =
   buildRegistry(RAW_DIMENSIONS_V0);
 
@@ -187,61 +177,7 @@ export const PERSONALITY_DIMENSION_IDS_V0: readonly string[] = Object.freeze(
   PERSONALITY_DIMENSION_REGISTRY_V0.map((definition) => definition.dimension_id as string)
 );
 
-/**
- * ENGINEERING_REFERENCE_V0 genesis disposition — explicit transparent starting
- * values for a fresh subject's personality. Deliberately NOT all 0.5 (no
- * universal neutral human) and explicitly declared rather than inferred.
- */
-export const ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION: Readonly<
-  Record<string, UnitIntervalV0>
-> = (() => {
-  const raw: Readonly<Record<string, number>> = Object.freeze({
-    agreeableness: 0.58,
-    conscientiousness: 0.6,
-    extraversion: 0.44,
-    openness: 0.56
-  });
-  const ids = PERSONALITY_DIMENSION_IDS_V0;
-  const keys = Object.keys(raw).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
-  if (keys.length !== ids.length || keys.some((key, index) => key !== ids[index])) {
-    failInvariant(
-      `genesis disposition keys must exactly cover the registry (expected ${ids.join(", ")}, got ${keys.join(", ")})`
-    );
-  }
-  const values = keys.map((key) => toUnitInterval(raw[key] as number, `genesis_disposition.${key}`));
-  if (values.every((value) => value === 0.5)) {
-    failInvariant("genesis disposition must not be a universal 0.5 neutral human");
-  }
-  const frozen: Record<string, UnitIntervalV0> = {};
-  for (let index = 0; index < keys.length; index++) {
-    frozen[keys[index] as string] = values[index] as UnitIntervalV0;
-  }
-  return Object.freeze(frozen);
-})();
-
 /** True iff the id is an admitted canonical personality dimension. */
 export function isCanonicalPersonalityDimensionV0(dimensionId: string): boolean {
   return PERSONALITY_DIMENSION_IDS_V0.includes(dimensionId);
-}
-
-/**
- * The immutable genesis prior P0 as a `TraitsSeedV0` (sorted keys). This is the
- * canonical disposition a fresh subject starts from; it says nothing about
- * lived history and creates no Memory/Experience/Belief/Relationship.
- */
-export function canonicalGenesisTraitsSeedV0(): TraitsSeedV0 {
-  const dimensions: Record<string, UnitIntervalV0> = {};
-  for (const dimensionId of PERSONALITY_DIMENSION_IDS_V0) {
-    dimensions[dimensionId] = ENGINEERING_REFERENCE_V0_GENESIS_DISPOSITION[dimensionId] as UnitIntervalV0;
-  }
-  return { dimensions: Object.freeze(dimensions) };
-}
-
-/**
- * `personality(t=0) = P0`: the acquired mutable personality state a fresh
- * subject is admitted with. Uses the existing frozen traits_seed → personality
- * mapping; traits_seed itself is only read, never written.
- */
-export function initializeCanonicalGenesisPersonalityV0(): PersonalityStateV0 {
-  return initializePersonalityFromTraitsSeed(canonicalGenesisTraitsSeedV0());
 }
