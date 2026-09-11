@@ -6,8 +6,11 @@
 import { describe, expect, it } from "vitest";
 import {
   createInMemorySubjectCoreFacade,
+  materializeSubjectStateV4V0,
+  validateHash,
   validateIdentifier,
   validateLogicalTime,
+  validateRepositoryRevision,
   validateStateRevision,
   validateUnitInterval,
   type HashV1,
@@ -15,6 +18,7 @@ import {
   type PersonalityStateV0,
   type ProducerAuthorizationIssuer,
   type SubjectStateV0,
+  type SubjectStateV4,
   type UnitIntervalV0,
   type ValidationResult
 } from "@characteros-next/subject-core";
@@ -49,9 +53,12 @@ import {
   PERSONALITY_SEMANTIC_CHANNEL_CATALOG_SCHEMA_VERSION,
   DeterministicReferenceSemanticChannelProviderV0,
   derivePersonalitySemanticCatalogFingerprint,
+  personalitySemanticEvidenceViewFromV3,
+  personalitySemanticEvidenceViewFromV4,
   producePersonalityPlasticityFromSemanticChannelProposal,
   runPersonalitySemanticChannelProposalV0,
   validatePersonalitySemanticChannelCatalog,
+  validatePersonalitySemanticEvidenceViewV0,
   type PersonalitySemanticChannelAcceptedV0,
   type PersonalitySemanticChannelCatalogV0,
   type PersonalitySemanticChannelProviderInputV0,
@@ -317,7 +324,7 @@ async function runAccepted(
   catalog?: PersonalitySemanticChannelCatalogV0
 ): Promise<PersonalitySemanticChannelAcceptedV0> {
   const result = await runPersonalitySemanticChannelProposalV0({
-    subject_state: world.state,
+    evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
     selected_records: records,
     repository: world.repository,
     channel_policy: policy,
@@ -396,7 +403,7 @@ describe("semantic evidence authority and projection", () => {
     const provider = new RawProvider((input) => channelOutput(input));
     const missing = recordFixture(EP_X, "A record not present in the bound revision.");
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: [missing],
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -418,7 +425,7 @@ describe("semantic evidence authority and projection", () => {
     });
     const provider = new RawProvider((input) => channelOutput(input));
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: [newer],
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -440,7 +447,7 @@ describe("semantic evidence authority and projection", () => {
     const revisionsBefore = world.repository.revisionIds();
     const provider = new RawProvider((input) => channelOutput(input));
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: [forged],
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -519,7 +526,7 @@ describe("semantic catalog and policy binding", () => {
     };
     const provider = new RawProvider((input) => channelOutput(input));
     const rejected = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: world.records,
       repository: world.repository,
       channel_policy: changedPolicy,
@@ -540,7 +547,7 @@ describe("semantic catalog and policy binding", () => {
     const world = await authorityWorld();
     const provider = new RawProvider((input) => channelOutput(input));
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: world.records,
       repository: world.repository,
       channel_policy: policy,
@@ -639,7 +646,7 @@ describe("provider least authority, validation and abstention", () => {
   it.each(invalidCases)("%s fails closed", async (_label, output, expectedCode) => {
     const world = await authorityWorld();
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: world.records,
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -658,7 +665,7 @@ describe("provider least authority, validation and abstention", () => {
     }));
     const worldB = await authorityWorld(baseRecords().slice(0, 2));
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: worldB.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(worldB.state),
       selected_records: worldB.records,
       repository: worldB.repository,
       channel_policy: policyFixture(),
@@ -677,7 +684,7 @@ describe("provider least authority, validation and abstention", () => {
     }));
     const catalogB = await catalogFixture(policyFixture(), "A changed catalog criterion.");
     const result = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: world.records,
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -700,7 +707,7 @@ describe("provider least authority, validation and abstention", () => {
     };
     const world = await authorityWorld(injected);
     const unknown = await runPersonalitySemanticChannelProposalV0({
-      subject_state: world.state,
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
       selected_records: world.records,
       repository: world.repository,
       channel_policy: policyFixture(),
@@ -938,7 +945,7 @@ describe("OpenAI-compatible provider and controlled prompt", () => {
         timeout_ms: 30000
       });
       const result = await runPersonalitySemanticChannelProposalV0({
-        subject_state: world.state,
+        evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
         selected_records: world.records,
         repository: world.repository,
         channel_policy: policyFixture(),
@@ -948,4 +955,216 @@ describe("OpenAI-compatible provider and controlled prompt", () => {
       expect(result.kind).toBe("ACCEPTED");
     }
   );
+});
+
+describe("PERSONALITY_SEMANTIC_EVIDENCE_V4_STATE_ADMISSION_V0 — narrow version-neutral view", () => {
+  const R0_HASH = `sha256:${"a".repeat(64)}` as HashV1;
+
+  async function v4From(world: AuthorityWorld): Promise<SubjectStateV4> {
+    const revision = requireBrand(
+      validateRepositoryRevision(
+        world.state.memory_state.repository_revision as string,
+        "v4.r0.revision"
+      )
+    );
+    const revisionHash = requireBrand(validateHash(R0_HASH, "v4.r0.hash"));
+    const binding = { repository_revision: revision, repository_revision_hash: revisionHash };
+    const result = await materializeSubjectStateV4V0({
+      mode: "EXPLICIT_V4_FOUNDATION_V0",
+      seed: {
+        schema_version: "subject-state-v4-genesis-seed-v0",
+        subject: { subject_id: SUBJECT_ID, display_name: "", identity_anchors: [] },
+        v3_source: world.state,
+        r0_binding: binding
+      },
+      r0_binding: binding,
+      reference_validator: async () => true
+    } as never);
+    if (!result.ok) throw new Error(`v4 genesis failed: ${result.code} ${result.detail}`);
+    return result.state;
+  }
+
+  async function runWithView(
+    view: ReturnType<typeof personalitySemanticEvidenceViewFromV4>,
+    world: AuthorityWorld,
+    provider: PersonalitySemanticChannelProviderV0,
+    records: readonly unknown[] = world.records
+  ) {
+    return runPersonalitySemanticChannelProposalV0({
+      evidence_view: view,
+      selected_records: records,
+      repository: world.repository,
+      channel_policy: policyFixture(),
+      semantic_catalog: await catalogFixture(),
+      provider
+    });
+  }
+
+  it("V4 production state derives a view without legacy mood/affect and runs the selector", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    expect("mood" in (v4 as unknown as Record<string, unknown>)).toBe(false);
+    expect((v4.affect as { schema_version?: string }).schema_version).toBe("canonical-affect-v0");
+    const view = personalitySemanticEvidenceViewFromV4(v4);
+    const result = await runWithView(
+      view,
+      world,
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) })
+    );
+    expect(result.kind).toBe("ACCEPTED");
+    if (result.kind !== "ACCEPTED") return;
+    expect(result.audit.repository_revision).toBe(world.state.memory_state.repository_revision);
+    expect(result.proposal.kind).toBe("CHANNEL");
+  });
+
+  it("V3 and V4 semantically equivalent states produce identical decisions", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const provider = () =>
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) });
+    const v3Result = await runPersonalitySemanticChannelProposalV0({
+      evidence_view: personalitySemanticEvidenceViewFromV3(world.state),
+      selected_records: world.records,
+      repository: world.repository,
+      channel_policy: policyFixture(),
+      semantic_catalog: await catalogFixture(),
+      provider: provider()
+    });
+    const v4Result = await runWithView(personalitySemanticEvidenceViewFromV4(v4), world, provider());
+    expect(v3Result.kind).toBe("ACCEPTED");
+    expect(v4Result.kind).toBe("ACCEPTED");
+    if (v3Result.kind !== "ACCEPTED" || v4Result.kind !== "ACCEPTED") return;
+    expect(v4Result.proposal).toEqual(v3Result.proposal);
+    expect(v4Result.audit).toEqual(v3Result.audit);
+  });
+
+  it("V4 canonical Affect is semantically irrelevant to evidence authority", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const v4OtherAffect: SubjectStateV4 = {
+      ...v4,
+      affect: { schema_version: "canonical-affect-v0", valence: -0.9 as never, activation: 0.1 as never }
+    };
+    const viewA = personalitySemanticEvidenceViewFromV4(v4);
+    const viewB = personalitySemanticEvidenceViewFromV4(v4OtherAffect);
+    expect(viewB).toEqual(viewA);
+    const provider = () =>
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) });
+    const resultA = await runWithView(viewA, world, provider());
+    const resultB = await runWithView(viewB, world, provider());
+    expect(resultA).toEqual(resultB);
+  });
+
+  it("V4 wrong repository revision is rejected", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    void v4;
+    const wrongRevision = requireBrand(validateRepositoryRevision("R0", "v4.wrong.rev"));
+    const wrongView = requireBrand(
+      validatePersonalitySemanticEvidenceViewV0({
+        schema_version: "personality-semantic-evidence-view-v0",
+        repository_revision: wrongRevision
+      })
+    );
+    const result = await runWithView(
+      wrongView,
+      world,
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) })
+    );
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
+  it("V4 non-member / forged record ref is rejected", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const forged = [...world.records, recordFixture(EP_X, "forged record", 4)];
+    const result = await runWithView(
+      personalitySemanticEvidenceViewFromV4(v4),
+      world,
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) }),
+      forged
+    );
+    expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
+  it("V4 provider ABSTAIN is preserved (no proposal)", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const result = await runWithView(
+      personalitySemanticEvidenceViewFromV4(v4),
+      world,
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "ABSTAIN" })
+    );
+    expect(result.kind).toBe("ACCEPTED");
+    if (result.kind !== "ACCEPTED") return;
+    expect(result.proposal.kind).toBe("ABSTAIN");
+  });
+
+  it("V4 provider failure fails closed", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const result = await runWithView(
+      personalitySemanticEvidenceViewFromV4(v4),
+      world,
+      new RawProvider(() => {
+        throw new Error("provider offline");
+      })
+    );
+    expect(result).toMatchObject({ kind: "REJECTED", code: "INVALID_PROVIDER_OUTPUT" });
+  });
+
+  it("V4 evidence view fails closed on structural forgery", () => {
+    const revision = requireBrand(validateRepositoryRevision("R1", "view.rev"));
+    expect(
+      validatePersonalitySemanticEvidenceViewV0({
+        schema_version: "personality-semantic-evidence-view-v0",
+        repository_revision: revision,
+        personality: {}
+      }).ok
+    ).toBe(false);
+    expect(
+      validatePersonalitySemanticEvidenceViewV0({
+        schema_version: "personality-semantic-evidence-view-v9",
+        repository_revision: revision
+      }).ok
+    ).toBe(false);
+    expect(validatePersonalitySemanticEvidenceViewV0(null).ok).toBe(false);
+    expect(
+      validatePersonalitySemanticEvidenceViewV0({
+        schema_version: "personality-semantic-evidence-view-v0",
+        repository_revision: "not a revision!"
+      }).ok
+    ).toBe(false);
+  });
+
+  it("V4 path inherits the existing fail-closed bridge for a missing target dimension", async () => {
+    const world = await authorityWorld();
+    const v4 = await v4From(world);
+    const accepted = await runWithView(
+      personalitySemanticEvidenceViewFromV4(v4),
+      world,
+      new DeterministicReferenceSemanticChannelProviderV0({ kind: "CHANNEL", channel_id: id(CH_A) })
+    );
+    expect(accepted.kind).toBe("ACCEPTED");
+    if (accepted.kind !== "ACCEPTED") return;
+    const withoutOpenness: PersonalityPlasticityContextV0 = {
+      ...producerContext(),
+      current_personality: {
+        schema_version: "personality-state-v0",
+        dimensions: [{ dimension_id: id(DIM_DILIGENCE), value: unit(0.6) }]
+      }
+    };
+    const bridged = await producePersonalityPlasticityFromSemanticChannelProposal(
+      accepted,
+      policyFixture(),
+      withoutOpenness,
+      projections(),
+      ENGINEERING_REFERENCE_V0_PLASTICITY_POLICY
+    );
+    expect(bridged.kind).toBe("DELEGATED");
+    if (bridged.kind !== "DELEGATED") return;
+    // The frozen evidence-channel bridge fails closed on an unregistered target
+    // dimension before the producer ever runs.
+    expect(bridged.channel_result.kind).toBe("UNKNOWN_TARGET_DIMENSION");
+  });
 });

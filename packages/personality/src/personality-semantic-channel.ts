@@ -24,12 +24,15 @@ import {
   validateCanonicalText,
   validateHash,
   validateIdentifier,
+  validateRepositoryRevision,
   validateSubjectState,
+  validateSubjectStateV4,
   type HashV1,
   type IdentifierV0,
   type LogicalTimeV0,
   type RepositoryRevisionIdV0,
   type SubjectStateV0,
+  type SubjectStateV4,
   type ValidationResult
 } from "@characteros-next/subject-core";
 
@@ -76,6 +79,97 @@ export interface PersonalitySemanticEvidenceProjectionV0 {
   readonly schema_version: typeof PERSONALITY_SEMANTIC_EVIDENCE_PROJECTION_SCHEMA_VERSION;
   /** Unique and canonically raw-ASCII sorted by episode_ref. */
   readonly evidence: readonly PersonalitySemanticEvidenceItemV0[];
+}
+
+/**
+ * PERSONALITY_SEMANTIC_EVIDENCE_V4_STATE_ADMISSION_V0 — narrow, version-neutral
+ * trusted state view.
+ *
+ * The semantic runner reads exactly ONE field from canonical subject state: the
+ * authoritative `memory_state.repository_revision` that evidence membership is
+ * bound to. It never reads identity, personality, traits_seed, beliefs,
+ * relationships, affect, mood, regulation, or context. Requiring a whole
+ * `SubjectStateV0` (and validating it with the legacy v3 validator) was
+ * incidental coupling that made production `SubjectStateV4` unusable.
+ *
+ * This view carries only that authoritative revision. It must be produced by
+ * trusted code from an already-validated canonical state (v3 or v4) via the
+ * builders below; a forged revision cannot survive evidence verification because
+ * the referenced manifest must actually contain the selected records with
+ * matching payload hashes.
+ */
+export const PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION =
+  "personality-semantic-evidence-view-v0" as const;
+
+export interface PersonalitySemanticEvidenceViewV0 {
+  readonly schema_version: typeof PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION;
+  readonly repository_revision: RepositoryRevisionIdV0;
+}
+
+const EVIDENCE_VIEW_KEYS: readonly string[] = ["schema_version", "repository_revision"];
+
+/** Fail-closed structural admission of the narrow evidence view. */
+export function validatePersonalitySemanticEvidenceViewV0(
+  v: unknown
+): ValidationResult<PersonalitySemanticEvidenceViewV0> {
+  if (!isRecord(v)) {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "personality_semantic_evidence_view: expected object");
+  }
+  for (const key of Object.keys(v)) {
+    if (!EVIDENCE_VIEW_KEYS.includes(key)) {
+      return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `personality_semantic_evidence_view.${key}: unknown key`);
+    }
+  }
+  if (v["schema_version"] !== PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION) {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "personality_semantic_evidence_view.schema_version: invalid literal");
+  }
+  const revisionRaw = v["repository_revision"];
+  if (typeof revisionRaw !== "string") {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", "personality_semantic_evidence_view.repository_revision: expected identifier");
+  }
+  const revision = validateRepositoryRevision(revisionRaw, "personality_semantic_evidence_view.repository_revision");
+  if (!revision.ok) {
+    return fail(revision.error.error_code, revision.error.reason, revision.error.detail);
+  }
+  return ok({
+    schema_version: PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION,
+    repository_revision: revision.value
+  });
+}
+
+/**
+ * Trusted extraction from a validated canonical v3 state. Fails closed (throws)
+ * when the state itself is invalid.
+ */
+export function personalitySemanticEvidenceViewFromV3(
+  state: SubjectStateV0
+): PersonalitySemanticEvidenceViewV0 {
+  const checked = validateSubjectState(state);
+  if (!checked.ok) {
+    throw new Error(`PERSONALITY_SEMANTIC_EVIDENCE_VIEW_INVALID: ${checked.error.detail}`);
+  }
+  return {
+    schema_version: PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION,
+    repository_revision: checked.value.memory_state.repository_revision
+  };
+}
+
+/**
+ * Trusted extraction from a validated canonical v4 state (production). No
+ * V4→V3 downgrade and no legacy Mood/Affect fabrication: only the authoritative
+ * repository revision is read.
+ */
+export function personalitySemanticEvidenceViewFromV4(
+  state: SubjectStateV4
+): PersonalitySemanticEvidenceViewV0 {
+  const checked = validateSubjectStateV4(state);
+  if (!checked.ok) {
+    throw new Error(`PERSONALITY_SEMANTIC_EVIDENCE_VIEW_INVALID: ${checked.error.detail}`);
+  }
+  return {
+    schema_version: PERSONALITY_SEMANTIC_EVIDENCE_VIEW_SCHEMA_VERSION,
+    repository_revision: checked.value.memory_state.repository_revision
+  };
 }
 
 export interface PersonalitySemanticChannelDefinitionV0 {
@@ -200,7 +294,12 @@ export type PersonalitySemanticEvidenceRepositoryV0 = Pick<
 >;
 
 export interface PersonalitySemanticChannelRunnerInputV0 {
-  readonly subject_state: SubjectStateV0;
+  /**
+   * Narrow trusted state view (v3- or v4-derived): the exact authoritative
+   * repository revision evidence membership is bound against. Replaces the
+   * former whole-state `subject_state` dependency.
+   */
+  readonly evidence_view: PersonalitySemanticEvidenceViewV0;
   /** Caller-selected exact records; the runner never searches for additional memory. */
   readonly selected_records: readonly unknown[];
   readonly repository: PersonalitySemanticEvidenceRepositoryV0;
@@ -410,11 +509,11 @@ async function verifyAndProjectEvidence(
     };
   }
 
-  const stateChecked = validateSubjectState(input.subject_state);
-  if (!stateChecked.ok) {
-    return { ok: false, detail: `current subject state invalid: ${stateChecked.error.detail}` };
+  const viewChecked = validatePersonalitySemanticEvidenceViewV0(input.evidence_view);
+  if (!viewChecked.ok) {
+    return { ok: false, detail: `evidence view invalid: ${viewChecked.error.detail}` };
   }
-  const repositoryRevision = stateChecked.value.memory_state.repository_revision;
+  const repositoryRevision = viewChecked.value.repository_revision;
   let manifestRaw: Awaited<ReturnType<PersonalitySemanticEvidenceRepositoryV0["readManifest"]>>;
   try {
     manifestRaw = await input.repository.readManifest(repositoryRevision);
