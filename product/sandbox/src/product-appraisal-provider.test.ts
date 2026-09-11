@@ -165,4 +165,24 @@ describe("CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0 — model-backed provider", ()
     expect(a["dimensions"]).toEqual(b["dimensions"]);
     expect(JSON.stringify(a)).not.toMatch(/sentiment|emotion|reward|positive|negative/i);
   });
+
+  it("represents an ambiguous event through uncertainty/confidence without inventing emotion", async () => {
+    const { transport } = stubTransport(() =>
+      JSON.stringify({
+        relevance: 0.4,
+        goal_congruence: 0.5,
+        attribution: "situation",
+        controllability: 0.3,
+        uncertainty: 0.9,
+        intensity: 0.3,
+        assessment_confidence: 0.25
+      })
+    );
+    const { provider } = createProductAppraisalProviderV0({ transport });
+    const proposal = (await provider.proposeFactualEventAppraisal(contextFor("The user says: \"Fine.\""))) as Record<string, unknown>;
+    expect((proposal["dimensions"] as Record<string, unknown>)["uncertainty"]).toBe(0.9);
+    expect(proposal["assessment_confidence"]).toBe(0.25);
+    expect(Object.keys(proposal).sort()).not.toContain("emotion");
+    expect(JSON.stringify(proposal)).not.toMatch(/happy|sad|angry|fear|sentiment|reward/i);
+  });
 });
