@@ -1271,6 +1271,23 @@ describe("PERSONALITY_EVIDENCE_MEMBERSHIP_AUTHORITY_ISOLATION_V0 — revision-bo
     expect(result).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
   });
 
+  it("HJ9: a sibling/fork episode is rejected at a bound revision (ancestry-only visibility)", async () => {
+    const repository = new InMemoryMemoryRepository();
+    await repository.prepareRevision({ parent_revision: null, records: [] });
+    const A = recordFixture(EP_A, "alpha", 1);
+    const X = recordFixture(EP_B, "sibling x", 2);
+    const Y = recordFixture(EP_C, "sibling y", 2);
+    const base = await appendRevision(repository, "R0", [{ ref: A.episode_ref, payload: A }]);
+    const branchX = await appendRevision(repository, base, [{ ref: X.episode_ref, payload: X }]);
+    const branchY = await appendRevision(repository, base, [{ ref: Y.episode_ref, payload: Y }]);
+    expect(branchX).not.toBe(branchY);
+    // X is visible on branch X; Y exists in the same store but only on the sibling.
+    const visible = await runCross(repository, branchX, [A, X]);
+    expect(visible.kind).toBe("ACCEPTED");
+    const sibling = await runCross(repository, branchX, [A, Y]);
+    expect(sibling).toMatchObject({ kind: "REJECTED", code: "UNVERIFIED_SEMANTIC_EVIDENCE" });
+  });
+
   it("HJ8: an unknown ref is rejected", async () => {
     const { repository, A, bound } = await crossRevisionHistory();
     const unknown = recordFixture(EP_X, "never stored", 5);
