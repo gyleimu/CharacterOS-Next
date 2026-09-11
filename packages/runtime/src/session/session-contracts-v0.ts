@@ -84,6 +84,13 @@ export interface SessionDurableStateV0 {
   /** Serialized delivery/ingress ledger states (authoritative durable ledgers). */
   readonly delivery_ledger_state: unknown;
   readonly ingress_ledger_state: unknown;
+  /**
+   * BELIEF_ADAPTATION_SESSION_WIRING_V0: serialized durable belief adaptation
+   * workflow store (INFRASTRUCTURE state only — never canonical subject state).
+   * Additive and optional: snapshots created before belief wiring carry no key
+   * and restore with an empty store.
+   */
+  readonly belief_workflow_store_state?: unknown;
 }
 
 export interface SessionCheckpointV0 {

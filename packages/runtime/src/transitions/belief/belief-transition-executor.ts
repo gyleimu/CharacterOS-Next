@@ -116,14 +116,21 @@ export class BeliefTransitionExecutor {
         `manifest revision ${manifest.repository_revision} does not match bound revision ${boundRevision}`
       );
     }
-    const boundRefs = new Set(manifest.record_hashes.map((record) => record.ref));
-    for (const evidenceRef of proposal.evidence_binding.member_refs) {
-      if (!boundRefs.has(evidenceRef)) {
-        return rejected(
-          "REJECTED_UNVERIFIED_EVIDENCE_MEMBER",
-          `evidence ${evidenceRef} is not present in bound revision ${boundRevision}`
-        );
-      }
+    // BELIEF_ADAPTATION_SESSION_WIRING_V0: membership uses the repository's
+    // SANCTIONED §11 step-6 verdict (effective visibility V(R) through bound
+    // revision ancestry) — the same semantics the canonical adoption/commit
+    // gates apply — instead of the raw per-revision manifest delta. Lived
+    // evidence lawfully stays verifiable at HEAD after later repository
+    // revisions (e.g. appraisal records) have been committed.
+    const evidenceVerified = await this.deps.memoryRepository.validateRefsBelong(
+      boundRevision,
+      proposal.evidence_binding.member_refs
+    );
+    if (!evidenceVerified) {
+      return rejected(
+        "REJECTED_UNVERIFIED_EVIDENCE_MEMBER",
+        `evidence ${proposal.evidence_binding.member_refs.join(", ")} is not visible through bound revision ${boundRevision}`
+      );
     }
 
     let nextBeliefs: BeliefStateV0;

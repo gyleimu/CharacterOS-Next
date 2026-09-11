@@ -1,0 +1,29 @@
+{
+  "commonA": {
+    "cognition_request_hash": "system:2134|user:3531",
+    "belief_line": "{\"proposition_id\":\"prop.alice-keeps-promises\",\"proposition_label\":\"Alice keeps promises\",\"credence\":0.65}",
+    "subject_text": "That's wonderful news. Given that Alice has kept her promises before, like watering your plants exactly as she said, I'm confident she'll help you move next weekend too.",
+    "turn_status": "COMPLETE",
+    "belief_adaptation": {
+      "status": "COMPLETED",
+      "resumed": [],
+      "current": {
+        "workflow_id": "wf-belief-adapt-7a2180c5e5daa8469351721a",
+        "terminal_kind": "COMPLETE_NO_BEARING",
+        "detail": null,
+        "evidence_episode_refs": [
+          "episode:268a8602a51fe9f25cbf32b991538b1d3bfbb9f03a82a393ff9b4656d80b5f62"
+        ],
+        "provider_calls": 1,
+        "proposition_id": null,
+        "prior_credence": null,
+        "next_credence": null
+      },
+      "failure": null
+    },
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "appraisal_calls": 2
+  },
+  "commonB": null
+}

@@ -19,16 +19,22 @@ import { validateCanonicalAffectShape } from "./subject-state-v4-values.js";
 const SCHEMA = "SS-SCHEMA-001";
 
 /**
- * CANONICAL_AFFECT_APPLICATION_V0 — the transitions a subject-state-v4
- * predecessor lawfully admits. The governed pre-cognition admission prefix
- * (Observation without legacy affect, Learning memory-content commits) plus
- * the recovery writer (Time) and the impulse writer (AffectApplication).
+ * The transitions a subject-state-v4 predecessor lawfully admits. The governed
+ * pre-cognition admission prefix (Observation without legacy affect, Learning
+ * memory-content commits), the recovery writer (Time), the impulse writer
+ * (AffectApplication), and — BELIEF_ADAPTATION_SESSION_WIRING_V0 — the
+ * subjective-endorsement writer (Belief): its closed composition (exactly one
+ * /beliefs replacement delta, producer "belief", writer-authority membrane)
+ * already exists version-agnostically in commit/composition.ts, so the v4
+ * foundation now admits the established Belief transition type exactly like
+ * the other admitted writers. No other composition law changes.
  */
 const V4_ALLOWED_TRANSITIONS: readonly string[] = [
   "Time",
   "Observation",
   "Learning",
-  "AffectApplication"
+  "AffectApplication",
+  "Belief"
 ];
 
 export function validateSubjectStateAnyVersionV0(

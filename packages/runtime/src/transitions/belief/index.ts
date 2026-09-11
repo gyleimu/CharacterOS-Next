@@ -87,6 +87,12 @@ export {
 } from "./belief-adaptation-workflow.js";
 
 export {
+  BELIEF_ADAPTATION_WORKFLOW_STORE_SCHEMA_VERSION,
+  InMemoryBeliefAdaptationWorkflowStoreV0,
+  type BeliefAdaptationWorkflowStoreStateV0
+} from "./belief-adaptation-workflow-store.js";
+
+export {
   BELIEF_SEMANTIC_OLLAMA_PROVIDER_ERROR_CODES,
   BeliefSemanticOllamaProviderErrorV0,
   OLLAMA_BELIEF_SEMANTIC_PROVIDER_NUM_PREDICT,

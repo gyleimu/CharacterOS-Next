@@ -570,12 +570,17 @@ export class SubjectCoreFacade<
       // read-only consumer whose canonical footprint is exactly this durable
       // zero-delta NO_OP terminal — never a state writer (the zero-delta
       // shape check above is mandatory and unchanged).
-      input.proposal.transition_type !== "CognitionAction"
+      input.proposal.transition_type !== "CognitionAction" &&
+      // BELIEF_ADAPTATION_SESSION_WIRING_V0: a Belief same-value update
+      // terminalizes as this same durable NO_OP with the exact /beliefs
+      // replacement-equality check below — the v4 foundation admits it like
+      // the v3 line always has.
+      input.proposal.transition_type !== "Belief"
     ) {
       return this.rejected(
         "INVALID_TRANSITION_COMPOSITION",
         "TR-ATOMIC-001",
-        "subject-state-v4 foundation permits durable NO_OP only for Time and CognitionAction"
+        "subject-state-v4 foundation permits durable NO_OP only for Time, CognitionAction and Belief"
       );
     }
     if (beliefNoOp) {

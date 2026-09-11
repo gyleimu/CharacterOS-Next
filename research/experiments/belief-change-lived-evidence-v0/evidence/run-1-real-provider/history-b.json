@@ -1,0 +1,20 @@
+{
+  "turns": [
+    {
+      "turn_index": 0,
+      "user_text": "Alice promised to water my plants while I was away, but she forgot the whole week and the plants died.",
+      "status": "FAILED",
+      "subject_text": null,
+      "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+      "belief_adaptation": null,
+      "state_revision_before": 0,
+      "state_revision_after": 3,
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R0"
+    }
+  ],
+  "snapshot": {
+    "snapshot_failed": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]"
+  },
+  "appraisalCalls": 2
+}

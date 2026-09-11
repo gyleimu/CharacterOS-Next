@@ -315,25 +315,48 @@ export async function runBeliefSemanticTargetResolutionV0(
       `manifest revision ${manifest.repository_revision} does not match bound revision ${repositoryRevision}`
     );
   }
-  const manifestHashes = new Map(
-    manifest.record_hashes.map((entry) => [entry.ref as string, entry.payload_hash as string])
-  );
+  // BELIEF_ADAPTATION_SESSION_WIRING_V0: membership uses the repository's
+  // SANCTIONED §11 step-6 verdict (effective visibility V(R) through bound
+  // revision ancestry) instead of the raw per-revision manifest delta — the
+  // canonical adoption/commit gates use the same visibility semantics, and
+  // lived evidence lawfully remains visible at HEAD after later repository
+  // revisions (e.g. appraisal records) have been committed. The provider can
+  // still never widen the evidence set: every ref must be visible at the
+  // exact bound revision and every payload hash is verified below.
   const sortedRecords = [...input.selected_episodes].sort((a, b) =>
     rawAsciiCompare(a.episode_ref as string, b.episode_ref as string)
   );
   const seenEpisodes = new Set<string>();
+  const evidenceRefs: never[] = [];
+  for (const record of sortedRecords) {
+    const checked = validateEpisodicMemoryRecord(record);
+    if (!checked.ok) return reject("INVALID_EVIDENCE", checked.error.detail);
+    evidenceRefs.push(checked.value.episode_ref as never);
+    const ref = checked.value.episode_ref as string;
+    if (seenEpisodes.has(ref)) return reject("INVALID_EVIDENCE", `duplicate episode_ref ${ref}`);
+    seenEpisodes.add(ref);
+  }
+  const allVisible = await deps.memoryRepository.validateRefsBelong(
+    repositoryRevision as never,
+    evidenceRefs
+  );
+  if (!allVisible) {
+    return reject(
+      "INVALID_EVIDENCE",
+      `evidence is not visible through the bound revision ${repositoryRevision}`
+    );
+  }
   for (const record of sortedRecords) {
     const checked = validateEpisodicMemoryRecord(record);
     if (!checked.ok) return reject("INVALID_EVIDENCE", checked.error.detail);
     const ref = checked.value.episode_ref as string;
-    if (seenEpisodes.has(ref)) return reject("INVALID_EVIDENCE", `duplicate episode_ref ${ref}`);
-    seenEpisodes.add(ref);
-    if (!manifestHashes.has(ref)) {
-      return reject("INVALID_EVIDENCE", `evidence ${ref} is not present in bound revision ${repositoryRevision}`);
+    const repositoryOwnedHash = await deps.memoryRepository.payloadHashOf(ref as never);
+    if (repositoryOwnedHash === null) {
+      return reject("INVALID_EVIDENCE", `evidence ${ref} has no repository-owned payload`);
     }
     const suppliedHash = await computeMemoryRecordPayloadHash(checked.value);
-    if (suppliedHash !== manifestHashes.get(ref)) {
-      return reject("INVALID_EVIDENCE", `evidence ${ref} payload hash does not match the bound manifest`);
+    if (suppliedHash !== repositoryOwnedHash) {
+      return reject("INVALID_EVIDENCE", `evidence ${ref} payload hash does not match repository-owned content`);
     }
   }
   const evidenceProjection = deepFreeze({

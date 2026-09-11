@@ -222,5 +222,25 @@ export function validateProposalCompositionForStateVersion(
     }
     return ok(undefined);
   }
+  if (proposal.transition_type === "Belief") {
+    // BELIEF_ADAPTATION_SESSION_WIRING_V0: the subjective-endorsement writer
+    // on v4 — exactly one belief/belief delta carrying exactly the /beliefs
+    // replacement (the shape the frozen BeliefTransitionExecutor constructs).
+    // No other domain may ride along; the required /beliefs path of the v3
+    // Belief law is subsumed by this exact shape.
+    if (proposal.domain_deltas.length !== 1) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: Belief requires exactly one belief delta`);
+    }
+    const delta = proposal.domain_deltas[0];
+    if (
+      delta?.producer !== "belief" ||
+      delta.domain !== "belief" ||
+      delta.operations.length !== 1 ||
+      delta.operations[0]?.path !== "/beliefs"
+    ) {
+      return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: exact belief/belief /beliefs replacement required`);
+    }
+    return ok(undefined);
+  }
   return fail("INVALID_TRANSITION_COMPOSITION", TR_ATOMIC, `${base}: v4 foundation does not support ${proposal.transition_type}`);
 }

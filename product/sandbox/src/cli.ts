@@ -23,6 +23,7 @@ import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
 
 import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
+import { OllamaBeliefSemanticProviderV0 } from "@characteros-next/runtime";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
@@ -79,6 +80,16 @@ async function main(): Promise<number> {
   // factual event, accounted separately from cognition/language.
   const appraisal = createProductAppraisalProviderV0({ transport: transports.appraisal });
 
+  // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
+  // semantic bearing call per lived-evidence workflow, accounted separately
+  // from cognition/language/appraisal. The provider's own budget is FIXED by
+  // contract (num_predict 512, temperature 0, think/stream off, 60s timeout)
+  // — deliberately NOT the cognition output budget (§75).
+  const beliefSemanticProvider = new OllamaBeliefSemanticProviderV0({
+    base_url: baseUrl,
+    model: env("CHARACTEROS_BELIEF_SEMANTIC_MODEL") ?? model
+  });
+
   // ---- readline + startup gates ----------------------------------------------
   // The line handler is attached BEFORE any await, and every queued line waits
   // for startup: in piped/non-TTY mode readline can emit lines immediately, so
@@ -125,6 +136,7 @@ async function main(): Promise<number> {
         conversationCognitionTransport: transports.cognition,
         languageTransport: transports.language,
         appraisalProvider: appraisal.provider,
+        beliefSemanticProvider,
         provider_identity: {
           model,
           num_predict: numPredict,
@@ -187,6 +199,8 @@ async function main(): Promise<number> {
         // Separate Appraisal accounting (never folded into cognition/language).
         appraisal_calls_so_far: appraisal.stats.callCount(),
         appraisal_terminal_trace: transports.lastAppraisalTrace(),
+        // Separate belief semantic accounting (§76 — no hidden calls).
+        belief_adaptation: outcome.belief_adaptation,
         failure: outcome.failure
       };
       try {

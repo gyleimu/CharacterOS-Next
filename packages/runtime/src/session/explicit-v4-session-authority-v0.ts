@@ -56,6 +56,12 @@ import { InMemoryMiclWorkflowStore } from "../micl/micl-workflow-store.js";
 import { createSubjectStateV4AuthoritativeRestoreEnvelopeV0, restoreSubjectStateV4AuthoritativelyV0 } from "../authority/restore-chain-authority-v4.js";
 import { mintTrustedCanonicalHistoryBoundaryV4V0 } from "../authority/trusted-canonical-history-boundary.js";
 import type { ModelTransportV0 } from "../transports/model-transport.js";
+import type { BeliefSemanticTargetResolutionProviderV0 } from "../transitions/belief/belief-semantic-target-resolution.js";
+import { InMemoryBeliefAdaptationWorkflowStoreV0 } from "../transitions/belief/belief-adaptation-workflow-store.js";
+import {
+  BeliefAdaptationWiringV0,
+  type BeliefAdaptationTurnReportV0
+} from "./belief-adaptation-wiring-v0.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
 
 export interface ExplicitV4SessionAuthorityOptionsV0 {
@@ -65,6 +71,13 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
   readonly conversationCognitionTransport: ModelTransportV0;
   readonly languageTransport: ModelTransportV0;
   readonly factualEventAppraisalProvider: FactualEventAppraisalProviderV0;
+  /**
+   * BELIEF_ADAPTATION_SESSION_WIRING_V0: when supplied, canonical lived
+   * evidence committed each turn is lawfully offered to the FROZEN belief
+   * plasticity chain after this turn's cognition. Omitted ⇒ belief adaptation
+   * stays DISABLED (no store writes, no provider calls).
+   */
+  readonly beliefSemanticProvider?: BeliefSemanticTargetResolutionProviderV0;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -209,6 +222,8 @@ export class ExplicitV4SessionAuthorityV0 {
   private readonly retrieval: RepositoryBackedMemoryRetrievalServiceV0;
   private readonly appraisalExecutor: FactualEventAppraisalExecutorV0;
   private readonly affectWriter: ReturnType<typeof createCanonicalAffectApplicationV0ForExplicitV4>;
+  private readonly beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
+  private readonly beliefWiring: BeliefAdaptationWiringV0;
   private pending: PendingLifecycleWorkV0[] = [];
   private subjectIdValue: string;
 
@@ -222,6 +237,8 @@ export class ExplicitV4SessionAuthorityV0 {
     conversationId: string;
     subjectId: string;
     genesisEnvelope: unknown;
+    beliefWorkflowStore: InMemoryBeliefAdaptationWorkflowStoreV0;
+    beliefWiring: BeliefAdaptationWiringV0;
   }) {
     this.repo = input.repo;
     this.assembly = input.assembly;
@@ -232,6 +249,8 @@ export class ExplicitV4SessionAuthorityV0 {
     this.conversationId = input.conversationId;
     this.genesisEnvelope = input.genesisEnvelope;
     this.subjectIdValue = input.subjectId;
+    this.beliefWorkflowStore = input.beliefWorkflowStore;
+    this.beliefWiring = input.beliefWiring;
     this.retrieval = new RepositoryBackedMemoryRetrievalServiceV0(this.repo as never);
     this.appraisalExecutor = new FactualEventAppraisalExecutorV0(this.container);
     const trustedHistory = {
@@ -371,7 +390,8 @@ export class ExplicitV4SessionAuthorityV0 {
       assembly,
       issuer: assembly.producerAuthorizationIssuer,
       options,
-      genesisEnvelope: durable.genesis_envelope
+      genesisEnvelope: durable.genesis_envelope,
+      beliefWorkflowStoreState: durable.belief_workflow_store_state
     });
     return { authority, detail: null };
   }
@@ -382,9 +402,27 @@ export class ExplicitV4SessionAuthorityV0 {
     issuer: ProducerAuthorizationIssuer;
     options: ExplicitV4SessionAuthorityOptionsV0;
     genesisEnvelope: unknown;
+    /** Restored belief workflow store image (absent for a fresh session). */
+    beliefWorkflowStoreState?: unknown;
   }): Promise<ExplicitV4SessionAuthorityV0> {
     const deliveryLedger = input.options.deliveryLedger ?? new InMemoryConversationDeliveryLedger();
     const ingressLedger = input.options.ingressLedger ?? new InMemoryConversationIngressLedger();
+    const beliefWorkflowStore = new InMemoryBeliefAdaptationWorkflowStoreV0();
+    const beliefStoreRestore = await beliefWorkflowStore.restoreState(input.beliefWorkflowStoreState ?? null);
+    if (!beliefStoreRestore.ok) {
+      throw new Error(`session authority: belief workflow store restore failed (${beliefStoreRestore.detail})`);
+    }
+    const beliefWiring = new BeliefAdaptationWiringV0({
+      subjectCore: input.assembly.facade as never,
+      memoryRepository: input.repo as never,
+      producerAuthorizationIssuer: input.issuer,
+      semanticProvider: input.options.beliefSemanticProvider ?? null,
+      workflowStore: beliefWorkflowStore,
+      readCommittedBundle: async (transitionId: string) =>
+        input.assembly.storeRead.readCommittedByTransitionId(transitionId as never) as unknown as AtomicCommitBundleAnyVersion | null,
+      readEpisodePayload: async (ref: string) =>
+        (input.repo as unknown as { readStoredPayload(r: string): unknown }).readStoredPayload(ref) ?? null
+    });
     const root = new RuntimeCompositionRoot({
       subjectCore: input.assembly.facade as never,
       producerAuthorizationIssuer: input.issuer,
@@ -414,7 +452,9 @@ export class ExplicitV4SessionAuthorityV0 {
       container: root.dependencies(),
       conversationId: `conv-${input.options.subject.subject_id}`,
       subjectId: input.options.subject.subject_id,
-      genesisEnvelope: input.genesisEnvelope
+      genesisEnvelope: input.genesisEnvelope,
+      beliefWorkflowStore,
+      beliefWiring
     });
   }
 
@@ -1046,8 +1086,24 @@ export class ExplicitV4SessionAuthorityV0 {
       },
       genesis_envelope: this.genesisEnvelope,
       delivery_ledger_state: (this.deliveryLedger as unknown as { exportState(): unknown }).exportState(),
-      ingress_ledger_state: (this.ingressLedger as unknown as { exportState(): unknown }).exportState()
+      ingress_ledger_state: (this.ingressLedger as unknown as { exportState(): unknown }).exportState(),
+      belief_workflow_store_state: this.beliefWorkflowStore.exportState()
     };
+  }
+
+  /**
+   * BELIEF_ADAPTATION_SESSION_WIRING_V0 — offers the given canonical episode
+   * refs (this turn's newly committed lived evidence) to the FROZEN belief
+   * plasticity chain. Never throws; belief remains unchanged on any failure.
+   * Reports DISABLED when no belief semantic provider is configured.
+   */
+  async runLivedEvidenceBeliefAdaptation(
+    episodeRefs: readonly string[]
+  ): Promise<BeliefAdaptationTurnReportV0> {
+    return this.beliefWiring.runForEpisodeRefs({
+      subject_id: this.subjectIdValue,
+      episode_refs: episodeRefs
+    });
   }
 
   /** The concrete durable store face needed to rebuild a fresh authority. */

@@ -61,7 +61,7 @@ import type {
 import {
   hashEnvelope,
   isRecord,
-  validateSubjectState,
+  validateSubjectStateAnyVersionV0,
   validateUnitInterval
 } from "@characteros-next/subject-core";
 import {
@@ -201,7 +201,13 @@ export async function produceBeliefPlasticityV0(
   const decision = semantic.decision;
 
   // ---- 4. current canonical state validation (never mutated/normalized) -------
-  const stateChecked = validateSubjectState(input.current_subject_state);
+  // BELIEF_ADAPTATION_SESSION_WIRING_V0: the exact same closed validation is
+  // now dispatched on the subject-state schema version (v3 unchanged; the
+  // explicit-v4 interactive foundation validates as SubjectStateV4). Every
+  // frozen gate below is byte-identical: capability, eligible decision kind,
+  // subject/revision/repository binding, canonical target lookup, evidence
+  // binding recomputation, and the fixed signed-step update law.
+  const stateChecked = validateSubjectStateAnyVersionV0(input.current_subject_state);
   if (!stateChecked.ok) {
     return reject("INVALID_CURRENT_SUBJECT_STATE", stateChecked.error.detail);
   }

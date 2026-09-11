@@ -363,6 +363,8 @@ export {
   deriveBeliefAdaptationSemanticCandidateFingerprint,
   deriveBeliefAdaptationWorkflowCheckpointFingerprint,
   runBeliefAdaptationWorkflowV0,
+  InMemoryBeliefAdaptationWorkflowStoreV0,
+  BELIEF_ADAPTATION_WORKFLOW_STORE_SCHEMA_VERSION,
   type BeliefAdaptationProposalCheckpointV0,
   type BeliefAdaptationRequestV0,
   type BeliefAdaptationSemanticCandidateV0,
@@ -370,6 +372,7 @@ export {
   type BeliefAdaptationTerminalV0,
   type BeliefAdaptationWorkflowDepsV0,
   type BeliefAdaptationWorkflowRecordV0,
+  type BeliefAdaptationWorkflowStoreStateV0,
   type BeliefAdaptationWorkflowStoreV0
 } from "./transitions/belief/index.js";
 
@@ -1140,6 +1143,14 @@ export {
   type SessionRepositoryRevisionImageV0,
   type RebuiltSessionStoreSourceV0
 } from "./session/session-store-image-v0.js";
+// BELIEF_ADAPTATION_SESSION_WIRING_V0 — observable per-turn belief adaptation
+// report types (the wiring itself is composed inside the session authority).
+export {
+  BeliefAdaptationWiringV0,
+  type BeliefAdaptationTurnReportV0,
+  type BeliefAdaptationWorkflowOutcomeV0,
+  type BeliefAdaptationWiringDepsV0
+} from "./session/belief-adaptation-wiring-v0.js";
 // Host-supplied appraisal provider contract (product host supplies a concrete
 // provider; the type is re-exported so the product shell needs no extra dep).
 export type {

@@ -20,6 +20,7 @@ import type {
   InteractiveSubjectStatusV0,
   InteractiveTurnOutcomeV0,
   LivedMemoryInspectionV0,
+  BeliefSemanticTargetResolutionProviderV0,
   ModelTransportTraceV0,
   ModelTransportV0
 } from "@characteros-next/runtime";
@@ -46,6 +47,13 @@ export interface InteractiveSubjectHostDepsV0 {
   readonly conversationCognitionTransport: ModelTransportV0;
   readonly languageTransport: ModelTransportV0;
   readonly appraisalProvider: FactualEventAppraisalProviderV0;
+  /**
+   * BELIEF_ADAPTATION_SESSION_WIRING_V0: the belief semantic bearing provider
+   * (e.g. OllamaBeliefSemanticProviderV0). Omitted ⇒ belief adaptation stays
+   * DISABLED: lived evidence is never offered to belief plasticity, no belief
+   * provider calls occur.
+   */
+  readonly beliefSemanticProvider?: BeliefSemanticTargetResolutionProviderV0;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -104,6 +112,7 @@ export class InteractiveSubjectHostV0 {
       conversationCognitionTransport: deps.conversationCognitionTransport,
       languageTransport: deps.languageTransport,
       factualEventAppraisalProvider: deps.appraisalProvider,
+      ...(deps.beliefSemanticProvider === undefined ? {} : { beliefSemanticProvider: deps.beliefSemanticProvider }),
       ...(config.interval_ticks === undefined ? {} : { interval_ticks: config.interval_ticks }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })

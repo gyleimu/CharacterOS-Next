@@ -32,6 +32,7 @@ import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/
 import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
 import { s0 } from "../transitions/observation/observation-fixtures.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
+import type { BeliefAdaptationTurnReportV0 } from "./belief-adaptation-wiring-v0.js";
 import {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
@@ -89,6 +90,15 @@ export interface InteractiveTurnOutcomeV0 {
     readonly episode_ref: string;
     readonly memory_event_ref: string;
   } | null;
+  /**
+   * BELIEF_ADAPTATION_SESSION_WIRING_V0 — observable report of offering this
+   * turn's newly committed lived evidence to the frozen belief plasticity
+   * chain (runs AFTER this turn's cognition; a changed Belief reaches only
+   * FUTURE turns). Null when the step was never reached (turn failure earlier
+   * in the lifecycle). A failure here NEVER fails the turn: belief remains
+   * unchanged (§55/§65 fail-closed).
+   */
+  readonly belief_adaptation: BeliefAdaptationTurnReportV0 | null;
   /**
    * Observation-sourced episode ref when THIS user event had no behavior-outcome
    * role (e.g. a new subject's first message) and was admitted through the
@@ -399,6 +409,7 @@ export class InteractiveSubjectRuntimeV0 {
     const pending = this.pendingBehaviorOutcome;
     let completedPriorOutcome: InteractiveTurnOutcomeV0["completed_prior_outcome"] = null;
     let observationalExperienceRef: string | null = null;
+    let beliefAdaptation: BeliefAdaptationTurnReportV0 | null = null;
 
     try {
       await this.authority.advanceTime(this.options.interval_ticks ?? 1, tag);
@@ -483,6 +494,23 @@ export class InteractiveSubjectRuntimeV0 {
       this.turnIndex = index + 1;
       this.completedTurns += 1;
 
+      // ---- BELIEF_ADAPTATION_SESSION_WIRING_V0: the turn's newly committed
+      // lived evidence is offered to the frozen belief plasticity chain AFTER
+      // this turn's cognition and after turn bookkeeping, so a belief-path
+      // failure can never corrupt the completed canonical turn (§65: belief
+      // remains unchanged, fail closed). §31 same-turn isolation: the changed
+      // Belief reaches only FUTURE turns' cognition, never the cognition that
+      // already responded to this event.
+      const beliefEpisodeRefs =
+        completedPriorOutcome !== null
+          ? [completedPriorOutcome.episode_ref]
+          : observationalExperienceRef !== null
+            ? [observationalExperienceRef]
+            : [];
+      beliefAdaptation =
+        beliefEpisodeRefs.length > 0
+          ? await this.authority.runLivedEvidenceBeliefAdaptation(beliefEpisodeRefs)
+          : { status: "EVIDENCE_UNAVAILABLE", resumed: [], current: null, failure: "no lived episode committed this turn" };
 
       const snapshotAfter = await this.authority.readSnapshot();
       const cognitionExchange = this.readCapture("cognition");
@@ -506,6 +534,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_call_required: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0",
         language_status: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0" ? "VALID" : "NOT_REQUIRED_CLARIFY",
         completed_prior_outcome: completedPriorOutcome,
+        belief_adaptation: beliefAdaptation,
         observational_experience_ref: observationalExperienceRef,
         retrieved_refs: context.selected_refs,
         working_episode_refs: context.working_episode_refs,
@@ -550,6 +579,7 @@ export class InteractiveSubjectRuntimeV0 {
         language_call_required: false,
         language_status: "NOT_REACHED",
         completed_prior_outcome: completedPriorOutcome,
+        belief_adaptation: beliefAdaptation,
         observational_experience_ref: null,
         retrieved_refs: [],
         working_episode_refs: [],
