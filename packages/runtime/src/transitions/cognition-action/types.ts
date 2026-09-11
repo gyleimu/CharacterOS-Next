@@ -106,6 +106,17 @@ export const COGNITIVE_CONTEXT_PROJECTION_HASH_PROJECTION =
  * Dual affect authority is structurally impossible: V0/V1 carry legacy
  * channels+Mood; V2 carries canonical VA — never both.
  */
+/**
+ * PERSONALITY_COGNITION_SALIENCE_DESIGN_V0 — one current acquired dimension with
+ * its FROZEN registry semantics (never rewritten per experiment/scenario).
+ */
+export interface PersonalityDispositionEntryV0 {
+  readonly value: number;
+  readonly description: string;
+  readonly low_anchor: string;
+  readonly high_anchor: string;
+}
+
 export interface CognitiveContextProjectionV2 {
   readonly schema_version: typeof COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION;
   readonly subject_id: IdentifierV0;
@@ -120,6 +131,15 @@ export interface CognitiveContextProjectionV2 {
    * disposition, not a second equal vote. Empty ⇒ no acquired dimensions.
    */
   readonly personality_dimensions: Readonly<Record<string, number>>;
+  /**
+   * PERSONALITY_COGNITION_SALIENCE_DESIGN_V0 — trusted canonical semantics for
+   * each CURRENT acquired dimension, taken VERBATIM from the frozen dimension
+   * registry (description + low/high anchors) plus its current value. Registered
+   * dimensions only; an empty map means no acquired dimensions (never fabricated
+   * semantics). Values are relative positions on their own axis — no universal
+   * neutral point, no bands, no thresholds.
+   */
+  readonly personality_disposition: Readonly<Record<string, PersonalityDispositionEntryV0>>;
   /** CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — exact raw canonical VA. */
   readonly canonical_affect: CanonicalAffectCognitionProjectionV0;
   readonly regulation: {

@@ -164,7 +164,12 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionAnyV
     // explicitly distinct from the immutable genesis prior above.
     ...(isV2
       ? [
-          `[current acquired personality (read-only; P(t), distinct from the immutable traits seed above)] ${JSON.stringify(v2Projection.personality_dimensions)}`
+          `[current acquired personality (read-only; P(t), distinct from the immutable traits seed above)] ${JSON.stringify(v2Projection.personality_dimensions)}`,
+          // PERSONALITY_COGNITION_SALIENCE_DESIGN_V0: frozen registry semantics
+          // (verbatim) + one generic dispositional-role rule. No bands, no
+          // thresholds, no scenario/action rules.
+          `[current acquired personality semantics (registry anchors; relative position on each dimension's own axis; 0.5 is NOT neutral and absence is not a value)] ${JSON.stringify(v2Projection.personality_disposition)}`,
+          "[personality disposition role — generic soft prior] Current acquired Personality is a slow subject-global disposition: when several responses remain otherwise compatible with facts, task and safety constraints, explicit beliefs, counterpart relationship state and current affect, it may weakly bias approach, style and preference toward the registered anchors. It never overrides those stronger causes, and it does not imply any specific action."
         ]
       : []),
     `CITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n${citeable}`,

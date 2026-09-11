@@ -71,9 +71,11 @@ import {
   type CognitiveContextProjectionV1,
   type CognitiveContextProjectionV2,
   type CognitionActionInputV0,
-  type CognitionProposalV0
+  type CognitionProposalV0,
+  type PersonalityDispositionEntryV0
 } from "./types.js";
 import { anchorContext, stageFailure, TransitionStageFailure } from "../common.js";
+import { PERSONALITY_DIMENSION_REGISTRY_V0 } from "../../transitions/personality/personality-dimension-registry-v0.js";
 import { projectCanonicalAffectForCognitionV0 } from "./canonical-affect-cognition-projection-v0.js";
 
 export interface CognitionActionExecutionResultV0 {
@@ -250,6 +252,30 @@ async function buildExplicitV4CognitiveContextProjection(
         .sort((a, b) => (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0))
         .map((dimension) => [dimension.dimension_id as string, dimension.value as number])
     ) as Record<string, number>,
+    // PERSONALITY_COGNITION_SALIENCE_DESIGN_V0: trusted canonical semantics for
+    // each CURRENT acquired dimension, taken VERBATIM from the frozen registry.
+    // Registered dimensions only; unknown ids are dropped (never given meaning).
+    personality_disposition: Object.fromEntries(
+      [...snapshot.personality.dimensions]
+        .sort((a, b) => (a.dimension_id < b.dimension_id ? -1 : a.dimension_id > b.dimension_id ? 1 : 0))
+        .flatMap((dimension): [string, PersonalityDispositionEntryV0][] => {
+          const definition = PERSONALITY_DIMENSION_REGISTRY_V0.find(
+            (entry) => entry.dimension_id === dimension.dimension_id
+          );
+          if (definition === undefined) return [];
+          return [
+            [
+              dimension.dimension_id as string,
+              {
+                value: dimension.value as number,
+                description: definition.description,
+                low_anchor: definition.low_anchor,
+                high_anchor: definition.high_anchor
+              }
+            ]
+          ];
+        })
+    ) as Record<string, PersonalityDispositionEntryV0>,
     // RAW_CANONICAL_VA: exact committed values, no transform (fail closed on
     // malformed shapes; no affect_profile, no history, no named emotions).
     canonical_affect: projectCanonicalAffectForCognitionV0(snapshot.affect),
