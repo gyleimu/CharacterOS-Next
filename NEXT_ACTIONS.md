@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `e30e27ac16d090564c8a7baf38a45cee263dd45a`（干净 baseline；本次 `CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0` 是其直接子提交）
+Last verified against commit: `2e6460355a2dfbec24850d84f04322fc8cbb75bc`（干净 baseline；本次 `PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -11,13 +11,15 @@ CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁�
 
 已完成并冻结的当前 slice：
 
-`CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0` — 内容敏感 Appraisal producer。
+`PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` — 受控双历史因果验证（无新 production semantics）。
 
-- 判定 `MODEL_BACKED_APPRAISAL_PROVIDER_REQUIRED`：任意自然语言事件无法用诚实的确定性算法 appraisal，按 §8 选择 model-backed；
-- 新增 frozen strict appraisal prompt（`product-appraisal-prompt.ts`）：模型只提出六个 canonical dimensions + assessment_confidence；adapter 从 trusted context 组装全部 authority 字段（subject/event ref/context hash/evidence refs），模型无法伪造身份/refs；
-- 当前事件作为 untrusted data 明确 delimiter；无 transcript、无 Memory dump；malformed / out-of-range / invalid enum 由既有 validator fail-closed，无 clamp、无 JSON repair、无 constant fallback；
-- 每个 factual event 恰好 1 次 appraisal model call（executor durable disposition 短路重放）；appraisal / cognition / language 分开计数；
-- Level 1 PASS（前一 slice）；Level 2 PASS（deterministic pipeline + real smoke：不同内容 → 不同 lawful proposal）；Level 3 PASS（既有 canonical Affect 方程在受控对比下产生不同 Affect）。
+- 判定 `EXISTING_LIVED_HISTORY_BEHAVIOR_CAUSAL_CHAIN_PRESENT`：**production behavior changes = 0**；
+- Phase A 因果表确认 cognition projection 已包含 `canonical_affect`（V2，exact committed VA）、Memory factual evidence、`belief_items`、relationship dims、traits；Affect 与 Memory 均已 lawful 到达 cognition；
+- Level 1 PASS：两条受控历史（positive vs negative lived events）经 authoritative restart 后仍不同（state_hash/affect/repository content 不同）；
+- Level 2 PASS：相同 current event 下 cognition request 不同（real: `fea…` vs `ef6f…`；请求 identity match true）；
+- Level 3 PASS：相同 model/current event 下 current_intent 与 observable behavior 不同（A 建议继续采用，B 警告会使情况更糟）；
+- Level 4 PASS（non-Memory state causal contribution）：common-event appraisal 在两分支完全相同（rel 1 / goal 0.5 / int 0.6 / conf 0.9），但 canonical Affect 持久不同（valence +0.545 vs -0.371）且该 Affect 被投影进 cognition；offline 测试额外证明 `[affect (canonical)]` 行本身不同；
+- Belief / Relationship / traits：UNCHANGED（本 slice 内无 lawful producer 触发，不强行制造）。
 
 此前能力保持 GREEN/FROZEN：
 
@@ -28,41 +30,42 @@ PERSISTENT_SUBJECT_CONFIGURATION_V0                    FROZEN / GREEN
 REAL_COUNTERPART_FEEDBACK_INGESTION_V0                 FROZEN / GREEN
 INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0               FROZEN / GREEN
 INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0      FROZEN / GREEN
+CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0                FROZEN / GREEN
 long-horizon session                                   IMPLEMENTED / EXPERIMENTALLY_SUPPORTED
 provider diagnostic / repair / revalidation            COMPLETE / FROZEN
 ```
 
 ## CURRENT BLOCKER
 
-当前没有已知的 interactive-runtime / configuration / feedback / memory-inspection / appraisal blocker。
+当前没有已知的 lived-history causal blocker：Memory + Affect 已证明能持久地改变同一 subject 的后续 cognition/behavior。
 
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
 1. 仍只有单一 subject 身份 per data root；无多 subject 选择、删除、克隆、重命名。
-2. Appraisal 现为 content-sensitive（model-backed），但每个 factual event 增加 1 次本地 model call；appraisal 输入仍限于 identity hashes + current_task + current_observable_scene（不含 Memory/Belief/Relationship，属有意边界）。
-3. 某轮交付行为的 outcome Experience 会在用户下一次发言时提交（包括重启后）——冻结 feedback law 要求的真实对话后果。
-4. `/memory` 仅暴露既有 durable episodes；无搜索、无 importance 排序、无编辑（未来产品能力）。
-5. 每个 data root 仍然只支持一个 persistent subject；创建/列出/切换多个 subject 尚无产品 surface。
+2. Appraisal 为 content-sensitive（model-backed），每个 factual event 1 次本地 model call；appraisal 输入限于 identity hashes + current_task + current_observable_scene（不含 Memory/Belief/Relationship，属有意边界）；common-event appraisal 因此不随历史变化。
+3. Belief 与 traits/personality-like state 已被投影进 cognition，但本 slice 内没有任何 lawful producer 使其随 lived evidence 变化 → 长期信念/倾向尚未由经历驱动。
+4. 某轮交付行为的 outcome Experience 会在用户下一次发言时提交（包括重启后）——冻结 feedback law 要求的真实对话后果。
+5. `/memory` 仅暴露既有 durable episodes；无搜索、无 importance 排序、无编辑（未来产品能力）。
 
 ## NEXT EXACT SLICE
 
 只启动：
 
-`MULTI_SUBJECT_LIFECYCLE_V0`
+`BELIEF_CHANGE_THROUGH_LIVED_EVIDENCE_V0`
 
-问题边界：在保持 single-active-subject 会话语义、canonical genesis/restore authority、现有 `subject-config.json` 存储约定不变的前提下，让用户能在一个 data root 下 lawful 地创建/列出/选择一个持久 subject；不得引入账号系统、云同步、GUI、subject 删除/克隆/重命名，也不得让 config 取代 canonical SubjectState authority。
+问题边界：在 Affect + Memory → cognition 的因果链已被证明、Belief infrastructure 已存在且已被投影进 cognition 的前提下，判定是否存在既有 lawful 的 belief-update producer/authority：若存在则最小接线，使 lived evidence 能（经既有 canonical 语义）改变 `beliefs.items`；若不存在，则精确记录缺失的 belief-admission boundary 与最小方案。不得发明新的信仰语义、不得用 host 直接写 belief、不得把 Affect/Memory 数值映射成 credence、不得改变 retrieval/appraisal/Affect 语义。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `MULTI_SUBJECT_LIFECYCLE_V0`：必须先确认其问题、边界与预算；
-- GUI、Electron/Tauri、mobile、voice、vision、avatar、websocket、multi-user accounts、cloud sync、auth、plugins、tool execution、autonomous world simulation、multi-character；
-- accounts / per-subject provider 或 model 配置；`/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型；
-- sentiment/positive-negative/toxicity classifier、named emotion、mood、reward/importance/salience 标量；
+- 自动开始 `BELIEF_CHANGE_THROUGH_LIVED_EVIDENCE_V0`：必须先确认其问题、边界与预算；
+- 多 subject / multi-agent / shared world / GUI / voice / camera / avatar / tools / autonomous task execution；
+- accounts / cloud sync / per-subject provider 配置；`/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型；
+- sentiment/positive-negative/toxicity classifier、named emotion、mood、reward/importance/salience 标量、cross-domain generic score；
 - 新 Experience kind / Memory schema、retrieval semantics 或 persistence/restore authority；不得修改 appraisal dimensions/validation/equations 或 canonical Affect law；
 - 对 frozen experiment source、raw output、result、report 或 evidence 的改写；
-- 把 bounded V0 smoke 包装成通用长期主体、任意时长可扩展或人格真实性证明。
+- 把 bounded V0 causal validation 包装成任意时长可扩展、人格真实或通用长期主体证明。
 
 ## ESCALATION CONDITIONS
 

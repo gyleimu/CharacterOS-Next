@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 本文件是仓库“现在是什么、做到哪里、下一步是什么”的唯一实时状态入口。
-Last verified against commit: `e30e27ac16d090564c8a7baf38a45cee263dd45a`（干净 baseline；`CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
+Last verified against commit: `2e6460355a2dfbec24850d84f04322fc8cbb75bc`（干净 baseline；`PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
 Workspace projects: 14
 Purpose: 记录可执行代码、当前测试与已提交冻结证据共同支持的最小事实；历史计划不能覆盖这些事实。
 Verified date: 2026-09-11
@@ -65,6 +65,7 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 | Read-only lived memory inspection | `IMPLEMENTED` / `SMOKE_VALIDATED` | `/memory` 输出 canonical durable episodes 的安全事实投影（复用既有 evidence resolver），按 occurrence 时序，默认最近 10 条（`/memory N`，上限 100）；observation 显示 counterpart 语句原文，behavior-outcome 同时显示 delivered behavior 文本与精确 user reply；严格只读（无写入、无 revision/index 变化、0 provider generation call）；不暴露内部 ref/payload/prompt；读取失败 fail safely |
 | Appraisal content availability | `LEVEL_1` | provider input projection 追加式包含 `current_observable_scene`（当前事件 committed observable scene）；不同内容 → 不同 provider input/hash；仅当前事件，无 transcript/Memory dump |
 | Content-sensitive appraisal | `IMPLEMENTED` / `SMOKE_VALIDATED` | model-backed host appraisal provider（frozen strict prompt）：每个 factual event 1 次本地 model call，只提出六个 canonical dimensions + confidence；adapter 从 trusted context 组装 authority 字段（模型无法伪造 identity/refs）；untrusted-data delimiter；malformed/out-of-range/invalid enum 由既有 validator fail-closed（无 clamp/repair/constant fallback）；Level 2 PASS（deterministic + real smoke 不同内容 → 不同 lawful proposal）；Level 3 PASS（既有 canonical Affect 方程产生不同 Affect）；appraisal/cognition/language 分开计数 |
+| Lived-history → behavior differentiation | `CONFIRMED` / `CAUSALLY_VALIDATED` | 受控双历史（同 genesis/identity/model/task，仅经历不同）+ authoritative restart：Level 1 历史持久且不同；Level 2 相同 current event 下 cognition request identity 不同；Level 3 current_intent 与可观察 behavior 不同；Level 4 非 Memory 状态（canonical Affect）因果参与（common-event appraisal 相同、Affect 持久不同且被投影）。Belief/Relationship/traits UNCHANGED（无 lawful producer）。**production behavior change = 0** |
 
 `FROZEN` 描述已提交协议/证据的不可变性，不自动提升其结论等级。
 
@@ -111,7 +112,9 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 `CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0` 已实现并通过 bounded real smoke：不同事件内容经由既有 Appraisal→Affect authority 路径产生不同 lawful proposal 与不同 canonical Affect；appraisal / cognition / language 分开计数。
 
-下一个产品/运行时 frontier 是 `MULTI_SUBJECT_LIFECYCLE_V0`：在单 active subject 会话、canonical authority 与现有 storage 约定不变的前提下，允许创建/列出/选择一个持久 subject。该 slice 未启动，也不由本文件授权启动。
+`PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` 已完成并因果验证（无 production semantic 变更）：不同 lived history 经 authoritative restart 后，通过已存在的 Memory + canonical Affect → cognition projection，使同一 subject 在相同 current event 下产生不同的 cognition request、current_intent 与可观察 behavior；common-event appraisal 相同，排除 current-event 解释；Level 4 证明非 Memory 状态（Affect）因果参与。
+
+下一个产品/运行时 frontier 是 `BELIEF_CHANGE_THROUGH_LIVED_EVIDENCE_V0`：判定是否存在既有 lawful belief-update authority 并因此最小接线，或精确记录缺失的 belief-admission boundary。该 slice 未启动，也不由本文件授权启动。
 
 长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
 
