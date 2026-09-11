@@ -1,0 +1,185 @@
+{
+  "schema_version": "personality-behavioral-differentiation-real-provider-v0",
+  "provider": "OLLAMA_NATIVE",
+  "settings": {
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "timeout_ms": 240000,
+    "num_predict": 1024,
+    "context_window_tokens": 8192
+  },
+  "seed_control": "PROVIDER_SEED_CONTROL_UNAVAILABLE",
+  "personality_contrast": {
+    "source": "FROZEN PersonalityPlasticityProducerV0 (openness INCREASE, ENGINEERING_REFERENCE_V0)",
+    "p0": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.4
+    },
+    "p1": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.45
+    },
+    "step": 0.05
+  },
+  "scenarios": [
+    {
+      "scenario_id": "novel-vs-familiar",
+      "event": {
+        "scene": "There is a familiar routine available, and separately an unfamiliar option has just appeared.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": {
+        "current_intent": "Decide how to proceed",
+        "action_intent": null,
+        "confidence": 0.5,
+        "reasoning_summary": "Subject is in a state of decision between a familiar routine and an unfamiliar option. No external actions are permitted (NO_ACTION). No memory evidence or context refs were provided to support a specific choice, so the cognition result reflects the current uncertainty without citing any references."
+      },
+      "behavior_b": {
+        "current_intent": null,
+        "action_intent": null,
+        "confidence": 0.9,
+        "reasoning_summary": "Subject is in a decision state between a familiar routine and an unfamiliar option. No memory evidence or context refs are available to resolve the choice. Given the lack of external action space, the intent remains undefined pending further input or internal resolution."
+      },
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject is in a state of decision between a familiar routine and an unfamiliar option. No external actions are permitted (NO_ACTION). No memory evidence or context refs were provided to support a specific choice, so the cognition result reflects the current uncertainty without citing any references.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"Decide how to proceed\",\"confidence\":0.5,\"uncertainty\":0.5,\"action_intent\":null,\"evidence_refs\":[]}",
+      "raw_b": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject is in a decision state between a familiar routine and an unfamiliar option. No memory evidence or context refs are available to resolve the choice. Given the lack of external action space, the intent remains undefined pending further input or internal resolution.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":null,\"confidence\":0.9,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[]}",
+      "failure_a": null,
+      "failure_b": null,
+      "classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED"
+    },
+    {
+      "scenario_id": "alternative-interpretation",
+      "event": {
+        "scene": "The situation could be read the usual way, but an unexpected alternative interpretation is also possible.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": {
+        "current_intent": "maintain current state",
+        "action_intent": {
+          "action_type": "NO_ACTION",
+          "target_ref": null
+        },
+        "confidence": 0.95,
+        "reasoning_summary": "No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a neutral affect and low stress with no active counterparts or environment refs. Consequently, no evidence supports a specific action intent beyond the allowed 'NO_ACTION' posture. All ref arrays must remain empty as no valid refs exist to cite."
+      },
+      "behavior_b": {
+        "current_intent": "Awaiting clarification on the ambiguous situation.",
+        "action_intent": null,
+        "confidence": 0.9,
+        "reasoning_summary": "Subject state indicates a neutral affective valence and low stress/arousal. The context presents an ambiguous situation with no specific observations or memory evidence available to resolve it. Given the empty CITEABLE CONTEXT REFS and ALLOWED ACTION SPACE, no external action can be proposed. The cognition result reflects a state of readiness to receive further input without committing to a specific interpretation or action."
+      },
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a neutral affect and low stress with no active counterparts or environment refs. Consequently, no evidence supports a specific action intent beyond the allowed 'NO_ACTION' posture. All ref arrays must remain empty as no valid refs exist to cite.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"maintain current state\",\"confidence\":0.95,\"uncertainty\":0.1,\"action_intent\":{\"action_type\":\"NO_ACTION\",\"target_ref\":null},\"evidence_refs\":[]}",
+      "raw_b": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject state indicates a neutral affective valence and low stress/arousal. The context presents an ambiguous situation with no specific observations or memory evidence available to resolve it. Given the empty CITEABLE CONTEXT REFS and ALLOWED ACTION SPACE, no external action can be proposed. The cognition result reflects a state of readiness to receive further input without committing to a specific interpretation or action.\", \"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"Awaiting clarification on the ambiguous situation.\",\"confidence\":0.9,\"uncertainty\":0.3,\"action_intent\":null,\"evidence_refs\":[]}",
+      "failure_a": null,
+      "failure_b": null,
+      "classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED"
+    },
+    {
+      "scenario_id": "proven-vs-unproven",
+      "event": {
+        "scene": "A well-known approach is safe, while an unproven approach might be more interesting.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": {
+        "current_intent": "Decide how to proceed and state your intent.",
+        "action_intent": null,
+        "confidence": 1,
+        "reasoning_summary": "No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a safe approach is preferred over an unproven one, but without specific evidence refs to support a decision, the only valid output cites no memory and proposes no action from the empty allowed action space."
+      },
+      "behavior_b": {
+        "current_intent": "maintain safety posture",
+        "action_intent": null,
+        "confidence": 0.9,
+        "reasoning_summary": "No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a safe approach is preferred over an unproven one, but without specific evidence refs to support a decision, the only valid output cites no memory and proposes no action from the empty allowed action space."
+      },
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a safe approach is preferred over an unproven one, but without specific evidence refs to support a decision, the only valid output cites no memory and proposes no action from the empty allowed action space.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"Decide how to proceed and state your intent.\",\"confidence\":1.0,\"uncertainty\":0.0,\"action_intent\":null,\"evidence_refs\":[]}",
+      "raw_b": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"No citeable context refs were provided in the input. Per binding rules, I cannot invent memories or entities. The subject state indicates a safe approach is preferred over an unproven one, but without specific evidence refs to support a decision, the only valid output cites no memory and proposes no action from the empty allowed action space.\",\"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"maintain safety posture\",\"confidence\":0.9,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[]}",
+      "failure_a": null,
+      "failure_b": null,
+      "classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED"
+    }
+  ],
+  "call_ledger": [
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "A",
+      "call": 1,
+      "ok": true
+    },
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "B",
+      "call": 1,
+      "ok": true
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "A",
+      "call": 1,
+      "ok": true
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "B",
+      "call": 1,
+      "ok": true
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "A",
+      "call": 1,
+      "ok": true
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "B",
+      "call": 1,
+      "ok": true
+    }
+  ],
+  "meaningful_scenario_count": 0,
+  "verdict": "LEVEL_6_NOT_DEMONSTRATED",
+  "seed": null
+}

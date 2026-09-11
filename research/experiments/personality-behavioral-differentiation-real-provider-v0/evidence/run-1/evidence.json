@@ -1,0 +1,152 @@
+{
+  "schema_version": "personality-behavioral-differentiation-real-provider-v0",
+  "provider": "OLLAMA_NATIVE",
+  "settings": {
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "timeout_ms": 120000,
+    "num_predict": 1024,
+    "context_window_tokens": 8192
+  },
+  "seed_control": "PROVIDER_SEED_CONTROL_UNAVAILABLE",
+  "personality_contrast": {
+    "source": "FROZEN PersonalityPlasticityProducerV0 (openness INCREASE, ENGINEERING_REFERENCE_V0)",
+    "p0": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.4
+    },
+    "p1": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.45
+    },
+    "step": 0.05
+  },
+  "scenarios": [
+    {
+      "scenario_id": "novel-vs-familiar",
+      "event": {
+        "scene": "There is a familiar routine available, and separately an unfamiliar option has just appeared.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": null,
+      "behavior_b": null,
+      "raw_a": null,
+      "raw_b": null,
+      "failure_a": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "failure_b": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "classification": "PROVIDER_FAILURE"
+    },
+    {
+      "scenario_id": "alternative-interpretation",
+      "event": {
+        "scene": "The situation could be read the usual way, but an unexpected alternative interpretation is also possible.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": null,
+      "behavior_b": null,
+      "raw_a": null,
+      "raw_b": null,
+      "failure_a": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "failure_b": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "classification": "PROVIDER_FAILURE"
+    },
+    {
+      "scenario_id": "proven-vs-unproven",
+      "event": {
+        "scene": "A well-known approach is safe, while an unproven approach might be more interesting.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "request_equivalent_except_personality": true,
+      "behavior_a": null,
+      "behavior_b": null,
+      "raw_a": null,
+      "raw_b": null,
+      "failure_a": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "failure_b": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+      "classification": "PROVIDER_FAILURE"
+    }
+  ],
+  "call_ledger": [
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "A",
+      "call": 1,
+      "ok": false
+    },
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "B",
+      "call": 1,
+      "ok": false
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "A",
+      "call": 1,
+      "ok": false
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "B",
+      "call": 1,
+      "ok": false
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "A",
+      "call": 1,
+      "ok": false
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "B",
+      "call": 1,
+      "ok": false
+    }
+  ],
+  "meaningful_scenario_count": 0,
+  "verdict": "LEVEL_6_NOT_DEMONSTRATED",
+  "seed": null
+}
