@@ -126,6 +126,15 @@ export {
   type OllamaRelationshipSemanticChannelProviderConfigV0
 } from "./relationship-semantic-ollama-provider.js";
 
+export {
+  RELATIONSHIP_FAMILIARITY_QUALIFYING_ADMISSION_OUTPUT_SCHEMA_VERSION,
+  RELATIONSHIP_FAMILIARITY_QUALIFYING_ADMISSION_PROMPT_PROJECTION_VERSION,
+  ModelRelationshipFamiliarityQualifyingAdmissionProviderV0,
+  RelationshipFamiliarityAdmissionProviderErrorV0,
+  buildRelationshipFamiliarityQualifyingAdmissionPromptMessages,
+  type RelationshipFamiliarityAdmissionProviderFailureCodeV0
+} from "./relationship-familiarity-qualifying-admission-provider-v0.js";
+
 // --- Relationship Feature Decision Semantics Foundation V0 -------------------------------------------
 
 export {

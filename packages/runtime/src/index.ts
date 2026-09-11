@@ -529,6 +529,15 @@ export {
   type OllamaRelationshipSemanticChannelProviderConfigV0
 } from "./transitions/relationship/index.js";
 
+export {
+  RELATIONSHIP_FAMILIARITY_QUALIFYING_ADMISSION_OUTPUT_SCHEMA_VERSION,
+  RELATIONSHIP_FAMILIARITY_QUALIFYING_ADMISSION_PROMPT_PROJECTION_VERSION,
+  ModelRelationshipFamiliarityQualifyingAdmissionProviderV0,
+  RelationshipFamiliarityAdmissionProviderErrorV0,
+  buildRelationshipFamiliarityQualifyingAdmissionPromptMessages,
+  type RelationshipFamiliarityAdmissionProviderFailureCodeV0
+} from "./transitions/relationship/index.js";
+
 // --- Belief Decision Influence Relation Foundation V0 ------------------------------
 
 export {
