@@ -1142,4 +1142,7 @@ export {
 } from "./session/session-store-image-v0.js";
 // Host-supplied appraisal provider contract (product host supplies a concrete
 // provider; the type is re-exported so the product shell needs no extra dep).
-export type { FactualEventAppraisalProviderV0 } from "@characteros-next/appraisal";
+export type {
+  FactualEventAppraisalProviderV0,
+  FactualEventAppraisalContextProjectionV0
+} from "@characteros-next/appraisal";

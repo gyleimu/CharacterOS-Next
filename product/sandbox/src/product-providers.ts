@@ -1,10 +1,12 @@
 /**
- * INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — product provider wiring.
+ * INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 + CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0
+ * — product provider wiring.
  *
- * Uses the EXISTING production Ollama cognition transport for both the
- * cognition call and the language-realization call (they share compatible
- * configuration but keep their distinct semantics). No second transport
- * implementation is introduced here.
+ * Uses the EXISTING production Ollama cognition transport for the cognition
+ * call, the language-realization call and the Appraisal proposal call. They
+ * share compatible configuration but keep distinct prompts, output schemas and
+ * semantic roles; each `complete()` is a separate model call. No second
+ * transport implementation is introduced here.
  */
 
 import type { ModelTransportTraceV0, ModelTransportV0 } from "@characteros-next/runtime";
@@ -12,6 +14,11 @@ import {
   MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0,
   OllamaNativeCognitionTransportV0
 } from "@characteros-next/runtime";
+
+/** Appraisal structured output is small; a bounded output budget is chosen explicitly. */
+export const PRODUCT_APPRAISAL_NUM_PREDICT_V0 = 256 as const;
+/** Appraisal input is one small scene + task; a small explicit context budget suffices. */
+export const PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0 = 4096 as const;
 
 export interface ProductProviderConfigV0 {
   readonly base_url: string;
@@ -24,8 +31,12 @@ export interface ProductProviderConfigV0 {
 export interface ProductTransportsV0 {
   readonly cognition: ModelTransportV0;
   readonly language: ModelTransportV0;
+  /** Dedicated Appraisal transport (separate semantic role and call accounting). */
+  readonly appraisal: ModelTransportV0;
   /** Terminal trace of the most recent cognition call (operational evidence). */
   readonly lastCognitionTrace: () => ModelTransportTraceV0 | null;
+  /** Terminal trace of the most recent appraisal call (operational evidence). */
+  readonly lastAppraisalTrace: () => ModelTransportTraceV0 | null;
 }
 
 export function createProductTransportsV0(config: ProductProviderConfigV0): ProductTransportsV0 {
@@ -49,7 +60,26 @@ export function createProductTransportsV0(config: ProductProviderConfigV0): Prod
     num_predict: config.num_predict,
     context_window_tokens: config.context_window_tokens
   });
-  return { cognition, language, lastCognitionTrace: () => lastTrace };
+  let lastAppraisalTrace: ModelTransportTraceV0 | null = null;
+  const appraisal: ModelTransportV0 = new OllamaNativeCognitionTransportV0({
+    base_url: config.base_url,
+    model: config.model,
+    timeout_ms: config.timeout_ms,
+    num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+    context_window_tokens: PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
+    trace_observer: (event) => {
+      if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
+        lastAppraisalTrace = structuredClone(event);
+      }
+    }
+  });
+  return {
+    cognition,
+    language,
+    appraisal,
+    lastCognitionTrace: () => lastTrace,
+    lastAppraisalTrace: () => lastAppraisalTrace
+  };
 }
 
 export interface OllamaProbeResultV0 {

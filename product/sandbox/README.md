@@ -215,13 +215,18 @@ cognition as untrusted factual evidence.
   event** (e.g. "the user stated …"), not that the statement is objectively true.
   It carries no reward, learning, trust or sentiment semantics, and it never
   feeds behavior-outcome learning.
-- The host appraisal provider is content-INSENSITIVE: the appraisal boundary
-  now lawfully carries the current event's committed observable scene
-  (`current_observable_scene`), but this V0 provider still applies the SAME
-  minimal profile to every event (see `product-appraisal-provider.ts`). It is not
-  a sentiment/user-reaction model, and Affect moves through the canonical
-  dynamics rather than per-content appraisal. A content-sensitive provider is a
-  separately authorized future slice.
+- Appraisal is **content-sensitive**: the host supplies a model-backed appraisal
+  provider (`product-appraisal-provider.ts` + frozen
+  `product-appraisal-prompt.ts`) that makes ONE additional local model call per
+  factual event and proposes only the six canonical dimensions plus assessment
+  confidence. The adapter assembles every authority field (subject, event ref,
+  context hash, evidence refs) from the trusted context, so model output can
+  never forge identity. The current event is delimited as untrusted data.
+  Malformed/invalid output fails the turn closed — there is no constant
+  fallback, no sentiment/named-emotion/reward surface, and no JSON repair.
+  Appraisal calls are accounted separately from cognition and language calls.
+  `createConstantAppraisalProviderV0()` remains as an explicit offline test
+  fixture only.
 - A crash mid-interaction discards that partial interaction: the next launch
   restores the last completed-interaction boundary. There is no ad-hoc
   "mark it done" recovery path.

@@ -17,7 +17,7 @@ import type {
   ModelTransportV0
 } from "@characteros-next/runtime";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
-import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
+import { createConstantAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
 
 interface TransportRecorder {
@@ -97,7 +97,7 @@ async function makeSession(recorder: TransportRecorder = { requests: [] }) {
     {
       conversationCognitionTransport: cognitionTransport(recorder),
       languageTransport: languageTransport(),
-      appraisalProvider: createProductAppraisalProviderV0(),
+      appraisalProvider: createConstantAppraisalProviderV0(),
       provider_identity: { model: "fake", num_predict: 2048 },
       clock: () => "2026-01-01T00:00:00.000Z"
     }
@@ -194,7 +194,7 @@ describe("INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0 — /memory command", () => {
       {
         conversationCognitionTransport: cognitionTransport(recorder),
         languageTransport: languageTransport(),
-        appraisalProvider: createProductAppraisalProviderV0(),
+        appraisalProvider: createConstantAppraisalProviderV0(),
         provider_identity: { model: "fake", num_predict: 2048 },
         clock: () => "2026-01-01T00:00:00.000Z"
       }

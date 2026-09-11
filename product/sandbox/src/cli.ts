@@ -75,6 +75,9 @@ async function main(): Promise<number> {
     num_predict: numPredict,
     context_window_tokens: contextWindowTokens
   });
+  // CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0: one model-backed appraisal call per
+  // factual event, accounted separately from cognition/language.
+  const appraisal = createProductAppraisalProviderV0({ transport: transports.appraisal });
 
   // ---- readline + startup gates ----------------------------------------------
   // The line handler is attached BEFORE any await, and every queued line waits
@@ -121,7 +124,7 @@ async function main(): Promise<number> {
       {
         conversationCognitionTransport: transports.cognition,
         languageTransport: transports.language,
-        appraisalProvider: createProductAppraisalProviderV0(),
+        appraisalProvider: appraisal.provider,
         provider_identity: {
           model,
           num_predict: numPredict,
@@ -181,6 +184,9 @@ async function main(): Promise<number> {
         max_output_tokens: trace?.budget.max_output_tokens ?? null,
         language_call_required: outcome.language_call_required,
         raw_cognition_response: outcome.raw_cognition_response,
+        // Separate Appraisal accounting (never folded into cognition/language).
+        appraisal_calls_so_far: appraisal.stats.callCount(),
+        appraisal_terminal_trace: transports.lastAppraisalTrace(),
         failure: outcome.failure
       };
       try {

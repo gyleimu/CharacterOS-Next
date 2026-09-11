@@ -17,7 +17,7 @@ import type {
   ModelTransportV0
 } from "@characteros-next/runtime";
 import { InteractiveSubjectHostV0, type InteractiveSubjectHostConfigV0 } from "./interactive-subject-host.js";
-import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
+import { createConstantAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
 import { SerialTaskQueueV0 } from "./serial-task-queue.js";
 import { InMemoryInteractiveSnapshotStoreV0, InteractiveSnapshotCorruptErrorV0 } from "./persistent-snapshot-store.js";
@@ -91,7 +91,7 @@ function hostDeps(mode: () => Mode, recorder: TransportRecorder, snapshotStore?:
   return {
     conversationCognitionTransport: cognitionTransport(mode, recorder),
     languageTransport: languageTransport(),
-    appraisalProvider: createProductAppraisalProviderV0(),
+    appraisalProvider: createConstantAppraisalProviderV0(),
     provider_identity: { model: "fake", num_predict: 2048 },
     clock: () => "2026-01-01T00:00:00.000Z",
     ...(snapshotStore === undefined ? {} : { snapshotStore })
