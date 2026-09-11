@@ -1,0 +1,28 @@
+{
+  "schema_version": "personality-behavioral-differentiation-real-provider-v1-adjudication",
+  "note": "No provider call was made to produce this file. It records the substantive classification of the SAME run-1 evidence under the V1 spec §25 (a difference counts only when the higher-openness branch is meaningfully more aligned with the frozen canonical high anchor) and §26 (do not reinterpret equal / more cautious / unrelated differences as openness).",
+  "mechanical_harness_verdict": "LEVEL_6_PASS",
+  "substantive_verdict": "LEVEL_6_NOT_DEMONSTRATED",
+  "per_scenario": [
+    {
+      "scenario_id": "novel-vs-familiar",
+      "mechanical": "NO_MEANINGFUL_BEHAVIOR_DIFFERENCE",
+      "substantive": "NO_MEANINGFUL_BEHAVIOR_DIFFERENCE",
+      "rationale": "Both branches produced the identical current_intent \"consider the unfamiliar option\". The personality contrast produced no behavioural difference."
+    },
+    {
+      "scenario_id": "alternative-interpretation",
+      "mechanical": "PROVIDER_FAILURE",
+      "substantive": "PROVIDER_FAILURE",
+      "rationale": "All six transport calls succeeded, but branch B's raw output was not a parseable structured cognition object (empty/unparsable for current_intent), so no comparison is available for this scenario. Classified per the frozen PROVIDER_FAILURE rule; not counted toward Level 6."
+    },
+    {
+      "scenario_id": "proven-vs-unproven",
+      "mechanical": "MEANINGFUL_PERSONALITY_CONSISTENT_DIFFERENCE",
+      "substantive": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED",
+      "rationale": "The mechanical marker rule fired only because branch B ABSTAINED (current_intent = null) while branch A stated \"maintain current approach\"; B's text simply contained fewer familiar-markers. Neither branch moved toward the frozen openness high anchor (\"readily engages novel experiences and reinterprets what is already known\"). Per §25 an abstention is not meaningfully MORE aligned with the high anchor, so this is not an openness-consistent difference (§26: an unrelatedly different branch must not be reinterpreted as openness)."
+    }
+  ],
+  "salience_contract_effect": "Outputs changed in kind versus V0, but no scenario showed the higher-openness branch behaving more in line with the frozen high anchor; the only mechanical 'difference' was an abstention artifact.",
+  "final_level_6": "NOT_DEMONSTRATED"
+}

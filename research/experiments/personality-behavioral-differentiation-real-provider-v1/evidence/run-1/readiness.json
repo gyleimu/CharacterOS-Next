@@ -1,0 +1,8 @@
+{
+  "reachable": true,
+  "model": "qwen3.5:9b",
+  "latency_ms": 8482,
+  "content": "{\"ready\":true}",
+  "transport": "OllamaNativeCognitionTransportV0",
+  "think_false": true
+}

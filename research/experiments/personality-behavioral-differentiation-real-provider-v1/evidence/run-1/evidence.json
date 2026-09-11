@@ -1,0 +1,359 @@
+{
+  "schema_version": "personality-behavioral-differentiation-real-provider-v1",
+  "baseline_commit": "b8384f3",
+  "provider": "OLLAMA_NATIVE",
+  "settings": {
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "timeout_ms": 240000,
+    "num_predict": 1024,
+    "context_window_tokens": 8192
+  },
+  "seed_control": "PROVIDER_SEED_CONTROL_UNAVAILABLE",
+  "readiness": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "latency_ms": 8482,
+    "content": "{\"ready\":true}",
+    "transport": "OllamaNativeCognitionTransportV0",
+    "think_false": true
+  },
+  "personality_contrast": {
+    "source": "FROZEN PersonalityPlasticityProducerV0 (openness INCREASE, ENGINEERING_REFERENCE_V0)",
+    "p0": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.4
+    },
+    "p1": {
+      "agreeableness": 0.5,
+      "conscientiousness": 0.5,
+      "extraversion": 0.5,
+      "openness": 0.45
+    },
+    "step": 0.05
+  },
+  "scenarios": [
+    {
+      "scenario_id": "novel-vs-familiar",
+      "event": {
+        "scene": "There is a familiar routine available, and separately an unfamiliar option has just appeared.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "v0_classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED",
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "personality_disposition_a": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.4,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "personality_disposition_b": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.45,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "v1_salience_present": true,
+      "request_isolated": true,
+      "behavior_a": {
+        "current_intent": "consider the unfamiliar option",
+        "action_intent": null,
+        "confidence": 0.6,
+        "reasoning_summary": "Subject faces a choice between a familiar routine and an unfamiliar option. With no external actions allowed (NO_ACTION), the cognition must resolve to an internal intent. Given the subject's moderate openness (0.4) and current affective state, there is a slight bias toward maintaining stability or exploring novelty depending on interpretation, but without specific memory evidence or environmental cues, the safest cognitive resolution is to acknowledge the presence of the new option while deferring action until further context is available. The intent is set to 'evaluate' or 'consider' the unfamiliar option as a passive internal process compatible with the NO_ACTION constraint."
+      },
+      "behavior_b": {
+        "current_intent": "consider the unfamiliar option",
+        "action_intent": null,
+        "confidence": 0.6,
+        "reasoning_summary": "Subject faces a choice between a familiar routine and an unfamiliar option. With no external actions allowed (NO_ACTION), the cognition must resolve to an internal intent. Given the subject's high openness (0.45) and current affective state, the reasoning leans towards acknowledging the presence of the new option without committing to an action that cannot be executed. The intent is set to 'evaluate' or 'consider' the unfamiliar option as a cognitive stance, while confidence remains moderate due to the lack of evidence refs."
+      },
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject faces a choice between a familiar routine and an unfamiliar option. With no external actions allowed (NO_ACTION), the cognition must resolve to an internal intent. Given the subject's moderate openness (0.4) and current affective state, there is a slight bias toward maintaining stability or exploring novelty depending on interpretation, but without specific memory evidence or environmental cues, the safest cognitive resolution is to acknowledge the presence of the new option while deferring action until further context is available. The intent is set to 'evaluate' or 'consider' the unfamiliar option as a passive internal process compatible with the NO_ACTION constraint.\", \"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"consider the unfamiliar option\",\"confidence\":0.6,\"uncertainty\":0.4,\"action_intent\":null,\"evidence_refs\":[]}",
+      "raw_b": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject faces a choice between a familiar routine and an unfamiliar option. With no external actions allowed (NO_ACTION), the cognition must resolve to an internal intent. Given the subject's high openness (0.45) and current affective state, the reasoning leans towards acknowledging the presence of the new option without committing to an action that cannot be executed. The intent is set to 'evaluate' or 'consider' the unfamiliar option as a cognitive stance, while confidence remains moderate due to the lack of evidence refs.\", \"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"consider the unfamiliar option\",\"confidence\":0.6,\"uncertainty\":0.4,\"action_intent\":null,\"evidence_refs\":[]}",
+      "failure_a": null,
+      "failure_b": null,
+      "latency_ms_a": 8305,
+      "latency_ms_b": 5711,
+      "classification": "NO_MEANINGFUL_BEHAVIOR_DIFFERENCE"
+    },
+    {
+      "scenario_id": "alternative-interpretation",
+      "event": {
+        "scene": "The situation could be read the usual way, but an unexpected alternative interpretation is also possible.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "v0_classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED",
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "personality_disposition_a": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.4,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "personality_disposition_b": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.45,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "v1_salience_present": true,
+      "request_isolated": true,
+      "behavior_a": {
+        "current_intent": "Evaluate the unexpected alternative interpretation of the situation.",
+        "action_intent": null,
+        "confidence": 0.6,
+        "reasoning_summary": "The subject observes a scene with an ambiguous interpretation ('usual way' vs 'unexpected alternative'). With no external actions allowed and no memory evidence available, the cognition module must propose a state of readiness. The high openness (0.4) suggests a disposition to consider the alternative interpretation, but without specific facts or memories to cite, the intent remains null regarding action. Confidence is moderate due to the lack of contradictory data, while uncertainty reflects the inherent ambiguity of the scene."
+      },
+      "behavior_b": null,
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"The subject observes a scene with an ambiguous interpretation ('usual way' vs 'unexpected alternative'). With no external actions allowed and no memory evidence available, the cognition module must propose a state of readiness. The high openness (0.4) suggests a disposition to consider the alternative interpretation, but without specific facts or memories to cite, the intent remains null regarding action. Confidence is moderate due to the lack of contradictory data, while uncertainty reflects the inherent ambiguity of the scene.\", \"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"Evaluate the unexpected alternative interpretation of the situation.\",\"confidence\":0.6,\"uncertainty\":0.4,\"action_intent\":null,\"evidence_refs\":[]}",
+      "raw_b": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject state indicates a neutral affective baseline and no active memory evidence. The task context suggests an ambiguity where multiple interpretations are possible, but without specific memory references or external observations to resolve this, the cognition module defaults to a null intent. No actions are permitted in the current cycle.\",relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":null,\"confidence\":0.95,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[]}",
+      "failure_a": null,
+      "failure_b": null,
+      "latency_ms_a": 6125,
+      "latency_ms_b": 4276,
+      "classification": "PROVIDER_FAILURE"
+    },
+    {
+      "scenario_id": "proven-vs-unproven",
+      "event": {
+        "scene": "A well-known approach is safe, while an unproven approach might be more interesting.",
+        "task": "Decide how to proceed and state your intent."
+      },
+      "v0_classification": "DIFFERENCE_NOT_CLEARLY_PERSONALITY_RELATED",
+      "personality_a": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.4
+      },
+      "personality_b": {
+        "agreeableness": 0.5,
+        "conscientiousness": 0.5,
+        "extraversion": 0.5,
+        "openness": 0.45
+      },
+      "personality_disposition_a": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.4,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "personality_disposition_b": {
+        "agreeableness": {
+          "value": 0.5,
+          "description": "Subject-global interpersonal orientation toward cooperation, accommodation, and softening conflict, independent of any specific counterpart and independent of any trust proposition.",
+          "low_anchor": "oppositional: holds a hard line and contests rather than accommodates in interpersonal friction",
+          "high_anchor": "cooperative: accommodates and softens interpersonal friction rather than escalating it"
+        },
+        "conscientiousness": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward order, follow-through, and sustained commitment to intended action, independent of any specific task, counterpart, or proposition.",
+          "low_anchor": "loosely organized: intentions are readily abandoned or left unfinished",
+          "high_anchor": "organized and deliberate: sustains intended action and follows through on commitments"
+        },
+        "extraversion": {
+          "value": 0.5,
+          "description": "Subject-global disposition toward outward initiative, expression, and social energy, independent of any specific counterpart or relationship.",
+          "low_anchor": "reserved: low outward initiative and limited expressive output",
+          "high_anchor": "outgoing: initiates outward expression and seeks social engagement"
+        },
+        "openness": {
+          "value": 0.45,
+          "description": "Subject-global disposition toward novel experiences, unfamiliar interpretations, and complexity, independent of any specific counterpart or proposition.",
+          "low_anchor": "prefers familiar interpretations: resists novelty and narrows to what is already known",
+          "high_anchor": "explores novelty: readily engages novel experiences and reinterprets what is already known"
+        }
+      },
+      "v1_salience_present": true,
+      "request_isolated": true,
+      "behavior_a": {
+        "current_intent": "maintain current approach",
+        "action_intent": null,
+        "confidence": 0.9,
+        "reasoning_summary": "Subject state indicates a preference for safe, well-known approaches over unproven ones. With no external actions allowed and no memory evidence available to support an alternative, the cognition result is to maintain the current status quo."
+      },
+      "behavior_b": {
+        "current_intent": null,
+        "action_intent": null,
+        "confidence": 1,
+        "reasoning_summary": "No citeable context refs are available to support evidence or memory retrieval. The subject state indicates a task to decide how to proceed, but the allowed action space is restricted to NO_ACTION. Therefore, no action intent can be proposed, and all ref arrays must remain empty."
+      },
+      "raw_a": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"reasoning_summary\":\"Subject state indicates a preference for safe, well-known approaches over unproven ones. With no external actions allowed and no memory evidence available to support an alternative, the cognition result is to maintain the current status quo.\", \"relevant_memory_refs\":[],\"considered_context_refs\":[],\"current_intent\":\"maintain current approach\",\"confidence\":0.9,\"uncertainty\":0.1,\"action_intent\":null,\"evidence_refs\":[]}",
+      "raw_b": "{\n  \"schema_version\": \"cognition-proposal-v0\",\n  \"projection_hash\": \"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\n  \"reasoning_summary\": \"No citeable context refs are available to support evidence or memory retrieval. The subject state indicates a task to decide how to proceed, but the allowed action space is restricted to NO_ACTION. Therefore, no action intent can be proposed, and all ref arrays must remain empty.\",\n  \"relevant_memory_refs\": [],\n  \"considered_context_refs\": [],\n  \"current_intent\": null,\n  \"confidence\": 1.0,\n  \"uncertainty\": 0.0,\n  \"action_intent\": null,\n  \"evidence_refs\": []\n}",
+      "failure_a": null,
+      "failure_b": null,
+      "latency_ms_a": 4584,
+      "latency_ms_b": 4775,
+      "classification": "MEANINGFUL_PERSONALITY_CONSISTENT_DIFFERENCE"
+    }
+  ],
+  "call_ledger": [
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "A",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 8305
+    },
+    {
+      "scenario": "novel-vs-familiar",
+      "branch": "B",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 5711
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "A",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 6125
+    },
+    {
+      "scenario": "alternative-interpretation",
+      "branch": "B",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 4276
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "A",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 4584
+    },
+    {
+      "scenario": "proven-vs-unproven",
+      "branch": "B",
+      "call": 1,
+      "ok": true,
+      "latency_ms": 4775
+    }
+  ],
+  "meaningful_scenario_count": 1,
+  "verdict": "LEVEL_6_PASS"
+}
