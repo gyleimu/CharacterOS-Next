@@ -17,6 +17,24 @@ export class SerialTaskQueueV0 {
     });
   }
 
+  /**
+   * CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — serialized execution that RETURNS
+   * the task's result (the fire-and-forget `enqueue` cannot). Same law: task N
+   * fully settles before task N+1 starts; a rejection never breaks the chain.
+   */
+  run<T>(task: () => Promise<T>): Promise<T> {
+    this.pending += 1;
+    const result = this.tail.then(task);
+    this.tail = result.then(
+      () => undefined,
+      () => undefined
+    );
+    void this.tail.finally(() => {
+      this.pending -= 1;
+    });
+    return result;
+  }
+
   /** Resolves once every task submitted so far has settled. */
   async drain(): Promise<void> {
     await this.tail;

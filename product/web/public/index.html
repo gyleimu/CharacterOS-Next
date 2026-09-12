@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CharacterOS</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-name">CharacterOS</span>
+        <span class="brand-sub">one persistent subject</span>
+      </div>
+      <div class="provider" id="provider-chip" aria-live="polite">
+        <span class="dot dot-unknown" id="provider-dot"></span>
+        <span id="provider-text">connecting…</span>
+      </div>
+    </header>
+
+    <p class="banner banner-hidden" id="connection-banner" role="status"></p>
+
+    <main class="layout">
+      <aside class="panel panel-character" aria-label="Character">
+        <h2 class="panel-title">Character</h2>
+        <div class="identity">
+          <div class="avatar" id="avatar" aria-hidden="true">?</div>
+          <div class="identity-text">
+            <div class="name" id="subject-name">…</div>
+            <div class="sub" id="subject-id"></div>
+            <div class="badge" id="subject-status">…</div>
+          </div>
+        </div>
+
+        <dl class="facts">
+          <div class="fact">
+            <dt>Affect</dt>
+            <dd id="fact-affect">…</dd>
+          </div>
+          <div class="fact">
+            <dt>Canonical time</dt>
+            <dd id="fact-time">…</dd>
+          </div>
+          <div class="fact">
+            <dt>Lived episodes</dt>
+            <dd id="fact-episodes">…</dd>
+          </div>
+        </dl>
+
+        <details class="state" id="state-block">
+          <summary>State</summary>
+          <div id="state-body" class="state-body"></div>
+        </details>
+      </aside>
+
+      <section class="panel panel-conversation" aria-label="Conversation">
+        <h2 class="panel-title">Conversation</h2>
+        <p class="note">
+          Session-only view. Continuity is proven by <strong>Life</strong>, not by a rebuilt transcript.
+        </p>
+        <div class="messages" id="messages" aria-live="polite"></div>
+        <div class="stages" id="stages" aria-live="polite"></div>
+        <form class="composer" id="composer">
+          <label class="sr-only" for="input">Message</label>
+          <textarea
+            id="input"
+            rows="2"
+            placeholder="Say something to the subject…"
+            autocomplete="off"
+          ></textarea>
+          <button type="submit" id="send">Send</button>
+        </form>
+      </section>
+
+      <aside class="panel panel-life" aria-label="Life">
+        <h2 class="panel-title">Life</h2>
+        <p class="note">Lived memory — what the subject actually experienced. Not a chat history.</p>
+        <div id="life" class="life"></div>
+      </aside>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

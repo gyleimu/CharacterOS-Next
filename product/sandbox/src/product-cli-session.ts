@@ -11,18 +11,16 @@ import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import type { InteractiveTurnOutcomeV0, LivedMemoryEntryV0, LivedMemoryInspectionV0 } from "@characteros-next/runtime";
 import type { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import type { ExternalStructuredObservationRequestV0 } from "./external-observation-ingress.js";
-import {
-  ProviderDiagnosticsV0,
-  buildProductTurnPlanV0,
-  classifyProviderFailureV0,
-  extractFailureStageV0,
-  type ProductTurnPlanInputV0
-} from "./provider-diagnostics.js";
+import { ProviderDiagnosticsV0, extractFailureStageV0, type ProductTurnPlanInputV0 } from "./provider-diagnostics.js";
+import { buildTurnFailureSummaryV0, runInstrumentedProductTurnV0 } from "./product-turn-execution.js";
 import {
   formatConfigurationLinesV0,
   type ProductConfigSourceV0,
   type ProductConfigurationV0
 } from "./product-configuration.js";
+
+// Re-exported for compatibility: the implementation moved to the shared turn module.
+export { suggestionForFailureV0 } from "./product-turn-execution.js";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
@@ -105,22 +103,6 @@ function sanitizeDisplayTextV0(text: string): string {
   return out.length > MAX_DISPLAY_TEXT_LENGTH_V0
     ? `${out.slice(0, MAX_DISPLAY_TEXT_LENGTH_V0)} …[truncated for display]`
     : out;
-}
-
-/** Product-facing next action for a classified provider failure. */
-export function suggestionForFailureV0(category: string): string {
-  switch (category) {
-    case "PROVIDER_UNAVAILABLE":
-      return "Check that Ollama is running and the configured model is installed, then relaunch.";
-    case "PROVIDER_TIMEOUT":
-      return "The local model exceeded the configured timeout; see /diagnostics, then retry or raise CHARACTEROS_TIMEOUT_MS.";
-    case "PROVIDER_MALFORMED_RESPONSE":
-      return "The model returned invalid structured output; see /diagnostics, then retry.";
-    case "PROVIDER_REJECTED_OUTPUT":
-      return "The model output was rejected by the frozen validator; see /diagnostics, then retry.";
-    default:
-      return "See /diagnostics, then /exit and relaunch to resume from durable state.";
-  }
 }
 
 /**
@@ -506,66 +488,33 @@ export class ProductCliSessionV0 {
    * A report never changes the turn's outcome; the frozen runtime decides
    * fatality. SKIPPED means no model call was lawful (not a failure).
    */
-  private reportAdaptation(outcome: InteractiveTurnOutcomeV0): void {
-    const diagnostics = this.deps.diagnostics;
-    if (diagnostics === undefined) return;
-    const belief = outcome.belief_adaptation;
-    if (belief !== null) {
-      if (belief.status === "DISABLED") diagnostics.noteReported("BELIEF_ADAPTATION", "DISABLED", belief.status);
-      else if (belief.failure !== null) diagnostics.noteReported("BELIEF_ADAPTATION", "FAILED", `${belief.status} — ${belief.failure}`);
-      else if (belief.status === "COMPLETED") diagnostics.noteReported("BELIEF_ADAPTATION", "OK", belief.status);
-      else diagnostics.noteReported("BELIEF_ADAPTATION", "SKIPPED", belief.status);
-    }
-    const relationship = outcome.relationship_familiarity;
-    if (relationship !== null) {
-      if (relationship.status === "DISABLED") diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "DISABLED", "not configured");
-      else if (relationship.status === "NO_APPLICABLE_EPISODE")
-        diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "SKIPPED", "no applicable counterpart episode");
-      else diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "OK", relationship.status);
-    }
-  }
-
   private async handleUserMessage(text: string): Promise<void> {
     if (this.deps.host.isFailed()) {
       this.deps.write("The runtime is in a failed state and cannot take new messages. Inspection commands still work; use /exit, then relaunch.");
       return;
     }
-    const diagnostics = this.deps.diagnostics;
-    // Expectation is published BEFORE the first provider call; total wall time is
-    // measured across the whole turn, provider time is summed from stage samples.
-    // From turn 2 on, the runtime also closes the previous delivered behavior
-    // (an extra appraisal) inside this turn, so it is planned truthfully.
-    const closingPriorOutcome =
-      diagnostics !== undefined ? (await this.deps.host.status()).pending_behavior_outcome : false;
-    const started = diagnostics?.now() ?? null;
-    diagnostics?.beginTurn(
-      buildProductTurnPlanV0({
-        ...(this.deps.turnPlan ?? {
-          belief_adaptation_enabled: false,
-          relationship_adaptation_enabled: false,
-          personality_adaptation_enabled: false
-        }),
-        closing_prior_outcome: closingPriorOutcome
-      })
-    );
-    const outcome = await this.deps.host.send(text);
-    const elapsed = started !== null && diagnostics !== undefined ? diagnostics.now() - started : null;
-    this.lastTurnOutcome = outcome;
-    this.deps.onTurnComplete?.(outcome);
-    this.reportAdaptation(outcome);
+    // The turn lifecycle (expectation, serialized turn, truthful conditional /
+    // adaptation reporting, timing close) is SHARED with the visual product.
+    const { outcome } = await runInstrumentedProductTurnV0({
+      host: this.deps.host,
+      diagnostics: this.deps.diagnostics ?? null,
+      turnPlan: this.deps.turnPlan ?? {
+        belief_adaptation_enabled: false,
+        relationship_adaptation_enabled: false,
+        personality_adaptation_enabled: false
+      },
+      text,
+      onOutcome: (turnOutcome): void => {
+        this.lastTurnOutcome = turnOutcome;
+        this.deps.onTurnComplete?.(turnOutcome);
+      }
+    });
     if (outcome.status !== "COMPLETE") {
-      diagnostics?.endTurn({ status: "FAILED", total_ms: elapsed });
       await this.printTurnFailureSummary(outcome);
       return;
     }
-    // LANGUAGE is conditional and only knowable AFTER cognition: never promised
-    // live, but reported truthfully here when it lawfully made no model call.
-    if (!outcome.language_call_required) {
-      diagnostics?.noteSkipped("LANGUAGE", `no language call (${outcome.language_status})`, false);
-    }
     this.deps.write(`${this.label()} > ${outcome.subject_text}`);
     if (this.deps.debug) this.deps.write(this.debugTurnLine(outcome));
-    diagnostics?.endTurn({ status: "COMPLETE", total_ms: elapsed });
     if (this.deps.host.isFailed()) {
       this.deps.write("Warning: the reply was produced but durable state could not be saved. Relaunch to resume.");
     }
@@ -634,30 +583,24 @@ export class ProductCliSessionV0 {
    */
   private async printTurnFailureSummary(outcome: InteractiveTurnOutcomeV0): Promise<void> {
     const out = (line: string): void => this.deps.write(line);
-    const failure = outcome.failure;
-    const stage = extractFailureStageV0(failure);
-    const recorded = stage === null ? null : this.deps.diagnostics?.last(stage) ?? null;
-    const classified =
-      recorded !== null && recorded.category !== null
-        ? { category: recorded.category, detail: recorded.detail ?? "" }
-        : classifyProviderFailureV0(failure ?? "unknown provider failure");
-    const canonicalChanged =
-      outcome.repository_revision_after !== outcome.repository_revision_before ||
-      outcome.state_revision_after !== outcome.state_revision_before;
-    const pending = this.deps.host.pendingLifecycleWork();
-    out(`Turn failed during: ${stage ?? "UNKNOWN"}`);
+    const summary = buildTurnFailureSummaryV0({
+      outcome,
+      diagnostics: this.deps.diagnostics ?? null,
+      pending_lifecycle_work: this.deps.host.pendingLifecycleWork()
+    });
+    out(`Turn failed during: ${summary.stage ?? "UNKNOWN"}`);
     out(
       `Subject persistence: ${
-        !canonicalChanged && pending === 0
+        summary.persistence === "SAFE"
           ? "SAFE (durable state unchanged since the last completed turn)"
           : "PARTIAL (this failed turn is not persisted; relaunch resumes from the last completed boundary)"
       }`
     );
-    out(`  Canonical revision: ${outcome.repository_revision_before} -> ${outcome.repository_revision_after}`);
-    out(`  State revision: ${outcome.state_revision_before} -> ${outcome.state_revision_after}`);
-    out(`  Pending lifecycle work: ${pending}`);
-    out(`Reason: ${classified.category}${this.deps.debug ? ` — ${sanitizeDisplayTextV0(classified.detail)}` : ""}`);
-    out(`Suggested action: ${suggestionForFailureV0(classified.category)}`);
+    out(`  Canonical revision: ${summary.repository_revision_before} -> ${summary.repository_revision_after}`);
+    out(`  State revision: ${summary.state_revision_before} -> ${summary.state_revision_after}`);
+    out(`  Pending lifecycle work: ${summary.pending_lifecycle_work}`);
+    out(`Reason: ${summary.category}${this.deps.debug ? ` — ${sanitizeDisplayTextV0(summary.detail)}` : ""}`);
+    out(`Suggested action: ${summary.suggested_action}`);
     out("Inspection commands still work: /status /state /life /memory /diagnostics /exit.");
   }
 

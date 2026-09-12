@@ -17,7 +17,8 @@
     "typecheck": "pnpm typecheck:workspaces",
     "typecheck:auxiliary": "tsc -p tsconfig.auxiliary.json",
     "typecheck:workspaces": "tsc -p tsconfig.workspaces.json",
-    "verify": "pnpm governance && pnpm typecheck && pnpm build && pnpm typecheck:auxiliary && pnpm lint && pnpm test"
+    "verify": "pnpm governance && pnpm typecheck && pnpm build && pnpm typecheck:auxiliary && pnpm lint && pnpm test",
+    "web": "pnpm --filter @characteros-next/product-web build && pnpm --filter @characteros-next/product-web start"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

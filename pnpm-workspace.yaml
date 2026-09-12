@@ -1,3 +1,4 @@
 packages:
   - "packages/*"
   - "product/sandbox"
+  - "product/web"

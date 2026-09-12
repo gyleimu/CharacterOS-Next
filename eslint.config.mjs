@@ -15,7 +15,8 @@ const workspacePackages = [
   "@characteros-next/relationship",
   "@characteros-next/long-term-state-domain",
   "@characteros-next/behavior",
-  "@characteros-next/sandbox"
+  "@characteros-next/sandbox",
+  "@characteros-next/product-web"
 ];
 
 const toRestrictedPaths = (names, message) =>
@@ -234,5 +235,39 @@ export default tseslint.config(
       "node:crypto"
     ],
     "sandbox composition may consume the runtime public root and the personality domain package (to build the personality-adaptation port), plus node built-ins for the local CLI host."
-  )
+  ),
+  // CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — the local visual product consumes
+  // ONLY the sandbox public product boundary (which re-exports the runtime
+  // services it composes) plus node built-ins for its local HTTP server.
+  packageBoundaryConfig(
+    "product/web/src/**/*.ts",
+    [
+      "@characteros-next/product-web",
+      "@characteros-next/sandbox",
+      "node:http",
+      "node:fs",
+      "node:fs/promises",
+      "node:path",
+      "node:url",
+      "node:process"
+    ],
+    "product/web may consume only the sandbox public product boundary plus node built-ins for its local server."
+  ),
+  {
+    // The V0 frontend is framework-free browser JavaScript served as-is. Declare
+    // the browser globals it relies on instead of disabling no-undef globally.
+    files: ["product/web/public/**/*.js"],
+    languageOptions: {
+      sourceType: "module",
+      globals: {
+        document: "readonly",
+        window: "readonly",
+        fetch: "readonly",
+        EventSource: "readonly",
+        console: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly"
+      }
+    }
+  }
 );

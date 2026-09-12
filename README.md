@@ -30,7 +30,8 @@ The detailed contract remains in [`ARCHITECTURE.md`](ARCHITECTURE.md) and its re
 ## Repository layout
 
 - `packages/` — 13 reusable workspaces: `subject-core`, `runtime`, `memory`, `appraisal`, `affect`, `behavior`, `belief`, `relationship`, `regulation`, `personality`, `influence-evidence`, `memory-influence`, and `long-term-state-domain`.
-- `product/sandbox/` — the fourteenth workspace and reference composition boundary.
+- `product/sandbox/` — reference CLI composition boundary (`pnpm interactive`): reference product, developer and debug tool.
+- `product/web/` — the fifteenth workspace: local visual product (`pnpm web`), a framework-free browser UI over a local Node backend that owns ONE persistent subject.
 - `evals/conformance/` — active offline conformance and frozen-evidence regression tests.
 - `evals/baselines/`, `evals/longitudinal/`, `evals/ablation/`, `evals/regression/` — reserved evaluation surfaces; currently not implemented.
 - `research/experiments/` — tracked experiment harnesses, contracts, reports, and experiment-local frozen evidence.

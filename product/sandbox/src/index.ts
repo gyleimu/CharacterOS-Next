@@ -130,3 +130,60 @@ export async function sandboxCommitBehaviorOutcomeFeedbackV0(
   const executor = new LearningTransitionExecutor(container);
   return executor.executeBehaviorOutcomeFeedback(ctx, { candidate } as never);
 }
+
+// --- CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — reusable product services --------
+// Additive public product boundary for local product surfaces (the CLI and the
+// local web product). These are the SAME services the CLI uses; no canonical
+// semantics, no authority, no raw mutation surface is exposed here.
+
+export {
+  ProductRuntimeV0,
+  ProductEventHubV0,
+  ProductRuntimeStartupErrorV0,
+  createProductRuntimeV0
+} from "./product-runtime.js";
+export type {
+  CreateProductRuntimeOptionsV0,
+  ProductRuntimeBootstrapV0,
+  ProductRuntimeDepsV0,
+  ProductRuntimeIdentityV0,
+  ProductRuntimeProviderV0,
+  ProductRuntimeStartupCodeV0,
+  ProductTurnResultV0
+} from "./product-runtime.js";
+export { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
+export { ProductLifeOperationsV0 } from "./product-life-operations.js";
+export type { ProductLifeViewV0, ProductStateViewV0 } from "./product-life-operations.js";
+export {
+  buildTurnFailureSummaryV0,
+  runInstrumentedProductTurnV0,
+  suggestionForFailureV0
+} from "./product-turn-execution.js";
+export type { InstrumentedTurnResultV0, TurnFailureSummaryV0 } from "./product-turn-execution.js";
+export { ProviderDiagnosticsV0, buildProductTurnPlanV0, formatLatencyV0 } from "./provider-diagnostics.js";
+export type {
+  ProductTurnPlanInputV0,
+  ProductTurnPlanV0,
+  ProviderFailureCategoryV0,
+  ProviderProgressEventV0,
+  ProviderProgressEventTypeV0,
+  ProviderProgressGroupV0,
+  ProviderStageRecordV0,
+  ProviderStageStatusV0,
+  ProviderStageV0,
+  ProviderTurnTimingV0
+} from "./provider-diagnostics.js";
+export {
+  PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
+  PRODUCT_DEFAULT_DATA_ROOT_V0
+} from "./product-paths.js";
+// Read-only runtime projections the visual client renders (types only).
+export type {
+  InteractiveSubjectStateViewV0,
+  InteractiveSubjectStatusV0,
+  InteractiveTurnOutcomeV0,
+  LivedMemoryEntryV0,
+  LivedMemoryInspectionV0
+} from "@characteros-next/runtime";
+export { resolveProductConfigurationV0, formatConfigurationLinesV0 } from "./product-configuration.js";
+export type { ProductConfigSourceV0, ProductConfigurationV0 } from "./product-configuration.js";

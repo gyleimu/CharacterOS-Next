@@ -106,6 +106,53 @@ export interface ProviderStageSampleV0 {
   readonly count: number;
 }
 
+/** Which plan group a stage belongs to (display grouping only). */
+export type ProviderProgressGroupV0 = "REPLY" | "PRIOR_REPLY" | "ADAPTATION" | "NONE";
+
+export type ProviderProgressEventTypeV0 =
+  | "TURN_PLAN"
+  | "TURN_STARTED"
+  | "TURN_COMPLETED"
+  | "TURN_FAILED"
+  | "STAGE_RUNNING"
+  | "STAGE_SUCCEEDED"
+  | "STAGE_FAILED"
+  | "STAGE_SKIPPED"
+  | "STAGE_REPORTED";
+
+/**
+ * CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — structured, prompt-free progress.
+ * The SAME events the CLI renders as text; a visual client renders these instead
+ * of parsing CLI strings. Never carries user text, prompts or Memory payloads.
+ */
+export interface ProviderProgressEventV0 {
+  readonly type: ProviderProgressEventTypeV0;
+  readonly stage?: ProviderStageV0;
+  readonly group?: ProviderProgressGroupV0;
+  readonly index?: number;
+  readonly total?: number;
+  readonly status?: ProviderStageStatusV0;
+  readonly latency_ms?: number;
+  readonly category?: ProviderFailureCategoryV0;
+  readonly detail?: string;
+  /** TURN_PLAN: the frozen plan for this turn. */
+  readonly plan?: ProductTurnPlanV0;
+  /** TURN_PLAN: rough reply-path estimate from process-local samples (null when unknown). */
+  readonly reply_estimate_ms?: number | null;
+  /** TURN_COMPLETED / TURN_FAILED: the turn's timing split. */
+  readonly timing?: ProviderTurnTimingV0;
+}
+
+/** Rough reply-path estimate from the most recent successful local samples. */
+export function estimateReplyPathMsV0(
+  plan: ProductTurnPlanV0,
+  sampleFor: (stage: ProviderStageV0) => number | null
+): number | null {
+  const sampled = plan.reply_stages.filter((stage) => sampleFor(stage) !== null);
+  if (sampled.length === 0) return null;
+  return sampled.reduce((total, stage) => total + (sampleFor(stage) ?? 0), 0);
+}
+
 export interface ProviderTurnTimingV0 {
   readonly status: "COMPLETE" | "FAILED";
   readonly total_ms: number | null;
@@ -119,6 +166,11 @@ export interface ProviderTurnTimingV0 {
 
 export interface ProviderDiagnosticsOptionsV0 {
   readonly write: (line: string) => void;
+  /**
+   * Optional structured observer receiving the SAME stage truth as `write`.
+   * Additive: the CLI keeps using `write`; a visual client consumes events.
+   */
+  readonly observer?: (event: ProviderProgressEventV0) => void;
   /** Monotonic millisecond clock (injectable for deterministic tests). */
   readonly now?: () => number;
   readonly model: string;
@@ -252,6 +304,20 @@ export class ProviderDiagnosticsV0 {
     return (this.options.now ?? defaultMonotonicNowV0)();
   }
 
+  /**
+   * Structured event emission is strictly additive observability: a throwing
+   * observer (e.g. a closed SSE socket) must never break a product turn.
+   */
+  private emit(event: ProviderProgressEventV0): void {
+    const observer = this.options.observer;
+    if (observer === undefined) return;
+    try {
+      observer(event);
+    } catch {
+      // Observability must never break the conversation.
+    }
+  }
+
   /** Marks a stage as ENABLED (configured) without a call yet. */
   enable(stage: ProviderStageV0): void {
     if (stage === "BELIEF_ADAPTATION" || stage === "PERSONALITY_ADAPTATION") {
@@ -285,6 +351,12 @@ export class ProviderDiagnosticsV0 {
     this.turnLatencyBySlot = new Map();
     this.turnStageCounts = new Map();
     this.turnSkipped = [];
+    this.emit({
+      type: "TURN_PLAN",
+      plan,
+      reply_estimate_ms: estimateReplyPathMsV0(plan, (stage) => this.lastSuccessMs(stage))
+    });
+    this.emit({ type: "TURN_STARTED" });
     this.options.write(formatTurnExpectationLineV0(plan, (stage) => this.lastSuccessMs(stage)));
     if (this.options.debug) {
       this.options.write(
@@ -300,27 +372,58 @@ export class ProviderDiagnosticsV0 {
    * `occurrence` is 1-based within the turn: a repeated reply-path stage is the
    * prior-turn outcome closing step, never a second reply slot.
    */
-  private locationOf(stage: ProviderStageV0, occurrence: number): { readonly prefix: string } {
+  private locationOf(
+    stage: ProviderStageV0,
+    occurrence: number
+  ): { readonly prefix: string; readonly group: ProviderProgressGroupV0; readonly index: number; readonly total: number } {
+    const plain = { prefix: `[${stage.toLowerCase()}]`, group: "NONE" as const, index: 0, total: 0 };
     const plan = this.activePlan;
-    if (plan === null) return { prefix: `[${stage.toLowerCase()}]` };
+    if (plan === null) return plain;
     if (occurrence > 1) {
       const priorIndex = plan.prior_reply_stages.indexOf(stage);
       if (priorIndex >= 0) {
         return {
-          prefix: `[prior-reply ${priorIndex + 1}/${plan.prior_reply_stages.length} ${stage.toLowerCase()}]`
+          prefix: `[prior-reply ${priorIndex + 1}/${plan.prior_reply_stages.length} ${stage.toLowerCase()}]`,
+          group: "PRIOR_REPLY",
+          index: priorIndex + 1,
+          total: plan.prior_reply_stages.length
         };
       }
-      return { prefix: `[${stage.toLowerCase()}]` };
+      return plain;
     }
     const replyIndex = plan.reply_stages.indexOf(stage);
     if (replyIndex >= 0) {
-      return { prefix: `[reply ${replyIndex + 1}/${plan.reply_stages.length} ${stage.toLowerCase()}]` };
+      return {
+        prefix: `[reply ${replyIndex + 1}/${plan.reply_stages.length} ${stage.toLowerCase()}]`,
+        group: "REPLY",
+        index: replyIndex + 1,
+        total: plan.reply_stages.length
+      };
     }
+    // Adaptation numbering covers BOTH product-timed and untimed stages (the
+    // untimed belief stage still runs; only its latency is unobservable), so a
+    // visual client sees one bounded adaptation group. Untimed stages remain
+    // excluded from any estimate.
+    const adaptationTotal = plan.adaptation_stages.length + plan.untimed_adaptation_stages.length;
     const adaptationIndex = plan.adaptation_stages.indexOf(stage);
     if (adaptationIndex >= 0) {
-      return { prefix: `[adaptation ${adaptationIndex + 1}/${plan.adaptation_stages.length} ${stage.toLowerCase()}]` };
+      return {
+        prefix: `[adaptation ${adaptationIndex + 1}/${adaptationTotal} ${stage.toLowerCase()}]`,
+        group: "ADAPTATION",
+        index: adaptationIndex + 1,
+        total: adaptationTotal
+      };
     }
-    return { prefix: `[${stage.toLowerCase()}]` };
+    const untimedIndex = plan.untimed_adaptation_stages.indexOf(stage);
+    if (untimedIndex >= 0) {
+      return {
+        prefix: `[adaptation ${plan.adaptation_stages.length + untimedIndex + 1}/${adaptationTotal} ${stage.toLowerCase()}]`,
+        group: "ADAPTATION",
+        index: plan.adaptation_stages.length + untimedIndex + 1,
+        total: adaptationTotal
+      };
+    }
+    return plain;
   }
 
   private nextOccurrence(stage: ProviderStageV0): number {
@@ -337,7 +440,16 @@ export class ProviderDiagnosticsV0 {
   noteRunning(stage: ProviderStageV0): void {
     this.records.set(stage, { stage, status: "RUNNING", latency_ms: null, category: null, error_code: null, detail: null });
     const occurrence = this.nextOccurrence(stage);
-    this.options.write(`${this.locationOf(stage, occurrence).prefix} running...${this.recentHint(stage)}`);
+    const location = this.locationOf(stage, occurrence);
+    this.emit({
+      type: "STAGE_RUNNING",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status: "RUNNING"
+    });
+    this.options.write(`${location.prefix} running...${this.recentHint(stage)}`);
   }
 
   noteSucceeded(stage: ProviderStageV0, latencyMs: number): void {
@@ -345,7 +457,17 @@ export class ProviderDiagnosticsV0 {
     this.samples.set(stage, { last_ms: latencyMs, count: this.sampleCount(stage) + 1 });
     const slot = `${stage}:${this.turnStageCounts.get(stage) ?? 1}`;
     this.turnLatencyBySlot.set(slot, (this.turnLatencyBySlot.get(slot) ?? 0) + latencyMs);
-    this.options.write(`${this.locationOf(stage, this.turnStageCounts.get(stage) ?? 1).prefix} done (${formatLatencyV0(latencyMs)})`);
+    const location = this.locationOf(stage, this.turnStageCounts.get(stage) ?? 1);
+    this.emit({
+      type: "STAGE_SUCCEEDED",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status: "OK",
+      latency_ms: latencyMs
+    });
+    this.options.write(`${location.prefix} done (${formatLatencyV0(latencyMs)})`);
   }
 
   noteFailed(stage: ProviderStageV0, latencyMs: number, error: unknown): void {
@@ -358,8 +480,20 @@ export class ProviderDiagnosticsV0 {
       error_code: classified.error_code,
       detail: classified.detail
     });
+    const location = this.locationOf(stage, this.turnStageCounts.get(stage) ?? 1);
+    this.emit({
+      type: "STAGE_FAILED",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status: "FAILED",
+      latency_ms: latencyMs,
+      category: classified.category,
+      detail: classified.detail
+    });
     this.options.write(
-      `${this.locationOf(stage, this.turnStageCounts.get(stage) ?? 1).prefix} failed (${formatLatencyV0(latencyMs)}): ${classified.category}` +
+      `${location.prefix} failed (${formatLatencyV0(latencyMs)}): ${classified.category}` +
         (this.options.debug ? ` [${classified.error_code ?? "no-code"}] ${shorten(classified.detail, 160)}` : "")
     );
   }
@@ -381,7 +515,17 @@ export class ProviderDiagnosticsV0 {
       detail
     });
     if (!this.turnSkipped.includes(stage)) this.turnSkipped.push(stage);
-    if (announce) this.options.write(`${this.locationOf(stage, 1).prefix} SKIPPED — ${detail}`);
+    const location = this.locationOf(stage, 1);
+    this.emit({
+      type: "STAGE_SKIPPED",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status: "SKIPPED",
+      detail
+    });
+    if (announce) this.options.write(`${location.prefix} SKIPPED — ${detail}`);
   }
 
   /** Records a stage outcome reported after the turn (e.g. belief adaptation). */
@@ -395,6 +539,17 @@ export class ProviderDiagnosticsV0 {
       detail
     });
     if (status === "SKIPPED" && !this.turnSkipped.includes(stage)) this.turnSkipped.push(stage);
+    const location = this.locationOf(stage, 1);
+    const event: ProviderProgressEventV0 = {
+      type: "STAGE_REPORTED",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status,
+      ...(detail === null ? {} : { detail })
+    };
+    this.emit(event);
   }
 
   /**
@@ -428,6 +583,7 @@ export class ProviderDiagnosticsV0 {
     this.turnLatencyBySlot = new Map();
     this.turnStageCounts = new Map();
     this.turnSkipped = [];
+    this.emit({ type: input.status === "COMPLETE" ? "TURN_COMPLETED" : "TURN_FAILED", timing });
     if (input.status === "COMPLETE") this.options.write(formatTurnCompletionLineV0(timing));
   }
 

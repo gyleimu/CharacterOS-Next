@@ -20,17 +20,16 @@ import { accessSync, appendFileSync, constants, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Interface as ReadlineInterface } from "node:readline";
 import { createInterface } from "node:readline";
-import { fileURLToPath } from "node:url";
 
 import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
-import {
-  ModelRelationshipFamiliarityQualifyingAdmissionProviderV0,
-  OllamaBeliefSemanticProviderV0
-} from "@characteros-next/runtime";
 import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { ProductLifeOperationsV0 } from "./product-life-operations.js";
-import { ProviderDiagnosticsV0, wrapTransportForStageV0 } from "./provider-diagnostics.js";
+import {
+  PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
+  PRODUCT_DEFAULT_DATA_ROOT_V0
+} from "./product-paths.js";
+import { createProductProviderBundleV0 } from "./product-provider-bundle.js";
 import {
   ProductConfigurationErrorV0,
   dataDirectoryFailureGuidanceV0,
@@ -47,9 +46,8 @@ import {
 } from "./product-configuration.js";
 import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
 import { advanceSubjectTimeV0, SubjectTimeAdvanceErrorV0 } from "./subject-time-advance.js";
-import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
-import { createProductTransportsV0, probeOllamaV0 } from "./product-providers.js";
+import { probeOllamaV0 } from "./product-providers.js";
 import { SerialTaskQueueV0 } from "./serial-task-queue.js";
 import {
   SubjectConfigurationErrorV0,
@@ -71,8 +69,8 @@ async function main(): Promise<number> {
   try {
     configuration = resolveProductConfigurationV0({
       environment,
-      default_data_root: fileURLToPath(new URL("../.data", import.meta.url)),
-      default_data_root_origin: "built-in default (product/sandbox/.data)"
+      default_data_root: PRODUCT_DEFAULT_DATA_ROOT_V0,
+      default_data_root_origin: PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0
     });
   } catch (error) {
     if (error instanceof ProductConfigurationErrorV0) {
@@ -85,7 +83,6 @@ async function main(): Promise<number> {
   const model = configuration.model.value;
   const numPredict = configuration.num_predict.value;
   const contextWindowTokens = configuration.context_window_tokens.value;
-  const timeoutMs = configuration.timeout_ms.value;
   const debug = configuration.debug.value;
   const dataDir = configuration.data_root.value;
   // Data root must exist and be writable; report the product-level cause actionably.
@@ -112,50 +109,27 @@ async function main(): Promise<number> {
     return 1;
   }
 
-  const transports = createProductTransportsV0({
-    base_url: baseUrl,
-    model,
-    timeout_ms: timeoutMs,
-    num_predict: numPredict,
-    context_window_tokens: contextWindowTokens
-  });
-  // CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0 — product-only
-  // stage progress/latency/failure classification. Pass-through wrappers; no
-  // canonical state, no persistence, no retry, no fallback.
-  const diagnostics = new ProviderDiagnosticsV0({
+  // CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — ONE shared provider bundle keeps
+  // the CLI and the local web product on identical provider semantics (same
+  // transports, appraisal/belief/relationship wiring, budgets and turn plan).
+  const bundle = createProductProviderBundleV0({
+    configuration,
     write: (line) => process.stdout.write(`${line}\n`),
-    model,
-    timeout_ms: timeoutMs,
     debug
   });
-  const cognitionTransport = wrapTransportForStageV0(transports.cognition, "COGNITION", diagnostics);
-  const languageTransport = wrapTransportForStageV0(transports.language, "LANGUAGE", diagnostics);
-  const appraisalTransport = wrapTransportForStageV0(transports.appraisal, "APPRAISAL", diagnostics);
-  const relationshipTransport = wrapTransportForStageV0(transports.relationship, "RELATIONSHIP_ADAPTATION", diagnostics);
-  if (!configuration.disable_adaptation.value) {
-    diagnostics.enable("BELIEF_ADAPTATION");
+  const transports = bundle.transports;
+  const diagnostics = bundle.diagnostics;
+  const cognitionTransport = transports.cognition;
+  const languageTransport = transports.language;
+  const appraisalProvider = bundle.appraisalProvider;
+  const beliefSemanticProvider = bundle.beliefSemanticProvider;
+  const relationshipFamiliarityAdmissionProvider = bundle.relationshipFamiliarityAdmissionProvider;
+  // The real bundle always wires both adaptation providers (nullable only so
+  // tests can construct a reduced double); a mis-wired bundle must fail loudly.
+  if (beliefSemanticProvider === null || relationshipFamiliarityAdmissionProvider === null) {
+    console.error("Product provider bundle is missing the adaptation providers.");
+    return 1;
   }
-  // CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0: one model-backed appraisal call per
-  // factual event, accounted separately from cognition/language.
-  const appraisal = createProductAppraisalProviderV0({ transport: appraisalTransport });
-
-  // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
-  // semantic bearing call per lived-evidence workflow, accounted separately
-  // from cognition/language/appraisal. The provider's own budget is FIXED by
-  // contract (num_predict 512, temperature 0, think/stream off, 60s timeout)
-  // — deliberately NOT the cognition output budget (§75).
-  const beliefSemanticProvider = new OllamaBeliefSemanticProviderV0({
-    base_url: baseUrl,
-    model: configuration.belief_semantic_model.value
-  });
-
-  // RELATIONSHIP_LIVED_DEVELOPMENT_V0: one bounded model-backed qualifying-
-  // interaction admission call per counterpart-referencing lived episode,
-  // accounted separately from cognition/language/appraisal/belief. The frozen
-  // provider emits only the closed qualifying/ABSTAIN vocabulary; the ingestion
-  // chain derives every number itself (no magnitude ever comes from the model).
-  const relationshipFamiliarityAdmissionProvider =
-    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: relationshipTransport });
 
   // SUBJECT_EXPLICIT_TIME_ADVANCE_PRODUCT_V0 — advance the SAME shared canonical
   // subject by explicit canonical TICKS (never seconds/minutes/hours). No human
@@ -174,7 +148,7 @@ async function main(): Promise<number> {
           },
           conversationCognitionTransport: cognitionTransport,
           languageTransport: languageTransport,
-          factualEventAppraisalProvider: appraisal.provider,
+          factualEventAppraisalProvider: appraisalProvider,
           beliefSemanticProvider,
           relationshipFamiliarityAdmissionProvider,
           clock: () => new Date().toISOString()
@@ -224,7 +198,7 @@ async function main(): Promise<number> {
       {
         conversationCognitionTransport: cognitionTransport,
         languageTransport: languageTransport,
-        factualEventAppraisalProvider: appraisal.provider,
+        factualEventAppraisalProvider: appraisalProvider,
         // ADAPTATION PARITY: the same existing providers as human mode.
         beliefSemanticProvider,
         relationshipFamiliarityAdmissionProvider,
@@ -310,7 +284,7 @@ async function main(): Promise<number> {
       {
         conversationCognitionTransport: cognitionTransport,
         languageTransport: languageTransport,
-        appraisalProvider: appraisal.provider,
+        appraisalProvider: appraisalProvider,
         beliefSemanticProvider,
         relationshipFamiliarityAdmissionProvider,
         // ONE authoritative canonical subject source shared with environment mode.
@@ -375,7 +349,7 @@ async function main(): Promise<number> {
         language_call_required: outcome.language_call_required,
         raw_cognition_response: outcome.raw_cognition_response,
         // Separate Appraisal accounting (never folded into cognition/language).
-        appraisal_calls_so_far: appraisal.stats.callCount(),
+        appraisal_calls_so_far: bundle.appraisalCallCount(),
         appraisal_terminal_trace: transports.lastAppraisalTrace(),
         // Separate belief semantic accounting (§76 — no hidden calls).
         belief_adaptation: outcome.belief_adaptation,
@@ -407,7 +381,7 @@ async function main(): Promise<number> {
                 sharedSourceStore: sharedStore,
                 conversationCognitionTransport: cognitionTransport,
                 languageTransport: languageTransport,
-                factualEventAppraisalProvider: appraisal.provider,
+                factualEventAppraisalProvider: appraisalProvider,
                 beliefSemanticProvider,
                 relationshipFamiliarityAdmissionProvider,
                 provider_identity: {
@@ -422,13 +396,8 @@ async function main(): Promise<number> {
           }),
       subjectLabel: opened.displayName().length > 0 ? opened.displayName() : subjectId,
       diagnostics,
-      // Display-only expected plan: which optional adaptation stages this product
-      // configuration has enabled. Changes no call eligibility.
-      turnPlan: {
-        belief_adaptation_enabled: !configuration.disable_adaptation.value,
-        relationship_adaptation_enabled: true,
-        personality_adaptation_enabled: false
-      },
+      // Display-only expected plan, shared with the visual product.
+      turnPlan: bundle.turnPlan,
       configuration,
       subjectIdentity,
       subjectDurableState: subjectConfig?.durable_state ?? "UNKNOWN",

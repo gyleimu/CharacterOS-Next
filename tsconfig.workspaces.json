@@ -23,6 +23,11 @@
       "@characteros-next/sandbox": ["product/sandbox/src/index.ts"]
     }
   },
-  "include": ["packages/**/*.ts", "product/sandbox/**/*.ts"],
-  "exclude": ["packages/**/dist/**", "product/sandbox/dist/**", "**/node_modules/**"]
+  "include": ["packages/**/*.ts", "product/sandbox/**/*.ts", "product/web/**/*.ts"],
+  "exclude": [
+    "packages/**/dist/**",
+    "product/sandbox/dist/**",
+    "product/web/dist/**",
+    "**/node_modules/**"
+  ]
 }

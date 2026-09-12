@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `975150b00aa1e254ec34794e5a7c5b3b22480072`（干净 baseline；本次 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0` 是其直接子提交）
+Last verified against commit: `98fb23628aa0f985ceb5f04d5188276bdc16c679`（干净 baseline；本次 `CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,17 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0` — 第一个真实可视化产品：本地 Node backend + HTTP/SSE product API + 无框架浏览器 UI，一个持久 subject。
+
+- W1–W10 PASS：`pnpm web` 启动本地产品（默认 `127.0.0.1:4188`，`node:http`，零新增第三方依赖），`product/sandbox` 保持 REFERENCE_PRODUCT/DEBUG_TOOL 不变；
+- 复用面：新增 `createProductRuntimeV0` facade（配置解析 → preflight → open/restore → life ops → 串行 turn → shutdown）与共享 `createProductProviderBundleV0`（CLI 与 web 共用同一 provider 语义，杜绝分叉）；`ProviderDiagnosticsV0` 增加可选结构化 `observer`（与既有 `write` 同一 stage 真相）；
+- 浏览器只持有 presentation state（草稿、会话消息、最近一次读取的 view、SSE 连接），Memory/Belief/Personality/Relationship/Affect/canonical Time/identity/revision 全部来自 backend，且不使用 localStorage/sessionStorage/IndexedDB；
+- API 仅有 `/api/bootstrap`、`/api/status`、`/api/state`、`/api/memory?limit=N`、`/api/talk`、`/api/events`(SSE)、`/api/health`；静态文件为显式 allowlist（无路径穿越面），请求体上限 64 KiB，无 CORS；
+- 真实 smoke：真实本地模型两轮对话（含 prior-reply stage）、SSE 进度、Life/State 更新、真实进程重启后同一 `mira-14aa8fc5` RESTORED 且 4 条 lived episodes 保留；浏览器截图确认 UI 渲染与 live stage strip；
+- 判定 `CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
+
+上一个产品里程碑：
 
 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0` — 产品层 turn 进度与本地延迟预期（纯 observability/presentation，无 canonical 变更、无 provider policy 变更）。
 
@@ -58,6 +69,7 @@ CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0               FROZEN / GREEN
 CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0   FROZEN / GREEN
 CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0        FROZEN / GREEN
 CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0    FROZEN / GREEN
+CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0                       FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -78,15 +90,15 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`CHARACTEROS_PRODUCT_FIRST_LIVED_MOMENT_USABILITY_V0`
+`CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0`
 
-问题边界：品牌-new subject 在第一个 lived event（用户首条消息）之前没有 durable canonical state，因此 `/observe`、`/time`、`/environment` 会先拒绝并只给一行 hint；让首跑用户在产品内明确知道「先建立第一个 lived moment 才能使用这些能力」以及为什么，且不伪造 canonical state、不新增 Experience/Observation 语义、不改变任何拒绝条件。
+问题边界：本地可视化产品 V0 刻意只做 Character/Conversation/Live progress/Life/State；下一步把已存在但未暴露的 backend 能力以「抽屉」形式接入同一 UI（结构化外部 observation、确定性 environment interaction、显式 canonical ticks、只读 config 与 provider diagnostics），保持 backend 产品 API 边界不变、不新增 canonical 语义、不引入 avatar/theme/打包。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `CHARACTEROS_PRODUCT_FIRST_LIVED_MOMENT_USABILITY_V0`：必须先确认其问题、边界与预算；
+- 自动开始 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0`：必须先确认其问题、边界与预算；
 - 多 subject / multi-agent / shared world / GUI / voice / camera / avatar / tools / autonomous task execution；
 - accounts / cloud sync / provider router / 自动模型切换 / 自动重试编排 / 云 fallback；
 - `/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型、personality/belief/relationship 编辑器；
