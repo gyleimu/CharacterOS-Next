@@ -35,6 +35,7 @@ import type {
   SubjectEnvironmentV0,
   SubjectSessionStatusV0
 } from "./session-contracts-v0.js";
+import { deriveSessionCheckpointRefV0, verifySessionCheckpointRefV0 } from "./session-contracts-v0.js";
 import {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
@@ -481,7 +482,7 @@ export class LongHorizonSubjectSessionV0 {
     const durable = await this.authority.captureDurableState(episodeRefs);
     const environment = this.options.environment.exportState();
     const createdAt = (this.options.clock ?? (() => new Date().toISOString()))();
-    const checkpointRef = await hashEnvelope("characteros-next/runtime/subject-session-checkpoint/v0", {
+    const checkpointRef = await deriveSessionCheckpointRefV0({
       session_id: this.options.session_id,
       subject_id: this.options.subject.subject_id,
       next_interaction_index: this.interactionIndex,
@@ -522,6 +523,28 @@ export class LongHorizonSubjectSessionV0 {
     checkpoint: SessionCheckpointV0,
     source: ReturnType<ExplicitV4SessionAuthorityV0["durableSource"]>
   ): Promise<SessionRestoreOutcomeV0> {
+    // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-08): a checkpoint is a
+    // content-addressed binding of its own body. A stale, swapped or tampered
+    // checkpoint (including a modified observational copy of an authoritative
+    // field) must fail closed BEFORE any canonical state is rebuilt. `created_at`
+    // is not bound, so a changed timestamp alone is accepted as observational.
+    const refMismatch = await verifySessionCheckpointRefV0(checkpoint);
+    if (refMismatch !== null) {
+      const failed: SessionRestoreOutcomeV0 = {
+        kind: "FAILED",
+        checkpoint_ref: checkpoint.checkpoint_ref,
+        restore_generation: this.restores.length + 1,
+        next_interaction_index: this.interactionIndex,
+        pre: checkpoint.durable.identity,
+        post: checkpoint.durable.identity,
+        environment_state_hash_pre: checkpoint.environment_state.state_hash,
+        environment_state_hash_post: checkpoint.environment_state.state_hash,
+        identity_classification: "FAILURE",
+        detail: refMismatch
+      };
+      this.restores.push(failed);
+      return failed;
+    }
     const envBefore = this.options.environment.exportState();
     const preIdentity = await this.capturePreRestoreIdentityV0(checkpoint);
     // CORE_INTEGRITY_AUDIT_V0 — a checkpoint belongs to exactly one subject. The

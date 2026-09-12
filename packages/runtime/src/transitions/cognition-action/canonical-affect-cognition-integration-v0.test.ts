@@ -57,7 +57,7 @@ import {
   buildCognitiveContextProjectionV2ForExplicitV4
 } from "./cognition-action-transition-executor.js";
 import { FACTUAL_MEMORY_EVIDENCE_SCHEMA_VERSION } from "./factual-memory-evidence.js";
-import { renderCognitiveSubjectData } from "../../providers/cognition/cognitive-prompt-projection.js";
+import { renderCognitiveSubjectData, CANONICAL_AFFECT_LEGEND_V0 } from "../../providers/cognition/cognitive-prompt-projection.js";
 import { createSubjectStateV4AuthoritativeRestoreEnvelopeV0, restoreSubjectStateV4AuthoritativelyV0 } from "../../authority/restore-chain-authority-v4.js";
 import { mintTrustedCanonicalHistoryBoundaryV4V0, type TrustedCanonicalHeadInputV0 } from "../../authority/trusted-canonical-history-boundary.js";
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
@@ -674,6 +674,27 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — provider input and rende
     const rig2 = buildCognitionRig(world);
     await rig2.execute(snapshot);
     expect(canonicalJsonString(rig2.captured[0])).toBe(canonicalJsonString(rig.captured[0]));
+  });
+
+  it("AUD-11. the canonical affect line carries the frozen numeric legend, with no named emotion and no directive", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-legend", "重做一下。");
+    const snapshot = await readSnapshot(world);
+    const rig = buildCognitionRig(world);
+    await rig.execute(snapshot);
+    const projection = rig.captured[0] as Record<string, unknown>;
+    const rendered = renderCognitiveSubjectData(projection as never);
+    expect(rendered).toContain(CANONICAL_AFFECT_LEGEND_V0);
+    // Exactly one legend, rendered only for the canonical V2 affect line.
+    expect(rendered.split(CANONICAL_AFFECT_LEGEND_V0)).toHaveLength(2);
+    // Exact frozen ranges, taken from the validator; neutral is stated explicitly.
+    expect(CANONICAL_AFFECT_LEGEND_V0).toContain("[-1,1]");
+    expect(CANONICAL_AFFECT_LEGEND_V0).toContain("[0,1]");
+    expect(CANONICAL_AFFECT_LEGEND_V0).toContain("0 is neutral");
+    // Semantics only: no named emotion, no behavioral instruction.
+    for (const forbidden of ["angry", "sad", "happy", "afraid", "anxious", "should ", "must "]) {
+      expect(CANONICAL_AFFECT_LEGEND_V0.toLowerCase()).not.toContain(forbidden);
+    }
   });
 
   it("24-28/31/37. v3 goldens: V0/V1 projection and rendering unchanged; V2 has no legacy lines", async () => {

@@ -18,12 +18,12 @@
 
 import type { ModelTransportV0 } from "../../transports/model-transport.js";
 import type { CognitiveContextProjectionAnyVersion, CognitiveContextProjectionV0, CognitiveContextProjectionV1, CognitiveContextProjectionV2 } from "../../transitions/cognition-action/types.js";
-import { validateCognitionProposal } from "../../transitions/cognition-action/types.js";
+import { allowedEvidenceSet, validateCognitionProposal } from "../../transitions/cognition-action/types.js";
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { isRecord } from "@characteros-next/subject-core";
 import type { ConversationCognitionProposalV1 } from "../../transitions/conversation/conversation-cognition-proposal.js";
-import { renderFactualMemoryEvidenceSectionV1 } from "../cognition/cognitive-prompt-projection.js";
+import { CANONICAL_AFFECT_LEGEND_V0, renderFactualMemoryEvidenceSectionV1 } from "../cognition/cognitive-prompt-projection.js";
 import { canonicalizeSetLikeRefFields } from "../cognition/wire-format-canonicalization.js";
 
 export const CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 = [
@@ -98,7 +98,10 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionAnyV
   const legacyProjection = projection as CognitiveContextProjectionV0 | CognitiveContextProjectionV1;
   const v2Projection = projection as CognitiveContextProjectionV2;
   const affectLines: string[] = isV2
-    ? [`[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`]
+    ? [
+        `[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`,
+        CANONICAL_AFFECT_LEGEND_V0
+      ]
     : [
         `[affect] ${legacyProjection.affect_channels.length === 0 ? "(no active affect channels)" : legacyProjection.affect_channels.map(c => `${c.channel}=${c.strength}`).join(", ")}`,
         `[mood] baseline=${legacyProjection.mood_baseline}`
@@ -127,13 +130,13 @@ function buildConversationSubjectData(projection: CognitiveContextProjectionAnyV
     : projection.allowed_actions.map(a =>
         `- action_type="${a.action_type}"${a.target_ref !== null ? ` target_ref="${a.target_ref}"` : " (no target)"}`
       ).join("\n");
-  const citeableRefs = [...new Set<string>([
-    ...projection.memory_working_refs,
-    ...projection.recent_retrieval_refs,
-    ...projection.context.focus_refs,
-    ...projection.context.active_entity_refs,
-    ...projection.context.environment_refs
-  ])].sort();
+  // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-10): the rendered
+  // citeable list is derived from the SAME executable authority the production
+  // validator enforces (allowedEvidenceSet) — no hand-rolled second algorithm.
+  // The prompt declaration and the enforcement now agree on exactly one
+  // authority truth (`current_observation_ref` included), matching the V0
+  // renderer, the LLM cognition provider and the conversation executor.
+  const citeableRefs = [...allowedEvidenceSet(projection)].sort();
   const citeable = citeableRefs.length === 0 ? "(none)" : citeableRefs.map(ref => `- ${ref}`).join("\n");
 
   return [

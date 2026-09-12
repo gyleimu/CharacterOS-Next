@@ -20,7 +20,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ConversationCognitionProviderV1 } from "./conversation-cognition-provider.js";
-import { renderFactualMemoryEvidenceSectionV1 } from "../cognition/cognitive-prompt-projection.js";
+import { CANONICAL_AFFECT_LEGEND_V0, renderFactualMemoryEvidenceSectionV1 } from "../cognition/cognitive-prompt-projection.js";
 import {
   allowedEvidenceSet,
   findUnsupportedEvidenceRef,
@@ -129,6 +129,8 @@ function v2Projection(input: {
     relationship_dimensions: [],
     interaction_familiarity: [],
     interaction_familiarity_cognition_influences: [],
+    personality_dimensions: {},
+    personality_disposition: {},
     allowed_actions: [],
     projection_hash: `sha256:${input.subjectId ?? SUBJECT_A}-fixture-projection`
   };
@@ -282,6 +284,61 @@ describe("conversation cognition provider — factual memory evidence surface", 
     }
   });
 
+  it("§48.13 AUD-11: the canonical affect legend is rendered identically and only on the V2 surface", async () => {
+    const v2 = await propose(v2Projection());
+    const renderedV2 = userContent(v2.transport);
+    expect(renderedV2).toContain(CANONICAL_AFFECT_LEGEND_V0);
+    expect(renderedV2.split(CANONICAL_AFFECT_LEGEND_V0)).toHaveLength(2);
+    // The legend is exactly the canonical-line legend, immediately after the value line.
+    const lines = renderedV2.split("\n");
+    const valueIndex = lines.findIndex((line) => line.startsWith("[affect (canonical)] "));
+    expect(valueIndex).toBeGreaterThanOrEqual(0);
+    expect(lines[valueIndex + 1]).toBe(CANONICAL_AFFECT_LEGEND_V0);
+
+    const legacy = {
+      ...(v2Projection() as unknown as Record<string, unknown>),
+      schema_version: "cognitive-context-projection-v0",
+      affect_channels: [],
+      mood_baseline: 0.5
+    } as unknown as CognitiveContextProjectionAnyVersion;
+    delete (legacy as unknown as Record<string, unknown>)["canonical_affect"];
+    const legacyRendered = userContent((await propose(legacy)).transport);
+    expect(legacyRendered).not.toContain(CANONICAL_AFFECT_LEGEND_V0);
+  });
+
+  it("§48.14 CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: sections are distinct and absent state stays visibly absent", async () => {
+    const rendered = userContent((await propose(v2Projection())).transport);
+    const markers = [
+      "[identity]",
+      "[current state]",
+      "[context]",
+      "[current observation]",
+      "[focus refs]",
+      "[active entity refs]",
+      "[environment refs]",
+      "[memory evidence (allowed refs)]",
+      "[regulation]",
+      "[SUBJECTIVE BELIEF STANCES",
+      "[relationships]",
+      "[interaction familiarity —",
+      "[traits seed (read-only evidence)]",
+      "[current acquired personality (read-only",
+      "CITEABLE CONTEXT REFS",
+      "[ALLOWED ACTION SPACE]",
+      "[projection_hash]"
+    ];
+    for (const marker of markers) {
+      expect(rendered.split(marker)).toHaveLength(2);
+    }
+    // Exactly one canonical affect value line and exactly one legend; no legacy lines.
+    expect(rendered.split("[affect (canonical)] valence=")).toHaveLength(2);
+    expect(rendered.split(CANONICAL_AFFECT_LEGEND_V0)).toHaveLength(2);
+    expect(rendered).not.toContain("[mood]");
+    // Absent systems stay honest: no fabricated belief/personality content.
+    expect(rendered).toContain("showing 0 of 0 canonical belief item(s)");
+    expect(rendered).toContain("[current acquired personality (read-only; P(t), distinct from the immutable traits seed above)] {}");
+  });
+
   it("§48.6 evidence subject isolation: no cross-subject factual leakage", async () => {
     const projectionA = v2Projection({ subjectId: SUBJECT_A, evidence: outcomeA });
     const projectionB = v2Projection({ subjectId: SUBJECT_B, evidence: outcomeB });
@@ -366,17 +423,13 @@ describe("conversation cognition provider — factual memory evidence surface", 
       rendered.indexOf("CITEABLE CONTEXT REFS"),
       rendered.indexOf("[ALLOWED ACTION SPACE]")
     );
-    // The rendered list is the renderer's five documented sources (a lawful
-    // SUBSET of the enforced allowlist) — and every shown ref is lawful.
+    // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-10): the rendered list is
+    // the EXACT enforced allowlist (one authority truth) — the prompt declaration
+    // and the executable validator no longer diverge. The current observation ref
+    // is lawful evidence and is now declared as such.
     const shown = citeableSection.split("\n").filter((line) => line.startsWith("- ")).map((line) => line.slice(2));
-    const expectedShown = [...new Set([
-      ...projection.memory_working_refs,
-      ...projection.recent_retrieval_refs,
-      ...projection.context.focus_refs,
-      ...projection.context.active_entity_refs,
-      ...projection.context.environment_refs
-    ])].sort();
-    expect(shown).toEqual(expectedShown);
+    expect(shown).toEqual([...allowed].sort());
+    expect(shown).toContain("observation:o-future");
     for (const ref of shown) expect(allowed.has(ref)).toBe(true);
     // No unlawful ref is ever exposed as citeable.
     expect(shown).not.toContain("experience:x-a");

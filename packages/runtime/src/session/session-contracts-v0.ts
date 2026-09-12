@@ -8,6 +8,7 @@
  */
 
 import type { ModelTransportTraceV0 } from "../transports/model-transport-trace-v0.js";
+import { hashEnvelope } from "@characteros-next/subject-core";
 
 /** A single observable external situation supplied by the environment. */
 export interface EnvironmentInteractionV0 {
@@ -111,6 +112,58 @@ export interface SessionCheckpointV0 {
   readonly created_at: string;
   /** Content-addressed checkpoint ref (binding of all the above). */
   readonly checkpoint_ref: string;
+}
+
+/**
+ * CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-08): the exact bytes a
+ * `checkpoint_ref` binds. `created_at` is deliberately excluded — it is
+ * transport/observational metadata, not durable authority.
+ */
+export const SESSION_CHECKPOINT_REF_PROJECTION_V0 =
+  "characteros-next/runtime/subject-session-checkpoint/v0" as const;
+
+export interface SessionCheckpointRefBodyV0 {
+  readonly session_id: string;
+  readonly subject_id: string;
+  readonly next_interaction_index: number;
+  readonly completed_interactions: number;
+  readonly environment_state: EnvironmentStateV0;
+  readonly durable: SessionDurableStateV0;
+}
+
+/** The ONE authority that derives a checkpoint ref from a checkpoint body. */
+export async function deriveSessionCheckpointRefV0(
+  body: SessionCheckpointRefBodyV0
+): Promise<string> {
+  return hashEnvelope(SESSION_CHECKPOINT_REF_PROJECTION_V0, {
+    session_id: body.session_id,
+    subject_id: body.subject_id,
+    next_interaction_index: body.next_interaction_index,
+    completed_interactions: body.completed_interactions,
+    environment_state: body.environment_state,
+    durable: body.durable
+  });
+}
+
+/**
+ * Fail-closed verification: a checkpoint is only a lawful restore input when
+ * its recorded ref re-derives from its OWN body. Returns a detail string on
+ * mismatch (caller decides the public outcome), or null when consistent.
+ */
+export async function verifySessionCheckpointRefV0(
+  checkpoint: SessionCheckpointV0
+): Promise<string | null> {
+  const expected = await deriveSessionCheckpointRefV0({
+    session_id: checkpoint.session_id,
+    subject_id: checkpoint.subject_id,
+    next_interaction_index: checkpoint.next_interaction_index,
+    completed_interactions: checkpoint.completed_interactions,
+    environment_state: checkpoint.environment_state,
+    durable: checkpoint.durable
+  });
+  return checkpoint.checkpoint_ref === expected
+    ? null
+    : `checkpoint_ref ${checkpoint.checkpoint_ref} does not bind the checkpoint body (expected ${expected})`;
 }
 
 export interface SessionRestoreOutcomeV0 {

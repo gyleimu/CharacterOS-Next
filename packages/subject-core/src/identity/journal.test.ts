@@ -74,6 +74,24 @@ function forgedCommittedRecord(transitionId: string): AuthoritativeTransitionRec
 }
 
 describe("journal export/import hardening (§16)", () => {
+  it("CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: rebuildFromCommittedBundles restores terminal idempotency after restart", async () => {
+    const transitionId = "t-rebuild-committed";
+    const restarted = new InMemoryTransitionIdentityJournal();
+    // A fresh process has no journal; authoritative restore replays the
+    // committed bundles, each carrying its own authoritative transition_record.
+    restarted.rebuildFromCommittedBundles([
+      { transition_record: forgedCommittedRecord(transitionId) } as never
+    ]);
+
+    // The already-consumed transition is recognized as its terminal result —
+    // not treated as new merely because the process-local journal disappeared.
+    expect(await reserve(restarted, transitionId)).toEqual({ route: "SAME_TERMINAL_COMMITTED" });
+
+    // The first-seen sequence counter recovers too (no collision with pre-restart ids).
+    expect(await reserve(restarted, "t-rebuild-next")).toEqual({ route: "NEW_RESERVED" });
+    expect(restarted.exportState().map((r) => r.first_seen_sequence as number)).toEqual([1, 2]);
+  });
+
   it("export returns a safe immutable snapshot — host mutation cannot reach journal state", async () => {
     const journal = new InMemoryTransitionIdentityJournal();
     await reserve(journal, "t-export-immutable");

@@ -22,6 +22,7 @@ import type {
   SubjectEnvironmentV0
 } from "./session-contracts-v0.js";
 import { createLongHorizonSubjectSessionV0, type LongHorizonSubjectSessionOptionsV0 } from "./subject-session-v0.js";
+import { deriveSessionCheckpointRefV0 } from "./session-contracts-v0.js";
 
 const SUBJECT_ID = "subject-s0";
 
@@ -244,6 +245,78 @@ describe("LONG_HORIZON_AUTONOMOUS_SUBJECT_SESSION_V0 — orchestrator (offline)"
     // The restored life is retrievable: prior episodes surface as working refs.
     expect(outcome.working_episode_refs.length).toBeGreaterThan(0);
     expect(outcome.provider_memory_section_present).toBe(true);
+  });
+
+  it("CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: a tampered checkpoint body fails closed before restore", async () => {
+    const session = await createLongHorizonSubjectSessionV0(sessionOptions());
+    await session.processInteraction();
+    const checkpoint = await session.checkpoint();
+
+    // Mutate a bound field without re-deriving checkpoint_ref: the checkpoint is
+    // no longer a lawful restore input.
+    const tampered = {
+      ...checkpoint,
+      environment_state: { ...checkpoint.environment_state, state_hash: "hash:tampered" }
+    };
+    const restore = await session.restore(tampered);
+    expect(restore.kind).toBe("FAILED");
+    expect(restore.identity_classification).toBe("FAILURE");
+    expect(restore.detail).toContain("checkpoint_ref");
+  });
+
+  it("CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: created_at is observational and not bound by checkpoint_ref", async () => {
+    const session = await createLongHorizonSubjectSessionV0(sessionOptions());
+    await session.processInteraction();
+    const checkpoint = await session.checkpoint();
+    // A changed timestamp alone is not durable authority: it is excluded from the
+    // hashed body, so restore still succeeds.
+    const retimestamped = { ...checkpoint, created_at: "2099-12-31T23:59:59.000Z" };
+    const restore = await session.restore(retimestamped);
+    expect(restore.kind).toBe("RESTORED");
+  });
+
+  it("CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: a legacy checkpoint with absent optional durable state restores", async () => {
+    const session = await createLongHorizonSubjectSessionV0(sessionOptions());
+    await session.processInteraction();
+    const checkpoint = await session.checkpoint();
+    // A pre-belief-wiring / pre-personality checkpoint legitimately carries no
+    // optional key; its ref binds the key-less body and restore defaults them.
+    const legacyDurable = { ...checkpoint.durable };
+    delete legacyDurable.belief_workflow_store_state;
+    delete legacyDurable.personality_adaptation_state;
+    const legacy = {
+      ...checkpoint,
+      durable: legacyDurable,
+      checkpoint_ref: await deriveSessionCheckpointRefV0({
+        session_id: checkpoint.session_id,
+        subject_id: checkpoint.subject_id,
+        next_interaction_index: checkpoint.next_interaction_index,
+        completed_interactions: checkpoint.completed_interactions,
+        environment_state: checkpoint.environment_state,
+        durable: legacyDurable
+      })
+    };
+    const restore = await session.restore(legacy);
+    expect(restore.kind).toBe("RESTORED");
+  });
+
+  it("CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0: a checkpoint from a different subject fails closed", async () => {
+    // A genuine, ref-valid checkpoint for subject-s0.
+    const sessionA = await createLongHorizonSubjectSessionV0(sessionOptions());
+    await sessionA.processInteraction();
+    const checkpointA = await sessionA.checkpoint();
+
+    // A second session configured for a DIFFERENT subject: the checkpoint's ref
+    // verifies against its own body, but the subject binding must fail closed.
+    const sessionB = await createLongHorizonSubjectSessionV0({
+      ...sessionOptions(),
+      session_id: "sess-other-subject",
+      subject: { subject_id: "other-subject", display_name: "", identity_anchors: [] }
+    });
+    const restore = await sessionB.restore(checkpointA);
+    expect(restore.kind).toBe("FAILED");
+    expect(restore.identity_classification).toBe("FAILURE");
+    expect(restore.detail).toContain("does not match configured subject");
   });
 
   it("§51.9 environment state restores independently from subject state", async () => {

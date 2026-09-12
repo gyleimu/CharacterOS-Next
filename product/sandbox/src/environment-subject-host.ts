@@ -28,7 +28,9 @@ import {
   type SessionCheckpointV0,
   type SessionInteractionOutcomeV0,
   type SubjectEnvironmentV0,
-  type SubjectSessionStatusV0
+  type SubjectSessionStatusV0,
+  deriveSessionCheckpointRefV0,
+  verifySessionCheckpointRefV0
 } from "@characteros-next/runtime";
 import {
   ENVIRONMENT_CHECKPOINT_DOCUMENT_SCHEMA_VERSION,
@@ -200,16 +202,31 @@ export class EnvironmentSubjectHostV0 {
       );
     });
     const sidecar = loadedSidecar.kind === "DOCUMENT" ? loadedSidecar.document : null;
-    const runtimeCheckpoint: SessionCheckpointV0 = {
-      schema_version: "subject-session-checkpoint-v0",
+    // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-08): a persisted
+    // checkpoint document is a content-addressed binding. Verify the sidecar's
+    // own ref before trusting any of its fields; a tampered sidecar fails closed.
+    if (sidecar !== null) {
+      const sidecarMismatch = await verifySessionCheckpointRefV0(sidecar.checkpoint);
+      if (sidecarMismatch !== null) {
+        throw new EnvironmentSubjectRestoreErrorV0(`environment sidecar rejected: ${sidecarMismatch}`);
+      }
+    }
+    // The runtime checkpoint is RECONSTRUCTED from the resolved canonical durable
+    // state (not the sidecar's stale copy), so its ref is derived from the body
+    // actually restored — restoreFromSource verifies exactly this binding.
+    const checkpointBody = {
       session_id: config.session_id,
       subject_id: config.subject_id,
       next_interaction_index: sidecar?.checkpoint.next_interaction_index ?? 0,
       completed_interactions: sidecar?.checkpoint.completed_interactions ?? 0,
       environment_state: sidecar?.checkpoint.environment_state ?? environment.exportState(),
-      durable: canonical.durable,
+      durable: canonical.durable
+    };
+    const runtimeCheckpoint: SessionCheckpointV0 = {
+      schema_version: "subject-session-checkpoint-v0",
+      ...checkpointBody,
       created_at: sidecar?.checkpoint.created_at ?? clock(),
-      checkpoint_ref: sidecar?.checkpoint.checkpoint_ref ?? "sidecar:none"
+      checkpoint_ref: await deriveSessionCheckpointRefV0(checkpointBody)
     };
     let restore;
     try {

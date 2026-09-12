@@ -1152,7 +1152,11 @@ export {
   type SessionDurableStateV0,
   type SessionInteractionOutcomeV0,
   type SessionRestoreOutcomeV0,
-  type SubjectSessionStatusV0
+  type SubjectSessionStatusV0,
+  type SessionCheckpointRefBodyV0,
+  SESSION_CHECKPOINT_REF_PROJECTION_V0,
+  deriveSessionCheckpointRefV0,
+  verifySessionCheckpointRefV0
 } from "./session/session-contracts-v0.js";
 
 // ---------------------------------------------------------------------------

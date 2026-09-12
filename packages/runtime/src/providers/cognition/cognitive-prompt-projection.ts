@@ -30,6 +30,18 @@ import type { ModelTransportMessageV0 } from "../../transports/model-transport.j
 
 export const COGNITIVE_PROMPT_PROJECTION_VERSION = "cognitive-prompt-projection-v0" as const;
 
+/**
+ * CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-11) — frozen numeric
+ * semantics for the canonical affect line. The ranges are the exact
+ * `CanonicalAffectV0` ranges (`valence ∈ [-1,1]`, `activation ∈ [0,1]`), taken
+ * verbatim from the validator; no named emotion, no mapping of numbers to
+ * emotions and no behavioral directive is introduced. Defined ONCE here and
+ * imported by every prompt surface so the legend can never diverge between the
+ * cognition-action prompt and the conversation cognition prompt.
+ */
+export const CANONICAL_AFFECT_LEGEND_V0 =
+  "[affect (canonical) legend] Canonical affect is a continuous internal state (not a named emotion, not a behavioral instruction). valence range [-1,1]: lower is more negative, 0 is neutral, higher is more positive. activation range [0,1]: lower is lower activation, higher is higher activation.";
+
 function renderRefList(refs: readonly string[], indent: string): string {
   if (refs.length === 0) return `${indent}(none)`;
   return refs.map((ref) => `${indent}- ${ref}`).join("\n");
@@ -95,7 +107,8 @@ export function renderCognitiveSubjectData(
   const v2Projection = projection as CognitiveContextProjectionV2;
   const affectLines: string[] = isV2
     ? [
-        `[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`
+        `[affect (canonical)] valence=${v2Projection.canonical_affect.valence} activation=${v2Projection.canonical_affect.activation}`,
+        CANONICAL_AFFECT_LEGEND_V0
       ]
     : [
         `[affect] ${

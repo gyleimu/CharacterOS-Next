@@ -62,6 +62,12 @@ import {
   BeliefAdaptationWiringV0,
   type BeliefAdaptationTurnReportV0
 } from "./belief-adaptation-wiring-v0.js";
+import {
+  deriveExternalObservationContentFingerprintV0,
+  ExternalObservationReplayConflictErrorV0,
+  findPriorExternalObservationFingerprintV0,
+  type CommittedObservationIdentityViewV0
+} from "./external-observation-identity.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
 import type {
   PersonalityAdaptationFactoryV0,
@@ -466,6 +472,14 @@ export class ExplicitV4SessionAuthorityV0 {
       preparedResultValidator: async () => true,
       memoryAdoptionValidator: async () => true
     });
+    // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-07): the transition
+    // identity journal is the durable idempotency authority. A fresh process has
+    // no journal, so rebuild it from the committed canonical bundles (each
+    // carries its authoritative transition_record). An already-consumed
+    // transition is then resolved as its terminal result instead of being
+    // treated as new merely because the journal disappeared. Only committed
+    // canonical evidence is reconstructed — no serialized capability objects.
+    assembly.journal.rebuildFromCommittedBundles(source.bundles as never);
     const authority = await ExplicitV4SessionAuthorityV0.assemble({
       repo: freshRepo,
       assembly,
@@ -1160,6 +1174,46 @@ export class ExplicitV4SessionAuthorityV0 {
     readonly episode_ref: string;
     readonly repository_revision: string;
   }> {
+    // CORE_PERSISTENCE_AND_PROJECTION_HARDENING_V0 (AUD-06) — durable
+    // FIRST/REPLAY/CONFLICT resolved from authoritative canonical committed
+    // history. This gate runs BEFORE any proposal or commit: an identical replay
+    // creates no second Observation and no second lived episode, and changed
+    // content under the same observation identity fails closed. The frozen
+    // transition-id derivation is untouched.
+    const fingerprint = await deriveExternalObservationContentFingerprintV0({
+      observation_id: input.observation_id,
+      source_refs: input.source_refs,
+      external_refs: input.external_refs,
+      entity_refs: input.entity_refs,
+      scene: input.scene,
+      task: input.task,
+      focus_refs: input.focus_refs,
+      environment_refs: input.environment_refs
+    });
+    const prior = await findPriorExternalObservationFingerprintV0(
+      this.committedExternalObservationViews(),
+      input.observation_id
+    );
+    if (prior !== null) {
+      if (prior.fingerprint !== fingerprint) {
+        throw new ExternalObservationReplayConflictErrorV0(
+          input.observation_id,
+          `observation ${input.observation_id} replayed with changed semantic content`
+        );
+      }
+      const lived = await this.findEpisodeForExternalObservation(input.observation_id);
+      if (lived === null) {
+        throw new Error(
+          `session external observation: ${input.observation_id} was committed without a durable lived episode; operator recovery required`
+        );
+      }
+      return {
+        observation_transition_id: prior.transition_id,
+        observation_ref: input.observation_id,
+        episode_ref: lived.episode_ref,
+        repository_revision: lived.repository_revision
+      };
+    }
     const snapshot = await this.readSnapshot();
     const observation = observationInput({
       observation_id: input.observation_id,
@@ -1227,6 +1281,54 @@ export class ExplicitV4SessionAuthorityV0 {
       episode_ref: learned.episode_ref,
       repository_revision: learned.repository_revision
     };
+  }
+
+  /** Narrow committed Observation views for the durable external-observation gate. */
+  private committedExternalObservationViews(): CommittedObservationIdentityViewV0[] {
+    const views: CommittedObservationIdentityViewV0[] = [];
+    for (const bundle of this.assembly.storeRead.getCommittedBundles()) {
+      if (bundle.subject_id !== this.subjectIdValue) continue;
+      if (bundle.transition_type !== "Observation") continue;
+      const snapshot = bundle.next_snapshot as unknown as SubjectStateV4;
+      views.push({
+        transition_id: bundle.transition_id as string,
+        cause_refs: bundle.canonical_proposal.cause_refs as unknown as readonly string[],
+        external_refs: bundle.canonical_proposal.external_refs as unknown as readonly string[],
+        context: {
+          scene: snapshot.context.scene,
+          task: snapshot.context.task,
+          focus_refs: [...snapshot.context.focus_refs],
+          environment_refs: [...snapshot.context.environment_refs],
+          active_entity_refs: [...snapshot.context.active_entity_refs]
+        }
+      });
+    }
+    return views;
+  }
+
+  /**
+   * The lived episode created for a committed external Observation: the Learning
+   * commit whose cause lineage carries that observation ref. Resolved from
+   * canonical history, so a REPLAY returns the SAME episode rather than creating
+   * a second one.
+   */
+  private async findEpisodeForExternalObservation(
+    observationRef: string
+  ): Promise<{ readonly episode_ref: string; readonly repository_revision: string } | null> {
+    for (const bundle of this.assembly.storeRead.getCommittedBundles()) {
+      if (bundle.subject_id !== this.subjectIdValue) continue;
+      if (bundle.transition_type !== "Learning") continue;
+      const causeRefs = bundle.canonical_proposal.cause_refs as unknown as readonly string[];
+      if (!causeRefs.includes(observationRef)) continue;
+      const revision = (bundle.next_snapshot as unknown as SubjectStateV4).memory_state
+        .repository_revision as string;
+      const manifest = await this.repo.readManifest(revision as never);
+      const episode = manifest?.record_hashes.find((record) => record.ref.startsWith("episode:"));
+      if (episode !== undefined) {
+        return { episode_ref: episode.ref, repository_revision: revision };
+      }
+    }
+    return null;
   }
 
   async recordObservationalExperience(input: {
