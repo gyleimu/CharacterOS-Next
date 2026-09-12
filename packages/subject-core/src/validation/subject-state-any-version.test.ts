@@ -67,14 +67,23 @@ describe("RELATIONSHIP_LIVED_DEVELOPMENT_V0 — Relationship admitted to the clo
     expect(result.error.error_code).toBe("UNAUTHORIZED_PRODUCER");
   });
 
+  it("rejects a /relationships write under the wrong domain", () => {
+    const result = validateOwnership("relationship", "belief", "/relationships", "Relationship", "t");
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.error.error_code).toBe("UNAUTHORIZED_PRODUCER");
+  });
+
   it("rejects a Relationship transition touching another domain's path", () => {
-    for (const path of ["/beliefs", "/personality", "/affect", "/mood"] as const) {
+    for (const path of ["/beliefs", "/personality", "/affect", "/mood", "/traits_seed", "/regulation", "/memory_state"] as const) {
       const result = validateOwnership("relationship", "relationship", path, "Relationship", "t");
-      expect(result.ok).toBe(false);
+      expect(result.ok, path).toBe(false);
       if (result.ok) continue;
       expect(
         result.error.error_code === "INVALID_TRANSITION_OWNER" ||
-          result.error.error_code === "FORBIDDEN_DIRECT_MUTATION"
+          result.error.error_code === "FORBIDDEN_DIRECT_MUTATION" ||
+          result.error.error_code === "INVALID_SCHEMA",
+        `${path}: ${result.error.error_code}`
       ).toBe(true);
     }
   });
