@@ -140,7 +140,16 @@ export class EnvironmentSubjectHostV0 {
         `store image rejected (${error instanceof Error ? error.message : String(error)})`
       );
     }
-    const restore = await session.restoreFromSource(loaded.document.checkpoint, source as never);
+    let restore;
+    try {
+      restore = await session.restoreFromSource(loaded.document.checkpoint, source as never);
+    } catch (error) {
+      // Fail closed (e.g. a checkpoint whose identity does not match the
+      // configured subject): never fall through to a new subject.
+      throw new EnvironmentSubjectRestoreErrorV0(
+        error instanceof Error ? error.message : String(error)
+      );
+    }
     if (restore.kind !== "RESTORED") {
       throw new EnvironmentSubjectRestoreErrorV0(restore.detail ?? "restore not RESTORED");
     }

@@ -270,6 +270,19 @@ describe("SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — product environment cont
     ).rejects.toThrow(/restore failed/i);
   }, 60000);
 
+  it("fails closed when a persisted checkpoint belongs to a different subject identity", async () => {
+    const store = new InMemoryEnvironmentCheckpointStoreV0();
+    const recorderA = { requests: [] as string[] };
+    const hostA = await EnvironmentSubjectHostV0.open(config("subject-a"), deps(store, recorderA));
+    await hostA.processNextInteraction();
+
+    // Same persisted bundle, different configured subject identity.
+    const recorderB = { requests: [] as string[] };
+    await expect(
+      EnvironmentSubjectHostV0.open(config("subject-b"), deps(store, recorderB))
+    ).rejects.toThrow(/restore failed/i);
+  }, 60000);
+
   it("does not leak environment/ActionIntent into the conversation product (allowed_actions stays [])", async () => {
     const store = new InMemoryEnvironmentCheckpointStoreV0();
     const recorder = { requests: [] as string[] };
