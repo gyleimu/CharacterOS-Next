@@ -9,8 +9,8 @@
  * produced valid production behavior is ONE blinded evaluator call made.
  */
 
-import { writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import type { ModelTransportV0 } from "../../../packages/runtime/dist/index.js";
 import { OllamaNativeCognitionTransportV0 } from "../../../packages/runtime/dist/index.js";
 import {
@@ -211,7 +211,9 @@ function directionOf(record: PairRecord): PairRecord["direction"] {
 
 export async function runFormal(outDir: string): Promise<FormalResult> {
   const save = async (name: string, value: unknown): Promise<void> => {
-    writeFileSync(join(outDir, `${name}.json`), JSON.stringify(value, null, 2));
+    const file = join(outDir, `${name}.json`);
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, JSON.stringify(value, null, 2));
   };
   // Deterministic preflight — 0 real calls. FAIL → STOP.
   const preflight = await runPreflight(save);

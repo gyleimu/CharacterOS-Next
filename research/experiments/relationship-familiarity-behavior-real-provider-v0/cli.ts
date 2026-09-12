@@ -26,6 +26,17 @@ async function main(): Promise<number> {
   if (command === "run") {
     if (outDir === undefined) throw new Error("run requires an output directory");
     mkdirSync(outDir, { recursive: true });
+    writeFileSync(
+      join(outDir, "source.json"),
+      JSON.stringify(
+        {
+          experiment: "RELATIONSHIP_FAMILIARITY_BEHAVIORAL_DIFFERENTIATION_REAL_PROVIDER_V0",
+          source_commit: process.env["CHARACTEROS_SOURCE_COMMIT"] ?? "UNKNOWN"
+        },
+        null,
+        2
+      )
+    );
     const result = await runFormal(outDir);
     console.log(JSON.stringify({ final: result.final_verdict, complete: result.complete }, null, 2));
     return 0;
