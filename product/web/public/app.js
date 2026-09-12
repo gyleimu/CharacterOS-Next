@@ -320,6 +320,7 @@ function onProgress(event) {
     STAGE_SUCCEEDED: "DONE",
     STAGE_FAILED: "FAILED",
     STAGE_SKIPPED: "SKIPPED",
+    STAGE_REUSED: "REUSED",
     STAGE_REPORTED: event.status === "DISABLED" ? "DISABLED" : event.status === "SKIPPED" ? "SKIPPED" : "DONE"
   };
   const status = statusByType[event.type];
@@ -506,7 +507,8 @@ function renderConfig(config) {
     ["Timeout", config.timeout_ms],
     ["Context window tokens", config.context_window_tokens],
     ["Max output tokens", config.num_predict],
-    ["Data root", config.data_root]
+    ["Data root", config.data_root],
+    ["Appraisal exact-input reuse", config.appraisal_exact_input_reuse]
   ];
   for (const [label, entry] of settings) {
     const group = document.createElement("div");
@@ -532,12 +534,13 @@ function renderConfig(config) {
   drawer.configView.appendChild(readOnly);
 }
 
-function renderDiagnostics(diagnostics) {
+function renderDiagnostics(view) {
   drawer.diagnosticsView.textContent = "";
-  if (diagnostics === null || diagnostics === undefined) {
+  if (view === null || view === undefined || view.provider === null || view.provider === undefined) {
     drawer.diagnosticsView.appendChild(kvRow("Diagnostics", "unavailable"));
     return;
   }
+  const diagnostics = view.provider;
   drawer.diagnosticsView.appendChild(kvRow("Model", diagnostics.model));
   drawer.diagnosticsView.appendChild(kvRow("Configured timeout", `${diagnostics.timeout_ms} ms`));
   for (const record of diagnostics.stages) {
@@ -578,6 +581,19 @@ function renderDiagnostics(diagnostics) {
       (turn.prior_reply_ms > 0 ? ` · prior-reply ${(turn.prior_reply_ms / 1000).toFixed(1)} s` : "") +
       ` · adaptation ${(turn.adaptation_ms / 1000).toFixed(1)} s` +
       (turn.skipped.length > 0 ? ` · skipped ${turn.skipped.join(", ")}` : "");
+    group.appendChild(sub);
+    drawer.diagnosticsView.appendChild(group);
+  }
+  const reuse = view.appraisal_inference;
+  if (reuse !== null && reuse !== undefined) {
+    const group = document.createElement("div");
+    group.className = "kv-group";
+    group.appendChild(kvRow("Appraisal inference reuse", reuse.enabled ? "ON" : "OFF (independent inference)"));
+    const sub = document.createElement("div");
+    sub.className = "kv-sub";
+    sub.textContent =
+      `semantic invocations ${reuse.semantic_invocations} · real inferences ${reuse.real_inferences} · ` +
+      `reuse hits ${reuse.reuse_hits} · misses ${reuse.reuse_misses} · unavailable ${reuse.reuse_unavailable}`;
     group.appendChild(sub);
     drawer.diagnosticsView.appendChild(group);
   }

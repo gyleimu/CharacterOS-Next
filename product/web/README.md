@@ -31,10 +31,10 @@ starts a fake "ready" UI.
 
 Configuration is the same environment configuration the CLI uses
 (`CHARACTEROS_MODEL`, `OLLAMA_BASE_URL`, `CHARACTEROS_TIMEOUT_MS`,
-`CHARACTEROS_DATA_DIR`, …), plus `CHARACTEROS_WEB_HOST` / `CHARACTEROS_WEB_PORT`
-for the local server. Both surfaces default to the **same data root**
-(`product/sandbox/.data`), so the CLI and the visual product are two windows onto
-one life.
+`CHARACTEROS_DATA_DIR`, `CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE`, …), plus
+`CHARACTEROS_WEB_HOST` / `CHARACTEROS_WEB_PORT` for the local server. Both
+surfaces default to the **same data root** (`product/sandbox/.data`), so the CLI
+and the visual product are two windows onto one life.
 
 ## What you see
 
@@ -124,9 +124,13 @@ State.
   are no editor controls: the drawer only answers "what is effective?".
 - **Diagnostics** — per-stage status/latency/failure category, configured or
   disabled stage state, process-local latency samples and last-turn timing, from
-  the same diagnostics owner that drives the live conversation strip. No prompts,
-  user text or Memory content appear; refs and revisions stay behind the small
-  *Details* expansion.
+  the same diagnostics owner that drives the live conversation strip. It also
+  separates **semantic Appraisal invocations** from **real inferences** and
+  **reuse hits** (`APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0`): when the switch
+  is on, a second identical-request Appraisal in the same turn reuses the first
+  inference, and the stage renders `REUSED` with `0` provider latency instead of
+  a fake transport call. No prompts, user text or Memory content appear; refs and
+  revisions stay behind the small *Details* expansion.
 
 ## API (bounded, local)
 

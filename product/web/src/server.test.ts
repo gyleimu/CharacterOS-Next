@@ -20,6 +20,7 @@ import type {
   ProductObservationOutcomeV0,
   ProductRuntimeBootstrapV0,
   ProductStateViewV0,
+  ProductDiagnosticsViewV0,
   ProductTurnResultV0,
   ProviderDiagnosticsSnapshotV0,
   ProviderProgressEventV0
@@ -74,11 +75,27 @@ function configViewShape(): ProductConfigViewV0 {
       durable_state: "PRESENT"
     },
     data_root_contains: ["subject-config.json (product subject configuration)"],
+    appraisal_exact_input_reuse: { value: "off", source: "DEFAULT", origin: "built-in default" },
     read_only: true
   };
 }
 
-function diagnosticsShape(): ProviderDiagnosticsSnapshotV0 {
+function diagnosticsShape(): ProductDiagnosticsViewV0 {
+  return {
+    provider: providerDiagnosticsShape(),
+    appraisal_inference: {
+      enabled: false,
+      semantic_invocations: 4,
+      real_inferences: 4,
+      reuse_hits: 0,
+      reuse_misses: 2,
+      reuse_unavailable: 0,
+      candidates_stored: 0
+    }
+  };
+}
+
+function providerDiagnosticsShape(): ProviderDiagnosticsSnapshotV0 {
   return {
     model: "qwen3.5:9b",
     timeout_ms: 120000,
@@ -316,7 +333,7 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
       };
     },
     configView: (): ProductConfigViewV0 => configViewShape(),
-    diagnosticsView: (): ProviderDiagnosticsSnapshotV0 => diagnosticsShape(),
+    diagnosticsView: (): ProductDiagnosticsViewV0 => diagnosticsShape(),
     summarizeTurn: (): ProductTurnResultV0 => talkResult,
     subscribe: (listener: (event: ProviderProgressEventV0) => void): (() => void) => {
       listeners.add(listener);
@@ -689,11 +706,15 @@ describe("CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — local product server", () 
     const { handle } = await startFakeServer();
     const response = await fetch(apiUrl(handle, "/api/diagnostics"));
     expect(response.status).toBe(200);
-    const body = (await response.json()) as { diagnostics: ProviderDiagnosticsSnapshotV0 };
-    expect(body.diagnostics.model).toBe("qwen3.5:9b");
-    expect(body.diagnostics.stages[0]?.stage).toBe("APPRAISAL");
-    expect(body.diagnostics.samples[0]?.count).toBe(3);
-    expect(body.diagnostics.last_turn?.provider_ms).toBe(8800);
+    const body = (await response.json()) as { diagnostics: ProductDiagnosticsViewV0 };
+    expect(body.diagnostics.provider?.model).toBe("qwen3.5:9b");
+    expect(body.diagnostics.provider?.stages[0]?.stage).toBe("APPRAISAL");
+    expect(body.diagnostics.provider?.samples[0]?.count).toBe(3);
+    expect(body.diagnostics.provider?.last_turn?.provider_ms).toBe(8800);
+    // P7: a semantic Appraisal invocation is never confused with a real inference.
+    expect(body.diagnostics.appraisal_inference.enabled).toBe(false);
+    expect(body.diagnostics.appraisal_inference.semantic_invocations).toBe(4);
+    expect(body.diagnostics.appraisal_inference.reuse_hits).toBe(0);
     const serialized = JSON.stringify(body.diagnostics);
     expect(serialized).not.toMatch(/prompt|user_text|memory_context|raw_cognition/i);
     expect((await fetch(apiUrl(handle, "/api/diagnostics"), { method: "POST" })).status).toBe(405);

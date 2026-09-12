@@ -147,6 +147,7 @@ export type {
   ProductCanonicalTimeResultV0,
   ProductConfigValueViewV0,
   ProductConfigViewV0,
+  ProductDiagnosticsViewV0,
   ProductEnvironmentOutcomeV0,
   ProductEnvironmentResultV0,
   ProductObservationOutcomeV0,
@@ -157,6 +158,18 @@ export type {
   ProductRuntimeStartupCodeV0,
   ProductTurnResultV0
 } from "./product-runtime.js";
+export {
+  AppraisalInferenceReuseV0,
+  appraisalProviderFingerprintV0,
+  appraisalRequestFingerprintV0,
+  appraisalRequestIdentityV0,
+  normalizedAppraisalValueV0
+} from "./product-appraisal-reuse.js";
+export type {
+  AppraisalReuseCountersV0,
+  AppraisalReuseScopeV0,
+  ReusableAppraisalCandidateV0
+} from "./product-appraisal-reuse.js";
 export { buildStructuredObservationRequestV0 } from "./product-observation.js";
 export type {
   ProductObservationFieldsV0,

@@ -18,7 +18,17 @@ import {
   OllamaBeliefSemanticProviderV0
 } from "@characteros-next/runtime";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
-import { createProductTransportsV0, type ProductTransportsV0 } from "./product-providers.js";
+import { PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0 } from "./product-appraisal-prompt.js";
+import {
+  AppraisalInferenceReuseV0,
+  appraisalProviderFingerprintV0
+} from "./product-appraisal-reuse.js";
+import {
+  PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
+  PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+  createProductTransportsV0,
+  type ProductTransportsV0
+} from "./product-providers.js";
 import {
   ProviderDiagnosticsV0,
   wrapTransportForStageV0,
@@ -49,6 +59,12 @@ export interface ProductProviderBundleV0 {
   readonly relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
   readonly turnPlan: ProductTurnPlanInputV0;
   readonly model: string;
+  /**
+   * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — turn-scoped reuse port shared by
+   * the appraisal provider and the product turn lifecycle. `enabled` reflects
+   * the product configuration switch; disabled ports are inert.
+   */
+  readonly appraisalReuse: AppraisalInferenceReuseV0;
 }
 
 /** Builds the frozen product provider set for ONE product process. */
@@ -89,7 +105,21 @@ export function createProductProviderBundleV0(
   if (!configuration.disable_adaptation.value) {
     diagnostics.enable("BELIEF_ADAPTATION");
   }
-  const appraisal = createProductAppraisalProviderV0({ transport: appraisalTransport });
+  // APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — the port is per bundle (per
+  // subject and process) and only reuses inside an explicitly opened turn scope.
+  const appraisalReuse = new AppraisalInferenceReuseV0(
+    configuration.appraisal_exact_input_reuse.value,
+    appraisalProviderFingerprintV0({
+      endpoint: baseUrl,
+      model,
+      timeout_ms: configuration.timeout_ms.value,
+      num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+      context_window_tokens: PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
+      system_prompt: PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0
+    }),
+    () => diagnostics.noteReused("APPRAISAL")
+  );
+  const appraisal = createProductAppraisalProviderV0({ transport: appraisalTransport, reuse: appraisalReuse });
   return {
     diagnostics,
     transports: {
@@ -113,6 +143,7 @@ export function createProductProviderBundleV0(
       relationship_adaptation_enabled: true,
       personality_adaptation_enabled: false
     },
-    model
+    model,
+    appraisalReuse
   };
 }

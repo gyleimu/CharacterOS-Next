@@ -121,6 +121,23 @@ export function resolveFlagSettingV0(
   return { value: raw === "1", source: "ENVIRONMENT", origin: name };
 }
 
+/**
+ * Strictly validated product boolean: accepts ONLY `1`/`0` (or unset). Any other
+ * value fails closed rather than being silently coerced to false.
+ */
+export function resolveStrictBooleanSettingV0(
+  environment: ProductEnvironmentV0,
+  name: string,
+  fallback: boolean
+): ProductConfigValueV0<boolean> {
+  const raw = environment.get(name);
+  if (raw === undefined) return { value: fallback, source: "DEFAULT", origin: BUILT_IN_DEFAULT_ORIGIN };
+  if (raw !== "0" && raw !== "1") {
+    throw new ProductConfigurationErrorV0(name, raw, "0 or 1", `environment variable ${name}`);
+  }
+  return { value: raw === "1", source: "ENVIRONMENT", origin: name };
+}
+
 export function resolveEndpointSettingV0(
   environment: ProductEnvironmentV0,
   name: string,
@@ -161,6 +178,12 @@ export interface ProductConfigurationV0 {
   readonly disable_adaptation: ProductConfigValueV0<boolean>;
   readonly belief_semantic_model: ProductConfigValueV0<string>;
   readonly interval_ticks: ProductConfigValueV0<number>;
+  /**
+   * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 rollout switch, strictly 0/1.
+   * DEFAULT OFF for the first production slice (opt-in until manually validated
+   * with real models). Non-canonical product configuration only.
+   */
+  readonly appraisal_exact_input_reuse: ProductConfigValueV0<boolean>;
 }
 
 export interface ResolveProductConfigurationInputV0 {
@@ -205,7 +228,12 @@ export function resolveProductConfigurationV0(
     debug: resolveFlagSettingV0(environment, "CHARACTEROS_DEBUG"),
     disable_adaptation: resolveFlagSettingV0(environment, "CHARACTEROS_DISABLE_ADAPTATION"),
     belief_semantic_model: beliefSemanticModel,
-    interval_ticks: resolvePositiveIntSettingV0(environment, "CHARACTEROS_INTERVAL_TICKS", 1, "canonical ticks")
+    interval_ticks: resolvePositiveIntSettingV0(environment, "CHARACTEROS_INTERVAL_TICKS", 1, "canonical ticks"),
+    appraisal_exact_input_reuse: resolveStrictBooleanSettingV0(
+      environment,
+      "CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE",
+      false
+    )
   };
 }
 
@@ -346,6 +374,16 @@ export function formatConfigurationLinesV0(
       String(configuration.interval_ticks.value),
       configuration.interval_ticks.source,
       configuration.interval_ticks.origin
+    )
+  );
+  lines.push("");
+  lines.push("Optimizations");
+  lines.push(
+    ...settingLinesV0(
+      "appraisal exact-input reuse",
+      configuration.appraisal_exact_input_reuse.value ? "on" : "off",
+      configuration.appraisal_exact_input_reuse.source,
+      configuration.appraisal_exact_input_reuse.origin
     )
   );
   lines.push("");

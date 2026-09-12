@@ -26,6 +26,7 @@ import {
   type ProviderProgressEventV0
 } from "./provider-diagnostics.js";
 import type { ProductProviderBundleV0 } from "./product-provider-bundle.js";
+import { AppraisalInferenceReuseV0 } from "./product-appraisal-reuse.js";
 import { environmentFromRecordV0 } from "./product-configuration.js";
 
 const tempDirs: string[] = [];
@@ -151,7 +152,8 @@ function fakeBundle(mode: CognitionMode = "OK"): BundleHarness {
         relationship_adaptation_enabled: false,
         personality_adaptation_enabled: false
       },
-      model: "fake"
+      model: "fake",
+      appraisalReuse: new AppraisalInferenceReuseV0(false, "test-fingerprint")
     }
   };
 }
@@ -417,8 +419,9 @@ describe("CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — product runtime facade", (
     const harness = fakeBundle();
     const runtime = await openRuntime(dir, harness);
     await runtime.submitHumanText("Establish a life first.");
-    const diagnostics = runtime.diagnosticsView();
-    expect(diagnostics).not.toBeNull();
+    const view = runtime.diagnosticsView();
+    expect(view).not.toBeNull();
+    const diagnostics = view?.provider ?? null;
     // The diagnostics owner is the injected bundle (model "fake" here); in the
     // product the bundle is built from the resolved configuration.
     expect(diagnostics?.model).toBe("fake");
@@ -427,7 +430,8 @@ describe("CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — product runtime facade", (
     expect(stages.some((record) => record.stage === "PERSONALITY_ADAPTATION" && record.status === "DISABLED")).toBe(true);
     expect(diagnostics?.last_turn?.status).toBe("COMPLETE");
     expect(diagnostics?.samples.some((sample) => sample.stage === "COGNITION")).toBe(true);
-    const serialized = JSON.stringify(diagnostics);
+    expect(view?.appraisal_inference.enabled).toBe(false);
+    const serialized = JSON.stringify(view);
     expect(serialized).not.toMatch(/prompt|user_text|memory_context|raw_cognition/i);
     expect(serialized).not.toContain("Establish a life first.");
     await runtime.shutdown();

@@ -34,7 +34,15 @@ export type ProviderFailureCategoryV0 =
   | "PROVIDER_REJECTED_OUTPUT"
   | "PROVIDER_INTERNAL_ERROR";
 
-export type ProviderStageStatusV0 = "DISABLED" | "CONFIGURED" | "RUNNING" | "OK" | "FAILED" | "SKIPPED";
+export type ProviderStageStatusV0 =
+  | "DISABLED"
+  | "CONFIGURED"
+  | "RUNNING"
+  | "OK"
+  | "FAILED"
+  | "SKIPPED"
+  /** Semantic stage ran by reusing an identical request's inference (no model call). */
+  | "REUSED";
 
 export interface ProviderStageRecordV0 {
   readonly stage: ProviderStageV0;
@@ -143,7 +151,8 @@ export type ProviderProgressEventTypeV0 =
   | "STAGE_SUCCEEDED"
   | "STAGE_FAILED"
   | "STAGE_SKIPPED"
-  | "STAGE_REPORTED";
+  | "STAGE_REPORTED"
+  | "STAGE_REUSED";
 
 /**
  * CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — structured, prompt-free progress.
@@ -562,6 +571,36 @@ export class ProviderDiagnosticsV0 {
     if (announce) this.options.write(`${location.prefix} SKIPPED — ${detail}`);
   }
 
+  /**
+   * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — a semantic stage that ran by
+   * reusing an identical request's already-validated inference. This is NOT a
+   * fake transport call: no provider latency is added, the stage still appears
+   * in progress and diagnostics, and the reuse is labelled explicitly.
+   */
+  noteReused(stage: ProviderStageV0, detail = "inference reused (identical request within this turn)"): void {
+    const occurrence = this.nextOccurrence(stage);
+    const location = this.locationOf(stage, occurrence);
+    this.records.set(stage, {
+      stage,
+      status: "REUSED",
+      latency_ms: 0,
+      category: null,
+      error_code: null,
+      detail
+    });
+    this.emit({
+      type: "STAGE_REUSED",
+      stage,
+      group: location.group,
+      index: location.index,
+      total: location.total,
+      status: "REUSED",
+      latency_ms: 0,
+      detail
+    });
+    this.options.write(`${location.prefix} inference reused (no model call)`);
+  }
+
   /** Records a stage outcome reported after the turn (e.g. belief adaptation). */
   noteReported(stage: ProviderStageV0, status: "OK" | "FAILED" | "DISABLED" | "SKIPPED", detail: string | null): void {
     this.records.set(stage, {
@@ -656,6 +695,10 @@ export class ProviderDiagnosticsV0 {
       }
       if (record.status === "CONFIGURED") {
         lines.push(`  ${stage}: CONFIGURED (not yet called)`);
+        continue;
+      }
+      if (record.status === "REUSED") {
+        lines.push(`  ${stage}: REUSED (identical request; no model inference)`);
         continue;
       }
       const latency = record.latency_ms === null ? "n/a" : formatLatencyV0(record.latency_ms);

@@ -187,14 +187,38 @@ selector, and no second configuration authority.
 | subject id override | `CHARACTEROS_SUBJECT_ID` | unset | explicit dev/automation override (must match persisted config in the same data root) |
 | display name override | `CHARACTEROS_DISPLAY_NAME` | unset | non-interactive creation display name |
 | environment interactions | `CHARACTEROS_ENVIRONMENT_INTERACTIONS` | `4` | `environment` subcommand interaction count |
+| appraisal exact-input reuse | `CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE` | `0` (off) | `1` reuses one identical-request Appraisal inference within a turn (see below) |
 
 Malformed numeric values (empty, non-numeric, zero, negative, fractional or
 overflow) FAIL CLOSED at startup with the setting name, the received value, the
 expected format and the source — values are never silently coerced. A malformed
-endpoint fails the same way. Precedence for subject identity is unchanged:
+endpoint fails the same way. The reuse switch accepts **only** `0` or `1`; any
+other value fails closed. Precedence for subject identity is unchanged:
 explicit env override → persisted subject config → first-run creation. An
 override that conflicts with the persisted subject in the same data root FAILS
 CLOSED (use a separate `CHARACTEROS_DATA_DIR` to run a different subject).
+
+### Appraisal exact-input reuse (`CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE`)
+
+Within ONE human turn the frozen runtime performs two semantic Appraisal
+invocations over **different event identities** — this turn's current-primary
+event and the previous delivered reply — whose model-facing requests can be
+byte-identical. With the switch set to `1`, the second invocation reuses the
+first's already parse-validated model candidate instead of paying a duplicate
+local inference. Measured on this machine's local model the redundant inference
+is ~2.7 s (research median; a single run can be higher).
+
+What is preserved: both semantic Appraisal invocations, both event identities,
+independent grounding/freshness/authority/commit for the second event, and the
+full Appraisal lifecycle. What disappears: only the duplicate model inference.
+
+Scope is strictly turn-local (same process, subject, turn, provider identity and
+complete request identity); the candidate is dropped on turn end, failure or
+restart, and is never persisted. `/config` shows the effective setting with its
+source; `/diagnostics` separates semantic invocations, real inferences and reuse
+hits, and a reused stage prints `inference reused (no model call)` rather than a
+fake transport call. Default is **off** (`DEFAULT_OFF`) for the first production
+rollout.
 
 ## Commands
 

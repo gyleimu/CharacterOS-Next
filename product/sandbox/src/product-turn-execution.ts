@@ -10,6 +10,7 @@
 
 import type { InteractiveTurnOutcomeV0 } from "@characteros-next/runtime";
 import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
+import type { AppraisalInferenceReuseV0 } from "./product-appraisal-reuse.js";
 import {
   buildProductTurnPlanV0,
   classifyProviderFailureV0,
@@ -128,27 +129,42 @@ export async function runInstrumentedProductTurnV0(input: {
   readonly turnPlan: ProductTurnPlanInputV0;
   readonly text: string;
   readonly onOutcome?: (outcome: InteractiveTurnOutcomeV0) => void;
+  /**
+   * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — optional turn-scoped reuse port.
+   * The scope opens for exactly this turn and closes on completion, failure,
+   * runtime failure or shutdown; nothing survives the turn.
+   */
+  readonly appraisalReuse?: AppraisalInferenceReuseV0 | null;
 }): Promise<InstrumentedTurnResultV0> {
   const diagnostics = input.diagnostics;
-  const closingPriorOutcome =
-    diagnostics !== null ? (await input.host.status()).pending_behavior_outcome : false;
+  const reuse = input.appraisalReuse ?? null;
+  const status =
+    diagnostics !== null || reuse !== null ? await input.host.status() : null;
+  const closingPriorOutcome = status?.pending_behavior_outcome ?? false;
+  if (reuse !== null && status !== null) {
+    reuse.beginTurn({ subject_id: status.subject_id, turn_index: status.turn_index });
+  }
   const started = diagnostics?.now() ?? null;
   diagnostics?.beginTurn(
     buildProductTurnPlanV0({ ...input.turnPlan, closing_prior_outcome: closingPriorOutcome })
   );
-  const outcome = await input.host.send(input.text);
-  const elapsed = started !== null && diagnostics !== null ? diagnostics.now() - started : null;
-  input.onOutcome?.(outcome);
-  if (diagnostics !== null) reportAdaptation(diagnostics, outcome);
-  if (outcome.status !== "COMPLETE") {
-    diagnostics?.endTurn({ status: "FAILED", total_ms: elapsed });
+  try {
+    const outcome = await input.host.send(input.text);
+    const elapsed = started !== null && diagnostics !== null ? diagnostics.now() - started : null;
+    input.onOutcome?.(outcome);
+    if (diagnostics !== null) reportAdaptation(diagnostics, outcome);
+    if (outcome.status !== "COMPLETE") {
+      diagnostics?.endTurn({ status: "FAILED", total_ms: elapsed });
+      return { outcome, elapsed_ms: elapsed };
+    }
+    // LANGUAGE is conditional and only knowable AFTER cognition: never promised
+    // live, but reported truthfully here when it lawfully made no model call.
+    if (!outcome.language_call_required) {
+      diagnostics?.noteSkipped("LANGUAGE", `no language call (${outcome.language_status})`, false);
+    }
+    diagnostics?.endTurn({ status: "COMPLETE", total_ms: elapsed });
     return { outcome, elapsed_ms: elapsed };
+  } finally {
+    reuse?.endTurn();
   }
-  // LANGUAGE is conditional and only knowable AFTER cognition: never promised
-  // live, but reported truthfully here when it lawfully made no model call.
-  if (!outcome.language_call_required) {
-    diagnostics?.noteSkipped("LANGUAGE", `no language call (${outcome.language_status})`, false);
-  }
-  diagnostics?.endTurn({ status: "COMPLETE", total_ms: elapsed });
-  return { outcome, elapsed_ms: elapsed };
 }

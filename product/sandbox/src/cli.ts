@@ -398,6 +398,7 @@ async function main(): Promise<number> {
       diagnostics,
       // Display-only expected plan, shared with the visual product.
       turnPlan: bundle.turnPlan,
+      appraisalReuse: bundle.appraisalReuse,
       configuration,
       subjectIdentity,
       subjectDurableState: subjectConfig?.durable_state ?? "UNKNOWN",

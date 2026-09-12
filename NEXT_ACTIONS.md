@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `2cd0066657147322a1b0b18b50d4ee4988275fbe`（干净 baseline；本次 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0` 是其直接子提交）
+Last verified against commit: `1b6c913`（research commit；`APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0` 的 production 提交是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,16 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0` — 同一 human turn 内「完全相同 model-facing request」的重复 Appraisal inference 复用（纯 product 层，无 canonical 变更）。
+
+- PHASE A 独立审计 V1 证据：判定 `V1_AUDIT_CONFIRMS_PRODUCTIONIZATION`。V1 = 15/15 paired、32 次真实 inference（17 A + 15 B）、2 次 A 侧 schema violation（`goal_conuence` / `goal_conguence`，均未重试/修复，B 未调用）；V0 树哈希与冻结值一致、V0 evidence 未被改写（immutable-write guard 重跑 10/10 通过）；20/20 组合 pair 的 request identity 完全相等且 event identity 不同、candidate 精确相等、authority/canonical/Affect/downstream cognition 等价；失效防火墙（grounding/stale/prepare/commit/subject/context/evidence/scope/config/prompt/order/budget/hash-collision）全部 FAIL CLOSED；I 独立重算 V1 冗余 B inference：n=15、min 2.33 s、p50 2.65 s、mean 2.69 s、p90 3.19 s、max 3.38 s、total 40.42 s；V0 的 13.92 s 不具代表性（同 prompt 规模下 V0 的 provider eval 本身即 11–16 s，机器层面原因未记录 = UNKNOWN）；research commit `1b6c913`（130 files，含 V1 原始 calls.jsonl/evidence/verifier/gates）。
+- PHASE B 实现：turn-local `AppraisalInferenceReuseV0` port（per bundle/process/subject），仅缓存 7 个 model-generated 且通过严格 parser 的候选字段；provider 在构造出完整 request 后按完整 identity（messages + provider fingerprint）比对，命中则复用、未命中正常独立 inference；B 的 authority 字段仍全部由 B 的可信 context 重建；
+- `CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE`（严格 0/1，非法值 fail closed，默认 0=OFF，`/config` 显示值与来源）；`/diagnostics` 与 web 抽屉区分 semantic invocations / real inferences / reuse hits，命中阶段显示 `REUSED`（0 provider latency，不伪造 transport 调用）；
+- P1–P10 全 PASS（含 P6 确定性 OFF/ON canonical 等价、P4 scope/turn/subject/restart/config 防火墙、P5 失败不缓存）；真实本地 A/B：OFF 3 real inferences / turn2 prior-reply 10.1 s；ON 3 semantic / 2 real / 1 hit / turn2 prior-reply 0 provider time；两轮重启后 logical time、state/repository revision、Affect、Regulation 完全一致；真实模型语言输出在无 reuse 参与的 turn 1 上存在正常采样差异；
+- 判定 `APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_GREEN_DEFAULT_OFF`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
+
+上一个产品里程碑：
 
 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0` — 可视化产品新增隐藏式 World & Settings / Diagnostics 抽屉（纯 wiring，无 canonical 变更）。
 
@@ -83,6 +93,7 @@ CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0        FROZEN / GREEN
 CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0    FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0                       FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0    FROZEN / GREEN
+APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0                     FROZEN / GREEN (DEFAULT_OFF)
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -93,7 +104,7 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
 1. provider 不可用时 CLI 在 preflight fail closed（含 model 缺失）；turn 级失败 fail closed 并给出分类与安全摘要；无云 fallback、无自动切换、无自动重试。
-2. 单次 turn 仍需 appraisal + cognition + language（+ 第二 turn 起的 prior-reply appraisal + lived-evidence adaptation）多次串行本地调用，实测约 30–55 s；现在已有 group 编号进度与进程内 rough estimate，但本地模型延迟本身不可压缩（无并行、无 fast mode、无 router）。
+2. 单次 turn 仍需 appraisal + cognition + language（+ 第二 turn 起的 prior-reply appraisal + lived-evidence adaptation）多次串行本地调用，实测约 31–55 s。当前唯一的 latency bottleneck 是 **reply-critical 的 Appraisal → Cognition 串行链**：本机实测两者合计约 30–32 s，占 reply path 的绝大部分；重复的 prior-reply Appraisal inference 已由 `APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0`（DEFAULT_OFF）消除，但该链仍不可压缩（无并行、无 fast mode、无 router，且 streaming/early-reply 未授权）。
 3. 品牌-new subject 在第一个 lived event 之前没有 durable canonical state，因此 observe/time/environment 会先拒绝并给出提示。
 4. Personality/Belief/Relationships 仅在对应 adaptation provider 被配置且 lawful 改变后显示；否则 `ABSENT`（不伪造默认值）。
 5. 配置只读：`/config` 能查看 effective 值与来源，但修改 model/endpoint/timeout/data dir 仍需设置环境变量并重启（V0 明确不提供 `/config set`、不提供多 subject 选择）。

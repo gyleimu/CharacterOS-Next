@@ -25,6 +25,10 @@ import {
   PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0,
   buildProductAppraisalUserDataV0
 } from "./product-appraisal-prompt.js";
+import {
+  appraisalRequestIdentityV0,
+  type AppraisalInferenceReuseV0
+} from "./product-appraisal-reuse.js";
 
 const ORDINARY_CONVERSATION_APPRAISAL = Object.freeze({
   relevance: 0.6,
@@ -132,47 +136,84 @@ function parseModelAppraisalV0(content: string): ParsedModelAppraisalV0 {
 }
 
 /**
+ * Assembles the proposal for THIS event. Every authority field comes ONLY from
+ * the trusted context — identical whether the candidate came from a real
+ * inference or from an exact-request reuse.
+ */
+function assembleProposalV0(
+  ctx: FactualEventAppraisalContextProjectionV0,
+  parsed: ParsedModelAppraisalV0
+): unknown {
+  return {
+    schema_version: "factual-event-appraisal-proposal-v0",
+    status: "APPRAISED",
+    // Authority fields come ONLY from the trusted context.
+    subject_id: ctx.subject_id,
+    factual_event_ref: ctx.factual_event_ref,
+    context_projection_hash: ctx.context_projection_hash,
+    dimensions: {
+      relevance: parsed.relevance,
+      goal_congruence: parsed.goal_congruence,
+      attribution: parsed.attribution,
+      controllability: parsed.controllability,
+      uncertainty: parsed.uncertainty,
+      intensity: parsed.intensity
+    },
+    assessment_confidence: parsed.assessment_confidence,
+    evidence_refs: [ctx.factual_event_ref].sort()
+  };
+}
+
+/**
  * The real product appraisal provider. ONE model call per factual event; the
  * model proposes only subjective dimensions/confidence and is never trusted
  * for identity, refs or hashes.
+ *
+ * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0: when an optional turn-scoped reuse
+ * port is supplied and the COMPLETE model-facing request is identical to an
+ * earlier invocation in the same turn/subject/provider scope, the already
+ * parse-validated candidate is reused and no second local inference is issued.
+ * Both semantic Appraisal invocations still happen; only the duplicate model
+ * call disappears. A miss performs the normal independent inference.
  */
 export function createProductAppraisalProviderV0(options: {
   readonly transport: ModelTransportV0;
+  readonly reuse?: AppraisalInferenceReuseV0 | null;
 }): ProductAppraisalProviderV0 {
   let calls = 0;
+  const reuse = options.reuse ?? null;
   const provider = {
     proposeFactualEventAppraisal: async (context: never) => {
       const ctx = context as unknown as FactualEventAppraisalContextProjectionV0;
       calls += 1;
-      const response = await options.transport.complete({
-        messages: [
-          { role: "system", content: PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0 },
-          { role: "user", content: buildProductAppraisalUserDataV0(ctx) }
-        ]
-      });
+      reuse?.noteSemanticInvocation();
+      const messages = [
+        { role: "system" as const, content: PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0 },
+        { role: "user" as const, content: buildProductAppraisalUserDataV0(ctx) }
+      ];
+      const identity = reuse === null ? null : appraisalRequestIdentityV0(messages);
+      if (reuse !== null && identity !== null) {
+        const cached = reuse.take(identity);
+        if (cached !== null) return assembleProposalV0(ctx, cached);
+      }
+      const response = await options.transport.complete({ messages });
       const content = (response as { readonly content?: unknown }).content;
       if (typeof content !== "string") {
+        // No candidate extraction from an unusable response: the port is never
+        // offered anything, and the turn fails closed through the lifecycle.
+        reuse?.noteInferenceWithoutCandidate();
         throw new ProductAppraisalProviderErrorV0("model response has no text content");
       }
-      const parsed = parseModelAppraisalV0(content);
-      return {
-        schema_version: "factual-event-appraisal-proposal-v0",
-        status: "APPRAISED",
-        // Authority fields come ONLY from the trusted context.
-        subject_id: ctx.subject_id,
-        factual_event_ref: ctx.factual_event_ref,
-        context_projection_hash: ctx.context_projection_hash,
-        dimensions: {
-          relevance: parsed.relevance,
-          goal_congruence: parsed.goal_congruence,
-          attribution: parsed.attribution,
-          controllability: parsed.controllability,
-          uncertainty: parsed.uncertainty,
-          intensity: parsed.intensity
-        },
-        assessment_confidence: parsed.assessment_confidence,
-        evidence_refs: [ctx.factual_event_ref].sort()
-      };
+      let parsed: ParsedModelAppraisalV0;
+      try {
+        parsed = parseModelAppraisalV0(content);
+      } catch (error) {
+        // A malformed first candidate must not populate reuse state.
+        reuse?.noteInferenceWithoutCandidate();
+        throw error;
+      }
+      if (reuse !== null && identity !== null) reuse.offer(identity, parsed);
+      return assembleProposalV0(ctx, parsed);
     }
   } as unknown as FactualEventAppraisalProviderV0;
   return { provider, stats: { callCount: () => calls } };

@@ -32,9 +32,9 @@ import type {
   ProductObservationFieldsV0,
   ProductObservationOutcomeV0,
   ProductRuntimeBootstrapV0,
+  ProductDiagnosticsViewV0,
   ProductStateViewV0,
   ProductTurnResultV0,
-  ProviderDiagnosticsSnapshotV0,
   ProviderProgressEventV0
 } from "@characteros-next/sandbox";
 
@@ -65,7 +65,7 @@ export interface ProductWebRuntimePortV0 {
   runEnvironmentInteraction(count: number): Promise<ProductEnvironmentResultV0>;
   advanceCanonicalTime(ticks: number): Promise<ProductCanonicalTimeResultV0>;
   configView(): ProductConfigViewV0;
-  diagnosticsView(): ProviderDiagnosticsSnapshotV0 | null;
+  diagnosticsView(): ProductDiagnosticsViewV0 | null;
 }
 
 export interface ProductWebServerOptionsV0 {

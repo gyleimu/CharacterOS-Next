@@ -14,6 +14,7 @@ import type { ExternalStructuredObservationRequestV0 } from "./external-observat
 import { buildStructuredObservationRequestV0 } from "./product-observation.js";
 import { ProviderDiagnosticsV0, extractFailureStageV0, type ProductTurnPlanInputV0 } from "./provider-diagnostics.js";
 import { buildTurnFailureSummaryV0, runInstrumentedProductTurnV0 } from "./product-turn-execution.js";
+import type { AppraisalInferenceReuseV0 } from "./product-appraisal-reuse.js";
 import {
   formatConfigurationLinesV0,
   type ProductConfigSourceV0,
@@ -42,6 +43,12 @@ export interface ProductCliSessionDepsV0 {
    * changes no call eligibility. Omitted ⇒ reply path only.
    */
   readonly turnPlan?: ProductTurnPlanInputV0;
+  /**
+   * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — optional turn-scoped appraisal
+   * inference reuse port (opened/closed by the turn lifecycle). Omitted ⇒ the
+   * original independent-inference path.
+   */
+  readonly appraisalReuse?: AppraisalInferenceReuseV0;
   /**
    * CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0 — effective product
    * configuration read view (/config). Read-only product metadata; omitted ⇒
@@ -492,6 +499,7 @@ export class ProductCliSessionV0 {
         personality_adaptation_enabled: false
       },
       text,
+      ...(this.deps.appraisalReuse === undefined ? {} : { appraisalReuse: this.deps.appraisalReuse }),
       onOutcome: (turnOutcome): void => {
         this.lastTurnOutcome = turnOutcome;
         this.deps.onTurnComplete?.(turnOutcome);
@@ -555,6 +563,15 @@ export class ProductCliSessionV0 {
     }
     this.deps.write("What happened during provider calls; see /config for effective settings.");
     for (const line of diagnostics.formatLines()) this.deps.write(line);
+    const reuse = this.deps.appraisalReuse;
+    if (reuse !== undefined) {
+      const counters = reuse.counters();
+      this.deps.write(
+        `Appraisal inference: ${reuse.enabled ? "reuse ON" : "reuse OFF"} — ` +
+          `semantic invocations=${counters.semantic_invocations} real inferences=${counters.real_inferences} ` +
+          `reuse hits=${counters.reuse_hits} misses=${counters.reuse_misses} unavailable=${counters.reuse_unavailable}`
+      );
+    }
     const last = this.lastTurnOutcome;
     if (last !== null) {
       this.deps.write(`Last turn: index=${last.turn_index} status=${last.status}`);

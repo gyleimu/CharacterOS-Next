@@ -46,6 +46,10 @@ import {
   buildStructuredObservationRequestV0,
   type ProductObservationFieldsV0
 } from "./product-observation.js";
+import type {
+  AppraisalInferenceReuseV0,
+  AppraisalReuseCountersV0
+} from "./product-appraisal-reuse.js";
 import {
   PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
   PRODUCT_DEFAULT_DATA_ROOT_V0
@@ -190,6 +194,12 @@ export interface ProductCanonicalTimeResultV0 {
   readonly base_revision: number;
 }
 
+/** Structured diagnostics view: provider snapshot + appraisal reuse accounting. */
+export interface ProductDiagnosticsViewV0 {
+  readonly provider: ProviderDiagnosticsSnapshotV0 | null;
+  readonly appraisal_inference: AppraisalReuseCountersV0 & { readonly enabled: boolean };
+}
+
 export interface ProductConfigValueViewV0 {
   readonly value: string;
   readonly source: ProductConfigSourceV0;
@@ -212,6 +222,8 @@ export interface ProductConfigViewV0 {
     readonly durable_state: "NONE" | "PRESENT" | "UNKNOWN";
   };
   readonly data_root_contains: readonly string[];
+  /** APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 rollout switch (non-canonical). */
+  readonly appraisal_exact_input_reuse: ProductConfigValueViewV0;
   readonly read_only: true;
 }
 
@@ -228,6 +240,8 @@ export interface ProductRuntimeDepsV0 {
   readonly queue: SerialTaskQueueV0;
   /** Display-only expected turn plan (same flags as the CLI provider bundle). */
   readonly turnPlan: ProductTurnPlanInputV0;
+  /** Turn-scoped appraisal inference reuse port (may be disabled by config). */
+  readonly appraisalReuse: AppraisalInferenceReuseV0 | null;
 }
 
 /**
@@ -302,7 +316,8 @@ export class ProductRuntimeV0 {
         host: this.deps.host,
         diagnostics: this.deps.diagnostics,
         turnPlan: this.deps.turnPlan,
-        text
+        text,
+        ...(this.deps.appraisalReuse === null ? {} : { appraisalReuse: this.deps.appraisalReuse })
       })
     );
   }
@@ -416,13 +431,37 @@ export class ProductRuntimeV0 {
         durable_state: this.deps.identity.durable_state
       },
       data_root_contains: PRODUCT_DATA_ROOT_CONTENTS_V0,
+      appraisal_exact_input_reuse: value(
+        configuration.appraisal_exact_input_reuse,
+        (input) => (input ? "on" : "off")
+      ),
       read_only: true
     };
   }
 
-  /** Structured bounded provider diagnostics (no prompts, no Memory content). */
-  diagnosticsView(): ProviderDiagnosticsSnapshotV0 | null {
-    return this.deps.diagnostics?.snapshot() ?? null;
+  /**
+   * Structured bounded provider diagnostics (no prompts, no Memory content),
+   * including the appraisal inference/reuse accounting so a semantic invocation
+   * is never confused with a real inference (P7).
+   */
+  diagnosticsView(): ProductDiagnosticsViewV0 | null {
+    const provider = this.deps.diagnostics?.snapshot() ?? null;
+    const reuse = this.deps.appraisalReuse;
+    if (provider === null && reuse === null) return null;
+    return {
+      provider,
+      appraisal_inference: {
+        enabled: reuse?.enabled ?? false,
+        ...(reuse?.counters() ?? {
+          semantic_invocations: 0,
+          real_inferences: 0,
+          reuse_hits: 0,
+          reuse_misses: 0,
+          reuse_unavailable: 0,
+          candidates_stored: 0
+        })
+      }
+    };
   }
 
   isQuiescent(): boolean {
@@ -676,7 +715,8 @@ export async function createProductRuntimeV0(
     debug,
     hub,
     queue: new SerialTaskQueueV0(),
-    turnPlan: bundle.turnPlan
+    turnPlan: bundle.turnPlan,
+    appraisalReuse: bundle.appraisalReuse
   });
 }
 
