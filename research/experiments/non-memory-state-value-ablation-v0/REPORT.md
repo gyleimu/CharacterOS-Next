@@ -416,11 +416,13 @@ experiment's own evidence. No production file changed.
 
 ## HEAD
 
-`4cb51a5` at the evidence commit (full SHA above). `origin/main` matches it.
+The final commit of this slice is this report's doc commit; the evidence commit is
+`4cb51a5` (full SHA above) and `origin/main` contains it.
 
 ## origin/main
 
-`4cb51a59723f875399c839e8dae6367703f775a1`
+`4cb51a5` (evidence commit) is included; `origin/main` was fast-forwarded to it, then to
+this report's doc commit.
 
 ## Worktree
 
