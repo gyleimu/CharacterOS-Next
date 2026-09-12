@@ -1,0 +1,17 @@
+{
+  "research_tests": { "result": "PASS", "passed": 10, "failed": 0 },
+  "offline_replay": { "result": "PASS", "pairs": 5, "malformed_A_rejected": true, "real_model_calls": 0 },
+  "governance": { "result": "PASS", "workspaces": 15, "conformance_files": 21 },
+  "workspace_typecheck": { "result": "PASS" },
+  "build": { "result": "PASS" },
+  "auxiliary_typecheck": { "result": "FAIL_BASELINE", "diagnostic": "TS2883", "count": 3, "file": "research/experiments/familiarity-causal-behavior-v1/preflight.ts", "line": 74, "new_experiment_files_in_program": 0, "proof": "baseline-types.json" },
+  "repository_lint": { "result": "PASS" },
+  "research_lint": { "result": "PASS" },
+  "full_vitest": { "result": "ONE_TIMEOUT", "files_passed": 177, "files_failed": 1, "files_skipped": 1, "tests_passed": 2317, "tests_failed": 1, "tests_skipped": 3, "failure": "existing familiarity-causal-behavior-v0 content tampering test exceeded 5000 ms" },
+  "bounded_failure_recheck": { "result": "PASS", "files": 1, "tests_passed": 20, "attempts": 1, "timeout_changed": false },
+  "production_files_changed": 0,
+  "repository_fully_green": false,
+  "production_reuse_enabled": false,
+  "real_appraisal_inference_calls": 11,
+  "empirical_result": "REQUIRES_MORE_EVIDENCE"
+}

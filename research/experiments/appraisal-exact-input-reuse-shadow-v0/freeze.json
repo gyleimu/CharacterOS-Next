@@ -1,0 +1,225 @@
+{
+  "frozen_at": "2026-09-12T07:31:57.487Z",
+  "baseline": "ea7eb4bb6f9a1a652a65ad344591a0369179c39f",
+  "branch": "main",
+  "origin_main": "ea7eb4bb6f9a1a652a65ad344591a0369179c39f",
+  "initial_worktree": "CLEAN (verified before research files)",
+  "hashes": {
+    "identity.mjs": "sha256:035d8b04b4e7c258f65e081eed8c7e9db4c5959f4612cff26ec8c7eef155ee91",
+    "harness.mjs": "sha256:77dc081b79b392c733ea05d93735b9c5835121e08679fa5459a53b0907af2b71",
+    "collect.mjs": "sha256:422fb8c7fbf1f0b8477e4e961cbb2aeb9f8abbb108f0a4730258b439699775ff",
+    "research.test.mjs": "sha256:e9880c204f824292fac132b132eb6465b9265071f69bd97e581026d88afe440d",
+    "protocol.json": "sha256:9edfe4f737d7abfd9ea80f191f0cb38ae3a1df2e240e50238b5959c5eaf01752",
+    "product/sandbox/src/product-appraisal-provider.ts": "sha256:f0d4a4f15a89d572051e5354a9a942200c2f32df59c69e23c8bf233adf1cb53a",
+    "product/sandbox/src/product-appraisal-prompt.ts": "sha256:33c97930e7cb1a9d59706d7a545d38abdb4753c253dd93f15a30385f4156ba00",
+    "product/sandbox/src/product-providers.ts": "sha256:5180ca2198a1a8cab066ef9f11344169a543e3c3cfb6e03656c9550a8bf11c6d",
+    "packages/runtime/src/providers/cognition/ollama-native-cognition-transport.ts": "sha256:97255b00c5d07a0f6510ee6f89bce85ab24b6b51d9c6f3d61d58dbdf09104560",
+    "packages/runtime/src/session/interactive-subject-runtime-v0.ts": "sha256:61b513b91c34c542603647a9421c97a24a87fbc24729ef82c6bd1ea3e76bb718",
+    "packages/runtime/src/session/explicit-v4-session-authority-v0.ts": "sha256:2f8bfcf5db6bfd520182f157663a938b81a5a9c8b7f6cd9c658e05a4f9e345a7",
+    "packages/runtime/src/factual-event-appraisal/factual-event-appraisal-executor.ts": "sha256:c6d23d5f83be8d7da4e3b688b9125ad39f377d13188c64536249fba461c251d7"
+  },
+  "metadata": {
+    "config": {
+      "base_url": "http://127.0.0.1:11434",
+      "model": "qwen3.5:9b",
+      "timeout_ms": 120000,
+      "num_predict": 256,
+      "context_window_tokens": 4096
+    },
+    "provenance": {
+      "model": {
+        "value": "qwen3.5:9b",
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      },
+      "endpoint": {
+        "value": "http://127.0.0.1:11434",
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      },
+      "timeout": {
+        "value": 120000,
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      }
+    },
+    "model": {
+      "name": "qwen3.5:9b",
+      "model": "qwen3.5:9b",
+      "modified_at": "2026-08-31T19:30:40.1426026+08:00",
+      "size": 6594474711,
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen35",
+        "families": [
+          "qwen35"
+        ],
+        "parameter_size": "9.7B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 4096
+      },
+      "capabilities": [
+        "vision",
+        "completion",
+        "tools",
+        "thinking"
+      ]
+    },
+    "environment": {
+      "provider_implementation": "OllamaNativeCognitionTransportV0",
+      "implementation_source_hash": "sha256:97255b00c5d07a0f6510ee6f89bce85ab24b6b51d9c6f3d61d58dbdf09104560",
+      "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "server_version": "0.33.3",
+      "model_configuration": {
+        "template": "{{ .Prompt }}",
+        "system": null,
+        "parameters": "top_p                          0.95\npresence_penalty               1.5\ntemperature                    1\ntop_k                          20",
+        "model_info": {
+          "general.architecture": "qwen35",
+          "general.file_type": 15,
+          "general.parameter_count": 9653104368,
+          "general.quantization_version": 2,
+          "qwen35.attention.head_count": 16,
+          "qwen35.attention.head_count_kv": null,
+          "qwen35.attention.key_length": 256,
+          "qwen35.attention.layer_norm_rms_epsilon": 0.000001,
+          "qwen35.attention.value_length": 256,
+          "qwen35.block_count": 32,
+          "qwen35.context_length": 262144,
+          "qwen35.embedding_length": 4096,
+          "qwen35.feed_forward_length": 12288,
+          "qwen35.full_attention_interval": 4,
+          "qwen35.image_token_id": 248056,
+          "qwen35.mrope_sections": null,
+          "qwen35.rope.dimension_count": 64,
+          "qwen35.rope.dimension_sections": null,
+          "qwen35.rope.freq_base": 10000000,
+          "qwen35.rope.mrope_interleaved": true,
+          "qwen35.rope.mrope_section": null,
+          "qwen35.ssm.conv_kernel": 4,
+          "qwen35.ssm.group_count": 16,
+          "qwen35.ssm.inner_size": 4096,
+          "qwen35.ssm.state_size": 128,
+          "qwen35.ssm.time_step_rank": 32,
+          "qwen35.ssm.v_head_reordered": true,
+          "qwen35.vision.attention.head_count": 16,
+          "qwen35.vision.block_count": 27,
+          "qwen35.vision.deepstack_visual_indexes": [],
+          "qwen35.vision.embedding_length": 1152,
+          "qwen35.vision.image_mean": null,
+          "qwen35.vision.image_std": null,
+          "qwen35.vision.longest_edge": 16777216,
+          "qwen35.vision.num_channels": 3,
+          "qwen35.vision.patch_size": 16,
+          "qwen35.vision.shortest_edge": 65536,
+          "qwen35.vision.spatial_merge_size": 2,
+          "qwen35.vision.temporal_patch_size": 2,
+          "qwen35.vision_end_token_id": 248054,
+          "qwen35.vision_start_token_id": 248053,
+          "tokenizer.ggml.add_eos_token": false,
+          "tokenizer.ggml.add_padding_token": false,
+          "tokenizer.ggml.eos_token_id": 248046,
+          "tokenizer.ggml.merges": null,
+          "tokenizer.ggml.model": "gpt2",
+          "tokenizer.ggml.padding_token_id": 248044,
+          "tokenizer.ggml.pre": "qwen35",
+          "tokenizer.ggml.scores": null,
+          "tokenizer.ggml.token_type": null,
+          "tokenizer.ggml.tokens": null
+        },
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen35",
+          "families": [
+            "qwen35"
+          ],
+          "parameter_size": "9.7B",
+          "quantization_level": "Q4_K_M"
+        },
+        "capabilities": [
+          "completion",
+          "vision",
+          "tools",
+          "thinking"
+        ]
+      },
+      "timeout_ms": 120000,
+      "response_format": "ABSENT",
+      "unspecified_options": "Ollama server/model defaults under observed version, digest and /api/show configuration; no seed/format/keep_alive supplied"
+    }
+  },
+  "protocol": {
+    "experiment": "APPRAISAL_EXACT_INPUT_REUSE_SHADOW_VALIDATION_V0",
+    "required_baseline": "ea7eb4bb6f9a1a652a65ad344591a0369179c39f",
+    "planned_pairs": 10,
+    "planned_appraisal_calls": 20,
+    "absolute_call_ceiling": 24,
+    "retries": 0,
+    "live_cognition_calls": 0,
+    "live_language_calls": 0,
+    "first_turn_candidate": "FIXED_CANDIDATE; deterministic lifecycle setup, excluded from live performance statistics",
+    "collection": "Serial fixed order; A at current-primary provider stage, B at later prior-reply provider stage; capture authoritative S before B. Stop truthfully on infrastructure/provider/authority failure; no replacement samples or prompt tuning.",
+    "isolation": "Both comparison paths are separately JSON-reconstructed and authority-restored copies of S; assert exact pre-state equality. Capture primary runtime authority read-only through the existing TS-private instance property, not snapshot() which flushes work. No live subject files.",
+    "comparison": "Actual independent calls remain on baseline. Replay B in CONTROL and seven model fields of A in SHADOW through original product adapter and real authorities. No field/value normalization for CONTROL versus SHADOW other than sorted object keys.",
+    "request_gate": "All intended pairs must match actual complete request plus frozen observed provider/model configuration; any mismatch forbids that pair. Hash and full normalized identity must both agree.",
+    "authority_gate": "All deterministic failure controls and independent authority/admission/order checks must pass. Any unaccounted authority or identity bypass rejects reuse.",
+    "behavior_gate": "Zero candidate/canonical/projection divergence supports LOW RISK only within this bounded sample. A valid candidate divergence propagated to canonical Affect or future cognition is material evidence against treating reuse as equivalent. Report every difference; do not tune rate thresholds after observation. Failures or inadequate eligible pairs yield UNKNOWN.",
+    "performance_gate": "Report measured B latency and actual Ollama token counts, including warm/cold loading. Judge practical local value against one-slot complexity, without universal numerical cutoff. Full-turn contribution uses separately labeled historical estimate only.",
+    "samples": [
+      {
+        "id": "S01",
+        "category": "neutral factual",
+        "text": "The train arrives at noon, and I have already packed my bag."
+      },
+      {
+        "id": "S02",
+        "category": "positive interpersonal",
+        "text": "Thank you for listening yesterday. I felt understood, and that helped me."
+      },
+      {
+        "id": "S03",
+        "category": "negative interpersonal",
+        "text": "You ignored what I said and repeated the same advice. I am frustrated with you."
+      },
+      {
+        "id": "S04",
+        "category": "request or question",
+        "text": "Could you help me decide which question to ask at tomorrow's meeting?"
+      },
+      {
+        "id": "S05",
+        "category": "ambiguous",
+        "text": "Well, that was unexpected. I am still not sure what to make of it."
+      },
+      {
+        "id": "S06",
+        "category": "emotionally salient",
+        "text": "I just learned that my closest friend is moving far away next week. I feel overwhelmed."
+      },
+      {
+        "id": "S07",
+        "category": "low information",
+        "text": "Okay."
+      },
+      {
+        "id": "S08",
+        "category": "counterpart related",
+        "text": "Alice told me she would call tonight, but she has not replied to my last two messages."
+      },
+      {
+        "id": "S09",
+        "category": "positive salient",
+        "text": "I got the position I worked toward for months. I wanted to share the good news with you."
+      },
+      {
+        "id": "S10",
+        "category": "uncertain practical event",
+        "text": "The meeting was postponed again. I do not know whether my plans for Friday still make sense."
+      }
+    ]
+  }
+}

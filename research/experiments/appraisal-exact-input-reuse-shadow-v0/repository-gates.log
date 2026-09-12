@@ -1,0 +1,28 @@
+$ pnpm governance && pnpm typecheck && pnpm build && pnpm typecheck:auxiliary && pnpm lint && pnpm test
+$ node scripts/governance-check.mjs
+governance invariants: PASS (15 workspaces, 21 conformance test files)
+$ pnpm typecheck:workspaces
+$ tsc -p tsconfig.workspaces.json
+$ pnpm --recursive --workspace-concurrency=1 --if-present run build
+Scope: 15 of 16 workspace projects
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.json
+$ tsc -p tsconfig.auxiliary.json
+research/experiments/familiarity-causal-behavior-v1/preflight.ts(74,17): error TS2883: The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageCommunicationBindingV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary.
+research/experiments/familiarity-causal-behavior-v1/preflight.ts(74,17): error TS2883: The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageEpisodeContentV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary.
+research/experiments/familiarity-causal-behavior-v1/preflight.ts(74,17): error TS2883: The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageRealizationConstraintsV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary.
+[ELIFECYCLE] Command failed with exit code 2.
+[ELIFECYCLE] Command failed with exit code 2.

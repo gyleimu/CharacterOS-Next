@@ -1,0 +1,239 @@
+{
+  "first_turn": {
+    "inferences": 1,
+    "opportunities": 0
+  },
+  "equivalent": {
+    "state_hash": "sha256:b22b921bcdeb83f492f47ee1eddd0d13e1a38fdcf9ff7ad93bd46f8dfb6cddb0",
+    "canonical": true,
+    "projection": true,
+    "baseline_restore_identity_differences": [
+      {
+        "path": "/durable/identity/subject_head/commit_ref",
+        "control": "commit:3ebc82c02d5463de2728d91eff713e8ee6a7163b88e8255a1e371eb76f6ea6d8",
+        "shadow": "commit:2bae9bd2f6fe70ccd49abd6deea631a5007ad31f871b9dfbeb1fff57d177f2bc"
+      },
+      {
+        "path": "/durable/identity/subject_head/record_checksum",
+        "control": "sha256:20ce41addebf17363424f145cba521cc975447dcb55949642f208055d53bb36f",
+        "shadow": "sha256:4ae15e4910b81d9ff74521b61da8ee076306cef9f225e84b622ba8c39e404380"
+      },
+      {
+        "path": "/store/committed_bundles/13/record_checksum",
+        "control": "sha256:12c4c5c03713d10601a5be094b39c79ee85b272279d6f78103391c250bf3cc9c",
+        "shadow": "sha256:c6131df1463f16695cef1c50acecd618a25826dc68a94370c491e511e4360eb9"
+      },
+      {
+        "path": "/store/committed_bundles/13/transition_record/first_seen_sequence",
+        "control": 16,
+        "shadow": 1
+      },
+      {
+        "path": "/store/committed_bundles/14/canonical_result/commit_ref",
+        "control": "commit:3ebc82c02d5463de2728d91eff713e8ee6a7163b88e8255a1e371eb76f6ea6d8",
+        "shadow": "commit:2bae9bd2f6fe70ccd49abd6deea631a5007ad31f871b9dfbeb1fff57d177f2bc"
+      },
+      {
+        "path": "/store/committed_bundles/14/canonical_result/result_ref",
+        "control": "result:0204e9dc00729f2ff30c314ea5935fdf79f6e9dd6d00868fb6b1c8cde983038d",
+        "shadow": "result:7046f8e92f170d69e7065841f193f383a799d4552d420b1ff2d5b0a7a1ced7b1"
+      },
+      {
+        "path": "/store/committed_bundles/14/commit_ref",
+        "control": "commit:3ebc82c02d5463de2728d91eff713e8ee6a7163b88e8255a1e371eb76f6ea6d8",
+        "shadow": "commit:2bae9bd2f6fe70ccd49abd6deea631a5007ad31f871b9dfbeb1fff57d177f2bc"
+      },
+      {
+        "path": "/store/committed_bundles/14/previous_record_checksum",
+        "control": "sha256:12c4c5c03713d10601a5be094b39c79ee85b272279d6f78103391c250bf3cc9c",
+        "shadow": "sha256:c6131df1463f16695cef1c50acecd618a25826dc68a94370c491e511e4360eb9"
+      },
+      {
+        "path": "/store/committed_bundles/14/record_checksum",
+        "control": "sha256:20ce41addebf17363424f145cba521cc975447dcb55949642f208055d53bb36f",
+        "shadow": "sha256:4ae15e4910b81d9ff74521b61da8ee076306cef9f225e84b622ba8c39e404380"
+      },
+      {
+        "path": "/store/committed_bundles/14/transition_record/attempts/0/result_ref",
+        "control": "result:0204e9dc00729f2ff30c314ea5935fdf79f6e9dd6d00868fb6b1c8cde983038d",
+        "shadow": "result:7046f8e92f170d69e7065841f193f383a799d4552d420b1ff2d5b0a7a1ced7b1"
+      },
+      {
+        "path": "/store/committed_bundles/14/transition_record/first_seen_sequence",
+        "control": 17,
+        "shadow": 2
+      },
+      {
+        "path": "/store/committed_bundles/14/transition_record/terminal_result_ref",
+        "control": "result:0204e9dc00729f2ff30c314ea5935fdf79f6e9dd6d00868fb6b1c8cde983038d",
+        "shadow": "result:7046f8e92f170d69e7065841f193f383a799d4552d420b1ff2d5b0a7a1ced7b1"
+      }
+    ]
+  },
+  "sensitivity": {
+    "classification": "AFFECT_TRAJECTORY",
+    "projection_differences": [
+      {
+        "path": "/canonical_affect/activation",
+        "control": 0.30184053215012085,
+        "shadow": 0.27184053215012083
+      },
+      {
+        "path": "/canonical_affect/valence",
+        "control": -0.135,
+        "shadow": 0
+      },
+      {
+        "path": "/projection_hash",
+        "control": "sha256:9e7fcc4de77bb025e4b9edcc652ac40b835c9fcd6f505feec015de5d2eea8fad",
+        "shadow": "sha256:3d856029d699fa0ddb337f0a333d17cb9491b952f36e0abb63257b7bb2702f70"
+      }
+    ],
+    "affect_control": {
+      "schema_version": "canonical-affect-v0",
+      "valence": -0.135,
+      "activation": 0.30184053215012085
+    },
+    "affect_shadow": {
+      "schema_version": "canonical-affect-v0",
+      "valence": 0,
+      "activation": 0.27184053215012083
+    }
+  },
+  "firewalls": {
+    "scope_dimensions": [
+      "subject",
+      "human_turn",
+      "process",
+      "restart",
+      "provider_instance"
+    ],
+    "request_variations": 13,
+    "environment_dimensions": [
+      "provider_implementation",
+      "model_digest",
+      "server_version",
+      "model_configuration",
+      "timeout_ms",
+      "response_format"
+    ],
+    "collision": "MISS"
+  },
+  "lawful_misses": {
+    "task": "MISS",
+    "scene": "MISS",
+    "null_task_provider_calls": 0,
+    "null_task_appraisal": "DURABLE_ABSTENTION",
+    "subsequent_session_affect": "NOT_ELIGIBLE (preserved existing behavior)"
+  },
+  "malformed": {
+    "cases": 8,
+    "cached": 0
+  },
+  "transport": [
+    {
+      "mode": "success",
+      "calls": 1,
+      "accepted": true
+    },
+    {
+      "mode": "timeout",
+      "calls": 1,
+      "accepted": false
+    },
+    {
+      "mode": "unavailable",
+      "calls": 1,
+      "accepted": false
+    },
+    {
+      "mode": "truncated",
+      "calls": 1,
+      "accepted": false
+    }
+  ],
+  "failures": [
+    {
+      "case": "subject_id",
+      "status": "FAILED",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "UNKNOWN_SUBJECT/SS-AUTH-001: proposal subject does not match the runtime subject",
+        "code": "UNKNOWN_SUBJECT"
+      },
+      "proposals": 1
+    },
+    {
+      "case": "factual_event_ref",
+      "status": "FAILED",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: proposal factual_event_ref does not match the evaluated event",
+        "code": "UNSUPPORTED_EVIDENCE_REF"
+      },
+      "proposals": 1
+    },
+    {
+      "case": "context_projection_hash",
+      "status": "FAILED",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "INVALID_SCHEMA/SS-SCHEMA-001: proposal answers a different context projection (stale or foreign hash)",
+        "code": "INVALID_SCHEMA"
+      },
+      "proposals": 1
+    },
+    {
+      "case": "evidence_refs",
+      "status": "FAILED",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: appraisal proposal cites event:a9dca217301324f0f46cafbd545fa5ed662507a94aa57dfc1f53a61d667a6fe7 outside the pre-cognition grounding allowlist",
+        "code": "UNSUPPORTED_EVIDENCE_REF"
+      },
+      "proposals": 1
+    },
+    {
+      "case": "grounding",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: factual event grounding failed (EVENT_CAUSE_MISSING): observation ref is not a cause ref of the committed bundle",
+        "code": "UNSUPPORTED_EVIDENCE_REF"
+      },
+      "proposals": 0
+    },
+    {
+      "case": "stale_head_both_attempts",
+      "error": {
+        "name": "Error",
+        "message": "session lifecycle work: AffectApplication must commit for event:3e3d3fdf330ef50b95ce3c0ef1574c49aedef47e9b6e0815017c1aba0c022cc3 (TARGET_NOT_READY)",
+        "code": null
+      },
+      "proposals": 2,
+      "new_appraisal_commits": 0
+    },
+    {
+      "case": "repository_prepare",
+      "error": {
+        "name": "TransitionStageFailure",
+        "message": "SERVICE_UNAVAILABLE/FAIL-PREPARE-001: appraisal repository prepare failed (fail closed)",
+        "code": "SERVICE_UNAVAILABLE"
+      },
+      "proposals": 1
+    },
+    {
+      "case": "commit_conflict",
+      "error": {
+        "name": "Error",
+        "message": "session lifecycle work: Appraisal rejected for event:3e3d3fdf330ef50b95ce3c0ef1574c49aedef47e9b6e0815017c1aba0c022cc3",
+        "code": null
+      },
+      "proposals": 1
+    }
+  ],
+  "cleanup": {
+    "paths": 5,
+    "restart_hit": false,
+    "persistent_candidate": false
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "result": "BASELINE_AUXILIARY_FAILURE_CONFIRMED",
+  "compiler": "6.0.3",
+  "new_experiment_files_in_typecheck_program": [],
+  "unchanged": [
+    {
+      "path": "research/experiments/familiarity-causal-behavior-v1/preflight.ts",
+      "identical_to_required_HEAD": true
+    },
+    {
+      "path": "tsconfig.auxiliary.json",
+      "identical_to_required_HEAD": true
+    },
+    {
+      "path": "tsconfig.base.json",
+      "identical_to_required_HEAD": true
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": 2883,
+      "file": "research/experiments/familiarity-causal-behavior-v1/preflight.ts",
+      "line": 74,
+      "message": "The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageCommunicationBindingV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary."
+    },
+    {
+      "code": 2883,
+      "file": "research/experiments/familiarity-causal-behavior-v1/preflight.ts",
+      "line": 74,
+      "message": "The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageEpisodeContentV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary."
+    },
+    {
+      "code": 2883,
+      "file": "research/experiments/familiarity-causal-behavior-v1/preflight.ts",
+      "line": 74,
+      "message": "The inferred type of 'fixedLanguage' cannot be named without a reference to 'LanguageRealizationConstraintsV0' from '../../../product/sandbox/node_modules/@characteros-next/runtime/dist/transitions/conversation/language-realization-input.js'. This is likely not portable. A type annotation is necessary."
+    }
+  ],
+  "production_source_changes": ""
+}

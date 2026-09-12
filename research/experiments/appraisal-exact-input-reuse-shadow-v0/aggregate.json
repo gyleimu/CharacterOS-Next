@@ -1,0 +1,168 @@
+{
+  "verdict": "APPRAISAL_EXACT_INPUT_REUSE_REQUIRES_MORE_EVIDENCE",
+  "productionize": "MORE_EVIDENCE_REQUIRED",
+  "recommended_next_slice": "APPRAISAL_EXACT_INPUT_REUSE_SHADOW_VALIDATION_V1",
+  "planned_pairs": 10,
+  "completed_eligible_pairs": 5,
+  "all_model_inferences": 11,
+  "exact_request_matches": 5,
+  "candidate_exact_equal": 5,
+  "candidate_divergence": 0,
+  "candidate_equality_rate": 1,
+  "authority_equivalence_rate": 1,
+  "canonical_equivalence_rate": 1,
+  "affect_equivalence_rate": 1,
+  "downstream_input_equivalence_rate": 1,
+  "live_candidate_validity": {
+    "valid": 10,
+    "invalid": 1,
+    "malformed_sample": "S06-A",
+    "cause": "goal_conguence instead of goal_congruence; strict product parser rejects",
+    "B_not_reached": true
+  },
+  "latency_ms": {
+    "paired_A": {
+      "count": 5,
+      "min": 12432.894700000004,
+      "median": 16475.29740000001,
+      "mean": 24465.244080000008,
+      "max": 55031.3095,
+      "total": 122326.22040000003
+    },
+    "all_A_including_invalid": {
+      "count": 6,
+      "min": 11642.269899999985,
+      "median": 15649.209650000012,
+      "mean": 22328.081716666667,
+      "max": 55031.3095,
+      "total": 133968.4903
+    },
+    "redundant_B": {
+      "count": 5,
+      "min": 4778.08600000001,
+      "median": 13915.503599999996,
+      "mean": 13022.327060000005,
+      "max": 16425.158200000005,
+      "total": 65111.63530000002
+    }
+  },
+  "actual_redundant_B_tokens": {
+    "input": {
+      "count": 5,
+      "min": 485,
+      "median": 486,
+      "mean": 486.4,
+      "max": 488,
+      "total": 2432
+    },
+    "output": {
+      "count": 5,
+      "min": 54,
+      "median": 54,
+      "mean": 54.6,
+      "max": 56,
+      "total": 273
+    }
+  },
+  "estimated_full_turn_impact": {
+    "historical_user_reported_range_s": [
+      30,
+      55
+    ],
+    "measurement_status": "ESTIMATED_NOT_FULL_TURN_BENCHMARK",
+    "median_B_s": 13.915503599999996,
+    "median_contribution_percent_range": [
+      25.30091563636363,
+      46.38501199999999
+    ],
+    "net_speedup_measured": false
+  },
+  "counters": {
+    "scope": "Six started baseline two-turn lifecycles; offline entry accounting replays the recorded candidates with zero inference.",
+    "semantic_appraisal_invocations": 28,
+    "later_turn_semantic_appraisal_invocations": 16,
+    "already_completed_replay_invocations": 11,
+    "distinct_model_backed_event_evaluations": 17,
+    "deterministic_setup_candidates": 6,
+    "real_appraisal_inferences": 11,
+    "eligible_reuse_opportunities": 5,
+    "exact_request_matches": 5,
+    "reuse_misses": 0,
+    "invalid_reuse_attempts": 0,
+    "malformed_first_candidates": 1,
+    "second_stage_not_reached": 1,
+    "control_replay_deliveries": 5,
+    "shadow_candidate_deliveries": 5,
+    "shadow_real_inferences": 0
+  },
+  "gates": {
+    "A": "PASS_FOR_FIVE_OBSERVED_PAIRS",
+    "B": "PASS_RESEARCH_AUTHORITY_AND_FAILURE_CONTROLS",
+    "C": "UNKNOWN_INCOMPLETE_SAMPLE",
+    "D": "MEASURED_LOCAL_VALUE_WORTH_FURTHER_VALIDATION"
+  },
+  "confidence": "LOW",
+  "limitation": "Preregistered stop on malformed A at sample 6 leaves low-information/counterpart/positive-salient/practical-uncertain categories unrun, emotionally salient category without a valid pair. Five successes do not establish broad behavioral equivalence.",
+  "benchmark_table": [
+    {
+      "id": "S01",
+      "request_equal": true,
+      "latency_A_s": 55.031309500000006,
+      "latency_B_s": 16.325895300000003,
+      "candidate_exact_equal": true,
+      "dimension_divergence": [],
+      "control": "COMMITTED",
+      "reuse": "COMMITTED",
+      "canonical_equal": true,
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL"
+    },
+    {
+      "id": "S02",
+      "request_equal": true,
+      "latency_A_s": 16.47529740000001,
+      "latency_B_s": 4.77808600000001,
+      "candidate_exact_equal": true,
+      "dimension_divergence": [],
+      "control": "COMMITTED",
+      "reuse": "COMMITTED",
+      "canonical_equal": true,
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL"
+    },
+    {
+      "id": "S03",
+      "request_equal": true,
+      "latency_A_s": 12.432894700000004,
+      "latency_B_s": 13.666992200000008,
+      "candidate_exact_equal": true,
+      "dimension_divergence": [],
+      "control": "COMMITTED",
+      "reuse": "COMMITTED",
+      "canonical_equal": true,
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL"
+    },
+    {
+      "id": "S04",
+      "request_equal": true,
+      "latency_A_s": 14.823121900000013,
+      "latency_B_s": 16.425158200000006,
+      "candidate_exact_equal": true,
+      "dimension_divergence": [],
+      "control": "COMMITTED",
+      "reuse": "COMMITTED",
+      "canonical_equal": true,
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL"
+    },
+    {
+      "id": "S05",
+      "request_equal": true,
+      "latency_A_s": 23.563596900000004,
+      "latency_B_s": 13.915503599999996,
+      "candidate_exact_equal": true,
+      "dimension_divergence": [],
+      "control": "COMMITTED",
+      "reuse": "COMMITTED",
+      "canonical_equal": true,
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL"
+    }
+  ]
+}

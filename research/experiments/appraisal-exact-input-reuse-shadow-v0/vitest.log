@@ -1,0 +1,29 @@
+$ vitest run
+
+ RUN  v4.1.11 D:/Documents/CharacterOS-Next
+
+ ❯ evals/conformance/familiarity-causal-behavior-v0.test.ts (20 tests | 1 failed) 59486ms
+     × rejects selected content tampering against the repository hash 5008ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  evals/conformance/familiarity-causal-behavior-v0.test.ts > familiarity causal behavior preregistration (zero network calls) > rejects selected content tampering against the repository hash
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ evals/conformance/familiarity-causal-behavior-v0.test.ts:48:3
+     46|     expect(frozen.arms.B.input.evidence[0]?.payload_hash).toMatch(/^sh…
+     47|   });
+     48|   it("rejects selected content tampering against the repository hash",…
+       |   ^
+     49|     const world = await buildWorld(16);
+     50|     const records = structuredClone(world.records).map(record => recor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 177 passed | 1 skipped (179)
+      Tests  1 failed | 2317 passed | 3 skipped (2321)
+   Start at  17:07:55
+   Duration  203.02s (transform 69.05s, setup 0ms, import 215.14s, tests 595.76s, environment 58ms)
+
+[ELIFECYCLE] Test failed. See above for more details.

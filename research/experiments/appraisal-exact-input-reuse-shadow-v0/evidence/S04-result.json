@@ -1,0 +1,104 @@
+{
+  "id": "S04",
+  "category": "request or question",
+  "request_equal": true,
+  "fingerprint_A": "sha256:09ef6ab92b1cbf7ff8ea7f07b01f781be64df6897ee765dc53eab2be3ea68cb5",
+  "fingerprint_B": "sha256:09ef6ab92b1cbf7ff8ea7f07b01f781be64df6897ee765dc53eab2be3ea68cb5",
+  "candidate_A": {
+    "relevance": 1,
+    "goal_congruence": 1,
+    "attribution": "other",
+    "controllability": 0.8,
+    "uncertainty": 0.2,
+    "intensity": 0.6,
+    "assessment_confidence": 0.95
+  },
+  "candidate_B": {
+    "relevance": 1,
+    "goal_congruence": 1,
+    "attribution": "other",
+    "controllability": 0.8,
+    "uncertainty": 0.2,
+    "intensity": 0.6,
+    "assessment_confidence": 0.95
+  },
+  "candidate_exact_equal": true,
+  "fields": {
+    "relevance": {
+      "A": 1,
+      "B": 1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "goal_congruence": {
+      "A": 1,
+      "B": 1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "attribution": {
+      "A": "other",
+      "B": "other",
+      "equal": true,
+      "absolute_difference": null
+    },
+    "controllability": {
+      "A": 0.8,
+      "B": 0.8,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "uncertainty": {
+      "A": 0.2,
+      "B": 0.2,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "intensity": {
+      "A": 0.6,
+      "B": 0.6,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "assessment_confidence": {
+      "A": 0.95,
+      "B": 0.95,
+      "equal": true,
+      "absolute_difference": 0
+    }
+  },
+  "latency_A_ms": 14823.121900000013,
+  "latency_B_ms": 16425.158200000005,
+  "tokens_A": {
+    "total_duration": 14812023200,
+    "load_duration": 3247500,
+    "prompt_eval_count": 485,
+    "prompt_eval_duration": 4101691000,
+    "eval_count": 55,
+    "eval_duration": 10695513000,
+    "done_reason": "stop"
+  },
+  "tokens_B": {
+    "total_duration": 16407146300,
+    "load_duration": 3440900,
+    "prompt_eval_count": 485,
+    "prompt_eval_duration": 269397000,
+    "eval_count": 55,
+    "eval_duration": 16127842000,
+    "done_reason": "stop"
+  },
+  "control_validation": "COMMITTED",
+  "reuse_validation": "COMMITTED",
+  "authority": "AUTHORITY_EQUIVALENT",
+  "canonical_equal": true,
+  "affect_equal": true,
+  "classification": "NONE",
+  "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+  "pre_second_state_hash": "sha256:0c51b7492e5cf165e13fa0ad081a477d03486080fa1d57d2597790f1fcd2ea13",
+  "canonical_control_hash": "sha256:ea54991e38406c561b4e619e97de4a7680511f3cd8ae17e436bc134543d5f30e",
+  "canonical_shadow_hash": "sha256:ea54991e38406c561b4e619e97de4a7680511f3cd8ae17e436bc134543d5f30e",
+  "projection_control_hash": "sha256:f37bc84a51d80c125692d42a9991c85f8b33736fceb9267f6da850c0b2621d66",
+  "projection_shadow_hash": "sha256:f37bc84a51d80c125692d42a9991c85f8b33736fceb9267f6da850c0b2621d66",
+  "canonical_differences": [],
+  "projection_differences": []
+}

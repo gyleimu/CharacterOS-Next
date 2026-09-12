@@ -1,0 +1,8 @@
+
+ RUN  v4.1.11 D:/Documents/CharacterOS-Next
+
+
+ Test Files  1 passed (1)
+      Tests  20 passed (20)
+   Start at  17:12:03
+   Duration  26.74s (transform 2.58s, setup 0ms, import 3.22s, tests 23.22s, environment 0ms)

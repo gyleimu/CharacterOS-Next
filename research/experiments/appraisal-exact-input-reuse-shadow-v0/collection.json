@@ -1,0 +1,533 @@
+{
+  "completed_at": "2026-09-12T07:35:21.381Z",
+  "planned_pairs": 10,
+  "calls": 11,
+  "completed_pairs": 5,
+  "collection_failure": {
+    "sample": "S06",
+    "message": "{\"schema_version\":\"interactive-subject-turn-v0\",\"session_id\":\"reuse-shadow\",\"subject_id\":\"reuse-s06\",\"turn_index\":1,\"user_text\":\"I just learned that my closest friend is moving far away next week. I feel overwhelmed.\",\"status\":\"FAILED\",\"failure\":\"TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]\",\"subject_text\":\"\",\"behavior_id\":null,\"delivery_id\":null,\"directive\":null,\"current_intent\":null,\"language_call_required\":false,\"language_status\":\"NOT_REACHED\",\"completed_prior_outcome\":null,\"belief_adaptation\":null,\"personality_adaptation\":null,\"relationship_familiarity\":null,\"observational_experience_ref\":null,\"retrieved_refs\":[],\"working_episode_refs\":[],\"resolved_evidence_entry_count\":0,\"provider_memory_section_present\":false,\"provider_request_hash\":null,\"transport_request_hash\":null,\"provider_request_identity_match\":false,\"provider_terminal_trace\":null,\"logical_time_before\":1,\"logical_time_after\":2,\"state_revision_before\":6,\"state_revision_after\":9,\"affect_before\":0,\"affect_after\":0,\"repository_revision_before\":\"R2\",\"repository_revision_after\":\"R2\",\"raw_cognition_response\":null,\"raw_language_response\":null}\n+ actual - expected\n\n+ 'FAILED'\n- 'COMPLETE'\n",
+    "calls": 11
+  },
+  "samples": [
+    {
+      "id": "S01",
+      "category": "neutral factual",
+      "request_equal": true,
+      "fingerprint_A": "sha256:48e1021eb47bc278e33ab8412b31c73151a60131f941f40fef5b4e5feef4e8fe",
+      "fingerprint_B": "sha256:48e1021eb47bc278e33ab8412b31c73151a60131f941f40fef5b4e5feef4e8fe",
+      "candidate_A": {
+        "relevance": 0.9,
+        "goal_congruence": 1,
+        "attribution": "situation",
+        "controllability": 0.8,
+        "uncertainty": 0.1,
+        "intensity": 0.6,
+        "assessment_confidence": 0.95
+      },
+      "candidate_B": {
+        "relevance": 0.9,
+        "goal_congruence": 1,
+        "attribution": "situation",
+        "controllability": 0.8,
+        "uncertainty": 0.1,
+        "intensity": 0.6,
+        "assessment_confidence": 0.95
+      },
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "situation",
+          "B": "situation",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "latency_A_ms": 55031.3095,
+      "latency_B_ms": 16325.895300000004,
+      "tokens_A": {
+        "total_duration": 55016670500,
+        "load_duration": 19285633100,
+        "prompt_eval_count": 485,
+        "prompt_eval_duration": 10143949000,
+        "eval_count": 56,
+        "eval_duration": 25565152000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 16307662700,
+        "load_duration": 7040700,
+        "prompt_eval_count": 485,
+        "prompt_eval_duration": 293635000,
+        "eval_count": 56,
+        "eval_duration": 15995929000,
+        "done_reason": "stop"
+      },
+      "control_validation": "COMMITTED",
+      "reuse_validation": "COMMITTED",
+      "authority": "AUTHORITY_EQUIVALENT",
+      "canonical_equal": true,
+      "affect_equal": true,
+      "classification": "NONE",
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+      "pre_second_state_hash": "sha256:25e307770d06fb4241f3c4e4a13c150d6e57df4294500dbed356e0d880bd3c90",
+      "canonical_control_hash": "sha256:90ffde5e8e06ea7104ee973efa64cc947e8ec4945e094c0648b80ce8cc8fd01f",
+      "canonical_shadow_hash": "sha256:90ffde5e8e06ea7104ee973efa64cc947e8ec4945e094c0648b80ce8cc8fd01f",
+      "projection_control_hash": "sha256:01e9703515e640f98bbb4be09ad2b85f280e6de531551c406cd4e64ef458f926",
+      "projection_shadow_hash": "sha256:01e9703515e640f98bbb4be09ad2b85f280e6de531551c406cd4e64ef458f926",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "S02",
+      "category": "positive interpersonal",
+      "request_equal": true,
+      "fingerprint_A": "sha256:d87d0a4978ca884daf904b8f3441e1db7015902258e3218fc8dfc7f6b4b83707",
+      "fingerprint_B": "sha256:d87d0a4978ca884daf904b8f3441e1db7015902258e3218fc8dfc7f6b4b83707",
+      "candidate_A": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 0.5,
+        "uncertainty": 0.1,
+        "intensity": 0.8,
+        "assessment_confidence": 0.9
+      },
+      "candidate_B": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 0.5,
+        "uncertainty": 0.1,
+        "intensity": 0.8,
+        "assessment_confidence": 0.9
+      },
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "latency_A_ms": 16475.29740000001,
+      "latency_B_ms": 4778.08600000001,
+      "tokens_A": {
+        "total_duration": 16469639800,
+        "load_duration": 11304500,
+        "prompt_eval_count": 486,
+        "prompt_eval_duration": 2437610000,
+        "eval_count": 54,
+        "eval_duration": 14004119000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 4763193000,
+        "load_duration": 4314900,
+        "prompt_eval_count": 486,
+        "prompt_eval_duration": 114804000,
+        "eval_count": 54,
+        "eval_duration": 4630911000,
+        "done_reason": "stop"
+      },
+      "control_validation": "COMMITTED",
+      "reuse_validation": "COMMITTED",
+      "authority": "AUTHORITY_EQUIVALENT",
+      "canonical_equal": true,
+      "affect_equal": true,
+      "classification": "NONE",
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+      "pre_second_state_hash": "sha256:271cb03a781a7809933db6cc9b165a8b2ecb00c94e669df3e4eed2dd1dae2726",
+      "canonical_control_hash": "sha256:7fbc3897d4d20f878bf1645dd5a0d05ab5e7c350c2a88d81821a99190a71fe66",
+      "canonical_shadow_hash": "sha256:7fbc3897d4d20f878bf1645dd5a0d05ab5e7c350c2a88d81821a99190a71fe66",
+      "projection_control_hash": "sha256:d1cfddaf6adda3077c2d733abf98182ceec0357586b9d490c9a5b6c4d7cfd89b",
+      "projection_shadow_hash": "sha256:d1cfddaf6adda3077c2d733abf98182ceec0357586b9d490c9a5b6c4d7cfd89b",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "S03",
+      "category": "negative interpersonal",
+      "request_equal": true,
+      "fingerprint_A": "sha256:e0bc7260eee6928e99580fa5a984af15ad94ca9703f22492d4915755a112659c",
+      "fingerprint_B": "sha256:e0bc7260eee6928e99580fa5a984af15ad94ca9703f22492d4915755a112659c",
+      "candidate_A": {
+        "relevance": 1,
+        "goal_congruence": 0.2,
+        "attribution": "other",
+        "controllability": 0.3,
+        "uncertainty": 0.4,
+        "intensity": 0.8,
+        "assessment_confidence": 0.9
+      },
+      "candidate_B": {
+        "relevance": 1,
+        "goal_congruence": 0.2,
+        "attribution": "other",
+        "controllability": 0.3,
+        "uncertainty": 0.4,
+        "intensity": 0.8,
+        "assessment_confidence": 0.9
+      },
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.3,
+          "B": 0.3,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.4,
+          "B": 0.4,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "latency_A_ms": 12432.894700000004,
+      "latency_B_ms": 13666.992200000008,
+      "tokens_A": {
+        "total_duration": 12418447300,
+        "load_duration": 3462800,
+        "prompt_eval_count": 488,
+        "prompt_eval_duration": 2122157000,
+        "eval_count": 54,
+        "eval_duration": 10273823000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 13654148300,
+        "load_duration": 1572900,
+        "prompt_eval_count": 488,
+        "prompt_eval_duration": 214477000,
+        "eval_count": 54,
+        "eval_duration": 13429719000,
+        "done_reason": "stop"
+      },
+      "control_validation": "COMMITTED",
+      "reuse_validation": "COMMITTED",
+      "authority": "AUTHORITY_EQUIVALENT",
+      "canonical_equal": true,
+      "affect_equal": true,
+      "classification": "NONE",
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+      "pre_second_state_hash": "sha256:9872177784eac8d4217e28a2c9731c1bad74d1b90208da5f6d13a54dcd2a0d7a",
+      "canonical_control_hash": "sha256:abd9bba0f454fdb2940be9e3f554aa1d7d38939cfb8367d1d3428e941831ab7e",
+      "canonical_shadow_hash": "sha256:abd9bba0f454fdb2940be9e3f554aa1d7d38939cfb8367d1d3428e941831ab7e",
+      "projection_control_hash": "sha256:4619e809b2811abeb2b18cc488228b6fef036bcffa8d975714a84a470902fd2f",
+      "projection_shadow_hash": "sha256:4619e809b2811abeb2b18cc488228b6fef036bcffa8d975714a84a470902fd2f",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "S04",
+      "category": "request or question",
+      "request_equal": true,
+      "fingerprint_A": "sha256:09ef6ab92b1cbf7ff8ea7f07b01f781be64df6897ee765dc53eab2be3ea68cb5",
+      "fingerprint_B": "sha256:09ef6ab92b1cbf7ff8ea7f07b01f781be64df6897ee765dc53eab2be3ea68cb5",
+      "candidate_A": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 0.8,
+        "uncertainty": 0.2,
+        "intensity": 0.6,
+        "assessment_confidence": 0.95
+      },
+      "candidate_B": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 0.8,
+        "uncertainty": 0.2,
+        "intensity": 0.6,
+        "assessment_confidence": 0.95
+      },
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "latency_A_ms": 14823.121900000013,
+      "latency_B_ms": 16425.158200000005,
+      "tokens_A": {
+        "total_duration": 14812023200,
+        "load_duration": 3247500,
+        "prompt_eval_count": 485,
+        "prompt_eval_duration": 4101691000,
+        "eval_count": 55,
+        "eval_duration": 10695513000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 16407146300,
+        "load_duration": 3440900,
+        "prompt_eval_count": 485,
+        "prompt_eval_duration": 269397000,
+        "eval_count": 55,
+        "eval_duration": 16127842000,
+        "done_reason": "stop"
+      },
+      "control_validation": "COMMITTED",
+      "reuse_validation": "COMMITTED",
+      "authority": "AUTHORITY_EQUIVALENT",
+      "canonical_equal": true,
+      "affect_equal": true,
+      "classification": "NONE",
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+      "pre_second_state_hash": "sha256:0c51b7492e5cf165e13fa0ad081a477d03486080fa1d57d2597790f1fcd2ea13",
+      "canonical_control_hash": "sha256:ea54991e38406c561b4e619e97de4a7680511f3cd8ae17e436bc134543d5f30e",
+      "canonical_shadow_hash": "sha256:ea54991e38406c561b4e619e97de4a7680511f3cd8ae17e436bc134543d5f30e",
+      "projection_control_hash": "sha256:f37bc84a51d80c125692d42a9991c85f8b33736fceb9267f6da850c0b2621d66",
+      "projection_shadow_hash": "sha256:f37bc84a51d80c125692d42a9991c85f8b33736fceb9267f6da850c0b2621d66",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "S05",
+      "category": "ambiguous",
+      "request_equal": true,
+      "fingerprint_A": "sha256:ad2f00bf9cf10359f3f0110e7e1cd235a9e7599d2cc1f67ee552b35e1e18faaf",
+      "fingerprint_B": "sha256:ad2f00bf9cf10359f3f0110e7e1cd235a9e7599d2cc1f67ee552b35e1e18faaf",
+      "candidate_A": {
+        "relevance": 0.9,
+        "goal_congruence": 0.8,
+        "attribution": "other",
+        "controllability": 0.5,
+        "uncertainty": 0.7,
+        "intensity": 0.6,
+        "assessment_confidence": 0.8
+      },
+      "candidate_B": {
+        "relevance": 0.9,
+        "goal_congruence": 0.8,
+        "attribution": "other",
+        "controllability": 0.5,
+        "uncertainty": 0.7,
+        "intensity": 0.6,
+        "assessment_confidence": 0.8
+      },
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "latency_A_ms": 23563.596900000004,
+      "latency_B_ms": 13915.503599999996,
+      "tokens_A": {
+        "total_duration": 23555629100,
+        "load_duration": 3203900,
+        "prompt_eval_count": 488,
+        "prompt_eval_duration": 5598702000,
+        "eval_count": 54,
+        "eval_duration": 17944857000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 13907065100,
+        "load_duration": 3840000,
+        "prompt_eval_count": 488,
+        "prompt_eval_duration": 2918794000,
+        "eval_count": 54,
+        "eval_duration": 10975309000,
+        "done_reason": "stop"
+      },
+      "control_validation": "COMMITTED",
+      "reuse_validation": "COMMITTED",
+      "authority": "AUTHORITY_EQUIVALENT",
+      "canonical_equal": true,
+      "affect_equal": true,
+      "classification": "NONE",
+      "downstream": "DOWNSTREAM_INPUT_IDENTICAL",
+      "pre_second_state_hash": "sha256:27c923bfa9b568670b7ff2618e4ce1682fa335a988bcef58f8d0f2b6a5520af2",
+      "canonical_control_hash": "sha256:4e244e175eca05ec81ceea3c23dad8b6cd8921386d0703e255a389c897284218",
+      "canonical_shadow_hash": "sha256:4e244e175eca05ec81ceea3c23dad8b6cd8921386d0703e255a389c897284218",
+      "projection_control_hash": "sha256:19b37d3e0719a9044eee370bcb7167d70c4b70194c6a549382ed400ef3435bd1",
+      "projection_shadow_hash": "sha256:19b37d3e0719a9044eee370bcb7167d70c4b70194c6a549382ed400ef3435bd1",
+      "canonical_differences": [],
+      "projection_differences": []
+    }
+  ]
+}

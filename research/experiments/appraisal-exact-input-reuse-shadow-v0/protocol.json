@@ -1,0 +1,30 @@
+{
+  "experiment": "APPRAISAL_EXACT_INPUT_REUSE_SHADOW_VALIDATION_V0",
+  "required_baseline": "ea7eb4bb6f9a1a652a65ad344591a0369179c39f",
+  "planned_pairs": 10,
+  "planned_appraisal_calls": 20,
+  "absolute_call_ceiling": 24,
+  "retries": 0,
+  "live_cognition_calls": 0,
+  "live_language_calls": 0,
+  "first_turn_candidate": "FIXED_CANDIDATE; deterministic lifecycle setup, excluded from live performance statistics",
+  "collection": "Serial fixed order; A at current-primary provider stage, B at later prior-reply provider stage; capture authoritative S before B. Stop truthfully on infrastructure/provider/authority failure; no replacement samples or prompt tuning.",
+  "isolation": "Both comparison paths are separately JSON-reconstructed and authority-restored copies of S; assert exact pre-state equality. Capture primary runtime authority read-only through the existing TS-private instance property, not snapshot() which flushes work. No live subject files.",
+  "comparison": "Actual independent calls remain on baseline. Replay B in CONTROL and seven model fields of A in SHADOW through original product adapter and real authorities. No field/value normalization for CONTROL versus SHADOW other than sorted object keys.",
+  "request_gate": "All intended pairs must match actual complete request plus frozen observed provider/model configuration; any mismatch forbids that pair. Hash and full normalized identity must both agree.",
+  "authority_gate": "All deterministic failure controls and independent authority/admission/order checks must pass. Any unaccounted authority or identity bypass rejects reuse.",
+  "behavior_gate": "Zero candidate/canonical/projection divergence supports LOW RISK only within this bounded sample. A valid candidate divergence propagated to canonical Affect or future cognition is material evidence against treating reuse as equivalent. Report every difference; do not tune rate thresholds after observation. Failures or inadequate eligible pairs yield UNKNOWN.",
+  "performance_gate": "Report measured B latency and actual Ollama token counts, including warm/cold loading. Judge practical local value against one-slot complexity, without universal numerical cutoff. Full-turn contribution uses separately labeled historical estimate only.",
+  "samples": [
+    {"id":"S01","category":"neutral factual","text":"The train arrives at noon, and I have already packed my bag."},
+    {"id":"S02","category":"positive interpersonal","text":"Thank you for listening yesterday. I felt understood, and that helped me."},
+    {"id":"S03","category":"negative interpersonal","text":"You ignored what I said and repeated the same advice. I am frustrated with you."},
+    {"id":"S04","category":"request or question","text":"Could you help me decide which question to ask at tomorrow's meeting?"},
+    {"id":"S05","category":"ambiguous","text":"Well, that was unexpected. I am still not sure what to make of it."},
+    {"id":"S06","category":"emotionally salient","text":"I just learned that my closest friend is moving far away next week. I feel overwhelmed."},
+    {"id":"S07","category":"low information","text":"Okay."},
+    {"id":"S08","category":"counterpart related","text":"Alice told me she would call tonight, but she has not replied to my last two messages."},
+    {"id":"S09","category":"positive salient","text":"I got the position I worked toward for months. I wanted to share the good news with you."},
+    {"id":"S10","category":"uncertain practical event","text":"The meeting was postponed again. I do not know whether my plans for Friday still make sense."}
+  ]
+}

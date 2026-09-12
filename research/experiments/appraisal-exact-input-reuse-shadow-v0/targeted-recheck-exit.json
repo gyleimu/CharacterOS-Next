@@ -1,0 +1,6 @@
+{
+  "timeout_unchanged": true,
+  "command": "pnpm exec vitest run evals/conformance/familiarity-causal-behavior-v0.test.ts",
+  "exit_code": 0,
+  "attempt": 1
+}

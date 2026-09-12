@@ -1,0 +1,205 @@
+{
+  "result": "PASS",
+  "empirical_collection": "INCOMPLETE_AS_PREREGISTERED_ON_MALFORMED_A",
+  "verified_pairs": 5,
+  "malformed_first_result": "REJECTED_NO_B_CALL",
+  "model_calls": 0,
+  "network_calls": 0,
+  "counters": {
+    "scope": "Six started baseline two-turn lifecycles; offline entry accounting replays the recorded candidates with zero inference.",
+    "semantic_appraisal_invocations": 28,
+    "later_turn_semantic_appraisal_invocations": 16,
+    "already_completed_replay_invocations": 11,
+    "distinct_model_backed_event_evaluations": 17,
+    "deterministic_setup_candidates": 6,
+    "real_appraisal_inferences": 11,
+    "eligible_reuse_opportunities": 5,
+    "exact_request_matches": 5,
+    "reuse_misses": 0,
+    "invalid_reuse_attempts": 0,
+    "malformed_first_candidates": 1,
+    "second_stage_not_reached": 1,
+    "control_replay_deliveries": 5,
+    "shadow_candidate_deliveries": 5,
+    "shadow_real_inferences": 0
+  },
+  "executor_entries": [
+    {
+      "subject_id": "reuse-s01",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s01",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s01",
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s01",
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s01",
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s02",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s02",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s02",
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s02",
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s02",
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s03",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s03",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s03",
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s03",
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s03",
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s04",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s04",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s04",
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s04",
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s04",
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s05",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s05",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s05",
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s05",
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s05",
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s06",
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "subject_id": "reuse-s06",
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "subject_id": "reuse-s06",
+      "source_event_id": "turn-1",
+      "result": "THREW"
+    }
+  ],
+  "samples": [
+    {
+      "sample": "S01",
+      "exact_offline_replay": true,
+      "pre_state": "sha256:25e307770d06fb4241f3c4e4a13c150d6e57df4294500dbed356e0d880bd3c90",
+      "canonical_equal": true,
+      "projection_equal": true
+    },
+    {
+      "sample": "S02",
+      "exact_offline_replay": true,
+      "pre_state": "sha256:271cb03a781a7809933db6cc9b165a8b2ecb00c94e669df3e4eed2dd1dae2726",
+      "canonical_equal": true,
+      "projection_equal": true
+    },
+    {
+      "sample": "S03",
+      "exact_offline_replay": true,
+      "pre_state": "sha256:9872177784eac8d4217e28a2c9731c1bad74d1b90208da5f6d13a54dcd2a0d7a",
+      "canonical_equal": true,
+      "projection_equal": true
+    },
+    {
+      "sample": "S04",
+      "exact_offline_replay": true,
+      "pre_state": "sha256:0c51b7492e5cf165e13fa0ad081a477d03486080fa1d57d2597790f1fcd2ea13",
+      "canonical_equal": true,
+      "projection_equal": true
+    },
+    {
+      "sample": "S05",
+      "exact_offline_replay": true,
+      "pre_state": "sha256:27c923bfa9b568670b7ff2618e4ce1682fa335a988bcef58f8d0f2b6a5520af2",
+      "canonical_equal": true,
+      "projection_equal": true
+    }
+  ]
+}
