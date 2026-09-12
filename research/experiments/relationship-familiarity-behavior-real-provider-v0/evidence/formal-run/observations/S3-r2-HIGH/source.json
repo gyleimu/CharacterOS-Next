@@ -1,0 +1,12 @@
+{
+  "subject_id": "subject-familiarity-behavior-v0",
+  "state_revision": 1,
+  "canonical_head": {
+    "commit_ref": "commit:cfa22f7fc1f4e190c7617bd958070d2f7ac463392f3c741f432d44a3833ff5f1",
+    "record_checksum": "sha256:158101852bcafcacb62762bc3e1ce3fdeec0e184257d2205ba765060cefd2562"
+  },
+  "repository_binding": {
+    "repository_revision": "R0",
+    "repository_revision_hash": "sha256:4a9f4df8c6ca9ae542b52e7748c3cf0bde37fa29166275f76691c00c1d83c74b"
+  }
+}

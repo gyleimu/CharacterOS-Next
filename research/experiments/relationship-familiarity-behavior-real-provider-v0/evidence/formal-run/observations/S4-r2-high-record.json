@@ -1,0 +1,22 @@
+{
+  "pair_id": "S4-r2",
+  "scenario_id": "S4",
+  "arm": "HIGH",
+  "order_position": "Y",
+  "validity": "COGNITION_SCHEMA_FAILURE",
+  "behavior_text": null,
+  "evidence_refs": [],
+  "behavior_id": null,
+  "cognition_request_hash": "sha256:7b79ba16150b62a589236780245035e6bf0007911774a6a890a80b68df33778e",
+  "projection_hash": "sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706",
+  "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+  "retrieval_attempts": 1,
+  "cognition_calls": 1,
+  "language_calls": 0,
+  "deterministic": {
+    "asks_clarification": false,
+    "cites_shared_context": false,
+    "possible_unsupported_shared_context": false
+  },
+  "error": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+}

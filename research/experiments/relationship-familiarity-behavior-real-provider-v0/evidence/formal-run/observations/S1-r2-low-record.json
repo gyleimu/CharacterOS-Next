@@ -1,0 +1,24 @@
+{
+  "pair_id": "S1-r2",
+  "scenario_id": "S1",
+  "arm": "LOW",
+  "order_position": "Y",
+  "validity": "VALID_BEHAVIOR",
+  "behavior_text": "Here is the revised update.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:57b4ec4c43ccf45ca467520b3f10f8ff0757630b10def2d9783ee7cbad983e0f",
+  "cognition_request_hash": "sha256:7af3f47d161c2d33b1ad1a50077c3042b69c4e8ba195f37b7c41d9d7417d2a6b",
+  "projection_hash": "sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+  "influence_strategy": "BASIC_CONTEXT_FIRST",
+  "retrieval_attempts": 0,
+  "cognition_calls": 1,
+  "language_calls": 1,
+  "deterministic": {
+    "asks_clarification": false,
+    "cites_shared_context": true,
+    "possible_unsupported_shared_context": false
+  },
+  "error": null
+}

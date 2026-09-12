@@ -1,0 +1,61 @@
+{
+  "pair_id": "S1-r1",
+  "scenario_id": "S1",
+  "order": "LOW_FIRST",
+  "low": {
+    "pair_id": "S1-r1",
+    "scenario_id": "S1",
+    "arm": "LOW",
+    "order_position": "X",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the revised update.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:4ef991a4b9a0afd9a3d309096a0c2d6d4e9b4cf5b4e3166eee64b3978354c912",
+    "cognition_request_hash": "sha256:7af3f47d161c2d33b1ad1a50077c3042b69c4e8ba195f37b7c41d9d7417d2a6b",
+    "projection_hash": "sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+    "influence_strategy": "BASIC_CONTEXT_FIRST",
+    "retrieval_attempts": 0,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "high": {
+    "pair_id": "S1-r1",
+    "scenario_id": "S1",
+    "arm": "HIGH",
+    "order_position": "Y",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Sure. Here is the revised update.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:10077c2643c4b632d680e0d64d5ff1ee77b922fb953633e7b7c12329a484b0c0",
+    "cognition_request_hash": "sha256:136158188191ebc3c9c31a02b8c031bc51c131c2039818a91651a48be6955b0e",
+    "projection_hash": "sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+    "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+    "retrieval_attempts": 1,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "evaluation": {
+    "x_class": "COUNTERPART_CONTEXT_USED",
+    "y_class": "BASIC_CONTEXT_USED",
+    "more_counterpart_context_use": "X",
+    "rationale": "Response X adheres strictly to the established 'concise, factual' convention by omitting conversational fillers like 'Sure'. Response Y includes 'Sure', which violates the specific constraint of avoiding unnecessary pleasantries.",
+    "raw_valid": true
+  },
+  "direction": "REVERSE"
+}

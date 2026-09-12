@@ -1,0 +1,7 @@
+{
+  "x_class": "COUNTERPART_CONTEXT_USED",
+  "y_class": "BASIC_CONTEXT_USED",
+  "more_counterpart_context_use": "X",
+  "rationale": "Response X explicitly references 'our usual way', directly applying the established counterpart convention. Response Y uses 'normally do' which is generic phrasing without explicitly invoking the specific shared convention style.",
+  "raw_valid": true
+}

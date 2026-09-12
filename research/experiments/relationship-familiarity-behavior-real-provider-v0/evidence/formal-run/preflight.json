@@ -1,0 +1,185 @@
+{
+  "schema_version": "relationship-familiarity-behavior-preflight-v0",
+  "low_value": 0.03125,
+  "high_value": 0.0625,
+  "scenarios": [
+    {
+      "scenario_id": "S1",
+      "low": {
+        "arm": "LOW",
+        "state_hash": "sha256:94fa54528d3515ab00dfc8bac0405b69edb2f0c7fea53073e73420d0643df701",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 0,
+        "cognition_request_hash": "sha256:7af3f47d161c2d33b1ad1a50077c3042b69c4e8ba195f37b7c41d9d7417d2a6b",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Can you help me revise that update in the usual way?\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Can you help me revise that update in the usual way?\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "high": {
+        "arm": "HIGH",
+        "state_hash": "sha256:fbe9336d989ba0213d91b3eefb7f5868cbd152c4295a6f6c1484576ad1d22726",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 1,
+        "cognition_request_hash": "sha256:136158188191ebc3c9c31a02b8c031bc51c131c2039818a91651a48be6955b0e",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Can you help me revise that update in the usual way?\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Can you help me revise that update in the usual way?\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "differing_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb"
+      ],
+      "low_only_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb"
+      ],
+      "high_only_lines": [
+        "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "[projection_hash] sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf"
+      ],
+      "approved_diff": true
+    },
+    {
+      "scenario_id": "S2",
+      "low": {
+        "arm": "LOW",
+        "state_hash": "sha256:2fdeb1a7deca310802cb11d3dab6b1ab16405a8b48ffaabe3a95e59331d60dc4",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 0,
+        "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Please redo the status note the way we normally do.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Please redo the status note the way we normally do.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "high": {
+        "arm": "HIGH",
+        "state_hash": "sha256:2ade1b32346e4aa62a3bff750acd6cf2844cdda953c88363808fe204e71a26c8",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 1,
+        "cognition_request_hash": "sha256:51da0c762f511e5c27e6785d450ace346d8b6edf7b71799c4033694f8eeea7d5",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Please redo the status note the way we normally do.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Please redo the status note the way we normally do.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "differing_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d"
+      ],
+      "low_only_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d"
+      ],
+      "high_only_lines": [
+        "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "[projection_hash] sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b"
+      ],
+      "approved_diff": true
+    },
+    {
+      "scenario_id": "S3",
+      "low": {
+        "arm": "LOW",
+        "state_hash": "sha256:f299c787af1579e6f58f2f7a59f594e85aab196c38b0997c26311d7441693cea",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 0,
+        "cognition_request_hash": "sha256:a332b58f403dd4f920ffa987fc2803789e11e0c43defca0e0146c2335527a0ef",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Update it as usual.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Update it as usual.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "high": {
+        "arm": "HIGH",
+        "state_hash": "sha256:3abd003fb818c5274a374a67109cb19bf73476d56d407f5bc604cd1589704150",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 1,
+        "cognition_request_hash": "sha256:d729bac92f384a776c092a0ef94d55b82e3d9740343d9e10038dbca65dbd69a0",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Update it as usual.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Update it as usual.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "differing_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9"
+      ],
+      "low_only_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9"
+      ],
+      "high_only_lines": [
+        "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "[projection_hash] sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4"
+      ],
+      "approved_diff": true
+    },
+    {
+      "scenario_id": "S4",
+      "low": {
+        "arm": "LOW",
+        "state_hash": "sha256:2ddd353c6b6e23f53b86c681105fb9f606cb08dbc25b4dc89ecd568a00f69645",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 0,
+        "cognition_request_hash": "sha256:a7c7b0e4287681ecbbed2183a4f706fdb71574d8104913d8d388c859917a1935",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Rework that summary in our standard style.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Rework that summary in our standard style.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "high": {
+        "arm": "HIGH",
+        "state_hash": "sha256:fb870346e1665d058078bd0e160de43d723b61067f17778de380f4293de67aa2",
+        "memory_binding_hash": "sha256:58093f10653ce44bce913a942f1759a75d36d6b962c4836f56170a2ca16d34bf",
+        "projection_hash": "sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "retrieval_attempts": 1,
+        "cognition_request_hash": "sha256:7b79ba16150b62a589236780245035e6bf0007911774a6a890a80b68df33778e",
+        "user_content": "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):\n[identity] subject_id=\"subject-familiarity-behavior-v0\"\n[current state] logical_time=0 state_revision=1\n[context] scene=\"Alice says: \"Rework that summary in our standard style.\"\" task=\"respond to Alice's request\"\n[current observation] (none)\n[focus refs]\n  (none)\n[active entity refs]\n  - entity:alice\n[environment refs]\n  (none)\n[memory evidence (allowed refs)]\n  - episode:alice-08\n[affect] (no active affect channels)\n[mood] baseline=0\n[regulation] energy=1 stress=0 arousal=0.5 fatigue=0\n[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; not automatically citeable]\nshowing 0 of 0 canonical belief item(s)\n(none)\n[relationships] 1 canonical relationship counterpart(s) exist but are not exposed in the V0 read model\n[interaction familiarity cognition influence — context-resolution ordering ONLY: BASIC_CONTEXT_FIRST = no counterpart-specific retrieval priority (use normally supplied memory and ordinary clarification as needed); COUNTERPART_CONTEXT_SEARCH_FIRST = prefer ONE future exact-counterpart interaction-memory lookup before broad clarification (that lookup is NOT performed by this strategy; if its future results are empty, irrelevant or unavailable, fall back to clarification; no shared fact may be invented from familiarity)]\n[this influence is derived from canonical familiarity state; it is NOT factual evidence, does NOT imply trust, liking or safety, carries no preference or desirability of any kind, and is NOT citeable — never place it in any refs array]\n- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST\n[traits seed (read-only evidence)] {\"openness\":0.5}\nCITEABLE CONTEXT REFS (only the exact refs listed below may appear in relevant_memory_refs, considered_context_refs, or evidence_refs):\n- entity:alice\n- episode:alice-08\n[ALLOWED ACTION SPACE]\n(no external actions allowed this cycle — NO_ACTION is the only valid external posture)\n[projection_hash] sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706",
+        "projection_material": "{\"affect_channels\":[],\"allowed_actions\":[],\"belief_item_count\":0,\"belief_items\":[],\"context\":{\"active_entity_refs\":[\"entity:alice\"],\"current_observation_ref\":null,\"environment_refs\":[],\"focus_refs\":[],\"scene\":\"Alice says: \\\"Rework that summary in our standard style.\\\"\",\"task\":\"respond to Alice's request\"},\"current_logical_time\":0,\"memory_working_refs\":[\"episode:alice-08\"],\"mood_baseline\":0,\"recent_retrieval_refs\":[],\"regulation\":{\"arousal\":0.5,\"energy\":1,\"fatigue\":0,\"stress\":0},\"relationship_counterpart_count\":1,\"relationship_dimensions\":[],\"schema_version\":\"cognitive-context-projection-v0\",\"state_revision\":1,\"subject_id\":\"subject-familiarity-behavior-v0\",\"traits_dimensions\":{\"openness\":0.5}}"
+      },
+      "differing_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5"
+      ],
+      "low_only_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "[projection_hash] sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5"
+      ],
+      "high_only_lines": [
+        "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "[projection_hash] sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706"
+      ],
+      "approved_diff": true
+    }
+  ],
+  "verdict": "STRICT_FAMILIARITY_ONLY_INPUT_ISOLATION_PASS",
+  "failures": []
+}

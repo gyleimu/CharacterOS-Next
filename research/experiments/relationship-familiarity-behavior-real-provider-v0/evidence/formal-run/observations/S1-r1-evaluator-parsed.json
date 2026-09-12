@@ -1,0 +1,7 @@
+{
+  "x_class": "COUNTERPART_CONTEXT_USED",
+  "y_class": "BASIC_CONTEXT_USED",
+  "more_counterpart_context_use": "X",
+  "rationale": "Response X adheres strictly to the established 'concise, factual' convention by omitting conversational fillers like 'Sure'. Response Y includes 'Sure', which violates the specific constraint of avoiding unnecessary pleasantries.",
+  "raw_valid": true
+}

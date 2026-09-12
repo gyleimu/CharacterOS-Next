@@ -1,0 +1,8 @@
+{
+  "text": "Here is the status note, done in our usual way.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:60d12b930e1684fcba0a413a4de89815dbb8407b51d2bd469a2e7b984535e6d9",
+  "input_hash": "sha256:7b331a5a5342bde55f4342055035e8f17caa7f43bab21affc141a9632f768ec3"
+}

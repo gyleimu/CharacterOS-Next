@@ -1,0 +1,7 @@
+{
+  "x_class": "COUNTERPART_CONTEXT_USED",
+  "y_class": "BASIC_CONTEXT_USED",
+  "more_counterpart_context_use": "X",
+  "rationale": "Response X explicitly applies the established concise/factual convention ('formatted as we normally do'), whereas Response Y ignores it and defers to a generic 'you prefer'.",
+  "raw_valid": true
+}

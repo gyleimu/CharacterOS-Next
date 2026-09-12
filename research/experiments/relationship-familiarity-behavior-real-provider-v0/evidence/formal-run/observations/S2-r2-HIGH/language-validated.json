@@ -1,0 +1,8 @@
+{
+  "schema_version": "language-realization-draft-v0",
+  "input_hash": "sha256:3325c33aeb1625067c52de66be7b9043797b881d57582b989f3e05b5a8f3acf3",
+  "text": "Here is the status note, formatted as we normally do.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

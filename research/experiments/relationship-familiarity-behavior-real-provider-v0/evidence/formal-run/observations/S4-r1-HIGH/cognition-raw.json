@@ -1,0 +1,4 @@
+{
+  "content": "{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706\",\"reasoning_summary\":\"Alice requests a rework of a summary in standard style. Per the COUNTERPART_CONTEXT_SEARCH_FIRST strategy for entity:alice, I will prioritize retrieving specific interaction memory (episode:alice-08) to align with her preferred style before generating the response.\",\"relevant_memory_refs\":[\"episode:alice-08\"],\"considered_context_refs\":[\"entity:alice\",\"episode:alice-08\"],\"current_intent\":\"retrieve and apply standard summary style from Alice's past interactions\",\"confidence\":0.9,\"uncertainty\":0.1,\"action_intent\":{\"action_type\":\"NO_ACTION\",\"target_ref\":\"episode:alice-08\"},\"evidence_refs\":[\"episode:alice-08\"]}",
+  "model": "qwen3.5:9b"
+}

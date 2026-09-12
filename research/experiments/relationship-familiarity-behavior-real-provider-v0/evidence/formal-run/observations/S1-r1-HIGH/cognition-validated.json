@@ -1,0 +1,19 @@
+{
+  "schema_version": "cognition-proposal-v0",
+  "projection_hash": "sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+  "reasoning_summary": "Alice requests a revision of an update. Per the subject's familiarity state for Alice (COUNTERPART_CONTEXT_SEARCH_FIRST), I will prioritize retrieving specific interaction memory 'episode:alice-08' to inform the response strategy before broad clarification. No external actions are permitted in this cycle.",
+  "relevant_memory_refs": [
+    "episode:alice-08"
+  ],
+  "considered_context_refs": [
+    "entity:alice",
+    "episode:alice-08"
+  ],
+  "current_intent": "retrieve_specific_interaction_memory_for_alice",
+  "confidence": 0.9,
+  "uncertainty": 0.1,
+  "action_intent": null,
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

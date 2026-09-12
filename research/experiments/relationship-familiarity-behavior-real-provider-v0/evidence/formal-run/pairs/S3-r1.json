@@ -1,0 +1,61 @@
+{
+  "pair_id": "S3-r1",
+  "scenario_id": "S3",
+  "order": "LOW_FIRST",
+  "low": {
+    "pair_id": "S3-r1",
+    "scenario_id": "S3",
+    "arm": "LOW",
+    "order_position": "X",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Update it as usual.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:63f79a9c9600ef4e21f505f4016aa8853cd848368251c70e732ed8dc2bc8dd04",
+    "cognition_request_hash": "sha256:a332b58f403dd4f920ffa987fc2803789e11e0c43defca0e0146c2335527a0ef",
+    "projection_hash": "sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+    "influence_strategy": "BASIC_CONTEXT_FIRST",
+    "retrieval_attempts": 0,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "high": {
+    "pair_id": "S3-r1",
+    "scenario_id": "S3",
+    "arm": "HIGH",
+    "order_position": "Y",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the update.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:56e666042ab06bb28f20f2953582ee74a8381640ae68100f5ac7320b3924d8b0",
+    "cognition_request_hash": "sha256:d729bac92f384a776c092a0ef94d55b82e3d9740343d9e10038dbca65dbd69a0",
+    "projection_hash": "sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+    "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+    "retrieval_attempts": 1,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "evaluation": {
+    "x_class": "COUNTERPART_CONTEXT_USED",
+    "y_class": "BASIC_CONTEXT_USED",
+    "more_counterpart_context_use": "X",
+    "rationale": "Response X directly adopts the established 'concise, factual' convention implied by 'as usual', whereas Response Y uses a generic polite phrase ('Here is the update') that does not reflect the specific counterpart style.",
+    "raw_valid": true
+  },
+  "direction": "REVERSE"
+}

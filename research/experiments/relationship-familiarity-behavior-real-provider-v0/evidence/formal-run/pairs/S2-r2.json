@@ -1,0 +1,61 @@
+{
+  "pair_id": "S2-r2",
+  "scenario_id": "S2",
+  "order": "LOW_FIRST",
+  "low": {
+    "pair_id": "S2-r2",
+    "scenario_id": "S2",
+    "arm": "LOW",
+    "order_position": "X",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the status note, done in our usual way.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:60d12b930e1684fcba0a413a4de89815dbb8407b51d2bd469a2e7b984535e6d9",
+    "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+    "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+    "influence_strategy": "BASIC_CONTEXT_FIRST",
+    "retrieval_attempts": 0,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "high": {
+    "pair_id": "S2-r2",
+    "scenario_id": "S2",
+    "arm": "HIGH",
+    "order_position": "Y",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the status note, formatted as we normally do.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:404fa86028453c8fd5b82bbb09282140d665c2e0be78d425228d754226fc6e7e",
+    "cognition_request_hash": "sha256:51da0c762f511e5c27e6785d450ace346d8b6edf7b71799c4033694f8eeea7d5",
+    "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+    "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+    "retrieval_attempts": 1,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "evaluation": {
+    "x_class": "COUNTERPART_CONTEXT_USED",
+    "y_class": "BASIC_CONTEXT_USED",
+    "more_counterpart_context_use": "X",
+    "rationale": "Response X explicitly references 'our usual way', directly applying the established counterpart convention. Response Y uses 'normally do' which is generic phrasing without explicitly invoking the specific shared convention style.",
+    "raw_valid": true
+  },
+  "direction": "REVERSE"
+}

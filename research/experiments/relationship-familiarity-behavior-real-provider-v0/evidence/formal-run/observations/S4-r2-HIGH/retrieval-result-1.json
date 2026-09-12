@@ -1,0 +1,13 @@
+{
+  "schema_version": "memory-retrieval-result-v0",
+  "subject_id": "subject-familiarity-behavior-v0",
+  "selected_memory_refs": [],
+  "evidence": [],
+  "retrieval_trace_ref": null,
+  "deterministic_metadata": {
+    "repository_revision": "R0",
+    "candidate_count": 0,
+    "computed_under_config": "MEMORY_RETRIEVAL_V0",
+    "query_fingerprint": "sha256:4afbb6b978535c53b942598be064e9cdbe4c3e1c962c0e43281bae90d2f72f8e"
+  }
+}

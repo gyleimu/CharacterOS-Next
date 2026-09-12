@@ -1,0 +1,12 @@
+{
+  "schema_version": "character-language-behavior-v0",
+  "behavior_id": "sha256:c89e725ca65ce243c98e24fdb179d4d2af65ee00a37f6f5b6d583dfd25ab6ef5",
+  "subject_id": "subject-familiarity-behavior-v0",
+  "source_revision": 1,
+  "response_request_id": "response-request-S4-r2-LOW",
+  "input_hash": "sha256:56707e47693a478533ecfa2f75246c38743532d45716a10d550af18dbd243a7e",
+  "text": "Here is the summary reworked in our standard style.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

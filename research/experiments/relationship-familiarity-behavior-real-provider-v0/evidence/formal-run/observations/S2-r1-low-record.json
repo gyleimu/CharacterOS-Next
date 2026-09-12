@@ -1,0 +1,24 @@
+{
+  "pair_id": "S2-r1",
+  "scenario_id": "S2",
+  "arm": "LOW",
+  "order_position": "Y",
+  "validity": "VALID_BEHAVIOR",
+  "behavior_text": "Here is the status note, formatted as you prefer.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:da554c61ce3fc3330b8069fbec062943a4ef7da82feeb8680421a9dabb66beea",
+  "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+  "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+  "influence_strategy": "BASIC_CONTEXT_FIRST",
+  "retrieval_attempts": 0,
+  "cognition_calls": 1,
+  "language_calls": 1,
+  "deterministic": {
+    "asks_clarification": false,
+    "cites_shared_context": true,
+    "possible_unsupported_shared_context": false
+  },
+  "error": null
+}

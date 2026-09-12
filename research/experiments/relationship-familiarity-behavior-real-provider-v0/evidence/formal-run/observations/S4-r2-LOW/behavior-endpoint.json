@@ -1,0 +1,8 @@
+{
+  "text": "Here is the summary reworked in our standard style.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:c89e725ca65ce243c98e24fdb179d4d2af65ee00a37f6f5b6d583dfd25ab6ef5",
+  "input_hash": "sha256:56707e47693a478533ecfa2f75246c38743532d45716a10d550af18dbd243a7e"
+}

@@ -1,0 +1,61 @@
+{
+  "pair_id": "S2-r1",
+  "scenario_id": "S2",
+  "order": "HIGH_FIRST",
+  "low": {
+    "pair_id": "S2-r1",
+    "scenario_id": "S2",
+    "arm": "LOW",
+    "order_position": "Y",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the status note, formatted as you prefer.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:da554c61ce3fc3330b8069fbec062943a4ef7da82feeb8680421a9dabb66beea",
+    "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+    "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+    "influence_strategy": "BASIC_CONTEXT_FIRST",
+    "retrieval_attempts": 0,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "high": {
+    "pair_id": "S2-r1",
+    "scenario_id": "S2",
+    "arm": "HIGH",
+    "order_position": "X",
+    "validity": "VALID_BEHAVIOR",
+    "behavior_text": "Here is the status note, formatted as we normally do.",
+    "evidence_refs": [
+      "episode:alice-08"
+    ],
+    "behavior_id": "sha256:c712153248df145252f8ec54128e5c93c59f225ab15457d1666dd630f526fa6d",
+    "cognition_request_hash": "sha256:51da0c762f511e5c27e6785d450ace346d8b6edf7b71799c4033694f8eeea7d5",
+    "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+    "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+    "retrieval_attempts": 1,
+    "cognition_calls": 1,
+    "language_calls": 1,
+    "deterministic": {
+      "asks_clarification": false,
+      "cites_shared_context": true,
+      "possible_unsupported_shared_context": false
+    },
+    "error": null
+  },
+  "evaluation": {
+    "x_class": "COUNTERPART_CONTEXT_USED",
+    "y_class": "BASIC_CONTEXT_USED",
+    "more_counterpart_context_use": "X",
+    "rationale": "Response X explicitly applies the established concise/factual convention ('formatted as we normally do'), whereas Response Y ignores it and defers to a generic 'you prefer'.",
+    "raw_valid": true
+  },
+  "direction": "CONSISTENT"
+}

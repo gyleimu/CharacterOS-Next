@@ -1,0 +1,17 @@
+{
+  "schema_version": "cognition-proposal-v0",
+  "projection_hash": "sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+  "reasoning_summary": "Alice requested an update. The subject's familiarity strategy is BASIC_CONTEXT_FIRST, meaning no specific counterpart memory lookup is prioritized over general clarification. No new observations or evidence were provided to trigger a specific action other than acknowledging the request. Therefore, the cognition result is a null intent with low confidence due to lack of actionable data.",
+  "relevant_memory_refs": [],
+  "considered_context_refs": [
+    "entity:alice",
+    "episode:alice-08"
+  ],
+  "current_intent": null,
+  "confidence": 0.3,
+  "uncertainty": 0.7,
+  "action_intent": null,
+  "evidence_refs": [
+    "entity:alice"
+  ]
+}

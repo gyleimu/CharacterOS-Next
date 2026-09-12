@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"familiarity-behavior-evaluation-v0\",\n  \"x_class\": \"COUNTERPART_CONTEXT_USED\",\n  \"y_class\": \"BASIC_CONTEXT_USED\",\n  \"more_counterpart_context_use\": \"X\",\n  \"rationale\": \"Response X adheres strictly to the established 'concise, factual' convention by omitting conversational fillers like 'Sure'. Response Y includes 'Sure', which violates the specific constraint of avoiding unnecessary pleasantries.\"\n}",
+  "model": "qwen3.5:9b"
+}

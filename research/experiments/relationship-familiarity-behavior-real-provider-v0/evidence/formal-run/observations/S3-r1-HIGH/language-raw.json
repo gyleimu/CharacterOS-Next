@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:7c3ef2386174629aaad751da81d2ad343c94acf8f31ed498090c1c894caa37b0\",\n  \"text\": \"Here is the update.\",\n  \"evidence_refs\": [\n    \"episode:alice-08\"\n  ]\n}",
+  "model": "qwen3.5:9b"
+}

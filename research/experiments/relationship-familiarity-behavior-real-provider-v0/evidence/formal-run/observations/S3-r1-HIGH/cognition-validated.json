@@ -1,0 +1,19 @@
+{
+  "schema_version": "cognition-proposal-v0",
+  "projection_hash": "sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+  "reasoning_summary": "Alice requests an update. The subject's familiarity strategy for Alice is COUNTERPART_CONTEXT_SEARCH_FIRST, directing retrieval of the specific interaction memory 'episode:alice-08'. This ref provides the necessary context to formulate a response consistent with their shared history.",
+  "relevant_memory_refs": [
+    "episode:alice-08"
+  ],
+  "considered_context_refs": [
+    "entity:alice",
+    "episode:alice-08"
+  ],
+  "current_intent": "respond to Alice's request for an update",
+  "confidence": 0.9,
+  "uncertainty": 0.1,
+  "action_intent": null,
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

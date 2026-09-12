@@ -1,0 +1,12 @@
+{
+  "schema_version": "character-language-behavior-v0",
+  "behavior_id": "sha256:10077c2643c4b632d680e0d64d5ff1ee77b922fb953633e7b7c12329a484b0c0",
+  "subject_id": "subject-familiarity-behavior-v0",
+  "source_revision": 1,
+  "response_request_id": "response-request-S1-r1-HIGH",
+  "input_hash": "sha256:c2513602c78f66a8978b368811c79e600f4160920921a96b5e492d552576530c",
+  "text": "Sure. Here is the revised update.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

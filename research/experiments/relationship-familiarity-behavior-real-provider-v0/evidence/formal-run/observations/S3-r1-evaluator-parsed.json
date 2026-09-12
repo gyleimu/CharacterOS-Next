@@ -1,0 +1,7 @@
+{
+  "x_class": "COUNTERPART_CONTEXT_USED",
+  "y_class": "BASIC_CONTEXT_USED",
+  "more_counterpart_context_use": "X",
+  "rationale": "Response X directly adopts the established 'concise, factual' convention implied by 'as usual', whereas Response Y uses a generic polite phrase ('Here is the update') that does not reflect the specific counterpart style.",
+  "raw_valid": true
+}

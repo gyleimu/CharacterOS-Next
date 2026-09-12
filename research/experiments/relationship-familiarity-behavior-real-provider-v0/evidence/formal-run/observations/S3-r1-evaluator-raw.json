@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"familiarity-behavior-evaluation-v0\",\n  \"x_class\": \"COUNTERPART_CONTEXT_USED\",\n  \"y_class\": \"BASIC_CONTEXT_USED\",\n  \"more_counterpart_context_use\": \"X\",\n  \"rationale\": \"Response X directly adopts the established 'concise, factual' convention implied by 'as usual', whereas Response Y uses a generic polite phrase ('Here is the update') that does not reflect the specific counterpart style.\"\n}",
+  "model": "qwen3.5:9b"
+}

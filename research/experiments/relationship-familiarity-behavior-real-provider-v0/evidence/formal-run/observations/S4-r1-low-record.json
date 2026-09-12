@@ -1,0 +1,24 @@
+{
+  "pair_id": "S4-r1",
+  "scenario_id": "S4",
+  "arm": "LOW",
+  "order_position": "Y",
+  "validity": "VALID_BEHAVIOR",
+  "behavior_text": "Here is the summary reworked in our standard style.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:41fab8e747e21bd9b2a754795ad8dda8564a5c67512d842a5e51c91af0772426",
+  "cognition_request_hash": "sha256:a7c7b0e4287681ecbbed2183a4f706fdb71574d8104913d8d388c859917a1935",
+  "projection_hash": "sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5",
+  "influence_strategy": "BASIC_CONTEXT_FIRST",
+  "retrieval_attempts": 0,
+  "cognition_calls": 1,
+  "language_calls": 1,
+  "deterministic": {
+    "asks_clarification": false,
+    "cites_shared_context": true,
+    "possible_unsupported_shared_context": false
+  },
+  "error": null
+}

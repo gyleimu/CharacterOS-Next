@@ -1,0 +1,6 @@
+{
+  "name": "LlmCognitionRejectionErrorV0",
+  "code": "MODEL_ACTION_NOT_ALLOWED",
+  "message": "LLM_COGNITION_MODEL_ACTION_NOT_ALLOWED: model proposed action \"NO_ACTION\" outside the allowed action space",
+  "http_status": null
+}

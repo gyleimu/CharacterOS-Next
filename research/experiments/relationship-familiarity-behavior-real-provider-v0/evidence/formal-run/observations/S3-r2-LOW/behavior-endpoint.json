@@ -1,0 +1,8 @@
+{
+  "text": "Update it as usual.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:47e8f2014d6b9a8e5f27e5fc90cc65149fa5106d47e26a6c1cf723e0e9fa6db2",
+  "input_hash": "sha256:a354fa34918730810162946a110682eaf9a82aa49ae69b37d6ee5ffde680d1eb"
+}

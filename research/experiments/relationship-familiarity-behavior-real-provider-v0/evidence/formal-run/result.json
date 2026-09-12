@@ -1,0 +1,491 @@
+{
+  "schema_version": "relationship-familiarity-behavior-result-v0",
+  "experiment": "RELATIONSHIP_FAMILIARITY_BEHAVIORAL_DIFFERENTIATION_REAL_PROVIDER_V0",
+  "manifest_hash": "sha256:887c4f2f1c29d4259fabdaf2b719ec9909c58e7e501b26849eab9737b5b11fca",
+  "complete": false,
+  "counts": {
+    "cognition": 16,
+    "language": 14,
+    "evaluator": 6,
+    "failed_calls": 0,
+    "skipped_dependent_calls": 0,
+    "retries": 0
+  },
+  "pairs": [
+    {
+      "pair_id": "S1-r1",
+      "scenario_id": "S1",
+      "order": "LOW_FIRST",
+      "low": {
+        "pair_id": "S1-r1",
+        "scenario_id": "S1",
+        "arm": "LOW",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the revised update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:4ef991a4b9a0afd9a3d309096a0c2d6d4e9b4cf5b4e3166eee64b3978354c912",
+        "cognition_request_hash": "sha256:7af3f47d161c2d33b1ad1a50077c3042b69c4e8ba195f37b7c41d9d7417d2a6b",
+        "projection_hash": "sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S1-r1",
+        "scenario_id": "S1",
+        "arm": "HIGH",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Sure. Here is the revised update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:10077c2643c4b632d680e0d64d5ff1ee77b922fb953633e7b7c12329a484b0c0",
+        "cognition_request_hash": "sha256:136158188191ebc3c9c31a02b8c031bc51c131c2039818a91651a48be6955b0e",
+        "projection_hash": "sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X adheres strictly to the established 'concise, factual' convention by omitting conversational fillers like 'Sure'. Response Y includes 'Sure', which violates the specific constraint of avoiding unnecessary pleasantries.",
+        "raw_valid": true
+      },
+      "direction": "REVERSE"
+    },
+    {
+      "pair_id": "S1-r2",
+      "scenario_id": "S1",
+      "order": "HIGH_FIRST",
+      "low": {
+        "pair_id": "S1-r2",
+        "scenario_id": "S1",
+        "arm": "LOW",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the revised update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:57b4ec4c43ccf45ca467520b3f10f8ff0757630b10def2d9783ee7cbad983e0f",
+        "cognition_request_hash": "sha256:7af3f47d161c2d33b1ad1a50077c3042b69c4e8ba195f37b7c41d9d7417d2a6b",
+        "projection_hash": "sha256:ccfc411993e47768a493fb8eb660340a9a1b501c61853ad335d14be1505252eb",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S1-r2",
+        "scenario_id": "S1",
+        "arm": "HIGH",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Sure. Here is the revised update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:7497b86322c05585ec45a947e9d3ae17d6033e6e586a65a5b98cdb25f4b7d391",
+        "cognition_request_hash": "sha256:136158188191ebc3c9c31a02b8c031bc51c131c2039818a91651a48be6955b0e",
+        "projection_hash": "sha256:179108929cc855c4694fc2713345b20f738bbd5faf8d32d7a86125eb98e123bf",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X includes 'Sure', which acknowledges the request with a conversational filler, whereas Response Y is purely factual. However, in the context of the defined rubric where COUNTERPART_CONTEXT_USED implies applying the established convention (concise, factual), Response Y is actually the stronger candidate for strictly adhering to the 'no unnecessary apology' and pure factuality if we consider 'Sure' as conversational fluff. But wait, let's re-evaluate based on standard interpretations of these specific classes in this dataset style. Usually, 'COUNTERPART_CONTEXT_USED' means the model explicitly adopts the persona/convention (e.g., being concise/factual). Both are concise. The difference is 'Sure'. Is 'Sure' a violation? No. Is it a failure to use the context? No. Let's look at the definitions again. COUNTERPART: applies established convention. BASIC: proceeds from generic request without claiming/applying counterpart-specific convention. If the convention is 'concise, factual', both are concise and factual. The only difference is the politeness marker 'Sure'. In many of these specific evaluation tasks, adding a conversational filler like 'Sure' or 'Of course' is often categorized as BASIC_CONTEXT_USED (standard polite assistant behavior) rather than COUNTERPART_CONTEXT_USED (which might require omitting such fillers to strictly adhere to a 'no fluff' convention). However, the prompt says Response X applies the convention. Let's look closer. If the convention is 'concise, factual', 'Sure' adds conversational tone. Response Y is *more* concise. But does 'Sure' make it BASIC? Yes, because it defaults to standard polite interaction. Response Y is also basic but perhaps more aligned with the 'no unnecessary apology/fluff' if that's the strict interpretation. Wait, the instruction says: 'COUNTERPART_CONTEXT_USED: the response applies the already-supplied counterpart convention...'. If the convention is 'concise', both are concise. If the convention implies a specific tone (e.g., robotic or strictly factual), 'Sure' might violate it. But usually, in these few-shot style evaluations, the presence of a conversational opener ('Sure') marks it as BASIC_CONTEXT_USED (standard assistant), while the absence of such markers and strict adherence to the constraint marks it as COUNTERPART_CONTEXT_USED. Therefore, Y is likely COUNTERPART and X is BASIC? Let's re-read the definitions carefully. 'BASIC_CONTEXT_USED: proceeds from the currently supplied generic request/context without claiming or applying a counterpart-specific convention.' If the user asks for a specific style, responding with standard politeness ('Sure') means you are NOT applying that specific style fully (you are using generic polite style). Responding without 'Sure' applies the specific style. So Y = COUNTERPART, X = BASIC? Let's check the 'more_counterpart_context_use' field. If Y is COUNTERPART and X is BASIC, then Y has more. But wait, looking at similar examples from this specific rubric type (often derived from datasets like 'contextual-adaptation'), usually, the response that strictly follows the constraint (no fluff) is labeled COUNTERPART. The one with standard politeness is BASIC. So X (with 'Sure') = BASIC. Y (without 'Sure') = COUNTERPART. Thus Y has more counterpart context use. Let's verify this logic. If I ask for a 'formal' response, and you say 'Hello, here is the text', that's formal. If you say 'Hey, here is the text', that's basic. Here, the convention is 'concise, factual, no unnecessary apology'. 'Sure' can be seen as an unnecessary conversational filler (apology/fluff equivalent). So X violates the strictness slightly or just defaults to generic. Y adheres strictly. Therefore Y is COUNTERPART. X is BASIC. More use: Y.",
+        "raw_valid": true
+      },
+      "direction": "CONSISTENT"
+    },
+    {
+      "pair_id": "S2-r1",
+      "scenario_id": "S2",
+      "order": "HIGH_FIRST",
+      "low": {
+        "pair_id": "S2-r1",
+        "scenario_id": "S2",
+        "arm": "LOW",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the status note, formatted as you prefer.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:da554c61ce3fc3330b8069fbec062943a4ef7da82feeb8680421a9dabb66beea",
+        "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+        "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S2-r1",
+        "scenario_id": "S2",
+        "arm": "HIGH",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the status note, formatted as we normally do.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:c712153248df145252f8ec54128e5c93c59f225ab15457d1666dd630f526fa6d",
+        "cognition_request_hash": "sha256:51da0c762f511e5c27e6785d450ace346d8b6edf7b71799c4033694f8eeea7d5",
+        "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X explicitly applies the established concise/factual convention ('formatted as we normally do'), whereas Response Y ignores it and defers to a generic 'you prefer'.",
+        "raw_valid": true
+      },
+      "direction": "CONSISTENT"
+    },
+    {
+      "pair_id": "S2-r2",
+      "scenario_id": "S2",
+      "order": "LOW_FIRST",
+      "low": {
+        "pair_id": "S2-r2",
+        "scenario_id": "S2",
+        "arm": "LOW",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the status note, done in our usual way.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:60d12b930e1684fcba0a413a4de89815dbb8407b51d2bd469a2e7b984535e6d9",
+        "cognition_request_hash": "sha256:263ea06a483189f7fadde67993c4e0da1b2b0a36867ad10bc6ddd81ddc9b17a6",
+        "projection_hash": "sha256:d56ca1eb5630a8161a209f7291d184dde30f4cad254d6cd03eb4f1773842a93d",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S2-r2",
+        "scenario_id": "S2",
+        "arm": "HIGH",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the status note, formatted as we normally do.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:404fa86028453c8fd5b82bbb09282140d665c2e0be78d425228d754226fc6e7e",
+        "cognition_request_hash": "sha256:51da0c762f511e5c27e6785d450ace346d8b6edf7b71799c4033694f8eeea7d5",
+        "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X explicitly references 'our usual way', directly applying the established counterpart convention. Response Y uses 'normally do' which is generic phrasing without explicitly invoking the specific shared convention style.",
+        "raw_valid": true
+      },
+      "direction": "REVERSE"
+    },
+    {
+      "pair_id": "S3-r1",
+      "scenario_id": "S3",
+      "order": "LOW_FIRST",
+      "low": {
+        "pair_id": "S3-r1",
+        "scenario_id": "S3",
+        "arm": "LOW",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Update it as usual.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:63f79a9c9600ef4e21f505f4016aa8853cd848368251c70e732ed8dc2bc8dd04",
+        "cognition_request_hash": "sha256:a332b58f403dd4f920ffa987fc2803789e11e0c43defca0e0146c2335527a0ef",
+        "projection_hash": "sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S3-r1",
+        "scenario_id": "S3",
+        "arm": "HIGH",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:56e666042ab06bb28f20f2953582ee74a8381640ae68100f5ac7320b3924d8b0",
+        "cognition_request_hash": "sha256:d729bac92f384a776c092a0ef94d55b82e3d9740343d9e10038dbca65dbd69a0",
+        "projection_hash": "sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X directly adopts the established 'concise, factual' convention implied by 'as usual', whereas Response Y uses a generic polite phrase ('Here is the update') that does not reflect the specific counterpart style.",
+        "raw_valid": true
+      },
+      "direction": "REVERSE"
+    },
+    {
+      "pair_id": "S3-r2",
+      "scenario_id": "S3",
+      "order": "HIGH_FIRST",
+      "low": {
+        "pair_id": "S3-r2",
+        "scenario_id": "S3",
+        "arm": "LOW",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Update it as usual.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:47e8f2014d6b9a8e5f27e5fc90cc65149fa5106d47e26a6c1cf723e0e9fa6db2",
+        "cognition_request_hash": "sha256:a332b58f403dd4f920ffa987fc2803789e11e0c43defca0e0146c2335527a0ef",
+        "projection_hash": "sha256:1582adabfc93c693418a554031a290dd5f371653614436acdf6bf95b8bfc81a9",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S3-r2",
+        "scenario_id": "S3",
+        "arm": "HIGH",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the update.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:12d2697b6396b87d65935726a96cd0fc228cb7f200905ea4a039717138509e40",
+        "cognition_request_hash": "sha256:d729bac92f384a776c092a0ef94d55b82e3d9740343d9e10038dbca65dbd69a0",
+        "projection_hash": "sha256:b95ada4c0efde93a8cc7927b5f9cd17fcb59da68e8ef517db1942d673231f8f4",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "evaluation": {
+        "x_class": "COUNTERPART_CONTEXT_USED",
+        "y_class": "BASIC_CONTEXT_USED",
+        "more_counterpart_context_use": "X",
+        "rationale": "Response X adheres to the established concise, factual convention by providing only the update without meta-commentary. Response Y merely repeats Alice's input verbatim rather than applying the specific behavioral convention (concise/factual/no apology) as a distinct action.",
+        "raw_valid": true
+      },
+      "direction": "CONSISTENT"
+    },
+    {
+      "pair_id": "S4-r1",
+      "scenario_id": "S4",
+      "order": "HIGH_FIRST",
+      "low": {
+        "pair_id": "S4-r1",
+        "scenario_id": "S4",
+        "arm": "LOW",
+        "order_position": "Y",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the summary reworked in our standard style.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:41fab8e747e21bd9b2a754795ad8dda8564a5c67512d842a5e51c91af0772426",
+        "cognition_request_hash": "sha256:a7c7b0e4287681ecbbed2183a4f706fdb71574d8104913d8d388c859917a1935",
+        "projection_hash": "sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S4-r1",
+        "scenario_id": "S4",
+        "arm": "HIGH",
+        "order_position": "X",
+        "validity": "COGNITION_SCHEMA_FAILURE",
+        "behavior_text": null,
+        "evidence_refs": [],
+        "behavior_id": null,
+        "cognition_request_hash": "sha256:7b79ba16150b62a589236780245035e6bf0007911774a6a890a80b68df33778e",
+        "projection_hash": "sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 0,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": false,
+          "possible_unsupported_shared_context": false
+        },
+        "error": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+      },
+      "evaluation": null,
+      "direction": "INVALID"
+    },
+    {
+      "pair_id": "S4-r2",
+      "scenario_id": "S4",
+      "order": "LOW_FIRST",
+      "low": {
+        "pair_id": "S4-r2",
+        "scenario_id": "S4",
+        "arm": "LOW",
+        "order_position": "X",
+        "validity": "VALID_BEHAVIOR",
+        "behavior_text": "Here is the summary reworked in our standard style.",
+        "evidence_refs": [
+          "episode:alice-08"
+        ],
+        "behavior_id": "sha256:c89e725ca65ce243c98e24fdb179d4d2af65ee00a37f6f5b6d583dfd25ab6ef5",
+        "cognition_request_hash": "sha256:a7c7b0e4287681ecbbed2183a4f706fdb71574d8104913d8d388c859917a1935",
+        "projection_hash": "sha256:82ae3a2c4fcc500d17a378052f4491342e82528b13a183e4beca8265c4bd9cd5",
+        "influence_strategy": "BASIC_CONTEXT_FIRST",
+        "retrieval_attempts": 0,
+        "cognition_calls": 1,
+        "language_calls": 1,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": true,
+          "possible_unsupported_shared_context": false
+        },
+        "error": null
+      },
+      "high": {
+        "pair_id": "S4-r2",
+        "scenario_id": "S4",
+        "arm": "HIGH",
+        "order_position": "Y",
+        "validity": "COGNITION_SCHEMA_FAILURE",
+        "behavior_text": null,
+        "evidence_refs": [],
+        "behavior_id": null,
+        "cognition_request_hash": "sha256:7b79ba16150b62a589236780245035e6bf0007911774a6a890a80b68df33778e",
+        "projection_hash": "sha256:9a40a345bbb7613263b10f924f6c1950331814a2ca538dc7386efd36993fc706",
+        "influence_strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "retrieval_attempts": 1,
+        "cognition_calls": 1,
+        "language_calls": 0,
+        "deterministic": {
+          "asks_clarification": false,
+          "cites_shared_context": false,
+          "possible_unsupported_shared_context": false
+        },
+        "error": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+      },
+      "evaluation": null,
+      "direction": "INVALID"
+    }
+  ],
+  "familiarity_consistent_pairs": 3,
+  "reverse_pairs": 3,
+  "final_verdict": "RELATIONSHIP_FAMILIARITY_REAL_PROVIDER_BEHAVIOR_INCOMPLETE"
+}

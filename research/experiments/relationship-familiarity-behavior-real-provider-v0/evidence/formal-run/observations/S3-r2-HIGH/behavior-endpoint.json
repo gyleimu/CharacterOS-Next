@@ -1,0 +1,8 @@
+{
+  "text": "Here is the update.",
+  "evidence_refs": [
+    "episode:alice-08"
+  ],
+  "behavior_id": "sha256:12d2697b6396b87d65935726a96cd0fc228cb7f200905ea4a039717138509e40",
+  "input_hash": "sha256:f015ca3933e83b07fe3e3acdfe018e77772704d6b2a6a52eba82832699c4b725"
+}

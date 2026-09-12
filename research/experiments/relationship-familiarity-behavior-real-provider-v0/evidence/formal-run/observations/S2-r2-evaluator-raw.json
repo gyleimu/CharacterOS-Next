@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"familiarity-behavior-evaluation-v0\",\n  \"x_class\": \"COUNTERPART_CONTEXT_USED\",\n  \"y_class\": \"BASIC_CONTEXT_USED\",\n  \"more_counterpart_context_use\": \"X\",\n  \"rationale\": \"Response X explicitly references 'our usual way', directly applying the established counterpart convention. Response Y uses 'normally do' which is generic phrasing without explicitly invoking the specific shared convention style.\"\n}",
+  "model": "qwen3.5:9b"
+}

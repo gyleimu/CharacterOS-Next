@@ -1,0 +1,19 @@
+{
+  "schema_version": "cognition-proposal-v0",
+  "projection_hash": "sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b",
+  "reasoning_summary": "Alice requests a redo of the status note using 'normal' procedures. Per the COUNTERPART_CONTEXT_SEARCH_FIRST strategy for entity:alice, I retrieve episode:alice-08 to identify the standard format. The evidence supports executing the task as defined in that episode.",
+  "relevant_memory_refs": [
+    "episode:alice-08"
+  ],
+  "considered_context_refs": [
+    "entity:alice",
+    "episode:alice-08"
+  ],
+  "current_intent": "retrieve_standard_status_note_format_from_episode_alice_08",
+  "confidence": 0.95,
+  "uncertainty": 0.05,
+  "action_intent": null,
+  "evidence_refs": [
+    "episode:alice-08"
+  ]
+}

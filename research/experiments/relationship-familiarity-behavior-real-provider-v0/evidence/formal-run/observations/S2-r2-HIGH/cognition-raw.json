@@ -1,0 +1,4 @@
+{
+  "content": "{\n  \"schema_version\": \"cognition-proposal-v0\",\n  \"projection_hash\": \"sha256:717ba03d7e9fcfe30452ac62a10683e5deaa1a067c57e324db4c27ab37cd4d0b\",\n  \"reasoning_summary\": \"Alice requests a redo of the status note using 'normal' procedures. Per the COUNTERPART_CONTEXT_SEARCH_FIRST strategy for entity:alice, I retrieve episode:alice-08 to identify the standard format. The evidence supports executing the task as defined in that episode.\",\n  \"relevant_memory_refs\": [\n    \"episode:alice-08\"\n  ],\n  \"considered_context_refs\": [\n    \"entity:alice\",\n    \"episode:alice-08\"\n  ],\n  \"current_intent\": \"retrieve_standard_status_note_format_from_episode_alice_08\",\n  \"confidence\": 0.95,\n  \"uncertainty\": 0.05,\n  \"action_intent\": null,\n  \"evidence_refs\": [\n    \"episode:alice-08\"\n  ]\n}",
+  "model": "qwen3.5:9b"
+}

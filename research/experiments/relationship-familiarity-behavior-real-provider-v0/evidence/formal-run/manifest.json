@@ -1,0 +1,144 @@
+{
+  "experiment": "RELATIONSHIP_FAMILIARITY_BEHAVIORAL_DIFFERENTIATION_REAL_PROVIDER_V0",
+  "manifest_hash": "sha256:887c4f2f1c29d4259fabdaf2b719ec9909c58e7e501b26849eab9737b5b11fca",
+  "scenarios": [
+    {
+      "scenario_id": "S1",
+      "current_event": "Alice says: \"Can you help me revise that update in the usual way?\"",
+      "task": "respond to Alice's request",
+      "shared_evidence": "Alice's established status-update convention (concise, factual, no unnecessary apology)",
+      "decision_axis": "whether the response applies the already-supplied counterpart convention or asks broadly what 'the usual way' means",
+      "forbidden_interpretations": [
+        "trust",
+        "liking",
+        "affection",
+        "warmth",
+        "obedience"
+      ]
+    },
+    {
+      "scenario_id": "S2",
+      "current_event": "Alice says: \"Please redo the status note the way we normally do.\"",
+      "task": "respond to Alice's request",
+      "shared_evidence": "Alice's established status-update convention (concise, factual, no unnecessary apology)",
+      "decision_axis": "whether the response applies the already-supplied counterpart convention or asks broadly what 'normally' means",
+      "forbidden_interpretations": [
+        "trust",
+        "liking",
+        "affection",
+        "warmth",
+        "obedience"
+      ]
+    },
+    {
+      "scenario_id": "S3",
+      "current_event": "Alice says: \"Update it as usual.\"",
+      "task": "respond to Alice's request",
+      "shared_evidence": "Alice's established status-update convention (concise, factual, no unnecessary apology)",
+      "decision_axis": "whether the response applies the already-supplied counterpart convention or asks broadly what 'as usual' means",
+      "forbidden_interpretations": [
+        "trust",
+        "liking",
+        "affection",
+        "warmth",
+        "obedience"
+      ]
+    },
+    {
+      "scenario_id": "S4",
+      "current_event": "Alice says: \"Rework that summary in our standard style.\"",
+      "task": "respond to Alice's request",
+      "shared_evidence": "Alice's established status-update convention (concise, factual, no unnecessary apology)",
+      "decision_axis": "whether the response applies the already-supplied counterpart convention or asks broadly what 'standard style' means",
+      "forbidden_interpretations": [
+        "trust",
+        "liking",
+        "affection",
+        "warmth",
+        "obedience"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "pair_id": "S1-r1",
+      "scenario_id": "S1",
+      "repetition": 1,
+      "order": "LOW_FIRST"
+    },
+    {
+      "pair_id": "S1-r2",
+      "scenario_id": "S1",
+      "repetition": 2,
+      "order": "HIGH_FIRST"
+    },
+    {
+      "pair_id": "S2-r1",
+      "scenario_id": "S2",
+      "repetition": 1,
+      "order": "HIGH_FIRST"
+    },
+    {
+      "pair_id": "S2-r2",
+      "scenario_id": "S2",
+      "repetition": 2,
+      "order": "LOW_FIRST"
+    },
+    {
+      "pair_id": "S3-r1",
+      "scenario_id": "S3",
+      "repetition": 1,
+      "order": "LOW_FIRST"
+    },
+    {
+      "pair_id": "S3-r2",
+      "scenario_id": "S3",
+      "repetition": 2,
+      "order": "HIGH_FIRST"
+    },
+    {
+      "pair_id": "S4-r1",
+      "scenario_id": "S4",
+      "repetition": 1,
+      "order": "HIGH_FIRST"
+    },
+    {
+      "pair_id": "S4-r2",
+      "scenario_id": "S4",
+      "repetition": 2,
+      "order": "LOW_FIRST"
+    }
+  ],
+  "low": {
+    "label": "LOW",
+    "credits": 1,
+    "value": 0.03125,
+    "strategy": "BASIC_CONTEXT_FIRST"
+  },
+  "high": {
+    "label": "HIGH",
+    "credits": 2,
+    "value": 0.0625,
+    "strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST"
+  },
+  "model": {
+    "provider": "ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 120000,
+    "seed": null
+  },
+  "settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 120000,
+    "seed": null
+  }
+}
