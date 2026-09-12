@@ -170,6 +170,7 @@ describe("SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — product environment cont
     // it appears in the durable checkpoint's canonical identity AND the persisted
     // store image carries its immutable payload.
     const checkpoint = host.lastCheckpoint();
+    if (checkpoint === null) throw new Error("expected a persisted environment checkpoint");
     expect(checkpoint.durable.identity.episode_refs).toContain(first.episode_ref as string);
     const loaded = await store.load();
     if (loaded.kind !== "DOCUMENT") throw new Error("expected a persisted checkpoint document");
@@ -226,6 +227,7 @@ describe("SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — product environment cont
     expect(later).not.toContain("[environment memory]");
     // At least one cited episode is one of the earlier environment experiences.
     const checkpoint = host.lastCheckpoint();
+    if (checkpoint === null) throw new Error("expected a persisted environment checkpoint");
     const earlier = checkpoint.durable.identity.episode_refs.filter((ref) => ref !== third.episode_ref);
     expect(earlier.length).toBeGreaterThan(0);
     expect(earlier.some((ref) => later.includes(ref) || third.working_episode_refs.includes(ref))).toBe(true);
@@ -267,7 +269,7 @@ describe("SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — product environment cont
     const recorder = { requests: [] as string[] };
     await expect(
       EnvironmentSubjectHostV0.open(config(), deps(new CorruptEnvironmentCheckpointStoreV0(), recorder))
-    ).rejects.toThrow(/restore failed/i);
+    ).rejects.toThrow(/refusing to restore|unreadable|restore failed/i);
   }, 60000);
 
   it("fails closed when a persisted checkpoint belongs to a different subject identity", async () => {
@@ -280,7 +282,7 @@ describe("SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — product environment cont
     const recorderB = { requests: [] as string[] };
     await expect(
       EnvironmentSubjectHostV0.open(config("subject-b"), deps(store, recorderB))
-    ).rejects.toThrow(/restore failed/i);
+    ).rejects.toThrow(/belongs to subject|restore failed|EXISTING_LINEAGE_CONFLICT/i);
   }, 60000);
 
   it("does not leak environment/ActionIntent into the conversation product (allowed_actions stays [])", async () => {

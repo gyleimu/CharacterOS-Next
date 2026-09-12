@@ -29,6 +29,7 @@ import {
 } from "@characteros-next/runtime";
 import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
+import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
 import { createProductTransportsV0, probeOllamaV0 } from "./product-providers.js";
@@ -102,6 +103,8 @@ async function main(): Promise<number> {
         conversationCognitionTransport: transports.cognition,
         languageTransport: transports.language,
         factualEventAppraisalProvider: appraisal.provider,
+        // ONE authoritative canonical subject source shared with the human host.
+        sharedSourceStore: new FileSharedSubjectSourceStoreV0(dataDir, subjectId),
         provider_identity: {
           model,
           num_predict: numPredict,
@@ -195,6 +198,8 @@ async function main(): Promise<number> {
         appraisalProvider: appraisal.provider,
         beliefSemanticProvider,
         relationshipFamiliarityAdmissionProvider,
+        // ONE authoritative canonical subject source shared with environment mode.
+        sharedSourceStore: new FileSharedSubjectSourceStoreV0(dataDir, config.subject_id),
         provider_identity: {
           model,
           num_predict: numPredict,

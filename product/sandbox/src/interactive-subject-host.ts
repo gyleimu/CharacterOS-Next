@@ -38,6 +38,11 @@ import {
 } from "@characteros-next/personality";
 import type { InteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
 import { FileInteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
+import {
+  persistCanonicalSubjectV0,
+  resolveCanonicalSubjectV0,
+  type SharedSubjectSourceStoreV0
+} from "./cross-context-canonical.js";
 
 export interface InteractiveSubjectHostConfigV0 {
   readonly subject_id: string;
@@ -91,6 +96,13 @@ export interface InteractiveSubjectHostDepsV0 {
   /** Override for tests; defaults to the file-backed store under storage_root. */
   readonly snapshotStore?: InteractiveSnapshotStoreV0;
   /**
+   * SUBJECT_CROSS_CONTEXT_PRODUCT_BRIDGE_V0 — when supplied, canonical subject
+   * state is read from and written to this ONE shared source; the interactive
+   * snapshot becomes a human-context sidecar (turn bookkeeping) whose embedded
+   * canonical copy is no longer authoritative.
+   */
+  readonly sharedSourceStore?: SharedSubjectSourceStoreV0;
+  /**
    * Called after a durable snapshot has been persisted (used by the product
    * layer to mark the subject config durable_state PRESENT). Idempotent.
    */
@@ -110,13 +122,20 @@ export class InteractiveSubjectHostV0 {
   private busy = false;
   private lastFailureDetailValue: string | null = null;
 
+  private baseRevision: number | null = null;
   private constructor(
     private readonly runtime: InteractiveSubjectRuntimeV0,
     private readonly store: InteractiveSnapshotStoreV0,
     private readonly resolutionValue: SubjectResolutionV0,
     private readonly displayNameValue: string,
-    private readonly onSnapshotPersisted: (() => Promise<void>) | undefined
-  ) {}
+    private readonly onSnapshotPersisted: (() => Promise<void>) | undefined,
+    private readonly sharedStore: SharedSubjectSourceStoreV0 | null,
+    private readonly subjectIdValue: string,
+    private readonly clock: () => string,
+    baseRevision: number | null
+  ) {
+    this.baseRevision = baseRevision;
+  }
 
   static async open(
     config: InteractiveSubjectHostConfigV0,
@@ -125,11 +144,33 @@ export class InteractiveSubjectHostV0 {
     const store =
       deps.snapshotStore ?? new FileInteractiveSnapshotStoreV0(config.storage_root, config.subject_id);
     const loaded = await store.load();
+    const sharedStore = deps.sharedSourceStore ?? null;
+    const clock = deps.clock ?? (() => new Date().toISOString());
+    // SUBJECT_CROSS_CONTEXT_PRODUCT_BRIDGE_V0 — ONE authoritative canonical
+    // subject source decides NEW vs RESTORE (shared source, else a single legacy
+    // artifact, else fresh). Two divergent legacy artifacts fail closed.
+    const resolution = await resolveCanonicalSubjectV0({
+      sharedStore,
+      storageRoot: config.storage_root,
+      subjectId: config.subject_id,
+      ownLegacy:
+        loaded.kind === "SNAPSHOT"
+          ? {
+              provenance: "ADOPTED_HUMAN",
+              source_path: store.location() ?? "in-memory-human-snapshot",
+              subject_id: loaded.snapshot.subject_id,
+              head_ref: loaded.snapshot.durable.identity.subject_head.commit_ref,
+              durable: loaded.snapshot.durable,
+              store: loaded.snapshot.store
+            }
+          : null
+    });
+    const isNewSubject = resolution.kind === "CREATE_FRESH";
     // Creation-only authoring: the explicit genesis prior is consulted ONLY when
     // no durable subject exists. A restore never applies (or validates) it, so a
     // later-supplied prior can never rewrite an existing subject's personality.
     const v3Source =
-      loaded.kind === "NONE"
+      isNewSubject
         ? createInteractiveSubjectSeedV0(
             config.subject_id,
             config.display_name,
@@ -177,26 +218,57 @@ export class InteractiveSubjectHostV0 {
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })
     };
-    if (loaded.kind === "NONE") {
+    if (resolution.kind === "CREATE_FRESH") {
       const runtime = await InteractiveSubjectRuntimeV0.create(runtimeOptions);
       return new InteractiveSubjectHostV0(
         runtime,
         store,
         "NEW_SUBJECT_CREATED",
         config.display_name,
-        deps.onSnapshotPersisted
+        deps.onSnapshotPersisted,
+        sharedStore,
+        config.subject_id,
+        clock,
+        null
       );
     }
     // Durable history exists: authoritative restore ONLY. A restore failure
-    // propagates and must never fall back to a fresh subject.
-    const runtime = await InteractiveSubjectRuntimeV0.restore(runtimeOptions, loaded.snapshot);
-    return new InteractiveSubjectHostV0(
+    // propagates and must never fall back to a fresh subject. When a shared
+    // canonical source is configured it decides the subject; the interactive
+    // snapshot supplies only human turn bookkeeping.
+    const canonical = resolution.canonical;
+    const sidecar = loaded.kind === "SNAPSHOT" ? loaded.snapshot : null;
+    const restoreSnapshot: InteractiveSubjectSnapshotV0 = {
+      schema_version: "interactive-subject-snapshot-v0",
+      session_id: config.session_id,
+      subject_id: config.subject_id,
+      subject: {
+        subject_id: config.subject_id,
+        display_name: config.display_name,
+        identity_anchors: [...(config.identity_anchors ?? [])]
+      },
+      next_turn_index: sidecar?.next_turn_index ?? 0,
+      pending_behavior_outcome: sidecar?.pending_behavior_outcome ?? null,
+      durable: canonical.durable,
+      store: canonical.store,
+      saved_at: clock()
+    };
+    const runtime = await InteractiveSubjectRuntimeV0.restore(runtimeOptions, restoreSnapshot);
+    const host = new InteractiveSubjectHostV0(
       runtime,
       store,
       "SUBJECT_RESTORED",
       config.display_name,
-      deps.onSnapshotPersisted
+      deps.onSnapshotPersisted,
+      sharedStore,
+      config.subject_id,
+      clock,
+      canonical.provenance === "SHARED" ? canonical.base_revision : null
     );
+    if (canonical.provenance !== "SHARED" && sharedStore !== null) {
+      await host.adoptIntoShared();
+    }
+    return host;
   }
 
   resolution(): SubjectResolutionV0 {
@@ -256,10 +328,42 @@ export class InteractiveSubjectHostV0 {
 
   async save(): Promise<void> {
     const snapshot = await this.runtime.snapshot();
+    // ONE authoritative canonical subject source first (stale base fails
+    // closed); the interactive snapshot is the human-context sidecar.
+    await this.persistCanonicalFrom(snapshot);
     await this.store.save(snapshot);
     if (this.onSnapshotPersisted !== undefined) {
       await this.onSnapshotPersisted();
     }
+  }
+
+  private async persistCanonicalFrom(snapshot: InteractiveSubjectSnapshotV0): Promise<void> {
+    if (this.sharedStore === null) return;
+    const canonical = await persistCanonicalSubjectV0({
+      sharedStore: this.sharedStore,
+      subjectId: this.subjectIdValue,
+      durable: snapshot.durable,
+      store: snapshot.store,
+      expectedBaseRevision: this.baseRevision,
+      updatedAt: this.clock()
+    });
+    this.baseRevision = canonical.base_revision;
+  }
+
+  /** Publishes an adopted legacy canonical subject into the shared source. */
+  private async adoptIntoShared(): Promise<void> {
+    if (this.sharedStore === null) return;
+    await this.persistCanonicalFrom(await this.runtime.snapshot());
+  }
+
+  /** Shared canonical subject revision this host last read/wrote (null before first persist). */
+  sharedRevision(): number | null {
+    return this.baseRevision;
+  }
+
+  /** True when no mandatory lifecycle work is outstanding. */
+  isQuiescent(): boolean {
+    return !this.busy && this.pendingLifecycleWork() === 0;
   }
 
   async status(): Promise<InteractiveSubjectStatusV0> {
