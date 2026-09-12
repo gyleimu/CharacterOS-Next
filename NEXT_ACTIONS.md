@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `a9ffc20382660e5a1ed70372c547120bb99c8841`（干净 baseline；本次 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0` 是其直接子提交）
+Last verified against commit: `975150b00aa1e254ec34794e5a7c5b3b22480072`（干净 baseline；本次 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,17 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0` — 产品层 turn 进度与本地延迟预期（纯 observability/presentation，无 canonical 变更、无 provider policy 变更）。
+
+- T1–T8 PASS：turn 开始前打印一行 expectation（reply path 阶段数、language 条件性、optional adaptation、基于本进程成功样本的 rough reply estimate）；运行中按 group 编号 `[reply i/N stage]` / `[adaptation i/M stage]`；首次运行无样本时明确 `reply estimate unavailable (no successful local sample yet)`，从不把 configured timeout 当作预计时长；
+- 从第二个 turn 起，runtime 会在本 turn 内 appraise 上一 turn 已交付的 reply（behavior-outcome closing）；该调用被如实编号为 `[prior-reply 1/1 appraisal]`，不会伪装成第二个 reply slot；完成行区分 total wall time 与 provider time，并拆分 reply / prior-reply / adaptation；
+- language 为条件阶段（cognition 返回 CLARIFY 时 0 次调用）：header 明示可能跳过，跳过状态写入 `/diagnostics` 并出现在完成行，不在 live stream 中虚假预告；
+- `/diagnostics` 扩展为 per-stage 状态/延迟 + 进程内 latency samples + last turn timing；personality（未配置）显示 DISABLED 且从不计入 pending/ETA；restart 重置所有样本；
+- provider 顺序、eligibility、timeout、budgets、retry、selection 全部不变；latency 仅显示，不驱动任何语义，也不与 canonical Time 交互；
+- 判定 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
+
+上一个产品里程碑：
 
 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0` — 产品内只读有效配置与首跑引导（无第二配置权威、无 canonical 变更）。
 
@@ -19,7 +30,7 @@ CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁�
 - `/config` 不改变任何设置或 canonical state；`/help` 同时列出 `/config` 与 `/diagnostics` 并交叉引用；README 含 prerequisites、配置表与 troubleshooting；
 - 判定 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
 
-上一个产品里程碑：
+更早的产品里程碑：
 
 `CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0` — 产品层 provider 韧性/诊断（纯 observability，无 canonical 变更）。
 
@@ -46,6 +57,7 @@ environment + cross-context continuity                        FROZEN / GREEN
 CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0               FROZEN / GREEN
 CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0   FROZEN / GREEN
 CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0        FROZEN / GREEN
+CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0    FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -56,7 +68,7 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
 1. provider 不可用时 CLI 在 preflight fail closed（含 model 缺失）；turn 级失败 fail closed 并给出分类与安全摘要；无云 fallback、无自动切换、无自动重试。
-2. 慢机器上单次 turn 需要 appraisal + cognition + language（+ lived-evidence adaptation）多次串行本地调用；已有 stage 进度与延迟，但无总量预算/预计耗时提示。
+2. 单次 turn 仍需 appraisal + cognition + language（+ 第二 turn 起的 prior-reply appraisal + lived-evidence adaptation）多次串行本地调用，实测约 30–55 s；现在已有 group 编号进度与进程内 rough estimate，但本地模型延迟本身不可压缩（无并行、无 fast mode、无 router）。
 3. 品牌-new subject 在第一个 lived event 之前没有 durable canonical state，因此 observe/time/environment 会先拒绝并给出提示。
 4. Personality/Belief/Relationships 仅在对应 adaptation provider 被配置且 lawful 改变后显示；否则 `ABSENT`（不伪造默认值）。
 5. 配置只读：`/config` 能查看 effective 值与来源，但修改 model/endpoint/timeout/data dir 仍需设置环境变量并重启（V0 明确不提供 `/config set`、不提供多 subject 选择）。
@@ -66,15 +78,15 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0`
+`CHARACTEROS_PRODUCT_FIRST_LIVED_MOMENT_USABILITY_V0`
 
-问题边界：单次 turn 需要 appraisal + cognition + language（+ lived-evidence adaptation）多次串行本地调用，目前只有 per-stage 延迟，没有整轮的量级预期与调用计数；让用户在等待前就知道大概会发生几次调用、目前进行到第几步，且不改变任何 canonical semantics、不改变既有调用预算语义、不新增 retry/fallback/router。
+问题边界：品牌-new subject 在第一个 lived event（用户首条消息）之前没有 durable canonical state，因此 `/observe`、`/time`、`/environment` 会先拒绝并只给一行 hint；让首跑用户在产品内明确知道「先建立第一个 lived moment 才能使用这些能力」以及为什么，且不伪造 canonical state、不新增 Experience/Observation 语义、不改变任何拒绝条件。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0`：必须先确认其问题、边界与预算；
+- 自动开始 `CHARACTEROS_PRODUCT_FIRST_LIVED_MOMENT_USABILITY_V0`：必须先确认其问题、边界与预算；
 - 多 subject / multi-agent / shared world / GUI / voice / camera / avatar / tools / autonomous task execution；
 - accounts / cloud sync / provider router / 自动模型切换 / 自动重试编排 / 云 fallback；
 - `/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型、personality/belief/relationship 编辑器；

@@ -191,12 +191,12 @@ describe("CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0", () => {
     const product = await buildResilientProduct(makeTempDir(), "OK");
     await product.session.handleLine("Hello there.");
     const text = output(product.lines);
-    expect(text).toContain("[appraisal] running...");
-    expect(text).toContain("[appraisal] done (100 ms)");
-    expect(text).toContain("[cognition] running...");
-    expect(text).toContain("[cognition] done (100 ms)");
-    expect(text).toContain("[language] running...");
-    expect(text).toContain("[language] done (100 ms)");
+    expect(text).toContain("[reply 1/3 appraisal] running...");
+    expect(text).toContain("[reply 1/3 appraisal] done (100 ms)");
+    expect(text).toContain("[reply 2/3 cognition] running...");
+    expect(text).toContain("[reply 2/3 cognition] done (100 ms)");
+    expect(text).toContain("[reply 3/3 language] running...");
+    expect(text).toContain("[reply 3/3 language] done (100 ms)");
     expect(product.diagnostics.last("COGNITION").status).toBe("OK");
     expect(product.diagnostics.last("COGNITION").latency_ms).toBe(100);
     // Progress output does not include prompts or payloads.
@@ -207,7 +207,7 @@ describe("CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0", () => {
     const product = await buildResilientProduct(makeTempDir(), "UNAVAILABLE");
     await product.session.handleLine("This will fail at cognition.");
     const text = output(product.lines);
-    expect(text).toContain("[cognition] failed");
+    expect(text).toContain("[reply 2/3 cognition] failed");
     expect(text).toContain("Turn failed during: COGNITION");
     expect(text).toContain("PROVIDER_UNAVAILABLE");
     expect(text).toContain("Subject persistence:");

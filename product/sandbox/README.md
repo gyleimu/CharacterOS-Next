@@ -455,3 +455,95 @@ product/transport observability only; they are never persisted in canonical
 subject state and are not part of the subject's life. The configuration view is
 product metadata only: it is not persisted, not canonical, and not a second
 configuration authority.
+
+## Turn progress and latency expectations
+
+A normal talk turn is a bounded sequence of serial local model calls. Before the
+first call the CLI prints one compact expectation line, then one line per stage
+that actually runs, then the reply, then one timing summary:
+
+```text
+Turn: up to 3 reply stages (language skipped when cognition clarifies) + 1 prior-reply stage + optional adaptation | reply estimate ~3.5 s (recent local calls)
+[reply 1/3 appraisal] running... (~1.0 s recent)
+[reply 1/3 appraisal] done (1.0 s)
+[reply 2/3 cognition] running... (~2.0 s recent)
+[reply 2/3 cognition] done (2.0 s)
+[reply 3/3 language] running... (~500 ms recent)
+[reply 3/3 language] done (500 ms)
+[prior-reply 1/1 appraisal] running... (~1.0 s recent)
+[prior-reply 1/1 appraisal] done (1.0 s)
+[adaptation 1/1 relationship_adaptation] running... (~300 ms recent)
+[adaptation 1/1 relationship_adaptation] done (300 ms)
+Mira > Hello!
+Turn completed in 4.8 s (provider time 4.8 s: reply 3.5 s, prior-reply 1.0 s, adaptation 300 ms)
+```
+
+### The stages
+
+- **Reply path** (produced by the frozen runtime, in this order):
+  1. `appraisal` — the pre-cognition canonical Appraisal of your message;
+  2. `cognition` — the cognition proposal and communication directive;
+  3. `language` — the realized reply text. **Conditional**: when cognition
+     returns `CLARIFY_MISSING_CONTEXT` the reply is host-rendered and no language
+     call is made. Because that is only known after cognition, the header says
+     "language skipped when cognition clarifies" and the skip is reported after
+     the turn (in `/diagnostics` and in the completion line) rather than promised
+     live.
+- **Prior-reply stage** (from the second turn on): the runtime also admits and
+  appraises the *previous* turn's delivered reply (the behavior-outcome feedback
+  path). It runs after this turn's reply text is produced and is labeled
+  `[prior-reply …]` so it is never mistaken for a second reply slot.
+- **Adaptation** (after the reply is produced, still inside the turn):
+  `relationship_adaptation` is product-timed; `belief_adaptation` runs on a
+  provider-internal transport the product does not time, so it is reported in
+  `/diagnostics` but not numbered or estimated. `personality_adaptation` is not
+  configured in V0 (`DISABLED`) and is never counted as pending work.
+
+Because the runtime returns the turn only after adaptation completes, the reply
+does not become visible before adaptation. The completion line therefore
+separates **provider time** (sum of observed stage latencies) from **total
+elapsed** (which also includes canonical transitions, Memory and persistence),
+and splits reply / prior-reply / adaptation.
+
+### What the estimate is based on
+
+The `reply estimate` is a **rough** sum of the most recent **successful**
+latency observed for each reply-path stage **in this process only**. There is no
+benchmark, no hardware model, no cross-machine data and no persistent
+performance store.
+
+- On the first turn (or the first turn after a restart) no stage has a local
+  sample yet, so the product says
+  `reply estimate unavailable (no successful local sample yet)`. It never
+  presents the configured timeout as an expected duration — the timeout is only
+  a safety bound, shown in `/diagnostics` as `Configured timeout: …`.
+- If only some stages have samples it says `~X s + N unsampled stage(s)`.
+- The per-stage `(~X s recent)` hint on a running line is that stage's own last
+  successful latency.
+
+Local model latency varies with prompt length, model, machine load and warm-up,
+so the estimate can be wrong in either direction; it is a rough expectation, not
+a promise.
+
+### /diagnostics vs live progress vs /config
+
+- **live progress** answers "what is happening now?" — the expectation line and
+  one line per running/completed stage.
+- **`/diagnostics`** answers "what provider calls happened, and how fast?" — per
+  stage status/latency/failure category, process-local latency samples, and the
+  last turn's total/provider/reply/adaptation timing.
+- **`/config`** answers "what configuration is effective?" — model, endpoint,
+  timeout, data root, and each value's source. Dynamic latency samples are
+  deliberately NOT in `/config`.
+
+### Honest limitations of this view
+
+- The estimate is process-local and approximate; **restarting resets all
+  observed latency history**.
+- There is no hardware benchmarking, no guaranteed completion time, no SLA.
+- Latency is display-only: it never skips stages, changes the model, disables
+  adaptation, alters budgets/prompts or reorders calls, and it never advances
+  canonical Time or becomes canonical state.
+- No parallel provider execution, no retries, no fallback, no router, no
+  fast/economy mode. Provider order, eligibility, timeouts and budgets are
+  unchanged.

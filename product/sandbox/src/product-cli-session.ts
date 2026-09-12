@@ -13,8 +13,10 @@ import type { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import type { ExternalStructuredObservationRequestV0 } from "./external-observation-ingress.js";
 import {
   ProviderDiagnosticsV0,
+  buildProductTurnPlanV0,
   classifyProviderFailureV0,
-  extractFailureStageV0
+  extractFailureStageV0,
+  type ProductTurnPlanInputV0
 } from "./provider-diagnostics.js";
 import {
   formatConfigurationLinesV0,
@@ -35,6 +37,12 @@ export interface ProductCliSessionDepsV0 {
    * product provider diagnostics (/diagnostics) and stage-aware failure UX.
    */
   readonly diagnostics?: ProviderDiagnosticsV0;
+  /**
+   * CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0 — which optional
+   * adaptation stages this product configuration has ENABLED. Display only: it
+   * changes no call eligibility. Omitted ⇒ reply path only.
+   */
+  readonly turnPlan?: ProductTurnPlanInputV0;
   /**
    * CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0 — effective product
    * configuration read view (/config). Read-only product metadata; omitted ⇒
@@ -493,28 +501,71 @@ export class ProductCliSessionV0 {
     });
   }
 
+  /**
+   * Reports post-turn adaptation truthfully into the ONE diagnostics record.
+   * A report never changes the turn's outcome; the frozen runtime decides
+   * fatality. SKIPPED means no model call was lawful (not a failure).
+   */
+  private reportAdaptation(outcome: InteractiveTurnOutcomeV0): void {
+    const diagnostics = this.deps.diagnostics;
+    if (diagnostics === undefined) return;
+    const belief = outcome.belief_adaptation;
+    if (belief !== null) {
+      if (belief.status === "DISABLED") diagnostics.noteReported("BELIEF_ADAPTATION", "DISABLED", belief.status);
+      else if (belief.failure !== null) diagnostics.noteReported("BELIEF_ADAPTATION", "FAILED", `${belief.status} — ${belief.failure}`);
+      else if (belief.status === "COMPLETED") diagnostics.noteReported("BELIEF_ADAPTATION", "OK", belief.status);
+      else diagnostics.noteReported("BELIEF_ADAPTATION", "SKIPPED", belief.status);
+    }
+    const relationship = outcome.relationship_familiarity;
+    if (relationship !== null) {
+      if (relationship.status === "DISABLED") diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "DISABLED", "not configured");
+      else if (relationship.status === "NO_APPLICABLE_EPISODE")
+        diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "SKIPPED", "no applicable counterpart episode");
+      else diagnostics.noteReported("RELATIONSHIP_ADAPTATION", "OK", relationship.status);
+    }
+  }
+
   private async handleUserMessage(text: string): Promise<void> {
     if (this.deps.host.isFailed()) {
       this.deps.write("The runtime is in a failed state and cannot take new messages. Inspection commands still work; use /exit, then relaunch.");
       return;
     }
+    const diagnostics = this.deps.diagnostics;
+    // Expectation is published BEFORE the first provider call; total wall time is
+    // measured across the whole turn, provider time is summed from stage samples.
+    // From turn 2 on, the runtime also closes the previous delivered behavior
+    // (an extra appraisal) inside this turn, so it is planned truthfully.
+    const closingPriorOutcome =
+      diagnostics !== undefined ? (await this.deps.host.status()).pending_behavior_outcome : false;
+    const started = diagnostics?.now() ?? null;
+    diagnostics?.beginTurn(
+      buildProductTurnPlanV0({
+        ...(this.deps.turnPlan ?? {
+          belief_adaptation_enabled: false,
+          relationship_adaptation_enabled: false,
+          personality_adaptation_enabled: false
+        }),
+        closing_prior_outcome: closingPriorOutcome
+      })
+    );
     const outcome = await this.deps.host.send(text);
+    const elapsed = started !== null && diagnostics !== undefined ? diagnostics.now() - started : null;
     this.lastTurnOutcome = outcome;
     this.deps.onTurnComplete?.(outcome);
-    const belief = outcome.belief_adaptation;
-    if (belief !== null && this.deps.diagnostics !== undefined) {
-      this.deps.diagnostics.noteReported(
-        "BELIEF_ADAPTATION",
-        belief.status === "DISABLED" ? "DISABLED" : belief.failure === null ? "OK" : "FAILED",
-        belief.failure === null ? belief.status : `${belief.status} — ${belief.failure}`
-      );
-    }
+    this.reportAdaptation(outcome);
     if (outcome.status !== "COMPLETE") {
+      diagnostics?.endTurn({ status: "FAILED", total_ms: elapsed });
       await this.printTurnFailureSummary(outcome);
       return;
     }
+    // LANGUAGE is conditional and only knowable AFTER cognition: never promised
+    // live, but reported truthfully here when it lawfully made no model call.
+    if (!outcome.language_call_required) {
+      diagnostics?.noteSkipped("LANGUAGE", `no language call (${outcome.language_status})`, false);
+    }
     this.deps.write(`${this.label()} > ${outcome.subject_text}`);
     if (this.deps.debug) this.deps.write(this.debugTurnLine(outcome));
+    diagnostics?.endTurn({ status: "COMPLETE", total_ms: elapsed });
     if (this.deps.host.isFailed()) {
       this.deps.write("Warning: the reply was produced but durable state could not be saved. Relaunch to resume.");
     }

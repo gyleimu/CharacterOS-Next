@@ -422,6 +422,13 @@ async function main(): Promise<number> {
           }),
       subjectLabel: opened.displayName().length > 0 ? opened.displayName() : subjectId,
       diagnostics,
+      // Display-only expected plan: which optional adaptation stages this product
+      // configuration has enabled. Changes no call eligibility.
+      turnPlan: {
+        belief_adaptation_enabled: !configuration.disable_adaptation.value,
+        relationship_adaptation_enabled: true,
+        personality_adaptation_enabled: false
+      },
       configuration,
       subjectIdentity,
       subjectDurableState: subjectConfig?.durable_state ?? "UNKNOWN",
