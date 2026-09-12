@@ -445,6 +445,20 @@ export class ExplicitV4SessionAuthorityV0 {
       reference_validator: async (binding: unknown) => freshRepo.validateRevisionBinding(binding as never)
     } as never);
     if (restored.kind !== "RESTORED") throw new Error(`session restore: restore failed (${restored.kind})`);
+    // CORE_INTEGRITY_AUDIT_V0 — the checkpoint identity is a BINDING, not an
+    // observational label: a supplied store whose head is older or different than
+    // the checkpoint's recorded head is a silent canonical rollback. Reject it.
+    const claimedIdentity = durable.identity;
+    const restoredSnapshot = restored.snapshot as unknown as SubjectStateV4;
+    if (
+      claimedIdentity.state_revision > 0 &&
+      (restoredSnapshot.runtime_metadata.state_revision !== claimedIdentity.state_revision ||
+        head.commit_ref !== claimedIdentity.subject_head.commit_ref)
+    ) {
+      throw new Error(
+        `session restore: supplied store head (revision ${String(restoredSnapshot.runtime_metadata.state_revision)}, commit ${String(head.commit_ref)}) does not match checkpoint identity (revision ${claimedIdentity.state_revision}, commit ${claimedIdentity.subject_head.commit_ref})`
+      );
+    }
     const assembly = createInMemorySubjectCoreFacadeForExplicitV4V0({
       seedSnapshots: new Map([[options.subject.subject_id as never, restored.snapshot as never]]),
       seedBundles: source.bundles as never,
@@ -586,7 +600,15 @@ export class ExplicitV4SessionAuthorityV0 {
       const outcome = await this.affectWriter.applyForEvent(ctxOf(await this.readSnapshot()), {
         factual_event_ref: work.event_ref as never
       });
+      // A lawful abstention (INSUFFICIENT_CONTEXT / durably-disposed INITIAL) makes
+      // the event ineligible for AffectApplication (NOT_ELIGIBLE). That is the same
+      // terminal, no-Affect outcome the pre-cognition path already accepts — not a
+      // lifecycle failure. Every other non-commit outcome still fails closed.
       if (outcome.kind !== "COMMITTED") {
+        if (outcome.kind === "NOT_ELIGIBLE") {
+          completed.push({ event_ref: work.event_ref, appraisal_ref: appraisalRef });
+          continue;
+        }
         throw new Error(`session lifecycle work: AffectApplication must commit for ${work.event_ref} (${outcome.kind})`);
       }
       completed.push({ event_ref: work.event_ref, appraisal_ref: appraisalRef });

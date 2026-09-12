@@ -214,7 +214,8 @@ export async function buildCognitiveContextProjectionV1(
  */
 async function buildExplicitV4CognitiveContextProjection(
   snapshot: SubjectStateV4,
-  factualEvidence: FactualMemoryEvidenceBundleV0 | null
+  factualEvidence: FactualMemoryEvidenceBundleV0 | null,
+  additionalRecentRetrievalRefs: readonly CanonicalRefV0[] | null = null
 ): Promise<CognitiveContextProjectionV2> {
   const profile = (snapshot.mechanism_config as { affect_profile?: { profile_id?: string; timebase?: string } })
     .affect_profile;
@@ -287,7 +288,19 @@ async function buildExplicitV4CognitiveContextProjection(
     },
     context: { ...snapshot.context },
     memory_working_refs: [...snapshot.memory_state.working_refs] as string[],
-    recent_retrieval_refs: [...snapshot.memory_state.recent_retrieval_trace] as string[],
+    recent_retrieval_refs:
+      additionalRecentRetrievalRefs === null || additionalRecentRetrievalRefs.length === 0
+        ? ([...snapshot.memory_state.recent_retrieval_trace] as string[])
+        : // RELATIONSHIP_FAMILIARITY_RETRIEVED_EVIDENCE_COGNITION_INTEGRATION_V0:
+          // validated familiarity-priority evidence joins the SAME recent-retrieval
+          // context on the explicit-v4 (V2) production path, exactly as the v3 path
+          // does (dedup + raw-ASCII sort; never overwriting ordinary Memory context).
+          ([
+            ...new Set<string>([
+              ...(snapshot.memory_state.recent_retrieval_trace as readonly string[]),
+              ...(additionalRecentRetrievalRefs as readonly string[])
+            ])
+          ].sort() as string[]),
     belief_item_count: snapshot.beliefs.items.length,
     belief_items: snapshot.beliefs.items
       .map(
@@ -361,7 +374,11 @@ async function buildCognitiveContextProjectionInternal(
   // dispatch: v4 builds the RAW_CANONICAL_VA projection; the v3 path below is
   // byte/behavior unchanged. Unknown schemas fail closed.
   if ((snapshot as { schema_version?: string }).schema_version === "subject-state-v4") {
-    return buildExplicitV4CognitiveContextProjection(snapshot as unknown as SubjectStateV4, factualEvidence);
+    return buildExplicitV4CognitiveContextProjection(
+      snapshot as unknown as SubjectStateV4,
+      factualEvidence,
+      additionalRecentRetrievalRefs
+    );
   }
   if ((snapshot as { schema_version?: string }).schema_version !== "subject-state-v3") {
     throw new Error(

@@ -137,6 +137,10 @@ export class RepositoryBackedMemoryRetrievalServiceV0 {
       if (!schemaChecked.ok) continue; // malformed — ignored
       if (schemaChecked.value.schema_version !== EPISODIC_MEMORY_RECORD_SCHEMA_VERSION) continue;
       const record: EpisodicMemoryRecordV0 = schemaChecked.value;
+      // Manifest membership is the selection authority: a payload that self-declares
+      // a different episode_ref than the revision entry binding it is unbound and is
+      // never selected (ref/content mismatch fails closed).
+      if (record.episode_ref !== entry.ref) continue;
       views.push({
         episode_ref: record.episode_ref,
         episode_payload_hash: entry.payload_hash,

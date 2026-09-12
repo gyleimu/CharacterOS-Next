@@ -104,13 +104,17 @@ export function createProductProviderBundleV0(
     "RELATIONSHIP_ADAPTATION",
     diagnostics
   );
-  // Every stage this bundle wires is CONFIGURED before its first call, so
-  // diagnostics never present a wired stage as "not configured".
-  for (const stage of ["APPRAISAL", "COGNITION", "LANGUAGE", "RELATIONSHIP_ADAPTATION"] as const) {
+  // Every stage this bundle actually wires is CONFIGURED before its first call,
+  // so diagnostics never present a wired stage as "not configured".
+  // CHARACTEROS_DISABLE_ADAPTATION gates the adaptation DEPENDENCIES (both
+  // providers below resolve to null), not merely their diagnostics.
+  const adaptationDisabled = configuration.disable_adaptation.value;
+  for (const stage of ["APPRAISAL", "COGNITION", "LANGUAGE"] as const) {
     diagnostics.enable(stage);
   }
-  if (!configuration.disable_adaptation.value) {
+  if (!adaptationDisabled) {
     diagnostics.enable("BELIEF_ADAPTATION");
+    diagnostics.enable("RELATIONSHIP_ADAPTATION");
   }
   // APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — the port is per bundle (per
   // subject and process) and only reuses inside an explicitly opened turn scope.
@@ -139,16 +143,20 @@ export function createProductProviderBundleV0(
     },
     appraisalProvider: appraisal.provider,
     appraisalCallCount: () => appraisal.stats.callCount(),
-    beliefSemanticProvider: new OllamaBeliefSemanticProviderV0({
-      base_url: baseUrl,
-      model: configuration.belief_semantic_model.value
-    }),
-    relationshipFamiliarityAdmissionProvider: new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({
-      transport: relationshipTransport
-    }),
+    beliefSemanticProvider: adaptationDisabled
+      ? null
+      : new OllamaBeliefSemanticProviderV0({
+          base_url: baseUrl,
+          model: configuration.belief_semantic_model.value
+        }),
+    relationshipFamiliarityAdmissionProvider: adaptationDisabled
+      ? null
+      : new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({
+          transport: relationshipTransport
+        }),
     turnPlan: {
-      belief_adaptation_enabled: !configuration.disable_adaptation.value,
-      relationship_adaptation_enabled: true,
+      belief_adaptation_enabled: !adaptationDisabled,
+      relationship_adaptation_enabled: !adaptationDisabled,
       personality_adaptation_enabled: false
     },
     model,

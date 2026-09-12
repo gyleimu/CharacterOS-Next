@@ -196,3 +196,25 @@ describe("RepositoryBackedMemoryRetrievalServiceV0", () => {
     expect(floored.selected_memory_refs).toHaveLength(0);
   });
 });
+
+describe("CORE_INTEGRITY_AUDIT_V0 — ref/content binding", () => {
+  it("never selects a payload whose self-declared episode_ref differs from its manifest entry", async () => {
+    const repo = new InMemoryMemoryRepository();
+    await repo.prepareRevision({ parent_revision: null, records: [] });
+    // The payload self-declares one ref; the revision binds it under a DIFFERENT ref.
+    const selfDeclared = `episode:${"c".repeat(64)}`;
+    const bindingRef = `episode:${"d".repeat(64)}`;
+    const record = episodeRecord({ episode_ref: selfDeclared });
+    const payloadHash = await repo.storePayload(bindingRef as never, record);
+    const revision = await repo.prepareRevision({
+      parent_revision: "R0" as never,
+      records: [{ ref: bindingRef, payload_hash: payloadHash }] as never
+    });
+    const service = new RepositoryBackedMemoryRetrievalServiceV0(repo);
+    const result = await service.retrieve(baseQuery(revision.repository_revision as string));
+    // The mismatched payload is unbound: it is enumerated but never selected.
+    expect(result.selected_memory_refs).not.toContain(bindingRef);
+    expect(result.selected_memory_refs).not.toContain(selfDeclared);
+    expect(result.selected_memory_refs).toHaveLength(0);
+  });
+});

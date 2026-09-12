@@ -53,8 +53,10 @@ import { InMemoryMiclWorkflowStore } from "../../micl/micl-workflow-store.js";
 import {
   CognitionActionTransitionExecutor,
   buildCognitiveContextProjection,
+  buildCognitiveContextProjectionV1,
   buildCognitiveContextProjectionV2ForExplicitV4
 } from "./cognition-action-transition-executor.js";
+import { FACTUAL_MEMORY_EVIDENCE_SCHEMA_VERSION } from "./factual-memory-evidence.js";
 import { renderCognitiveSubjectData } from "../../providers/cognition/cognitive-prompt-projection.js";
 import { createSubjectStateV4AuthoritativeRestoreEnvelopeV0, restoreSubjectStateV4AuthoritativelyV0 } from "../../authority/restore-chain-authority-v4.js";
 import { mintTrustedCanonicalHistoryBoundaryV4V0, type TrustedCanonicalHeadInputV0 } from "../../authority/trusted-canonical-history-boundary.js";
@@ -1039,5 +1041,25 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(result.behavior.text).toBe("Could you clarify what you mean?");
     expect(result.trace.realization_source).toBe("HOST_CLARIFICATION_V0");
     expect(languageCalls).toBe(0);
+  });
+});
+
+describe("CORE_INTEGRITY_AUDIT_V0 — explicit-v4 additional retrieval evidence", () => {
+  it("validated additional retrieval refs join the V2 projection instead of being dropped", async () => {
+    const world = await buildWorld();
+    const snapshot = await readSnapshot(world);
+    const extraRef = `episode:${"e".repeat(64)}`;
+    const projection = await buildCognitiveContextProjectionV1(
+      snapshot as unknown as SubjectStateV0,
+      [extraRef as never],
+      {
+        schema_version: FACTUAL_MEMORY_EVIDENCE_SCHEMA_VERSION,
+        repository_revision: snapshot.memory_state.repository_revision,
+        entries: []
+      }
+    );
+    // A v4 snapshot produces the explicit-v4 V2 surface even through the V1 entrypoint.
+    expect(String(projection.schema_version)).toBe("cognitive-context-projection-v2");
+    expect(projection.recent_retrieval_refs).toContain(extraRef);
   });
 });

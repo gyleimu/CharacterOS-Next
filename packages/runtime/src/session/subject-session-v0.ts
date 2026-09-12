@@ -524,6 +524,26 @@ export class LongHorizonSubjectSessionV0 {
   ): Promise<SessionRestoreOutcomeV0> {
     const envBefore = this.options.environment.exportState();
     const preIdentity = await this.capturePreRestoreIdentityV0(checkpoint);
+    // CORE_INTEGRITY_AUDIT_V0 — a checkpoint belongs to exactly one subject. The
+    // interactive path already rejects a subject mismatch; the long-horizon seam
+    // must fail closed identically instead of surfacing subject A's canonical
+    // state under subject B's configured id.
+    if (checkpoint.subject_id !== this.options.subject.subject_id) {
+      const failed: SessionRestoreOutcomeV0 = {
+        kind: "FAILED",
+        checkpoint_ref: checkpoint.checkpoint_ref,
+        restore_generation: this.restores.length + 1,
+        next_interaction_index: this.interactionIndex,
+        pre: preIdentity,
+        post: preIdentity,
+        environment_state_hash_pre: envBefore.state_hash,
+        environment_state_hash_post: envBefore.state_hash,
+        identity_classification: "FAILURE",
+        detail: `checkpoint subject ${checkpoint.subject_id} does not match configured subject ${this.options.subject.subject_id}`
+      };
+      this.restores.push(failed);
+      return failed;
+    }
     const deliveryLedger = new InMemoryConversationDeliveryLedger();
     const deliveryRestore = await (deliveryLedger as unknown as { restoreState(state: unknown): Promise<{ ok: boolean }> }).restoreState(checkpoint.durable.delivery_ledger_state);
     const ingressLedger = new InMemoryConversationIngressLedger();
