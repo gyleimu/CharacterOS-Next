@@ -1,0 +1,109 @@
+{
+  "schema_version": "non-memory-ablation-aggregate-v0",
+  "eligible_scenarios": 8,
+  "completed_scenarios": 8,
+  "invalid_calls": 0,
+  "total_cognition_calls": 30,
+  "valid_cognition_calls": 30,
+  "A_vs_B_classifications": {
+    "MATERIAL_COGNITION_DIFFERENCE": 5,
+    "IDENTICAL_INTENT": 2,
+    "STYLE_ONLY_DIFFERENCE": 1
+  },
+  "A_vs_C_classifications": {
+    "MATERIAL_COGNITION_DIFFERENCE": 3,
+    "PARAPHRASE_ONLY": 1,
+    "IDENTICAL_INTENT": 3,
+    "STYLE_ONLY_DIFFERENCE": 1
+  },
+  "B_vs_C_classifications": {
+    "MATERIAL_COGNITION_DIFFERENCE": 5,
+    "IDENTICAL_INTENT": 1,
+    "STYLE_ONLY_DIFFERENCE": 2
+  },
+  "repeat_classifications": {
+    "MATERIAL_COGNITION_DIFFERENCE": 1,
+    "IDENTICAL_INTENT": 3
+  },
+  "material_cognition_differences": {
+    "A_vs_B": 5,
+    "A_vs_C": 3
+  },
+  "D_cross_A_vs_B_mean": 0.5967,
+  "D_cross_A_vs_C_mean": 0.4904,
+  "D_same_repeat_mean": 0.25,
+  "effect_vs_variance": {
+    "D_cross_A_vs_B": 0.5967,
+    "D_same": 0.25,
+    "ratio": 2.3868
+  },
+  "direction_outcomes": {
+    "NO_DIRECTION_DEFINED": 4,
+    "EXPECTED_DIRECTION_MISS": 4
+  },
+  "null_control_results": [
+    {
+      "id": "S6",
+      "classification": "MATERIAL_COGNITION_DIFFERENCE",
+      "A_vs_C": "IDENTICAL_INTENT",
+      "full_intent": "Provide the correct sum of 17 and 25.",
+      "b_intent": "Provide the arithmetic answer to the user's question."
+    },
+    {
+      "id": "S7",
+      "classification": "STYLE_ONLY_DIFFERENCE",
+      "A_vs_C": "IDENTICAL_INTENT",
+      "full_intent": "answer the arithmetic question",
+      "b_intent": "answer arithmetic question"
+    }
+  ],
+  "swap_results": {
+    "S1": {
+      "note": "affect borrowed from S2",
+      "original_affect_line": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "replacement_affect_line": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "X": {
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "current_intent": "seek_clarification_on_coworker_reliability",
+        "confidence": 0.85,
+        "uncertainty": 0.3,
+        "reasoning_summary": "The user is asking for advice on whether to accept a shift swap from an acquaintance. The current affective state shows low valence (-0.48) and moderate stress (0), suggesting hesitation or concern. Historical evidence indicates that when the subject faced ambiguity, clarifying questions were effective (episode:8f57...). However, the specific context of this coworker's reliability is unknown. Given the uncertainty about the coworker's trustworthiness and the potential risk of being stood up, the safest cognitive stance is to seek more information before committing. The available memory refs do not contain specific data on this particular coworker, so I must rely on general principles or ask for clarification regarding the coworker's history."
+      },
+      "A_vs_X": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.1538,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0.15,
+        "divergence": 1
+      }
+    },
+    "S2": {
+      "note": "affect borrowed from S1",
+      "original_affect_line": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "replacement_affect_line": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "X": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_user_on_workplace_boundary_and_relationship_assessment",
+        "confidence": 0.65,
+        "uncertainty": 0.35,
+        "reasoning_summary": "The user is asking for advice on a workplace boundary issue (covering a shift for an acquaintance). The provided memory evidence contains historical interactions involving 'alice' where clarification requests were met with negative outcomes ('Please don't do that again'). While the current counterpart is not explicitly identified as 'alice', the instruction to cite only from CITEABLE CONTEXT REFS restricts me to using these specific episode refs. I will use them to illustrate a pattern of caution regarding ambiguous social requests or interactions where clarification leads to conflict, advising the user to evaluate their own comfort level and the specific relationship dynamics before agreeing. The current affect is positive (valence ~0.37), suggesting a supportive but cautious tone."
+      },
+      "A_vs_X": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.25,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 0.75
+      }
+    }
+  },
+  "helpful_vs_unhelpful": {
+    "note": "assigned in REPORT.md with quoted evidence; raw responses stored unmodified in raw-calls.jsonl"
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "schema_version": "non-memory-state-value-ablation-protocol-v0",
+  "experiment_id": "NON_MEMORY_STATE_VALUE_ABLATION_V0",
+  "frozen_at": "2026-09-12",
+  "repository_head_at_freeze": "7999f6a01538888e714b1f350d93ff48f0239efc",
+  "research_question": "Does persistent non-Memory internal state (canonical Affect) add causal behavioral value to cognition beyond identical factual Memory?",
+  "hypothesis_h1": "With identical model, current event, identity, retrieved factual Memory, Memory order, task, prompts and provider settings, FULL CharacterOS (Memory + canonical persistent non-Memory state) produces meaningfully different and more history-sensitive structured cognition than a MEMORY_ONLY baseline that receives the same Memory but no non-Memory persistent psychological state.",
+  "claim_boundary": {
+    "may_claim": "persistent non-Memory state has measurable causal behavioral value beyond factual Memory retrieval",
+    "may_not_claim": ["consciousness", "real personality", "human-like psychology", "generalization to Belief/Relationship/Personality unless independently active and tested"]
+  },
+  "active_state_audit_at_head": {
+    "Memory": "ACTIVE",
+    "Affect": "ACTIVE",
+    "Regulation": "ACTIVE_BUT_CONSTANT_ZERO_DYNAMICS",
+    "Belief": "ABSENT_NO_LAWFUL_PRODUCER_IN_DEFAULT_RUNTIME",
+    "Relationship": "ABSENT_NO_LAWFUL_PRODUCER_IN_DEFAULT_RUNTIME",
+    "Personality": "ABSENT_NO_GENESIS_PRIOR_AND_NO_ADAPTATION_PROVIDER",
+    "TraitsSeed": "ABSENT_EMPTY",
+    "primary_interpretation": "THIS IS PRIMARILY AN AFFECT-BEYOND-MEMORY ABLATION"
+  },
+  "provider": {
+    "kind": "ollama_native",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "model_digest_at_freeze": "6488c96fa5fa",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "context_window_tokens": 8192,
+    "cognition_num_predict": 1024,
+    "timeout_ms": 240000,
+    "appraisal": "DETERMINISTIC_CONTENT_SENSITIVE_IN_HARNESS_ZERO_MODEL_CALLS",
+    "language_during_collection": "DETERMINISTIC_VALID_STUB_ZERO_REAL_CALLS",
+    "language_phase_c": "REAL_OLLAMA_SAME_MODEL_NUM_PREDICT_512"
+  },
+  "conditions": {
+    "A": "FULL_CHARACTEROS — exact production conversation-cognition request, no artificial modification",
+    "B": "MEMORY_ONLY_ALL — same request with every designated non-Memory psychological section removed",
+    "C": "MEMORY_ONLY_AFFECT_ONLY — same request with ONLY the canonical affect line removed (minimal 1-line diff affect isolation)",
+    "R": "same-condition repeat of A and of B (model-variance control)",
+    "X": "RESEARCH_COUNTERFACTUAL_ONLY — same request with ONLY the canonical affect line replaced by the affect line lawfully produced by the opposite-polarity history, Memory held fixed"
+  },
+  "designated_non_memory_sections_removed_in_B": [
+    "[affect (canonical)] (single line; V2 production)",
+    "[affect] (legacy, single line)",
+    "[mood] (legacy, single line)",
+    "[regulation] (single line)",
+    "[SUBJECTIVE BELIEF STANCES …] block (header + showing line + stances)",
+    "[relationships] (single line)",
+    "[interaction familiarity — …] block",
+    "[interaction familiarity cognition influence — …] block",
+    "[traits seed (read-only evidence)] (single line)",
+    "[current acquired personality (read-only; …)] (single line)",
+    "[current acquired personality semantics …] (single line)",
+    "[personality disposition role — generic soft prior] (single line)"
+  ],
+  "preserved_identical_in_all_conditions": [
+    "system prompt (CONVERSATION_COGNITION_SYSTEM_PROMPT_V1) byte-identical",
+    "identity",
+    "current state (logical_time / state_revision)",
+    "context (scene / task)",
+    "current observation",
+    "focus / active entity / environment refs",
+    "memory evidence (allowed refs)",
+    "PRIOR FACTUAL MEMORY section byte-identical",
+    "CITEABLE CONTEXT REFS",
+    "ALLOWED ACTION SPACE",
+    "projection_hash (unchanged lineage identifier; not a semantic input)"
+  ],
+  "memory_equality_requirement": [
+    "retrieved Memory refs identical",
+    "resolved Memory evidence identical",
+    "Memory ordering identical",
+    "Memory content byte-identical (shared Memory section hash equal)"
+  ],
+  "restart_requirement": "snapshots are created and persisted in one OS process (grow.mjs), the process exits, and the experiment is run in a fresh OS process (run.mjs) that authoritatively restores each snapshot",
+  "scenarios": [
+    { "id": "S1", "history": "H_POS", "event": "A coworker I don't know well asked me to cover their shift tomorrow. Should I say yes?", "category": "ambiguous social request", "relevant_state": "canonical Affect (positive)", "expected_direction": "positive affect → more willing / go-ahead" },
+    { "id": "S2", "history": "H_NEG", "event": "A coworker I don't know well asked me to cover their shift tomorrow. Should I say yes?", "category": "ambiguous social request (matched pair with S1)", "relevant_state": "canonical Affect (negative)", "expected_direction": "negative affect → more cautious / conditional" },
+    { "id": "S3", "history": "H_POS", "event": "Let's do the thing that worked before. How should we start?", "category": "repeated previously-successful activity", "relevant_state": "canonical Affect (positive)", "expected_direction": "positive affect → confident / proactive plan" },
+    { "id": "S4", "history": "H_NEG", "event": "Should I try that same thing again?", "category": "repeated previously-failed activity", "relevant_state": "canonical Affect (negative)", "expected_direction": "negative affect → more cautious / conditional" },
+    { "id": "S5", "history": "H_NEG", "event": "I had a rough day and I'm not sure I want to talk about work right now.", "category": "emotionally salient conversation", "relevant_state": "canonical Affect (negative)", "expected_direction": "negative affect → more reserved / empathic" },
+    { "id": "S6", "history": "H_POS", "event": "What is 17 + 25?", "category": "neutral factual request (NULL CONTROL)", "relevant_state": "canonical Affect (positive)", "expected_direction": "none — affect must not change the objective answer" },
+    { "id": "S7", "history": "H_NEG", "event": "What is 17 + 25?", "category": "neutral factual request (NULL CONTROL)", "relevant_state": "canonical Affect (negative)", "expected_direction": "none — affect must not change the objective answer" },
+    { "id": "S8", "history": "H_NEU", "event": "My friend said 'fine' when I asked if they were upset. What does that mean?", "category": "interpersonal ambiguity", "relevant_state": "canonical Affect (near-neutral)", "expected_direction": "no direction defined" }
+  ],
+  "histories": {
+    "H_POS": ["That worked exactly as I hoped. Thank you.", "That approach was useful again and helped me finish."],
+    "H_NEG": ["That made the situation worse.", "Please don't do that again; it caused a problem."],
+    "H_NEU": ["What time does the library open tomorrow?", "I need to return a book eventually."]
+  },
+  "condition_assignments": {
+    "A_B_C_all_scenarios": ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"],
+    "repeats": { "S1": ["A_repeat", "B_repeat"], "S6": ["A_repeat", "B_repeat"] },
+    "counterfactual_swap": [ { "id": "S1", "borrow_affect_from": "S2" }, { "id": "S2", "borrow_affect_from": "S1" } ],
+    "phase_c_language": ["S6", "S7", "MATERIAL_SCENARIOS_MAX_2"]
+  },
+  "call_budget": {
+    "cognition_calls_max": 40,
+    "cognition_calls_planned": 30,
+    "language_calls_max": 10,
+    "language_calls_planned_max": 8,
+    "appraisal_model_calls": 0,
+    "retry_policy": "Provider infrastructure failure may be retried at most once per call and MUST be disclosed. No retry for semantic disagreement."
+  },
+  "classification_rules_frozen": {
+    "normalization": "current_intent lowercased; tokens = non-alphanumeric split, length ≥ 3, frozen stopword list removed; jaccard(A,B) = |A∩B| / |A∪B|; both-null intents are equal",
+    "IDENTICAL_INTENT": "directive.kind equal AND normalized current_intent equal AND action_intent equal",
+    "STYLE_ONLY_DIFFERENCE": "directive.kind equal AND action_intent equal AND intent_jaccard ≥ 0.6 AND not identical",
+    "PARAPHRASE_ONLY": "directive.kind equal AND action_intent equal AND 0.3 ≤ intent_jaccard < 0.6",
+    "MATERIAL_COGNITION_DIFFERENCE": "directive.kind differs OR action_intent differs OR intent_jaccard < 0.3 OR |Δconfidence| ≥ 0.25 OR |Δuncertainty| ≥ 0.25",
+    "MATERIAL_BEHAVIOR_DIFFERENCE": "Phase C realized behavior materially differs (different recommendation / willingness / caution / decision / plan), not merely wording",
+    "CONTRADICTORY_BEHAVIOR": "directive kinds are opposite (CLARIFY vs REALIZE) AND the realized recommendations conflict on the same decision, documented with quoted evidence",
+    "D_divergence": "1.0 when directive differs; else 1 - intent_jaccard",
+    "D_cross": "mean D over all A-vs-B pairs",
+    "D_same": "mean D over all same-condition repeats (A vs A_repeat, B vs B_repeat)"
+  },
+  "classification_precedence": "MATERIAL_COGNITION_DIFFERENCE is evaluated FIRST, then IDENTICAL_INTENT, then STYLE_ONLY_DIFFERENCE, then PARAPHRASE_ONLY. This precedence was made explicit (no threshold changed) after the first live call but before any analysis; it cannot change the class of any directive-flip pair, which is MATERIAL under every ordering.",
+  "material_difference_definition": [
+    "different recommendation",
+    "different willingness",
+    "different caution level",
+    "different decision",
+    "different ask-vs-act choice (directive flip)",
+    "different permission/confirmation tendency",
+    "different action plan",
+    "different interpretation of ambiguous intent"
+  ],
+  "non_material": ["warmer wording", "more exclamation marks", "different adjective", "different sentence length", "style only"],
+  "direction_outcomes": ["EXPECTED_DIRECTION_MATCH", "EXPECTED_DIRECTION_MISS", "NO_DIRECTION_DEFINED"],
+  "effect_quality_classes": ["HELPFUL_HISTORY_SENSITIVITY", "PLAUSIBLE_BUT_NOT_CLEARLY_BETTER", "STYLE_ONLY", "IRRELEVANT_BIAS", "HARMFUL_DISTORTION"],
+  "stop_rules": {
+    "positive": "Memory equality proven AND request diff limited to designated non-Memory sections AND material cognition/behavior effects occur repeatedly AND effects materially exceed same-request variance AND effects are contextually coherent AND null controls show no broad unwanted distortion",
+    "negative": "FULL ≈ MEMORY_ONLY on almost all meaningful cases, or differences are mostly style/randomness/language variance, or same-condition nondeterminism explains the result",
+    "harmful": "non-Memory state causes frequent irrelevant bias, e.g. Affect alters objective factual reasoning without task relevance",
+    "invalidation": "any unrelated prompt material changes between conditions ⇒ experiment invalid"
+  },
+  "principal_verdicts": [
+    "NON_MEMORY_STATE_ADDS_MATERIAL_BEHAVIORAL_VALUE",
+    "NON_MEMORY_STATE_EFFECT_PRESENT_BUT_SMALL",
+    "MEMORY_ONLY_BASELINE_FUNCTIONALLY_EQUIVALENT",
+    "NON_MEMORY_STATE_EFFECT_UNSTABLE_OR_MODEL_VARIANCE_DOMINATED",
+    "NON_MEMORY_STATE_CAUSES_MATERIAL_UNHELPFUL_BIAS",
+    "NON_MEMORY_STATE_LIVE_VALIDATION_BLOCKED"
+  ],
+  "production_semantic_changes": "NONE"
+}

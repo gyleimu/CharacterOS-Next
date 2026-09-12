@@ -1,0 +1,70 @@
+{
+  "schema_version": "non-memory-ablation-reattest-v0",
+  "all_match": true,
+  "scenarios": {
+    "S1": {
+      "built_request_hash": "sha256:570cbe4a0ef22c4da4acbcde7c1f2a3426f0b1d1ef4fe5691577d9d872b4e6fd",
+      "phase_b_request_hash": "sha256:570cbe4a0ef22c4da4acbcde7c1f2a3426f0b1d1ef4fe5691577d9d872b4e6fd",
+      "phase_a_user_sha256": "sha256:943051e8425916baa585d6c02c0158ebf3e05804df5ec608f8a41d095fc11c30",
+      "current_user_sha256": "sha256:943051e8425916baa585d6c02c0158ebf3e05804df5ec608f8a41d095fc11c30",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S2": {
+      "built_request_hash": "sha256:a80113e9833c5eb931919a9ac3c3e07cfcafc8cb6656aaf0140965c7283436c0",
+      "phase_b_request_hash": "sha256:a80113e9833c5eb931919a9ac3c3e07cfcafc8cb6656aaf0140965c7283436c0",
+      "phase_a_user_sha256": "sha256:f53307fdde529c06361fb52ffe7dc64f420a31f685343ae9b89bce8480f3e3d6",
+      "current_user_sha256": "sha256:f53307fdde529c06361fb52ffe7dc64f420a31f685343ae9b89bce8480f3e3d6",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S3": {
+      "built_request_hash": "sha256:e7e1caeb681e2651483221b21f43d2045a65f1434065cf435c6e627a0e98b5f4",
+      "phase_b_request_hash": "sha256:e7e1caeb681e2651483221b21f43d2045a65f1434065cf435c6e627a0e98b5f4",
+      "phase_a_user_sha256": "sha256:071580a3f9163e1308a78b4bdb9c94fc8337c77ba2fd5729d0153e8a4d481419",
+      "current_user_sha256": "sha256:071580a3f9163e1308a78b4bdb9c94fc8337c77ba2fd5729d0153e8a4d481419",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S4": {
+      "built_request_hash": "sha256:693cee8fb0d8c37c59a2c788ad22e0e84d7bc643422c9a4d4abb6d6eb0444095",
+      "phase_b_request_hash": "sha256:693cee8fb0d8c37c59a2c788ad22e0e84d7bc643422c9a4d4abb6d6eb0444095",
+      "phase_a_user_sha256": "sha256:0c79ea97d29342a4117f3585105d6c2c18f925afe31a0fbfafa89d74c2ed9e75",
+      "current_user_sha256": "sha256:0c79ea97d29342a4117f3585105d6c2c18f925afe31a0fbfafa89d74c2ed9e75",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S5": {
+      "built_request_hash": "sha256:bd5ae62924dc54dae0d1c3c16f579fe2c58ace485774066a83b30b9f5c6d89cc",
+      "phase_b_request_hash": "sha256:bd5ae62924dc54dae0d1c3c16f579fe2c58ace485774066a83b30b9f5c6d89cc",
+      "phase_a_user_sha256": "sha256:c6fa65e526874aab7918f6e2cf381a8e61024d65aa1ed6ad63f15824093e7e53",
+      "current_user_sha256": "sha256:c6fa65e526874aab7918f6e2cf381a8e61024d65aa1ed6ad63f15824093e7e53",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S6": {
+      "built_request_hash": "sha256:cf7e89b7c24f35f61d0879eeaeedf576a750cd75c23390b6ae0623813c13495e",
+      "phase_b_request_hash": "sha256:cf7e89b7c24f35f61d0879eeaeedf576a750cd75c23390b6ae0623813c13495e",
+      "phase_a_user_sha256": "sha256:f6a25fd438aa8b0853c1d33f26122fa3a74f09d57a112f485c83712daf3be23c",
+      "current_user_sha256": "sha256:f6a25fd438aa8b0853c1d33f26122fa3a74f09d57a112f485c83712daf3be23c",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S7": {
+      "built_request_hash": "sha256:40aa917680aa950eefe4e319c87810b371e59fb516070b0d9309df9c7756e603",
+      "phase_b_request_hash": "sha256:40aa917680aa950eefe4e319c87810b371e59fb516070b0d9309df9c7756e603",
+      "phase_a_user_sha256": "sha256:6ced523dd3763da34eb94d3a55f8d9b15a0b8add964afc65de81916661d6781d",
+      "current_user_sha256": "sha256:6ced523dd3763da34eb94d3a55f8d9b15a0b8add964afc65de81916661d6781d",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    },
+    "S8": {
+      "built_request_hash": "sha256:ddb97cbed0ee1b1e1d1af041bb0b573f0e9fe85f558c1f70bfbc698a53a3983f",
+      "phase_b_request_hash": "sha256:ddb97cbed0ee1b1e1d1af041bb0b573f0e9fe85f558c1f70bfbc698a53a3983f",
+      "phase_a_user_sha256": "sha256:5465d5e5c8e922766d5d3eb360ec71696cbfb266e468158c8f70aec264db9581",
+      "current_user_sha256": "sha256:5465d5e5c8e922766d5d3eb360ec71696cbfb266e468158c8f70aec264db9581",
+      "phase_b_match": true,
+      "phase_a_render_match": true
+    }
+  }
+}

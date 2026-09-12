@@ -1,0 +1,113 @@
+{
+  "schema_version": "non-memory-ablation-snapshots-v0",
+  "snapshots": {
+    "H_POS": {
+      "history_id": "H_POS",
+      "messages": [
+        "That worked exactly as I hoped. Thank you.",
+        "That approach was useful again and helped me finish."
+      ],
+      "turns": [
+        {
+          "user_text": "That worked exactly as I hoped. Thank you.",
+          "affect_after": 0.12599999999999997,
+          "repository_revision_after": "R2"
+        },
+        {
+          "user_text": "That approach was useful again and helped me finish.",
+          "affect_after": 0.3771627937881342,
+          "repository_revision_after": "R5"
+        }
+      ],
+      "affect_final": {
+        "valence": 0.3771627937881342,
+        "activation": 0.3676279083502819
+      },
+      "regulation_final": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality_dimension_count": 0,
+      "traits_seed": {},
+      "belief_count": 0,
+      "relationship_count": 0,
+      "state_revision": 15,
+      "repository_revision": "R5",
+      "snapshot_sha256_input_bytes": 421476
+    },
+    "H_NEG": {
+      "history_id": "H_NEG",
+      "messages": [
+        "That made the situation worse.",
+        "Please don't do that again; it caused a problem."
+      ],
+      "turns": [
+        {
+          "user_text": "That made the situation worse.",
+          "affect_after": -0.16200000000000003,
+          "repository_revision_after": "R2"
+        },
+        {
+          "user_text": "Please don't do that again; it caused a problem.",
+          "affect_after": -0.4849235920133157,
+          "repository_revision_after": "R5"
+        }
+      ],
+      "affect_final": {
+        "valence": -0.4849235920133157,
+        "activation": 0.4155215964503625
+      },
+      "regulation_final": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality_dimension_count": 0,
+      "traits_seed": {},
+      "belief_count": 0,
+      "relationship_count": 0,
+      "state_revision": 15,
+      "repository_revision": "R5",
+      "snapshot_sha256_input_bytes": 421312
+    },
+    "H_NEU": {
+      "history_id": "H_NEU",
+      "messages": [
+        "What time does the library open tomorrow?",
+        "I need to return a book eventually."
+      ],
+      "turns": [
+        {
+          "user_text": "What time does the library open tomorrow?",
+          "affect_after": 0,
+          "repository_revision_after": "R2"
+        },
+        {
+          "user_text": "I need to return a book eventually.",
+          "affect_after": 0,
+          "repository_revision_after": "R5"
+        }
+      ],
+      "affect_final": {
+        "valence": 0,
+        "activation": 0.29578737620016116
+      },
+      "regulation_final": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality_dimension_count": 0,
+      "traits_seed": {},
+      "belief_count": 0,
+      "relationship_count": 0,
+      "state_revision": 15,
+      "repository_revision": "R5",
+      "snapshot_sha256_input_bytes": 420931
+    }
+  }
+}

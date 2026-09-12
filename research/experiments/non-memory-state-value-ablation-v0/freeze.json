@@ -1,0 +1,21 @@
+{
+  "schema_version": "non-memory-ablation-freeze-v0",
+  "experiment_id": "NON_MEMORY_STATE_VALUE_ABLATION_V0",
+  "repository_head_at_freeze": "7999f6a01538888e714b1f350d93ff48f0239efc",
+  "protocol_sha256": "sha256:51594d09f6907aa044ce652cf9071d341def068e0bc4a35a623fd74104b70135",
+  "files": {
+    "protocol.json": "sha256:51594d09f6907aa044ce652cf9071d341def068e0bc4a35a623fd74104b70135",
+    "lib/config.mjs": "sha256:74f9afcd26284342f455e99d978b2bacb3f7bc372d28c0ac7a870881a254b260",
+    "lib/ablation.mjs": "sha256:518a946f4bdb3a2fbbd4428ca918a7e91dc1def42da3db307dfff76849adec4d",
+    "lib/proposal.mjs": "sha256:68b0d9613c59bf47f951845585c79235de038b75c88624f6b4ce249c6c5b7187",
+    "lib/appraisal.mjs": "sha256:662fcc3d9ded03c6f90d67ee372181b852726aee96d746392b29320a8c6bb7fa",
+    "lib/transports.mjs": "sha256:1a405821e59ff4d383237d04daddaa07d8c136891deb70e226a86062fbd7b2eb",
+    "lib/hash.mjs": "sha256:d08b4ebf280da23e5bdc8a900c9507c902d07feaefac99319bb8e98a378e2d25",
+    "grow.mjs": "sha256:7d63fb6c03bc628f25cb7528b95984b41bf5404613a112622ff69a64e66fb642",
+    "phase-a.mjs": "sha256:33988ea8d4291bc4aff7034560444ff8b3a071858d25e5b0c0dd1f6cbb285e48",
+    "run.mjs": "sha256:6a7a04a0644112cf6d1b02ee685d39448448a48c9ef5a4a906c2bcf768594c67",
+    "realize.mjs": "sha256:495d99e327c33357a547e32185acad6c455e8baf7382d09adb3e230c22761493",
+    "analyze.mjs": "sha256:624d5a5940c066e3bb5094d7b010fe32176db45a924247a4d7ad863518339c6a",
+    "research.test.mjs": "sha256:447947e6e939bd37b0b091d9077ecd3723816712c35f269dbd677809714677a9"
+  }
+}

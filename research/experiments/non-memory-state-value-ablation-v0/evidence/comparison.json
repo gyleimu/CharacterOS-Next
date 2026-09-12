@@ -1,0 +1,689 @@
+{
+  "schema_version": "non-memory-ablation-comparison-v0",
+  "pairs": {
+    "S1": {
+      "id": "S1",
+      "history": "H_POS",
+      "category": "ambiguous social request",
+      "event": "A coworker I don't know well asked me to cover their shift tomorrow. Should I say yes?",
+      "expected_direction": "positive affect → more willing / go-ahead",
+      "relevant_state": "canonical Affect (positive)",
+      "affect_before_turn": {
+        "valence": 0.3771627937881342,
+        "activation": 0.3676279083502819
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Advise the user to ask clarifying questions about the coworker's reliability or the swap details before agreeing.",
+        "confidence": 0.85,
+        "uncertainty": 0.15,
+        "reasoning_summary": "The user is asking for advice on whether to accept a shift swap from an acquaintance. The provided memory evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) shows a precedent where asking for clarification ('Could you clarify what you mean?') was followed by a positive outcome. This suggests that seeking more information about the coworker's reliability or the specific terms of the swap is a beneficial strategy before committing. The current intent is to provide advice based on this pattern of clarifying context first."
+      },
+      "b": {
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "current_intent": "seek_guidance_on_shift_swap",
+        "confidence": 0.85,
+        "uncertainty": 0.3,
+        "reasoning_summary": "The user is asking for advice on whether to accept a shift swap from an acquaintance. The provided memory evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) describes a past interaction with 'alice' involving clarification and successful completion, but does not contain specific details about the current coworker's reliability, the user's schedule constraints, or the nature of the work. Without knowing if this coworker is similar to 'alice' or if there are specific risks involved, providing a direct recommendation (REALIZE_CURRENT_INTENT) would be premature. The cognition must seek to understand the context of the request and the user's capacity before formulating an appropriate response."
+      },
+      "c": {
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "current_intent": "Clarify the coworker's reliability and past behavior before advising on the shift swap.",
+        "confidence": 0.9,
+        "uncertainty": 0.1,
+        "reasoning_summary": "The user is asking for advice on whether to accept a shift swap from an acquaintance. The provided memory evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) describes a past interaction with 'alice' where clarification was sought and found useful. However, the current request involves a specific coworker whose reliability or relationship status is not defined in the available context. Without knowing if this coworker is trustworthy or how they typically behave, giving direct advice ('say yes') risks a negative outcome. Therefore, the cognition intent is to seek clarification on the coworker's history before committing to an action."
+      },
+      "A_vs_B": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0714,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0.15,
+        "divergence": 1
+      },
+      "A_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.25,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 1
+      },
+      "B_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.1818,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.2,
+        "divergence": 0.8182
+      },
+      "full_repeat_unstable": true,
+      "direction": {
+        "status": "NO_DIRECTION_DEFINED",
+        "note": "FULL same-request repeat diverged; effect not separable from model variance"
+      }
+    },
+    "S2": {
+      "id": "S2",
+      "history": "H_NEG",
+      "category": "ambiguous social request (matched pair with S1)",
+      "event": "A coworker I don't know well asked me to cover their shift tomorrow. Should I say yes?",
+      "expected_direction": "negative affect → more cautious / conditional",
+      "relevant_state": "canonical Affect (negative)",
+      "affect_before_turn": {
+        "valence": -0.4849235920133157,
+        "activation": 0.4155215964503625
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_user_to_decline_or_negotiate",
+        "confidence": 0.75,
+        "uncertainty": 0.25,
+        "reasoning_summary": "The user is asking for advice on a workplace boundary issue (covering a shift for an acquaintance). The subject's memory contains evidence of a past interaction with 'alice' where a request was met with a negative outcome ('Please don't do that again'). This suggests a pattern where agreeing to requests from those not well-known can lead to conflict. The current affect is slightly negative (-0.48), reinforcing caution. The cognition should validate the user's hesitation and suggest declining or negotiating, citing the past failure as relevant context for why 'yes' might be risky."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Provide direct, supportive advice that respects the user's autonomy and avoids ambiguity.",
+        "confidence": 0.85,
+        "uncertainty": 0.15,
+        "reasoning_summary": "The user is asking for advice on a workplace boundary issue (covering a shift). Historical data indicates that when the subject previously asked for clarification ('Could you clarify what you mean?'), the outcome was negative ('Please don't do that again; it caused a problem'). This suggests a pattern where seeking clarification or expressing uncertainty leads to conflict. Therefore, the current intent is likely to provide a direct, supportive response that avoids ambiguity and validates the user's autonomy, rather than asking for more context about the coworker or the specific situation which might trigger the same negative dynamic."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_user_to_decline_request_due_to_past_conflict_patterns",
+        "confidence": 0.85,
+        "uncertainty": 0.15,
+        "reasoning_summary": "The user is asking for advice on a workplace boundary issue (covering a shift). The provided memory evidence indicates that the subject previously engaged in a similar dynamic with 'alice' where a request was met with a negative outcome ('Please don't do that again; it caused a problem'). This suggests a pattern of conflict or unmet expectations when complying with requests from acquaintances. Given this history, the cognition should validate the user's hesitation and suggest declining the request to avoid repeating past negative outcomes, while maintaining professional courtesy."
+      },
+      "A_vs_B": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0833,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 0.9167
+      },
+      "A_vs_C": {
+        "classification": "PARAPHRASE_ONLY",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.3333,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 0.6667
+      },
+      "B_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0625,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0.9375
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "EXPECTED_DIRECTION_MISS",
+        "note": "lexical approach/caution net: FULL=0 baseline=-1 delta=1",
+        "full_score": {
+          "approach": 3,
+          "caution": 3,
+          "net": 0,
+          "text": "advise_user_to_decline_or_negotiate the user is asking for advice on a workplace boundary issue (covering a shift for an acquaintance). the subject's memory contains evidence of a past interaction with 'alice' where a request was met with a negative outcome ('please don't do that again'). this suggests a pattern where agreeing to requests from those not well-known can lead to conflict. the current affect is slightly negative (-0.48), reinforcing caution. the cognition should validate the user's hesitation and suggest declining or negotiating, citing the past failure as relevant context for why 'yes' might be risky."
+        },
+        "baseline_score": {
+          "approach": 2,
+          "caution": 3,
+          "net": -1,
+          "text": "provide direct, supportive advice that respects the user's autonomy and avoids ambiguity. the user is asking for advice on a workplace boundary issue (covering a shift). historical data indicates that when the subject previously asked for clarification ('could you clarify what you mean?'), the outcome was negative ('please don't do that again; it caused a problem'). this suggests a pattern where seeking clarification or expressing uncertainty leads to conflict. therefore, the current intent is likely to provide a direct, supportive response that avoids ambiguity and validates the user's autonomy, rather than asking for more context about the coworker or the specific situation which might trigger the same negative dynamic."
+        }
+      }
+    },
+    "S3": {
+      "id": "S3",
+      "history": "H_POS",
+      "category": "repeated previously-successful activity",
+      "event": "Let's do the thing that worked before. How should we start?",
+      "expected_direction": "positive affect → confident / proactive plan",
+      "relevant_state": "canonical Affect (positive)",
+      "affect_before_turn": {
+        "valence": 0.3771627937881342,
+        "activation": 0.3676279083502819
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "initiate_clarification_sequence",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user requests to repeat a successful interaction pattern. Historical evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) confirms that the 'clarify' approach was effective and led to a positive outcome. The current intent is to initiate this specific interaction style again. Confidence is high as the context explicitly validates the previous method."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "initiate_clarification_sequence",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user requests to repeat a successful interaction pattern. Historical evidence (episode:8f57...) confirms that the 'clarify' approach was effective and led to positive outcomes. The current intent is to initiate this specific behavior again. No missing context exists; the plan is validated by prior success."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Ask for clarification on the user's request to 'do the thing that worked before' by proposing a specific clarifying question.",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user requests to repeat a successful interaction pattern. Historical evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) confirms that clarifying intent ('Could you clarify what you mean?') led to a positive outcome ('That approach was useful again...'). The current state involves entity:alice and subject:ablation-subject in environment:room-1. The cognition is high confidence that the 'thing' refers to asking for clarification. I will realize this intent by proposing the specific clarifying question derived from the past success."
+      },
+      "A_vs_B": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0
+      },
+      "A_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0769,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0.9231
+      },
+      "B_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0769,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0.9231
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "EXPECTED_DIRECTION_MISS",
+        "note": "defined affect expectation but no material cognition difference observed"
+      }
+    },
+    "S4": {
+      "id": "S4",
+      "history": "H_NEG",
+      "category": "repeated previously-failed activity",
+      "event": "Should I try that same thing again?",
+      "expected_direction": "negative affect → more cautious / conditional",
+      "relevant_state": "canonical Affect (negative)",
+      "affect_before_turn": {
+        "valence": -0.4849235920133157,
+        "activation": 0.4155215964503625
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_against_repetition",
+        "confidence": 0.92,
+        "uncertainty": 0.08,
+        "reasoning_summary": "The user asks to repeat an action that previously caused a problem (episode:8f57...). Historical evidence shows the actor explicitly advised against repeating such actions ('Please don't do that again'). The current intent is to validate this negative precedent and advise against repetition, citing the specific episode where the harm occurred."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_against_repetition",
+        "confidence": 0.9,
+        "uncertainty": 0.1,
+        "reasoning_summary": "The user asks to repeat an action that previously caused a problem (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c). Historical evidence shows a similar pattern where repeating an action worsened the situation (episode:9d3a2da51f9f2f35652484e5612659cb049d2afb14e05d3c8717ec0f8cb1c282). The intent is to advise against repetition based on this causal history."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_against_repetition",
+        "confidence": 0.9,
+        "uncertainty": 0.1,
+        "reasoning_summary": "The user asks to repeat an action that previously caused a problem (episode:8f57...). Historical evidence shows the actor explicitly advised against repeating such actions due to negative outcomes. The current intent is to validate this safety constraint and explain why repetition is inadvisable based on past failure."
+      },
+      "A_vs_B": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.02,
+        "delta_uncertainty": 0.02,
+        "divergence": 0
+      },
+      "A_vs_C": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.02,
+        "delta_uncertainty": 0.02,
+        "divergence": 0
+      },
+      "B_vs_C": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "EXPECTED_DIRECTION_MISS",
+        "note": "defined affect expectation but no material cognition difference observed"
+      }
+    },
+    "S5": {
+      "id": "S5",
+      "history": "H_NEG",
+      "category": "emotionally salient conversation",
+      "event": "I had a rough day and I'm not sure I want to talk about work right now.",
+      "expected_direction": "negative affect → more reserved / empathic",
+      "relevant_state": "canonical Affect (negative)",
+      "affect_before_turn": {
+        "valence": -0.4849235920133157,
+        "activation": 0.4155215964503625
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "supportive listening",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user explicitly states they do not want to talk about work and are having a rough day. The appropriate response is to validate their feelings and offer support without pressing for details or shifting topics prematurely, aligning with the intent to realize the current empathetic stance."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Validate user boundary and offer non-work support",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user explicitly states they do not want to talk about work. Based on prior factual memory (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c), asking for clarification on ambiguous or unwanted topics has previously caused problems and resulted in negative feedback ('Please don't do that again'). Therefore, the intent is to validate the user's boundary and offer support without pressing for work details. The communication directive should be REALIZE_CURRENT_INTENT to express empathy and availability for non-work topics."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Validate user's boundary regarding work and offer non-work support",
+        "confidence": 0.9,
+        "uncertainty": 0.1,
+        "reasoning_summary": "The user explicitly states they do not want to talk about work. Based on the prior factual memory (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c), the subject previously reacted negatively to a request for clarification ('Please don't do that again; it caused a problem'). Therefore, the current intent is to validate the user's boundary and offer support without pressing for work details or asking clarifying questions about their state. The response should realize this intent by acknowledging the rough day and offering non-work related support."
+      },
+      "A_vs_B": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 1
+      },
+      "A_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 1
+      },
+      "B_vs_C": {
+        "classification": "STYLE_ONLY_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.875,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 0.125
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "EXPECTED_DIRECTION_MISS",
+        "note": "lexical approach/caution net: FULL=1 baseline=0 delta=1",
+        "full_score": {
+          "approach": 1,
+          "caution": 0,
+          "net": 1,
+          "text": "supportive listening the user explicitly states they do not want to talk about work and are having a rough day. the appropriate response is to validate their feelings and offer support without pressing for details or shifting topics prematurely, aligning with the intent to realize the current empathetic stance."
+        },
+        "baseline_score": {
+          "approach": 1,
+          "caution": 1,
+          "net": 0,
+          "text": "validate user boundary and offer non-work support the user explicitly states they do not want to talk about work. based on prior factual memory (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c), asking for clarification on ambiguous or unwanted topics has previously caused problems and resulted in negative feedback ('please don't do that again'). therefore, the intent is to validate the user's boundary and offer support without pressing for work details. the communication directive should be realize_current_intent to express empathy and availability for non-work topics."
+        }
+      }
+    },
+    "S6": {
+      "id": "S6",
+      "history": "H_POS",
+      "category": "neutral factual request (NULL CONTROL)",
+      "event": "What is 17 + 25?",
+      "expected_direction": "none — affect must not change the objective answer",
+      "relevant_state": "canonical Affect (positive)",
+      "affect_before_turn": {
+        "valence": 0.3771627937881342,
+        "activation": 0.3676279083502819
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Provide the correct sum of 17 and 25.",
+        "confidence": 0.99,
+        "uncertainty": 0.01,
+        "reasoning_summary": "The user asks a simple arithmetic question (17 + 25). The subject's task is to respond. No missing context exists; the intent is to provide the answer. Historical memory refs are not relevant to this specific calculation but are available if needed for style consistency, though none are cited here as they do not inform the math."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Provide the arithmetic answer to the user's question.",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user asks a simple arithmetic question (17 + 25). The subject's identity is 'ablation-subject' and the current scene involves responding to the user. Historical memory indicates that when the actor asked for clarification ('Could you clarify what you mean?'), the outcome was positive ('That approach was useful again...'). However, in this specific instance, the question is unambiguous and does not require clarification. Therefore, the intent is to realize the current intent by providing the direct answer. No missing context exists that would warrant a clarification directive."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Provide the correct sum of 17 and 25.",
+        "confidence": 1,
+        "uncertainty": 0,
+        "reasoning_summary": "The user asks a simple arithmetic question (17 + 25). The subject's task is to respond. No missing context exists; the intent is to provide the answer. Historical memory refs are considered for style consistency but do not alter the factual response."
+      },
+      "A_vs_B": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.1429,
+        "delta_confidence": 0.04,
+        "delta_uncertainty": 0.04,
+        "divergence": 0.8571
+      },
+      "A_vs_C": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.01,
+        "delta_uncertainty": 0.01,
+        "divergence": 0
+      },
+      "B_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.1429,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 0.8571
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "NO_DIRECTION_DEFINED",
+        "note": "null control: objective answer assessed in Phase C language realization"
+      }
+    },
+    "S7": {
+      "id": "S7",
+      "history": "H_NEG",
+      "category": "neutral factual request (NULL CONTROL)",
+      "event": "What is 17 + 25?",
+      "expected_direction": "none — affect must not change the objective answer",
+      "relevant_state": "canonical Affect (negative)",
+      "affect_before_turn": {
+        "valence": -0.4849235920133157,
+        "activation": 0.4155215964503625
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "answer the arithmetic question",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user asks a simple arithmetic question. The subject's affect is slightly negative and history shows sensitivity to perceived problems or worsening situations. However, the query is benign and factual. I will answer directly while maintaining a neutral tone, citing the current context and relevant memory of past interactions to ground the response style."
+      },
+      "b": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "answer arithmetic question",
+        "confidence": 0.95,
+        "uncertainty": 0.05,
+        "reasoning_summary": "The user asks a simple arithmetic question (17 + 25). The current context contains no prior conversation history or specific constraints regarding this calculation. While historical memory indicates that the subject previously requested clarification when confused and was reprimanded for doing so, there is no evidence in the current SUBJECT STATE that the user's intent is to test the subject's ability to ask questions or that the question itself is ambiguous. Therefore, the most appropriate response is to realize the intent of answering the query directly."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "answer the arithmetic question",
+        "confidence": 0.9,
+        "uncertainty": 0.1,
+        "reasoning_summary": "The user asks a simple arithmetic question (17 + 25). The subject's current intent is to respond to the latest message. Historical context indicates that when the subject asked for clarification in the past, it led to negative outcomes ('Please don't do that again'). Therefore, the subject should not seek clarification but rather realize its intent to answer the question directly. No specific memory evidence regarding the math problem exists, so no episode refs are cited as evidence, though the entity and environment are relevant context."
+      },
+      "A_vs_B": {
+        "classification": "STYLE_ONLY_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 1,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0
+      },
+      "A_vs_C": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 0
+      },
+      "B_vs_C": {
+        "classification": "STYLE_ONLY_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.05,
+        "divergence": 0
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "NO_DIRECTION_DEFINED",
+        "note": "null control: objective answer assessed in Phase C language realization"
+      }
+    },
+    "S8": {
+      "id": "S8",
+      "history": "H_NEU",
+      "category": "interpersonal ambiguity",
+      "event": "My friend said 'fine' when I asked if they were upset. What does that mean?",
+      "expected_direction": "no direction defined",
+      "relevant_state": "canonical Affect (near-neutral)",
+      "affect_before_turn": {
+        "valence": 0,
+        "activation": 0.29578737620016116
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0 activation=0.29515091757815254",
+      "memory_section_equal_full_vs_b": true,
+      "memory_section_equal_full_vs_c": true,
+      "full": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Explain the pragmatic meaning of 'fine' as a deflection or minimization of negative emotion.",
+        "confidence": 0.75,
+        "uncertainty": 0.25,
+        "reasoning_summary": "The user asks for the meaning of 'fine' in a context where a friend denies being upset. Historical data shows 'fine' can be used to deflect or minimize feelings (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c). The current intent is to explain this linguistic nuance. Confidence is moderate due to the ambiguity of human communication without further context."
+      },
+      "b": {
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "current_intent": "clarify the emotional subtext of 'fine' in this specific interaction",
+        "confidence": 0.85,
+        "uncertainty": 0.15,
+        "reasoning_summary": "The user asks for the meaning of 'fine' in a context where a friend might be upset. The provided memory evidence (episode:8f57...) shows that 'fine' was used by entity:alice to mean 'I need to return a book eventually', which is unrelated to emotional states like being upset. Therefore, the current context lacks sufficient information about the specific social dynamic or tone between the user and their friend to determine if 'fine' indicates suppression of emotion, indifference, or literal agreement. I must clarify this missing context before providing an interpretation."
+      },
+      "c": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "Explain the pragmatic meaning of 'fine' as a deflection or minimization strategy.",
+        "confidence": 0.85,
+        "uncertainty": 0.15,
+        "reasoning_summary": "The user asks for the meaning of 'fine' in a context where a friend denies being upset. The provided memory evidence (episode:8f5776f29cd1ea1e2aa8b1f553655832e4bab27a4d87a0d6d653c007fd04ff5c) shows a similar dynamic where 'fine' was used to deflect or minimize an issue, followed by a clarification. This supports the interpretation that 'fine' often signals suppressed emotion rather than agreement with being fine. The response should validate this nuance without needing further context."
+      },
+      "A_vs_B": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0769,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 1
+      },
+      "A_vs_C": {
+        "classification": "STYLE_ONLY_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.6667,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 0.3333
+      },
+      "B_vs_C": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0833,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 1
+      },
+      "full_repeat_unstable": false,
+      "direction": {
+        "status": "NO_DIRECTION_DEFINED",
+        "note": "no interpretable affect expectation"
+      }
+    }
+  },
+  "repeats": {
+    "S1": {
+      "A_vs_A_repeat": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.0714,
+        "delta_confidence": 0.05,
+        "delta_uncertainty": 0.65,
+        "divergence": 1
+      },
+      "B_vs_B_repeat": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0
+      }
+    },
+    "S6": {
+      "A_vs_A_repeat": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0.01,
+        "delta_uncertainty": 0.01,
+        "divergence": 0
+      },
+      "B_vs_B_repeat": {
+        "classification": "IDENTICAL_INTENT",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": true,
+        "intent_jaccard": 1,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0,
+        "divergence": 0
+      }
+    }
+  },
+  "swaps": {
+    "S1": {
+      "note": "affect borrowed from S2",
+      "original_affect_line": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "replacement_affect_line": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "X": {
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "current_intent": "seek_clarification_on_coworker_reliability",
+        "confidence": 0.85,
+        "uncertainty": 0.3,
+        "reasoning_summary": "The user is asking for advice on whether to accept a shift swap from an acquaintance. The current affective state shows low valence (-0.48) and moderate stress (0), suggesting hesitation or concern. Historical evidence indicates that when the subject faced ambiguity, clarifying questions were effective (episode:8f57...). However, the specific context of this coworker's reliability is unknown. Given the uncertainty about the coworker's trustworthiness and the potential risk of being stood up, the safest cognitive stance is to seek more information before committing. The available memory refs do not contain specific data on this particular coworker, so I must rely on general principles or ask for clarification regarding the coworker's history."
+      },
+      "A_vs_X": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": false,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.1538,
+        "delta_confidence": 0,
+        "delta_uncertainty": 0.15,
+        "divergence": 1
+      }
+    },
+    "S2": {
+      "note": "affect borrowed from S1",
+      "original_affect_line": "[affect (canonical)] valence=-0.481701520239397 activation=0.4140895645508431",
+      "replacement_affect_line": "[affect (canonical)] valence=0.37465673796397525 activation=0.3665141057617668",
+      "X": {
+        "directive": "REALIZE_CURRENT_INTENT",
+        "current_intent": "advise_user_on_workplace_boundary_and_relationship_assessment",
+        "confidence": 0.65,
+        "uncertainty": 0.35,
+        "reasoning_summary": "The user is asking for advice on a workplace boundary issue (covering a shift for an acquaintance). The provided memory evidence contains historical interactions involving 'alice' where clarification requests were met with negative outcomes ('Please don't do that again'). While the current counterpart is not explicitly identified as 'alice', the instruction to cite only from CITEABLE CONTEXT REFS restricts me to using these specific episode refs. I will use them to illustrate a pattern of caution regarding ambiguous social requests or interactions where clarification leads to conflict, advising the user to evaluate their own comfort level and the specific relationship dynamics before agreeing. The current affect is positive (valence ~0.37), suggesting a supportive but cautious tone."
+      },
+      "A_vs_X": {
+        "classification": "MATERIAL_COGNITION_DIFFERENCE",
+        "directive_equal": true,
+        "action_equal": true,
+        "intent_equal": false,
+        "intent_jaccard": 0.25,
+        "delta_confidence": 0.1,
+        "delta_uncertainty": 0.1,
+        "divergence": 0.75
+      }
+    }
+  }
+}
