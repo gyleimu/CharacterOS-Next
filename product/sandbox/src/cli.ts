@@ -85,9 +85,28 @@ async function main(): Promise<number> {
   // factual event, accounted separately from cognition/language.
   const appraisal = createProductAppraisalProviderV0({ transport: transports.appraisal });
 
-  // SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — optional deterministic
-  // environment mode. It reuses the SAME provider transports and the frozen
-  // long-horizon environment session; it is not the human-conversation host.
+  // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
+  // semantic bearing call per lived-evidence workflow, accounted separately
+  // from cognition/language/appraisal. The provider's own budget is FIXED by
+  // contract (num_predict 512, temperature 0, think/stream off, 60s timeout)
+  // — deliberately NOT the cognition output budget (§75).
+  const beliefSemanticProvider = new OllamaBeliefSemanticProviderV0({
+    base_url: baseUrl,
+    model: env("CHARACTEROS_BELIEF_SEMANTIC_MODEL") ?? model
+  });
+
+  // RELATIONSHIP_LIVED_DEVELOPMENT_V0: one bounded model-backed qualifying-
+  // interaction admission call per counterpart-referencing lived episode,
+  // accounted separately from cognition/language/appraisal/belief. The frozen
+  // provider emits only the closed qualifying/ABSTAIN vocabulary; the ingestion
+  // chain derives every number itself (no magnitude ever comes from the model).
+  const relationshipFamiliarityAdmissionProvider =
+    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: transports.cognition });
+
+  // SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 + ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 —
+  // optional deterministic environment mode. It reuses the SAME provider
+  // transports, the frozen long-horizon environment session and the SAME
+  // adaptation providers as human mode; it is not the human-conversation host.
   if (process.argv[2] === "environment") {
     const subjectId = env("CHARACTEROS_SUBJECT_ID") ?? "alice";
     const interactions = Number.parseInt(process.argv[3] ?? env("CHARACTEROS_ENVIRONMENT_INTERACTIONS") ?? "4", 10);
@@ -103,6 +122,9 @@ async function main(): Promise<number> {
         conversationCognitionTransport: transports.cognition,
         languageTransport: transports.language,
         factualEventAppraisalProvider: appraisal.provider,
+        // ADAPTATION PARITY: the same existing providers as human mode.
+        beliefSemanticProvider,
+        relationshipFamiliarityAdmissionProvider,
         // ONE authoritative canonical subject source shared with the human host.
         sharedSourceStore: new FileSharedSubjectSourceStoreV0(dataDir, subjectId),
         provider_identity: {
@@ -131,24 +153,6 @@ async function main(): Promise<number> {
     );
     return 0;
   }
-
-  // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
-  // semantic bearing call per lived-evidence workflow, accounted separately
-  // from cognition/language/appraisal. The provider's own budget is FIXED by
-  // contract (num_predict 512, temperature 0, think/stream off, 60s timeout)
-  // — deliberately NOT the cognition output budget (§75).
-  const beliefSemanticProvider = new OllamaBeliefSemanticProviderV0({
-    base_url: baseUrl,
-    model: env("CHARACTEROS_BELIEF_SEMANTIC_MODEL") ?? model
-  });
-
-  // RELATIONSHIP_LIVED_DEVELOPMENT_V0: one bounded model-backed qualifying-
-  // interaction admission call per counterpart-referencing lived episode,
-  // accounted separately from cognition/language/appraisal/belief. The frozen
-  // provider emits only the closed qualifying/ABSTAIN vocabulary; the ingestion
-  // chain derives every number itself (no magnitude ever comes from the model).
-  const relationshipFamiliarityAdmissionProvider =
-    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: transports.cognition });
 
   // ---- readline + startup gates ----------------------------------------------
   // The line handler is attached BEFORE any await, and every queued line waits

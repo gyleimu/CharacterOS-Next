@@ -196,6 +196,12 @@ export interface SessionInteractionOutcomeV0 {
   readonly language_total_tokens: number | null;
   readonly raw_cognition_response: string | null;
   readonly raw_language_response: string | null;
+  /**
+   * ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 — observable per-interaction
+   * adaptation report (Belief / Personality / Relationship familiarity).
+   * Observation only; never canonical authority.
+   */
+  readonly lived_evidence_adaptation?: unknown;
   readonly status: "COMPLETE" | "FAILED";
   readonly failure: string | null;
 }

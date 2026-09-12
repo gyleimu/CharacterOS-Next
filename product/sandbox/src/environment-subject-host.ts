@@ -16,11 +16,15 @@ import {
   createInteractiveSubjectSeedV0,
   createLongHorizonSubjectSessionV0,
   rebuildSessionStoreSourceV0,
+  type BeliefSemanticTargetResolutionProviderV0,
+  type EnvironmentLivedEvidenceAdaptationReportV0,
   type EnvironmentStateV0,
   type FactualEventAppraisalProviderV0,
   type LongHorizonSubjectSessionOptionsV0,
   type ModelTransportTraceV0,
   type ModelTransportV0,
+  type PersonalityAdaptationFactoryV0,
+  type RelationshipInteractionQualifyingAdmissionProviderV0,
   type SessionCheckpointV0,
   type SessionInteractionOutcomeV0,
   type SubjectEnvironmentV0,
@@ -62,6 +66,14 @@ export interface EnvironmentSubjectHostDepsV0 {
    * checkpoint becomes a non-authoritative sidecar.
    */
   readonly sharedSourceStore?: SharedSubjectSourceStoreV0;
+  /**
+   * ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 — the SAME existing adaptation
+   * provider dependencies the human host uses. Omitted ⇒ that channel stays
+   * DISABLED (no provider calls, no heuristic adaptation).
+   */
+  readonly beliefSemanticProvider?: BeliefSemanticTargetResolutionProviderV0;
+  readonly personalityAdaptationFactory?: PersonalityAdaptationFactoryV0;
+  readonly relationshipFamiliarityAdmissionProvider?: RelationshipInteractionQualifyingAdmissionProviderV0;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -133,6 +145,15 @@ export class EnvironmentSubjectHostV0 {
       environment,
       session_id: config.session_id,
       interaction_interval_ticks: config.interaction_interval_ticks ?? 300,
+      // ADAPTATION PARITY: the same existing provider dependencies as the human
+      // host. Omitted deps leave the corresponding channel DISABLED.
+      ...(deps.beliefSemanticProvider === undefined ? {} : { beliefSemanticProvider: deps.beliefSemanticProvider }),
+      ...(deps.personalityAdaptationFactory === undefined
+        ? {}
+        : { personalityAdaptationFactory: deps.personalityAdaptationFactory }),
+      ...(deps.relationshipFamiliarityAdmissionProvider === undefined
+        ? {}
+        : { relationshipFamiliarityAdmissionProvider: deps.relationshipFamiliarityAdmissionProvider }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       clock
     };
@@ -237,6 +258,18 @@ export class EnvironmentSubjectHostV0 {
   /** True when the session has no outstanding mandatory lifecycle work. */
   isQuiescent(): boolean {
     return this.session.pendingWork().length === 0;
+  }
+
+  /**
+   * ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 — offers already-committed
+   * canonical episode refs to the SAME frozen adaptation runners (the normal
+   * path does this automatically for each completed interaction). Observability
+   * and replay-safety seam; owns no authority.
+   */
+  offerLivedEvidenceAdaptation(
+    episodeRefs: readonly string[]
+  ): Promise<EnvironmentLivedEvidenceAdaptationReportV0> {
+    return this.session.runLivedEvidenceAdaptation(episodeRefs);
   }
 
   /** Captures and persists canonical (shared) + environment sidecar. */

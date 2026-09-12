@@ -1137,6 +1137,7 @@ export {
 export {
   LongHorizonSubjectSessionV0,
   createLongHorizonSubjectSessionV0,
+  type EnvironmentLivedEvidenceAdaptationReportV0,
   type LongHorizonSubjectSessionOptionsV0
 } from "./session/subject-session-v0.js";
 export {

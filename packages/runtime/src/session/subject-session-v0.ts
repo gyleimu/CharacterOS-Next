@@ -99,6 +99,17 @@ function asRefArray(value: unknown): readonly string[] | null {
   return value.filter((entry): entry is string => typeof entry === "string");
 }
 
+/**
+ * ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 — observable per-interaction
+ * adaptation report. Observation only; every decision stays domain-local and
+ * the frozen channels remain authoritative.
+ */
+export interface EnvironmentLivedEvidenceAdaptationReportV0 {
+  readonly belief: unknown;
+  readonly personality: unknown;
+  readonly relationship_familiarity: unknown;
+}
+
 export class LongHorizonSubjectSessionV0 {
   private authority: ExplicitV4SessionAuthorityV0;
   private readonly options: LongHorizonSubjectSessionOptionsV0;
@@ -236,6 +247,20 @@ export class LongHorizonSubjectSessionV0 {
         observationRef: reply.observation_ref
       });
 
+      // ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 — ADAPTATION PARITY: offer this
+      // interaction's newly committed canonical lived evidence (the ONE
+      // BehaviorOutcome episode) to the SAME frozen adaptation runners the human
+      // runtime uses, in the SAME domain order (Belief → Personality →
+      // Relationship familiarity). It runs immediately AFTER the episode's
+      // Experience/Memory commit — while that episode is still part of the
+      // current bound repository revision — and strictly AFTER this
+      // interaction's cognition/delivery, so the change reaches only FUTURE
+      // interactions' cognition (same-interaction firewall) and is committed
+      // before the host persists the completed interaction. Each runner is
+      // authoritative and never throws: a channel may COMMIT / NO_OP / ABSTAIN /
+      // fail closed, and an absent provider leaves that channel DISABLED.
+      const livedEvidenceAdaptation = await this.runLivedEvidenceAdaptation([feedback.episode_ref]);
+
       // Queue and complete the reply event's lawful Appraisal + Affect so the
       // work queue is terminal at every interaction boundary.
       this.authority.enqueuePending({
@@ -309,6 +334,7 @@ export class LongHorizonSubjectSessionV0 {
         language_total_tokens: null,
         raw_cognition_response: cognitionExchange?.response ?? null,
         raw_language_response: this.readCapture("language")?.response ?? null,
+        lived_evidence_adaptation: livedEvidenceAdaptation,
         status: "COMPLETE",
         failure: null
       };
@@ -393,6 +419,7 @@ export class LongHorizonSubjectSessionV0 {
       language_total_tokens: null,
       raw_cognition_response: null,
       raw_language_response: null,
+      lived_evidence_adaptation: null,
       status: "FAILED",
       failure: `PARTIAL_INTERACTION_REQUIRES_OPERATOR_RECOVERY: ${detail}`
     };
@@ -619,6 +646,30 @@ export class LongHorizonSubjectSessionV0 {
 
   pendingWork(): readonly PendingLifecycleWorkV0[] {
     return this.authority.pendingWork();
+  }
+
+  /**
+   * ADAPTATION PARITY — offers newly committed canonical episode refs to the
+   * SAME frozen adaptation runners the human runtime invokes, in the SAME order
+   * (Belief → Personality → Relationship familiarity). No adaptation logic is
+   * duplicated here; each runner owns its semantics, eligibility, idempotency
+   * and fail-closed behavior, and a channel with no configured provider stays
+   * DISABLED. Never throws.
+   */
+  async runLivedEvidenceAdaptation(
+    episodeRefs: readonly string[]
+  ): Promise<EnvironmentLivedEvidenceAdaptationReportV0> {
+    if (episodeRefs.length === 0) {
+      return {
+        belief: { status: "EVIDENCE_UNAVAILABLE" },
+        personality: null,
+        relationship_familiarity: null
+      };
+    }
+    const belief = await this.authority.runLivedEvidenceBeliefAdaptation(episodeRefs);
+    const personality = await this.authority.runLivedEvidencePersonalityAdaptation(episodeRefs);
+    const relationship_familiarity = await this.authority.runLivedEvidenceRelationshipFamiliarity(episodeRefs);
+    return { belief, personality, relationship_familiarity };
   }
 
   restoreOutcomes(): readonly SessionRestoreOutcomeV0[] {
