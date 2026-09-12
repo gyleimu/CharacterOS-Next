@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `1b6c913`（research commit；`APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0` 的 production 提交是其直接子提交）
+Last verified against commit: `ca097c5`（research commit；`REPLY_CRITICAL_LATENCY_FORENSIC_V0` 的 production 提交是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,16 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`REPLY_CRITICAL_LATENCY_FORENSIC_V0` — reply-critical 延迟取证 + 一个语义中性修复（纯 product 层，无 canonical 变更）。
+
+- PHASE A 实测（真实本地 Ollama 0.33.3 / qwen3.5:9b / RTX 4060 Laptop 8 GiB，`REUSE=1`）：warm turn 的 reply-critical（Appraisal+Cognition+Language）provider 时间 43.06 s，其中 **20.32 s（47%）是模型 reload**；cognition 1188 prompt tok / 227 output tok（prefill 4.53 s、decode 9.21 s ≈ 24.6 tok/s）；language 145 tok ≈ 23 tok/s；appraisal 55 tok ≈ 41 tok/s；**host+canonical 仅 101.8 ms/turn（0.2%）**；cold 首次调用 35.25 s 中 30.93 s 是 model load。
+- 根因（受控 probe，prompt/output token 完全相同 110/55）：product 对同一模型使用两套 options（Appraisal `num_ctx=4096`，Cognition/Language/Relationship `num_ctx=8192`），Ollama 以 model+options 作为 resident runner 的键，**每次 4096↔8192 切换触发 runner 重建，实测 8.91–10.96 s `load_duration`**；一个 turn 最多切换两次。
+- PHASE B 修复（语义中性）：四个 product transport 统一使用同一个 `CHARACTEROS_CONTEXT_WINDOW_TOKENS` 上下文分配；Appraisal 输出预算仍为 256，prompt/schema/sampling/canonical 语义全部不变；修复后 Appraisal 的 `load_duration` 从 8.04 s 降到 0.028 s，并按 token 不变推算 reply-critical 43.06 s → 22.74 s；新增 wire 级回归测试 `product-transport-options.test.ts` 固定「四个 transport 同一 num_ctx + appraisal num_predict=256」。
+- 环境披露：后续测量窗口被无关 GPU 负载压到 ~1.1 tok/s、出现 120–239 s 超时（99% util / 88 °C / 7492-8188 MiB，`ollama stop` 后仍持续），因此本轮**没有**得到干净的端到端 before/after；V0 13.92 s / V1 2.65 s / production 10.1 s 的 appraisal 差异被归类为设备吞吐波动（BACKGROUND_LOAD / GPU_THROTTLING / MODEL_EVICTION），残余外部原因 UNKNOWN。
+- 判定 `REPLY_CRITICAL_LATENCY_OPTIMIZED_GREEN`（次要结论：剩余延迟由本地模型 serving/decode 主导；端到端 A/B 受环境阻塞）。
+
+上一个产品里程碑：
 
 `APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0` — 同一 human turn 内「完全相同 model-facing request」的重复 Appraisal inference 复用（纯 product 层，无 canonical 变更）。
 
@@ -94,6 +104,7 @@ CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0    FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0                       FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0    FROZEN / GREEN
 APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0                     FROZEN / GREEN (DEFAULT_OFF)
+REPLY_CRITICAL_LATENCY_FORENSIC_V0                            FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -104,7 +115,7 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
 1. provider 不可用时 CLI 在 preflight fail closed（含 model 缺失）；turn 级失败 fail closed 并给出分类与安全摘要；无云 fallback、无自动切换、无自动重试。
-2. 单次 turn 仍需 appraisal + cognition + language（+ 第二 turn 起的 prior-reply appraisal + lived-evidence adaptation）多次串行本地调用，实测约 31–55 s。当前唯一的 latency bottleneck 是 **reply-critical 的 Appraisal → Cognition 串行链**：本机实测两者合计约 30–32 s，占 reply path 的绝大部分；重复的 prior-reply Appraisal inference 已由 `APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0`（DEFAULT_OFF）消除，但该链仍不可压缩（无并行、无 fast mode、无 router，且 streaming/early-reply 未授权）。
+2. 单次 turn 仍需 appraisal + cognition + language（+ 第二 turn 起的 prior-reply appraisal + lived-evidence adaptation）多次串行本地调用。当前**唯一**的 latency bottleneck 是 **本地模型 serving 的 decode 速度**：cognition 227 tok ≈ 9.2 s（24.6 tok/s）、language 145 tok ≈ 6.3 s（23 tok/s）；prefill 小（1188 tok ≈ 4.5 s）、host 开销可忽略（~100 ms/turn）。`REPLY_CRITICAL_LATENCY_FORENSIC_V0` 已消除其中的 runner reload 分量（~20 s/turn，47%），重复的 prior-reply Appraisal inference 由 `APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0`（DEFAULT_OFF）消除；剩余的 decode 时间在不改模型/语义的前提下无法压缩，只能靠 streaming/early-reply 改善“感知”延迟（尚未授权实现）。
 3. 品牌-new subject 在第一个 lived event 之前没有 durable canonical state，因此 observe/time/environment 会先拒绝并给出提示。
 4. Personality/Belief/Relationships 仅在对应 adaptation provider 被配置且 lawful 改变后显示；否则 `ABSENT`（不伪造默认值）。
 5. 配置只读：`/config` 能查看 effective 值与来源，但修改 model/endpoint/timeout/data dir 仍需设置环境变量并重启（V0 明确不提供 `/config set`、不提供多 subject 选择）。
@@ -114,9 +125,11 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`CHARACTEROS_VISUAL_PRODUCT_SUBJECT_ONBOARDING_V0`
+`CHARACTEROS_LANGUAGE_STREAMING_AND_EARLY_DELIVERY_V0`
 
-问题边界：可视化产品在首次运行时会用固定默认名（Mira）自动创建 subject，用户无法在 UI 内为自己的持久 subject 命名（CLI 可以）；下一步在浏览器内提供首次运行命名/确认（复用既有 `resolvePersistentSubjectV0` / `buildSubjectConfigForCreationV0` 与 subject-config.json 语义），不改 canonical 语义、不新增第二配置权威、不做多 subject 管理。
+问题边界：`REPLY_CRITICAL_LATENCY_FORENSIC_V0` 已证明剩余 reply-critical 时间几乎全部是本地模型 serving 的 decode（cognition ~9.2 s / language ~6.3 s，24 tok/s 量级，host 开销 ~100 ms），在不更换模型、不裁剪 Memory/context、不并行/合并 stage 的前提下无法压缩模型时间；下一步只改善**感知**延迟：研究并（若语义可证明等价）实现语言阶段的流式输出与更早的回复交付，必须保持 Canonical 语义、CommunicationDirective 语义、Language 语义与持久化不变，并给出语义等价的受控证据。
+
+该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 

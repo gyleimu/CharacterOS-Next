@@ -153,6 +153,8 @@ function fakeBundle(mode: CognitionMode = "OK"): BundleHarness {
         personality_adaptation_enabled: false
       },
       model: "fake",
+      context_window_tokens: 8192,
+      appraisal_num_predict: 256,
       appraisalReuse: new AppraisalInferenceReuseV0(false, "test-fingerprint")
     }
   };

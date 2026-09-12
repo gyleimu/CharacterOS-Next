@@ -198,6 +198,18 @@ explicit env override → persisted subject config → first-run creation. An
 override that conflicts with the persisted subject in the same data root FAILS
 CLOSED (use a separate `CHARACTEROS_DATA_DIR` to run a different subject).
 
+### One shared provider context allocation
+
+Every product model call (appraisal, cognition, language, relationship) is sent
+with the **same** context budget (`CHARACTEROS_CONTEXT_WINDOW_TOKENS`, default
+8192). Ollama keys its resident runner by model + generation options, so a stage
+that asked for a different `num_ctx` forced the server to rebuild the runner —
+measured at **~9–11 s of extra load time per switch**, twice per turn, with
+identical prompt and output tokens. Keeping one allocation lets one warm runner
+serve the whole turn. The appraisal **output** budget stays 256; prompts,
+schemas, sampling options and canonical semantics are unchanged. See
+`research/experiments/reply-critical-latency-forensic-v0/REPORT.md`.
+
 ### Appraisal exact-input reuse (`CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE`)
 
 Within ONE human turn the frozen runtime performs two semantic Appraisal

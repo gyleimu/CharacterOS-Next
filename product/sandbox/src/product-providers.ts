@@ -17,8 +17,21 @@ import {
 
 /** Appraisal structured output is small; a bounded output budget is chosen explicitly. */
 export const PRODUCT_APPRAISAL_NUM_PREDICT_V0 = 256 as const;
-/** Appraisal input is one small scene + task; a small explicit context budget suffices. */
-export const PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0 = 4096 as const;
+
+/**
+ * REPLY_CRITICAL_LATENCY_FORENSIC_V0 — EVERY product transport shares the ONE
+ * configured context budget (`CHARACTEROS_CONTEXT_WINDOW_TOKENS`).
+ *
+ * WHY: Ollama keys its resident runner by model + generation options. A visitor
+ * with a different `num_ctx` forces the server to rebuild the runner, and each
+ * rebuild was measured at ~9–11 s of `load_duration` (identical prompt/output
+ * tokens) — twice per turn whenever Appraisal used a 4096-token allocation while
+ * Cognition/Language used 8192. Unifying the allocation keeps ONE resident runner
+ * for all product calls. This changes no prompt, no schema, no output budget and
+ * no sampling option; the appraisal prompt (~490 tokens) fits either budget.
+ */
+export const PRODUCT_APPRAISAL_OUTPUT_BUDGET_NOTE_V0 =
+  "appraisal output budget stays 256; context budget is shared with cognition/language" as const;
 
 export interface ProductProviderConfigV0 {
   readonly base_url: string;
@@ -72,7 +85,8 @@ export function createProductTransportsV0(config: ProductProviderConfigV0): Prod
     model: config.model,
     timeout_ms: config.timeout_ms,
     num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
-    context_window_tokens: PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
+    // SAME context allocation as cognition/language ⇒ one resident Ollama runner.
+    context_window_tokens: config.context_window_tokens,
     trace_observer: (event) => {
       if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
         lastAppraisalTrace = structuredClone(event);

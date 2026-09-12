@@ -24,7 +24,6 @@ import {
   appraisalProviderFingerprintV0
 } from "./product-appraisal-reuse.js";
 import {
-  PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
   PRODUCT_APPRAISAL_NUM_PREDICT_V0,
   createProductTransportsV0,
   type ProductTransportsV0
@@ -59,6 +58,14 @@ export interface ProductProviderBundleV0 {
   readonly relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
   readonly turnPlan: ProductTurnPlanInputV0;
   readonly model: string;
+  /**
+   * The ONE context allocation shared by every product transport. Exposed as
+   * non-canonical observability so the "single resident runner" property is
+   * testable and visible.
+   */
+  readonly context_window_tokens: number;
+  /** Appraisal output budget (unchanged by the latency fix). */
+  readonly appraisal_num_predict: number;
   /**
    * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — turn-scoped reuse port shared by
    * the appraisal provider and the product turn lifecycle. `enabled` reflects
@@ -114,7 +121,8 @@ export function createProductProviderBundleV0(
       model,
       timeout_ms: configuration.timeout_ms.value,
       num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
-      context_window_tokens: PRODUCT_APPRAISAL_CONTEXT_WINDOW_TOKENS_V0,
+      // Shared allocation (see product-providers.ts): one resident runner.
+      context_window_tokens: configuration.context_window_tokens.value,
       system_prompt: PRODUCT_APPRAISAL_SYSTEM_PROMPT_V0
     }),
     () => diagnostics.noteReused("APPRAISAL")
@@ -144,6 +152,8 @@ export function createProductProviderBundleV0(
       personality_adaptation_enabled: false
     },
     model,
+    context_window_tokens: configuration.context_window_tokens.value,
+    appraisal_num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
     appraisalReuse
   };
 }
