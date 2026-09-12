@@ -29,6 +29,7 @@ import type {
   EnvironmentStateV0,
   PendingLifecycleWorkV0,
   SessionCheckpointV0,
+  SessionDurableIdentityV0,
   SessionInteractionOutcomeV0,
   SessionRestoreOutcomeV0,
   SubjectEnvironmentV0,
@@ -102,6 +103,12 @@ export class LongHorizonSubjectSessionV0 {
   private authority: ExplicitV4SessionAuthorityV0;
   private readonly options: LongHorizonSubjectSessionOptionsV0;
   private interactionIndex = 0;
+  /**
+   * Completed-interaction count that survives a restore. `outcomes` is only the
+   * in-process trace, so a restored session would otherwise report 0 completed
+   * interactions despite a positive interaction index.
+   */
+  private completedCount = 0;
   private readonly outcomes: SessionInteractionOutcomeV0[] = [];
   private readonly restores: SessionRestoreOutcomeV0[] = [];
   private readonly checkpoints: SessionCheckpointV0[] = [];
@@ -307,6 +314,7 @@ export class LongHorizonSubjectSessionV0 {
       };
       void primaryWork;
       this.outcomes.push(outcome);
+      this.completedCount += 1;
       this.interactionIndex = index + 1;
       return outcome;
     } catch (error) {
@@ -423,6 +431,22 @@ export class LongHorizonSubjectSessionV0 {
     return { request_hash: await sha256HashV1(body) };
   }
 
+  /**
+   * SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — observational pre-restore
+   * identity. In-process restore reads the live authority; a fresh process has
+   * no canonical state at all (its authority has no committed head), so the
+   * checkpoint's own durable identity is the only truthful baseline.
+   */
+  private async capturePreRestoreIdentityV0(
+    checkpoint: SessionCheckpointV0
+  ): Promise<SessionDurableIdentityV0> {
+    try {
+      return (await this.authority.captureDurableState([])).identity;
+    } catch {
+      return checkpoint.durable.identity;
+    }
+  }
+
   /** §17/§43 — durable checkpoint: subject authority + Memory + operational state. */
   async checkpoint(): Promise<SessionCheckpointV0> {
     await this.authority.completePendingLifecycleWork();
@@ -434,7 +458,7 @@ export class LongHorizonSubjectSessionV0 {
       session_id: this.options.session_id,
       subject_id: this.options.subject.subject_id,
       next_interaction_index: this.interactionIndex,
-      completed_interactions: this.outcomes.length,
+      completed_interactions: this.completedCount,
       environment_state: environment,
       durable
     });
@@ -443,7 +467,7 @@ export class LongHorizonSubjectSessionV0 {
       session_id: this.options.session_id,
       subject_id: this.options.subject.subject_id,
       next_interaction_index: this.interactionIndex,
-      completed_interactions: this.outcomes.length,
+      completed_interactions: this.completedCount,
       environment_state: environment,
       durable,
       created_at: createdAt,
@@ -455,9 +479,24 @@ export class LongHorizonSubjectSessionV0 {
 
   /** §41/§42 — authoritative restore: rebuild fresh authority + operational state. */
   async restore(checkpoint: SessionCheckpointV0): Promise<SessionRestoreOutcomeV0> {
+    return this.restoreFromSource(checkpoint, this.authority.durableSource());
+  }
+
+  /**
+   * SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — the SAME authoritative restore
+   * law as `restore()`, but the durable store source (Memory repository image +
+   * committed bundles) is supplied by the host. A fresh process has no live
+   * in-memory store, so `restore()` alone cannot resume a persisted subject;
+   * this additive seam lets a product host rebuild the source from a persisted
+   * store image and restore identically. Processing/checkpoint semantics are
+   * unchanged, and the existing `restore()` delegates here.
+   */
+  async restoreFromSource(
+    checkpoint: SessionCheckpointV0,
+    source: ReturnType<ExplicitV4SessionAuthorityV0["durableSource"]>
+  ): Promise<SessionRestoreOutcomeV0> {
     const envBefore = this.options.environment.exportState();
-    const pre = await this.authority.captureDurableState([]);
-    const source = this.authority.durableSource();
+    const preIdentity = await this.capturePreRestoreIdentityV0(checkpoint);
     const deliveryLedger = new InMemoryConversationDeliveryLedger();
     const deliveryRestore = await (deliveryLedger as unknown as { restoreState(state: unknown): Promise<{ ok: boolean }> }).restoreState(checkpoint.durable.delivery_ledger_state);
     const ingressLedger = new InMemoryConversationIngressLedger();
@@ -468,8 +507,8 @@ export class LongHorizonSubjectSessionV0 {
         checkpoint_ref: checkpoint.checkpoint_ref,
         restore_generation: this.restores.length + 1,
         next_interaction_index: this.interactionIndex,
-        pre: pre.identity,
-        post: pre.identity,
+        pre: preIdentity,
+        post: preIdentity,
         environment_state_hash_pre: envBefore.state_hash,
         environment_state_hash_post: envBefore.state_hash,
         identity_classification: "FAILURE",
@@ -498,8 +537,8 @@ export class LongHorizonSubjectSessionV0 {
         checkpoint_ref: checkpoint.checkpoint_ref,
         restore_generation: this.restores.length + 1,
         next_interaction_index: this.interactionIndex,
-        pre: pre.identity,
-        post: pre.identity,
+        pre: preIdentity,
+        post: preIdentity,
         environment_state_hash_pre: envBefore.state_hash,
         environment_state_hash_post: envBefore.state_hash,
         identity_classification: "FAILURE",
@@ -512,6 +551,7 @@ export class LongHorizonSubjectSessionV0 {
     this.authority = rebuilt.authority;
     this.options.environment.restoreState(checkpoint.environment_state);
     this.interactionIndex = checkpoint.next_interaction_index;
+    this.completedCount = checkpoint.completed_interactions;
     const post = await this.authority.captureDurableState([]);
     const envAfter = this.options.environment.exportState();
     const classification = post.identity.subject_state_hash === checkpoint.durable.identity.subject_state_hash &&
@@ -524,7 +564,7 @@ export class LongHorizonSubjectSessionV0 {
       checkpoint_ref: checkpoint.checkpoint_ref,
       restore_generation: this.restores.length + 1,
       next_interaction_index: this.interactionIndex,
-      pre: pre.identity,
+      pre: preIdentity,
       post: post.identity,
       environment_state_hash_pre: envBefore.state_hash,
       environment_state_hash_post: envAfter.state_hash,
@@ -544,7 +584,7 @@ export class LongHorizonSubjectSessionV0 {
       subject_id: this.options.subject.subject_id,
       environment_id: this.options.environment.environment_id,
       interaction_index: this.interactionIndex,
-      completed_interactions: this.outcomes.filter((outcome) => outcome.status === "COMPLETE").length,
+      completed_interactions: this.completedCount,
       interaction_count: this.options.environment.interaction_count,
       logical_time: snapshot.runtime_metadata.logical_time as number,
       state_revision: snapshot.runtime_metadata.state_revision as number,
@@ -566,6 +606,15 @@ export class LongHorizonSubjectSessionV0 {
 
   ledger(): readonly SessionInteractionOutcomeV0[] {
     return [...this.outcomes];
+  }
+
+  /**
+   * SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — the durable store face
+   * (Memory repository + committed bundles) a host must persist as part of a
+   * restart bundle. Read-only; no semantics.
+   */
+  durableSource(): ReturnType<ExplicitV4SessionAuthorityV0["durableSource"]> {
+    return this.authority.durableSource();
   }
 
   pendingWork(): readonly PendingLifecycleWorkV0[] {

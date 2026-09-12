@@ -27,6 +27,7 @@ import {
   ModelRelationshipFamiliarityQualifyingAdmissionProviderV0,
   OllamaBeliefSemanticProviderV0
 } from "@characteros-next/runtime";
+import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
@@ -82,6 +83,51 @@ async function main(): Promise<number> {
   // CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0: one model-backed appraisal call per
   // factual event, accounted separately from cognition/language.
   const appraisal = createProductAppraisalProviderV0({ transport: transports.appraisal });
+
+  // SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 — optional deterministic
+  // environment mode. It reuses the SAME provider transports and the frozen
+  // long-horizon environment session; it is not the human-conversation host.
+  if (process.argv[2] === "environment") {
+    const subjectId = env("CHARACTEROS_SUBJECT_ID") ?? "alice";
+    const interactions = Number.parseInt(process.argv[3] ?? env("CHARACTEROS_ENVIRONMENT_INTERACTIONS") ?? "4", 10);
+    const host = await EnvironmentSubjectHostV0.open(
+      {
+        subject_id: subjectId,
+        display_name: env("CHARACTEROS_DISPLAY_NAME") ?? "Alice",
+        session_id: `environment-${subjectId}`,
+        storage_root: dataDir,
+        interaction_interval_ticks: intEnv("CHARACTEROS_INTERVAL_TICKS", 1)
+      },
+      {
+        conversationCognitionTransport: transports.cognition,
+        languageTransport: transports.language,
+        factualEventAppraisalProvider: appraisal.provider,
+        provider_identity: {
+          model,
+          num_predict: numPredict,
+          context_window_tokens: contextWindowTokens,
+          last_trace: transports.lastCognitionTrace
+        },
+        clock: () => new Date().toISOString()
+      }
+    );
+    console.log(`environment: ${host.environmentId()} (${host.resolution()})`);
+    for (let i = 0; i < interactions; i++) {
+      const outcome = await host.processNextInteraction();
+      console.log(
+        `  [${outcome.interaction_index}] ${outcome.status} env=${outcome.environment_state_hash_after} ` +
+          `behavior=${JSON.stringify(outcome.behavior_text.slice(0, 80))} episode=${outcome.episode_ref ?? "(none)"}`
+      );
+      if (outcome.status !== "COMPLETE") break;
+    }
+    const status = await host.status();
+    console.log(
+      `done: interaction_index=${status.interaction_index}/${status.interaction_count} ` +
+        `state_revision=${status.state_revision} repository=${status.repository_revision} ` +
+        `environment_state=${host.environmentState().state_hash}`
+    );
+    return 0;
+  }
 
   // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
   // semantic bearing call per lived-evidence workflow, accounted separately
