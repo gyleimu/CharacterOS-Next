@@ -81,6 +81,11 @@ export function createProductProviderBundleV0(
     "RELATIONSHIP_ADAPTATION",
     diagnostics
   );
+  // Every stage this bundle wires is CONFIGURED before its first call, so
+  // diagnostics never present a wired stage as "not configured".
+  for (const stage of ["APPRAISAL", "COGNITION", "LANGUAGE", "RELATIONSHIP_ADAPTATION"] as const) {
+    diagnostics.enable(stage);
+  }
   if (!configuration.disable_adaptation.value) {
     diagnostics.enable("BELIEF_ADAPTATION");
   }

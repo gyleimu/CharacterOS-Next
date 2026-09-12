@@ -36,6 +36,8 @@ import {
   wrapTransportForStageV0,
   type ProductTurnPlanInputV0
 } from "./provider-diagnostics.js";
+import { createProductProviderBundleV0 } from "./product-provider-bundle.js";
+import { environmentFromRecordV0, resolveProductConfigurationV0 } from "./product-configuration.js";
 
 const SUBJECT_ID = "progress-subject";
 const APPRAISAL_MS = 1000;
@@ -382,6 +384,26 @@ describe("CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0 — plan an
     // DISABLED stages are never pending work.
     diagnostics.noteReported("PERSONALITY_ADAPTATION", "DISABLED", "not configured");
     expect(diagnostics.last("PERSONALITY_ADAPTATION").status).toBe("DISABLED");
+  });
+
+  it("D7: a configured product bundle marks wired stages CONFIGURED, never DISABLED", () => {
+    const configuration = resolveProductConfigurationV0({
+      environment: environmentFromRecordV0({}),
+      default_data_root: "D:\\data"
+    });
+    const bundle = createProductProviderBundleV0({ configuration, write: () => undefined });
+    const statusOf = (stage: string): string | undefined =>
+      bundle.diagnostics.snapshot().stages.find((record) => record.stage === stage)?.status;
+    // Wired but not yet called in this process:
+    expect(statusOf("APPRAISAL")).toBe("CONFIGURED");
+    expect(statusOf("COGNITION")).toBe("CONFIGURED");
+    expect(statusOf("LANGUAGE")).toBe("CONFIGURED");
+    expect(statusOf("RELATIONSHIP_ADAPTATION")).toBe("CONFIGURED");
+    expect(statusOf("BELIEF_ADAPTATION")).toBe("CONFIGURED");
+    // Genuinely not part of this product configuration:
+    expect(statusOf("PERSONALITY_ADAPTATION")).toBe("DISABLED");
+    expect(bundle.diagnostics.formatLines().join("\n")).toContain("APPRAISAL: CONFIGURED (not yet called)");
+    expect(bundle.turnPlan.relationship_adaptation_enabled).toBe(true);
   });
 
   it("T4: latency samples and last-turn timing are process-local and reset on restart", () => {

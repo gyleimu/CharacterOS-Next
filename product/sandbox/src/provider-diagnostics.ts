@@ -34,7 +34,7 @@ export type ProviderFailureCategoryV0 =
   | "PROVIDER_REJECTED_OUTPUT"
   | "PROVIDER_INTERNAL_ERROR";
 
-export type ProviderStageStatusV0 = "DISABLED" | "RUNNING" | "OK" | "FAILED" | "SKIPPED";
+export type ProviderStageStatusV0 = "DISABLED" | "CONFIGURED" | "RUNNING" | "OK" | "FAILED" | "SKIPPED";
 
 export interface ProviderStageRecordV0 {
   readonly stage: ProviderStageV0;
@@ -51,6 +51,31 @@ export const REPLY_PATH_STAGES_V0: readonly ProviderStageV0[] = Object.freeze([
   "COGNITION",
   "LANGUAGE"
 ]);
+
+/** Canonical operator display order for every product-observed stage. */
+export const PROVIDER_STAGES_V0: readonly ProviderStageV0[] = Object.freeze([
+  "APPRAISAL",
+  "BELIEF_ADAPTATION",
+  "PERSONALITY_ADAPTATION",
+  "RELATIONSHIP_ADAPTATION",
+  "COGNITION",
+  "LANGUAGE"
+]);
+
+/** Structured, bounded diagnostics snapshot (the same truth as formatLines). */
+export interface ProviderDiagnosticsSnapshotV0 {
+  readonly model: string;
+  readonly timeout_ms: number;
+  readonly stages: readonly ProviderStageRecordV0[];
+  readonly samples: readonly ProviderStageSampleV0WithStageV0[];
+  readonly last_turn: ProviderTurnTimingV0 | null;
+}
+
+export interface ProviderStageSampleV0WithStageV0 {
+  readonly stage: ProviderStageV0;
+  readonly last_ms: number;
+  readonly count: number;
+}
 
 /**
  * Expected stage plan for ONE product turn. Read-only description of what the
@@ -318,11 +343,20 @@ export class ProviderDiagnosticsV0 {
     }
   }
 
-  /** Marks a stage as ENABLED (configured) without a call yet. */
+  /**
+   * Marks a stage as CONFIGURED without a call yet. Distinct from DISABLED so a
+   * visual client never reads a wired-but-not-yet-called stage as "not
+   * configured" (and vice versa).
+   */
   enable(stage: ProviderStageV0): void {
-    if (stage === "BELIEF_ADAPTATION" || stage === "PERSONALITY_ADAPTATION") {
-      this.records.set(stage, { stage, status: "OK", latency_ms: null, category: null, error_code: null, detail: "configured" });
-    }
+    this.records.set(stage, {
+      stage,
+      status: "CONFIGURED",
+      latency_ms: null,
+      category: null,
+      error_code: null,
+      detail: "configured"
+    });
   }
 
   // ---- process-local latency samples -----------------------------------------
@@ -591,16 +625,37 @@ export class ProviderDiagnosticsV0 {
     return this.records.get(stage) ?? disabled(stage);
   }
 
+  /**
+   * Structured view of the SAME records `formatLines` renders (one truth for the
+   * CLI text and any visual client). Contains no prompts, user text or Memory.
+   */
+  snapshot(): ProviderDiagnosticsSnapshotV0 {
+    return {
+      model: this.options.model,
+      timeout_ms: this.options.timeout_ms,
+      stages: PROVIDER_STAGES_V0.map((stage) => this.last(stage)),
+      samples: PROVIDER_STAGES_V0.flatMap((stage) => {
+        const sample = this.samples.get(stage);
+        return sample === undefined ? [] : [{ stage, last_ms: sample.last_ms, count: sample.count }];
+      }),
+      last_turn: this.lastTurnTimingValue
+    };
+  }
+
   formatLines(): readonly string[] {
     const lines = [
       `Provider: ${this.options.model}`,
       `Configured timeout: ${this.options.timeout_ms} ms`,
       "Stages:"
     ];
-    for (const stage of ["APPRAISAL", "BELIEF_ADAPTATION", "PERSONALITY_ADAPTATION", "RELATIONSHIP_ADAPTATION", "COGNITION", "LANGUAGE"] as const) {
+    for (const stage of PROVIDER_STAGES_V0) {
       const record = this.last(stage);
       if (record.status === "DISABLED") {
         lines.push(`  ${stage}: DISABLED (not configured)`);
+        continue;
+      }
+      if (record.status === "CONFIGURED") {
+        lines.push(`  ${stage}: CONFIGURED (not yet called)`);
         continue;
       }
       const latency = record.latency_ms === null ? "n/a" : formatLatencyV0(record.latency_ms);
@@ -610,7 +665,7 @@ export class ProviderDiagnosticsV0 {
     }
     lines.push("Local latency samples (process-local, resets on restart):");
     let anySample = false;
-    for (const stage of ["APPRAISAL", "BELIEF_ADAPTATION", "PERSONALITY_ADAPTATION", "RELATIONSHIP_ADAPTATION", "COGNITION", "LANGUAGE"] as const) {
+    for (const stage of PROVIDER_STAGES_V0) {
       const sample = this.samples.get(stage);
       if (sample === undefined) continue;
       anySample = true;

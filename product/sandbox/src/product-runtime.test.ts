@@ -311,6 +311,128 @@ describe("CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — product runtime facade", (
     expect((badConfig as ProductRuntimeStartupErrorV0).guidance.join("\n")).toContain("CHARACTEROS_TIMEOUT_MS");
   });
 
+  it("D2+D3: a FIRST external observation creates lawful lived history; REPLAY does not duplicate it", async () => {
+    const dir = makeTempDir();
+    const runtime = await openRuntime(dir, fakeBundle());
+    await runtime.submitHumanText("Establish a life first.");
+
+    const first = await runtime.submitExternalObservation({
+      source: "camera-front-door",
+      event: "person-entered-001",
+      entities: "alice",
+      scene: "Alice entered the room.",
+      task: "Observe the current situation."
+    });
+    expect(first.kind).toBe("FIRST");
+    const afterFirst = await runtime.livedMemory(10);
+
+    const replay = await runtime.submitExternalObservation({
+      source: "camera-front-door",
+      event: "person-entered-001",
+      entities: "alice",
+      scene: "Alice entered the room.",
+      task: "Observe the current situation."
+    });
+    expect(replay.kind).toBe("REPLAY");
+    const afterReplay = await runtime.livedMemory(10);
+    // A replay is idempotent: no second lived experience.
+    expect(afterReplay.total_episode_count).toBe(afterFirst.total_episode_count);
+
+    const conflict = await runtime.submitExternalObservation({
+      source: "camera-front-door",
+      event: "person-entered-001",
+      entities: "alice",
+      scene: "A different scene under the same event identity."
+    });
+    expect(conflict.kind).toBe("CONFLICT");
+
+    const invalid = await runtime.submitExternalObservation({
+      source: "camera-front-door",
+      event: "person-entered-002",
+      entities: "alice"
+    });
+    expect(invalid.kind).toBe("INVALID");
+    await runtime.shutdown();
+  });
+
+  it("D4: environment interaction runs deterministically over the SAME subject", async () => {
+    const dir = makeTempDir();
+    const runtime = await openRuntime(dir, fakeBundle());
+    await runtime.submitHumanText("Establish a life first.");
+    const before = await runtime.livedMemory(100);
+    const run = await runtime.runEnvironmentInteraction(1);
+    expect(run.requested).toBe(1);
+    expect(run.completed).toBe(1);
+    expect(run.outcomes.length).toBe(1);
+    const after = await runtime.livedMemory(100);
+    expect(after.total_episode_count).toBeGreaterThan(before.total_episode_count);
+    await runtime.shutdown();
+  });
+
+  it("D5: canonical ticks advance visibly and 0 is a lawful NO_OP", async () => {
+    const dir = makeTempDir();
+    const runtime = await openRuntime(dir, fakeBundle());
+    await runtime.submitHumanText("Establish a life first.");
+    const before = await runtime.status();
+
+    const noop = await runtime.advanceCanonicalTime(0);
+    expect(noop.no_op).toBe(true);
+    expect(noop.logical_time_after).toBe(before.logical_time);
+
+    const advanced = await runtime.advanceCanonicalTime(5);
+    expect(advanced.no_op).toBe(false);
+    expect(advanced.logical_time_after).toBe(before.logical_time + 5);
+    const after = await runtime.status();
+    expect(after.logical_time).toBe(before.logical_time + 5);
+    await runtime.shutdown();
+  });
+
+  it("D6: the configuration view is read-only, sourced, and redacts endpoint credentials", async () => {
+    const dir = makeTempDir();
+    const runtime = await createProductRuntimeV0({
+      data_root: dir,
+      subject: { display_name: "Mira" },
+      provider_bundle: fakeBundle().bundle,
+      probe: READY_PROBE,
+      environment: environmentFromRecordV0({
+        OLLAMA_BASE_URL: "http://user:sup3rsecret@127.0.0.1:11434",
+        CHARACTEROS_TIMEOUT_MS: "60000"
+      }),
+      clock: () => "2026-01-01T00:00:00.000Z"
+    });
+    const view = runtime.configView();
+    expect(view.read_only).toBe(true);
+    expect(view.model.value).toBe("qwen3.5:9b");
+    expect(view.timeout_ms).toEqual({ value: "60000", source: "ENVIRONMENT", origin: "CHARACTEROS_TIMEOUT_MS" });
+    expect(view.endpoint.source).toBe("ENVIRONMENT");
+    const serialized = JSON.stringify(view);
+    expect(serialized).not.toContain("sup3rsecret");
+    expect(serialized).not.toContain("user:");
+    expect(view.data_root_contains.length).toBeGreaterThan(0);
+    await runtime.shutdown();
+  });
+
+  it("D7: the diagnostics view is structured, bounded, and prompt-free", async () => {
+    const dir = makeTempDir();
+    const harness = fakeBundle();
+    const runtime = await openRuntime(dir, harness);
+    await runtime.submitHumanText("Establish a life first.");
+    const diagnostics = runtime.diagnosticsView();
+    expect(diagnostics).not.toBeNull();
+    // The diagnostics owner is the injected bundle (model "fake" here); in the
+    // product the bundle is built from the resolved configuration.
+    expect(diagnostics?.model).toBe("fake");
+    const stages = diagnostics?.stages ?? [];
+    expect(stages.some((record) => record.stage === "COGNITION" && record.status === "OK")).toBe(true);
+    expect(stages.some((record) => record.stage === "PERSONALITY_ADAPTATION" && record.status === "DISABLED")).toBe(true);
+    expect(diagnostics?.last_turn?.status).toBe("COMPLETE");
+    expect(diagnostics?.samples.some((sample) => sample.stage === "COGNITION")).toBe(true);
+    const serialized = JSON.stringify(diagnostics);
+    expect(serialized).not.toMatch(/prompt|user_text|memory_context|raw_cognition/i);
+    expect(serialized).not.toContain("Establish a life first.");
+    await runtime.shutdown();
+  });
+
   it("W10: the facade exposes no canonical mutation surface and no provider call of its own", async () => {
     const dir = makeTempDir();
     const harness = fakeBundle();

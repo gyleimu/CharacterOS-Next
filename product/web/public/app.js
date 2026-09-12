@@ -402,6 +402,305 @@ el.composer.addEventListener("submit", (event) => {
   void sendMessage(text);
 });
 
+// --- World & settings drawer (secondary; hidden by default) -------------------
+// Everything here calls the existing bounded product operations. The drawer is
+// never authoritative: after any mutation it re-fetches authoritative views.
+
+const drawer = {
+  panel: document.getElementById("drawer"),
+  toggle: document.getElementById("drawer-toggle"),
+  close: document.getElementById("drawer-close"),
+  refresh: document.getElementById("refresh-read-views"),
+  observationForm: document.getElementById("observation-form"),
+  observationResult: document.getElementById("observation-result"),
+  environmentForm: document.getElementById("environment-form"),
+  environmentResult: document.getElementById("environment-result"),
+  timeForm: document.getElementById("time-form"),
+  timeResult: document.getElementById("time-result"),
+  configView: document.getElementById("config-view"),
+  diagnosticsView: document.getElementById("diagnostics-view"),
+  loaded: false
+};
+
+function setDrawerOpen(open) {
+  drawer.panel.hidden = !open;
+  drawer.toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  if (open && !drawer.loaded) {
+    drawer.loaded = true;
+    void refreshReadOnlyViews();
+  }
+}
+
+function setResult(target, tone, text, details) {
+  target.textContent = "";
+  target.className = `result result-${tone}`;
+  const strong = document.createElement("strong");
+  strong.textContent = text;
+  target.appendChild(strong);
+  if (details !== undefined) {
+    const summary = document.createElement("details");
+    const caption = document.createElement("summary");
+    caption.textContent = "Details";
+    const body = document.createElement("div");
+    body.className = "kv";
+    for (const [label, value] of Object.entries(details)) {
+      const row = document.createElement("div");
+      row.className = "kv-row";
+      const key = document.createElement("span");
+      key.textContent = label;
+      const val = document.createElement("span");
+      val.textContent = String(value);
+      row.append(key, val);
+      body.appendChild(row);
+    }
+    summary.append(caption, body);
+    target.appendChild(summary);
+  }
+}
+
+async function readProductResponse(response) {
+  let body;
+  try {
+    body = await response.json();
+  } catch {
+    body = null;
+  }
+  return { ok: response.ok && body !== null && body.ok === true, status: response.status, body };
+}
+
+function failureMessage(body, status) {
+  if (body && typeof body.message === "string") return body.message;
+  return `Request failed (${status}).`;
+}
+
+async function refreshReadOnlyViews() {
+  try {
+    const [config, diagnostics] = await Promise.all([api("/api/config"), api("/api/diagnostics")]);
+    renderConfig(config.config);
+    renderDiagnostics(diagnostics.diagnostics);
+  } catch (error) {
+    setResult(drawer.configView, "bad", error instanceof Error ? error.message : "Read-only views unavailable.");
+  }
+}
+
+function kvRow(label, value) {
+  const row = document.createElement("div");
+  row.className = "kv-row";
+  const key = document.createElement("span");
+  key.textContent = label;
+  const val = document.createElement("span");
+  val.textContent = value;
+  row.append(key, val);
+  return row;
+}
+
+function renderConfig(config) {
+  drawer.configView.textContent = "";
+  if (config === null || config === undefined) {
+    drawer.configView.appendChild(kvRow("Configuration", "unavailable"));
+    return;
+  }
+  const settings = [
+    ["Model", config.model],
+    ["Endpoint", config.endpoint],
+    ["Timeout", config.timeout_ms],
+    ["Context window tokens", config.context_window_tokens],
+    ["Max output tokens", config.num_predict],
+    ["Data root", config.data_root]
+  ];
+  for (const [label, entry] of settings) {
+    const group = document.createElement("div");
+    group.className = "kv-group";
+    group.appendChild(kvRow(label, entry.value));
+    const source = document.createElement("div");
+    source.className = "kv-sub";
+    source.textContent = `source: ${entry.source} (${entry.origin})`;
+    group.appendChild(source);
+    drawer.configView.appendChild(group);
+  }
+  const subject = document.createElement("div");
+  subject.className = "kv-group";
+  subject.appendChild(kvRow("Subject", `${config.subject.display_name} (${config.subject.subject_id})`));
+  const subjectSource = document.createElement("div");
+  subjectSource.className = "kv-sub";
+  subjectSource.textContent = `source: ${config.subject.identity_source} (${config.subject.identity_origin})`;
+  subject.appendChild(subjectSource);
+  drawer.configView.appendChild(subject);
+  const readOnly = document.createElement("div");
+  readOnly.className = "note";
+  readOnly.textContent = "Read-only: this drawer never changes configuration.";
+  drawer.configView.appendChild(readOnly);
+}
+
+function renderDiagnostics(diagnostics) {
+  drawer.diagnosticsView.textContent = "";
+  if (diagnostics === null || diagnostics === undefined) {
+    drawer.diagnosticsView.appendChild(kvRow("Diagnostics", "unavailable"));
+    return;
+  }
+  drawer.diagnosticsView.appendChild(kvRow("Model", diagnostics.model));
+  drawer.diagnosticsView.appendChild(kvRow("Configured timeout", `${diagnostics.timeout_ms} ms`));
+  for (const record of diagnostics.stages) {
+    const group = document.createElement("div");
+    group.className = "kv-group";
+    const latency = typeof record.latency_ms === "number" ? ` · ${(record.latency_ms / 1000).toFixed(1)} s` : "";
+    group.appendChild(kvRow(record.stage, `${record.status}${latency}`));
+    const detail = record.category ?? record.detail;
+    if (detail !== null && detail !== undefined) {
+      const sub = document.createElement("div");
+      sub.className = "kv-sub";
+      sub.textContent = String(detail);
+      group.appendChild(sub);
+    }
+    drawer.diagnosticsView.appendChild(group);
+  }
+  if (Array.isArray(diagnostics.samples) && diagnostics.samples.length > 0) {
+    const samples = document.createElement("div");
+    samples.className = "kv-group";
+    samples.appendChild(kvRow("Local samples", "process-local (reset on restart)"));
+    for (const sample of diagnostics.samples) {
+      const sub = document.createElement("div");
+      sub.className = "kv-sub";
+      sub.textContent = `${sample.stage}: last ${(sample.last_ms / 1000).toFixed(1)} s (${sample.count})`;
+      samples.appendChild(sub);
+    }
+    drawer.diagnosticsView.appendChild(samples);
+  }
+  if (diagnostics.last_turn !== null && diagnostics.last_turn !== undefined) {
+    const turn = diagnostics.last_turn;
+    const group = document.createElement("div");
+    group.className = "kv-group";
+    group.appendChild(kvRow("Last turn", `${turn.status} · provider ${(turn.provider_ms / 1000).toFixed(1)} s`));
+    const sub = document.createElement("div");
+    sub.className = "kv-sub";
+    sub.textContent =
+      `reply ${(turn.reply_ms / 1000).toFixed(1)} s` +
+      (turn.prior_reply_ms > 0 ? ` · prior-reply ${(turn.prior_reply_ms / 1000).toFixed(1)} s` : "") +
+      ` · adaptation ${(turn.adaptation_ms / 1000).toFixed(1)} s` +
+      (turn.skipped.length > 0 ? ` · skipped ${turn.skipped.join(", ")}` : "");
+    group.appendChild(sub);
+    drawer.diagnosticsView.appendChild(group);
+  }
+  const note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "No prompts, user text or Memory content are exposed here.";
+  drawer.diagnosticsView.appendChild(note);
+}
+
+drawer.toggle.addEventListener("click", () => setDrawerOpen(drawer.panel.hidden));
+drawer.close.addEventListener("click", () => setDrawerOpen(false));
+drawer.refresh.addEventListener("click", () => void refreshReadOnlyViews());
+
+drawer.observationForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  void submitObservation();
+});
+
+async function submitObservation() {
+  const payload = {
+    source: document.getElementById("obs-source").value.trim(),
+    event: document.getElementById("obs-event").value.trim(),
+    entities: document.getElementById("obs-entities").value.trim(),
+    scene: document.getElementById("obs-scene").value.trim(),
+    task: document.getElementById("obs-task").value.trim()
+  };
+  const response = await fetch("/api/observation", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const { ok, status, body } = await readProductResponse(response);
+  if (!ok) {
+    setResult(drawer.observationResult, "bad", "Not accepted.", { reason: failureMessage(body, status) });
+    return;
+  }
+  const outcome = body.outcome;
+  if (outcome.kind === "FIRST") {
+    setResult(drawer.observationResult, "ok", "External observation recorded.", {
+      observation_ref: outcome.observation_ref,
+      episode_ref: outcome.episode_ref,
+      base_revision: outcome.base_revision
+    });
+  } else if (outcome.kind === "REPLAY") {
+    setResult(drawer.observationResult, "warn", "Already recorded — no new lived experience.", {
+      observation_ref: outcome.observation_ref,
+      base_revision: outcome.base_revision
+    });
+  } else if (outcome.kind === "CONFLICT") {
+    setResult(drawer.observationResult, "bad", "Refused: the same event identity arrived with different content.", {
+      detail: outcome.detail
+    });
+  } else {
+    setResult(drawer.observationResult, "bad", "Not accepted.", { detail: outcome.detail });
+    return;
+  }
+  await refreshViews();
+}
+
+drawer.environmentForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  void submitEnvironment();
+});
+
+async function submitEnvironment() {
+  const count = Number.parseInt(document.getElementById("env-count").value, 10);
+  const response = await fetch("/api/environment", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ count })
+  });
+  const { ok, status, body } = await readProductResponse(response);
+  if (!ok) {
+    setResult(drawer.environmentResult, "bad", "Not accepted.", { reason: failureMessage(body, status) });
+    return;
+  }
+  const run = body.environment;
+  setResult(
+    drawer.environmentResult,
+    run.completed === run.requested ? "ok" : "warn",
+    `Environment interaction complete: ${run.completed} of ${run.requested}.`,
+    {
+      environment: `${run.environment_id} (${run.resolution})`,
+      episodes: run.outcomes.map((outcome) => outcome.episode_ref ?? "(none)").join(", "),
+      state_revision: run.state_revision,
+      repository_revision: run.repository_revision
+    }
+  );
+  await refreshViews();
+}
+
+drawer.timeForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  void submitTime();
+});
+
+async function submitTime() {
+  const ticks = Number.parseInt(document.getElementById("time-ticks").value, 10);
+  const response = await fetch("/api/time", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ ticks })
+  });
+  const { ok, status, body } = await readProductResponse(response);
+  if (!ok) {
+    setResult(drawer.timeResult, "bad", "Not accepted.", { reason: failureMessage(body, status) });
+    return;
+  }
+  const time = body.time;
+  if (time.no_op) {
+    setResult(drawer.timeResult, "warn", "NO_OP — canonical time and Affect unchanged.", {
+      logical_time: time.logical_time_after
+    });
+  } else {
+    setResult(drawer.timeResult, "ok", `Advanced ${time.ticks} canonical ticks.`, {
+      logical_time: `${time.logical_time_before} → ${time.logical_time_after}`,
+      valence: `${time.valence_before} → ${time.valence_after}`,
+      activation: `${time.activation_before} → ${time.activation_after}`
+    });
+  }
+  await refreshViews();
+}
+
 async function main() {
   try {
     await refreshViews();

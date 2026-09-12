@@ -12,9 +12,20 @@
         <span class="brand-name">CharacterOS</span>
         <span class="brand-sub">one persistent subject</span>
       </div>
-      <div class="provider" id="provider-chip" aria-live="polite">
-        <span class="dot dot-unknown" id="provider-dot"></span>
-        <span id="provider-text">connecting…</span>
+      <div class="topbar-right">
+        <div class="provider" id="provider-chip" aria-live="polite">
+          <span class="dot dot-unknown" id="provider-dot"></span>
+          <span id="provider-text">connecting…</span>
+        </div>
+        <button
+          type="button"
+          class="ghost"
+          id="drawer-toggle"
+          aria-expanded="false"
+          aria-controls="drawer"
+        >
+          World &amp; settings
+        </button>
       </div>
     </header>
 
@@ -78,6 +89,56 @@
         <div id="life" class="life"></div>
       </aside>
     </main>
+
+    <aside class="drawer" id="drawer" aria-label="World and settings" hidden>
+      <div class="drawer-head">
+        <h2>World &amp; settings</h2>
+        <button type="button" class="ghost" id="drawer-close">Close</button>
+      </div>
+      <div class="drawer-body">
+        <section class="drawer-section" aria-labelledby="world-heading">
+          <h3 id="world-heading">World</h3>
+          <p class="note">
+            Non-conversational experiences and explicit canonical time. Recorded evidence, never an
+            objective-truth claim.
+          </p>
+
+          <h4>External observation</h4>
+          <form class="form" id="observation-form">
+            <label>Source <input id="obs-source" name="source" autocomplete="off" placeholder="camera-front-door" /></label>
+            <label>Event <input id="obs-event" name="event" autocomplete="off" placeholder="person-entered-001" /></label>
+            <label>Entities <input id="obs-entities" name="entities" autocomplete="off" placeholder="alice" /></label>
+            <label>Scene <textarea id="obs-scene" name="scene" rows="2" placeholder="Alice entered the room."></textarea></label>
+            <label>Task <input id="obs-task" name="task" autocomplete="off" placeholder="Observe the current situation." /></label>
+            <button type="submit">Submit external observation</button>
+          </form>
+          <div class="result" id="observation-result" role="status"></div>
+
+          <h4>Environment</h4>
+          <form class="form form-inline" id="environment-form">
+            <label>Count <input id="env-count" type="number" min="1" max="100" value="1" /></label>
+            <button type="submit">Run environment interaction</button>
+          </form>
+          <div class="result" id="environment-result" role="status"></div>
+
+          <h4>Canonical time</h4>
+          <form class="form form-inline" id="time-form">
+            <label>Canonical ticks <input id="time-ticks" type="number" min="0" value="10" /></label>
+            <button type="submit">Advance canonical ticks</button>
+          </form>
+          <div class="result" id="time-result" role="status"></div>
+        </section>
+
+        <section class="drawer-section" aria-labelledby="settings-heading">
+          <h3 id="settings-heading">Settings / diagnostics</h3>
+          <h4>Configuration (read-only)</h4>
+          <div class="kv" id="config-view"></div>
+          <h4>Provider diagnostics (read-only)</h4>
+          <div class="kv" id="diagnostics-view"></div>
+          <button type="button" class="ghost" id="refresh-read-views">Refresh read-only views</button>
+        </section>
+      </div>
+    </aside>
 
     <script type="module" src="/app.js"></script>
   </body>

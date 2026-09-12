@@ -25,10 +25,16 @@ import type {
   InteractiveSubjectStatusV0,
   InstrumentedTurnResultV0,
   LivedMemoryInspectionV0,
+  ProductCanonicalTimeResultV0,
+  ProductConfigViewV0,
+  ProductEnvironmentResultV0,
   ProductLifeViewV0,
+  ProductObservationFieldsV0,
+  ProductObservationOutcomeV0,
   ProductRuntimeBootstrapV0,
   ProductStateViewV0,
   ProductTurnResultV0,
+  ProviderDiagnosticsSnapshotV0,
   ProviderProgressEventV0
 } from "@characteros-next/sandbox";
 
@@ -38,6 +44,10 @@ export const WEB_MAX_BODY_BYTES_V0 = 64 * 1024;
 export const WEB_MAX_TEXT_LENGTH_V0 = 8000;
 export const WEB_DEFAULT_MEMORY_LIMIT_V0 = 10;
 export const WEB_MAX_MEMORY_LIMIT_V0 = 100;
+export const WEB_MAX_ENVIRONMENT_INTERACTIONS_V0 = 100;
+export const WEB_MAX_CANONICAL_TICKS_V0 = 1_000_000;
+export const WEB_MAX_OBSERVATION_FIELD_V0 = 200;
+export const WEB_MAX_OBSERVATION_SCENE_V0 = 2000;
 
 /** The narrow product surface the visual client needs (satisfied by ProductRuntimeV0). */
 export interface ProductWebRuntimePortV0 {
@@ -49,6 +59,13 @@ export interface ProductWebRuntimePortV0 {
   submitHumanText(text: string): Promise<InstrumentedTurnResultV0>;
   summarizeTurn(result: InstrumentedTurnResultV0): ProductTurnResultV0;
   subscribe(listener: (event: ProviderProgressEventV0) => void): () => void;
+  // CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0 — bounded World /
+  // Settings read-and-act operations over already-frozen product services.
+  submitExternalObservation(fields: ProductObservationFieldsV0): Promise<ProductObservationOutcomeV0>;
+  runEnvironmentInteraction(count: number): Promise<ProductEnvironmentResultV0>;
+  advanceCanonicalTime(ticks: number): Promise<ProductCanonicalTimeResultV0>;
+  configView(): ProductConfigViewV0;
+  diagnosticsView(): ProviderDiagnosticsSnapshotV0 | null;
 }
 
 export interface ProductWebServerOptionsV0 {
@@ -125,6 +142,51 @@ async function readBoundedBodyV0(
     });
     req.on("error", reject);
   });
+}
+
+/** Reads the bounded structured-observation form fields (types/lengths only). */
+function readObservationFieldsV0(
+  record: Record<string, unknown>
+): { readonly ok: true; readonly fields: ProductObservationFieldsV0 } | { readonly ok: false; readonly detail: string } {
+  const keys = ["source", "event", "entities", "scene", "task", "focus", "environment"] as const;
+  const fields: Record<string, string | undefined> = {};
+  for (const key of keys) {
+    const value = record[key];
+    if (value === undefined || value === null) continue;
+    if (typeof value !== "string") {
+      return { ok: false, detail: `${key} must be a string.` };
+    }
+    const max = key === "scene" ? WEB_MAX_OBSERVATION_SCENE_V0 : WEB_MAX_OBSERVATION_FIELD_V0;
+    if (value.length > max) {
+      return { ok: false, detail: `${key} must be at most ${max} characters.` };
+    }
+    fields[key] = value;
+  }
+  return { ok: true, fields };
+}
+
+/**
+ * Maps a thrown product-authority error onto the bounded API error shape.
+ * No stack traces, no internal transition detail.
+ */
+function sendProductErrorV0(res: ServerResponse, error: unknown, fallbackMessage: string): void {
+  const code = (error as { code?: unknown } | null)?.code;
+  const detail = error instanceof Error ? error.message : String(error);
+  if (typeof code === "string" && code.includes("NO_SUBJECT")) {
+    sendErrorV0(
+      res,
+      409,
+      "NO_SUBJECT",
+      "This subject has no durable life yet — send it one message first.",
+      detail
+    );
+    return;
+  }
+  if (typeof code === "string" && code.includes("INVALID")) {
+    sendErrorV0(res, 400, "INVALID_INPUT", "The product refused this request as invalid.", detail);
+    return;
+  }
+  sendErrorV0(res, 503, "RUNTIME_UNAVAILABLE", fallbackMessage, detail);
 }
 
 function parseMemoryLimitV0(raw: string | null): number | null {
@@ -291,6 +353,116 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         return;
       }
       sendJsonV0(res, 200, { ok: true, memory: await runtime.livedMemory(limit) });
+      return;
+    }
+
+    if (pathname === "/api/config") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Configuration is read-only.");
+        return;
+      }
+      sendJsonV0(res, 200, { ok: true, config: runtime.configView() });
+      return;
+    }
+
+    if (pathname === "/api/diagnostics") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Diagnostics are read-only.");
+        return;
+      }
+      sendJsonV0(res, 200, { ok: true, diagnostics: runtime.diagnosticsView() });
+      return;
+    }
+
+    if (pathname === "/api/observation" || pathname === "/api/environment" || pathname === "/api/time") {
+      if (method !== "POST") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", `${pathname} requires POST.`);
+        return;
+      }
+      const body = await readBoundedBodyV0(req, WEB_MAX_BODY_BYTES_V0);
+      if (body.kind === "TOO_LARGE") {
+        sendErrorV0(res, 413, "BODY_TOO_LARGE", `Request body exceeds ${WEB_MAX_BODY_BYTES_V0} bytes.`);
+        return;
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(body.text);
+      } catch {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      const record = parsed as Record<string, unknown>;
+
+      if (pathname === "/api/observation") {
+        const fields = readObservationFieldsV0(record);
+        if (!fields.ok) {
+          sendErrorV0(res, 400, "INVALID_INPUT", fields.detail);
+          return;
+        }
+        let outcome: ProductObservationOutcomeV0;
+        try {
+          outcome = await runtime.submitExternalObservation(fields.fields);
+        } catch (error) {
+          sendProductErrorV0(res, error, "The external observation could not be recorded.");
+          return;
+        }
+        if (outcome.kind === "INVALID") {
+          sendErrorV0(res, 400, "INVALID_INPUT", outcome.detail);
+          return;
+        }
+        sendJsonV0(res, 200, { ok: true, outcome });
+        return;
+      }
+
+      if (pathname === "/api/environment") {
+        const count = record["count"];
+        if (
+          typeof count !== "number" ||
+          !Number.isSafeInteger(count) ||
+          count < 1 ||
+          count > WEB_MAX_ENVIRONMENT_INTERACTIONS_V0
+        ) {
+          sendErrorV0(res, 400, "INVALID_COUNT", `count must be an integer between 1 and ${WEB_MAX_ENVIRONMENT_INTERACTIONS_V0}.`);
+          return;
+        }
+        let run: ProductEnvironmentResultV0;
+        try {
+          run = await runtime.runEnvironmentInteraction(count);
+        } catch (error) {
+          sendProductErrorV0(res, error, "The environment interaction could not run.");
+          return;
+        }
+        sendJsonV0(res, 200, { ok: true, environment: run });
+        return;
+      }
+
+      const ticks = record["ticks"];
+      if (
+        typeof ticks !== "number" ||
+        !Number.isSafeInteger(ticks) ||
+        ticks < 0 ||
+        ticks > WEB_MAX_CANONICAL_TICKS_V0
+      ) {
+        sendErrorV0(
+          res,
+          400,
+          "INVALID_TICKS",
+          `ticks must be a non-negative integer (canonical ticks) up to ${WEB_MAX_CANONICAL_TICKS_V0}.`
+        );
+        return;
+      }
+      let advanced: ProductCanonicalTimeResultV0;
+      try {
+        advanced = await runtime.advanceCanonicalTime(ticks);
+      } catch (error) {
+        sendProductErrorV0(res, error, "Canonical time could not be advanced.");
+        return;
+      }
+      sendJsonV0(res, 200, { ok: true, time: advanced });
       return;
     }
 

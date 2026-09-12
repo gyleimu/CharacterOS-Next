@@ -144,6 +144,12 @@ export {
 } from "./product-runtime.js";
 export type {
   CreateProductRuntimeOptionsV0,
+  ProductCanonicalTimeResultV0,
+  ProductConfigValueViewV0,
+  ProductConfigViewV0,
+  ProductEnvironmentOutcomeV0,
+  ProductEnvironmentResultV0,
+  ProductObservationOutcomeV0,
   ProductRuntimeBootstrapV0,
   ProductRuntimeDepsV0,
   ProductRuntimeIdentityV0,
@@ -151,6 +157,11 @@ export type {
   ProductRuntimeStartupCodeV0,
   ProductTurnResultV0
 } from "./product-runtime.js";
+export { buildStructuredObservationRequestV0 } from "./product-observation.js";
+export type {
+  ProductObservationFieldsV0,
+  ProductObservationRequestResultV0
+} from "./product-observation.js";
 export { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 export { ProductLifeOperationsV0 } from "./product-life-operations.js";
 export type { ProductLifeViewV0, ProductStateViewV0 } from "./product-life-operations.js";
@@ -164,11 +175,13 @@ export { ProviderDiagnosticsV0, buildProductTurnPlanV0, formatLatencyV0 } from "
 export type {
   ProductTurnPlanInputV0,
   ProductTurnPlanV0,
+  ProviderDiagnosticsSnapshotV0,
   ProviderFailureCategoryV0,
   ProviderProgressEventV0,
   ProviderProgressEventTypeV0,
   ProviderProgressGroupV0,
   ProviderStageRecordV0,
+  ProviderStageSampleV0WithStageV0,
   ProviderStageStatusV0,
   ProviderStageV0,
   ProviderTurnTimingV0

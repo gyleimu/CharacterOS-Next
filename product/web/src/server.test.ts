@@ -13,12 +13,18 @@ import type {
   InteractiveSubjectStateViewV0,
   InteractiveSubjectStatusV0,
   LivedMemoryInspectionV0,
+  ProductCanonicalTimeResultV0,
+  ProductConfigViewV0,
+  ProductEnvironmentResultV0,
   ProductLifeViewV0,
+  ProductObservationOutcomeV0,
   ProductRuntimeBootstrapV0,
   ProductStateViewV0,
   ProductTurnResultV0,
+  ProviderDiagnosticsSnapshotV0,
   ProviderProgressEventV0
 } from "@characteros-next/sandbox";
+import { buildStructuredObservationRequestV0 } from "@characteros-next/sandbox";
 import {
   createProductWebServerV0,
   startProductWebServerV0,
@@ -43,9 +49,68 @@ afterEach(async () => {
 interface FakeRuntimeV0 extends ProductWebRuntimePortV0 {
   readonly emitted: ProviderProgressEventV0[];
   setTalkResult(result: ProductTurnResultV0): void;
+  setObservationOutcome(outcome: ProductObservationOutcomeV0): void;
   emit(event: ProviderProgressEventV0): void;
   talkCount(): number;
   episodeCount(): number;
+  environmentCount(): number;
+  ticksAdvanced(): number;
+  throwOnObservation(error: unknown): void;
+}
+
+function configViewShape(): ProductConfigViewV0 {
+  return {
+    model: { value: "qwen3.5:9b", source: "DEFAULT", origin: "built-in default" },
+    endpoint: { value: "http://***@127.0.0.1:11434", source: "ENVIRONMENT", origin: "OLLAMA_BASE_URL" },
+    timeout_ms: { value: "120000", source: "DEFAULT", origin: "built-in default" },
+    context_window_tokens: { value: "8192", source: "DEFAULT", origin: "built-in default" },
+    num_predict: { value: "2048", source: "DEFAULT", origin: "built-in default" },
+    data_root: { value: "D:\\data", source: "DEFAULT", origin: "built-in default (product/sandbox/.data)" },
+    subject: {
+      subject_id: "mira-14aa8fc5",
+      display_name: "Mira",
+      identity_source: "PERSISTED_PRODUCT_CONFIG",
+      identity_origin: "subject-config.json",
+      durable_state: "PRESENT"
+    },
+    data_root_contains: ["subject-config.json (product subject configuration)"],
+    read_only: true
+  };
+}
+
+function diagnosticsShape(): ProviderDiagnosticsSnapshotV0 {
+  return {
+    model: "qwen3.5:9b",
+    timeout_ms: 120000,
+    stages: [
+      {
+        stage: "APPRAISAL",
+        status: "OK",
+        latency_ms: 2100,
+        category: null,
+        error_code: null,
+        detail: null
+      },
+      {
+        stage: "BELIEF_ADAPTATION",
+        status: "SKIPPED",
+        latency_ms: null,
+        category: null,
+        error_code: null,
+        detail: "SKIPPED_NO_CANDIDATE_PROPOSITIONS"
+      }
+    ],
+    samples: [{ stage: "APPRAISAL", last_ms: 2100, count: 3 }],
+    last_turn: {
+      status: "COMPLETE",
+      total_ms: 9000,
+      provider_ms: 8800,
+      reply_ms: 8500,
+      prior_reply_ms: 0,
+      adaptation_ms: 300,
+      skipped: ["BELIEF_ADAPTATION"]
+    }
+  };
 }
 
 function stateViewShape(): InteractiveSubjectStateViewV0 {
@@ -64,7 +129,11 @@ function stateViewShape(): InteractiveSubjectStateViewV0 {
   };
 }
 
-function statusShape(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED", turns: number): InteractiveSubjectStatusV0 {
+function statusShape(
+  origin: "NEW_SUBJECT" | "SUBJECT_RESTORED",
+  turns: number,
+  logicalTime = 3
+): InteractiveSubjectStatusV0 {
   return {
     schema_version: "interactive-subject-status-v0",
     session_id: "sess-test",
@@ -73,7 +142,7 @@ function statusShape(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED", turns: number):
     turn_index: turns,
     completed_turns: turns,
     pending_behavior_outcome: false,
-    logical_time: 3,
+    logical_time: logicalTime,
     state_revision: 4 + turns,
     repository_revision: `R${4 + turns}`,
     affect: { valence: 0.12, activation: 0.4 },
@@ -129,12 +198,30 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
   const emitted: ProviderProgressEventV0[] = [];
   let turns = origin === "SUBJECT_RESTORED" ? 2 : 0;
   let episodes = origin === "SUBJECT_RESTORED" ? 2 : 0;
+  let logicalTime = 3;
   let talkResult = completeTurnResult("Hello from the subject.");
+  let observationOutcome: ProductObservationOutcomeV0 = {
+    kind: "FIRST",
+    observation_ref: "observation:web-1",
+    episode_ref: "episode:web-1",
+    base_revision: 8
+  };
+  let observationError: unknown = null;
+  let environments = 0;
+  let ticksTotal = 0;
   return {
     emitted,
     setTalkResult: (result): void => {
       talkResult = result;
     },
+    setObservationOutcome: (outcome): void => {
+      observationOutcome = outcome;
+    },
+    throwOnObservation: (error): void => {
+      observationError = error;
+    },
+    environmentCount: () => environments,
+    ticksAdvanced: () => ticksTotal,
     emit: (event): void => {
       emitted.push(event);
       for (const listener of [...listeners]) listener(event);
@@ -153,15 +240,15 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
       status: origin === "SUBJECT_RESTORED" ? "RESTORED" : "NEW",
       created_this_start: false,
       provider: { ready: true, model: "qwen3.5:9b", endpoint: "http://127.0.0.1:11434", timeout_ms: 120000 },
-      logical_time: 3,
+      logical_time: logicalTime,
       affect: { valence: 0.12, activation: 0.4 },
       revisions: { state_revision: 4 + turns, repository_revision: `R${4 + turns}`, shared_revision: 7 },
       state: stateViewShape(),
       recent_memory: memoryShape(episodes)
     }),
-    status: async (): Promise<InteractiveSubjectStatusV0> => statusShape(origin, turns),
+    status: async (): Promise<InteractiveSubjectStatusV0> => statusShape(origin, turns, logicalTime),
     stateView: async (): Promise<ProductStateViewV0> => ({
-      status: statusShape(origin, turns),
+      status: statusShape(origin, turns, logicalTime),
       state: stateViewShape(),
       shared_revision: 7
     }),
@@ -169,7 +256,7 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
       subject_id: "mira-14aa8fc5",
       display_name: "Mira",
       origin,
-      logical_time: 3,
+      logical_time: logicalTime,
       state_revision: 4 + turns,
       repository_revision: `R${4 + turns}`,
       shared_revision: 7,
@@ -186,6 +273,50 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
       if (talkResult.status === "COMPLETE") episodes += 1;
       return { outcome: { turn_index: turns - 1 }, elapsed_ms: talkResult.elapsed_ms } as unknown as InstrumentedTurnResultV0;
     },
+    submitExternalObservation: async (fields): Promise<ProductObservationOutcomeV0> => {
+      if (observationError !== null) throw observationError;
+      // Faithful double: the real runtime builds the request through the shared
+      // product normalizer, so invalid input surfaces as INVALID here too.
+      const built = buildStructuredObservationRequestV0(fields);
+      if (!built.ok) return { kind: "INVALID", detail: built.detail };
+      if (observationOutcome.kind === "FIRST") episodes += 1;
+      return observationOutcome;
+    },
+    runEnvironmentInteraction: async (count: number): Promise<ProductEnvironmentResultV0> => {
+      environments += count;
+      episodes += count;
+      return {
+        environment_id: "reference-review-environment",
+        resolution: "NEW_ENVIRONMENT_SUBJECT",
+        requested: count,
+        completed: count,
+        outcomes: Array.from({ length: count }, (_unused, index) => ({
+          interaction_index: index,
+          status: "COMPLETE",
+          episode_ref: `episode:env-${index}`
+        })),
+        repository_revision: "R9",
+        state_revision: 20
+      };
+    },
+    advanceCanonicalTime: async (ticks: number): Promise<ProductCanonicalTimeResultV0> => {
+      ticksTotal += ticks;
+      const before = logicalTime;
+      if (ticks > 0) logicalTime += ticks;
+      return {
+        ticks,
+        no_op: ticks === 0,
+        logical_time_before: before,
+        logical_time_after: logicalTime,
+        valence_before: 0.1,
+        valence_after: 0.2,
+        activation_before: 0.3,
+        activation_after: 0.4,
+        base_revision: 10
+      };
+    },
+    configView: (): ProductConfigViewV0 => configViewShape(),
+    diagnosticsView: (): ProviderDiagnosticsSnapshotV0 => diagnosticsShape(),
     summarizeTurn: (): ProductTurnResultV0 => talkResult,
     subscribe: (listener: (event: ProviderProgressEventV0) => void): (() => void) => {
       listeners.add(listener);
@@ -412,6 +543,169 @@ describe("CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — local product server", () 
     expect(second.bootstrap.status).toBe("RESTORED");
     expect(runtime.talkCount()).toBe(2);
     expect(runtime.episodeCount()).toBe(2);
+  });
+
+  it("D2+D3: external observation returns FIRST/REPLAY/CONFLICT truthfully and reaches Life", async () => {
+    const { handle, runtime } = await startFakeServer("SUBJECT_RESTORED");
+    const memoryBefore = (await (await fetch(apiUrl(handle, "/api/memory?limit=10"))).json()) as {
+      memory: LivedMemoryInspectionV0;
+    };
+    const post = (body: unknown): Promise<Response> =>
+      fetch(apiUrl(handle, "/api/observation"), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+    const first = await post({
+      source: "camera-front-door",
+      event: "person-entered-001",
+      entities: "alice",
+      scene: "Alice entered the room.",
+      task: "Observe the current situation."
+    });
+    expect(first.status).toBe(200);
+    const firstBody = (await first.json()) as { outcome: ProductObservationOutcomeV0 };
+    expect(firstBody.outcome.kind).toBe("FIRST");
+
+    // FIRST lawfully adds a lived episode → Life must reflect it on refresh.
+    const memoryAfter = (await (await fetch(apiUrl(handle, "/api/memory?limit=10"))).json()) as {
+      memory: LivedMemoryInspectionV0;
+    };
+    expect(memoryAfter.memory.total_episode_count).toBe(memoryBefore.memory.total_episode_count + 1);
+
+    runtime.setObservationOutcome({ kind: "REPLAY", observation_ref: "observation:web-1", base_revision: 8 });
+    const replay = (await (await post({ source: "s", event: "e", entities: "alice", scene: "same" })).json()) as {
+      outcome: ProductObservationOutcomeV0;
+    };
+    expect(replay.outcome.kind).toBe("REPLAY");
+
+    runtime.setObservationOutcome({ kind: "CONFLICT", detail: "same event identity with changed content" });
+    const conflict = (await (await post({ source: "s", event: "e", entities: "alice", scene: "changed" })).json()) as {
+      outcome: ProductObservationOutcomeV0;
+    };
+    expect(conflict.outcome.kind).toBe("CONFLICT");
+
+    // Missing required fields are refused by the product boundary, not coerced.
+    const invalid = await post({ source: "s", event: "e", entities: "alice" });
+    expect(invalid.status).toBe(400);
+    const wrongType = await post({ source: 5, event: "e", entities: "alice", scene: "x" });
+    expect(wrongType.status).toBe(400);
+    const tooLong = await post({ source: "s", event: "e", entities: "alice", scene: "x".repeat(3000) });
+    expect(tooLong.status).toBe(400);
+  });
+
+  it("D2: a subject with no durable life yet reports NO_SUBJECT, not a fake success", async () => {
+    const { handle, runtime } = await startFakeServer("NEW_SUBJECT");
+    runtime.throwOnObservation(Object.assign(new Error("EXTERNAL_OBSERVATION_NO_SUBJECT: no durable subject"), { code: "EXTERNAL_OBSERVATION_NO_SUBJECT" }));
+    const response = await fetch(apiUrl(handle, "/api/observation"), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ source: "s", event: "e", entities: "alice", scene: "x" })
+    });
+    expect(response.status).toBe(409);
+    const body = (await response.json()) as { ok: boolean; code: string };
+    expect(body.ok).toBe(false);
+    expect(body.code).toBe("NO_SUBJECT");
+  });
+
+  it("D4: environment interaction is bounded and refreshes Life", async () => {
+    const { handle, runtime } = await startFakeServer("SUBJECT_RESTORED");
+    const post = (body: unknown): Promise<Response> =>
+      fetch(apiUrl(handle, "/api/environment"), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    const before = (await (await fetch(apiUrl(handle, "/api/memory?limit=100"))).json()) as {
+      memory: LivedMemoryInspectionV0;
+    };
+
+    const ok = await post({ count: 2 });
+    expect(ok.status).toBe(200);
+    const body = (await ok.json()) as { environment: ProductEnvironmentResultV0 };
+    expect(body.environment.completed).toBe(2);
+    expect(body.environment.outcomes.length).toBe(2);
+    expect(runtime.environmentCount()).toBe(2);
+
+    const after = (await (await fetch(apiUrl(handle, "/api/memory?limit=100"))).json()) as {
+      memory: LivedMemoryInspectionV0;
+    };
+    expect(after.memory.total_episode_count).toBe(before.memory.total_episode_count + 2);
+
+    for (const bad of [{ count: 0 }, { count: 101 }, { count: 1.5 }, { count: "2" }, {}]) {
+      expect((await post(bad)).status).toBe(400);
+    }
+  });
+
+  it("D5: canonical time advances ticks visibly and 0 stays a lawful NO_OP", async () => {
+    const { handle } = await startFakeServer("SUBJECT_RESTORED");
+    const post = (body: unknown): Promise<Response> =>
+      fetch(apiUrl(handle, "/api/time"), {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(body)
+      });
+
+    const advanced = await post({ ticks: 30 });
+    expect(advanced.status).toBe(200);
+    const body = (await advanced.json()) as { time: ProductCanonicalTimeResultV0 };
+    expect(body.time.ticks).toBe(30);
+    expect(body.time.no_op).toBe(false);
+    expect(body.time.logical_time_after).toBe(body.time.logical_time_before + 30);
+
+    // The header data source (bootstrap) reflects the new canonical time.
+    const bootstrap = (await (await fetch(apiUrl(handle, "/api/bootstrap"))).json()) as {
+      bootstrap: ProductRuntimeBootstrapV0;
+    };
+    expect(bootstrap.bootstrap.logical_time).toBe(body.time.logical_time_after);
+
+    const noop = (await (await post({ ticks: 0 })).json()) as { time: ProductCanonicalTimeResultV0 };
+    expect(noop.time.no_op).toBe(true);
+
+    for (const bad of [{ ticks: -1 }, { ticks: 1.5 }, { ticks: "5" }, { ticks: 1e12 }, {}]) {
+      expect((await post(bad)).status).toBe(400);
+    }
+  });
+
+  it("D6: configuration is read-only, sourced, and secret-free", async () => {
+    const { handle } = await startFakeServer();
+    const response = await fetch(apiUrl(handle, "/api/config"));
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { config: ProductConfigViewV0 };
+    expect(body.config.read_only).toBe(true);
+    expect(body.config.model.value).toBe("qwen3.5:9b");
+    expect(body.config.timeout_ms.source).toBe("DEFAULT");
+    expect(body.config.endpoint.origin).toBe("OLLAMA_BASE_URL");
+    // No credential material anywhere in the payload (context_window_tokens is a
+    // legitimate non-secret setting).
+    expect(JSON.stringify(body.config)).not.toMatch(/password|secret|api[_-]?key|bearer/i);
+    // No user:password userinfo form can survive redaction.
+    expect(body.config.endpoint.value).not.toMatch(/:[^/@]*@/);
+    expect((await fetch(apiUrl(handle, "/api/config"), { method: "POST" })).status).toBe(405);
+  });
+
+  it("D7: diagnostics expose only bounded provider information", async () => {
+    const { handle } = await startFakeServer();
+    const response = await fetch(apiUrl(handle, "/api/diagnostics"));
+    expect(response.status).toBe(200);
+    const body = (await response.json()) as { diagnostics: ProviderDiagnosticsSnapshotV0 };
+    expect(body.diagnostics.model).toBe("qwen3.5:9b");
+    expect(body.diagnostics.stages[0]?.stage).toBe("APPRAISAL");
+    expect(body.diagnostics.samples[0]?.count).toBe(3);
+    expect(body.diagnostics.last_turn?.provider_ms).toBe(8800);
+    const serialized = JSON.stringify(body.diagnostics);
+    expect(serialized).not.toMatch(/prompt|user_text|memory_context|raw_cognition/i);
+    expect((await fetch(apiUrl(handle, "/api/diagnostics"), { method: "POST" })).status).toBe(405);
+  });
+
+  it("D1: drawer routes are explicit, bounded, and have no generic execute endpoint", async () => {
+    const { handle } = await startFakeServer();
+    expect((await fetch(apiUrl(handle, "/api/observation"))).status).toBe(405);
+    expect((await fetch(apiUrl(handle, "/api/environment"))).status).toBe(405);
+    expect((await fetch(apiUrl(handle, "/api/time"))).status).toBe(405);
+    expect((await fetch(apiUrl(handle, "/api/execute"), { method: "POST", body: "{}" })).status).toBe(404);
+    expect((await fetch(apiUrl(handle, "/api/command"), { method: "POST", body: "{}" })).status).toBe(404);
   });
 
   it("W1: createProductWebServerV0 also binds 127.0.0.1 by default", async () => {

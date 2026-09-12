@@ -28,17 +28,24 @@ import {
   type ProductProviderBundleV0
 } from "./product-provider-bundle.js";
 import {
+  PRODUCT_DATA_ROOT_CONTENTS_V0,
   ProductConfigurationErrorV0,
   dataDirectoryFailureGuidanceV0,
   formatConfigurationErrorLinesV0,
   modelMissingGuidanceV0,
   processEnvironmentV0,
   providerUnavailableGuidanceV0,
+  redactEndpointV0,
   resolveProductConfigurationV0,
   type ProductConfigSourceV0,
   type ProductConfigurationV0,
+  type ProductConfigValueV0,
   type ProductEnvironmentV0
 } from "./product-configuration.js";
+import {
+  buildStructuredObservationRequestV0,
+  type ProductObservationFieldsV0
+} from "./product-observation.js";
 import {
   PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
   PRODUCT_DEFAULT_DATA_ROOT_V0
@@ -52,6 +59,7 @@ import {
 import {
   ProviderDiagnosticsV0,
   type ProductTurnPlanInputV0,
+  type ProviderDiagnosticsSnapshotV0,
   type ProviderProgressEventV0
 } from "./provider-diagnostics.js";
 import type { InteractiveSnapshotStoreV0 } from "./persistent-snapshot-store.js";
@@ -138,6 +146,73 @@ export interface ProductRuntimeBootstrapV0 {
   };
   readonly state: InteractiveSubjectStateViewV0;
   readonly recent_memory: LivedMemoryInspectionV0;
+}
+
+/** Bounded result of one structured external observation (FIRST/REPLAY/CONFLICT). */
+export type ProductObservationOutcomeV0 =
+  | {
+      readonly kind: "FIRST";
+      readonly observation_ref: string;
+      readonly episode_ref: string;
+      readonly base_revision: number;
+    }
+  | { readonly kind: "REPLAY"; readonly observation_ref: string; readonly base_revision: number }
+  | { readonly kind: "CONFLICT"; readonly detail: string }
+  | { readonly kind: "INVALID"; readonly detail: string };
+
+export interface ProductEnvironmentOutcomeV0 {
+  readonly interaction_index: number;
+  readonly status: string;
+  readonly episode_ref: string | null;
+}
+
+/** Bounded result of a deterministic environment run. */
+export interface ProductEnvironmentResultV0 {
+  readonly environment_id: string;
+  readonly resolution: "NEW_ENVIRONMENT_SUBJECT" | "ENVIRONMENT_SUBJECT_RESTORED";
+  readonly requested: number;
+  readonly completed: number;
+  readonly outcomes: readonly ProductEnvironmentOutcomeV0[];
+  readonly repository_revision: string;
+  readonly state_revision: number;
+}
+
+/** Bounded result of explicit canonical time advancement (ticks, never wall clock). */
+export interface ProductCanonicalTimeResultV0 {
+  readonly ticks: number;
+  readonly no_op: boolean;
+  readonly logical_time_before: number;
+  readonly logical_time_after: number;
+  readonly valence_before: number;
+  readonly valence_after: number;
+  readonly activation_before: number;
+  readonly activation_after: number;
+  readonly base_revision: number;
+}
+
+export interface ProductConfigValueViewV0 {
+  readonly value: string;
+  readonly source: ProductConfigSourceV0;
+  readonly origin: string;
+}
+
+/** READ-ONLY effective configuration (endpoint credentials redacted). */
+export interface ProductConfigViewV0 {
+  readonly model: ProductConfigValueViewV0;
+  readonly endpoint: ProductConfigValueViewV0;
+  readonly timeout_ms: ProductConfigValueViewV0;
+  readonly context_window_tokens: ProductConfigValueViewV0;
+  readonly num_predict: ProductConfigValueViewV0;
+  readonly data_root: ProductConfigValueViewV0;
+  readonly subject: {
+    readonly subject_id: string;
+    readonly display_name: string;
+    readonly identity_source: ProductConfigSourceV0;
+    readonly identity_origin: string;
+    readonly durable_state: "NONE" | "PRESENT" | "UNKNOWN";
+  };
+  readonly data_root_contains: readonly string[];
+  readonly read_only: true;
 }
 
 export interface ProductRuntimeDepsV0 {
@@ -259,6 +334,95 @@ export class ProductRuntimeV0 {
             })
           : null
     };
+  }
+
+  /**
+   * ONE structured external observation through the FROZEN ingress (no truth
+   * upgrade, no wall-clock mapping, FIRST/REPLAY/CONFLICT preserved). Invalid
+   * product input is reported, never coerced; ingress authority errors throw.
+   */
+  async submitExternalObservation(fields: ProductObservationFieldsV0): Promise<ProductObservationOutcomeV0> {
+    const built = buildStructuredObservationRequestV0(fields);
+    if (!built.ok) return { kind: "INVALID", detail: built.detail };
+    const outcome = await this.deps.life.observe(built.request);
+    if (outcome.kind === "FIRST") {
+      return {
+        kind: "FIRST",
+        observation_ref: outcome.observation_ref,
+        episode_ref: outcome.episode_ref,
+        base_revision: outcome.base_revision
+      };
+    }
+    if (outcome.kind === "REPLAY") {
+      return { kind: "REPLAY", observation_ref: outcome.observation_ref, base_revision: outcome.base_revision };
+    }
+    return { kind: "CONFLICT", detail: outcome.detail };
+  }
+
+  /** Deterministic environment interaction against the SAME canonical subject. */
+  async runEnvironmentInteraction(count: number): Promise<ProductEnvironmentResultV0> {
+    const run = await this.deps.life.environment(count);
+    return {
+      environment_id: run.environment_id,
+      resolution: run.resolution,
+      requested: count,
+      completed: run.outcomes.filter((outcome) => outcome.status === "COMPLETE").length,
+      outcomes: run.outcomes.map((outcome) => ({
+        interaction_index: outcome.interaction_index,
+        status: outcome.status,
+        episode_ref: outcome.episode_ref
+      })),
+      repository_revision: run.status.repository_revision,
+      state_revision: run.status.state_revision
+    };
+  }
+
+  /** Explicit canonical TICKS only (0 is a lawful NO_OP); no wall-clock mapping. */
+  async advanceCanonicalTime(ticks: number): Promise<ProductCanonicalTimeResultV0> {
+    const result = await this.deps.life.time(ticks);
+    return {
+      ticks: result.ticks,
+      no_op: result.no_op,
+      logical_time_before: result.logical_time_before,
+      logical_time_after: result.logical_time_after,
+      valence_before: result.valence_before,
+      valence_after: result.valence_after,
+      activation_before: result.activation_before,
+      activation_after: result.activation_after,
+      base_revision: result.base_revision
+    };
+  }
+
+  /** READ-ONLY effective configuration; endpoint credentials are redacted. */
+  configView(): ProductConfigViewV0 {
+    const value = <T>(entry: ProductConfigValueV0<T>, render: (input: T) => string): ProductConfigValueViewV0 => ({
+      value: render(entry.value),
+      source: entry.source,
+      origin: entry.origin
+    });
+    const configuration = this.deps.configuration;
+    return {
+      model: value(configuration.model, (input) => input),
+      endpoint: value(configuration.endpoint, (input) => redactEndpointV0(input)),
+      timeout_ms: value(configuration.timeout_ms, (input) => String(input)),
+      context_window_tokens: value(configuration.context_window_tokens, (input) => String(input)),
+      num_predict: value(configuration.num_predict, (input) => String(input)),
+      data_root: value(configuration.data_root, (input) => input),
+      subject: {
+        subject_id: this.deps.identity.subject_id,
+        display_name: this.deps.identity.display_name,
+        identity_source: this.deps.identity.identity_source,
+        identity_origin: this.deps.identity.identity_origin,
+        durable_state: this.deps.identity.durable_state
+      },
+      data_root_contains: PRODUCT_DATA_ROOT_CONTENTS_V0,
+      read_only: true
+    };
+  }
+
+  /** Structured bounded provider diagnostics (no prompts, no Memory content). */
+  diagnosticsView(): ProviderDiagnosticsSnapshotV0 | null {
+    return this.deps.diagnostics?.snapshot() ?? null;
   }
 
   isQuiescent(): boolean {

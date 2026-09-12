@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 本文件是仓库“现在是什么、做到哪里、下一步是什么”的唯一实时状态入口。
-Last verified against commit: `98fb23628aa0f985ceb5f04d5188276bdc16c679`（干净 baseline；`CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
+Last verified against commit: `2cd0066657147322a1b0b18b50d4ee4988275fbe`（干净 baseline；`CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0` 是其直接子提交。§2 的机器派生计数仍以 `d4503cc` 为准，未在本 slice 重新测量）
 Workspace projects: 15
 Purpose: 记录可执行代码、当前测试与已提交冻结证据共同支持的最小事实；历史计划不能覆盖这些事实。
 Verified date: 2026-09-11

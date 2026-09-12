@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `98fb23628aa0f985ceb5f04d5188276bdc16c679`（干净 baseline；本次 `CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0` 是其直接子提交）
+Last verified against commit: `2cd0066657147322a1b0b18b50d4ee4988275fbe`（干净 baseline；本次 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,18 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0` — 可视化产品新增隐藏式 World & Settings / Diagnostics 抽屉（纯 wiring，无 canonical 变更）。
+
+- D1–D10 PASS：默认隐藏的次级抽屉（`World`：结构化 external observation / deterministic environment / explicit canonical ticks；`Settings`：只读 config + 只读 provider diagnostics），主界面仍是 Character/Conversation/Life/State；
+- 复用既有 frozen 能力：`submitExternalObservationV0`（FIRST/REPLAY/CONFLICT 原样呈现，不升级真值、不映射 wall-clock、不产生 ActionIntent）、`ProductLifeOperationsV0.environment`、`life.time`（0 仍是 NO_OP，永不标注 seconds/minutes/hours/days）、`ProductConfigurationV0`（只读、来源标注、endpoint 凭据打码）、`ProviderDiagnosticsV0`；
+- 新增 bounded API：`POST /api/observation`、`POST /api/environment`、`POST /api/time`、`GET /api/config`、`GET /api/diagnostics`；无 `/api/execute` 泛化命令入口；沿用 body limit 与产品错误形状；
+- 每次变更后前端重新拉取 authoritative bootstrap/state/memory（无乐观写入）；browser 仍不持有任何 canonical 权威；
+- diagnostics 阶段状态新增 `CONFIGURED`（已接线但尚未调用），与 `DISABLED`（未配置）严格区分；
+- 真实 smoke：真实模型下 FIRST→REPLAY→CONFLICT 全部正确、external observation 与 environment 均进入 Life、ticks 30 使 logical time 2→32 且 Affect 变化、0 为 NO_OP、config 只读且无秘密、diagnostics 有界；fresh-process restart 后同一 `mira-14aa8fc5` RESTORED 且 world-originated 经历保留；浏览器截图确认抽屉/表单/结果/只读视图；
+- 判定 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
+
+上一个产品里程碑：
 
 `CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0` — 第一个真实可视化产品：本地 Node backend + HTTP/SSE product API + 无框架浏览器 UI，一个持久 subject。
 
@@ -70,6 +82,7 @@ CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0   FROZEN / GREEN
 CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0        FROZEN / GREEN
 CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0    FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0                       FROZEN / GREEN
+CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0    FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -90,15 +103,15 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0`
+`CHARACTEROS_VISUAL_PRODUCT_SUBJECT_ONBOARDING_V0`
 
-问题边界：本地可视化产品 V0 刻意只做 Character/Conversation/Live progress/Life/State；下一步把已存在但未暴露的 backend 能力以「抽屉」形式接入同一 UI（结构化外部 observation、确定性 environment interaction、显式 canonical ticks、只读 config 与 provider diagnostics），保持 backend 产品 API 边界不变、不新增 canonical 语义、不引入 avatar/theme/打包。
+问题边界：可视化产品在首次运行时会用固定默认名（Mira）自动创建 subject，用户无法在 UI 内为自己的持久 subject 命名（CLI 可以）；下一步在浏览器内提供首次运行命名/确认（复用既有 `resolvePersistentSubjectV0` / `buildSubjectConfigForCreationV0` 与 subject-config.json 语义），不改 canonical 语义、不新增第二配置权威、不做多 subject 管理。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0`：必须先确认其问题、边界与预算；
+- 自动开始 `CHARACTEROS_VISUAL_PRODUCT_SUBJECT_ONBOARDING_V0`：必须先确认其问题、边界与预算；
 - 多 subject / multi-agent / shared world / GUI / voice / camera / avatar / tools / autonomous task execution；
 - accounts / cloud sync / provider router / 自动模型切换 / 自动重试编排 / 云 fallback；
 - `/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型、personality/belief/relationship 编辑器；

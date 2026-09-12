@@ -11,6 +11,7 @@ import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import type { InteractiveTurnOutcomeV0, LivedMemoryEntryV0, LivedMemoryInspectionV0 } from "@characteros-next/runtime";
 import type { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import type { ExternalStructuredObservationRequestV0 } from "./external-observation-ingress.js";
+import { buildStructuredObservationRequestV0 } from "./product-observation.js";
 import { ProviderDiagnosticsV0, extractFailureStageV0, type ProductTurnPlanInputV0 } from "./provider-diagnostics.js";
 import { buildTurnFailureSummaryV0, runInstrumentedProductTurnV0 } from "./product-turn-execution.js";
 import {
@@ -119,38 +120,25 @@ export function parseObservationCommandV0(
   while ((match = pattern.exec(argument)) !== null) {
     fields.set(match[1] as string, match[3] !== undefined ? match[3] : (match[2] as string));
   }
-  const source = fields.get("source");
-  const event = fields.get("event");
-  const scene = fields.get("scene");
-  const entities = fields.get("entities");
-  if (source === undefined) return { ok: false, detail: "missing source=<source>" };
-  if (event === undefined) return { ok: false, detail: "missing event=<event>" };
-  if (scene === undefined || scene.length === 0) return { ok: false, detail: 'missing scene="<text>"' };
-  if (entities === undefined) return { ok: false, detail: "missing entities=<a,b>" };
-  const normalize = (value: string, prefix: string): string => (value.includes(":") ? value : `${prefix}:${value}`);
-  const list = (value: string, prefix: string): string[] =>
-    value
-      .split(",")
-      .map((entry) => entry.trim())
-      .filter((entry) => entry.length > 0)
-      .map((entry) => normalize(entry, prefix));
-  const entityRefs = list(entities, "entity");
-  if (entityRefs.length === 0) return { ok: false, detail: "entities must name at least one entity" };
-  const focus = fields.get("focus");
-  const environment = fields.get("environment");
-  const taskRaw = fields.get("task");
-  return {
-    ok: true,
-    request: {
-      source_ref: normalize(source, "source"),
-      event_ref: normalize(event, "event"),
-      entity_refs: entityRefs,
-      scene,
-      task: taskRaw === undefined || taskRaw.length === 0 ? null : taskRaw,
-      ...(focus === undefined ? {} : { focus_refs: list(focus, "entity") }),
-      ...(environment === undefined ? {} : { environment_refs: list(environment, "environment") })
-    }
-  };
+  const built = buildStructuredObservationRequestV0({
+    source: fields.get("source"),
+    event: fields.get("event"),
+    scene: fields.get("scene"),
+    entities: fields.get("entities"),
+    task: fields.get("task"),
+    focus: fields.get("focus"),
+    environment: fields.get("environment")
+  });
+  if (!built.ok) {
+    // Preserve the CLI's actionable usage hint wording.
+    const detail = built.detail;
+    if (detail === "missing source") return { ok: false, detail: "missing source=<source>" };
+    if (detail === "missing event") return { ok: false, detail: "missing event=<event>" };
+    if (detail === "missing scene text") return { ok: false, detail: 'missing scene="<text>"' };
+    if (detail === "missing entities") return { ok: false, detail: "missing entities=<a,b>" };
+    return { ok: false, detail };
+  }
+  return built;
 }
 
 export class ProductCliSessionV0 {

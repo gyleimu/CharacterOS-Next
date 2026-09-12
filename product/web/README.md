@@ -88,6 +88,46 @@ source and reports `RESTORED` with the previous Memory, Affect, canonical time
 and revisions. Reloading the browser alone never creates or forks a subject — it
 just re-fetches backend truth (`GET /api/bootstrap`).
 
+## World & settings drawer (hidden by default)
+
+A secondary drawer, opened explicitly from the top bar, exposes the product's
+already-frozen non-conversational capabilities without turning the app into an
+engineering console. The main surface stays Character / Conversation / Life /
+State.
+
+**World**
+
+- **External observation** — the existing structured ingress with the existing
+  fields (source, event, entities, scene, task). The UI normalizes bare names to
+  the same canonical ref prefixes the CLI uses; the frozen ingress validator
+  remains the only authority. Results render exactly as the product reports them:
+  *FIRST* → "External observation recorded." (+ episode/revision under
+  *Details*), *REPLAY* → "Already recorded — no new lived experience.",
+  *CONFLICT* → "Refused: the same event identity arrived with different content."
+  Wording never claims objective truth, and a FIRST observation makes the new
+  lived experience appear in **Life** on refresh.
+- **Environment** — run N (1..100) deterministic environment interactions
+  against the same canonical subject; the result reports the interaction count,
+  the statuses and the new episodes, then refreshes Life/State.
+- **Canonical time** — advance explicit **canonical ticks** (0 is a lawful
+  `NO_OP`), showing logical time and Affect before → after and refreshing the
+  character header without a page reload. Ticks are never labelled as
+  seconds/minutes/hours/days, and there is no wall-clock sync, background timer
+  or offline aging.
+
+**Settings / diagnostics** (read-only)
+
+- **Configuration** — model, endpoint, timeout, context/output budgets and data
+  root with the existing source labels (`DEFAULT`, `ENVIRONMENT`,
+  `PERSISTED_PRODUCT_CONFIG`, `DERIVED`). Endpoint credentials are redacted;
+  unrelated environment variables, tokens and secrets are never exposed. There
+  are no editor controls: the drawer only answers "what is effective?".
+- **Diagnostics** — per-stage status/latency/failure category, configured or
+  disabled stage state, process-local latency samples and last-turn timing, from
+  the same diagnostics owner that drives the live conversation strip. No prompts,
+  user text or Memory content appear; refs and revisions stay behind the small
+  *Details* expansion.
+
 ## API (bounded, local)
 
 | Route | Meaning |
@@ -99,6 +139,14 @@ just re-fetches backend truth (`GET /api/bootstrap`).
 | `GET /api/memory?limit=N` | recent lived Memory (1..100) |
 | `POST /api/talk` | one serialized human turn → structured result or truthful failure |
 | `GET /api/events` | SSE provider/turn progress |
+| `POST /api/observation` | one structured external observation → FIRST / REPLAY / CONFLICT |
+| `POST /api/environment` | bounded deterministic environment interaction (count 1..100) |
+| `POST /api/time` | explicit canonical ticks (non-negative integer, 0 = NO_OP) |
+| `GET /api/config` | read-only effective configuration with sources (redacted) |
+| `GET /api/diagnostics` | read-only bounded provider diagnostics |
+
+There is deliberately **no** generic command endpoint (`/api/execute`,
+`/api/command`): each product operation is explicit and bounded.
 
 The API exposes **only** these product operations. It never exposes atomic-commit
 internals, authority/capability tokens, raw SubjectState mutators, transition
@@ -130,10 +178,10 @@ operational JSONL). No database, no browser-side authority.
 ## Honest limitations (V0)
 
 - one subject only, local-only (`127.0.0.1`), no accounts/authentication;
-- no external-observation UI, no environment UI, no canonical-time controls yet
-  (the backend services support them; they are deliberately deferred);
-- no settings/diagnostics drawer yet (only provider readiness and live stage
-  progress);
+- the World & settings drawer exposes the existing non-conversational
+  capabilities; there is still no hardware adapter (a device would POST to the
+  same `/api/observation` boundary), no Action/Need/Goal execution, and no
+  canonical-time automation;
 - no avatar system (a monogram placeholder only), no animation, no themes;
 - no packaging (no exe/Electron/Tauri) — launch is `pnpm web`;
 - no cloud, no telemetry, no multi-subject libraries;
