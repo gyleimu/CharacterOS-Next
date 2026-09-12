@@ -312,3 +312,51 @@ explicit canonical time, and the current life. Then `/exit`, relaunch, and run
 
 Automated acceptance (deterministic fakes, 0 real provider calls) lives in
 `src/product-one-life.test.ts`.
+
+## Provider resilience and diagnostics
+
+Every model-backed stage prints concise progress with bounded latency, e.g.:
+
+```text
+[appraisal] running...
+[appraisal] done (412 ms)
+[cognition] running...
+[cognition] failed (120 s): PROVIDER_TIMEOUT
+```
+
+- **Stage progress** shows which model-backed stage is currently running:
+  `appraisal`, `cognition`, `language`, `relationship_adaptation`, and (reported
+  after the turn) `belief_adaptation`. Stages that are not configured print
+  `DISABLED` — they are not reported as broken.
+- **Latency** is process-local monotonic timing only. It is never written into
+  canonical state, Memory or the shared subject source, and it resets on restart.
+- **`/diagnostics`** (alias `/provider`) shows the configured model, the
+  configured timeout, each stage's last status/latency/failure category, and the
+  last turn/failure. It performs no model generation.
+- **Timeout** means the local model did not answer within
+  `CHARACTEROS_TIMEOUT_MS`. The product does not silently retry; the turn fails
+  closed and the summary names the stage and the configured timeout.
+- **Ollama unavailable / model missing**: the CLI preflight fails fast with
+  "Provider unavailable." and the endpoint detail; at turn level the failure is
+  classified `PROVIDER_UNAVAILABLE` with the suggestion to check that Ollama is
+  running and the configured model is installed. The product never
+  auto-downloads a model or runs install commands.
+- **After a failed turn** the CLI prints which stage failed, whether persistence
+  is `SAFE` (durable state unchanged) or `PARTIAL` (the failed turn — including
+  any pre-cognition Appraisal that committed in memory — is not persisted and
+  will be discarded on relaunch), the canonical/state revisions, any pending
+  lifecycle work, the classified reason, and a suggested action.
+- **Still usable during an outage**: `/status`, `/state`, `/life`, `/memory`,
+  `/diagnostics`, `/help`, `/exit`, and provider-independent `/time` all work
+  while the model is unavailable. Conversation, `/observe` adaptation and
+  `/environment` still need the model and fail closed with the summary above.
+- **`/exit` is always immediate and safe**, including after a failed turn: any
+  unpersisted partial work is explicitly reported as discarded.
+- The product never fabricates a successful turn: no synthetic appraisal,
+  cognition, language, Belief, Personality or Relationship result exists, and no
+  fallback constant is substituted.
+
+Honest limitations: no cloud fallback, no automatic model switching, no retry
+orchestration, no SLA, and no guaranteed model latency. Provider diagnostics are
+product/transport observability only; they are never persisted in canonical
+subject state and are not part of the subject's life.

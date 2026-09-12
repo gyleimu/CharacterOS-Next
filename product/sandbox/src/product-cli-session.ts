@@ -11,6 +11,11 @@ import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import type { InteractiveTurnOutcomeV0, LivedMemoryEntryV0, LivedMemoryInspectionV0 } from "@characteros-next/runtime";
 import type { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import type { ExternalStructuredObservationRequestV0 } from "./external-observation-ingress.js";
+import {
+  ProviderDiagnosticsV0,
+  classifyProviderFailureV0,
+  extractFailureStageV0
+} from "./provider-diagnostics.js";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
@@ -20,6 +25,11 @@ export interface ProductCliSessionDepsV0 {
    * report that the capability is not configured in this session.
    */
   readonly life?: ProductLifeOperationsV0;
+  /**
+   * CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0 — optional
+   * product provider diagnostics (/diagnostics) and stage-aware failure UX.
+   */
+  readonly diagnostics?: ProviderDiagnosticsV0;
   /** Conversation prefix label (display name); defaults to "Subject". */
   readonly subjectLabel?: string;
   readonly model: string;
@@ -47,6 +57,7 @@ export const PRODUCT_CLI_HELP_LINES: readonly string[] = Object.freeze([
   "  /environment run deterministic environment interaction(s): /environment [count]",
   "  /time        advance explicit canonical ticks: /time <ticks>",
   "  /demo        run the bounded one-life acceptance scenario",
+  "  /diagnostics show provider stage status, latency and last failure (alias /provider)",
   "  /exit        finish the current turn, save, and quit",
   "Anything else is sent to the subject as a natural-language message."
 ]);
@@ -71,9 +82,24 @@ function sanitizeDisplayTextV0(text: string): string {
     : out;
 }
 
+/** Product-facing next action for a classified provider failure. */
+export function suggestionForFailureV0(category: string): string {
+  switch (category) {
+    case "PROVIDER_UNAVAILABLE":
+      return "Check that Ollama is running and the configured model is installed, then relaunch.";
+    case "PROVIDER_TIMEOUT":
+      return "The local model exceeded the configured timeout; see /diagnostics, then retry or raise CHARACTEROS_TIMEOUT_MS.";
+    case "PROVIDER_MALFORMED_RESPONSE":
+      return "The model returned invalid structured output; see /diagnostics, then retry.";
+    case "PROVIDER_REJECTED_OUTPUT":
+      return "The model output was rejected by the frozen validator; see /diagnostics, then retry.";
+    default:
+      return "See /diagnostics, then /exit and relaunch to resume from durable state.";
+  }
+}
+
 /**
- * PRODUCT observation UX: one line of `key=value` pairs (quoted values allowed)
- * parsed into the EXISTING structured-observation request. Bare names are
+ * PRODUCT observation UX: one line of `key=value` pairs (quoted values allowed) * parsed into the EXISTING structured-observation request. Bare names are
  * normalized to canonical ref prefixes; the ingress validator remains the
  * authority for what is lawful.
  */
@@ -152,10 +178,8 @@ export class ProductCliSessionV0 {
       const pending = this.deps.host.pendingLifecycleWork();
       if (pending > 0) {
         this.deps.write(
-          `Warning: ${pending} mandatory lifecycle work item(s) still pending; refusing a clean exit.`
+          `Note: ${pending} mandatory lifecycle work item(s) remain from a failed turn; that partial work is NOT persisted and will be discarded.`
         );
-        this.exiting = false;
-        return { kind: "HANDLED" };
       }
       this.deps.write("Goodbye.");
       return { kind: "EXIT" };
@@ -194,6 +218,10 @@ export class ProductCliSessionV0 {
     }
     if (command === "/demo") {
       await this.runDemo();
+      return { kind: "HANDLED" };
+    }
+    if (command === "/diagnostics" || command === "/provider") {
+      this.printDiagnostics();
       return { kind: "HANDLED" };
     }
     this.deps.write(`Unknown command "${command}". Type /help for commands.`);
@@ -446,16 +474,22 @@ export class ProductCliSessionV0 {
 
   private async handleUserMessage(text: string): Promise<void> {
     if (this.deps.host.isFailed()) {
-      this.deps.write("The runtime is in a failed state and cannot take new messages. Use /exit, then relaunch.");
+      this.deps.write("The runtime is in a failed state and cannot take new messages. Inspection commands still work; use /exit, then relaunch.");
       return;
     }
     const outcome = await this.deps.host.send(text);
     this.lastTurnOutcome = outcome;
     this.deps.onTurnComplete?.(outcome);
+    const belief = outcome.belief_adaptation;
+    if (belief !== null && this.deps.diagnostics !== undefined) {
+      this.deps.diagnostics.noteReported(
+        "BELIEF_ADAPTATION",
+        belief.status === "DISABLED" ? "DISABLED" : belief.failure === null ? "OK" : "FAILED",
+        belief.failure === null ? belief.status : `${belief.status} — ${belief.failure}`
+      );
+    }
     if (outcome.status !== "COMPLETE") {
-      this.deps.write("Cognition generation failed; the interaction did not commit.");
-      this.deps.write("The subject was not advanced. Use /exit and relaunch to resume from durable state.");
-      if (this.deps.debug && outcome.failure !== null) this.deps.write(`[debug] ${outcome.failure}`);
+      await this.printTurnFailureSummary(outcome);
       return;
     }
     this.deps.write(`${this.label()} > ${outcome.subject_text}`);
@@ -479,8 +513,58 @@ export class ProductCliSessionV0 {
     ].join(" ");
   }
 
-  private async printStatus(): Promise<void> {
-    const status = await this.deps.host.status();
+  /** Per-stage provider diagnostics (/diagnostics, /provider). Read-only. */
+  private printDiagnostics(): void {
+    const diagnostics = this.deps.diagnostics;
+    if (diagnostics === undefined) {
+      this.deps.write("Provider diagnostics are not configured in this session.");
+      return;
+    }
+    for (const line of diagnostics.formatLines()) this.deps.write(line);
+    const last = this.lastTurnOutcome;
+    if (last !== null) {
+      this.deps.write(`Last turn: index=${last.turn_index} status=${last.status}`);
+      if (last.failure !== null) {
+        this.deps.write(`Last failure stage: ${extractFailureStageV0(last.failure) ?? "UNKNOWN"}`);
+        this.deps.write(`Last failure detail: ${sanitizeDisplayTextV0(last.failure)}`);
+      }
+    }
+  }
+
+  /**
+   * Bounded, truthful failure summary: which stage failed, whether canonical
+   * work committed or remains pending, why, and what the user can do next.
+   */
+  private async printTurnFailureSummary(outcome: InteractiveTurnOutcomeV0): Promise<void> {
+    const out = (line: string): void => this.deps.write(line);
+    const failure = outcome.failure;
+    const stage = extractFailureStageV0(failure);
+    const recorded = stage === null ? null : this.deps.diagnostics?.last(stage) ?? null;
+    const classified =
+      recorded !== null && recorded.category !== null
+        ? { category: recorded.category, detail: recorded.detail ?? "" }
+        : classifyProviderFailureV0(failure ?? "unknown provider failure");
+    const canonicalChanged =
+      outcome.repository_revision_after !== outcome.repository_revision_before ||
+      outcome.state_revision_after !== outcome.state_revision_before;
+    const pending = this.deps.host.pendingLifecycleWork();
+    out(`Turn failed during: ${stage ?? "UNKNOWN"}`);
+    out(
+      `Subject persistence: ${
+        !canonicalChanged && pending === 0
+          ? "SAFE (durable state unchanged since the last completed turn)"
+          : "PARTIAL (this failed turn is not persisted; relaunch resumes from the last completed boundary)"
+      }`
+    );
+    out(`  Canonical revision: ${outcome.repository_revision_before} -> ${outcome.repository_revision_after}`);
+    out(`  State revision: ${outcome.state_revision_before} -> ${outcome.state_revision_after}`);
+    out(`  Pending lifecycle work: ${pending}`);
+    out(`Reason: ${classified.category}${this.deps.debug ? ` — ${sanitizeDisplayTextV0(classified.detail)}` : ""}`);
+    out(`Suggested action: ${suggestionForFailureV0(classified.category)}`);
+    out("Inspection commands still work: /status /state /life /memory /diagnostics /exit.");
+  }
+
+  private async printStatus(): Promise<void> {    const status = await this.deps.host.status();
     const displayName = this.deps.host.displayName();
     const lines = [
       `Display name: ${displayName.length > 0 ? displayName : "(unset)"}`,

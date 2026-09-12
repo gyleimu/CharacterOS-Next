@@ -33,6 +33,12 @@ export interface ProductTransportsV0 {
   readonly language: ModelTransportV0;
   /** Dedicated Appraisal transport (separate semantic role and call accounting). */
   readonly appraisal: ModelTransportV0;
+  /**
+   * Dedicated relationship-familiarity admission transport so product
+   * diagnostics can label that model-backed stage distinctly from cognition.
+   * Same model/configuration; separate instance only.
+   */
+  readonly relationship: ModelTransportV0;
   /** Terminal trace of the most recent cognition call (operational evidence). */
   readonly lastCognitionTrace: () => ModelTransportTraceV0 | null;
   /** Terminal trace of the most recent appraisal call (operational evidence). */
@@ -77,6 +83,13 @@ export function createProductTransportsV0(config: ProductProviderConfigV0): Prod
     cognition,
     language,
     appraisal,
+    relationship: new OllamaNativeCognitionTransportV0({
+      base_url: config.base_url,
+      model: config.model,
+      timeout_ms: config.timeout_ms,
+      num_predict: config.num_predict,
+      context_window_tokens: config.context_window_tokens
+    }) as unknown as ModelTransportV0,
     lastCognitionTrace: () => lastTrace,
     lastAppraisalTrace: () => lastAppraisalTrace
   };

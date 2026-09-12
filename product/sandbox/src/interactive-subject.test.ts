@@ -300,10 +300,11 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — CLI session (offline)", 
     expect(status.turn_index).toBe(1);
   });
 
-  it("a failed provider turn reports a concise failure and no fake reply", async () => {
+  it("a failed provider turn reports a stage-aware failure summary and no fake reply", async () => {
     const { session, lines } = await makeSession(() => "MALFORMED");
     await session.handleLine("Hello.");
-    expect(lines.some((line) => line.includes("did not commit"))).toBe(true);
+    expect(lines.some((line) => line.includes("Turn failed during:"))).toBe(true);
+    expect(lines.some((line) => line.includes("Subject persistence:"))).toBe(true);
     expect(lines.some((line) => line.startsWith("Subject > "))).toBe(false);
   });
 

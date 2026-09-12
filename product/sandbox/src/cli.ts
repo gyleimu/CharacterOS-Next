@@ -30,6 +30,7 @@ import {
 import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { ProductLifeOperationsV0 } from "./product-life-operations.js";
+import { ProviderDiagnosticsV0, wrapTransportForStageV0 } from "./provider-diagnostics.js";
 import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
 import { advanceSubjectTimeV0, SubjectTimeAdvanceErrorV0 } from "./subject-time-advance.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
@@ -75,6 +76,15 @@ async function main(): Promise<number> {
     console.error(`  detail: ${probe.failure ?? "unknown"}`);
     return 1;
   }
+  // MODEL MISSING: reachable endpoint but the configured model is not installed.
+  // Fail closed with the configured identifier; never auto-download or install.
+  if (probe.failure !== null) {
+    console.error(`Model unavailable: ${model}`);
+    console.error(`  endpoint: ${baseUrl}`);
+    console.error(`  detail: ${probe.failure}`);
+    console.error("  action: install/pull the model locally, then relaunch. The product never downloads models for you.");
+    return 1;
+  }
 
   const transports = createProductTransportsV0({
     base_url: baseUrl,
@@ -83,9 +93,25 @@ async function main(): Promise<number> {
     num_predict: numPredict,
     context_window_tokens: contextWindowTokens
   });
+  // CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0 — product-only
+  // stage progress/latency/failure classification. Pass-through wrappers; no
+  // canonical state, no persistence, no retry, no fallback.
+  const diagnostics = new ProviderDiagnosticsV0({
+    write: (line) => process.stdout.write(`${line}\n`),
+    model,
+    timeout_ms: timeoutMs,
+    debug
+  });
+  const cognitionTransport = wrapTransportForStageV0(transports.cognition, "COGNITION", diagnostics);
+  const languageTransport = wrapTransportForStageV0(transports.language, "LANGUAGE", diagnostics);
+  const appraisalTransport = wrapTransportForStageV0(transports.appraisal, "APPRAISAL", diagnostics);
+  const relationshipTransport = wrapTransportForStageV0(transports.relationship, "RELATIONSHIP_ADAPTATION", diagnostics);
+  if (env("CHARACTEROS_DISABLE_ADAPTATION") !== "1") {
+    diagnostics.enable("BELIEF_ADAPTATION");
+  }
   // CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0: one model-backed appraisal call per
   // factual event, accounted separately from cognition/language.
-  const appraisal = createProductAppraisalProviderV0({ transport: transports.appraisal });
+  const appraisal = createProductAppraisalProviderV0({ transport: appraisalTransport });
 
   // BELIEF_ADAPTATION_SESSION_WIRING_V0: one bounded model-backed belief
   // semantic bearing call per lived-evidence workflow, accounted separately
@@ -103,7 +129,7 @@ async function main(): Promise<number> {
   // provider emits only the closed qualifying/ABSTAIN vocabulary; the ingestion
   // chain derives every number itself (no magnitude ever comes from the model).
   const relationshipFamiliarityAdmissionProvider =
-    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: transports.cognition });
+    new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: relationshipTransport });
 
   // SUBJECT_EXPLICIT_TIME_ADVANCE_PRODUCT_V0 — advance the SAME shared canonical
   // subject by explicit canonical TICKS (never seconds/minutes/hours). No human
@@ -120,8 +146,8 @@ async function main(): Promise<number> {
             display_name: env("CHARACTEROS_DISPLAY_NAME") ?? "Alice",
             identity_anchors: []
           },
-          conversationCognitionTransport: transports.cognition,
-          languageTransport: transports.language,
+          conversationCognitionTransport: cognitionTransport,
+          languageTransport: languageTransport,
           factualEventAppraisalProvider: appraisal.provider,
           beliefSemanticProvider,
           relationshipFamiliarityAdmissionProvider,
@@ -162,8 +188,8 @@ async function main(): Promise<number> {
         interaction_interval_ticks: intEnv("CHARACTEROS_INTERVAL_TICKS", 1)
       },
       {
-        conversationCognitionTransport: transports.cognition,
-        languageTransport: transports.language,
+        conversationCognitionTransport: cognitionTransport,
+        languageTransport: languageTransport,
         factualEventAppraisalProvider: appraisal.provider,
         // ADAPTATION PARITY: the same existing providers as human mode.
         beliefSemanticProvider,
@@ -242,8 +268,8 @@ async function main(): Promise<number> {
         storage_root: dataDir
       },
       {
-        conversationCognitionTransport: transports.cognition,
-        languageTransport: transports.language,
+        conversationCognitionTransport: cognitionTransport,
+        languageTransport: languageTransport,
         appraisalProvider: appraisal.provider,
         beliefSemanticProvider,
         relationshipFamiliarityAdmissionProvider,
@@ -339,8 +365,8 @@ async function main(): Promise<number> {
               {
                 host: opened,
                 sharedSourceStore: sharedStore,
-                conversationCognitionTransport: transports.cognition,
-                languageTransport: transports.language,
+                conversationCognitionTransport: cognitionTransport,
+                languageTransport: languageTransport,
                 factualEventAppraisalProvider: appraisal.provider,
                 beliefSemanticProvider,
                 relationshipFamiliarityAdmissionProvider,
@@ -355,6 +381,7 @@ async function main(): Promise<number> {
             )
           }),
       subjectLabel: opened.displayName().length > 0 ? opened.displayName() : subjectId,
+      diagnostics,
       model,
       providerLabel: "OLLAMA_NATIVE",
       contextWindowTokens,
