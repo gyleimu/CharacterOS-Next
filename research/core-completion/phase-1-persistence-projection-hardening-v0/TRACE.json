@@ -1,0 +1,113 @@
+{
+  "schema_version": "core-phase-1-hardening-trace-v0",
+  "real_model_calls": 0,
+  "human_lifecycle": {
+    "turns": [
+      {
+        "turn_index": 0,
+        "event": "That worked exactly as I hoped. Thank you.",
+        "status": "COMPLETE",
+        "affect_before_turn": {
+          "valence": 0,
+          "activation": 0.2
+        },
+        "affect_line_at_cognition": "[affect (canonical)] valence=0 activation=0.2",
+        "affect_legend_at_cognition": "[affect (canonical) legend] Canonical affect is a continuous internal state (not a named emotion, not a behavioral instruction). valence range [-1,1]: lower is more negative, 0 is neutral, higher is more positive. activation range [0,1]: lower is lower activation, higher is higher activation.",
+        "affect_legend_at_cognition_present": true,
+        "cognition_request_sha256": "sha256:a9dbff660d1f4aec37a4a9a01ca093c3fde8f8e6f98c4abd0307ed2902d6eed0",
+        "affect_after_turn": 0.12599999999999997,
+        "affect_after_status": {
+          "valence": 0.12599999999999997,
+          "activation": 0.256
+        },
+        "state_revision_before": 0,
+        "state_revision_after": 6,
+        "repository_revision_before": "R0",
+        "repository_revision_after": "R2",
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "provider_memory_section_present": false,
+        "retrieved_ref_count": 0
+      },
+      {
+        "turn_index": 1,
+        "event": "Please don't do that again; it caused a problem.",
+        "status": "COMPLETE",
+        "affect_before_turn": {
+          "valence": 0.12599999999999997,
+          "activation": 0.256
+        },
+        "affect_line_at_cognition": "[affect (canonical)] valence=0.1251627937881343 activation=0.25562790835028193",
+        "affect_legend_at_cognition": "[affect (canonical) legend] Canonical affect is a continuous internal state (not a named emotion, not a behavioral instruction). valence range [-1,1]: lower is more negative, 0 is neutral, higher is more positive. activation range [0,1]: lower is lower activation, higher is higher activation.",
+        "affect_legend_at_cognition_present": true,
+        "cognition_request_sha256": "sha256:540a75988f84db72e69d6a5b987f7f2937c8b4adc86469281d1fa56fb9438bfd",
+        "affect_after_turn": -0.19883720621186576,
+        "affect_after_status": {
+          "valence": -0.19883720621186576,
+          "activation": 0.39962790835028195
+        },
+        "state_revision_before": 6,
+        "state_revision_after": 15,
+        "repository_revision_before": "R2",
+        "repository_revision_after": "R5",
+        "directive": "CLARIFY_MISSING_CONTEXT",
+        "provider_memory_section_present": true,
+        "retrieved_ref_count": 1
+      }
+    ],
+    "restore_proof": {
+      "origin": "SUBJECT_RESTORED",
+      "state_revision_equal": true,
+      "repository_revision_equal": true,
+      "affect_equal": true
+    },
+    "affect_timing": [
+      {
+        "turn_index": 0,
+        "affect_line_at_cognition": "[affect (canonical)] valence=0 activation=0.2",
+        "affect_before_turn": {
+          "valence": 0,
+          "activation": 0.2
+        },
+        "affect_after_previous_turn": null,
+        "affect_after_turn": 0.12599999999999997,
+        "note": "cognition sees the affect from BEFORE the current event AffectApplication (one-turn lag, AUD-12 frozen)"
+      },
+      {
+        "turn_index": 1,
+        "affect_line_at_cognition": "[affect (canonical)] valence=0.1251627937881343 activation=0.25562790835028193",
+        "affect_before_turn": {
+          "valence": 0.12599999999999997,
+          "activation": 0.256
+        },
+        "affect_after_previous_turn": 0.12599999999999997,
+        "affect_after_turn": -0.19883720621186576,
+        "note": "cognition sees the affect from BEFORE the current event AffectApplication (one-turn lag, AUD-12 frozen)"
+      }
+    ]
+  },
+  "external_observation": {
+    "first": {
+      "observation_transition_id": "t-obs-9e112e2f67c86b8b81c525b49325efe788b40faca7507766f6fb97378acf62fb",
+      "observation_ref": "observation:phase1-trace-1",
+      "episode_ref": "episode:aca5dbab83802e4eecb9c77d696507d5eafb8149929fad922f193979f25be3d8",
+      "bundles_after": 2
+    },
+    "replay": {
+      "identical_transition_id": true,
+      "identical_episode_ref": true,
+      "bundles_unchanged": true
+    },
+    "conflict": {
+      "kind": "CONFLICT_FAIL_CLOSED",
+      "name": "ExternalObservationReplayConflictErrorV0",
+      "messagePrefix": "EXTERNAL_OBSERVATION_CONFLICT: observation observation:phase",
+      "bundles_unchanged": true
+    },
+    "replay_after_restart": {
+      "identical_transition_id": true,
+      "identical_episode_ref": true,
+      "bundles_unchanged": true
+    }
+  },
+  "total_cognition_calls": 2
+}
