@@ -1102,6 +1102,111 @@ export class ExplicitV4SessionAuthorityV0 {
    * record, applies NO appraisal and NO affect, and adds NO learning/reward
    * signal. The behavior-outcome feedback law is untouched and remains strict.
    */
+  /**
+   * EXTERNAL_STRUCTURED_OBSERVATION_PRODUCT_INGRESS_V0 — commit ONE generic
+   * canonical Observation from an EXTERNAL adapter and turn it into lived
+   * experience through the EXISTING observation-sourced Learning path.
+   *
+   * This bypasses the conversation ingress ledger entirely: there is NO
+   * fabricated human actor, NO conversation text event and NO counterpart
+   * assumption. Provenance is carried by `source_refs` (`source:`/`event:`
+   * refs) and observed entities by `entity_refs`, exactly as
+   * `ObservationInputV0` defines. Observable content rides the existing context
+   * delta (`scene`/`task`/`focus_refs`/`environment_refs`). No blob field, no
+   * belief/truth upgrade, no time advance.
+   */
+  async commitExternalObservation(input: {
+    readonly observation_id: string;
+    readonly source_refs: readonly string[];
+    /**
+     * External provenance refs (the stable external `event:<id>` identity).
+     * Deliberately NOT cause refs: an external, non-conversation event must not
+     * be encoded as an admitted conversation factual event, because the frozen
+     * affect law requires a terminal appraisal disposition for every `event:`
+     * cause ref — which only the conversation ingress authority can produce.
+     */
+    readonly external_refs: readonly string[];
+    readonly entity_refs: readonly string[];
+    readonly scene: string;
+    readonly task: string | null;
+    readonly focus_refs: readonly string[];
+    readonly environment_refs: readonly string[];
+    readonly declaredSalience: number;
+  }): Promise<{
+    readonly observation_transition_id: string;
+    readonly observation_ref: string;
+    readonly episode_ref: string;
+    readonly repository_revision: string;
+  }> {
+    const snapshot = await this.readSnapshot();
+    const observation = observationInput({
+      observation_id: input.observation_id,
+      source_refs: [...input.source_refs],
+      entity_refs: [...input.entity_refs],
+      occurrence_logical_time: snapshot.runtime_metadata.logical_time
+    });
+    const baseContextDelta = await buildContextDelta(observation, snapshot as never);
+    const baseOp = baseContextDelta.operations[0] as unknown as { path: string; value: Record<string, unknown> };
+    const contextDelta = {
+      ...baseContextDelta,
+      operations: [
+        {
+          ...baseOp,
+          value: {
+            ...baseOp.value,
+            scene: input.scene,
+            task: input.task,
+            focus_refs: [...input.focus_refs],
+            environment_refs: [...input.environment_refs]
+          }
+        }
+      ]
+    } as typeof baseContextDelta;
+    const builtProposal = await buildObservationProposal({
+      subjectId: this.subjectIdValue as never,
+      stateRevision: snapshot.runtime_metadata.state_revision as number,
+      observation,
+      deltas: [contextDelta]
+    });
+    const proposal = {
+      ...builtProposal,
+      external_refs: [...input.external_refs]
+    } as unknown as typeof builtProposal;
+    const reserved = await this.assembly.facade.reserveAndRoute(proposal);
+    if (reserved.kind !== "CONTINUE") {
+      throw new Error(`session external observation reservation failed: ${reserved.kind}`);
+    }
+    const committed = await this.assembly.facade.commitReserved({
+      proposal,
+      continuation: reserved.continuation,
+      producerAuthorization: this.issuer.issue([{ producer: "context", domain: "context" }]) as never,
+      preparedBinding: {
+        prepared_result_ref: `workflow:w-external-observation-${input.observation_id.replace("observation:", "")}` as never,
+        transition_id: proposal.transition_id,
+        subject_id: proposal.subject_id,
+        transition_type: proposal.transition_type,
+        payload_fingerprint: await proposalFingerprint(proposal)
+      },
+      repository_bindings: (await this.repositoryBindings(snapshot)) as never
+    });
+    if (committed.kind !== "COMMITTED") {
+      throw new Error(
+        `session external observation must commit: ${committed.kind} ${JSON.stringify((committed as { failure?: unknown }).failure ?? null)}`
+      );
+    }
+    const observationTransitionsId = committed.bundle.transition_id as string;
+    const learned = await this.recordObservationalExperience({
+      observationTransitionId: observationTransitionsId,
+      declaredSalience: input.declaredSalience
+    });
+    return {
+      observation_transition_id: observationTransitionsId,
+      observation_ref: observationCauseRefOf(committed.bundle as never),
+      episode_ref: learned.episode_ref,
+      repository_revision: learned.repository_revision
+    };
+  }
+
   async recordObservationalExperience(input: {
     readonly observationTransitionId: string;
     readonly declaredSalience: number;
