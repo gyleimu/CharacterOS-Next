@@ -30,6 +30,7 @@ import {
 import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
+import { advanceSubjectTimeV0, SubjectTimeAdvanceErrorV0 } from "./subject-time-advance.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
 import { ProductCliSessionV0 } from "./product-cli-session.js";
 import { createProductTransportsV0, probeOllamaV0 } from "./product-providers.js";
@@ -102,6 +103,47 @@ async function main(): Promise<number> {
   // chain derives every number itself (no magnitude ever comes from the model).
   const relationshipFamiliarityAdmissionProvider =
     new ModelRelationshipFamiliarityQualifyingAdmissionProviderV0({ transport: transports.cognition });
+
+  // SUBJECT_EXPLICIT_TIME_ADVANCE_PRODUCT_V0 — advance the SAME shared canonical
+  // subject by explicit canonical TICKS (never seconds/minutes/hours). No human
+  // input, environment interaction, Observation, Experience or Memory is created.
+  if (process.argv[2] === "time") {
+    const subjectId = env("CHARACTEROS_SUBJECT_ID") ?? "alice";
+    const parsed = Number.parseInt(process.argv[3] ?? "", 10);
+    try {
+      const result = await advanceSubjectTimeV0(
+        {
+          sharedSourceStore: new FileSharedSubjectSourceStoreV0(dataDir, subjectId),
+          subject: {
+            subject_id: subjectId,
+            display_name: env("CHARACTEROS_DISPLAY_NAME") ?? "Alice",
+            identity_anchors: []
+          },
+          conversationCognitionTransport: transports.cognition,
+          languageTransport: transports.language,
+          factualEventAppraisalProvider: appraisal.provider,
+          beliefSemanticProvider,
+          relationshipFamiliarityAdmissionProvider,
+          clock: () => new Date().toISOString()
+        },
+        Number.isNaN(parsed) ? -1 : parsed
+      );
+      console.log(
+        `time: ${result.ticks} canonical tick(s) ${result.no_op ? "(NO_OP)" : "advanced"} ` +
+          `logical_time ${result.logical_time_before} -> ${result.logical_time_after} ` +
+          `valence ${result.valence_before} -> ${result.valence_after} ` +
+          `activation ${result.activation_before} -> ${result.activation_after} ` +
+          `shared_revision=${result.base_revision}`
+      );
+      return 0;
+    } catch (error) {
+      if (error instanceof SubjectTimeAdvanceErrorV0) {
+        console.error(`time advance refused: ${error.code}: ${error.message}`);
+        return 2;
+      }
+      throw error;
+    }
+  }
 
   // SUBJECT_ENVIRONMENT_PRODUCT_CONTINUITY_V0 + ENVIRONMENT_LIVED_EVIDENCE_ADAPTATION_V0 —
   // optional deterministic environment mode. It reuses the SAME provider
