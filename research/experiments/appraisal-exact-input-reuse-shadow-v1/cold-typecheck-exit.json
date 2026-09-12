@@ -1,0 +1,4 @@
+{
+  "command": "scripts/cold-typecheck-regression.ps1",
+  "exit_code": 0
+}

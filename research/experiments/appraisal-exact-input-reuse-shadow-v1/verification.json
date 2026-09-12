@@ -1,0 +1,169 @@
+{
+  "result": "PASS",
+  "model_calls": 0,
+  "network_calls": 0,
+  "V0_unchanged": true,
+  "production_unchanged": true,
+  "verified": [
+    {
+      "id": "V101",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V102",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V103",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V104",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V105",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V106",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V107",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V108",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V109",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V110",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V111",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V112",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V113",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V114",
+      "failed_A_retained": true,
+      "B_not_invoked": true
+    },
+    {
+      "id": "V115",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    },
+    {
+      "id": "V116",
+      "failed_A_retained": true,
+      "B_not_invoked": true
+    },
+    {
+      "id": "V117",
+      "exact_pre_state": true,
+      "persisted_before_B": true,
+      "exact_replay": true,
+      "classifications": [
+        "NONE"
+      ]
+    }
+  ],
+  "counters": {
+    "semantic_appraisal_invocations": 81,
+    "already_completed_replay_invocations": 32,
+    "initial_event_evaluations": 49,
+    "deterministic_setup_candidates": 17,
+    "real_appraisal_inferences": 32,
+    "reuse_eligible": 15,
+    "baseline_reuse_hits": 0,
+    "isolated_shadow_reuse_hits": 15,
+    "reuse_misses": 0,
+    "reuse_rejected": 0,
+    "invalid_first_candidates_not_reused": 2,
+    "shadow_inferences": 0,
+    "counter_scope": "Collected baseline lifecycles and one archived shadow branch per reached B. Adversarial test counters excluded."
+  }
+}

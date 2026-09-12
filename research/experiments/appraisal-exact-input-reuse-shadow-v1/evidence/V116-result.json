@@ -1,0 +1,58 @@
+{
+  "id": "V116",
+  "category": "predeclared reserve ambiguous",
+  "stage": "FIRST_INFERENCE_FAILED",
+  "candidate_A": {
+    "valid": false,
+    "candidate": null,
+    "error": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]"
+  },
+  "candidate_B": {
+    "valid": false,
+    "candidate": null,
+    "error": "NOT_REACHED"
+  },
+  "transport_error_A": null,
+  "transport_error_B": null,
+  "request_equal": null,
+  "event_identities_differ": null,
+  "fingerprint_A": "sha256:a06bd1dcb88de04f24e8ffaf8bde19e48a193bc049eb6411d387da102473f9ab",
+  "fingerprint_B": null,
+  "latency_A_ms": 3203.4012999999977,
+  "latency_B_ms": null,
+  "tokens_A": {
+    "total_duration": 3202548100,
+    "load_duration": 2502200,
+    "prompt_eval_count": 496,
+    "prompt_eval_duration": 575412000,
+    "eval_count": 55,
+    "eval_duration": 2619172000,
+    "done_reason": "stop"
+  },
+  "tokens_B": null,
+  "semantic_entries": [
+    {
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "THREW"
+    }
+  ],
+  "baseline_status": "FAILED",
+  "baseline_failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+  "completed_valid_pair": false,
+  "candidate_exact_equal": null,
+  "fields": null,
+  "authority_equal": null,
+  "canonical_equal": null,
+  "affect_equal": null,
+  "downstream": null,
+  "classifications": [],
+  "material": false
+}

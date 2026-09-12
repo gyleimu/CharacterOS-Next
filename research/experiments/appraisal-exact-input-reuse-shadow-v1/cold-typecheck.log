@@ -1,0 +1,18 @@
+removed D:\Documents\CharacterOS-Next\packages\affect\dist
+removed D:\Documents\CharacterOS-Next\packages\appraisal\dist
+removed D:\Documents\CharacterOS-Next\packages\behavior\dist
+removed D:\Documents\CharacterOS-Next\packages\belief\dist
+removed D:\Documents\CharacterOS-Next\packages\influence-evidence\dist
+removed D:\Documents\CharacterOS-Next\packages\long-term-state-domain\dist
+removed D:\Documents\CharacterOS-Next\packages\memory\dist
+removed D:\Documents\CharacterOS-Next\packages\memory-influence\dist
+removed D:\Documents\CharacterOS-Next\packages\personality\dist
+removed D:\Documents\CharacterOS-Next\packages\regulation\dist
+removed D:\Documents\CharacterOS-Next\packages\relationship\dist
+removed D:\Documents\CharacterOS-Next\packages\runtime\dist
+removed D:\Documents\CharacterOS-Next\packages\subject-core\dist
+removed D:\Documents\CharacterOS-Next\product\sandbox\dist
+removed D:\Documents\CharacterOS-Next\product\web\dist
+cold source-mapped workspace typecheck (15 packages)...
+$ tsc -p tsconfig.workspaces.json
+R2-K cold-start typecheck regression: PASS

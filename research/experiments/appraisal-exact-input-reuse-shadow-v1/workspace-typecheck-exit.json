@@ -1,0 +1,4 @@
+{
+  "command": "pnpm typecheck:workspaces",
+  "exit_code": 0
+}

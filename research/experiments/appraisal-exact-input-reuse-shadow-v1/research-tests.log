@@ -1,0 +1,18 @@
+✔ V0 sixth failure is the unmodified MODEL_SCHEMA_VIOLATION, not harness/fixture/transport defect (3.4713ms)
+✔ first-turn no opportunity; later distinct events and complete identity; real same-S rebind and lifecycle (173.7351ms)
+✔ malformed A terminates only its turn; no B, no entry, next independent sample remains lawful (88.026ms)
+✔ malformed independent B compares from SAVED S: failure boundary visible, no repair or fallback (204.2334ms)
+✔ numeric candidate sensitivity reaches canonical Affect and existing cognition projection (267.7003ms)
+✔ event-B stale/grounding/context/subject/prepare/commit failures cannot be bypassed by reusable A (373.3415ms)
+✔ scope/config/prompt/format/order/budget firewalls and normalized comparison defeat hash collision (1.1129ms)
+✔ native timeout/unavailable/truncation and malformed/range violations never create reusable first candidate (45.3574ms)
+✔ automatic finally cleanup on success/throw/failure/shutdown/restart; no persistent slot (58.7377ms)
+✔ persist V1 deterministic evidence, never V0 files (0.6037ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1577.9664

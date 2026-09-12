@@ -1,0 +1,180 @@
+{
+  "V0": {
+    "completed_valid_pairs": 5,
+    "evaluated_pairs": 5,
+    "inferences": 11,
+    "exact_request_pairs": 5,
+    "candidate_exact_equal": 5,
+    "candidate_divergent_valid_pairs": 0,
+    "schema_invalid_attempts": 1,
+    "authority_equivalent": 5,
+    "canonical_equivalent": 5,
+    "affect_equivalent": 5,
+    "downstream_equivalent": 5,
+    "B_latency_ms": {
+      "count": 5,
+      "min": 4778.08600000001,
+      "p50": 13915.503599999996,
+      "mean": 13022.327060000005,
+      "p90": null,
+      "max": 16425.158200000005,
+      "total": 65111.63530000002
+    }
+  },
+  "V1": {
+    "completed_valid_pairs": 15,
+    "evaluated_pairs": 15,
+    "inferences": 32,
+    "exact_request_pairs": 15,
+    "candidate_exact_equal": 15,
+    "candidate_divergent_valid_pairs": 0,
+    "schema_invalid_attempts": 2,
+    "authority_equivalent": 15,
+    "canonical_equivalent": 15,
+    "affect_equivalent": 15,
+    "downstream_equivalent": 15,
+    "B_latency_ms": {
+      "count": 15,
+      "min": 2329.3817000000126,
+      "p50": 2650.716599999985,
+      "mean": 2694.673900000002,
+      "p90": 3192.881300000008,
+      "max": 3377.7800000000134,
+      "total": 40420.10850000003
+    },
+    "A_latency_ms": {
+      "count": 17,
+      "min": 2467.813999999984,
+      "p50": 3121.653100000025,
+      "mean": 7937.619135294123,
+      "p90": 3207.623700000011,
+      "max": 85758.8655,
+      "total": 134939.5253000001
+    },
+    "stop": {
+      "kind": "TARGET_COMPLETE",
+      "completed": 15
+    }
+  },
+  "combined": {
+    "completed_valid_pairs": 20,
+    "evaluated_pairs": 20,
+    "inferences": 43,
+    "exact_request_pairs": 20,
+    "candidate_exact_equal": 20,
+    "candidate_divergent_valid_pairs": 0,
+    "schema_invalid_attempts": 3,
+    "authority_equivalent": 20,
+    "canonical_equivalent": 20,
+    "affect_equivalent": 20,
+    "downstream_equivalent": 20,
+    "B_latency_ms": {
+      "count": 20,
+      "min": 2329.3817000000126,
+      "p50": 2670.3398499999967,
+      "mean": 5276.587190000003,
+      "p90": 13915.503599999996,
+      "max": 16425.158200000005,
+      "total": 105531.74380000005
+    }
+  },
+  "token_accounting": {
+    "V0_B_prompt": {
+      "count": 5,
+      "min": 485,
+      "p50": 486,
+      "mean": 486.4,
+      "p90": null,
+      "max": 488,
+      "total": 2432
+    },
+    "V0_B_completion": {
+      "count": 5,
+      "min": 54,
+      "p50": 54,
+      "mean": 54.6,
+      "p90": null,
+      "max": 56,
+      "total": 273
+    },
+    "V1_B_prompt": {
+      "count": 15,
+      "min": 473,
+      "p50": 494,
+      "mean": 491.93333333333334,
+      "p90": 498,
+      "max": 498,
+      "total": 7379
+    },
+    "V1_B_completion": {
+      "count": 15,
+      "min": 54,
+      "p50": 55,
+      "mean": 54.93333333333333,
+      "p90": 56,
+      "max": 57,
+      "total": 824
+    },
+    "combined_B_prompt": {
+      "count": 20,
+      "min": 473,
+      "p50": 492.5,
+      "mean": 490.55,
+      "p90": 497,
+      "max": 498,
+      "total": 9811
+    },
+    "combined_B_completion": {
+      "count": 20,
+      "min": 54,
+      "p50": 55,
+      "mean": 54.85,
+      "p90": 56,
+      "max": 57,
+      "total": 1097
+    }
+  },
+  "counters": {
+    "semantic_appraisal_invocations": 81,
+    "already_completed_replay_invocations": 32,
+    "initial_event_evaluations": 49,
+    "deterministic_setup_candidates": 17,
+    "real_appraisal_inferences": 32,
+    "reuse_eligible": 15,
+    "baseline_reuse_hits": 0,
+    "isolated_shadow_reuse_hits": 15,
+    "reuse_misses": 0,
+    "reuse_rejected": 0,
+    "invalid_first_candidates_not_reused": 2,
+    "shadow_inferences": 0,
+    "counter_scope": "Collected baseline lifecycles and one archived shadow branch per reached B. Adversarial test counters excluded."
+  },
+  "estimated_turn_impact": {
+    "denominator": "historical user-reported 30-55 seconds, not remeasured",
+    "fraction_percent": [
+      4.8194847272727,
+      8.83572199999995
+    ],
+    "actual_end_to_end_comparison": false
+  },
+  "V0_latency_representative_now": false,
+  "individual_failures": [
+    {
+      "id": "V114",
+      "stage": "FIRST_INFERENCE_FAILED",
+      "A": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+      "B": "NOT_REACHED"
+    },
+    {
+      "id": "V116",
+      "stage": "FIRST_INFERENCE_FAILED",
+      "A": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+      "B": "NOT_REACHED"
+    }
+  ],
+  "paired_differences": [],
+  "verdict": "APPRAISAL_EXACT_INPUT_REUSE_VALIDATED_FOR_PRODUCTIONIZATION",
+  "engineering_judgment": "YES",
+  "productionize": "YES",
+  "recommended_next_slice": "APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0"
+}

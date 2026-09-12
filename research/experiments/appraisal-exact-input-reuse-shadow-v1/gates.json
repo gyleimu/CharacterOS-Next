@@ -1,0 +1,19 @@
+{
+  "V1_research_tests": { "passed": 10, "failed": 0 },
+  "V0_immutable_regressions": { "passed": 10, "failed": 0, "V0_evidence_written": false },
+  "offline_evidence_verifier": { "result": "PASS", "valid_pairs_replayed": 15, "failed_A_attempts_verified": 2, "model_calls": 0 },
+  "product_runtime_web_regressions": { "files_passed": 5, "tests_passed": 40 },
+  "full_vitest": { "exit_code": 0, "files_passed": 178, "files_skipped": 1, "tests_passed": 2318, "tests_skipped": 3, "failed": 0 },
+  "workspace_typecheck": "PASS",
+  "cold_workspace_typecheck": "PASS",
+  "build_after_cold_check": "PASS",
+  "lint": "PASS",
+  "governance": "PASS",
+  "auxiliary_typecheck": "KNOWN_TS2883_OUT_OF_SCOPE_PER_USER; NOT_REPAIRED",
+  "production_source_changes": 0,
+  "V0_changed": false,
+  "V1_real_inference_calls": 32,
+  "V1_valid_pairs": 15,
+  "V1_schema_invalid_A": 2,
+  "production_reuse_enabled": false
+}

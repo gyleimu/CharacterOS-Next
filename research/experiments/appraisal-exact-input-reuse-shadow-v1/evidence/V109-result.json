@@ -1,0 +1,170 @@
+{
+  "id": "V109",
+  "category": "request or question",
+  "stage": "PAIRED_EVALUATION",
+  "candidate_A": {
+    "valid": true,
+    "candidate": {
+      "relevance": 1,
+      "goal_congruence": 1,
+      "attribution": "other",
+      "controllability": 1,
+      "uncertainty": 0.1,
+      "intensity": 0.8,
+      "assessment_confidence": 0.95
+    },
+    "error": null
+  },
+  "candidate_B": {
+    "valid": true,
+    "candidate": {
+      "relevance": 1,
+      "goal_congruence": 1,
+      "attribution": "other",
+      "controllability": 1,
+      "uncertainty": 0.1,
+      "intensity": 0.8,
+      "assessment_confidence": 0.95
+    },
+    "error": null
+  },
+  "transport_error_A": null,
+  "transport_error_B": null,
+  "request_equal": true,
+  "event_identities_differ": true,
+  "fingerprint_A": "sha256:2001c1b71379b5efc2dd6c2ba560758e115519a9f0e00a536b6f48008ac73ae1",
+  "fingerprint_B": "sha256:2001c1b71379b5efc2dd6c2ba560758e115519a9f0e00a536b6f48008ac73ae1",
+  "latency_A_ms": 3181.4444000000076,
+  "latency_B_ms": 2656.6241000000155,
+  "tokens_A": {
+    "total_duration": 3167150600,
+    "load_duration": 1036200,
+    "prompt_eval_count": 494,
+    "prompt_eval_duration": 653196000,
+    "eval_count": 55,
+    "eval_duration": 2507244000,
+    "done_reason": "stop"
+  },
+  "tokens_B": {
+    "total_duration": 2639148200,
+    "load_duration": 1031100,
+    "prompt_eval_count": 494,
+    "prompt_eval_duration": 67152000,
+    "eval_count": 55,
+    "eval_duration": 2565374000,
+    "done_reason": "stop"
+  },
+  "semantic_entries": [
+    {
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    }
+  ],
+  "baseline_status": "COMPLETE",
+  "baseline_failure": null,
+  "completed_valid_pair": true,
+  "candidate_exact_equal": true,
+  "fields": {
+    "relevance": {
+      "A": 1,
+      "B": 1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "goal_congruence": {
+      "A": 1,
+      "B": 1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "attribution": {
+      "A": "other",
+      "B": "other",
+      "equal": true,
+      "absolute_difference": null
+    },
+    "controllability": {
+      "A": 1,
+      "B": 1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "uncertainty": {
+      "A": 0.1,
+      "B": 0.1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "intensity": {
+      "A": 0.8,
+      "B": 0.8,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "assessment_confidence": {
+      "A": 0.95,
+      "B": 0.95,
+      "equal": true,
+      "absolute_difference": 0
+    }
+  },
+  "authority_equal": true,
+  "canonical_equal": true,
+  "affect_equal": true,
+  "downstream": "DOWNSTREAM_EQUIVALENT",
+  "classifications": [
+    "NONE"
+  ],
+  "material": false,
+  "validation_control": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 1,
+        "uncertainty": 0.1,
+        "intensity": 0.8,
+        "assessment_confidence": 0.95
+      },
+      "error": null
+    }
+  ],
+  "validation_reuse": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 1,
+        "goal_congruence": 1,
+        "attribution": "other",
+        "controllability": 1,
+        "uncertainty": 0.1,
+        "intensity": 0.8,
+        "assessment_confidence": 0.95
+      },
+      "error": null
+    }
+  ],
+  "control_status": "COMMITTED",
+  "shadow_status": "COMMITTED",
+  "pre_state_hash": "sha256:7a3bffc2a83295129fa945c706e3efc75ef22c8c3434bc95d25b1ab7a6d7b923",
+  "canonical_differences": [],
+  "projection_differences": []
+}

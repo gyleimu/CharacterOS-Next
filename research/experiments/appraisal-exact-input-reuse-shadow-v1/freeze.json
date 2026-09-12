@@ -1,0 +1,278 @@
+{
+  "frozen_at": "2026-09-12T10:48:20.840Z",
+  "baseline": "4962e45c9ccfa199818b9c410467509068e80220",
+  "branch": "main",
+  "origin_main": "ea7eb4bb6f9a1a652a65ad344591a0369179c39f",
+  "starting_worktree": "CLEAN before V1 creation",
+  "source_hashes": {
+    "protocol.json": "sha256:5023c4741ff1759504a000b1f7b3be7497e592693e63eba4dfabd4635e90d1e9",
+    "harness.mjs": "sha256:ac6e0cd4aa307f68ec5fb26bca78f891c7151051e5e3e7a81fd69b8797c47acb",
+    "research.test.mjs": "sha256:ded17ccf24a0c81dd1a1ec849b0f19a3dee6a0629eb9be8d3893ad637889b112",
+    "collect.mjs": "sha256:6c5246d5b3adfa81e36971b4662e8e9c98a6995ba217b18a354dc1530d1cd72f",
+    "product/sandbox/src/product-appraisal-provider.ts": "sha256:f0d4a4f15a89d572051e5354a9a942200c2f32df59c69e23c8bf233adf1cb53a",
+    "product/sandbox/src/product-appraisal-prompt.ts": "sha256:33c97930e7cb1a9d59706d7a545d38abdb4753c253dd93f15a30385f4156ba00",
+    "product/sandbox/src/product-providers.ts": "sha256:5180ca2198a1a8cab066ef9f11344169a543e3c3cfb6e03656c9550a8bf11c6d",
+    "packages/runtime/src/providers/cognition/ollama-native-cognition-transport.ts": "sha256:97255b00c5d07a0f6510ee6f89bce85ab24b6b51d9c6f3d61d58dbdf09104560",
+    "packages/runtime/src/session/interactive-subject-runtime-v0.ts": "sha256:61b513b91c34c542603647a9421c97a24a87fbc24729ef82c6bd1ea3e76bb718",
+    "packages/runtime/src/session/explicit-v4-session-authority-v0.ts": "sha256:2f8bfcf5db6bfd520182f157663a938b81a5a9c8b7f6cd9c658e05a4f9e345a7",
+    "packages/runtime/src/factual-event-appraisal/factual-event-appraisal-executor.ts": "sha256:c6d23d5f83be8d7da4e3b688b9125ad39f377d13188c64536249fba461c251d7"
+  },
+  "v0_tree": "06066f869535c6dde551bbefc3cef78c9b2fc998",
+  "metadata": {
+    "config": {
+      "base_url": "http://127.0.0.1:11434",
+      "model": "qwen3.5:9b",
+      "timeout_ms": 120000,
+      "num_predict": 256,
+      "context_window_tokens": 4096
+    },
+    "model": {
+      "name": "qwen3.5:9b",
+      "model": "qwen3.5:9b",
+      "modified_at": "2026-08-31T19:30:40.1426026+08:00",
+      "size": 6594474711,
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "qwen35",
+        "families": [
+          "qwen35"
+        ],
+        "parameter_size": "9.7B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 262144,
+        "embedding_length": 4096
+      },
+      "capabilities": [
+        "vision",
+        "completion",
+        "tools",
+        "thinking"
+      ]
+    },
+    "provenance": {
+      "model": {
+        "value": "qwen3.5:9b",
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      },
+      "endpoint": {
+        "value": "http://127.0.0.1:11434",
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      },
+      "timeout": {
+        "value": 120000,
+        "source": "DEFAULT",
+        "origin": "built-in default"
+      }
+    },
+    "environment": {
+      "provider_implementation": "OllamaNativeCognitionTransportV0",
+      "implementation_source_hash": "sha256:97255b00c5d07a0f6510ee6f89bce85ab24b6b51d9c6f3d61d58dbdf09104560",
+      "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "server_version": "0.33.3",
+      "model_configuration": {
+        "template": "{{ .Prompt }}",
+        "system": null,
+        "parameters": "top_p                          0.95\npresence_penalty               1.5\ntemperature                    1\ntop_k                          20",
+        "model_info": {
+          "general.architecture": "qwen35",
+          "general.file_type": 15,
+          "general.parameter_count": 9653104368,
+          "general.quantization_version": 2,
+          "qwen35.attention.head_count": 16,
+          "qwen35.attention.head_count_kv": null,
+          "qwen35.attention.key_length": 256,
+          "qwen35.attention.layer_norm_rms_epsilon": 0.000001,
+          "qwen35.attention.value_length": 256,
+          "qwen35.block_count": 32,
+          "qwen35.context_length": 262144,
+          "qwen35.embedding_length": 4096,
+          "qwen35.feed_forward_length": 12288,
+          "qwen35.full_attention_interval": 4,
+          "qwen35.image_token_id": 248056,
+          "qwen35.mrope_sections": null,
+          "qwen35.rope.dimension_count": 64,
+          "qwen35.rope.dimension_sections": null,
+          "qwen35.rope.freq_base": 10000000,
+          "qwen35.rope.mrope_interleaved": true,
+          "qwen35.rope.mrope_section": null,
+          "qwen35.ssm.conv_kernel": 4,
+          "qwen35.ssm.group_count": 16,
+          "qwen35.ssm.inner_size": 4096,
+          "qwen35.ssm.state_size": 128,
+          "qwen35.ssm.time_step_rank": 32,
+          "qwen35.ssm.v_head_reordered": true,
+          "qwen35.vision.attention.head_count": 16,
+          "qwen35.vision.block_count": 27,
+          "qwen35.vision.deepstack_visual_indexes": [],
+          "qwen35.vision.embedding_length": 1152,
+          "qwen35.vision.image_mean": null,
+          "qwen35.vision.image_std": null,
+          "qwen35.vision.longest_edge": 16777216,
+          "qwen35.vision.num_channels": 3,
+          "qwen35.vision.patch_size": 16,
+          "qwen35.vision.shortest_edge": 65536,
+          "qwen35.vision.spatial_merge_size": 2,
+          "qwen35.vision.temporal_patch_size": 2,
+          "qwen35.vision_end_token_id": 248054,
+          "qwen35.vision_start_token_id": 248053,
+          "tokenizer.ggml.add_eos_token": false,
+          "tokenizer.ggml.add_padding_token": false,
+          "tokenizer.ggml.eos_token_id": 248046,
+          "tokenizer.ggml.merges": null,
+          "tokenizer.ggml.model": "gpt2",
+          "tokenizer.ggml.padding_token_id": 248044,
+          "tokenizer.ggml.pre": "qwen35",
+          "tokenizer.ggml.scores": null,
+          "tokenizer.ggml.token_type": null,
+          "tokenizer.ggml.tokens": null
+        },
+        "details": {
+          "parent_model": "",
+          "format": "gguf",
+          "family": "qwen35",
+          "families": [
+            "qwen35"
+          ],
+          "parameter_size": "9.7B",
+          "quantization_level": "Q4_K_M"
+        },
+        "capabilities": [
+          "completion",
+          "vision",
+          "tools",
+          "thinking"
+        ]
+      },
+      "timeout_ms": 120000,
+      "response_format": "ABSENT",
+      "unspecified_options": "Ollama server/model defaults under observed version, digest and /api/show configuration; no seed/format/keep_alive supplied"
+    }
+  },
+  "v0_failure_classification": "MODEL_SCHEMA_VIOLATION",
+  "v0_failure_parse": {
+    "valid": false,
+    "candidate": null,
+    "error": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]"
+  },
+  "protocol": {
+    "experiment": "APPRAISAL_EXACT_INPUT_REUSE_SHADOW_VALIDATION_V1",
+    "baseline": "4962e45c9ccfa199818b9c410467509068e80220",
+    "target_completed_valid_pairs": 15,
+    "maximum_appraisal_inferences": 40,
+    "maximum_started_samples": 20,
+    "retries": 0,
+    "live_cognition_or_language_calls": 0,
+    "sample_rule": "Fixed ordered pool of 20 NEW inputs; aim for 15 additional complete valid pairs. Invalid A fails its own turn, creates no reusable candidate and no B call; retain the attempt and proceed to the next independent predeclared sample. Never repeat, repair, replace or tune a sample. Invalid B is evaluated from the saved S and retained in authority/reliability denominators.",
+    "state_rule": "Persist full authoritative pre-second-Appraisal state S before dispatching B. Independently restore CONTROL(B) and SHADOW(A), compare exact complete states and real V2 cognition projections. No normalization except object-key order. Baseline versus restored CONTROL may differ only in the existing restore-local reservation counter and derived receipts, separately recorded.",
+    "latency_rule": "Monotonic product native transport timing; capture observer copy overhead separately and subtract observed synchronous instrumentation only. Include real transport/body parsing, exclude state serialization, disk writes, metadata checks and shadow execution. Retain raw client timing, adjusted timing and Ollama timing/token fields. No optional end-to-end generation benchmark in this slice.",
+    "identity_rule": "Retain V0 complete normalized actual wire request plus observed implementation/model/config identity and fingerprint, and its separate subject/turn/process/restart/provider-instance scope. Compare full identity as well as hash and prove distinct event identities for every pair.",
+    "stopping_rule": "Stop on 15 complete valid pairs, 40 attempted Appraisal inferences, exhaustion of the fixed pool, an identity/authority defect, or observed material canonical/Affect/downstream/admission/failure-boundary divergence AFTER real isolated authority evaluation. A lone malformed A is reliability evidence, not a whole-experiment stop. Transport infrastructure failure stops truthfully; no retries or model switching.",
+    "decision_rule": "Approve a bounded production slice if request identity, event authority/failure firewalls, scope isolation, at least 12 additional completed pairs covering the hard-case pool, no observed material paired consequence divergence, useful measured local latency and bounded implementation complexity support it. Do not demand mathematical determinism. Stop after a material paired difference and make a conservative NO engineering decision based on the demonstrated non-equivalence; disclose small frequency denominators rather than call a single difference frequent. Synthetic provider-B failures demonstrate the expected difference between removing an inference failure and bypassing an event authority gate; they alone do not count as observed model divergence. Unknown is reserved for a concrete infrastructure/identity-attribution blocker, never merely wanting more samples.",
+    "samples": [
+      {
+        "id": "V101",
+        "category": "high emotional salience",
+        "text": "My sister called this morning to say the surgery went well. I had barely slept while waiting, and now I feel relieved and shaky."
+      },
+      {
+        "id": "V102",
+        "category": "low information",
+        "text": "Hmm."
+      },
+      {
+        "id": "V103",
+        "category": "counterpart related",
+        "text": "Alice remembered the date of my interview and sent a message before I left. I did not expect her to remember."
+      },
+      {
+        "id": "V104",
+        "category": "mixed valence",
+        "text": "I was offered the promotion I wanted, but accepting it means leaving the team that supported me for years."
+      },
+      {
+        "id": "V105",
+        "category": "near plausible dimension boundary",
+        "text": "There is no urgent problem to solve. The room is quiet, and I am simply letting you know I am still here."
+      },
+      {
+        "id": "V106",
+        "category": "strong negative interpersonal",
+        "text": "You shared something I told you in confidence. I feel betrayed, and I need some distance before we talk again."
+      },
+      {
+        "id": "V107",
+        "category": "strong positive interpersonal",
+        "text": "You stayed with me through a very difficult evening and listened without dismissing me. I trust you more because of that."
+      },
+      {
+        "id": "V108",
+        "category": "ambiguous or underspecified",
+        "text": "They finally sent the message. I cannot tell whether this is an apology or another way of blaming me."
+      },
+      {
+        "id": "V109",
+        "category": "request or question",
+        "text": "Would you help me write a short note asking my colleague for more time, without promising a date I cannot meet?"
+      },
+      {
+        "id": "V110",
+        "category": "neutral factual",
+        "text": "The library closes at six today. I returned the books this morning and kept the receipt."
+      },
+      {
+        "id": "V111",
+        "category": "high emotional salience negative",
+        "text": "The rescue team found my missing dog alive. He is injured, and I am frightened about what happens next."
+      },
+      {
+        "id": "V112",
+        "category": "low information uncertain",
+        "text": "Maybe. I do not know yet."
+      },
+      {
+        "id": "V113",
+        "category": "counterpart boundary",
+        "text": "Alice said she needs a few days without messages. I care about her and want to respect that, even though the silence is hard."
+      },
+      {
+        "id": "V114",
+        "category": "mixed valence practical",
+        "text": "I missed the last bus after helping a stranger find their child. I am glad I helped, but now getting home is difficult."
+      },
+      {
+        "id": "V115",
+        "category": "near plausible dimension boundary high control",
+        "text": "I made a small mistake in the document, noticed it immediately, and corrected it before anyone used it. Nothing else needs doing."
+      },
+      {
+        "id": "V116",
+        "category": "predeclared reserve ambiguous",
+        "text": "My manager said we should talk tomorrow, with no explanation. It might be routine, but I keep wondering what it means."
+      },
+      {
+        "id": "V117",
+        "category": "predeclared reserve interpersonal repair",
+        "text": "You acknowledged that your earlier advice hurt me and explained what you misunderstood. I am still upset, but I appreciate the apology."
+      },
+      {
+        "id": "V118",
+        "category": "predeclared reserve low control",
+        "text": "The storm has cancelled every train tonight. I cannot change that, and I am looking for somewhere safe to wait."
+      },
+      {
+        "id": "V119",
+        "category": "predeclared reserve strong positive",
+        "text": "After months of uncertainty, my brother has been told he can go home from hospital. I am grateful and exhausted."
+      },
+      {
+        "id": "V120",
+        "category": "predeclared reserve neutral question",
+        "text": "Can we check whether the appointment is on Tuesday or Wednesday before I arrange transport?"
+      }
+    ]
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "id": "V102",
+  "category": "low information",
+  "stage": "PAIRED_EVALUATION",
+  "candidate_A": {
+    "valid": true,
+    "candidate": {
+      "relevance": 0.1,
+      "goal_congruence": 0.5,
+      "attribution": "situation",
+      "controllability": 0.2,
+      "uncertainty": 0.9,
+      "intensity": 0.1,
+      "assessment_confidence": 0.8
+    },
+    "error": null
+  },
+  "candidate_B": {
+    "valid": true,
+    "candidate": {
+      "relevance": 0.1,
+      "goal_congruence": 0.5,
+      "attribution": "situation",
+      "controllability": 0.2,
+      "uncertainty": 0.9,
+      "intensity": 0.1,
+      "assessment_confidence": 0.8
+    },
+    "error": null
+  },
+  "transport_error_A": null,
+  "transport_error_B": null,
+  "request_equal": true,
+  "event_identities_differ": true,
+  "fingerprint_A": "sha256:e8c4bd0ad707ebab5ffeeb95b5f87e166be24ede0c1ce86f33d768497d7b5611",
+  "fingerprint_B": "sha256:e8c4bd0ad707ebab5ffeeb95b5f87e166be24ede0c1ce86f33d768497d7b5611",
+  "latency_A_ms": 2467.813999999984,
+  "latency_B_ms": 2329.3817000000126,
+  "tokens_A": {
+    "total_duration": 2463272500,
+    "load_duration": 2662700,
+    "prompt_eval_count": 473,
+    "prompt_eval_duration": 519498000,
+    "eval_count": 55,
+    "eval_duration": 1932334000,
+    "done_reason": "stop"
+  },
+  "tokens_B": {
+    "total_duration": 2310296300,
+    "load_duration": 1586000,
+    "prompt_eval_count": 473,
+    "prompt_eval_duration": 72592000,
+    "eval_count": 55,
+    "eval_duration": 2230181000,
+    "done_reason": "stop"
+  },
+  "semantic_entries": [
+    {
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    }
+  ],
+  "baseline_status": "COMPLETE",
+  "baseline_failure": null,
+  "completed_valid_pair": true,
+  "candidate_exact_equal": true,
+  "fields": {
+    "relevance": {
+      "A": 0.1,
+      "B": 0.1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "goal_congruence": {
+      "A": 0.5,
+      "B": 0.5,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "attribution": {
+      "A": "situation",
+      "B": "situation",
+      "equal": true,
+      "absolute_difference": null
+    },
+    "controllability": {
+      "A": 0.2,
+      "B": 0.2,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "uncertainty": {
+      "A": 0.9,
+      "B": 0.9,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "intensity": {
+      "A": 0.1,
+      "B": 0.1,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "assessment_confidence": {
+      "A": 0.8,
+      "B": 0.8,
+      "equal": true,
+      "absolute_difference": 0
+    }
+  },
+  "authority_equal": true,
+  "canonical_equal": true,
+  "affect_equal": true,
+  "downstream": "DOWNSTREAM_EQUIVALENT",
+  "classifications": [
+    "NONE"
+  ],
+  "material": false,
+  "validation_control": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 0.1,
+        "goal_congruence": 0.5,
+        "attribution": "situation",
+        "controllability": 0.2,
+        "uncertainty": 0.9,
+        "intensity": 0.1,
+        "assessment_confidence": 0.8
+      },
+      "error": null
+    }
+  ],
+  "validation_reuse": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 0.1,
+        "goal_congruence": 0.5,
+        "attribution": "situation",
+        "controllability": 0.2,
+        "uncertainty": 0.9,
+        "intensity": 0.1,
+        "assessment_confidence": 0.8
+      },
+      "error": null
+    }
+  ],
+  "control_status": "COMMITTED",
+  "shadow_status": "COMMITTED",
+  "pre_state_hash": "sha256:1be0c54cb6c6eb6976bcb9ada4b63aac4368505382ae85d6dd3c81adfe135916",
+  "canonical_differences": [],
+  "projection_differences": []
+}

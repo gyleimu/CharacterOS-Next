@@ -1,0 +1,163 @@
+{
+  "v0_failure": {
+    "classification": "MODEL_SCHEMA_VIOLATION",
+    "raw_unmodified": true,
+    "correct_prompt_field": true,
+    "parser_truthful": true
+  },
+  "same_state": {
+    "exact": true,
+    "authority": true,
+    "canonical": true,
+    "projection": true,
+    "saved_before_B": true
+  },
+  "invalid_A": {
+    "failed_turn": true,
+    "B_calls": 0,
+    "cached": false,
+    "next_independent_sample": "COMPLETE"
+  },
+  "invalid_B": {
+    "synthetic": true,
+    "classifications": [
+      "FAILURE_BOUNDARY_EFFECT",
+      "ADMISSION_EFFECT",
+      "DOWNSTREAM_COGNITION_INPUT_EFFECT",
+      "AFFECT_TRAJECTORY_EFFECT",
+      "NUMERIC_CANONICAL_EFFECT"
+    ],
+    "control": "FAILED",
+    "shadow": "COMMITTED",
+    "authority_equivalent": false,
+    "event_authority_bypassed": false
+  },
+  "sensitivity": {
+    "classifications": [
+      "DOWNSTREAM_COGNITION_INPUT_EFFECT",
+      "AFFECT_TRAJECTORY_EFFECT",
+      "NUMERIC_CANONICAL_EFFECT"
+    ],
+    "projection_differences": [
+      {
+        "path": "/canonical_affect/activation",
+        "control": 0.30184053215012085,
+        "shadow": 0.27184053215012083
+      },
+      {
+        "path": "/canonical_affect/valence",
+        "control": -0.135,
+        "shadow": 0
+      },
+      {
+        "path": "/projection_hash",
+        "control": "sha256:cf46dff732a8b4ca23c7c88faebb429a382118040b48e05cbf088aa83f7a7f9d",
+        "shadow": "sha256:7193d47a09c5d27558633ba44d6c299eb71befe0d7b00f5719991220726f7dc3"
+      }
+    ]
+  },
+  "event_failures": [
+    {
+      "case": "subject_id",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "UNKNOWN_SUBJECT",
+        "message": "UNKNOWN_SUBJECT/SS-AUTH-001: proposal subject does not match the runtime subject"
+      },
+      "proposal_deliveries": 1
+    },
+    {
+      "case": "factual_event_ref",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "UNSUPPORTED_EVIDENCE_REF",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: proposal factual_event_ref does not match the evaluated event"
+      },
+      "proposal_deliveries": 1
+    },
+    {
+      "case": "context_projection_hash",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "INVALID_SCHEMA",
+        "message": "INVALID_SCHEMA/SS-SCHEMA-001: proposal answers a different context projection (stale or foreign hash)"
+      },
+      "proposal_deliveries": 1
+    },
+    {
+      "case": "evidence_refs",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "UNSUPPORTED_EVIDENCE_REF",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: appraisal proposal cites event:70c8ab217808304c39b013f208f7b600d23d7bb3d6ad96a508c129e6936d15c4 outside the pre-cognition grounding allowlist"
+      },
+      "proposal_deliveries": 1
+    },
+    {
+      "case": "grounding",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "UNSUPPORTED_EVIDENCE_REF",
+        "message": "UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: factual event grounding failed (EVENT_CAUSE_MISSING): observation ref is not a cause ref of the committed bundle"
+      }
+    },
+    {
+      "case": "stale",
+      "error": {
+        "name": "Error",
+        "code": null,
+        "message": "session lifecycle work: AffectApplication must commit for event:da2849c460c84ffaf2d8ec411e83cc08e0d86798297fe93b913e0ba5c64ab966 (TARGET_NOT_READY)"
+      },
+      "existing_bounded_rebuild_proposals": 2,
+      "model_retries": 0
+    },
+    {
+      "case": "prepare",
+      "error": {
+        "name": "TransitionStageFailure",
+        "code": "SERVICE_UNAVAILABLE",
+        "message": "SERVICE_UNAVAILABLE/FAIL-PREPARE-001: appraisal repository prepare failed (fail closed)"
+      }
+    },
+    {
+      "case": "commit",
+      "error": {
+        "name": "Error",
+        "code": null,
+        "message": "session lifecycle work: Appraisal rejected for event:da2849c460c84ffaf2d8ec411e83cc08e0d86798297fe93b913e0ba5c64ab966"
+      }
+    }
+  ],
+  "firewalls": {
+    "scope_dimensions": [
+      "subject",
+      "turn",
+      "process",
+      "restart",
+      "provider_instance"
+    ],
+    "request_variants": 11,
+    "normalized_collision_check": true
+  },
+  "provider_failures": [
+    {
+      "failure": "timeout",
+      "calls": 1,
+      "cached": false
+    },
+    {
+      "failure": "unavailable",
+      "calls": 1,
+      "cached": false
+    },
+    {
+      "failure": "truncated",
+      "calls": 1,
+      "cached": false
+    }
+  ],
+  "cleanup": {
+    "automatic_finally_paths": 5,
+    "persisted_slot": false
+  }
+}

@@ -1,0 +1,2679 @@
+{
+  "completed_at": "2026-09-12T10:51:23.654Z",
+  "calls": 32,
+  "completed_valid_pairs": 15,
+  "evaluated_pairs": 15,
+  "started_samples": 17,
+  "stop": {
+    "kind": "TARGET_COMPLETE",
+    "completed": 15
+  },
+  "samples": [
+    {
+      "id": "V101",
+      "category": "high emotional salience",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:9e111f1e6614725820d32f2b528be679f5e600cad71ad62324ccb6c144724cd6",
+      "fingerprint_B": "sha256:9e111f1e6614725820d32f2b528be679f5e600cad71ad62324ccb6c144724cd6",
+      "latency_A_ms": 85758.8655,
+      "latency_B_ms": 3377.7800000000134,
+      "tokens_A": {
+        "total_duration": 85751748100,
+        "load_duration": 17413715800,
+        "prompt_eval_count": 498,
+        "prompt_eval_duration": 29775044000,
+        "eval_count": 55,
+        "eval_duration": 38526923000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 3366410400,
+        "load_duration": 5306700,
+        "prompt_eval_count": 498,
+        "prompt_eval_duration": 85604000,
+        "eval_count": 55,
+        "eval_duration": 3266839000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:49edb9fd74ad3343881daea298caa8b8fec2b2eae1a25834235804da131db99e",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V102",
+      "category": "low information",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.1,
+          "goal_congruence": 0.5,
+          "attribution": "situation",
+          "controllability": 0.2,
+          "uncertainty": 0.9,
+          "intensity": 0.1,
+          "assessment_confidence": 0.8
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.1,
+          "goal_congruence": 0.5,
+          "attribution": "situation",
+          "controllability": 0.2,
+          "uncertainty": 0.9,
+          "intensity": 0.1,
+          "assessment_confidence": 0.8
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:e8c4bd0ad707ebab5ffeeb95b5f87e166be24ede0c1ce86f33d768497d7b5611",
+      "fingerprint_B": "sha256:e8c4bd0ad707ebab5ffeeb95b5f87e166be24ede0c1ce86f33d768497d7b5611",
+      "latency_A_ms": 2467.813999999984,
+      "latency_B_ms": 2329.3817000000126,
+      "tokens_A": {
+        "total_duration": 2463272500,
+        "load_duration": 2662700,
+        "prompt_eval_count": 473,
+        "prompt_eval_duration": 519498000,
+        "eval_count": 55,
+        "eval_duration": 1932334000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2310296300,
+        "load_duration": 1586000,
+        "prompt_eval_count": 473,
+        "prompt_eval_duration": 72592000,
+        "eval_count": 55,
+        "eval_duration": 2230181000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "situation",
+          "B": "situation",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.1,
+            "goal_congruence": 0.5,
+            "attribution": "situation",
+            "controllability": 0.2,
+            "uncertainty": 0.9,
+            "intensity": 0.1,
+            "assessment_confidence": 0.8
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.1,
+            "goal_congruence": 0.5,
+            "attribution": "situation",
+            "controllability": 0.2,
+            "uncertainty": 0.9,
+            "intensity": 0.1,
+            "assessment_confidence": 0.8
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:1be0c54cb6c6eb6976bcb9ada4b63aac4368505382ae85d6dd3c81adfe135916",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V103",
+      "category": "counterpart related",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.3,
+          "intensity": 0.7,
+          "assessment_confidence": 0.85
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.3,
+          "intensity": 0.7,
+          "assessment_confidence": 0.85
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:1ad04e73e9051bccc75beb1a0874344172316a0748a46a56b4876a716abf3455",
+      "fingerprint_B": "sha256:1ad04e73e9051bccc75beb1a0874344172316a0748a46a56b4876a716abf3455",
+      "latency_A_ms": 3207.623700000011,
+      "latency_B_ms": 2665.082699999999,
+      "tokens_A": {
+        "total_duration": 3193341700,
+        "load_duration": 1746700,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 589910000,
+        "eval_count": 55,
+        "eval_duration": 2594818000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2652655600,
+        "load_duration": 2567000,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 62418000,
+        "eval_count": 55,
+        "eval_duration": 2582217000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.3,
+          "B": 0.3,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.85,
+          "B": 0.85,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.3,
+            "intensity": 0.7,
+            "assessment_confidence": 0.85
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.3,
+            "intensity": 0.7,
+            "assessment_confidence": 0.85
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:ba1b7631ca60fcd12522be5a11fda14dc546f92b3aff25a47f27ab27a1ba88e5",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V104",
+      "category": "mixed valence",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.95,
+          "goal_congruence": 0.8,
+          "attribution": "situation",
+          "controllability": 0.6,
+          "uncertainty": 0.2,
+          "intensity": 0.85,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.95,
+          "goal_congruence": 0.8,
+          "attribution": "situation",
+          "controllability": 0.6,
+          "uncertainty": 0.2,
+          "intensity": 0.85,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:e54216fe82b1d916f947129c3d7bafbeee1f0b84a65c3145b39ef62767a682e5",
+      "fingerprint_B": "sha256:e54216fe82b1d916f947129c3d7bafbeee1f0b84a65c3145b39ef62767a682e5",
+      "latency_A_ms": 3158.491000000009,
+      "latency_B_ms": 2675.5969999999943,
+      "tokens_A": {
+        "total_duration": 3145135300,
+        "load_duration": 1567300,
+        "prompt_eval_count": 492,
+        "prompt_eval_duration": 571100000,
+        "eval_count": 57,
+        "eval_duration": 2566005000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2660147600,
+        "load_duration": 2359700,
+        "prompt_eval_count": 492,
+        "prompt_eval_duration": 67667000,
+        "eval_count": 57,
+        "eval_duration": 2583718000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "situation",
+          "B": "situation",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.85,
+          "B": 0.85,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.95,
+            "goal_congruence": 0.8,
+            "attribution": "situation",
+            "controllability": 0.6,
+            "uncertainty": 0.2,
+            "intensity": 0.85,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.95,
+            "goal_congruence": 0.8,
+            "attribution": "situation",
+            "controllability": 0.6,
+            "uncertainty": 0.2,
+            "intensity": 0.85,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:ce20a9a6264e518cac0d5625014cb855fb746b912c30ff6ced5e79711d69899b",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V105",
+      "category": "near plausible dimension boundary",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.1,
+          "goal_congruence": 0.95,
+          "attribution": "other",
+          "controllability": 0.8,
+          "uncertainty": 0.1,
+          "intensity": 0.2,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.1,
+          "goal_congruence": 0.95,
+          "attribution": "other",
+          "controllability": 0.8,
+          "uncertainty": 0.1,
+          "intensity": 0.2,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:803737da87dba65aa6f45d2eaa7a120f97c9d01c59923e255c24851d89c5b41a",
+      "fingerprint_B": "sha256:803737da87dba65aa6f45d2eaa7a120f97c9d01c59923e255c24851d89c5b41a",
+      "latency_A_ms": 3013.6777000000147,
+      "latency_B_ms": 2587.4092999999993,
+      "tokens_A": {
+        "total_duration": 3000969800,
+        "load_duration": 1594700,
+        "prompt_eval_count": 496,
+        "prompt_eval_duration": 533894000,
+        "eval_count": 55,
+        "eval_duration": 2459808000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2575015500,
+        "load_duration": 1576000,
+        "prompt_eval_count": 496,
+        "prompt_eval_duration": 66227999,
+        "eval_count": 55,
+        "eval_duration": 2502554000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.1,
+            "goal_congruence": 0.95,
+            "attribution": "other",
+            "controllability": 0.8,
+            "uncertainty": 0.1,
+            "intensity": 0.2,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.1,
+            "goal_congruence": 0.95,
+            "attribution": "other",
+            "controllability": 0.8,
+            "uncertainty": 0.1,
+            "intensity": 0.2,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:46e60378208e13229593ba255711a9ccee2892c2b0761c144cc939daecf64d54",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V106",
+      "category": "strong negative interpersonal",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.2,
+          "intensity": 0.9,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.2,
+          "intensity": 0.9,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:8d378d785b802afc8861b904d57ec35178c169633af82514cc160c93fe7538f6",
+      "fingerprint_B": "sha256:8d378d785b802afc8861b904d57ec35178c169633af82514cc160c93fe7538f6",
+      "latency_A_ms": 3019.901800000007,
+      "latency_B_ms": 2534.4860000000044,
+      "tokens_A": {
+        "total_duration": 3003266500,
+        "load_duration": 1555500,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 501976000,
+        "eval_count": 55,
+        "eval_duration": 2492780000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2516773000,
+        "load_duration": 1553500,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 74877000,
+        "eval_count": 55,
+        "eval_duration": 2435050000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0,
+          "B": 0,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.2,
+            "intensity": 0.9,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.2,
+            "intensity": 0.9,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:d7d3834af1d7ad07ace5dc9fb350006e00b62f42e2d9d6f2863607894c43a992",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V107",
+      "category": "strong positive interpersonal",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:4dece88de16bdb7610981a7896f6ebf341cefbc19140959c55d951b6696d97ee",
+      "fingerprint_B": "sha256:4dece88de16bdb7610981a7896f6ebf341cefbc19140959c55d951b6696d97ee",
+      "latency_A_ms": 3095.9521999999997,
+      "latency_B_ms": 2650.716599999985,
+      "tokens_A": {
+        "total_duration": 3081225900,
+        "load_duration": 1564200,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 539559000,
+        "eval_count": 54,
+        "eval_duration": 2532478000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2631347400,
+        "load_duration": 1033800,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 74135000,
+        "eval_count": 54,
+        "eval_duration": 2551081000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:09e08080afe67f07d0262477a8107da3f20855ca8c59208f65c27e6372172edb",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V108",
+      "category": "ambiguous or underspecified",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.5,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.8,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.5,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.8,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:31d6e164b24e54fa196e15b3d989305a0c11f08c9dc9eada5a5d9cd0522a7e5b",
+      "fingerprint_B": "sha256:31d6e164b24e54fa196e15b3d989305a0c11f08c9dc9eada5a5d9cd0522a7e5b",
+      "latency_A_ms": 3059.396200000003,
+      "latency_B_ms": 2544.855400000015,
+      "tokens_A": {
+        "total_duration": 3046296300,
+        "load_duration": 1559500,
+        "prompt_eval_count": 492,
+        "prompt_eval_duration": 593594000,
+        "eval_count": 54,
+        "eval_duration": 2446014000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2540440700,
+        "load_duration": 1567400,
+        "prompt_eval_count": 492,
+        "prompt_eval_duration": 68737000,
+        "eval_count": 54,
+        "eval_duration": 2465609000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.5,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.8,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.5,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.8,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:6edad0da6176eb55551449270583b15b778a845fa4400208608d075d1a22b70d",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V109",
+      "category": "request or question",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 1,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 1,
+          "uncertainty": 0.1,
+          "intensity": 0.8,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:2001c1b71379b5efc2dd6c2ba560758e115519a9f0e00a536b6f48008ac73ae1",
+      "fingerprint_B": "sha256:2001c1b71379b5efc2dd6c2ba560758e115519a9f0e00a536b6f48008ac73ae1",
+      "latency_A_ms": 3181.4444000000076,
+      "latency_B_ms": 2656.6241000000155,
+      "tokens_A": {
+        "total_duration": 3167150600,
+        "load_duration": 1036200,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 653196000,
+        "eval_count": 55,
+        "eval_duration": 2507244000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2639148200,
+        "load_duration": 1031100,
+        "prompt_eval_count": 494,
+        "prompt_eval_duration": 67152000,
+        "eval_count": 55,
+        "eval_duration": 2565374000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 1,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 1,
+            "uncertainty": 0.1,
+            "intensity": 0.8,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:7a3bffc2a83295129fa945c706e3efc75ef22c8c3434bc95d25b1ab7a6d7b923",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V110",
+      "category": "neutral factual",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.8,
+          "uncertainty": 0.1,
+          "intensity": 0.6,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "other",
+          "controllability": 0.8,
+          "uncertainty": 0.1,
+          "intensity": 0.6,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:0415e801ca6d283b43ba5a395448500ead863ead32f79a08692b7b116551b603",
+      "fingerprint_B": "sha256:0415e801ca6d283b43ba5a395448500ead863ead32f79a08692b7b116551b603",
+      "latency_A_ms": 3145.5934000000125,
+      "latency_B_ms": 2593.4451000000117,
+      "tokens_A": {
+        "total_duration": 3130615200,
+        "load_duration": 1570400,
+        "prompt_eval_count": 489,
+        "prompt_eval_duration": 574510000,
+        "eval_count": 55,
+        "eval_duration": 2549353000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2591551300,
+        "load_duration": 1570800,
+        "prompt_eval_count": 489,
+        "prompt_eval_duration": 71704000,
+        "eval_count": 55,
+        "eval_duration": 2513458000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.8,
+            "uncertainty": 0.1,
+            "intensity": 0.6,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "other",
+            "controllability": 0.8,
+            "uncertainty": 0.1,
+            "intensity": 0.6,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:3ccf7c270ea40bc8afd85e218411cf7b19876961edefcb7a61b2bf4a0b9fab22",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V111",
+      "category": "high emotional salience negative",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.8,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.6,
+          "intensity": 0.9,
+          "assessment_confidence": 0.85
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.8,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.6,
+          "intensity": 0.9,
+          "assessment_confidence": 0.85
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:f14a589c2cb1d1c23cdfe7a36baa050c645a59de45ca3ad962f6e2ec780af3a0",
+      "fingerprint_B": "sha256:f14a589c2cb1d1c23cdfe7a36baa050c645a59de45ca3ad962f6e2ec780af3a0",
+      "latency_A_ms": 3127.0969999999797,
+      "latency_B_ms": 2731.3582999999926,
+      "tokens_A": {
+        "total_duration": 3112783500,
+        "load_duration": 1569100,
+        "prompt_eval_count": 493,
+        "prompt_eval_duration": 562703000,
+        "eval_count": 55,
+        "eval_duration": 2543097000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2727598400,
+        "load_duration": 2290900,
+        "prompt_eval_count": 493,
+        "prompt_eval_duration": 70032000,
+        "eval_count": 55,
+        "eval_duration": 2648137000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.85,
+          "B": 0.85,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.8,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.6,
+            "intensity": 0.9,
+            "assessment_confidence": 0.85
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.8,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.6,
+            "intensity": 0.9,
+            "assessment_confidence": 0.85
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:abfaa0f071583b9e2863304eda77d0aa4895044a25c4c0aee2271472b15bf0eb",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V112",
+      "category": "low information uncertain",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 0.5,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.8,
+          "intensity": 0.3,
+          "assessment_confidence": 0.7
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 0.5,
+          "attribution": "other",
+          "controllability": 0.2,
+          "uncertainty": 0.8,
+          "intensity": 0.3,
+          "assessment_confidence": 0.7
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:2df060abe7fc8aaf3bacd7f1a909e9b4ed1853155c06bbea014857f5a13b36a9",
+      "fingerprint_B": "sha256:2df060abe7fc8aaf3bacd7f1a909e9b4ed1853155c06bbea014857f5a13b36a9",
+      "latency_A_ms": 3156.7641000000003,
+      "latency_B_ms": 2600.1426999999676,
+      "tokens_A": {
+        "total_duration": 3145943900,
+        "load_duration": 1562600,
+        "prompt_eval_count": 479,
+        "prompt_eval_duration": 497159000,
+        "eval_count": 54,
+        "eval_duration": 2641992000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2590023300,
+        "load_duration": 1035500,
+        "prompt_eval_count": 479,
+        "prompt_eval_duration": 63710000,
+        "eval_count": 54,
+        "eval_duration": 2520024000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.3,
+          "B": 0.3,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 0.5,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.8,
+            "intensity": 0.3,
+            "assessment_confidence": 0.7
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 0.5,
+            "attribution": "other",
+            "controllability": 0.2,
+            "uncertainty": 0.8,
+            "intensity": 0.3,
+            "assessment_confidence": 0.7
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:3c83a8e5bee728092346e0fb20ab236a6df6f89923b5b1e7be83c0ab037ffa8c",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V113",
+      "category": "counterpart boundary",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.95,
+          "goal_congruence": 0.85,
+          "attribution": "other",
+          "controllability": 0.6,
+          "uncertainty": 0.2,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.95,
+          "goal_congruence": 0.85,
+          "attribution": "other",
+          "controllability": 0.6,
+          "uncertainty": 0.2,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:f27a9f7169d5a8337ee704554745600ca61331f61f59bd56867d737e1aea7453",
+      "fingerprint_B": "sha256:f27a9f7169d5a8337ee704554745600ca61331f61f59bd56867d737e1aea7453",
+      "latency_A_ms": 3121.653100000025,
+      "latency_B_ms": 2680.3434000000125,
+      "tokens_A": {
+        "total_duration": 3106196300,
+        "load_duration": 1561600,
+        "prompt_eval_count": 498,
+        "prompt_eval_duration": 572935000,
+        "eval_count": 56,
+        "eval_duration": 2526780000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2669660400,
+        "load_duration": 1601600,
+        "prompt_eval_count": 498,
+        "prompt_eval_duration": 66709999,
+        "eval_count": 56,
+        "eval_duration": 2596572000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.85,
+          "B": 0.85,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.6,
+          "B": 0.6,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.95,
+            "goal_congruence": 0.85,
+            "attribution": "other",
+            "controllability": 0.6,
+            "uncertainty": 0.2,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.95,
+            "goal_congruence": 0.85,
+            "attribution": "other",
+            "controllability": 0.6,
+            "uncertainty": 0.2,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:f082408d56839cfdfee50d955249d2b3576f7782b113cd028829cb82ae3ec0e5",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V114",
+      "category": "mixed valence practical",
+      "stage": "FIRST_INFERENCE_FAILED",
+      "candidate_A": {
+        "valid": false,
+        "candidate": null,
+        "error": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]"
+      },
+      "candidate_B": {
+        "valid": false,
+        "candidate": null,
+        "error": "NOT_REACHED"
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": null,
+      "event_identities_differ": null,
+      "fingerprint_A": "sha256:0addda13c96955e375ca86be49b8d8df22306b9cae3bab1a9e5238fd92b0c010",
+      "fingerprint_B": null,
+      "latency_A_ms": 3089.895200000028,
+      "latency_B_ms": null,
+      "tokens_A": {
+        "total_duration": 3072099800,
+        "load_duration": 1562200,
+        "prompt_eval_count": 497,
+        "prompt_eval_duration": 533671000,
+        "eval_count": 54,
+        "eval_duration": 2531808000,
+        "done_reason": "stop"
+      },
+      "tokens_B": null,
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "THREW"
+        }
+      ],
+      "baseline_status": "FAILED",
+      "baseline_failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+      "completed_valid_pair": false,
+      "candidate_exact_equal": null,
+      "fields": null,
+      "authority_equal": null,
+      "canonical_equal": null,
+      "affect_equal": null,
+      "downstream": null,
+      "classifications": [],
+      "material": false
+    },
+    {
+      "id": "V115",
+      "category": "near plausible dimension boundary high control",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "self",
+          "controllability": 1,
+          "uncertainty": 0.1,
+          "intensity": 0.3,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 0.9,
+          "goal_congruence": 1,
+          "attribution": "self",
+          "controllability": 1,
+          "uncertainty": 0.1,
+          "intensity": 0.3,
+          "assessment_confidence": 0.95
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:715f8db2dd0087c4bd35039fbfdd75d6f763741899d16a47b439fec5c4a4078b",
+      "fingerprint_B": "sha256:715f8db2dd0087c4bd35039fbfdd75d6f763741899d16a47b439fec5c4a4078b",
+      "latency_A_ms": 3045.517099999968,
+      "latency_B_ms": 3192.881300000008,
+      "tokens_A": {
+        "total_duration": 3031204500,
+        "load_duration": 1030900,
+        "prompt_eval_count": 497,
+        "prompt_eval_duration": 487030000,
+        "eval_count": 55,
+        "eval_duration": 2537452000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 3190459700,
+        "load_duration": 1954800,
+        "prompt_eval_count": 497,
+        "prompt_eval_duration": 71035000,
+        "eval_count": 55,
+        "eval_duration": 3111206000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "self",
+          "B": "self",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.1,
+          "B": 0.1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.3,
+          "B": 0.3,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.95,
+          "B": 0.95,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "self",
+            "controllability": 1,
+            "uncertainty": 0.1,
+            "intensity": 0.3,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 0.9,
+            "goal_congruence": 1,
+            "attribution": "self",
+            "controllability": 1,
+            "uncertainty": 0.1,
+            "intensity": 0.3,
+            "assessment_confidence": 0.95
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:a6364da0714dae653742a91fa87c3dc077fadc9090f2fb51c87e480e554f388e",
+      "canonical_differences": [],
+      "projection_differences": []
+    },
+    {
+      "id": "V116",
+      "category": "predeclared reserve ambiguous",
+      "stage": "FIRST_INFERENCE_FAILED",
+      "candidate_A": {
+        "valid": false,
+        "candidate": null,
+        "error": "appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]"
+      },
+      "candidate_B": {
+        "valid": false,
+        "candidate": null,
+        "error": "NOT_REACHED"
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": null,
+      "event_identities_differ": null,
+      "fingerprint_A": "sha256:a06bd1dcb88de04f24e8ffaf8bde19e48a193bc049eb6411d387da102473f9ab",
+      "fingerprint_B": null,
+      "latency_A_ms": 3203.4012999999977,
+      "latency_B_ms": null,
+      "tokens_A": {
+        "total_duration": 3202548100,
+        "load_duration": 2502200,
+        "prompt_eval_count": 496,
+        "prompt_eval_duration": 575412000,
+        "eval_count": 55,
+        "eval_duration": 2619172000,
+        "done_reason": "stop"
+      },
+      "tokens_B": null,
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "THREW"
+        }
+      ],
+      "baseline_status": "FAILED",
+      "baseline_failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: appraisal provider: model output: unexpected key set; expected exactly [assessment_confidence,attribution,controllability,goal_congruence,intensity,relevance,uncertainty]",
+      "completed_valid_pair": false,
+      "candidate_exact_equal": null,
+      "fields": null,
+      "authority_equal": null,
+      "canonical_equal": null,
+      "affect_equal": null,
+      "downstream": null,
+      "classifications": [],
+      "material": false
+    },
+    {
+      "id": "V117",
+      "category": "predeclared reserve interpersonal repair",
+      "stage": "PAIRED_EVALUATION",
+      "candidate_A": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.8,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.2,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "candidate_B": {
+        "valid": true,
+        "candidate": {
+          "relevance": 1,
+          "goal_congruence": 0.8,
+          "attribution": "other",
+          "controllability": 0.5,
+          "uncertainty": 0.2,
+          "intensity": 0.7,
+          "assessment_confidence": 0.9
+        },
+        "error": null
+      },
+      "transport_error_A": null,
+      "transport_error_B": null,
+      "request_equal": true,
+      "event_identities_differ": true,
+      "fingerprint_A": "sha256:4bf280b8c2cc5fd0cf92959cd3f9c90d89edcba16b7f76e0488af97539ffcfa0",
+      "fingerprint_B": "sha256:4bf280b8c2cc5fd0cf92959cd3f9c90d89edcba16b7f76e0488af97539ffcfa0",
+      "latency_A_ms": 3086.437600000034,
+      "latency_B_ms": 2600.0049,
+      "tokens_A": {
+        "total_duration": 3074532600,
+        "load_duration": 2387000,
+        "prompt_eval_count": 496,
+        "prompt_eval_duration": 525914000,
+        "eval_count": 54,
+        "eval_duration": 2541108000,
+        "done_reason": "stop"
+      },
+      "tokens_B": {
+        "total_duration": 2592460700,
+        "load_duration": 1573700,
+        "prompt_eval_count": 496,
+        "prompt_eval_duration": 79557000,
+        "eval_count": 54,
+        "eval_duration": 2505581000,
+        "done_reason": "stop"
+      },
+      "semantic_entries": [
+        {
+          "source_event_id": "turn-0",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-0",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "COMMITTED"
+        },
+        {
+          "source_event_id": "turn-1",
+          "result": "ALREADY_COMPLETED"
+        },
+        {
+          "source_event_id": "turn-0-reply",
+          "result": "COMMITTED"
+        }
+      ],
+      "baseline_status": "COMPLETE",
+      "baseline_failure": null,
+      "completed_valid_pair": true,
+      "candidate_exact_equal": true,
+      "fields": {
+        "relevance": {
+          "A": 1,
+          "B": 1,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "goal_congruence": {
+          "A": 0.8,
+          "B": 0.8,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "attribution": {
+          "A": "other",
+          "B": "other",
+          "equal": true,
+          "absolute_difference": null
+        },
+        "controllability": {
+          "A": 0.5,
+          "B": 0.5,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "uncertainty": {
+          "A": 0.2,
+          "B": 0.2,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "intensity": {
+          "A": 0.7,
+          "B": 0.7,
+          "equal": true,
+          "absolute_difference": 0
+        },
+        "assessment_confidence": {
+          "A": 0.9,
+          "B": 0.9,
+          "equal": true,
+          "absolute_difference": 0
+        }
+      },
+      "authority_equal": true,
+      "canonical_equal": true,
+      "affect_equal": true,
+      "downstream": "DOWNSTREAM_EQUIVALENT",
+      "classifications": [
+        "NONE"
+      ],
+      "material": false,
+      "validation_control": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.8,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.2,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "validation_reuse": [
+        {
+          "valid": true,
+          "candidate": {
+            "relevance": 1,
+            "goal_congruence": 0.8,
+            "attribution": "other",
+            "controllability": 0.5,
+            "uncertainty": 0.2,
+            "intensity": 0.7,
+            "assessment_confidence": 0.9
+          },
+          "error": null
+        }
+      ],
+      "control_status": "COMMITTED",
+      "shadow_status": "COMMITTED",
+      "pre_state_hash": "sha256:f60487587d0a513812c19e0043e38bc55bf06a3f03748534332b807d75429cfd",
+      "canonical_differences": [],
+      "projection_differences": []
+    }
+  ]
+}

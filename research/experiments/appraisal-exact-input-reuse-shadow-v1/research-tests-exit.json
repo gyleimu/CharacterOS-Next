@@ -1,0 +1,4 @@
+{
+  "exit_code": 0,
+  "command": "node --test V1/research.test.mjs"
+}

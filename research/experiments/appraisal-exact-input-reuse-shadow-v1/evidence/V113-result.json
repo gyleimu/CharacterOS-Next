@@ -1,0 +1,170 @@
+{
+  "id": "V113",
+  "category": "counterpart boundary",
+  "stage": "PAIRED_EVALUATION",
+  "candidate_A": {
+    "valid": true,
+    "candidate": {
+      "relevance": 0.95,
+      "goal_congruence": 0.85,
+      "attribution": "other",
+      "controllability": 0.6,
+      "uncertainty": 0.2,
+      "intensity": 0.7,
+      "assessment_confidence": 0.9
+    },
+    "error": null
+  },
+  "candidate_B": {
+    "valid": true,
+    "candidate": {
+      "relevance": 0.95,
+      "goal_congruence": 0.85,
+      "attribution": "other",
+      "controllability": 0.6,
+      "uncertainty": 0.2,
+      "intensity": 0.7,
+      "assessment_confidence": 0.9
+    },
+    "error": null
+  },
+  "transport_error_A": null,
+  "transport_error_B": null,
+  "request_equal": true,
+  "event_identities_differ": true,
+  "fingerprint_A": "sha256:f27a9f7169d5a8337ee704554745600ca61331f61f59bd56867d737e1aea7453",
+  "fingerprint_B": "sha256:f27a9f7169d5a8337ee704554745600ca61331f61f59bd56867d737e1aea7453",
+  "latency_A_ms": 3121.653100000025,
+  "latency_B_ms": 2680.3434000000125,
+  "tokens_A": {
+    "total_duration": 3106196300,
+    "load_duration": 1561600,
+    "prompt_eval_count": 498,
+    "prompt_eval_duration": 572935000,
+    "eval_count": 56,
+    "eval_duration": 2526780000,
+    "done_reason": "stop"
+  },
+  "tokens_B": {
+    "total_duration": 2669660400,
+    "load_duration": 1601600,
+    "prompt_eval_count": 498,
+    "prompt_eval_duration": 66709999,
+    "eval_count": 56,
+    "eval_duration": 2596572000,
+    "done_reason": "stop"
+  },
+  "semantic_entries": [
+    {
+      "source_event_id": "turn-0",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-0",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "COMMITTED"
+    },
+    {
+      "source_event_id": "turn-1",
+      "result": "ALREADY_COMPLETED"
+    },
+    {
+      "source_event_id": "turn-0-reply",
+      "result": "COMMITTED"
+    }
+  ],
+  "baseline_status": "COMPLETE",
+  "baseline_failure": null,
+  "completed_valid_pair": true,
+  "candidate_exact_equal": true,
+  "fields": {
+    "relevance": {
+      "A": 0.95,
+      "B": 0.95,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "goal_congruence": {
+      "A": 0.85,
+      "B": 0.85,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "attribution": {
+      "A": "other",
+      "B": "other",
+      "equal": true,
+      "absolute_difference": null
+    },
+    "controllability": {
+      "A": 0.6,
+      "B": 0.6,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "uncertainty": {
+      "A": 0.2,
+      "B": 0.2,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "intensity": {
+      "A": 0.7,
+      "B": 0.7,
+      "equal": true,
+      "absolute_difference": 0
+    },
+    "assessment_confidence": {
+      "A": 0.9,
+      "B": 0.9,
+      "equal": true,
+      "absolute_difference": 0
+    }
+  },
+  "authority_equal": true,
+  "canonical_equal": true,
+  "affect_equal": true,
+  "downstream": "DOWNSTREAM_EQUIVALENT",
+  "classifications": [
+    "NONE"
+  ],
+  "material": false,
+  "validation_control": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 0.95,
+        "goal_congruence": 0.85,
+        "attribution": "other",
+        "controllability": 0.6,
+        "uncertainty": 0.2,
+        "intensity": 0.7,
+        "assessment_confidence": 0.9
+      },
+      "error": null
+    }
+  ],
+  "validation_reuse": [
+    {
+      "valid": true,
+      "candidate": {
+        "relevance": 0.95,
+        "goal_congruence": 0.85,
+        "attribution": "other",
+        "controllability": 0.6,
+        "uncertainty": 0.2,
+        "intensity": 0.7,
+        "assessment_confidence": 0.9
+      },
+      "error": null
+    }
+  ],
+  "control_status": "COMMITTED",
+  "shadow_status": "COMMITTED",
+  "pre_state_hash": "sha256:f082408d56839cfdfee50d955249d2b3576f7782b113cd028829cb82ae3ec0e5",
+  "canonical_differences": [],
+  "projection_differences": []
+}

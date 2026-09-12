@@ -1,0 +1,18 @@
+✔ actual runtime first turn has one inference; later pair has equal requests, distinct events and contexts (1.2922ms)
+✔ both isolated clones start from exact S; real validation, Learning and Affect; persistence/projection exact (258.1093ms)
+✔ sensitivity positive control: different valid candidate changes canonical Affect and real V2 projection (367.1161ms)
+✔ all effective request differences miss, normalized identity checks defeated simulated hash collision (2.0679ms)
+✔ lawful task and scene misses; null task abstains before provider without inventing candidate (63.8964ms)
+✔ closed parser/range validation prevents malformed, extra authority, out-of-range and abstention slots (1.008ms)
+✔ actual native wire identity and timeout/unavailable/truncation fail without candidate or retry (52.3883ms)
+✔ second-event binding, grounding, freshness, repository prepare and commit failures stay real failures (553.1239ms)
+✔ cleanup success/failure/runtime failure/shutdown/restart closes slot and never serializes it (66.6967ms)
+✔ write deterministic evidence after all preceding assertions (11.9106ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1872.6346

@@ -1,0 +1,2 @@
+$ node scripts/governance-check.mjs
+governance invariants: PASS (15 workspaces, 21 conformance test files)
