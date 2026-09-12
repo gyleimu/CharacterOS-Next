@@ -1,0 +1,222 @@
+[
+  {
+    "turn": 0,
+    "label": "WARM_1",
+    "status": "FAILED",
+    "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: MODEL_TRAN",
+    "wall_ms": 120044.5,
+    "provider_ms": 0,
+    "reply_ms": 0,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 0,
+    "skipped": [],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 0,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 0
+    },
+    "calls": []
+  },
+  {
+    "turn": 1,
+    "label": "WARM_2",
+    "status": "RUNTIME_RELAUNCHED",
+    "failure": "The runtime is in a failed state (TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event app",
+    "calls": []
+  },
+  {
+    "turn": 2,
+    "label": "WARM_3",
+    "status": "FAILED",
+    "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: MODEL_TRAN",
+    "wall_ms": 120054.7,
+    "provider_ms": 0,
+    "reply_ms": 0,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 0,
+    "skipped": [],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 0,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 0
+    },
+    "calls": []
+  },
+  {
+    "turn": 3,
+    "label": "WARM_4",
+    "status": "RUNTIME_RELAUNCHED",
+    "failure": "The runtime is in a failed state (TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event app",
+    "calls": []
+  },
+  {
+    "turn": 4,
+    "label": "WARM_5",
+    "status": "COMPLETE",
+    "failure": null,
+    "wall_ms": 52255.7,
+    "provider_ms": 52168,
+    "reply_ms": 50858,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 1310,
+    "skipped": [
+      "BELIEF_ADAPTATION"
+    ],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 1,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 1
+    },
+    "calls": [
+      {
+        "stage": "APPRAISAL",
+        "client_ms": 23607.86,
+        "ollama": {
+          "total_duration_ms": 23599.732,
+          "load_duration_ms": 3.276,
+          "prompt_eval_count": 487,
+          "prompt_eval_duration_ms": 15647.934,
+          "eval_count": 54,
+          "eval_duration_ms": 2051.019,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": true
+      },
+      {
+        "stage": "COGNITION",
+        "client_ms": 21067.723,
+        "ollama": {
+          "total_duration_ms": 21059.763,
+          "load_duration_ms": 10094.036,
+          "prompt_eval_count": 1174,
+          "prompt_eval_duration_ms": 1335.804,
+          "eval_count": 254,
+          "eval_duration_ms": 9615.278,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "LANGUAGE",
+        "client_ms": 6166.824,
+        "ollama": {
+          "total_duration_ms": 6156.547,
+          "load_duration_ms": 2.676,
+          "prompt_eval_count": 1138,
+          "prompt_eval_duration_ms": 1181.491,
+          "eval_count": 145,
+          "eval_duration_ms": 4913.886,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "OTHER_ADAPTATION",
+        "client_ms": 1309.796,
+        "ollama": {
+          "total_duration_ms": 1306.179,
+          "load_duration_ms": 1.571,
+          "prompt_eval_count": 395,
+          "prompt_eval_duration_ms": 487.615,
+          "eval_count": 23,
+          "eval_duration_ms": 757.209,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      }
+    ]
+  },
+  {
+    "turn": 5,
+    "label": "WARM_6",
+    "status": "COMPLETE",
+    "failure": null,
+    "wall_ms": 43923.6,
+    "provider_ms": 43825,
+    "reply_ms": 42605,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 1220,
+    "skipped": [
+      "BELIEF_ADAPTATION"
+    ],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 3,
+      "real_inferences": 2,
+      "reuse_hits": 1,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 2
+    },
+    "calls": [
+      {
+        "stage": "APPRAISAL",
+        "client_ms": 11344.455,
+        "ollama": {
+          "total_duration_ms": 11328.495,
+          "load_duration_ms": 9101.012,
+          "prompt_eval_count": 481,
+          "prompt_eval_duration_ms": 523.822,
+          "eval_count": 54,
+          "eval_duration_ms": 1692.675,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": true
+      },
+      {
+        "stage": "COGNITION",
+        "client_ms": 22550.872,
+        "ollama": {
+          "total_duration_ms": 22543.25,
+          "load_duration_ms": 8714.139,
+          "prompt_eval_count": 1499,
+          "prompt_eval_duration_ms": 1398.11,
+          "eval_count": 360,
+          "eval_duration_ms": 12417.311,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "LANGUAGE",
+        "client_ms": 8697.009,
+        "ollama": {
+          "total_duration_ms": 8686.818,
+          "load_duration_ms": 3.626,
+          "prompt_eval_count": 1675,
+          "prompt_eval_duration_ms": 1727.495,
+          "eval_count": 181,
+          "eval_duration_ms": 6887.228,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "OTHER_ADAPTATION",
+        "client_ms": 1218.756,
+        "ollama": {
+          "total_duration_ms": 1212.327,
+          "load_duration_ms": 1.579,
+          "prompt_eval_count": 379,
+          "prompt_eval_duration_ms": 406.245,
+          "eval_count": 23,
+          "eval_duration_ms": 737.791,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      }
+    ]
+  }
+]

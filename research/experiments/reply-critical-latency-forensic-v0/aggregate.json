@@ -1,0 +1,209 @@
+{
+  "experiment": "REPLY_CRITICAL_LATENCY_FORENSIC_V0",
+  "generated_at": "2026-09-12T12:37:26.172Z",
+  "baseline": {
+    "commit": "ad058e2792b87ac98ef42679ea0ff17a4ae2866d",
+    "branch": "main"
+  },
+  "provider": {
+    "implementation": "OllamaNativeCognitionTransportV0",
+    "endpoint": "http://127.0.0.1:11434",
+    "ollama_version": "0.33.3",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "details": "9.7B / Q4_K_M / gguf"
+  },
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "vram_total_mib": 8188,
+    "driver": "555.97",
+    "observed_vram_used_mib": 7492,
+    "observed_gpu_util_pct": 100,
+    "observed_temp_c": 86,
+    "observed_power_w": 40,
+    "power_cap_w": 75,
+    "observed_clock_mhz": 1980,
+    "pstate": "P0",
+    "model_processor": "100% GPU 8192"
+  },
+  "model_residency": {
+    "resident_runner": "qwen3.5:9b 5.6 GB 100% GPU, CONTEXT 8192",
+    "fully_gpu_resident": true,
+    "cpu_offload_observed": false,
+    "keep_alive": "Ollama default (not set by CharacterOS)",
+    "reloads_observed": true
+  },
+  "cold": {
+    "model_load_s": 30.93,
+    "note": "first call after eviction/idle: load_duration dominated the call"
+  },
+  "warm_before": {
+    "turn_wall_ms": 49528.8,
+    "provider_ms": 49427,
+    "reply_critical_ms": 43088,
+    "adaptation_ms": 6339,
+    "host_plus_canonical_ms": 101.8,
+    "calls": [
+      {
+        "stage": "APPRAISAL",
+        "ctx": 4096,
+        "num_predict": 256,
+        "prompt_tokens": 498,
+        "output_tokens": 55,
+        "total_s": 9.742,
+        "load_s": 8.042,
+        "prefill_s": 0.35,
+        "decode_s": 1.341,
+        "prefill_tok_s": 1423.6,
+        "decode_tok_s": 41,
+        "client_overhead_ms": 6.6
+      },
+      {
+        "stage": "COGNITION",
+        "ctx": 8192,
+        "num_predict": 2048,
+        "prompt_tokens": 1188,
+        "output_tokens": 227,
+        "total_s": 26.052,
+        "load_s": 12.275,
+        "prefill_s": 4.528,
+        "decode_s": 9.212,
+        "prefill_tok_s": 262.4,
+        "decode_tok_s": 24.6,
+        "client_overhead_ms": 2.3
+      },
+      {
+        "stage": "LANGUAGE",
+        "ctx": 8192,
+        "num_predict": 2048,
+        "prompt_tokens": 1165,
+        "output_tokens": 145,
+        "total_s": 7.269,
+        "load_s": 0.002,
+        "prefill_s": 0.852,
+        "decode_s": 6.313,
+        "prefill_tok_s": 1366.9,
+        "decode_tok_s": 23,
+        "client_overhead_ms": 10.3
+      },
+      {
+        "stage": "OTHER_ADAPTATION",
+        "ctx": 8192,
+        "num_predict": 2048,
+        "prompt_tokens": 406,
+        "output_tokens": 23,
+        "total_s": 6.319,
+        "load_s": 0.004,
+        "prefill_s": 2.744,
+        "decode_s": 3.324,
+        "prefill_tok_s": 148,
+        "decode_tok_s": 6.9,
+        "client_overhead_ms": 18.4
+      }
+    ]
+  },
+  "runner_churn": {
+    "controlled_probe": [
+      {
+        "label": "CTX_8192_a",
+        "ctx": 8192,
+        "total_s": 2.11,
+        "load_s": 0,
+        "prompt_tokens": 110,
+        "output_tokens": 55
+      },
+      {
+        "label": "CTX_8192_b",
+        "ctx": 8192,
+        "total_s": 1.66,
+        "load_s": 0,
+        "prompt_tokens": 110,
+        "output_tokens": 55
+      },
+      {
+        "label": "CTX_4096_a",
+        "ctx": 4096,
+        "total_s": 12.77,
+        "load_s": 10.96,
+        "prompt_tokens": 110,
+        "output_tokens": 55
+      },
+      {
+        "label": "CTX_4096_b",
+        "ctx": 4096,
+        "total_s": 1.68,
+        "load_s": 0,
+        "prompt_tokens": 110,
+        "output_tokens": 55
+      },
+      {
+        "label": "CTX_8192_c",
+        "ctx": 8192,
+        "total_s": 10.73,
+        "load_s": 8.91,
+        "prompt_tokens": 110,
+        "output_tokens": 55
+      }
+    ],
+    "load_ms_by_ctx": {
+      "4096": [
+        10959.7,
+        1.7
+      ],
+      "8192": [
+        2.1,
+        2.6,
+        8914.2
+      ]
+    },
+    "identical_tokens": "110 prompt / 55 output in every probe call",
+    "conclusion": "alternating num_ctx rebuilds the Ollama runner; each switch costs ~8.9-11.0 s of load_duration with identical prompt and output tokens"
+  },
+  "reply_critical_before": {
+    "provider_total_s": 43.06,
+    "of_which_model_load_s": 20.32,
+    "load_share_pct": 47,
+    "projected_after_fix_s": 22.74,
+    "projection_basis": "only load_duration differs; prompt/output tokens identical between allocations"
+  },
+  "host_overhead": {
+    "per_turn_ms": 101.8,
+    "share_pct_of_turn": 0.21,
+    "conclusion": "CharacterOS host/canonical work is negligible; reply latency is model serving"
+  },
+  "bottleneck_ranking": [
+    {
+      "rank": 1,
+      "class": "E. MODEL_LOAD / EVICTION (runner rebuild from mixed num_ctx)",
+      "measured": "8.9-11.0 s per switch (ctx probe); 20.32 s of a 43.06 s reply-critical path (47%) in the product turn"
+    },
+    {
+      "rank": 2,
+      "class": "C. DECODE",
+      "measured": "23-25 tok/s cognition/language, 41 tok/s appraisal on a free GPU"
+    },
+    {
+      "rank": 3,
+      "class": "B. PROMPT_PREFILL",
+      "measured": "0.35-4.53 s per call; cognition 262 tok/s prefill (1188 tokens)"
+    },
+    {
+      "rank": 4,
+      "class": "G. HOST-SIDE CHARACTEROS PROCESSING",
+      "measured": "~100 ms per turn"
+    }
+  ],
+  "environment_caveat": {
+    "observed": "later measurement windows collapsed to ~1.1 tok/s decode with 120-239 s client timeouts while unrelated GPU applications saturated the device (99% util, 88 C, model unloaded)",
+    "impact": "blocks a clean end-to-end before/after A/B in this session",
+    "explains": "V0 (13.92 s) vs V1 (2.65 s) vs production (10.1 s) appraisal variance is a contention/throughput difference, not a methodology change"
+  },
+  "variance_explanation": {
+    "classification": [
+      "BACKGROUND_LOAD",
+      "GPU_THROTTLING",
+      "MODEL_EVICTION"
+    ],
+    "cause_unknown_residual": "the exact external workload is not attributable from these artifacts"
+  }
+}

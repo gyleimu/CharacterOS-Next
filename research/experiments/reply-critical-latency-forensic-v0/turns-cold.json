@@ -1,0 +1,23 @@
+[
+  {
+    "turn": 0,
+    "label": "COLD",
+    "status": "FAILED",
+    "calls": [
+      {
+        "stage": "APPRAISAL",
+        "client_ms": 35306.356,
+        "ollama": {
+          "total_duration_ms": 35245.553,
+          "load_duration_ms": 30926.738,
+          "prompt_eval_count": 498,
+          "prompt_eval_duration_ms": 2007.52,
+          "eval_count": 55,
+          "eval_duration_ms": 2252.193,
+          "done_reason": "stop"
+        }
+      }
+    ],
+    "model_load_total_ms": 30926.738
+  }
+]

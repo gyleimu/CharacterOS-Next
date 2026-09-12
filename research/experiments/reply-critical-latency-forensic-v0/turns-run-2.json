@@ -1,0 +1,163 @@
+[
+  {
+    "turn": 0,
+    "label": "WARM_1",
+    "status": "COMPLETE",
+    "failure": null,
+    "wall_ms": 49528.8,
+    "provider_ms": 49427,
+    "reply_ms": 43088,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 6339,
+    "skipped": [
+      "BELIEF_ADAPTATION"
+    ],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 1,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 1
+    },
+    "calls": [
+      {
+        "stage": "APPRAISAL",
+        "client_ms": 9748.693,
+        "ollama": {
+          "total_duration_ms": 9742.128,
+          "load_duration_ms": 8041.918,
+          "prompt_eval_count": 498,
+          "prompt_eval_duration_ms": 349.809,
+          "eval_count": 55,
+          "eval_duration_ms": 1340.542,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": true
+      },
+      {
+        "stage": "COGNITION",
+        "client_ms": 26054.409,
+        "ollama": {
+          "total_duration_ms": 26052.066,
+          "load_duration_ms": 12275.268,
+          "prompt_eval_count": 1188,
+          "prompt_eval_duration_ms": 4528.3,
+          "eval_count": 227,
+          "eval_duration_ms": 9212.137,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "LANGUAGE",
+        "client_ms": 7279.795,
+        "ollama": {
+          "total_duration_ms": 7269.494,
+          "load_duration_ms": 2.02,
+          "prompt_eval_count": 1165,
+          "prompt_eval_duration_ms": 852.267,
+          "eval_count": 145,
+          "eval_duration_ms": 6312.846,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      },
+      {
+        "stage": "OTHER_ADAPTATION",
+        "client_ms": 6337.072,
+        "ollama": {
+          "total_duration_ms": 6318.713,
+          "load_duration_ms": 4.002,
+          "prompt_eval_count": 406,
+          "prompt_eval_duration_ms": 2743.544,
+          "eval_count": 23,
+          "eval_duration_ms": 3324.356,
+          "done_reason": "stop"
+        },
+        "appraisal_key_set_valid": null
+      }
+    ]
+  },
+  {
+    "turn": 1,
+    "label": "WARM_2",
+    "status": "FAILED",
+    "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: MODEL_TRAN",
+    "wall_ms": 120138.7,
+    "provider_ms": 0,
+    "reply_ms": 0,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 0,
+    "skipped": [],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 2,
+      "real_inferences": 1,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 1
+    },
+    "calls": []
+  },
+  {
+    "turn": 2,
+    "label": "WARM_3",
+    "status": "RUNTIME_RELAUNCHED",
+    "failure": "The runtime is in a failed state (TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event app",
+    "calls": []
+  },
+  {
+    "turn": 3,
+    "label": "WARM_4",
+    "status": "FAILED",
+    "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: MODEL_TRAN",
+    "wall_ms": 120129.3,
+    "provider_ms": 0,
+    "reply_ms": 0,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 0,
+    "skipped": [],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 0,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 0
+    },
+    "calls": []
+  },
+  {
+    "turn": 4,
+    "label": "WARM_5",
+    "status": "RUNTIME_RELAUNCHED",
+    "failure": "The runtime is in a failed state (TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event app",
+    "calls": []
+  },
+  {
+    "turn": 5,
+    "label": "WARM_6",
+    "status": "FAILED",
+    "failure": "TURN_FAILED_CLOSED: cognition/language path failed (APPRAISAL_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: factual event appraisal provider failed: MODEL_TRAN",
+    "wall_ms": 120036,
+    "provider_ms": 0,
+    "reply_ms": 0,
+    "prior_reply_ms": 0,
+    "adaptation_ms": 0,
+    "skipped": [],
+    "reuse": {
+      "enabled": true,
+      "semantic_invocations": 1,
+      "real_inferences": 0,
+      "reuse_hits": 0,
+      "reuse_misses": 0,
+      "reuse_unavailable": 0,
+      "candidates_stored": 0
+    },
+    "calls": []
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "started_at": "2026-09-12T12:14:49.628Z",
+  "mode": "--run",
+  "reuse_flag": "1",
+  "ollama_version": {
+    "version": "0.33.3"
+  },
+  "ollama_ps_before": "NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL              \nqwen3.5:9b    6488c96fa5fa    5.5 GB    100% GPU     4096       2 minutes from now",
+  "gpu_before": "61 %, 7595 MiB, 8188 MiB, 48.24 W, 87, 1920 MHz, P0",
+  "data_root": "D:\\Documents\\CharacterOS-Next\\research\\experiments\\reply-critical-latency-forensic-v0\\data-root",
+  "subject_id": "forensic-d30c37cd",
+  "subject_status": "NEW",
+  "model": "qwen3.5:9b",
+  "endpoint": "http://127.0.0.1:11434",
+  "config_reuse": {
+    "value": "on",
+    "source": "ENVIRONMENT",
+    "origin": "CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE"
+  },
+  "ollama_ps_after": "NAME          ID              SIZE      PROCESSOR    CONTEXT    UNTIL              \nqwen3.5:9b    6488c96fa5fa    5.6 GB    100% GPU     8192       4 minutes from now",
+  "gpu_after": "100 %, 7487 MiB, 8188 MiB, 47.88 W, 88, 1875 MHz, P0",
+  "calls": 2,
+  "relaunches": 3,
+  "finished_at": "2026-09-12T12:23:53.814Z"
+}
