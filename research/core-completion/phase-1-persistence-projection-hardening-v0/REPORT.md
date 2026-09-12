@@ -144,13 +144,13 @@ Every production cognition call carries the canonical line and the legend.
 
 ## Is Phase 2 Affect experiment now valid?
 
-`PARTIALLY — depends on one open design point.`
+`YES`
 
 The two blockers named by the audit are resolved: the affect line is now interpretable
 (AUD-11) and the one-turn visibility lag is documented and frozen (AUD-12). A replicated
-same-Memory swap experiment with k≥5 repeats is now well-specified **provided** the design
-uses the pre-event affect as the controlled variable and does not assume same-turn
-visibility. No code blocker remains.
+same-Memory swap experiment with k≥5 repeats is now well-specified, provided the design uses
+the pre-event affect as the controlled variable and does not assume same-turn visibility.
+No code blocker remains.
 
 ## Recommended next slice
 
