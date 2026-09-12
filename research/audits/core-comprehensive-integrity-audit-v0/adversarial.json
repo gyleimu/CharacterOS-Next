@@ -1,0 +1,19 @@
+{
+  "schema_version": "core-integrity-audit-adversarial-v0",
+  "real_model_calls": 0,
+  "rollback": {
+    "restore_succeeded": false,
+    "durable_claimed_state_revision": 15,
+    "error": "Error: session restore: supplied store head (revision 6, commit commit:870ceb1713269ed332f336e509a86be25d90fbd30c55085bff49fef6904e4dd2) does not match checkpoint identity (revision 15, commit commit:3f7290f154099c825b389b00f8515056d4e09badb62f5e4f0e2244132a2bcbf2)",
+    "rollback_accepted": false
+  },
+  "external_observation_replay": {
+    "first_observation_transition_id": "t-obs-91cf5f806132e75c3c57cce4348b34017706381d0087fb9c91094586c87c6442",
+    "second_observation_transition_id": "t-obs-1e7a44e75c3c28d764e72ab49708a4f86b5a56f132dffd19618bfe471075da17",
+    "first_episode_ref": "episode:396313e2ab5779efa62c2a5a6486e76d5c96c279a517e5b8501afa0b809d0145",
+    "second_episode_ref": "episode:23872c4659cfccc40eb3afa6dd613cb3f2ed696d04df736e0b7b5ef5e2ad3a64",
+    "distinct_transition_ids": true,
+    "distinct_episodes": true,
+    "duplicate_experience": true
+  }
+}

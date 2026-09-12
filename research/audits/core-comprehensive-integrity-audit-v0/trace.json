@@ -1,0 +1,140 @@
+{
+  "schema_version": "core-integrity-audit-trace-v0",
+  "real_model_calls": 0,
+  "turns": [
+    {
+      "turn_index": 0,
+      "event": "That worked exactly as I hoped. Thank you.",
+      "status": "COMPLETE",
+      "affect_before_turn": {
+        "valence": 0,
+        "activation": 0.2
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0 activation=0.2",
+      "affect_after_turn": 0.12599999999999997,
+      "affect_after_status": {
+        "valence": 0.12599999999999997,
+        "activation": 0.256
+      },
+      "state_revision_before": 0,
+      "state_revision_after": 6,
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R2",
+      "directive": "CLARIFY_MISSING_CONTEXT",
+      "current_intent": "respond to the user",
+      "provider_memory_section_present": false,
+      "retrieved_ref_count": 0,
+      "observable_episode_ref": "episode:03d1ed9c750a6ca3bba83a97252ce82442d464b26d6be1a795a2dde2630934d8"
+    },
+    {
+      "turn_index": 1,
+      "event": "Please don't do that again; it caused a problem.",
+      "status": "COMPLETE",
+      "affect_before_turn": {
+        "valence": 0.12599999999999997,
+        "activation": 0.256
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.1251627937881343 activation=0.25562790835028193",
+      "affect_after_turn": -0.19883720621186576,
+      "affect_after_status": {
+        "valence": -0.19883720621186576,
+        "activation": 0.39962790835028195
+      },
+      "state_revision_before": 6,
+      "state_revision_after": 15,
+      "repository_revision_before": "R2",
+      "repository_revision_after": "R5",
+      "directive": "CLARIFY_MISSING_CONTEXT",
+      "current_intent": "respond to the user",
+      "provider_memory_section_present": true,
+      "retrieved_ref_count": 1,
+      "observable_episode_ref": null
+    },
+    {
+      "turn_index": 2,
+      "event": "What time does the library open tomorrow?",
+      "status": "COMPLETE",
+      "affect_before_turn": {
+        "valence": -0.19883720621186576,
+        "activation": 0.39962790835028195
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.1975160336389246 activation=0.39830148196192794",
+      "affect_after_turn": -0.1975160336389246,
+      "affect_after_status": {
+        "valence": -0.1975160336389246,
+        "activation": 0.462301481961928
+      },
+      "state_revision_before": 15,
+      "state_revision_after": 24,
+      "repository_revision_before": "R5",
+      "repository_revision_after": "R8",
+      "directive": "CLARIFY_MISSING_CONTEXT",
+      "current_intent": "respond to the user",
+      "provider_memory_section_present": true,
+      "retrieved_ref_count": 2,
+      "observable_episode_ref": null
+    }
+  ],
+  "restore_proof": {
+    "origin": "SUBJECT_RESTORED",
+    "state_revision_equal": true,
+    "repository_revision_equal": true,
+    "affect_equal": true,
+    "restored_affect": {
+      "valence": -0.1975160336389246,
+      "activation": 0.462301481961928
+    },
+    "restored_state_revision": 24,
+    "restored_repository_revision": "R8",
+    "personality_dimensions": 0,
+    "beliefs": 0,
+    "relationships": 0,
+    "traits_seed": {},
+    "regulation": {
+      "energy": 1,
+      "stress": 0,
+      "arousal": 0.5,
+      "fatigue": 0
+    }
+  },
+  "continuity": {
+    "status": "COMPLETE",
+    "state_revision_after": 33
+  },
+  "ordering": [
+    {
+      "turn_index": 0,
+      "affect_line_at_cognition": "[affect (canonical)] valence=0 activation=0.2",
+      "affect_before_turn": {
+        "valence": 0,
+        "activation": 0.2
+      },
+      "affect_after_previous_turn": null,
+      "affect_after_turn": 0.12599999999999997,
+      "note": "cognition affect is post-time-recovery / post-prior-pending but PRE current-event AffectApplication (AffectApplication for the current event runs in completePendingLifecycleWork, after cognition); the current event's impulse therefore first reaches cognition on the NEXT turn"
+    },
+    {
+      "turn_index": 1,
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.1251627937881343 activation=0.25562790835028193",
+      "affect_before_turn": {
+        "valence": 0.12599999999999997,
+        "activation": 0.256
+      },
+      "affect_after_previous_turn": 0.12599999999999997,
+      "affect_after_turn": -0.19883720621186576,
+      "note": "cognition affect is post-time-recovery / post-prior-pending but PRE current-event AffectApplication (AffectApplication for the current event runs in completePendingLifecycleWork, after cognition); the current event's impulse therefore first reaches cognition on the NEXT turn"
+    },
+    {
+      "turn_index": 2,
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.1975160336389246 activation=0.39830148196192794",
+      "affect_before_turn": {
+        "valence": -0.19883720621186576,
+        "activation": 0.39962790835028195
+      },
+      "affect_after_previous_turn": -0.19883720621186576,
+      "affect_after_turn": -0.1975160336389246,
+      "note": "cognition affect is post-time-recovery / post-prior-pending but PRE current-event AffectApplication (AffectApplication for the current event runs in completePendingLifecycleWork, after cognition); the current event's impulse therefore first reaches cognition on the NEXT turn"
+    }
+  ],
+  "total_cognition_calls": 4
+}
