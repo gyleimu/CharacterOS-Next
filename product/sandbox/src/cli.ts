@@ -29,6 +29,7 @@ import {
 } from "@characteros-next/runtime";
 import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
+import { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
 import { advanceSubjectTimeV0, SubjectTimeAdvanceErrorV0 } from "./subject-time-advance.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
@@ -209,6 +210,7 @@ async function main(): Promise<number> {
   let awaitingDisplayName = false;
   let session: ProductCliSessionV0 | null = null;
   let subjectConfig: ProductSubjectConfigV0 | null = null;
+  let sharedStore: FileSharedSubjectSourceStoreV0 | null = null;
 
   let completeStartup: () => void = () => undefined;
   const startup = new Promise<void>((resolve) => {
@@ -230,6 +232,7 @@ async function main(): Promise<number> {
 
   const openHost = async (config: ProductSubjectConfigV0): Promise<InteractiveSubjectHostV0> => {
     subjectConfig = config;
+    sharedStore = new FileSharedSubjectSourceStoreV0(dataDir, config.subject_id);
     const opened = await InteractiveSubjectHostV0.open(
       {
         subject_id: config.subject_id,
@@ -245,7 +248,7 @@ async function main(): Promise<number> {
         beliefSemanticProvider,
         relationshipFamiliarityAdmissionProvider,
         // ONE authoritative canonical subject source shared with environment mode.
-        sharedSourceStore: new FileSharedSubjectSourceStoreV0(dataDir, config.subject_id),
+        sharedSourceStore: sharedStore,
         provider_identity: {
           model,
           num_predict: numPredict,
@@ -320,6 +323,37 @@ async function main(): Promise<number> {
     };
     session = new ProductCliSessionV0({
       host: opened,
+      ...(sharedStore === null
+        ? {}
+        : {
+            life: new ProductLifeOperationsV0(
+              {
+                storage_root: dataDir,
+                subject: {
+                  subject_id: subjectId,
+                  display_name: opened.displayName(),
+                  identity_anchors: [...(subjectConfig?.identity_anchors ?? [])]
+                },
+                interaction_interval_ticks: intEnv("CHARACTEROS_INTERVAL_TICKS", 1)
+              },
+              {
+                host: opened,
+                sharedSourceStore: sharedStore,
+                conversationCognitionTransport: transports.cognition,
+                languageTransport: transports.language,
+                factualEventAppraisalProvider: appraisal.provider,
+                beliefSemanticProvider,
+                relationshipFamiliarityAdmissionProvider,
+                provider_identity: {
+                  model,
+                  num_predict: numPredict,
+                  context_window_tokens: contextWindowTokens,
+                  last_trace: transports.lastCognitionTrace
+                },
+                clock: () => new Date().toISOString()
+              }
+            )
+          }),
       subjectLabel: opened.displayName().length > 0 ? opened.displayName() : subjectId,
       model,
       providerLabel: "OLLAMA_NATIVE",

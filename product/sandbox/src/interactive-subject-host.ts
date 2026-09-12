@@ -18,6 +18,7 @@ import type {
   InteractiveSubjectRuntimeOptionsV0,
   InteractiveSubjectSnapshotV0,
   InteractiveSubjectStatusV0,
+  InteractiveSubjectStateViewV0,
   InteractiveTurnOutcomeV0,
   LivedMemoryInspectionV0,
   BeliefSemanticTargetResolutionProviderV0,
@@ -124,7 +125,7 @@ export class InteractiveSubjectHostV0 {
 
   private baseRevision: number | null = null;
   private constructor(
-    private readonly runtime: InteractiveSubjectRuntimeV0,
+    private runtime: InteractiveSubjectRuntimeV0,
     private readonly store: InteractiveSnapshotStoreV0,
     private readonly resolutionValue: SubjectResolutionV0,
     private readonly displayNameValue: string,
@@ -132,6 +133,7 @@ export class InteractiveSubjectHostV0 {
     private readonly sharedStore: SharedSubjectSourceStoreV0 | null,
     private readonly subjectIdValue: string,
     private readonly clock: () => string,
+    private readonly runtimeOptions: InteractiveSubjectRuntimeOptionsV0,
     baseRevision: number | null
   ) {
     this.baseRevision = baseRevision;
@@ -229,6 +231,7 @@ export class InteractiveSubjectHostV0 {
         sharedStore,
         config.subject_id,
         clock,
+        runtimeOptions,
         null
       );
     }
@@ -263,6 +266,7 @@ export class InteractiveSubjectHostV0 {
       sharedStore,
       config.subject_id,
       clock,
+      runtimeOptions,
       canonical.provenance === "SHARED" ? canonical.base_revision : null
     );
     if (canonical.provenance !== "SHARED" && sharedStore !== null) {
@@ -368,6 +372,49 @@ export class InteractiveSubjectHostV0 {
 
   async status(): Promise<InteractiveSubjectStatusV0> {
     return this.runtime.status();
+  }
+
+  /** Read-only canonical subject state inspection; no provider call. */
+  async subjectStateView(): Promise<InteractiveSubjectStateViewV0> {
+    return this.runtime.subjectStateView();
+  }
+
+  /**
+   * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — re-adopt the ONE shared
+   * canonical subject source after another product context (structured external
+   * observation / explicit time / environment) advanced it. Rebuilds a fresh
+   * runtime from the shared durable state; the interactive snapshot remains the
+   * human-turn sidecar. Fails closed if the shared source is absent/mismatched.
+   */
+  async reloadFromShared(): Promise<void> {
+    if (this.sharedStore === null) return;
+    const loaded = await this.sharedStore.load();
+    if (loaded.kind !== "DOCUMENT") {
+      throw new Error("shared canonical subject source missing during reload");
+    }
+    if (loaded.document.subject_id !== this.subjectIdValue) {
+      throw new Error("shared canonical subject identity mismatch during reload");
+    }
+    const sidecar = await this.store.load();
+    const restoreSnapshot: InteractiveSubjectSnapshotV0 = {
+      schema_version: "interactive-subject-snapshot-v0",
+      session_id: this.runtimeOptions.session_id,
+      subject_id: this.subjectIdValue,
+      subject: {
+        subject_id: this.subjectIdValue,
+        display_name: this.displayNameValue,
+        identity_anchors: [...(this.runtimeOptions.subject.identity_anchors ?? [])]
+      },
+      next_turn_index: sidecar.kind === "SNAPSHOT" ? sidecar.snapshot.next_turn_index : 0,
+      pending_behavior_outcome: sidecar.kind === "SNAPSHOT" ? sidecar.snapshot.pending_behavior_outcome : null,
+      durable: loaded.document.durable,
+      store: loaded.document.store,
+      saved_at: this.clock()
+    };
+    this.runtime = await InteractiveSubjectRuntimeV0.restore(this.runtimeOptions, restoreSnapshot);
+    this.baseRevision = loaded.document.base_revision;
+    this.failed = false;
+    this.lastFailureDetailValue = null;
   }
 
   /** Read-only durable lived-memory projection; performs no provider call. */

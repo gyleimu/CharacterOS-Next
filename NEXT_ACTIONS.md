@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `2e6460355a2dfbec24850d84f04322fc8cbb75bc`（干净 baseline；本次 `PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` 是其直接子提交）
+Last verified against commit: `ee6ffa65f20c8e529e6708444acbee0e96bbd904`（干净 baseline；本次 `CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -11,49 +11,49 @@ CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁�
 
 已完成并冻结的当前 slice：
 
-`PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0` — 受控双历史因果验证（无新 production semantics）。
+`CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0` — ONE 本地 CLI 产品：一个持久 subject、一条 canonical life。
 
-- 判定 `EXISTING_LIVED_HISTORY_BEHAVIOR_CAUSAL_CHAIN_PRESENT`：**production behavior changes = 0**；
-- Phase A 因果表确认 cognition projection 已包含 `canonical_affect`（V2，exact committed VA）、Memory factual evidence、`belief_items`、relationship dims、traits；Affect 与 Memory 均已 lawful 到达 cognition；
-- Level 1 PASS：两条受控历史（positive vs negative lived events）经 authoritative restart 后仍不同（state_hash/affect/repository content 不同）；
-- Level 2 PASS：相同 current event 下 cognition request 不同（real: `fea…` vs `ef6f…`；请求 identity match true）；
-- Level 3 PASS：相同 model/current event 下 current_intent 与 observable behavior 不同（A 建议继续采用，B 警告会使情况更糟）；
-- Level 4 PASS（non-Memory state causal contribution）：common-event appraisal 在两分支完全相同（rel 1 / goal 0.5 / int 0.6 / conf 0.9），但 canonical Affect 持久不同（valence +0.545 vs -0.371）且该 Affect 被投影进 cognition；offline 测试额外证明 `[affect (canonical)]` 行本身不同；
-- Belief / Relationship / traits：UNCHANGED（本 slice 内无 lawful producer 触发，不强行制造）。
+- P1–P8 PASS：单一可用 subject；一个 session 内统一 talk/observe/environment/time/state/life/memory；observe/time 可见地改变 canonical state；真实进程重启后同一 subject 恢复；Memory 含 human / external-observation / environment 三种来源；显式 canonical tick 与 Affect 演化可见；累积 history 进入后续 cognition input；全部由 composition/read surface 构成，无新 canonical ontology；
+- 判定 `CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE = FROZEN`（仅产品里程碑标记，不引入新 runtime authority）；
+- 真实本地 smoke（qwen3.5:9b）：`/demo` → talk + observe FIRST + environment 1 + time 30；fresh process restart → `/life` 恢复同一 `mira-14aa8fc5`（logical_time 32、state revision 19、repository R6、shared revision 4、3 episodes）。
 
-此前能力保持 GREEN/FROZEN：
+此前能力保持 GREEN/FROZEN（含此前 slice 已冻结的 belief/personality/relationship lived-evidence adaptation、external observation ingress、explicit canonical time、environment + cross-context continuity）：
 
 ```text
-INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0              FROZEN / GREEN
-INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0      FROZEN / GREEN
-PERSISTENT_SUBJECT_CONFIGURATION_V0                    FROZEN / GREEN
-REAL_COUNTERPART_FEEDBACK_INGESTION_V0                 FROZEN / GREEN
-INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0               FROZEN / GREEN
-INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0      FROZEN / GREEN
-CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0                FROZEN / GREEN
-long-horizon session                                   IMPLEMENTED / EXPERIMENTALLY_SUPPORTED
-provider diagnostic / repair / revalidation            COMPLETE / FROZEN
+INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0                    FROZEN / GREEN
+INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0            FROZEN / GREEN
+PERSISTENT_SUBJECT_CONFIGURATION_V0                          FROZEN / GREEN
+REAL_COUNTERPART_FEEDBACK_INGESTION_V0                       FROZEN / GREEN
+INTERACTIVE_SUBJECT_MEMORY_INSPECTION_V0                     FROZEN / GREEN
+INTERACTIVE_SUBJECT_APPRAISAL_CONTENT_BOUNDARY_V0            FROZEN / GREEN
+CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0                      FROZEN / GREEN
+PERSISTENT_SUBJECT_LIVED_HISTORY_BEHAVIOR_DIFFERENTIATION_V0 FROZEN / GREEN
+belief / personality / relationship lived-evidence adaptation FROZEN / GREEN
+external structured observation ingress                       FROZEN / GREEN
+explicit canonical time advance                               FROZEN / GREEN
+environment + cross-context continuity                        FROZEN / GREEN
+CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
 ## CURRENT BLOCKER
 
-当前没有已知的 lived-history causal blocker：Memory + Affect 已证明能持久地改变同一 subject 的后续 cognition/behavior。
+当前没有已知的 product blocker：P1–P8 全部满足。
 
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
-1. 仍只有单一 subject 身份 per data root；无多 subject 选择、删除、克隆、重命名。
-2. Appraisal 为 content-sensitive（model-backed），每个 factual event 1 次本地 model call；appraisal 输入限于 identity hashes + current_task + current_observable_scene（不含 Memory/Belief/Relationship，属有意边界）；common-event appraisal 因此不随历史变化。
-3. Belief 与 traits/personality-like state 已被投影进 cognition，但本 slice 内没有任何 lawful producer 使其随 lived evidence 变化 → 长期信念/倾向尚未由经历驱动。
-4. 某轮交付行为的 outcome Experience 会在用户下一次发言时提交（包括重启后）——冻结 feedback law 要求的真实对话后果。
-5. `/memory` 仅暴露既有 durable episodes；无搜索、无 importance 排序、无编辑（未来产品能力）。
+1. 产品依赖本地 Ollama 模型；无离线/降级模式，provider 不可用时 CLI 在 preflight fail closed。
+2. 慢机器上单次 turn 需要 appraisal + cognition + language（+ lived-evidence adaptation）多次串行本地调用，缺少进度/耗时可见性与超时提示分级。
+3. 品牌-new subject 在第一个 lived event 之前没有 durable canonical state，因此 observe/time/environment 会先拒绝并给出提示。
+4. Personality/Belief/Relationships 仅在对应 adaptation provider 被配置且 lawful 改变后显示；否则 `ABSENT`（不伪造默认值）。
+5. 无 Need/Goal、无 action execution、无 wall-clock 自动时间、无 camera/audio 原生解释。
 
 ## NEXT EXACT SLICE
 
 只启动：
 
-`BELIEF_CHANGE_THROUGH_LIVED_EVIDENCE_V0`
+`CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0`
 
-问题边界：在 Affect + Memory → cognition 的因果链已被证明、Belief infrastructure 已存在且已被投影进 cognition 的前提下，判定是否存在既有 lawful 的 belief-update producer/authority：若存在则最小接线，使 lived evidence 能（经既有 canonical 语义）改变 `beliefs.items`；若不存在，则精确记录缺失的 belief-admission boundary 与最小方案。不得发明新的信仰语义、不得用 host 直接写 belief、不得把 Affect/Memory 数值映射成 credence、不得改变 retrieval/appraisal/Affect 语义。
+问题边界：让本地产品在 provider 慢/不可用/超时时仍然可理解、可诊断、可安全退出：分级超时提示、per-call 进度与耗时可见性（operator/debug）、provider 不可用时的清晰降级/拒绝路径、以及不改变任何 canonical 语义的 provider 诊断 surface。不得引入云 provider、新 canonical state 或 action execution。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 

@@ -178,6 +178,42 @@ export interface InteractiveSubjectStatusV0 {
   readonly pending_lifecycle_work: number;
 }
 
+/**
+ * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — READ-ONLY canonical subject
+ * state view for product inspection. Plain detached data derived from the
+ * authority's current canonical snapshot; no canonical ontology, no mutation,
+ * no fabricated defaults (empty domains are empty arrays).
+ */
+export interface InteractiveSubjectStateViewV0 {
+  readonly schema_version: "interactive-subject-state-view-v0";
+  readonly identity: {
+    readonly subject_id: string;
+    readonly display_name: string;
+    readonly identity_anchors: readonly string[];
+  };
+  readonly logical_time: number;
+  readonly state_revision: number;
+  readonly repository_revision: string;
+  readonly affect: { readonly valence: number; readonly activation: number };
+  readonly regulation: {
+    readonly energy: number;
+    readonly stress: number;
+    readonly arousal: number;
+    readonly fatigue: number;
+  };
+  readonly personality: readonly { readonly dimension_id: string; readonly value: number }[];
+  readonly traits_seed: Readonly<Record<string, number>>;
+  readonly beliefs: readonly {
+    readonly proposition_id: string;
+    readonly proposition_label: string;
+    readonly credence: number;
+  }[];
+  readonly relationships: readonly {
+    readonly counterpart_ref: string;
+    readonly dimensions: readonly { readonly dimension_id: string; readonly value: number }[];
+  }[];
+}
+
 interface CapturedExchange {
   readonly request: { readonly system_content: string; readonly user_content: string };
   readonly response: string;
@@ -701,6 +737,49 @@ export class InteractiveSubjectRuntimeV0 {
    */
   async livedMemory(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
     return this.authority.readLivedMemoryV0(input);
+  }
+
+  /**
+   * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — read-only inspection of
+   * the canonical subject state. Pure read: no mutation, no provider call.
+   */
+  async subjectStateView(): Promise<InteractiveSubjectStateViewV0> {
+    const snapshot = await this.authority.readSnapshot();
+    return {
+      schema_version: "interactive-subject-state-view-v0",
+      identity: {
+        subject_id: snapshot.identity.subject_id as string,
+        display_name: snapshot.identity.display_name as string,
+        identity_anchors: [...(snapshot.identity.identity_anchors as readonly string[])]
+      },
+      logical_time: snapshot.runtime_metadata.logical_time as number,
+      state_revision: snapshot.runtime_metadata.state_revision as number,
+      repository_revision: snapshot.memory_state.repository_revision as string,
+      affect: { valence: snapshot.affect.valence, activation: snapshot.affect.activation },
+      regulation: {
+        energy: snapshot.regulation.energy,
+        stress: snapshot.regulation.stress,
+        arousal: snapshot.regulation.arousal,
+        fatigue: snapshot.regulation.fatigue
+      },
+      personality: snapshot.personality.dimensions.map((dimension) => ({
+        dimension_id: dimension.dimension_id as string,
+        value: dimension.value
+      })),
+      traits_seed: { ...(snapshot.traits_seed.dimensions as Readonly<Record<string, number>>) },
+      beliefs: snapshot.beliefs.items.map((item) => ({
+        proposition_id: item.proposition_id as string,
+        proposition_label: item.proposition_label,
+        credence: item.credence
+      })),
+      relationships: snapshot.relationships.counterparts.map((counterpart) => ({
+        counterpart_ref: counterpart.counterpart_ref as string,
+        dimensions: counterpart.dimensions.map((dimension) => ({
+          dimension_id: dimension.dimension_id as string,
+          value: dimension.value
+        }))
+      }))
+    };
   }
 
   async status(): Promise<InteractiveSubjectStatusV0> {

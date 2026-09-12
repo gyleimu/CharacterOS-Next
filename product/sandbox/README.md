@@ -1,15 +1,69 @@
-# CharacterOS-Next — interactive persistent subject runtime (V0)
+# CharacterOS-Next — local persistent-subject product (V0)
 
-This workspace package is the product shell for `INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0`.
-It lets you talk to ONE persistent CharacterOS subject with a natural-language CLI,
-close the process, reopen it, and continue with the SAME subject whose prior lived
-interactions survive restart.
+This workspace package is the local product shell for CharacterOS: ONE persistent
+artificial subject, ONE canonical life.
 
-The shell is thin: it owns local process concerns (readline, provider wiring, a
-file-backed durable snapshot, an operational log) and delegates every semantic
-step to the existing production runtime (`packages/runtime`). It never chooses
-Memory refs, writes Memory, sets Affect/beliefs/relationship, writes
-`current_intent`, selects a communication directive, or authors behavior.
+> CharacterOS maintains one canonical persistent subject whose experiences from
+> conversation, environment and external structured observations become one lived
+> history. Internal state and Memory survive restart and context switching,
+> canonical time can advance independently of interactions, and accumulated
+> history reaches future cognition.
+
+There is no account system, no server, no cloud: it is a local CLI over the
+frozen runtime in `packages/runtime`.
+
+The shell is thin: it owns local process concerns only (readline, provider
+wiring, file-backed durable stores, an operational log) and composes the existing
+frozen seams. It never chooses Memory refs, writes Memory, sets
+Affect/beliefs/relationship, writes `current_intent`, selects a directive, or
+authors behavior.
+
+## One session, one life — commands
+
+Start with `pnpm interactive` (see Run below), then use:
+
+| Command | What it does |
+|---|---|
+| `/help` | list commands |
+| `/status` | subject identity, revisions, Affect, pending work |
+| `/state` | READ-ONLY canonical state (identity, time, Affect, Regulation, Personality, beliefs, relationships; `ABSENT` when a domain is empty) |
+| `/life` | READ-ONLY one-life view: identity, continuity, time, revisions, Affect, state summaries, recent lived Memory |
+| `/memory [count]` | recent durable lived episodes (read-only) |
+| `/observe source=… event=… entities=… scene="…" [task="…"]` | submit ONE structured external observation |
+| `/environment [count]` | run deterministic environment interaction(s) against the SAME subject |
+| `/time <ticks>` | advance explicit CANONICAL ticks (never seconds/minutes/hours) |
+| `/demo` | run the bounded one-life acceptance scenario |
+| `/exit` | finish the current turn, verify no pending work, save, and quit |
+
+Anything else is sent to the subject as natural-language conversation.
+
+### Observe
+
+`/observe` parses one line of `key=value` pairs into the existing structured
+observation ingress (bare names are normalized to canonical refs; the ingress
+validator remains the authority). Result is `FIRST` (with observation/episode
+refs and the new revision), `REPLAY` (already recorded), or `CONFLICT`.
+
+### Time
+
+`/time N` advances N explicit canonical ticks. `0` is a lawful `NO_OP` (no
+write). Wall-clock time is never consulted and never displayed as elapsed time.
+Time advances the same shared subject without creating Observations or Memory.
+
+### One shared canonical subject
+
+Human conversation, environment interactions and external observations are
+different CONTEXTS over ONE canonical subject source
+(`subject-<id>.shared-subject.json`). After any context advances it, the session
+re-adopts the shared canonical state, so the next command continues the same
+life. Stale writers fail closed; no second genesis and no lineage fork.
+
+### Restart = same subject
+
+Exit the process and launch it again: the product prints `RESTORED`, and
+`/status`, `/state`, `/life` and `/memory` show the same subject with its
+accumulated life. This is a real process restart over the file-backed stores,
+not an in-process reset.
 
 ## Requirements
 
@@ -17,8 +71,9 @@ Memory refs, writes Memory, sets Affect/beliefs/relationship, writes
 - [Ollama](https://ollama.com/) reachable locally with a chat model, by default:
   - endpoint `http://127.0.0.1:11434`
   - model `qwen3.5:9b`
-- The provider is the existing production Ollama cognition transport; cognition
-  and language realization share it but keep distinct semantics.
+- The provider is the existing production Ollama cognition transport; appraisal,
+  cognition, language and lived-evidence adaptation are separate calls with
+  distinct prompts and budgets.
 
 ## Run
 
@@ -233,3 +288,27 @@ cognition as untrusted factual evidence.
 - No GUI, voice, vision, multi-user, cloud sync, plugins, or tool use.
 - Not a scalability claim: this proves interactive + persistent + restartable +
   lawful, not long-horizon scaling.
+- A brand-new subject has no durable canonical state until its first lived
+  event, so `/observe`, `/time` and `/environment` refuse with a hint until you
+  send the subject one message (or run `/demo`, which talks first).
+- No endogenous Need/Goal system and no product action execution
+  (`allowed_actions = []`, `action_intent = null` on the conversation path).
+- No wall-clock automatic time: only explicit canonical ticks.
+- No native camera/audio interpretation: `/observe` accepts structured text.
+- State/life views show only state that durably exists. Personality and
+  relationship dimensions appear only when the corresponding lived-evidence
+  adaptation provider is configured and has lawfully changed them; otherwise the
+  domain prints `ABSENT` (no fabricated defaults).
+- Real-model behavioral sensitivity is not guaranteed; the causal claims in this
+  repository are bounded to the frozen experiments that produced them.
+
+## One-life demo
+
+Run `pnpm interactive`, then `/demo` to execute the bounded acceptance scenario
+with the SAME commands listed above: initial state, one human experience, one
+structured external observation, one environment interaction, recent Memory,
+explicit canonical time, and the current life. Then `/exit`, relaunch, and run
+`/life` to see the same subject restored with its accumulated life.
+
+Automated acceptance (deterministic fakes, 0 real provider calls) lives in
+`src/product-one-life.test.ts`.

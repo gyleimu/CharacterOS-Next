@@ -1166,6 +1166,7 @@ export {
   type InteractiveTurnOutcomeV0,
   type InteractiveSubjectSnapshotV0,
   type InteractiveSubjectStatusV0,
+  type InteractiveSubjectStateViewV0,
   type PendingBehaviorOutcomeV0
 } from "./session/interactive-subject-runtime-v0.js";
 export {

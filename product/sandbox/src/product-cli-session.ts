@@ -9,9 +9,17 @@
 
 import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import type { InteractiveTurnOutcomeV0, LivedMemoryEntryV0, LivedMemoryInspectionV0 } from "@characteros-next/runtime";
+import type { ProductLifeOperationsV0 } from "./product-life-operations.js";
+import type { ExternalStructuredObservationRequestV0 } from "./external-observation-ingress.js";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
+  /**
+   * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — optional life operations
+   * (observe / time / environment / state / life). Omitted ⇒ those commands
+   * report that the capability is not configured in this session.
+   */
+  readonly life?: ProductLifeOperationsV0;
   /** Conversation prefix label (display name); defaults to "Subject". */
   readonly subjectLabel?: string;
   readonly model: string;
@@ -29,10 +37,17 @@ export type ProductCliLineResultV0 = { readonly kind: "EXIT" } | { readonly kind
 
 export const PRODUCT_CLI_HELP_LINES: readonly string[] = Object.freeze([
   "Commands:",
-  "  /help     show this help",
-  "  /status   show subject + runtime status",
-  "  /memory   show recent durable lived memories (read-only)",
-  "  /exit     finish the current turn, save, and quit",
+  "  /help        show this help",
+  "  /status      show subject + runtime status",
+  "  /state       show the subject's canonical state (read-only)",
+  "  /life        show this subject's current life (read-only)",
+  "  /memory      show recent durable lived memories (read-only)",
+  "  /observe     submit one structured external observation",
+  "               /observe source=front-door event=entered-001 entities=alice scene=\"Alice entered.\"",
+  "  /environment run deterministic environment interaction(s): /environment [count]",
+  "  /time        advance explicit canonical ticks: /time <ticks>",
+  "  /demo        run the bounded one-life acceptance scenario",
+  "  /exit        finish the current turn, save, and quit",
   "Anything else is sent to the subject as a natural-language message."
 ]);
 
@@ -56,8 +71,58 @@ function sanitizeDisplayTextV0(text: string): string {
     : out;
 }
 
+/**
+ * PRODUCT observation UX: one line of `key=value` pairs (quoted values allowed)
+ * parsed into the EXISTING structured-observation request. Bare names are
+ * normalized to canonical ref prefixes; the ingress validator remains the
+ * authority for what is lawful.
+ */
+export function parseObservationCommandV0(
+  argument: string
+): { readonly ok: true; readonly request: ExternalStructuredObservationRequestV0 } | { readonly ok: false; readonly detail: string } {
+  const fields = new Map<string, string>();
+  const pattern = /([A-Za-z_][A-Za-z0-9_]*)=("([^"]*)"|\S+)/g;
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(argument)) !== null) {
+    fields.set(match[1] as string, match[3] !== undefined ? match[3] : (match[2] as string));
+  }
+  const source = fields.get("source");
+  const event = fields.get("event");
+  const scene = fields.get("scene");
+  const entities = fields.get("entities");
+  if (source === undefined) return { ok: false, detail: "missing source=<source>" };
+  if (event === undefined) return { ok: false, detail: "missing event=<event>" };
+  if (scene === undefined || scene.length === 0) return { ok: false, detail: 'missing scene="<text>"' };
+  if (entities === undefined) return { ok: false, detail: "missing entities=<a,b>" };
+  const normalize = (value: string, prefix: string): string => (value.includes(":") ? value : `${prefix}:${value}`);
+  const list = (value: string, prefix: string): string[] =>
+    value
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0)
+      .map((entry) => normalize(entry, prefix));
+  const entityRefs = list(entities, "entity");
+  if (entityRefs.length === 0) return { ok: false, detail: "entities must name at least one entity" };
+  const focus = fields.get("focus");
+  const environment = fields.get("environment");
+  const taskRaw = fields.get("task");
+  return {
+    ok: true,
+    request: {
+      source_ref: normalize(source, "source"),
+      event_ref: normalize(event, "event"),
+      entity_refs: entityRefs,
+      scene,
+      task: taskRaw === undefined || taskRaw.length === 0 ? null : taskRaw,
+      ...(focus === undefined ? {} : { focus_refs: list(focus, "entity") }),
+      ...(environment === undefined ? {} : { environment_refs: list(environment, "environment") })
+    }
+  };
+}
+
 export class ProductCliSessionV0 {
   private exiting = false;
+  private lastTurnOutcome: InteractiveTurnOutcomeV0 | null = null;
 
   constructor(private readonly deps: ProductCliSessionDepsV0) {}
 
@@ -107,8 +172,230 @@ export class ProductCliSessionV0 {
       await this.printLivedMemory(argument);
       return { kind: "HANDLED" };
     }
+    if (command === "/state") {
+      await this.printState();
+      return { kind: "HANDLED" };
+    }
+    if (command === "/life") {
+      await this.printLife();
+      return { kind: "HANDLED" };
+    }
+    if (command === "/observe") {
+      await this.runObserve(argument);
+      return { kind: "HANDLED" };
+    }
+    if (command === "/time") {
+      await this.runTime(argument);
+      return { kind: "HANDLED" };
+    }
+    if (command === "/environment") {
+      await this.runEnvironment(argument);
+      return { kind: "HANDLED" };
+    }
+    if (command === "/demo") {
+      await this.runDemo();
+      return { kind: "HANDLED" };
+    }
     this.deps.write(`Unknown command "${command}". Type /help for commands.`);
     return { kind: "HANDLED" };
+  }
+
+  private lifeOrNull(): ProductLifeOperationsV0 | null {
+    return this.deps.life ?? null;
+  }
+
+  private writeLifeFailure(label: string, error: unknown): void {
+    const detail = error instanceof Error ? error.message : String(error);
+    this.deps.write(`${label} refused: ${detail}`);
+    if (detail.includes("NO_SUBJECT")) {
+      this.deps.write("  hint: no durable subject yet — send the subject a message first.");
+    }
+  }
+
+  private async printState(): Promise<void> {
+    const life = this.lifeOrNull();
+    if (life === null) {
+      this.deps.write("State inspection is not configured in this session.");
+      return;
+    }
+    const view = await life.stateView();
+    const state = view.state;
+    const out = (line: string): void => this.deps.write(line);
+    out("State (canonical, read-only)");
+    out("  Identity");
+    out(`    subject: ${state.identity.subject_id}`);
+    out(`    display name: ${state.identity.display_name.trim().length > 0 ? state.identity.display_name : "ABSENT"}`);
+    out(`    identity anchors: ${state.identity.identity_anchors.length > 0 ? state.identity.identity_anchors.join(", ") : "ABSENT"}`);
+    out("  Time");
+    out(`    logical time: ${state.logical_time}`);
+    out(`    state revision: ${state.state_revision}`);
+    out(`    repository revision: ${state.repository_revision}`);
+    out(`    shared revision: ${view.shared_revision === null ? "ABSENT" : String(view.shared_revision)}`);
+    out("  Affect");
+    out(`    valence: ${state.affect.valence}`);
+    out(`    activation: ${state.affect.activation}`);
+    out("  Regulation");
+    out(`    energy: ${state.regulation.energy} stress: ${state.regulation.stress} arousal: ${state.regulation.arousal} fatigue: ${state.regulation.fatigue}`);
+    out("  Personality");
+    if (state.personality.length === 0) out("    ABSENT");
+    else for (const dimension of state.personality) out(`    ${dimension.dimension_id}: ${dimension.value}`);
+    const traitIds = Object.keys(state.traits_seed).sort();
+    out("  Traits seed (P0)");
+    if (traitIds.length === 0) out("    ABSENT");
+    else for (const id of traitIds) out(`    ${id}: ${state.traits_seed[id]}`);
+    out(`  Beliefs (${state.beliefs.length})`);
+    if (state.beliefs.length === 0) out("    ABSENT");
+    else for (const item of state.beliefs) out(`    ${item.proposition_label} [${item.proposition_id}] credence=${item.credence}`);
+    out(`  Relationships (${state.relationships.length})`);
+    if (state.relationships.length === 0) out("    ABSENT");
+    else {
+      for (const counterpart of state.relationships) {
+        out(`    ${counterpart.counterpart_ref}`);
+        if (counterpart.dimensions.length === 0) out("      (no dimensions)");
+        else for (const dimension of counterpart.dimensions) out(`      ${dimension.dimension_id}: ${dimension.value}`);
+      }
+    }
+    if (this.deps.debug && this.lastTurnOutcome !== null) {
+      out("  Last cognition request (debug)");
+      out(`    provider_request_hash: ${this.lastTurnOutcome.provider_request_hash ?? "ABSENT"}`);
+      out(`    identity_match: ${this.lastTurnOutcome.provider_request_identity_match}`);
+    }
+  }
+
+  private async printLife(): Promise<void> {
+    const life = this.lifeOrNull();
+    if (life === null) {
+      this.deps.write("Life view is not configured in this session.");
+      return;
+    }
+    const view = await life.lifeView();
+    const out = (line: string): void => this.deps.write(line);
+    out(`${view.display_name.trim().length > 0 ? view.display_name : view.subject_id} — one life`);
+    out(`  Status: ${view.origin === "SUBJECT_RESTORED" ? "RESTORED (same subject)" : "NEW"}`);
+    out(`  Subject: ${view.subject_id}`);
+    out(`  Logical time: ${view.logical_time} canonical ticks`);
+    out(`  State revision: ${view.state_revision}  Repository: ${view.repository_revision}  Shared: ${view.shared_revision === null ? "ABSENT" : view.shared_revision}`);
+    out(`  Affect: valence=${view.affect.valence} activation=${view.affect.activation}`);
+    out(`  Regulation: energy=${view.regulation.energy} stress=${view.regulation.stress} arousal=${view.regulation.arousal} fatigue=${view.regulation.fatigue}`);
+    out(`  Beliefs: ${view.beliefs.length === 0 ? "ABSENT" : view.beliefs.map((item) => `${item.proposition_label}(${item.credence})`).join(", ")}`);
+    out(`  Personality: ${view.personality.length === 0 ? "ABSENT" : view.personality.map((dimension) => `${dimension.dimension_id}=${dimension.value}`).join(", ")}`);
+    out(`  Relationships: ${view.relationships.length === 0 ? "ABSENT" : view.relationships.map((counterpart) => counterpart.counterpart_ref).join(", ")}`);
+    const memory = view.recent_memory;
+    out(`  Lived memory: ${memory.total_episode_count} episode(s)${memory.total_episode_count > memory.displayed_count ? ` (showing ${memory.displayed_count} most recent)` : ""}`);
+    for (const entry of memory.entries) {
+      if (entry.kind === "OBSERVATION") out(`    - ${sanitizeDisplayTextV0(entry.scene)}`);
+      else out(`    - delivered: "${sanitizeDisplayTextV0(entry.delivered_behavior_text)}" | replied: "${sanitizeDisplayTextV0(entry.outcome_reply_text)}"`);
+    }
+  }
+
+  private async runObserve(argument: string): Promise<void> {
+    const life = this.lifeOrNull();
+    if (life === null) {
+      this.deps.write("Structured observation is not configured in this session.");
+      return;
+    }
+    const parsed = parseObservationCommandV0(argument);
+    if (!parsed.ok) {
+      this.deps.write(`Usage: /observe source=<source> event=<event> entities=<a,b> scene="<text>" [task="<text>"]`);
+      this.deps.write(`  ${parsed.detail}`);
+      return;
+    }
+    try {
+      const outcome = await life.observe(parsed.request);
+      if (outcome.kind === "FIRST") {
+        this.deps.write(
+          `observation FIRST: observation_ref=${outcome.observation_ref} episode_ref=${outcome.episode_ref} revision=${outcome.base_revision}`
+        );
+      } else if (outcome.kind === "REPLAY") {
+        this.deps.write(`observation REPLAY (already recorded): observation_ref=${outcome.observation_ref} revision=${outcome.base_revision}`);
+      } else {
+        this.deps.write(`observation CONFLICT: ${outcome.detail}`);
+      }
+    } catch (error) {
+      this.writeLifeFailure("observation", error);
+    }
+  }
+
+  private async runTime(argument: string): Promise<void> {
+    const life = this.lifeOrNull();
+    if (life === null) {
+      this.deps.write("Canonical time advance is not configured in this session.");
+      return;
+    }
+    const ticks = Number.parseInt(argument, 10);
+    if (!Number.isSafeInteger(ticks) || ticks < 0 || (argument.length > 0 && String(ticks) !== argument)) {
+      this.deps.write("Usage: /time <canonical ticks>");
+      return;
+    }
+    try {
+      const result = await life.time(ticks);
+      this.deps.write(
+        `time: advanced ${result.ticks} canonical tick(s)${result.no_op ? " (NO_OP)" : ""} ` +
+          `logical_time ${result.logical_time_before} -> ${result.logical_time_after} ` +
+          `valence ${result.valence_before} -> ${result.valence_after}`
+      );
+    } catch (error) {
+      this.writeLifeFailure("time advance", error);
+    }
+  }
+
+  private async runEnvironment(argument: string): Promise<void> {
+    const life = this.lifeOrNull();
+    if (life === null) {
+      this.deps.write("Environment interaction is not configured in this session.");
+      return;
+    }
+    const parsed = argument.length === 0 ? 1 : Number.parseInt(argument, 10);
+    if (!Number.isSafeInteger(parsed) || parsed <= 0 || parsed > 100) {
+      this.deps.write("Usage: /environment [count] (1..100)");
+      return;
+    }
+    try {
+      const run = await life.environment(parsed);
+      this.deps.write(`environment: ${run.environment_id} (${run.resolution})`);
+      for (const outcome of run.outcomes) {
+        this.deps.write(
+          `  [${outcome.interaction_index}] ${outcome.status} behavior=${JSON.stringify(outcome.behavior_text.slice(0, 80))} ` +
+            `episode=${outcome.episode_ref ?? "(none)"}`
+        );
+      }
+      this.deps.write(
+        `done: interaction_index=${run.status.interaction_index}/${run.status.interaction_count} ` +
+          `state_revision=${run.status.state_revision} repository=${run.status.repository_revision}`
+      );
+    } catch (error) {
+      this.writeLifeFailure("environment", error);
+    }
+  }
+
+  /**
+   * Bounded one-life acceptance scenario using the SAME product operations as
+   * normal commands. Restart continuity is manual: the demo ends by asking the
+   * user to /exit and relaunch, then run /life.
+   */
+  private async runDemo(): Promise<void> {
+    const life = this.lifeOrNull();
+    const out = (line: string): void => this.deps.write(line);
+    out("demo: one persistent subject, one life");
+    if (life === null) {
+      out("demo unavailable: life operations are not configured in this session.");
+      return;
+    }
+    out("[1/7] initial state");
+    await this.printState();
+    out("[2/7] human experience");
+    await this.handleUserMessage("Hello — I would like to see what you are like today.");
+    out("[3/7] structured external observation");
+    await this.runObserve('source=demo-sensor event=demo-001 entities=alice scene="A quiet room with a desk." task="observe current situation"');
+    out("[4/7] environment interaction");
+    await this.runEnvironment("1");
+    out("[5/7] recent lived memory");
+    await this.printLivedMemory("");
+    out("[6/7] advance canonical time");
+    await this.runTime("30");
+    out("[7/7] current life");
+    await this.printLife();
+    out("demo complete: /exit, then relaunch and run /life to see the same subject continue.");
   }
 
   /** Read-only lived-memory inspection. No provider call, no subject mutation. */
@@ -163,6 +450,7 @@ export class ProductCliSessionV0 {
       return;
     }
     const outcome = await this.deps.host.send(text);
+    this.lastTurnOutcome = outcome;
     this.deps.onTurnComplete?.(outcome);
     if (outcome.status !== "COMPLETE") {
       this.deps.write("Cognition generation failed; the interaction did not commit.");
