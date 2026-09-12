@@ -407,23 +407,25 @@ experiment's own evidence. No production file changed.
 
 ## Commit
 
-See below.
+`4cb51a59723f875399c839e8dae6367703f775a1` — `research: test non-memory state value beyond memory`
+(this is the evidence commit; the report-file bookkeeping update is the subsequent doc commit).
 
 ## Push
 
-See below.
+`7999f6a..4cb51a5 main -> main` (normal fast-forward push, no force).
 
 ## HEAD
 
-See below.
+`4cb51a5` at the evidence commit (full SHA above). `origin/main` matches it.
 
 ## origin/main
 
-See below.
+`4cb51a59723f875399c839e8dae6367703f775a1`
 
 ## Worktree
 
-See below.
+Clean after the evidence commit; only this experiment's new directory is added. No
+production file changed.
 
 ## Disclosed Harness Defects
 
