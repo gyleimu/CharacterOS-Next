@@ -16,7 +16,7 @@
  * creation. Conflicting overrides inside one data root FAIL CLOSED.
  */
 
-import { appendFileSync, mkdirSync } from "node:fs";
+import { accessSync, appendFileSync, constants, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import type { Interface as ReadlineInterface } from "node:readline";
 import { createInterface } from "node:readline";
@@ -31,6 +31,20 @@ import { EnvironmentSubjectHostV0 } from "./environment-subject-host.js";
 import { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
 import { ProductLifeOperationsV0 } from "./product-life-operations.js";
 import { ProviderDiagnosticsV0, wrapTransportForStageV0 } from "./provider-diagnostics.js";
+import {
+  ProductConfigurationErrorV0,
+  dataDirectoryFailureGuidanceV0,
+  firstRunGuidanceV0,
+  formatConfigurationErrorLinesV0,
+  formatStartupSummaryV0,
+  modelMissingGuidanceV0,
+  parsePositiveIntV0,
+  processEnvironmentV0,
+  providerUnavailableGuidanceV0,
+  resolveProductConfigurationV0,
+  type ProductConfigurationV0,
+  type ProductIdentityProvenanceV0
+} from "./product-configuration.js";
 import { FileSharedSubjectSourceStoreV0 } from "./shared-subject-source.js";
 import { advanceSubjectTimeV0, SubjectTimeAdvanceErrorV0 } from "./subject-time-advance.js";
 import { createProductAppraisalProviderV0 } from "./product-appraisal-provider.js";
@@ -46,43 +60,55 @@ import {
   type ProductSubjectConfigV0
 } from "./subject-configuration.js";
 
-function env(name: string): string | undefined {
-  const value = process.env[name];
-  return value === undefined || value.length === 0 ? undefined : value;
-}
-
-function intEnv(name: string, fallback: number): number {
-  const raw = env(name);
-  if (raw === undefined) return fallback;
-  const parsed = Number.parseInt(raw, 10);
-  return Number.isFinite(parsed) ? parsed : fallback;
-}
-
 async function main(): Promise<number> {
-  const baseUrl = env("OLLAMA_BASE_URL") ?? "http://127.0.0.1:11434";
-  const model = env("CHARACTEROS_MODEL") ?? "qwen3.5:9b";
-  const numPredict = intEnv("CHARACTEROS_NUM_PREDICT", 2048);
-  const contextWindowTokens = intEnv("CHARACTEROS_CONTEXT_WINDOW_TOKENS", 8192);
-  const timeoutMs = intEnv("CHARACTEROS_TIMEOUT_MS", 120000);
-  const debug = env("CHARACTEROS_DEBUG") === "1";
-  const dataDir = env("CHARACTEROS_DATA_DIR") ?? fileURLToPath(new URL("../.data", import.meta.url));
-  mkdirSync(dataDir, { recursive: true });
+  const environment = processEnvironmentV0();
+  const env = (name: string): string | undefined => environment.get(name);
+
+  // CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0 — resolve the SAME
+  // product settings as before (env → built-in default), but fail early on
+  // malformed values instead of silently coercing them.
+  let configuration: ProductConfigurationV0;
+  try {
+    configuration = resolveProductConfigurationV0({
+      environment,
+      default_data_root: fileURLToPath(new URL("../.data", import.meta.url)),
+      default_data_root_origin: "built-in default (product/sandbox/.data)"
+    });
+  } catch (error) {
+    if (error instanceof ProductConfigurationErrorV0) {
+      for (const line of formatConfigurationErrorLinesV0(error)) console.error(line);
+      return 1;
+    }
+    throw error;
+  }
+  const baseUrl = configuration.endpoint.value;
+  const model = configuration.model.value;
+  const numPredict = configuration.num_predict.value;
+  const contextWindowTokens = configuration.context_window_tokens.value;
+  const timeoutMs = configuration.timeout_ms.value;
+  const debug = configuration.debug.value;
+  const dataDir = configuration.data_root.value;
+  // Data root must exist and be writable; report the product-level cause actionably.
+  try {
+    mkdirSync(dataDir, { recursive: true });
+    accessSync(dataDir, constants.W_OK);
+  } catch (error) {
+    for (const line of dataDirectoryFailureGuidanceV0(dataDir, error instanceof Error ? error.message : String(error))) {
+      console.error(line);
+    }
+    return 1;
+  }
 
   console.log("CharacterOS-Next");
   const probe = await probeOllamaV0(baseUrl, model);
   if (!probe.reachable) {
-    console.error("Provider unavailable. Is Ollama running?");
-    console.error(`  endpoint: ${baseUrl}`);
-    console.error(`  detail: ${probe.failure ?? "unknown"}`);
+    for (const line of providerUnavailableGuidanceV0(baseUrl, probe.failure ?? "unknown")) console.error(line);
     return 1;
   }
   // MODEL MISSING: reachable endpoint but the configured model is not installed.
   // Fail closed with the configured identifier; never auto-download or install.
   if (probe.failure !== null) {
-    console.error(`Model unavailable: ${model}`);
-    console.error(`  endpoint: ${baseUrl}`);
-    console.error(`  detail: ${probe.failure}`);
-    console.error("  action: install/pull the model locally, then relaunch. The product never downloads models for you.");
+    for (const line of modelMissingGuidanceV0(model, baseUrl, probe.failure)) console.error(line);
     return 1;
   }
 
@@ -106,7 +132,7 @@ async function main(): Promise<number> {
   const languageTransport = wrapTransportForStageV0(transports.language, "LANGUAGE", diagnostics);
   const appraisalTransport = wrapTransportForStageV0(transports.appraisal, "APPRAISAL", diagnostics);
   const relationshipTransport = wrapTransportForStageV0(transports.relationship, "RELATIONSHIP_ADAPTATION", diagnostics);
-  if (env("CHARACTEROS_DISABLE_ADAPTATION") !== "1") {
+  if (!configuration.disable_adaptation.value) {
     diagnostics.enable("BELIEF_ADAPTATION");
   }
   // CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0: one model-backed appraisal call per
@@ -120,7 +146,7 @@ async function main(): Promise<number> {
   // — deliberately NOT the cognition output budget (§75).
   const beliefSemanticProvider = new OllamaBeliefSemanticProviderV0({
     base_url: baseUrl,
-    model: env("CHARACTEROS_BELIEF_SEMANTIC_MODEL") ?? model
+    model: configuration.belief_semantic_model.value
   });
 
   // RELATIONSHIP_LIVED_DEVELOPMENT_V0: one bounded model-backed qualifying-
@@ -178,14 +204,22 @@ async function main(): Promise<number> {
   // adaptation providers as human mode; it is not the human-conversation host.
   if (process.argv[2] === "environment") {
     const subjectId = env("CHARACTEROS_SUBJECT_ID") ?? "alice";
-    const interactions = Number.parseInt(process.argv[3] ?? env("CHARACTEROS_ENVIRONMENT_INTERACTIONS") ?? "4", 10);
+    const interactionsRaw = process.argv[3] ?? env("CHARACTEROS_ENVIRONMENT_INTERACTIONS");
+    const interactions = interactionsRaw === undefined ? 4 : parsePositiveIntV0(interactionsRaw);
+    if (interactions === null) {
+      console.error(
+        `Configuration is invalid: CHARACTEROS_ENVIRONMENT_INTERACTIONS=${JSON.stringify(interactionsRaw)} ` +
+          `(source: environment variable CHARACTEROS_ENVIRONMENT_INTERACTIONS); expected a positive integer (interactions).`
+      );
+      return 1;
+    }
     const host = await EnvironmentSubjectHostV0.open(
       {
         subject_id: subjectId,
         display_name: env("CHARACTEROS_DISPLAY_NAME") ?? "Alice",
         session_id: `environment-${subjectId}`,
         storage_root: dataDir,
-        interaction_interval_ticks: intEnv("CHARACTEROS_INTERVAL_TICKS", 1)
+        interaction_interval_ticks: configuration.interval_ticks.value
       },
       {
         conversationCognitionTransport: cognitionTransport,
@@ -237,6 +271,12 @@ async function main(): Promise<number> {
   let session: ProductCliSessionV0 | null = null;
   let subjectConfig: ProductSubjectConfigV0 | null = null;
   let sharedStore: FileSharedSubjectSourceStoreV0 | null = null;
+  // Product metadata only: where the open subject's identity came from. Never
+  // canonical state, never persisted.
+  let subjectIdentity: ProductIdentityProvenanceV0 = {
+    source: "DERIVED",
+    origin: "derived from display name"
+  };
 
   let completeStartup: () => void = () => undefined;
   const startup = new Promise<void>((resolve) => {
@@ -360,7 +400,7 @@ async function main(): Promise<number> {
                   display_name: opened.displayName(),
                   identity_anchors: [...(subjectConfig?.identity_anchors ?? [])]
                 },
-                interaction_interval_ticks: intEnv("CHARACTEROS_INTERVAL_TICKS", 1)
+                interaction_interval_ticks: configuration.interval_ticks.value
               },
               {
                 host: opened,
@@ -382,6 +422,10 @@ async function main(): Promise<number> {
           }),
       subjectLabel: opened.displayName().length > 0 ? opened.displayName() : subjectId,
       diagnostics,
+      configuration,
+      subjectIdentity,
+      subjectDurableState: subjectConfig?.durable_state ?? "UNKNOWN",
+      providerReady: true,
       model,
       providerLabel: "OLLAMA_NATIVE",
       contextWindowTokens,
@@ -395,19 +439,22 @@ async function main(): Promise<number> {
 
   const announceReady = async (opened: InteractiveSubjectHostV0, created: boolean): Promise<void> => {
     const status = await opened.status();
-    if (created) {
-      write("Subject created.");
-      write(`Subject ID: ${opened.subjectId()}`);
+    const restored = opened.resolution() === "SUBJECT_RESTORED";
+    for (const line of formatStartupSummaryV0({
+      display_name: opened.displayName(),
+      subject_id: opened.subjectId(),
+      status: restored ? "RESTORED" : "NEW",
+      created,
+      model,
+      data_location: opened.storageLocation(),
+      provider_ready: true
+    })) {
+      write(line);
     }
-    write(`Subject: ${opened.displayName().length > 0 ? opened.displayName() : opened.subjectId()}`);
-    write(`Status: ${opened.resolution() === "SUBJECT_RESTORED" ? "RESTORED" : "NEW"}`);
-    write(`Memory revision: ${status.repository_revision}`);
-    write(`Provider: OLLAMA_NATIVE / ${model} (context ${contextWindowTokens}, max output ${numPredict})`);
-    write(`Data: ${opened.storageLocation() ?? "(in-memory)"}`);
-    if (opened.resolution() === "SUBJECT_RESTORED" && status.pending_behavior_outcome) {
+    if (!restored) for (const line of firstRunGuidanceV0({ display_name: opened.displayName() })) write(line);
+    if (restored && status.pending_behavior_outcome) {
       write("Note: your next message will also complete the previous reply's outcome.");
     }
-    write("Type /help for commands.");
     promptWith("You > ");
   };
 
@@ -489,9 +536,14 @@ async function main(): Promise<number> {
         write("Create a persistent subject.");
         promptWith("Display name: ");
       } else {
+        subjectIdentity = { source: "ENVIRONMENT", origin: "CHARACTEROS_SUBJECT_ID" };
         await setupSubject(buildSubjectConfigForCreationV0(preset.display_name));
       }
     } else {
+      subjectIdentity =
+        resolution.kind === "RECOVER_AND_RESTORE"
+          ? { source: "PERSISTED_PRODUCT_CONFIG", origin: "recovered from durable snapshot identity" }
+          : { source: "PERSISTED_PRODUCT_CONFIG", origin: "subject-config.json" };
       if (resolution.kind === "RECOVER_AND_RESTORE") {
         writeProductSubjectConfigV0(dataDir, resolution.config);
       }

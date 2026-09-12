@@ -16,6 +16,11 @@ import {
   classifyProviderFailureV0,
   extractFailureStageV0
 } from "./provider-diagnostics.js";
+import {
+  formatConfigurationLinesV0,
+  type ProductConfigSourceV0,
+  type ProductConfigurationV0
+} from "./product-configuration.js";
 
 export interface ProductCliSessionDepsV0 {
   readonly host: InteractiveSubjectHostV0;
@@ -30,6 +35,17 @@ export interface ProductCliSessionDepsV0 {
    * product provider diagnostics (/diagnostics) and stage-aware failure UX.
    */
   readonly diagnostics?: ProviderDiagnosticsV0;
+  /**
+   * CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0 — effective product
+   * configuration read view (/config). Read-only product metadata; omitted ⇒
+   * /config reports that the view is unavailable.
+   */
+  readonly configuration?: ProductConfigurationV0;
+  /** Where the open subject's identity came from (product metadata only). */
+  readonly subjectIdentity?: { readonly source: ProductConfigSourceV0; readonly origin: string };
+  readonly subjectDurableState?: "NONE" | "PRESENT" | "UNKNOWN";
+  /** Provider metadata preflight result at startup; defaults to READY. */
+  readonly providerReady?: boolean;
   /** Conversation prefix label (display name); defaults to "Subject". */
   readonly subjectLabel?: string;
   readonly model: string;
@@ -57,7 +73,8 @@ export const PRODUCT_CLI_HELP_LINES: readonly string[] = Object.freeze([
   "  /environment run deterministic environment interaction(s): /environment [count]",
   "  /time        advance explicit canonical ticks: /time <ticks>",
   "  /demo        run the bounded one-life acceptance scenario",
-  "  /diagnostics show provider stage status, latency and last failure (alias /provider)",
+  "  /config      show effective product configuration and where each value came from (read-only)",
+  "  /diagnostics show what happened during provider calls: stage status, latency, last failure (alias /provider)",
   "  /exit        finish the current turn, save, and quit",
   "Anything else is sent to the subject as a natural-language message."
 ]);
@@ -218,6 +235,10 @@ export class ProductCliSessionV0 {
     }
     if (command === "/demo") {
       await this.runDemo();
+      return { kind: "HANDLED" };
+    }
+    if (command === "/config") {
+      await this.printConfiguration();
       return { kind: "HANDLED" };
     }
     if (command === "/diagnostics" || command === "/provider") {
@@ -513,6 +534,30 @@ export class ProductCliSessionV0 {
     ].join(" ");
   }
 
+  /**
+   * Read-only effective product configuration (/config). Reports the SAME
+   * resolution the CLI uses (env → default) plus the persisted product subject
+   * config for identity; mutates nothing and never dumps the environment.
+   */
+  private async printConfiguration(): Promise<void> {
+    const configuration = this.deps.configuration;
+    if (configuration === undefined) {
+      this.deps.write("Configuration view is not available in this session.");
+      return;
+    }
+    for (const line of formatConfigurationLinesV0(configuration, {
+      subject_id: this.deps.host.subjectId(),
+      display_name: this.deps.host.displayName(),
+      status: this.deps.host.resolution() === "SUBJECT_RESTORED" ? "RESTORED" : "NEW",
+      durable_state: this.deps.subjectDurableState ?? "UNKNOWN",
+      identity: this.deps.subjectIdentity ?? { source: "PERSISTED_PRODUCT_CONFIG", origin: "subject-config.json" },
+      data_location: this.deps.host.storageLocation(),
+      provider_ready: this.deps.providerReady !== false
+    })) {
+      this.deps.write(line);
+    }
+  }
+
   /** Per-stage provider diagnostics (/diagnostics, /provider). Read-only. */
   private printDiagnostics(): void {
     const diagnostics = this.deps.diagnostics;
@@ -520,6 +565,7 @@ export class ProductCliSessionV0 {
       this.deps.write("Provider diagnostics are not configured in this session.");
       return;
     }
+    this.deps.write("What happened during provider calls; see /config for effective settings.");
     for (const line of diagnostics.formatLines()) this.deps.write(line);
     const last = this.lastTurnOutcome;
     if (last !== null) {

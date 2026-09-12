@@ -33,6 +33,8 @@ Start with `pnpm interactive` (see Run below), then use:
 | `/environment [count]` | run deterministic environment interaction(s) against the SAME subject |
 | `/time <ticks>` | advance explicit CANONICAL ticks (never seconds/minutes/hours) |
 | `/demo` | run the bounded one-life acceptance scenario |
+| `/config` | READ-ONLY effective product configuration: model, endpoint, timeout, data root, subject identity, and where each value came from |
+| `/diagnostics` | READ-ONLY provider stage status/latency/last failure (alias `/provider`) |
 | `/exit` | finish the current turn, verify no pending work, save, and quit |
 
 Anything else is sent to the subject as natural-language conversation.
@@ -112,33 +114,97 @@ This is identity configuration only: no persona/personality/belief/memory editor
 no backstory generation, and setup inputs never become Memory. The display name
 is immutable in V0 (no `/rename`).
 
+On a NEW subject the CLI prints a compact startup summary and short first-run
+guidance (checked provider readiness, where data will live, how to talk to the
+subject and how to inspect it). There is no multi-page wizard and no setup
+persistence beyond the subject config. A RESTORED subject prints the
+continuation status instead, so an existing life never looks like a fresh setup.
+
 Runtime/provider settings are application configuration, not subject identity:
-they remain environment variables.
+they remain environment variables, and `/config` shows the effective value and
+its source for each one.
 
-| Variable | Default | Meaning |
-|---|---|---|
-| `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Ollama endpoint |
-| `CHARACTEROS_MODEL` | `qwen3.5:9b` | chat model |
-| `CHARACTEROS_CONTEXT_WINDOW_TOKENS` | `8192` | total sequence budget (`num_ctx`) |
-| `CHARACTEROS_NUM_PREDICT` | `2048` | generation budget (`num_predict`) |
-| `CHARACTEROS_TIMEOUT_MS` | `120000` | per provider call timeout |
-| `CHARACTEROS_DATA_DIR` | `product/sandbox/.data` | local durable subject data |
-| `CHARACTEROS_SUBJECT_ID` | unset | explicit dev/automation override (must match persisted config in the same data root) |
-| `CHARACTEROS_DISPLAY_NAME` | unset | non-interactive creation display name |
-| `CHARACTEROS_DEBUG` | unset | `1` prints per-turn operational evidence |
+### Configuration (`/config`)
 
-Precedence: explicit env override → persisted subject config → first-run
-creation. An override that conflicts with the persisted subject in the same data
-root FAILS CLOSED (use a separate `CHARACTEROS_DATA_DIR` to run a different
-subject).
+`/config` is read-only and answers "what configuration is effective?":
+
+```text
+CharacterOS configuration (read-only)
+
+Subject
+  id: mira-14aa8fc5
+  name: Mira
+  status: RESTORED (continuing the same canonical subject)
+  durable state: PRESENT (a completed turn has been persisted)
+    source: PERSISTED_PRODUCT_CONFIG (subject-config.json)
+
+Provider
+  model: qwen3.5:9b
+    source: DEFAULT (built-in default)
+  endpoint: http://127.0.0.1:11434
+    source: DEFAULT (built-in default)
+  timeout: 120000 ms (120 s)
+    source: ENVIRONMENT (CHARACTEROS_TIMEOUT_MS)
+  readiness: READY (metadata preflight passed at startup)
+
+Storage
+  data root: D:\...\product\sandbox\.data
+    source: DEFAULT (built-in default (product/sandbox/.data))
+  contains:
+    - subject-config.json (product subject configuration)
+    - subject-<id>.snapshot.json (authoritative durable snapshot)
+    - subject-<id>.shared-subject.json (shared canonical subject source)
+    - subject-<id>.environment-<id>.checkpoint.json (context checkpoint sidecar)
+    - subject-<id>.interactions.jsonl (append-only operational log)
+
+/config is read-only and changes nothing. Use /diagnostics for what happened during provider calls.
+```
+
+Every effective setting is labeled with where it came from: `DEFAULT`,
+`ENVIRONMENT` (with the variable name), `PERSISTED_PRODUCT_CONFIG` (the file),
+or `DERIVED` (from another effective setting). `/config` is built from an
+explicit allow-list of known settings and never dumps the environment, so
+unrelated variables (API keys, tokens, credentials) cannot appear; endpoint
+credentials, if any, are redacted. `/config` changes no setting and no canonical
+subject state. To change the model, endpoint or timeout, set the corresponding
+environment variable and relaunch — there is no `/config set`, no model
+selector, and no second configuration authority.
+
+### Configuration table
+
+| Setting | How configured | Default | Meaning |
+|---|---|---|---|
+| model | `CHARACTEROS_MODEL` | `qwen3.5:9b` | chat model used by appraisal, cognition, language and adaptation |
+| provider endpoint | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | local Ollama endpoint |
+| provider timeout | `CHARACTEROS_TIMEOUT_MS` | `120000` | per model call timeout, in ms (positive integer) |
+| context window tokens | `CHARACTEROS_CONTEXT_WINDOW_TOKENS` | `8192` | total sequence budget (`num_ctx`) |
+| max output tokens | `CHARACTEROS_NUM_PREDICT` | `2048` | generation budget (`num_predict`) |
+| data root | `CHARACTEROS_DATA_DIR` | `product/sandbox/.data` | directory holding all durable subject files |
+| debug | `CHARACTEROS_DEBUG` | unset | `1` prints per-turn operational evidence |
+| disable adaptation | `CHARACTEROS_DISABLE_ADAPTATION` | unset | `1` disables the belief adaptation stage |
+| belief semantic model | `CHARACTEROS_BELIEF_SEMANTIC_MODEL` | effective model | model used by the belief semantic provider |
+| interval ticks | `CHARACTEROS_INTERVAL_TICKS` | `1` | canonical ticks between environment interactions |
+| subject id override | `CHARACTEROS_SUBJECT_ID` | unset | explicit dev/automation override (must match persisted config in the same data root) |
+| display name override | `CHARACTEROS_DISPLAY_NAME` | unset | non-interactive creation display name |
+| environment interactions | `CHARACTEROS_ENVIRONMENT_INTERACTIONS` | `4` | `environment` subcommand interaction count |
+
+Malformed numeric values (empty, non-numeric, zero, negative, fractional or
+overflow) FAIL CLOSED at startup with the setting name, the received value, the
+expected format and the source — values are never silently coerced. A malformed
+endpoint fails the same way. Precedence for subject identity is unchanged:
+explicit env override → persisted subject config → first-run creation. An
+override that conflicts with the persisted subject in the same data root FAILS
+CLOSED (use a separate `CHARACTEROS_DATA_DIR` to run a different subject).
 
 ## Commands
 
 ```
-/help     show help
-/status   show subject + runtime status (read-only)
-/memory   show recent durable lived memories (read-only)
-/exit     finish the current turn, verify no mandatory pending work, save, quit
+/help        show help
+/status      show subject + runtime status (read-only)
+/config      show effective product configuration and its sources (read-only)
+/diagnostics show provider stage status, latency and last failure (read-only)
+/memory      show recent durable lived memories (read-only)
+/exit        finish the current turn, verify no mandatory pending work, save, quit
 ```
 
 Anything else is sent to the subject as a natural-language message. Ctrl+C
@@ -179,7 +245,9 @@ Alice remembers 3 lived episodes:
 
 ## Where state lives
 
-Durable subject state is written to `product/sandbox/.data/`:
+The resolved data root is shown by the startup `Data:` line and by `/config`
+(together with where the path came from). By default durable subject state is
+written to `product/sandbox/.data/`:
 
 - `subject-config.json` — product subject configuration: schema version,
   `subject_id`, `display_name`, `identity_anchors`, and a `durable_state` marker.
@@ -187,11 +255,15 @@ Durable subject state is written to `product/sandbox/.data/`:
 - `subject-<id>.snapshot.json` — the authoritative durable snapshot (canonical
   subject state + Memory repository revisions/payloads + commit chain + ledgers),
   written atomically (temp file + rename) after every completed interaction.
+- `subject-<id>.shared-subject.json` — the ONE shared canonical subject source
+  used across contexts (human session, environment mode, explicit time advance).
+- `subject-<id>.environment-<id>.checkpoint.json` — the environment-context
+  checkpoint sidecar for deterministic environment continuation.
 - `subject-<id>.interactions.jsonl` — append-only operational evidence (turn
   index, directive, revision, provider token counts, finish reason). Optional;
   logging failures never break a conversation.
 
-All three are written atomically (temp file + rename). Storage paths derive only
+These are written atomically (temp file + rename). Storage paths derive only
 from the validated canonical `subject_id`, never from the display name.
 
 Failure handling: a malformed/unsupported config fails closed; a config whose
@@ -337,9 +409,10 @@ Every model-backed stage prints concise progress with bounded latency, e.g.:
   `CHARACTEROS_TIMEOUT_MS`. The product does not silently retry; the turn fails
   closed and the summary names the stage and the configured timeout.
 - **Ollama unavailable / model missing**: the CLI preflight fails fast with
-  "Provider unavailable." and the endpoint detail; at turn level the failure is
-  classified `PROVIDER_UNAVAILABLE` with the suggestion to check that Ollama is
-  running and the configured model is installed. The product never
+  either "Provider unavailable." (endpoint + detail + "Start Ollama locally,
+  then relaunch CharacterOS.") or "Model unavailable: `<model>`" (endpoint +
+  detail + install/pull guidance). At turn level the failure is classified
+  `PROVIDER_UNAVAILABLE` with the same suggestion. The product never
   auto-downloads a model or runs install commands.
 - **After a failed turn** the CLI prints which stage failed, whether persistence
   is `SAFE` (durable state unchanged) or `PARTIAL` (the failed turn — including
@@ -356,7 +429,29 @@ Every model-backed stage prints concise progress with bounded latency, e.g.:
   cognition, language, Belief, Personality or Relationship result exists, and no
   fallback constant is substituted.
 
+### Configuration and onboarding troubleshooting
+
+- **"Configuration is invalid."** — a malformed setting value. The message names
+  the setting, the received value, the expected format and the source (e.g.
+  `CHARACTEROS_TIMEOUT_MS=abc` → expected a positive integer in milliseconds).
+  Fix the value and relaunch; nothing is silently coerced.
+- **"Data directory is not usable."** — the data root could not be created or is
+  not writable. Fix the path or set `CHARACTEROS_DATA_DIR` to a writable
+  directory.
+- **"Provider unavailable." / "Model unavailable: …"** — see the actionable
+  guidance printed at startup; `/config` shows the effective endpoint and model
+  with their sources so you can confirm what is actually being used.
+- **"What is it actually using?"** — `/config` answers configuration questions
+  (model, endpoint, timeout, data root, subject identity and each value's
+  source); `/diagnostics` answers runtime questions (stage status, latency, last
+  failure). They are deliberately separate commands.
+- `/config` is read-only in V0: there is no `/config set`, no `/model switch`,
+  no multi-subject selector, and no cloud setup. Change settings with the
+  existing environment variables and relaunch.
+
 Honest limitations: no cloud fallback, no automatic model switching, no retry
 orchestration, no SLA, and no guaranteed model latency. Provider diagnostics are
 product/transport observability only; they are never persisted in canonical
-subject state and are not part of the subject's life.
+subject state and are not part of the subject's life. The configuration view is
+product metadata only: it is not persisted, not canonical, and not a second
+configuration authority.

@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `7b666b89781884c9f06e31655ec1d2f044d9ded9`（干净 baseline；本次 `CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0` 是其直接子提交）
+Last verified against commit: `a9ffc20382660e5a1ed70372c547120bb99c8841`（干净 baseline；本次 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0` 是其直接子提交）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
@@ -10,6 +10,16 @@ Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升�
 CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0` — 产品内只读有效配置与首跑引导（无第二配置权威、无 canonical 变更）。
+
+- C1–C8 PASS：`/config` 只读呈现 effective model / endpoint / timeout / data root / subject id+name，并为每个值标注来源（`ENVIRONMENT` 变量名 / `DEFAULT` / `PERSISTED_PRODUCT_CONFIG` / `DERIVED`）；输出由显式 allow-list 构造，不 dump 环境，endpoint 凭据打码；
+- 首跑输出紧凑 startup summary 与简短 actionable guidance；restored subject 呈现为「延续同一 subject」而非新建；provider READY 由已有 metadata preflight 得出（不额外生成）；
+- provider unavailable / model missing / data root 不可用分别给出明确可执行指引（含「绝不自动下载/安装 model」）；malformed 数值与 endpoint 在启动时 fail closed 并给出 setting / received / expected / source，不再静默强转；
+- `/config` 不改变任何设置或 canonical state；`/help` 同时列出 `/config` 与 `/diagnostics` 并交叉引用；README 含 prerequisites、配置表与 troubleshooting；
+- 判定 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_GREEN`；`CHARACTEROS_CORE_V1_PRODUCT_BASELINE` 保持 FROZEN。
+
+上一个产品里程碑：
 
 `CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0` — 产品层 provider 韧性/诊断（纯 observability，无 canonical 变更）。
 
@@ -33,6 +43,9 @@ belief / personality / relationship lived-evidence adaptation FROZEN / GREEN
 external structured observation ingress                       FROZEN / GREEN
 explicit canonical time advance                               FROZEN / GREEN
 environment + cross-context continuity                        FROZEN / GREEN
+CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0               FROZEN / GREEN
+CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0   FROZEN / GREEN
+CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0        FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
@@ -46,22 +59,22 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 2. 慢机器上单次 turn 需要 appraisal + cognition + language（+ lived-evidence adaptation）多次串行本地调用；已有 stage 进度与延迟，但无总量预算/预计耗时提示。
 3. 品牌-new subject 在第一个 lived event 之前没有 durable canonical state，因此 observe/time/environment 会先拒绝并给出提示。
 4. Personality/Belief/Relationships 仅在对应 adaptation provider 被配置且 lawful 改变后显示；否则 `ABSENT`（不伪造默认值）。
-5. 本地产品仍要求用户了解环境变量（model/endpoint/data dir/timeout）；无 in-product 配置查看/引导。
+5. 配置只读：`/config` 能查看 effective 值与来源，但修改 model/endpoint/timeout/data dir 仍需设置环境变量并重启（V0 明确不提供 `/config set`、不提供多 subject 选择）。
 6. 无 Need/Goal、无 action execution、无 wall-clock 自动时间、无 camera/audio 原生解释。
 
 ## NEXT EXACT SLICE
 
 只启动：
 
-`CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0`
+`CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0`
 
-问题边界：让用户无需预先了解环境变量即可安全使用本地产品：read-only 的 `/config`（显示 effective model / endpoint / timeout / data dir / subject id 与实际来源）、首次运行引导（何时需要 Ollama、model 缺失怎么办、数据位置在哪）、以及失败后的可操作指引；不得引入新 canonical state、配置持久化 authority、多 subject 或云依赖。
+问题边界：单次 turn 需要 appraisal + cognition + language（+ lived-evidence adaptation）多次串行本地调用，目前只有 per-stage 延迟，没有整轮的量级预期与调用计数；让用户在等待前就知道大概会发生几次调用、目前进行到第几步，且不改变任何 canonical semantics、不改变既有调用预算语义、不新增 retry/fallback/router。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
 ## DO NOT START
 
-- 自动开始 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0`：必须先确认其问题、边界与预算；
+- 自动开始 `CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0`：必须先确认其问题、边界与预算；
 - 多 subject / multi-agent / shared world / GUI / voice / camera / avatar / tools / autonomous task execution；
 - accounts / cloud sync / provider router / 自动模型切换 / 自动重试编排 / 云 fallback；
 - `/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型、personality/belief/relationship 编辑器；
