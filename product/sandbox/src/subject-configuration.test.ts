@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  CONVERSATION_COGNITION_SYSTEM_PROMPT_V1,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V2,
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportV0
@@ -48,7 +48,7 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v1",
+          schema_version: "conversation-cognition-proposal-v2",
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -64,7 +64,7 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
           communication_directive: {
             kind: mode() === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT"
           }
-        }),
+        , clarification_basis: (mode() === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
         model: "fake"
       } as ModelTransportResponseV0;
     }
@@ -293,7 +293,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     expect(recorderB.requests[0]?.messages[1]?.content ?? "").toContain("teal");
   });
 
-  it("provider prompt semantics are unchanged and the display name never enters the prompt", async () => {
+  it("provider prompt semantics carry the V2 authority contract and the display name never enters the prompt", async () => {
     const dir = makeTempDir();
     const config = buildSubjectConfigForCreationV0("Alice");
     const recorder: TransportRecorder = { requests: [] };
@@ -301,7 +301,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     await host.send("Hello there.");
     const request = recorder.requests[0];
     expect(request?.messages).toHaveLength(2);
-    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V1);
+    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V2);
     const userContent = request?.messages[1]?.content ?? "";
     expect(userContent).toContain(`[identity] subject_id="${config.subject_id}"`);
     expect(userContent).not.toContain("Alice");

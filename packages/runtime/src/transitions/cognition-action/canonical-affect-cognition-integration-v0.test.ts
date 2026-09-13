@@ -22,7 +22,6 @@ import { describe, expect, it } from "vitest";
 import {
   canonicalJsonString,
   createInMemorySubjectCoreFacadeForExplicitV4V0,
-  hashEnvelope,
   materializeSubjectStateV4V0,
   proposalFingerprint,
   validateSubjectState,
@@ -63,6 +62,7 @@ import { mintTrustedCanonicalHistoryBoundaryV4V0, type TrustedCanonicalHeadInput
 import { RuntimeCompositionRoot } from "../../composition/runtime-composition-root.js";
 import { ConversationTextResponseExecutorV1 } from "../conversation/conversation-text-response-executor-v1.js";
 import { buildLanguageRealizationInputV1 } from "../conversation/language-realization-input.js";
+import { deriveConversationCognitionProposalHashV2 } from "../conversation/conversation-cognition-proposal.js";
 import type { ModelTransportRequestV0, ModelTransportV0 } from "../../transports/model-transport.js";
 import type { CognitiveContextProjectionV2, CognitionProposalV0 } from "./types.js";
 
@@ -474,7 +474,7 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v1",
+          schema_version: "conversation-cognition-proposal-v2",
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -488,7 +488,7 @@ async function executeDownstreamProof(
             evidence_refs: []
           },
           communication_directive: { kind: "REALIZE_CURRENT_INTENT" }
-        })
+        , clarification_basis: String("REALIZE_CURRENT_INTENT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null })
       };
     }
   };
@@ -577,10 +577,11 @@ async function deterministicHandoffFromProjection(projection: CognitiveContextPr
     evidence_refs: []
   };
   const directive = { kind: "REALIZE_CURRENT_INTENT" as const };
-  const proposalHash = await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
-    schema_version: "conversation-cognition-proposal-v1",
+  const proposalHash = await deriveConversationCognitionProposalHashV2({
+    schema_version: "conversation-cognition-proposal-v2",
     cognition,
-    communication_directive: directive
+    communication_directive: directive,
+    clarification_basis: null
   });
   return buildLanguageRealizationInputV1({
     subject_id: projection.subject_id,
@@ -963,8 +964,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     const bindingB = resultB.language_input["cognition_proposal_binding"] as Record<string, unknown>;
     expect(bindingA["current_intent"]).toBe(resultA.cognition_intent);
     expect(bindingB["current_intent"]).toBe(resultB.cognition_intent);
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v2");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v2");
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v3");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v3");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("canonical_affect");
       expect(input).not.toHaveProperty("affect_channels");
@@ -993,7 +994,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     const binding = result.language_input["cognition_proposal_binding"] as Record<string, unknown>;
     expect(result.cognition_intent).toBeNull();
     expect(binding["current_intent"]).toBeNull();
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v2");
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v3");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1009,7 +1010,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v1",
+            schema_version: "conversation-cognition-proposal-v2",
             cognition: {
               schema_version: "cognition-proposal-v0",
               projection_hash: projectionHash,
@@ -1023,7 +1024,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
               evidence_refs: []
             },
             communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
-          })
+          , clarification_basis: String("CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null })
         };
       }
     };

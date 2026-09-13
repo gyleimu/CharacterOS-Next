@@ -23,7 +23,7 @@ import {
 } from "../../../packages/runtime/dist/providers/behavior/language-realization-provider.js";
 import {
   buildLanguageRealizationInputV1,
-  type LanguageRealizationInputV2
+  type LanguageRealizationInputV3
 } from "../../../packages/runtime/dist/transitions/conversation/language-realization-input.js";
 import {
   allowedEvidenceSet,
@@ -108,7 +108,7 @@ export interface LanguageStageRecord {
   readonly settings: Record<string, unknown>;
   readonly input_schema_version: string | null;
   readonly input_hash: string | null;
-  readonly input: LanguageRealizationInputV2 | null;
+  readonly input: LanguageRealizationInputV3 | null;
   readonly cognition_current_intent: string | null;
   readonly language_current_intent: string | null;
   readonly exact_intent_binding: boolean | null;
@@ -482,7 +482,7 @@ export async function executePostCognitionStage(
   check(conversation !== null && cognition !== null, "validated cognition checkpoint missing");
   const directive = conversation["communication_directive"] as { readonly kind: string };
   const proposalHash = await hashEnvelope(
-    "characteros-next/runtime/conversation-cognition-proposal/v1",
+    "characteros-next/runtime/conversation-cognition-proposal/v2",
     conversation
   );
   const projection = item.cell.provider_inputs[item.arm];
@@ -520,7 +520,7 @@ export async function executePostCognitionStage(
     communication_directive: directive,
     memory_episode_contents: []
   });
-  if (!builtInput.ok || builtInput.input.schema_version !== "language-realization-input-v2") {
+  if (!builtInput.ok || builtInput.input.schema_version !== "language-realization-input-v3") {
     const detail = builtInput.ok ? "V2 language input required" : builtInput.detail;
     return finalRecord(inflight, {
       ...noLanguage("NOT_REACHED"),

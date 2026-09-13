@@ -310,11 +310,12 @@ async function auditLanguageBinding(
   const intended = `Respond to the current ${scenario.scenario_id} situation using the validated facts.`;
   const cognitionCapture = await captureConversationInput(projection, intended);
   const proposalHash = await hashEnvelope(
-    "characteros-next/runtime/conversation-cognition-proposal/v1",
+    "characteros-next/runtime/conversation-cognition-proposal/v2",
     {
-      schema_version: "conversation-cognition-proposal-v1",
+      schema_version: "conversation-cognition-proposal-v2",
       cognition: cognitionCapture.cognition,
-      communication_directive: cognitionCapture.directive
+      communication_directive: cognitionCapture.directive,
+      clarification_basis: null
     }
   );
   const built = await buildLanguageRealizationInputV1({
@@ -361,7 +362,7 @@ async function auditLanguageBinding(
   const forbidden = ["canonical_affect", "valence", "activation", "affect_channels", "mood_baseline", "reasoning_summary"]
     .filter((key) => Object.prototype.hasOwnProperty.call(input, key));
   check(binding["current_intent"] === cognitionCapture.cognition.current_intent, `${scenario.scenario_id}/${arm}: intent handoff mismatch`);
-  check(input["schema_version"] === "language-realization-input-v2", `${scenario.scenario_id}/${arm}: V2 required`);
+  check(input["schema_version"] === "language-realization-input-v3", `${scenario.scenario_id}/${arm}: V2 required`);
   check(forbidden.length === 0, `${scenario.scenario_id}/${arm}: forbidden language fields ${forbidden.join(",")}`);
   return {
     scenario_id: scenario.scenario_id,

@@ -4,7 +4,6 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { hashEnvelope } from "@characteros-next/subject-core";
 import type { ModelTransportV0 } from "../../transports/model-transport.js";
 import { LanguageRealizationProviderV0 } from "../../providers/behavior/language-realization-provider.js";
 import type { CognitiveContextProjectionV2, CognitionProposalV0 } from "../cognition-action/types.js";
@@ -12,6 +11,7 @@ import {
   buildLanguageRealizationInputV1,
   validateLanguageRealizationInputAnyVersion
 } from "./language-realization-input.js";
+import { deriveConversationCognitionProposalHashV2 } from "./conversation-cognition-proposal.js";
 
 const HASH_A = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const HASH_B = "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
@@ -67,14 +67,12 @@ function cognition(currentIntent: string | null, projectionHash = HASH_A): Cogni
 async function build(currentIntent: string | null, projectionValue = projection()) {
   const cognitionValue = cognition(currentIntent, projectionValue.projection_hash);
   const directive = { kind: "REALIZE_CURRENT_INTENT" as const };
-  const proposalHash = await hashEnvelope(
-    "characteros-next/runtime/conversation-cognition-proposal/v1",
-    {
-      schema_version: "conversation-cognition-proposal-v1",
-      cognition: cognitionValue,
-      communication_directive: directive
-    }
-  );
+  const proposalHash = await deriveConversationCognitionProposalHashV2({
+    schema_version: "conversation-cognition-proposal-v2",
+    cognition: cognitionValue,
+    communication_directive: directive,
+    clarification_basis: null
+  });
   return buildLanguageRealizationInputV1({
     subject_id: projectionValue.subject_id,
     source_revision: projectionValue.state_revision,
@@ -95,7 +93,7 @@ describe("LanguageRealizationInputV2 handoff", () => {
     expect(second.ok).toBe(true);
     if (!first.ok || !second.ok) return;
 
-    expect(first.input.schema_version).toBe("language-realization-input-v2");
+    expect(first.input.schema_version).toBe("language-realization-input-v3");
     expect(first.input.cognition_proposal_binding.current_intent).toBe("answer directly and warmly");
     expect(first.input_hash).not.toBe(second.input_hash);
     expect(Object.isFrozen(first.input)).toBe(true);
@@ -145,14 +143,12 @@ describe("LanguageRealizationInputV2 handoff", () => {
     const projectionValue = projection();
     const validCognition = cognition("validated");
     const directive = { kind: "REALIZE_CURRENT_INTENT" as const };
-    const proposalHash = await hashEnvelope(
-      "characteros-next/runtime/conversation-cognition-proposal/v1",
-      {
-        schema_version: "conversation-cognition-proposal-v1",
-        cognition: validCognition,
-        communication_directive: directive
-      }
-    );
+    const proposalHash = await deriveConversationCognitionProposalHashV2({
+      schema_version: "conversation-cognition-proposal-v2",
+      cognition: validCognition,
+      communication_directive: directive,
+      clarification_basis: null
+    });
     const base = {
       subject_id: projectionValue.subject_id,
       source_revision: projectionValue.state_revision,

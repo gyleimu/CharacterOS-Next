@@ -107,7 +107,7 @@ function cognitionTransport(clock: Clock, recorder: Recorder, mode: CognitionMod
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v1",
+          schema_version: "conversation-cognition-proposal-v2",
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -123,7 +123,7 @@ function cognitionTransport(clock: Clock, recorder: Recorder, mode: CognitionMod
           communication_directive: {
             kind: mode === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT"
           }
-        }),
+        , clarification_basis: String(mode === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
         model: "fake"
       } as ModelTransportResponseV0;
     }

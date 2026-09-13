@@ -109,7 +109,7 @@ function fakeCognitionTransport(mode: () => Mode, recorder: TransportRecorder): 
       const selected = mode();
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v1",
+          schema_version: "conversation-cognition-proposal-v2",
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -125,7 +125,7 @@ function fakeCognitionTransport(mode: () => Mode, recorder: TransportRecorder): 
           communication_directive: {
             kind: selected === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT"
           }
-        }),
+        , clarification_basis: String(selected === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
         model: "fake"
       } as ModelTransportResponseV0;
     }

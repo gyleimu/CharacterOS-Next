@@ -352,7 +352,7 @@ async function verifyCollectionIntegrity(output: string): Promise<Record<string,
     check(equal(trial.canonical_affect, planned.cell.provider_inputs[planned.arm].canonical_affect), `${trial.trial_id}: canonical Affect mismatch`);
     check(trial.current_event_hash === hashJson(planned.cell.scenario.current_factual_event), `${trial.trial_id}: current factual event mismatch`);
     if (trial.language.input !== null) {
-      check(trial.language.input_schema_version === "language-realization-input-v2", `${trial.trial_id}: V2 language input required`);
+      check(trial.language.input_schema_version === "language-realization-input-v3", `${trial.trial_id}: V2 language input required`);
       check(trial.language.exact_intent_binding === true, `${trial.trial_id}: current_intent binding failed`);
       check(trial.language.cognition_current_intent === trial.language.language_current_intent, `${trial.trial_id}: current_intent changed between stages`);
       const serialized = canonicalJson(trial.language.input);

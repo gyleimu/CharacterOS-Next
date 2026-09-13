@@ -36,6 +36,7 @@ import type {
   CognitionProposalV0
 } from "../cognition-action/types.js";
 import { validateCognitionProposal } from "../cognition-action/types.js";
+import { CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V2 } from "./conversation-cognition-proposal.js";
 
 export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V0 =
   "language-realization-input-v0" as const;
@@ -43,6 +44,13 @@ export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V1 =
   "language-realization-input-v1" as const;
 export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V2 =
   "language-realization-input-v2" as const;
+/**
+ * AFFECT_COGNITION_AUTHORITY_CONTRACT_AND_REVALIDATION_V0 — V3 binds the V2
+ * conversation proposal (including `clarification_basis: null` on REALIZE).
+ * V0/V1/V2 remain frozen and independently valid.
+ */
+export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3 =
+  "language-realization-input-v3" as const;
 
 export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V0 =
   "characteros-next/runtime/language-realization-input/v1" as const;
@@ -51,6 +59,8 @@ export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V1 =
   "characteros-next/runtime/language-realization-input-v1/v1" as const;
 export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V2 =
   "characteros-next/runtime/language-realization-input-v2/v1" as const;
+export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V3 =
+  "characteros-next/runtime/language-realization-input-v3/v1" as const;
 
 /** Validated episode content resolved through the trusted Memory reader. */
 export interface LanguageEpisodeContentV0 {
@@ -76,6 +86,18 @@ export interface LanguageCommunicationBindingV0 {
   readonly schema_version: "conversation-cognition-proposal-v1";
   readonly proposal_hash: HashV1;
   readonly directive: { readonly kind: "REALIZE_CURRENT_INTENT" };
+}
+
+/**
+ * V2 conversation binding: the language stage accepts ONLY a REALIZE V2
+ * proposal, whose clarification basis is structurally null. A V1 hash can never
+ * satisfy this binding, and a modified basis changes the bound proposal hash.
+ */
+export interface LanguageCommunicationBindingV2 {
+  readonly schema_version: "conversation-cognition-proposal-v2";
+  readonly proposal_hash: HashV1;
+  readonly directive: { readonly kind: "REALIZE_CURRENT_INTENT" };
+  readonly clarification_basis: null;
 }
 
 interface LanguageRealizationInputCommonV0 {
@@ -137,10 +159,21 @@ export interface LanguageRealizationInputV2 extends LanguageRealizationInputComm
   readonly communication_binding: LanguageCommunicationBindingV0;
 }
 
+/**
+ * Canonical v4 handoff bound to the V2 conversation proposal. Still carries no
+ * raw Affect: Affect reaches language only through the validated cognition
+ * result.
+ */
+export interface LanguageRealizationInputV3 extends LanguageRealizationInputCommonV0 {
+  readonly schema_version: typeof LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3;
+  readonly communication_binding: LanguageCommunicationBindingV2;
+}
+
 export type LanguageRealizationInputAnyVersion =
   | LanguageRealizationInputV0
   | LanguageRealizationInputV1
-  | LanguageRealizationInputV2;
+  | LanguageRealizationInputV2
+  | LanguageRealizationInputV3;
 
 export interface BuildLanguageRealizationInputV1Request {
   readonly subject_id: IdentifierV0;
@@ -157,7 +190,10 @@ export interface BuildLanguageRealizationInputV1Request {
 export type BuildLanguageRealizationInputV1Result =
   | {
       readonly ok: true;
-      readonly input: LanguageRealizationInputV1 | LanguageRealizationInputV2;
+      readonly input:
+        | LanguageRealizationInputV1
+        | LanguageRealizationInputV2
+        | LanguageRealizationInputV3;
       readonly input_hash: HashV1;
     }
   | { readonly ok: false; readonly detail: string };
@@ -381,6 +417,32 @@ function validateCommunicationBinding(value: unknown): string | null {
   return null;
 }
 
+function validateCommunicationBindingV2(value: unknown): string | null {
+  if (!isRecord(value)) return "language input.communication_binding: expected object";
+  const keys = exactKeys(
+    value,
+    ["schema_version", "proposal_hash", "directive", "clarification_basis"],
+    "language input.communication_binding"
+  );
+  if (keys !== null) return keys;
+  if (value["schema_version"] !== "conversation-cognition-proposal-v2") {
+    return "language input.communication_binding.schema_version: unsupported schema";
+  }
+  const proposalHash = validateHash(
+    value["proposal_hash"] as string,
+    "language input.communication_binding.proposal_hash"
+  );
+  if (!proposalHash.ok) return proposalHash.error.detail;
+  const directive = validateCommunicationDirectiveV0(value["directive"]);
+  if (!directive.ok || directive.directive.kind !== "REALIZE_CURRENT_INTENT") {
+    return "language input.communication_binding.directive: REALIZE_CURRENT_INTENT required";
+  }
+  if (value["clarification_basis"] !== null) {
+    return "language input.communication_binding.clarification_basis: must be null for REALIZE";
+  }
+  return null;
+}
+
 /** Closed, version-dispatched validation. Unknown or mixed schemas fail. */
 export function validateLanguageRealizationInputAnyVersion(
   value: unknown
@@ -392,7 +454,8 @@ export function validateLanguageRealizationInputAnyVersion(
       ? LEGACY_KEYS
       : schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V1
         ? STRUCTURED_LEGACY_KEYS
-        : schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V2
+        : schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V2 ||
+            schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3
           ? CANONICAL_KEYS
           : null;
   if (expected === null) {
@@ -415,6 +478,10 @@ export function validateLanguageRealizationInputAnyVersion(
     const communicationFailure = validateCommunicationBinding(value["communication_binding"]);
     if (communicationFailure !== null) return { ok: false, detail: communicationFailure };
   }
+  if (schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3) {
+    const communicationFailure = validateCommunicationBindingV2(value["communication_binding"]);
+    if (communicationFailure !== null) return { ok: false, detail: communicationFailure };
+  }
   if (
     schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V1 &&
     (value["cognition_proposal_binding"] as Record<string, unknown>)["current_intent"] !== null
@@ -434,7 +501,10 @@ export async function deriveLanguageRealizationInputHashAnyVersion(
   if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V1) {
     return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V1, input);
   }
-  return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V2, input);
+  if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V2) {
+    return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V2, input);
+  }
+  return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V3, input);
 }
 
 /** Frozen V0 compatibility helper. */
@@ -490,14 +560,19 @@ export async function buildLanguageRealizationInputV1(
     "conversation cognition proposal hash"
   );
   if (!proposalHashCheck.ok) return { ok: false, detail: proposalHashCheck.error.detail };
-  const expectedProposalHash = await hashEnvelope(
-    "characteros-next/runtime/conversation-cognition-proposal/v1",
-    {
-      schema_version: "conversation-cognition-proposal-v1",
-      cognition,
-      communication_directive: directiveCheck.directive
-    }
-  );
+  const isV2Conversation = request.projection.schema_version === "cognitive-context-projection-v2";
+  const expectedProposalHash = isV2Conversation
+    ? await hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V2, {
+        schema_version: "conversation-cognition-proposal-v2",
+        cognition,
+        communication_directive: directiveCheck.directive,
+        clarification_basis: null
+      })
+    : await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
+        schema_version: "conversation-cognition-proposal-v1",
+        cognition,
+        communication_directive: directiveCheck.directive
+      });
   if (expectedProposalHash !== proposalHashCheck.value) {
     return { ok: false, detail: "conversation cognition proposal hash mismatch" };
   }
@@ -514,15 +589,7 @@ export async function buildLanguageRealizationInputV1(
     cognition_proposal_binding: {
       schema_version: "cognition-proposal-v0" as const,
       projection_hash: request.projection.projection_hash,
-      current_intent:
-        request.projection.schema_version === "cognitive-context-projection-v2"
-          ? cognition.current_intent
-          : null
-    },
-    communication_binding: {
-      schema_version: "conversation-cognition-proposal-v1" as const,
-      proposal_hash: proposalHashCheck.value,
-      directive: { kind: "REALIZE_CURRENT_INTENT" as const }
+      current_intent: isV2Conversation ? cognition.current_intent : null
     },
     scene: request.projection.context.scene,
     task: request.projection.context.task,
@@ -546,15 +613,26 @@ export async function buildLanguageRealizationInputV1(
     }
   };
 
-  const input: LanguageRealizationInputV1 | LanguageRealizationInputV2 =
-    request.projection.schema_version === "cognitive-context-projection-v2"
+  const input: LanguageRealizationInputV1 | LanguageRealizationInputV2 | LanguageRealizationInputV3 =
+    isV2Conversation
       ? {
-          schema_version: LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V2,
-          ...common
+          schema_version: LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3,
+          ...common,
+          communication_binding: {
+            schema_version: "conversation-cognition-proposal-v2" as const,
+            proposal_hash: proposalHashCheck.value,
+            directive: { kind: "REALIZE_CURRENT_INTENT" as const },
+            clarification_basis: null
+          }
         }
       : {
           schema_version: LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V1,
           ...common,
+          communication_binding: {
+            schema_version: "conversation-cognition-proposal-v1" as const,
+            proposal_hash: proposalHashCheck.value,
+            directive: { kind: "REALIZE_CURRENT_INTENT" as const }
+          },
           affect_channels: [...request.projection.affect_channels],
           mood_baseline: request.projection.mood_baseline
         };

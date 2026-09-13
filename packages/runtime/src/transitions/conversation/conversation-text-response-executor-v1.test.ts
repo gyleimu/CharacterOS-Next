@@ -62,7 +62,7 @@ function seedState(): SubjectStateV0 {
     context: {
       scene: `Alice says: "Can you help me revise that update in the usual way?"`,
       task: "revise the update", focus_refs: [], active_entity_refs: ["entity:alice"] as never,
-      environment_refs: [], current_observation_ref: null
+      environment_refs: [], current_observation_ref: "observation:o-executor-test-1" as never
     },
     mechanism_config: { affect_profile: { profile_id: "FAST_EMA_V0", timebase: "legacy_tick" }, legacy_reference_defaults: { tHold: 60, alpha: 0.06, tau: 150, clamp: 0.25 }, feature_flags: {}, thresholds: {} },
     trace_window: { trace_window_schema_version: "trace-window-v1", capacity: 64, cursor: { last_history_sequence: 0, offloaded_through_sequence: 0, offloaded_through_trace_ref: null }, entries: [] },
@@ -73,10 +73,11 @@ function seedState(): SubjectStateV0 {
 function conversationProposalJson(
   projectionHash: string,
   directive: string,
-  currentIntent: string | null = "respond to the current request"
+  currentIntent: string | null = "respond to the current request",
+  observationRef: string | null = null
 ): string {
   return JSON.stringify({
-    schema_version: "conversation-cognition-proposal-v1",
+    schema_version: "conversation-cognition-proposal-v2",
     cognition: {
       schema_version: "cognition-proposal-v0",
       projection_hash: projectionHash,
@@ -89,7 +90,15 @@ function conversationProposalJson(
       action_intent: null,
       evidence_refs: []
     },
-    communication_directive: { kind: directive }
+    communication_directive: { kind: directive },
+    clarification_basis:
+      directive === "CLARIFY_MISSING_CONTEXT"
+        ? {
+            current_observation_ref: observationRef,
+            missing_information: "the specific unresolved detail",
+            needed_for: "completing the current response"
+          }
+        : null
   });
 }
 
@@ -106,8 +115,9 @@ function fakeConversationTransport(projectionHashGetter: () => string, directive
         requests.push(request);
         const userContent = request.messages.find((m: { role: string }) => m.role === "user")?.content ?? "";
         const hashMatch = /\[projection_hash\] (sha256:[0-9a-f]{64})/.exec(userContent);
+        const observationRef = /^\[current observation\] (\S+)$/m.exec(userContent)?.[1] ?? null;
         return {
-          content: conversationProposalJson(hashMatch?.[1] ?? projectionHashGetter(), directive, intent),
+          content: conversationProposalJson(hashMatch?.[1] ?? projectionHashGetter(), directive, intent, observationRef),
           model: "fake-conversation-cognition"
         };
       }

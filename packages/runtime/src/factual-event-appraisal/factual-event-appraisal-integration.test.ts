@@ -738,7 +738,7 @@ describe("PRE_COGNITION order matrix (§64) — governed V1 conversation path", 
         const hashMatch = /\[projection_hash\] (sha256:[0-9a-f]{64})/.exec(userContent);
         return {
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v1",
+            schema_version: "conversation-cognition-proposal-v2",
             cognition: {
               schema_version: "cognition-proposal-v0",
               projection_hash: hashMatch?.[1] ?? "sha256:" + "0".repeat(64),
@@ -751,7 +751,12 @@ describe("PRE_COGNITION order matrix (§64) — governed V1 conversation path", 
               action_intent: null,
               evidence_refs: []
             },
-            communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
+            communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" },
+            clarification_basis: {
+              current_observation_ref: /^\[current observation\] (\S+)$/m.exec(userContent)?.[1] ?? "",
+              missing_information: "the specific unresolved detail",
+              needed_for: "completing the current response"
+            }
           }),
           model: "fake-conversation-cognition"
         };

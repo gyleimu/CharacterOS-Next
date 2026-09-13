@@ -26,7 +26,11 @@ import { computeRepositoryRevisionHash } from "@characteros-next/memory";
 import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/factual-event-appraisal-executor.js";
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
-import { ConversationCognitionProviderV1 } from "../../providers/behavior/conversation-cognition-provider.js";
+import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
+import {
+  deriveConversationCognitionProposalHashV2,
+  type ClarificationBasisV0
+} from "./conversation-cognition-proposal.js";
 import { buildLanguageRealizationInputV1, type LanguageEpisodeContentV0 } from "./language-realization-input.js";
 
 export const CONVERSATION_TEXT_RESPONSE_EXECUTOR_V1_SCHEMA_VERSION =
@@ -44,6 +48,15 @@ export interface ConversationResponseTraceV1 {
   };
   readonly communication_directive_kind: string;
   readonly conversation_cognition_proposal_hash: string;
+  /**
+   * AFFECT_COGNITION_AUTHORITY_CONTRACT_AND_REVALIDATION_V0 — protocol lineage.
+   * V2 is the Family C contract: CLARIFY carries a structural basis, REALIZE
+   * requires exactly `clarification_basis: null`.
+   */
+  readonly conversation_proposal_schema_version?:
+    | "conversation-cognition-proposal-v1"
+    | "conversation-cognition-proposal-v2";
+  readonly clarification_basis?: ClarificationBasisV0 | null;
   readonly cognition_projection_hash: string;
   readonly realization_input_hash: string;
   readonly realization_source: RealizationSourceV0;
@@ -152,8 +165,8 @@ export class ConversationTextResponseExecutorV1 {
       } as unknown as RuntimeContext;
     })());
 
-    // ---- shared cognition pipeline with ConversationCognitionProviderV1 -----------
-    const conversationProvider = new ConversationCognitionProviderV1(conversationTransport);
+    // ---- shared cognition pipeline with ConversationCognitionProviderV2 -----------
+    const conversationProvider = new ConversationCognitionProviderV2(conversationTransport);
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = await conversationProvider.propose(projection);
@@ -220,24 +233,44 @@ export class ConversationTextResponseExecutorV1 {
     }
 
     // ---- directive branching (from validated conversation cognition) ---------------
+    const conversationProposal = conversationProvider.lastConversationProposal;
     const lastDirective = conversationProvider.lastDirective;
-    if (lastDirective === null) {
+    if (lastDirective === null || conversationProposal === null) {
       // Unreachable after a successful propose(): preserve the historical
       // TypeError-on-violation instead of continuing with a null directive.
       throw new TypeError("conversation cognition directive missing after successful cognition");
     }
     const directive: CommunicationDirectiveV0 = lastDirective;
+    const clarificationBasis = conversationProposal.clarification_basis;
     const evidenceProjection = cognitionResult.projection;
-    const conversationProposalHash = await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
-      schema_version: "conversation-cognition-proposal-v1",
-      cognition: cognitionResult.cognition,
-      communication_directive: directive
-    });
+    // Version-appropriate protocol hash domain. The v4 canonical surface binds
+    // the V2 proposal (cognition + directive + clarification_basis, explicitly
+    // null for REALIZE); the frozen v3 surface keeps its historical V1 domain
+    // and null-intent language handoff.
+    const isV2Projection = evidenceProjection.schema_version === "cognitive-context-projection-v2";
+    const conversationProposalHash = isV2Projection
+      ? await deriveConversationCognitionProposalHashV2({
+          schema_version: "conversation-cognition-proposal-v2",
+          cognition: cognitionResult.cognition,
+          communication_directive: directive,
+          clarification_basis: clarificationBasis
+        })
+      : await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
+          schema_version: "conversation-cognition-proposal-v1",
+          cognition: cognitionResult.cognition,
+          communication_directive: directive
+        });
+    const proposalSchemaVersion = isV2Projection
+      ? ("conversation-cognition-proposal-v2" as const)
+      : ("conversation-cognition-proposal-v1" as const);
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
-      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, factualAppraisalTrace);
+      if (clarificationBasis === null) {
+        return failed("COGNITION_FAILED", "CLARIFY without a lawful clarification basis");
+      }
+      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, proposalSchemaVersion, clarificationBasis, factualAppraisalTrace);
     }
-    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, cognitionResult.cognition, conversationProposalHash, directive, lawfulEvidence(evidenceProjection), factualAppraisalTrace);
+    return this.realizeBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, cognitionResult.cognition, conversationProposalHash, proposalSchemaVersion, directive, lawfulEvidence(evidenceProjection), factualAppraisalTrace);
   }
 
   private async clarifyBranch(
@@ -246,6 +279,8 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2",
+    clarificationBasis: ClarificationBasisV0,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
     const built = await buildClarificationBehaviorV0({
@@ -278,6 +313,8 @@ export class ConversationTextResponseExecutorV1 {
         ...(factualAppraisalTrace !== undefined ? { factual_appraisal: factualAppraisalTrace } : {}),
         communication_directive_kind: "CLARIFY_MISSING_CONTEXT",
         conversation_cognition_proposal_hash: conversationProposalHash,
+        conversation_proposal_schema_version: proposalSchemaVersion,
+        clarification_basis: clarificationBasis,
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "HOST_CLARIFICATION_V0"
@@ -292,6 +329,7 @@ export class ConversationTextResponseExecutorV1 {
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     cognition: CognitionProposalV0,
     conversationProposalHash: string,
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2",
     directive: CommunicationDirectiveV0,
     lawfulEvidence: ReadonlySet<string>,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
@@ -369,6 +407,8 @@ export class ConversationTextResponseExecutorV1 {
         ...(factualAppraisalTrace !== undefined ? { factual_appraisal: factualAppraisalTrace } : {}),
         communication_directive_kind: "REALIZE_CURRENT_INTENT",
         conversation_cognition_proposal_hash: conversationProposalHash,
+        conversation_proposal_schema_version: proposalSchemaVersion,
+        clarification_basis: null,
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "LANGUAGE_PROVIDER_V0"

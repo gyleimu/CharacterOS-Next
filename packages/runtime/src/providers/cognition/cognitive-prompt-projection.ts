@@ -156,7 +156,7 @@ export function renderCognitiveSubjectData(
     "SUBJECT STATE (read-only context; values here may influence reasoning but are NOT automatically citeable refs):",
     `[identity] subject_id="${projection.subject_id}"`,
     `[current state] logical_time=${projection.current_logical_time} state_revision=${projection.state_revision}`,
-    `[context] scene="${projection.context.scene}" task=${projection.context.task === null ? "(none)" : `"${projection.context.task}"`}`,
+    `[context] scene=${JSON.stringify(projection.context.scene)} task=${projection.context.task === null ? "(none)" : JSON.stringify(projection.context.task)}`,
     `[current observation] ${projection.context.current_observation_ref ?? "(none)"}`,
     `[focus refs]\n${renderRefList(projection.context.focus_refs, "  ")}`,
     `[active entity refs]\n${renderRefList(projection.context.active_entity_refs, "  ")}`,

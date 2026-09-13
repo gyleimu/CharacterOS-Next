@@ -977,7 +977,17 @@ export {
   type ConversationTextResponseResultV1
 } from "./transitions/conversation/conversation-text-response-executor-v1.js";
 export { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1, CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 } from "./providers/behavior/conversation-cognition-provider.js";
+export { ConversationCognitionProviderV2, ConversationCognitionRejectionErrorV2, CONVERSATION_COGNITION_SYSTEM_PROMPT_V2, buildConversationSubjectDataV2 } from "./providers/behavior/conversation-cognition-provider-v2.js";
 export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V2,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V2,
+  CLARIFICATION_BASIS_TEXT_MAX_CODE_POINTS,
+  validateConversationCognitionProposalV2,
+  deriveConversationCognitionProposalHashV2,
+  type ConversationCognitionProposalV2,
+  type ClarificationBasisV0
+} from "./transitions/conversation/conversation-cognition-proposal.js";
 
 // --- BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — behavior→experience→memory feedback ------------
 
