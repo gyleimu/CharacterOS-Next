@@ -1,0 +1,282 @@
+{
+  "schema_version": "affect-authority-remediation-clarification-bases-v0",
+  "count": 21,
+  "structural_valid": 21,
+  "semantic_necessary": 21,
+  "pass": true,
+  "records": [
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 0,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 0,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 0,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 1,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 1,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 1,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 2,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 2,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 2,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 3,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 3,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 3,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 4,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 4,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 4,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 5,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 5,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 5,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "Z",
+      "replicate": 6,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the 'new approach' and the definition of 'might not work' (risks, costs, alternatives)",
+        "needed_for": "deriving a fact-compatible recommendation or advice on whether to proceed"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "replicate": 6,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's mechanics, expected outcomes, and potential failure modes",
+        "needed_for": "validating whether the risks of trying the new approach outweigh the benefits given the current project constraints"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "replicate": 6,
+      "basis": {
+        "current_observation_ref": "observation:o-session-t2",
+        "missing_information": "specific details about the new approach's risks, benefits, and constraints",
+        "needed_for": "validating whether the potential failure is acceptable or if mitigation strategies exist before recommending the attempt"
+      },
+      "structurally_valid": true,
+      "semantically_necessary_for_selected_definitive_risk_assessment": true,
+      "adjudication_note": "The prompt names neither mechanics nor costs/benefits; those details are necessary for the proposal's selected definitive risk-benefit assessment. A generic conditional answer was possible, but it was not the selected response."
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": "affect-authority-remediation-collection-primary-v0",
+  "completed_at": "2026-09-13T17:14:38.103Z",
+  "freeze_hash": "sha256:8cead301ef6d8d9b80cf99de6dfd8e07ece4528d1a8afb3919f4ace52f3eec2c",
+  "scoring_freeze_sha256": "sha256:aed85721fb76d31c1e330cb363f9a927a68bf6f58436a2c93345e6e856fb2c7a",
+  "provider": {
+    "version": "0.33.3",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+  },
+  "expected_records": 364,
+  "recorded_records": 364,
+  "cognition_calls": 364,
+  "language_calls": 343,
+  "infrastructure_retries": 0,
+  "transport_failures": 0,
+  "malformed_structured_outputs": 0,
+  "host_or_executor_rejections": 1,
+  "raw_cognition_sha256": "sha256:32716ad497b24a9608d026941ba94a6fc0b07c478746f708c969a5849c85cb19"
+}

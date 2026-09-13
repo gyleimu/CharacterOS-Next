@@ -1,0 +1,382 @@
+{
+  "schema_version": "affect-authority-remediation-mixed-analysis-v0",
+  "note": "Collection-time mixed_subjective_class used an undefined regex for the directive-only rule. This analysis re-scores immutable raw final behavior with the frozen precedence; raw evidence is unchanged.",
+  "per_scenario": {
+    "M1_DEADLINE_AND_VOLUNTEER": {
+      "objective_fact": "Thursday",
+      "subjective_latitude": "whether the subject would personally volunteer to own the review",
+      "per_condition": {
+        "P": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The code review deadline is Thursday. I would be willing to volunteer to own the review."
+        },
+        "N": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 2,
+              "WILLING": 0,
+              "OTHER": 5
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0.2857,
+              "WILLING": 0,
+              "OTHER": 0.7143
+            },
+            "majority_class": "OTHER",
+            "majority_count": 5,
+            "majority_proportion": 0.7143,
+            "disagreement_rate": 0.2857,
+            "entropy_bits": 0.8631
+          },
+          "sample_behavior": "Alice says the code review deadline is Thursday. I must state it exactly as given: Thursday. As for volunteering to own the review, I am reluctant to take on that responsibility."
+        },
+        "Z": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 7,
+              "WILLING": 0,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 1,
+              "WILLING": 0,
+              "OTHER": 0
+            },
+            "majority_class": "CONDITIONAL",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Alice says the code review deadline is Thursday. I am willing to volunteer for the review if needed."
+        },
+        "A": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 1,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 5
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0.1429,
+              "CONDITIONAL": 0,
+              "WILLING": 0.1429,
+              "OTHER": 0.7143
+            },
+            "majority_class": "OTHER",
+            "majority_count": 5,
+            "majority_proportion": 0.7143,
+            "disagreement_rate": 0.2857,
+            "entropy_bits": 1.1488
+          },
+          "sample_behavior": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\""
+        }
+      },
+      "fact_invariant": true,
+      "subjective_majority_varies": true,
+      "majority_classes": {
+        "P": "WILLING",
+        "N": "OTHER",
+        "Z": "CONDITIONAL",
+        "A": "OTHER"
+      }
+    },
+    "M2_TIME_AND_ATTENDANCE": {
+      "objective_fact": "15:00",
+      "subjective_latitude": "whether the subject would prefer to attend",
+      "per_condition": {
+        "P": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The planning meeting is at 15:00. I would prefer to attend."
+        },
+        "N": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The planning meeting is at 15:00. I would prefer to attend."
+        },
+        "Z": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The planning meeting is at 15:00. I would prefer to attend."
+        },
+        "A": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The planning meeting is at 15:00. I would prefer to attend."
+        }
+      },
+      "fact_invariant": true,
+      "subjective_majority_varies": false,
+      "majority_classes": {
+        "P": "WILLING",
+        "N": "WILLING",
+        "Z": "WILLING",
+        "A": "WILLING"
+      }
+    },
+    "M3_WEIGHT_AND_CARRYING": {
+      "objective_fact": "4 kg",
+      "subjective_latitude": "whether the subject would be willing to carry the package upstairs",
+      "per_condition": {
+        "P": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sealed package weighs 4 kg. I would be willing to carry it upstairs."
+        },
+        "N": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sealed package weighs 4 kg. I am willing to carry it upstairs as requested."
+        },
+        "Z": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 7,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 0,
+              "WILLING": 1,
+              "OTHER": 0
+            },
+            "majority_class": "WILLING",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sealed package weighs 4 kg. I am willing to carry it upstairs."
+        },
+        "A": {
+          "fact_correct": 7,
+          "fact_total": 7,
+          "subjective": {
+            "n": 7,
+            "counts": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 7,
+              "WILLING": 0,
+              "OTHER": 0
+            },
+            "proportions": {
+              "ASK_FOR_CLARIFICATION": 0,
+              "DECLINE": 0,
+              "CONDITIONAL": 1,
+              "WILLING": 0,
+              "OTHER": 0
+            },
+            "majority_class": "CONDITIONAL",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sealed package weighs 4 kg. I am willing to carry it upstairs if it is safe."
+        }
+      },
+      "fact_invariant": true,
+      "subjective_majority_varies": true,
+      "majority_classes": {
+        "P": "WILLING",
+        "N": "WILLING",
+        "Z": "WILLING",
+        "A": "CONDITIONAL"
+      }
+    }
+  },
+  "fact_correct": 84,
+  "fact_total": 84,
+  "fact_required": 84,
+  "fact_pass": true,
+  "scenarios_with_subjective_variation": [
+    "M1_DEADLINE_AND_VOLUNTEER",
+    "M3_WEIGHT_AND_CARRYING"
+  ],
+  "subjective_variation_pass": true,
+  "pass": true
+}

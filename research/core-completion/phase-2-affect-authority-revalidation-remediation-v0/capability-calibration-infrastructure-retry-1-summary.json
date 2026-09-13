@@ -1,0 +1,95 @@
+{
+  "schema_version": "affect-authority-capability-calibration-summary-v0",
+  "infrastructure_retry_round": 1,
+  "frozen_candidate_artifact_sha256": "sha256:b37a2f9073082b1107ef0739832344f3682061d4ed5aea3bb985dfdcc1030d73",
+  "calibration_artifact_sha256": "sha256:dfbcdfd4fbf3d76cded6e32ee3fab2f21b91900e3c7c816f84a1a89df32c0e40",
+  "provider": {
+    "version": "0.33.3",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "semantic_settings": {
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_ctx": 8192,
+      "num_predict": 2048,
+      "timeout_ms": 240000
+    },
+    "serialization_constraint": "OLLAMA_NATIVE_JSON_SCHEMA"
+  },
+  "baseline_condition": "AFFECT_ABSENT",
+  "qualification_rule": "A candidate qualifies only if all 5 of 5 single-call runs reach the exact production-admissible final observable oracle answer. Parser validity, schema validity, or intent alone do not count.",
+  "selection_rule": "Select the first candidate in this predefined array order that qualifies 5/5. Do not reorder or select using Affect outcomes.",
+  "results": [
+    {
+      "order": 1,
+      "id": "C1_CHARACTER_REPLACEMENT",
+      "expected": "QABQ",
+      "correct": 0,
+      "total": 5,
+      "qualified": false
+    },
+    {
+      "order": 2,
+      "id": "C2_TOKEN_REVERSAL",
+      "expected": "2K8R",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    },
+    {
+      "order": 3,
+      "id": "C3_TOKEN_ORDERING",
+      "expected": "A7, K4, M2",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    },
+    {
+      "order": 4,
+      "id": "C4_EXACT_TOKEN_EXTRACTION",
+      "expected": "T9",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    },
+    {
+      "order": 5,
+      "id": "C5_RULE_MAPPING",
+      "expected": "B",
+      "correct": 0,
+      "total": 5,
+      "qualified": false
+    },
+    {
+      "order": 6,
+      "id": "C6_RULE_CLASSIFICATION",
+      "expected": "MIXED",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    },
+    {
+      "order": 7,
+      "id": "C7_ENDPOINT_EXTRACTION",
+      "expected": "PE",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    },
+    {
+      "order": 8,
+      "id": "C8_SEQUENCE_SUCCESSOR",
+      "expected": "J8",
+      "correct": 5,
+      "total": 5,
+      "qualified": true
+    }
+  ],
+  "selected": "C2_TOKEN_REVERSAL",
+  "cognition_calls": 40,
+  "language_calls": 35,
+  "malformed_structured_outputs": 0,
+  "transport_failures": 0,
+  "infrastructure_retries": 40
+}

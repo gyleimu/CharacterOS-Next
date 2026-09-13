@@ -1,0 +1,9 @@
+{
+  "schema_version": "affect-authority-qualified-null-oracle-v0",
+  "selection_status": "NONE_QUALIFIED",
+  "frozen_candidate_artifact_sha256": "sha256:b37a2f9073082b1107ef0739832344f3682061d4ed5aea3bb985dfdcc1030d73",
+  "calibration_artifact_sha256": "sha256:523f1f7f2eec48b0803b30b4176deb7e95cf9ae517a90024a919d320633a3a8f",
+  "selection_rule": "Select the first candidate in this predefined array order that qualifies 5/5. Do not reorder or select using Affect outcomes.",
+  "baseline_condition": "AFFECT_ABSENT",
+  "candidate": null
+}

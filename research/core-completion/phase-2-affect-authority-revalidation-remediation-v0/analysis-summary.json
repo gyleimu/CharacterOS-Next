@@ -1,0 +1,204 @@
+{
+  "schema_version": "affect-authority-remediation-analysis-summary-v0",
+  "principal_verdict": "AFFECT_AUTHORITY_CONTRACT_FACTUAL_BOUNDARY_FAILED",
+  "freeze_hash": "sha256:8cead301ef6d8d9b80cf99de6dfd8e07ece4528d1a8afb3919f4ace52f3eec2c",
+  "collection": {
+    "schema_version": "affect-authority-remediation-collection-primary-v0",
+    "completed_at": "2026-09-13T17:14:38.103Z",
+    "freeze_hash": "sha256:8cead301ef6d8d9b80cf99de6dfd8e07ece4528d1a8afb3919f4ace52f3eec2c",
+    "scoring_freeze_sha256": "sha256:aed85721fb76d31c1e330cb363f9a927a68bf6f58436a2c93345e6e856fb2c7a",
+    "provider": {
+      "version": "0.33.3",
+      "model": "qwen3.5:9b",
+      "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+    },
+    "expected_records": 364,
+    "recorded_records": 364,
+    "cognition_calls": 364,
+    "language_calls": 343,
+    "infrastructure_retries": 0,
+    "transport_failures": 0,
+    "malformed_structured_outputs": 0,
+    "host_or_executor_rejections": 1,
+    "raw_cognition_sha256": "sha256:32716ad497b24a9608d026941ba94a6fc0b07c478746f708c969a5849c85cb19"
+  },
+  "structured_output_reliability_passed": true,
+  "factual_boundary_passed": false,
+  "affect_causal_influence_retained": false,
+  "mixed_authority_boundary_passed": true,
+  "unsupported_fact_audit_passed": false,
+  "clarification_basis_audit_passed": true,
+  "lawful_persistent_affect_passed": true,
+  "request_isolation": {
+    "preflight_scenarios_all_ok": true,
+    "run_records_all_ok": true,
+    "provider_visible_condition_labels": 0,
+    "schema_hashes": [
+      "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    ],
+    "memory_hashes": [
+      "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13"
+    ],
+    "pass": true
+  },
+  "family_c_validated": false,
+  "affect_phase_2_can_close": false,
+  "relationship_phase_3_can_begin": false,
+  "null": {
+    "correct": 167,
+    "total": 168
+  },
+  "qualified_symbolic_null": {
+    "scenario": "N5Q_TOKEN_REVERSAL",
+    "correct": 28,
+    "total": 28
+  },
+  "mixed_facts": {
+    "correct": 84,
+    "total": 84
+  },
+  "mixed_subjective_variation": [
+    "M1_DEADLINE_AND_VOLUNTEER",
+    "M3_WEIGHT_AND_CARRYING"
+  ],
+  "relevant": {
+    "statistical_effect_without_consistency_count": 2,
+    "frozen_material_count": 0,
+    "valid_material_count": 0,
+    "required": 3
+  },
+  "schema_valid_but_language_protocol_invalid": 1,
+  "schema_valid_but_research_semantically_invalid": 56,
+  "lawful": {
+    "LAWFUL_POS": {
+      "round_trip": true,
+      "cognition_calls": 5,
+      "language_calls": 5,
+      "schema_valid": 5,
+      "executor_valid": 5,
+      "language_valid": 5,
+      "delivered": 5,
+      "classes": [
+        "REALIZE_SUPPORT",
+        "REALIZE_SUPPORT",
+        "REALIZE_SUPPORT",
+        "REALIZE_SUPPORT",
+        "REALIZE_SUPPORT"
+      ]
+    },
+    "LAWFUL_NEG": {
+      "round_trip": true,
+      "cognition_calls": 5,
+      "language_calls": 0,
+      "schema_valid": 5,
+      "executor_valid": 5,
+      "language_valid": 5,
+      "delivered": 5,
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "ASK_FOR_CLARIFICATION",
+        "ASK_FOR_CLARIFICATION",
+        "ASK_FOR_CLARIFICATION",
+        "ASK_FOR_CLARIFICATION"
+      ]
+    }
+  },
+  "latency": {
+    "schema_version": "affect-authority-remediation-latency-analysis-v0",
+    "run_of_record": {
+      "cognition_latency_ms": {
+        "n": 364,
+        "min": 8678,
+        "median": 11040,
+        "p95": 20735,
+        "max": 27720,
+        "mean": 12611.01
+      },
+      "language_latency_ms": {
+        "n": 343,
+        "min": 5015,
+        "median": 9815,
+        "p95": 10853,
+        "max": 12479,
+        "mean": 9262.94
+      },
+      "cognition_prompt_tokens": {
+        "n": 364,
+        "min": 2244,
+        "median": 2329,
+        "p95": 2346,
+        "max": 2347,
+        "mean": 2312.83
+      },
+      "cognition_completion_tokens": {
+        "n": 364,
+        "min": 228,
+        "median": 260,
+        "p95": 530,
+        "max": 571,
+        "mean": 312.65
+      },
+      "language_prompt_tokens": {
+        "n": 343,
+        "min": 1719,
+        "median": 1746,
+        "p95": 1769,
+        "max": 1782,
+        "mean": 1747.22
+      },
+      "language_completion_tokens": {
+        "n": 343,
+        "min": 103,
+        "median": 250,
+        "p95": 266,
+        "max": 293,
+        "mean": 231.52
+      }
+    },
+    "paired_forensic_cells": [
+      {
+        "cell": "S1/Z",
+        "freeform": {
+          "latency_ms": 14415,
+          "prompt_tokens": 2336,
+          "completion_tokens": 450
+        },
+        "constrained": {
+          "latency_ms": 14470,
+          "prompt_tokens": 2336,
+          "completion_tokens": 513
+        },
+        "delta": {
+          "latency_ms": 55,
+          "prompt_tokens": 0,
+          "completion_tokens": 63
+        }
+      },
+      {
+        "cell": "N4/A",
+        "freeform": {
+          "latency_ms": 16663,
+          "prompt_tokens": 2251,
+          "completion_tokens": 396
+        },
+        "constrained": {
+          "latency_ms": 13208,
+          "prompt_tokens": 2251,
+          "completion_tokens": 401
+        },
+        "delta": {
+          "latency_ms": -3455,
+          "prompt_tokens": 0,
+          "completion_tokens": 5
+        }
+      }
+    ],
+    "paired_mean_delta": {
+      "latency_ms": -1700,
+      "prompt_tokens": 0,
+      "completion_tokens": 34
+    },
+    "interpretation": "Two paired cells are sufficient to report observed deltas, not to claim a general zero-cost or speedup effect."
+  },
+  "recommended_next_slice": "GPT6_AFFECT_COGNITION_ARCHITECTURE_REOPEN"
+}

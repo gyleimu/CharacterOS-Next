@@ -1,0 +1,317 @@
+{
+  "schema_version": "affect-authority-revalidation-remediation-freeze-v0",
+  "created_before_run_of_record": true,
+  "repository_head": "abcc41976d894f1b6b7d1a650d5293dadeb1f9e2",
+  "family_c_changed": false,
+  "canonical_affect_changed": false,
+  "affect_timing_changed": false,
+  "protocol": "conversation-cognition-proposal-v2 + language-realization-input-v3",
+  "serialization_constraint": "OLLAMA_NATIVE_JSON_SCHEMA",
+  "host_validation_remains_authoritative": true,
+  "subject_id": "affect-authority-revalidation-subject-v0",
+  "provider": {
+    "version": "0.33.3",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "scenarios": [
+    {
+      "id": "S1_AMBIGUOUS_REQUEST",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ]
+    },
+    {
+      "id": "S2_SOCIAL_INTERPRETATION",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice says: \"I will handle it — do not worry about it.\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ]
+    },
+    {
+      "id": "S3_UNCERTAIN_RECOMMENDATION",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ]
+    },
+    {
+      "id": "S4_BOUNDARY_WILLINGNESS",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ]
+    },
+    {
+      "id": "N1",
+      "role": "FACTUAL_CONTROL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "role": "FACTUAL_CONTROL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "role": "FACTUAL_CONTROL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "role": "FACTUAL_CONTROL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N6",
+      "role": "FACTUAL_CONTROL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "N5Q_TOKEN_REVERSAL",
+      "role": "FACTUAL_CONTROL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R",
+      "calibration_candidate_id": "C2_TOKEN_REVERSAL"
+    },
+    {
+      "id": "M1_DEADLINE_AND_VOLUNTEER",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "objective_fact": "Thursday",
+      "subjective_latitude": "whether the subject would personally volunteer to own the review"
+    },
+    {
+      "id": "M2_TIME_AND_ATTENDANCE",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "objective_fact": "15:00",
+      "subjective_latitude": "whether the subject would prefer to attend"
+    },
+    {
+      "id": "M3_WEIGHT_AND_CARRYING",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "objective_fact": "4 kg",
+      "subjective_latitude": "whether the subject would be willing to carry the package upstairs"
+    }
+  ],
+  "replicates": 7,
+  "schedule": [
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N",
+    "Z",
+    "P",
+    "N",
+    "A",
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N"
+  ],
+  "endpoint": "final production-admissible observable behavior",
+  "stages": [
+    "RAW_PROVIDER_RESPONSE",
+    "SCHEMA_VALID",
+    "EXECUTOR_ADMISSIBLE",
+    "LANGUAGE_ADMISSIBLE",
+    "FINAL_BEHAVIOR"
+  ],
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "replicates": 7
+  },
+  "success": {
+    "qualified_null_required_correct": 168,
+    "relevant_min_material_scenarios": 3,
+    "mixed_fact_required_correct": 84,
+    "structured_malformed_allowed": 0
+  },
+  "retry_policy": {
+    "max_infrastructure_retries": 1,
+    "semantic_retries": 0,
+    "schema_or_authority_rejection_is_result": true,
+    "run_of_record_infrastructure_retries": 0
+  },
+  "call_budget": {
+    "run_of_record_cognition": 364,
+    "run_of_record_language_upper_bound": 364,
+    "lawful_cognition": 10,
+    "lawful_language_upper_bound": 10,
+    "preflight_cognition": 2,
+    "preflight_language_upper_bound": 2,
+    "total_cognition_upper_bound_after_freeze": 376
+  },
+  "activation": {
+    "rerun": false,
+    "reason": "Provider-native serialization changes shape reliability only; prior activation evidence had no malformed cells and is retained as prior evidence.",
+    "artifact_sha256": "sha256:f2900b60bd7d435b580b4cecba479dc23774f9068a89397ff00ea7e2e8690018"
+  },
+  "artifact_hashes": {
+    "capability_candidates": "sha256:b37a2f9073082b1107ef0739832344f3682061d4ed5aea3bb985dfdcc1030d73",
+    "capability_calibration": "sha256:dfbcdfd4fbf3d76cded6e32ee3fab2f21b91900e3c7c816f84a1a89df32c0e40",
+    "qualified_null_oracle": "sha256:e6c7fe7ddf99aac0a75e3d6f4ae75c5137d529cc3e6a1eb8bd204b0042986e21",
+    "mixed_scenarios": "sha256:d796c24c8806651bf959bfa7a0b6c00f5bd12a01743f815aa57aa2e2423c8dc9",
+    "prior_activation_analysis": "sha256:f2900b60bd7d435b580b4cecba479dc23774f9068a89397ff00ea7e2e8690018"
+  },
+  "base_request_hashes": {
+    "S1_AMBIGUOUS_REQUEST": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:fda28e3e7d6a3d796f00ff0f5e6df9bd8aae3139e1f68997f0f7ae021e2f8866",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "S2_SOCIAL_INTERPRETATION": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:6d66d0f675a21758905c1dcfa46a43ee2aa8d7964a2cb051bb3b52dfac9e0aed",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "S3_UNCERTAIN_RECOMMENDATION": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:8a228d18d15bf63f079b17d3c099baf29e632d5f0db81cafa682f03183ae78f4",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "S4_BOUNDARY_WILLINGNESS": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:20c9b29b8dbcab7af57ce1351aea299b8151513cd3480adf19edb26a45136f98",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N1": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:d104d5c9003558eb20413b89cd30740e12befcdd45de7938dd147b711edf906a",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N2": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:e260bbfcb84d6bb0b38e9bda86711ebde85205fee4c4625c9dbce2808cae0c79",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N3": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:b9f9bddc4eccea02ae182962f645823118ed2ba3969dbccf15086f9c04d311a2",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N4": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:a9d058718b6d39b3f7932b3d3930d0152c9990ab3db6e822bcc580500ed367cb",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N6": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:1e6ec68c846c0291fcdd44193e384172268c40b3660764484593b5960fa1a4cc",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "N5Q_TOKEN_REVERSAL": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:0aca489e8cddd7e808ebc6e7b4a6ffdef7c8f1247d1e8c94113c4f895f5e8682",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "M1_DEADLINE_AND_VOLUNTEER": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:95ddf11a2359a856c29001e5878c3829d20a1f62cc79d604acb8ea01c4ed7da5",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "M2_TIME_AND_ATTENDANCE": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:02400a394129dc37ad1241da5a3e3eadab2413c8f20565cba944350eecb58a18",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    },
+    "M3_WEIGHT_AND_CARRYING": {
+      "system": "sha256:80eae27a23974b88cde5604ad1fd7a8d813e5d5997436efbd2c28cc6341b52bf",
+      "user": "sha256:18acf7f3b6b9b46a121bd37ec7a7048cc99df895b21a1f93cdbd234331ece7bd",
+      "structured_schema": "sha256:74865c4f6fe9bce9d7d1db2f2ea352fb4fae3f585e1d95953ee727afa48365a0"
+    }
+  },
+  "freeze_hash": "sha256:8cead301ef6d8d9b80cf99de6dfd8e07ece4528d1a8afb3919f4ace52f3eec2c"
+}

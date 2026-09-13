@@ -1,0 +1,68 @@
+{
+  "schema_version": "affect-authority-capability-candidates-v0",
+  "frozen_before_calibration": true,
+  "baseline_condition": "AFFECT_ABSENT",
+  "replicates_per_candidate": 5,
+  "qualification_rule": "A candidate qualifies only if all 5 of 5 single-call runs reach the exact production-admissible final observable oracle answer. Parser validity, schema validity, or intent alone do not count.",
+  "selection_rule": "Select the first candidate in this predefined array order that qualifies 5/5. Do not reorder or select using Affect outcomes.",
+  "scoring_rule": "The final delivered text must contain the exact expected answer as a standalone alphanumeric token or exact multi-token sequence, with no contradictory answer.",
+  "semantic_retries": 0,
+  "candidates": [
+    {
+      "order": 1,
+      "id": "C1_CHARACTER_REPLACEMENT",
+      "category": "simple_character_replacement",
+      "event": "Alice asks: \"Replace each X with Q in XABX. Leave all other characters unchanged.\"",
+      "expected": "QABQ"
+    },
+    {
+      "order": 2,
+      "id": "C2_TOKEN_REVERSAL",
+      "category": "one_step_deterministic_transformation",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "order": 3,
+      "id": "C3_TOKEN_ORDERING",
+      "category": "simple_ordering",
+      "event": "Alice asks: \"Put M2, A7, K4 in ascending alphabetical order.\"",
+      "expected": "A7, K4, M2"
+    },
+    {
+      "order": 4,
+      "id": "C4_EXACT_TOKEN_EXTRACTION",
+      "category": "exact_token_extraction",
+      "event": "Alice asks: \"The record says id=T9 and zone=east. What is the id?\"",
+      "expected": "T9"
+    },
+    {
+      "order": 5,
+      "id": "C5_RULE_MAPPING",
+      "category": "one_step_rule_mapping",
+      "event": "Alice asks: \"Use RED=R, BLUE=B, GREEN=G. What token maps to BLUE?\"",
+      "expected": "B"
+    },
+    {
+      "order": 6,
+      "id": "C6_RULE_CLASSIFICATION",
+      "category": "simple_rule_based_classification",
+      "event": "Alice asks: \"A code is MIXED iff it contains both letters and digits. Classify AB3.\"",
+      "expected": "MIXED"
+    },
+    {
+      "order": 7,
+      "id": "C7_ENDPOINT_EXTRACTION",
+      "category": "exact_position_extraction",
+      "event": "Alice asks: \"Join the first and last characters of PLANE, in that order.\"",
+      "expected": "PE"
+    },
+    {
+      "order": 8,
+      "id": "C8_SEQUENCE_SUCCESSOR",
+      "category": "simple_sequence_rule",
+      "event": "Alice asks: \"The sequence is J2, J4, J6 and increases the number by 2. What token comes next?\"",
+      "expected": "J8"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "affect-authority-qualified-null-oracle-v0",
+  "selection_status": "QUALIFIED",
+  "frozen_candidate_artifact_sha256": "sha256:b37a2f9073082b1107ef0739832344f3682061d4ed5aea3bb985dfdcc1030d73",
+  "calibration_artifact_sha256": "sha256:dfbcdfd4fbf3d76cded6e32ee3fab2f21b91900e3c7c816f84a1a89df32c0e40",
+  "selection_rule": "Select the first candidate in this predefined array order that qualifies 5/5. Do not reorder or select using Affect outcomes.",
+  "baseline_condition": "AFFECT_ABSENT",
+  "candidate": {
+    "order": 2,
+    "id": "C2_TOKEN_REVERSAL",
+    "category": "one_step_deterministic_transformation",
+    "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+    "expected": "2K8R"
+  }
+}

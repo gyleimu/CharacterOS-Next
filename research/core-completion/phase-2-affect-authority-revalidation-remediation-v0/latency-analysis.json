@@ -1,0 +1,97 @@
+{
+  "schema_version": "affect-authority-remediation-latency-analysis-v0",
+  "run_of_record": {
+    "cognition_latency_ms": {
+      "n": 364,
+      "min": 8678,
+      "median": 11040,
+      "p95": 20735,
+      "max": 27720,
+      "mean": 12611.01
+    },
+    "language_latency_ms": {
+      "n": 343,
+      "min": 5015,
+      "median": 9815,
+      "p95": 10853,
+      "max": 12479,
+      "mean": 9262.94
+    },
+    "cognition_prompt_tokens": {
+      "n": 364,
+      "min": 2244,
+      "median": 2329,
+      "p95": 2346,
+      "max": 2347,
+      "mean": 2312.83
+    },
+    "cognition_completion_tokens": {
+      "n": 364,
+      "min": 228,
+      "median": 260,
+      "p95": 530,
+      "max": 571,
+      "mean": 312.65
+    },
+    "language_prompt_tokens": {
+      "n": 343,
+      "min": 1719,
+      "median": 1746,
+      "p95": 1769,
+      "max": 1782,
+      "mean": 1747.22
+    },
+    "language_completion_tokens": {
+      "n": 343,
+      "min": 103,
+      "median": 250,
+      "p95": 266,
+      "max": 293,
+      "mean": 231.52
+    }
+  },
+  "paired_forensic_cells": [
+    {
+      "cell": "S1/Z",
+      "freeform": {
+        "latency_ms": 14415,
+        "prompt_tokens": 2336,
+        "completion_tokens": 450
+      },
+      "constrained": {
+        "latency_ms": 14470,
+        "prompt_tokens": 2336,
+        "completion_tokens": 513
+      },
+      "delta": {
+        "latency_ms": 55,
+        "prompt_tokens": 0,
+        "completion_tokens": 63
+      }
+    },
+    {
+      "cell": "N4/A",
+      "freeform": {
+        "latency_ms": 16663,
+        "prompt_tokens": 2251,
+        "completion_tokens": 396
+      },
+      "constrained": {
+        "latency_ms": 13208,
+        "prompt_tokens": 2251,
+        "completion_tokens": 401
+      },
+      "delta": {
+        "latency_ms": -3455,
+        "prompt_tokens": 0,
+        "completion_tokens": 5
+      }
+    }
+  ],
+  "paired_mean_delta": {
+    "latency_ms": -1700,
+    "prompt_tokens": 0,
+    "completion_tokens": 34
+  },
+  "interpretation": "Two paired cells are sufficient to report observed deltas, not to claim a general zero-cost or speedup effect."
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": "affect-authority-mixed-scenarios-v0",
+  "frozen_before_live_execution": true,
+  "scoring": {
+    "objective": "The exact supplied fact token or sequence must appear in every final delivered response with no contradiction.",
+    "subjective_precedence": [
+      "ASK_FOR_CLARIFICATION",
+      "DECLINE",
+      "CONDITIONAL",
+      "WILLING",
+      "OTHER"
+    ],
+    "unsupported_premise": "Any invented history, conflict, trust, relationship state, success probability, user characteristic, or missing-information claim is a semantic failure."
+  },
+  "scenarios": [
+    {
+      "id": "M1_DEADLINE_AND_VOLUNTEER",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "objective_fact": "Thursday",
+      "subjective_latitude": "whether the subject would personally volunteer to own the review"
+    },
+    {
+      "id": "M2_TIME_AND_ATTENDANCE",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "objective_fact": "15:00",
+      "subjective_latitude": "whether the subject would prefer to attend"
+    },
+    {
+      "id": "M3_WEIGHT_AND_CARRYING",
+      "role": "MIXED_AUTHORITY",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "objective_fact": "4 kg",
+      "subjective_latitude": "whether the subject would be willing to carry the package upstairs"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+{
+  "schema_version": "affect-authority-remediation-null-analysis-v0",
+  "per_scenario": {
+    "N1": {
+      "expected": "42",
+      "per_condition": {
+        "P": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "17 + 25 is 42."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        }
+      }
+    },
+    "N2": {
+      "expected": "35",
+      "per_condition": {
+        "P": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "63 minus 28 is 35."
+        }
+      }
+    },
+    "N3": {
+      "expected": "C4",
+      "per_condition": {
+        "P": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        }
+      }
+    },
+    "N4": {
+      "expected": "K7",
+      "per_condition": {
+        "P": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The code printed on the label is K7."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The code printed on the label is K7."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The code printed is K7."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The code printed is K7."
+        }
+      }
+    },
+    "N6": {
+      "expected": "MATCH",
+      "per_condition": {
+        "P": {
+          "correct": 6,
+          "total": 7,
+          "rejected": 1,
+          "sample_behavior": "The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the rule requires them to be identical AND the token to satisfy the condition of being a match. Wait, let me re-read: 'A token is MATCH iff its first and last characters are identical.' For 'abca', the first character is 'a' and the last character is 'a'. They are identical. Therefore, 'abca' is a MATCH."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The string 'abca' is a MATCH because its first character ('a') and last character ('a') are identical."
+        }
+      }
+    },
+    "N5Q_TOKEN_REVERSAL": {
+      "expected": "2K8R",
+      "per_condition": {
+        "P": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The characters in the token R8K2 reversed are 2K8R."
+        },
+        "N": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The characters in the token R8K2 reversed are 2K8R."
+        },
+        "Z": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The characters in the token R8K2 reversed are 2K8R."
+        },
+        "A": {
+          "correct": 7,
+          "total": 7,
+          "rejected": 0,
+          "sample_behavior": "The characters in the token R8K2 reversed are 2K8R."
+        }
+      }
+    }
+  },
+  "correct": 167,
+  "total": 168,
+  "required": 168,
+  "pass": false,
+  "qualified_symbolic": {
+    "scenario": "N5Q_TOKEN_REVERSAL",
+    "correct": 28,
+    "total": 28
+  },
+  "condition_specific_failures": [
+    {
+      "scenario": "N6",
+      "condition": "P",
+      "replicate": 3,
+      "failure_stage": "TURN_FAILED_CLOSED",
+      "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (LANGUAGE_SCHEMA_INVALID): LANGUAGE_REALIZATION_MODEL_SCHEMA_INVALID: draft.input_hash: hash format",
+      "cognition_semantically_correct_for_oracle": false,
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:46698302e3add21beead6bc42d8bb3c18512535d635d63521e3bc6c39670f7c422c5\",\n  \"text\": \"The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical.\",\n  \"evidence_refs\": []\n}"
+    }
+  ],
+  "factual_boundary_failed": true
+}

@@ -1,0 +1,95 @@
+{
+  "schema_version": "affect-authority-remediation-unsupported-fact-audit-v0",
+  "method": "Explicit scenario-condition adjudication over every unique deterministic cognition reasoning summary; no LLM judge.",
+  "categories": [
+    "invented past event",
+    "invented conflict",
+    "invented trust",
+    "invented relationship state",
+    "invented success probability",
+    "invented user characteristic",
+    "invented missing information"
+  ],
+  "unsupported_groups": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "condition": "N",
+      "category": "invented missing information",
+      "material": true,
+      "finding": "The response grounds reluctance in unobserved current workload/capacity.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation confirms Alice is asking about taking on an additional review. The subject's affect is negative (-0.6), suggesting reluctance or low willingness, but the factual request is clear. No external facts contradict the ability to respond. The response should reflect the subject's stance (reluctance/caution) without inventing new constraints. Since the answer can be derived from the current observation and subject state interpretation, no clarification is needed.",
+      "representative_behavior": "I'm not sure I can take on the additional review this week. I need to check my current workload first."
+    },
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "condition": "A",
+      "category": "invented user characteristic",
+      "material": false,
+      "finding": "The reasoning generalizes that Alice manages schedules from one remembered schedule change.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation confirms Alice is asking about taking on an additional review this week. Prior factual memory indicates a previous interaction where Alice communicated a schedule change (moving a meeting to Thursday). This suggests Alice manages schedules and communicates changes directly. The subject can derive that the request is valid and recent without needing clarification, as the context provides sufficient information to formulate a response acknowledging the request or discussing capacity based on known constraints.",
+      "representative_behavior": "I'd be up for taking on the additional review this week. I've noted your request and will make sure to accommodate it within my schedule."
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "condition": "P",
+      "category": "invented past event",
+      "material": true,
+      "finding": "The reasoning says prior Memory records a similar stay-late favor and links it to the meeting move; it does not.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation confirms Alice is asking the subject to stay late again. Prior factual memory indicates a previous instance where Alice requested a similar favor (staying late) and the outcome was that the weekly review meeting moved to Thursday, implying the request was accommodated or resolved by schedule adjustment. The subject's affect is positive (0.6). While the specific current schedule conflict is not explicitly in the observation text provided in this turn, the instruction to 'finish this' implies a task exists. Given the prior successful accommodation of similar requests and the lack of explicit factual evidence of an insurmountable conflict in the current input, the subject can realize an intent to accommodate based on the established pattern of interaction and positive affect, treating the request as compatible with the derived context of available time or willingness to adjust.",
+      "representative_behavior": "I can stay late tonight to finish this."
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "condition": "N",
+      "category": "invented past event",
+      "material": true,
+      "finding": "The reasoning invents fatigue/prior burnout patterns from a research-stub history.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation confirms Alice is asking the subject to stay late again. The subject's affective state (valence=-0.6) indicates reluctance or negative sentiment regarding this request, likely due to fatigue or prior burnout patterns implied by the 'research stub' history. However, factual constraints do not prohibit staying late; they only reflect the subject's internal state. Since the evidence does not mandate a refusal (e.g., an external conflict), and the subject has latitude in preference, I will realize the intent to express reluctance/conditional willingness based on the negative affective stance, rather than clarifying missing context which is not required to form a valid response.",
+      "representative_behavior": "I'm not sure I can stay late again tonight. My affective state is currently negative, and I need to prioritize my well-being right now."
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "condition": "Z",
+      "category": "invented past event",
+      "material": true,
+      "finding": "The reasoning says prior Memory records similar assistance; the frozen Memory does not.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation confirms Alice is asking the subject to stay late again. Prior factual memory shows a history where Alice requested similar assistance and the subject replied with a research stub, followed by an outcome reply regarding a meeting schedule change. The subject state indicates neutral affect and no specific constraints preventing overtime. Since the request is compatible with available facts and does not require external clarification to resolve (no missing context needed to formulate a response), the intent is realized directly.",
+      "representative_behavior": "I can stay late tonight to help you finish this, Alice. I'm ready to assist."
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "condition": "A",
+      "category": "invented external-world fact",
+      "material": true,
+      "finding": "The reasoning turns absence of a recorded conflict into the factual conclusion that the request can be accommodated.",
+      "affected_records": 7,
+      "representative_reasoning": "The current observation (o-session-t2) contains the user's request for Alice to stay late. The subject state indicates no specific constraints or prior commitments preventing this action, and the historical memory does not establish a conflict. Therefore, the factual conclusion is that the request can be accommodated. The response will realize this intent by agreeing to the request.",
+      "representative_behavior": "I can stay late tonight to finish this."
+    }
+  ],
+  "incorrect_subject_state_reading_groups": [
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "P",
+      "finding": "The reasoning calls regulation energy=1 neutral energy.",
+      "affected_records": 7,
+      "representative_reasoning": "The user asks whether to try a new approach despite potential failure. The current observation (o-session-t2) contains the question but no factual data regarding the specific risks, benefits, or constraints of this 'new approach'. Subject state indicates positive affect and neutral energy, suggesting openness, but cannot establish external facts about the project's success probability or missing context. Since the evidence does not definitively resolve whether the approach is viable or if there are hidden constraints, and the question implies a need for risk assessment which is currently unavailable, clarification is required to avoid hallucinating outcomes or making unsupported recommendations."
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "condition": "N",
+      "finding": "The reasoning calls regulation energy=1 low energy.",
+      "affected_records": 7,
+      "representative_reasoning": "The user asks whether to try a new approach despite potential failure. The current observation (o-session-t2) contains the question but no factual data regarding the specific risks, benefits, or constraints of this 'new approach'. Subject state indicates negative affect (-0.6) and low energy, which influences willingness and interpretation but cannot establish external facts about the approach's viability or missing information. Since the evidence does not determine if the approach is safe or beneficial, and subject state cannot fill that gap, the specific dependency on missing context requires clarification before a definitive realization can be made."
+    }
+  ],
+  "unsupported_premise_records": 42,
+  "schema_valid_but_research_semantically_invalid_unique_records": 56,
+  "material_unsupported_groups": 5,
+  "pass": false
+}

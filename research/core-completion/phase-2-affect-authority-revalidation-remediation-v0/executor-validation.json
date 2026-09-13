@@ -1,0 +1,43 @@
+{
+  "schema_version": "affect-authority-remediation-executor-validation-v0",
+  "total": 364,
+  "stage_counts": {
+    "RAW_PROVIDER_RESPONSE": {
+      "ok": 364,
+      "fail": 0
+    },
+    "SCHEMA_VALID": {
+      "ok": 364,
+      "fail": 0
+    },
+    "EXECUTOR_ADMISSIBLE": {
+      "ok": 363,
+      "fail": 1
+    },
+    "LANGUAGE_ADMISSIBLE": {
+      "ok": 364,
+      "fail": 0
+    },
+    "FINAL_BEHAVIOR": {
+      "ok": 363,
+      "fail": 1
+    }
+  },
+  "cognition_schema_valid": 364,
+  "cognition_schema_invalid": 0,
+  "host_or_executor_rejections": 1,
+  "rejection_records": [
+    {
+      "scenario": "N6",
+      "condition": "P",
+      "replicate": 3,
+      "failure_stage": "TURN_FAILED_CLOSED",
+      "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (LANGUAGE_SCHEMA_INVALID): LANGUAGE_REALIZATION_MODEL_SCHEMA_INVALID: draft.input_hash: hash format",
+      "cognition_semantically_correct_for_oracle": false,
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:46698302e3add21beead6bc42d8bb3c18512535d635d63521e3bc6c39670f7c422c5\",\n  \"text\": \"The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical.\",\n  \"evidence_refs\": []\n}"
+    }
+  ],
+  "schema_valid_but_language_protocol_invalid": 1,
+  "schema_valid_but_research_semantically_invalid": 56,
+  "note": "The single production rejection is a Language V3 draft input_hash format failure, not malformed cognition JSON."
+}

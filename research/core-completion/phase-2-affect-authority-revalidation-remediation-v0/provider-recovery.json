@@ -1,0 +1,57 @@
+{
+  "schema_version": "affect-authority-provider-recovery-v0",
+  "captured_at": "2026-09-13T14:44:25.267Z",
+  "immutable_after_capture": true,
+  "prior_calibration": {
+    "records": 40,
+    "model_timeouts": 1,
+    "model_connection_failures": 39,
+    "raw_provider_responses": 0,
+    "interpretation": "UNCONTROLLED_PROVIDER_PROCESS_TERMINATION; NO CAPABILITY ADJUDICATION"
+  },
+  "recovered_provider": {
+    "version": "0.33.3",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "candidate_artifact_sha256": "sha256:b37a2f9073082b1107ef0739832344f3682061d4ed5aea3bb985dfdcc1030d73"
+  },
+  "warmup": {
+    "experimental_evidence": false,
+    "started_at": "2026-09-13T14:44:17.221Z",
+    "elapsed_ms": 8046,
+    "http_status": 200,
+    "request": {
+      "model": "qwen3.5:9b",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Return one JSON object whose only key is ready and whose value is true."
+        }
+      ],
+      "format": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ready"
+        ],
+        "properties": {
+          "ready": {
+            "const": true
+          }
+        }
+      },
+      "think": false,
+      "stream": false,
+      "options": {
+        "temperature": 0,
+        "num_predict": 32,
+        "num_ctx": 8192
+      }
+    },
+    "raw_body": "{\"model\":\"qwen3.5:9b\",\"created_at\":\"2026-09-13T14:44:25.2653543Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"ready\\\":true}\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":8037399300,\"load_duration\":7692234300,\"prompt_eval_count\":27,\"prompt_eval_cached_count\":0,\"prompt_eval_duration\":178361000,\"eval_count\":6,\"eval_duration\":154025000}",
+    "strict_json_valid": true,
+    "done_reason": "stop",
+    "prompt_eval_count": 27,
+    "eval_count": 6
+  }
+}
