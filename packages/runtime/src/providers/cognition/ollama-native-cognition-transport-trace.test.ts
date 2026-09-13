@@ -293,6 +293,39 @@ describe("instrumentation — generation budget", () => {
 });
 
 // ============================================================================
+// Provider-native structured serialization (host validation remains separate)
+// ============================================================================
+
+describe("provider-native structured output", () => {
+  it("maps the caller's JSON Schema constraint to Ollama format exactly once", async () => {
+    const { calls } = stubFetch(() => okJson(ollamaBody('{"ok":true}', { done_reason: "stop" })));
+    const schema = {
+      type: "object",
+      additionalProperties: false,
+      required: ["ok"],
+      properties: { ok: { type: "boolean" } }
+    };
+    const response = await new OllamaNativeCognitionTransportV0(config()).complete({
+      messages: REQUEST.messages,
+      structured_output: { kind: "JSON_SCHEMA", schema }
+    });
+    expect(response.content).toBe('{"ok":true}');
+    expect(calls).toHaveLength(1);
+    const body = JSON.parse(bodyOf(calls)) as Record<string, unknown>;
+    expect(body["format"]).toEqual(schema);
+  });
+
+  it("keeps the prior wire shape when no structured-output constraint is requested", async () => {
+    const { calls } = stubFetch(() => okJson(ollamaBody("pong", { done_reason: "stop" })));
+    await new OllamaNativeCognitionTransportV0(config()).complete(REQUEST);
+    expect(calls).toHaveLength(1);
+    const body = JSON.parse(bodyOf(calls)) as Record<string, unknown>;
+    expect(Object.hasOwn(body, "format")).toBe(false);
+    expect(Object.keys(body)).toEqual(["model", "messages", "think", "stream", "options"]);
+  });
+});
+
+// ============================================================================
 // Provider truncation classification (context/output exhaustion)
 // ============================================================================
 

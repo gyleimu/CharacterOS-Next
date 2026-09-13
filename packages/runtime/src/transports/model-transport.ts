@@ -45,9 +45,24 @@ export interface ModelTransportMessageV0 {
   readonly content: string;
 }
 
+/**
+ * Provider-portable request for machine-enforced JSON serialization.
+ *
+ * This is serialization assistance only. The caller's existing host parser and
+ * semantic validators remain authoritative and MUST validate the returned
+ * value independently. Transports that support native JSON Schema map this
+ * request at their own provider boundary; no repair or retry semantics are
+ * implied by this interface.
+ */
+export interface ModelJsonSchemaConstraintV0 {
+  readonly kind: "JSON_SCHEMA";
+  readonly schema: Readonly<Record<string, unknown>>;
+}
+
 /** Raw completion request (semantics-free). */
 export interface ModelTransportRequestV0 {
   readonly messages: readonly ModelTransportMessageV0[];
+  readonly structured_output?: ModelJsonSchemaConstraintV0;
 }
 
 /** Raw completion response. */

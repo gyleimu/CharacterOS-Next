@@ -21,7 +21,10 @@
  */
 
 import { hashEnvelope, sha256HashV1 } from "@characteros-next/subject-core";
-import type { ModelTransportV0 } from "../transports/model-transport.js";
+import type {
+  ModelJsonSchemaConstraintV0,
+  ModelTransportV0
+} from "../transports/model-transport.js";
 import type { ModelTransportTraceV0 } from "../transports/model-transport-trace-v0.js";
 import { InMemoryConversationDeliveryLedger } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { InMemoryConversationIngressLedger } from "../transitions/conversation/conversation-ingress-ledger.js";
@@ -64,7 +67,11 @@ export interface LongHorizonSubjectSessionOptionsV0 extends ExplicitV4SessionAut
 }
 
 interface CapturedExchange {
-  readonly request: { readonly system_content: string; readonly user_content: string };
+  readonly request: {
+    readonly system_content: string;
+    readonly user_content: string;
+    readonly structured_output?: ModelJsonSchemaConstraintV0;
+  };
   readonly response: string;
 }
 
@@ -78,7 +85,10 @@ function recordingTransport(target: ModelTransportV0, sink: (exchange: CapturedE
       sink({
         request: {
           system_content: messages.find((message) => message.role === "system")?.content ?? "",
-          user_content: messages.find((message) => message.role === "user")?.content ?? ""
+          user_content: messages.find((message) => message.role === "user")?.content ?? "",
+          ...(request.structured_output === undefined
+            ? {}
+            : { structured_output: request.structured_output })
         },
         response: (response as { content: string }).content
       });
@@ -452,6 +462,9 @@ export class LongHorizonSubjectSessionV0 {
         { role: "system", content: exchange.request.system_content },
         { role: "user", content: exchange.request.user_content }
       ],
+      ...(exchange.request.structured_output === undefined
+        ? {}
+        : { format: exchange.request.structured_output.schema }),
       think: false,
       stream: false,
       options

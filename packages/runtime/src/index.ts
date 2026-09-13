@@ -175,6 +175,7 @@ export {
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportMessageV0,
+  type ModelJsonSchemaConstraintV0,
   type ModelTransportFailureCode
 } from "./transports/model-transport.js";
 
@@ -977,7 +978,7 @@ export {
   type ConversationTextResponseResultV1
 } from "./transitions/conversation/conversation-text-response-executor-v1.js";
 export { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1, CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 } from "./providers/behavior/conversation-cognition-provider.js";
-export { ConversationCognitionProviderV2, ConversationCognitionRejectionErrorV2, CONVERSATION_COGNITION_SYSTEM_PROMPT_V2, buildConversationSubjectDataV2 } from "./providers/behavior/conversation-cognition-provider-v2.js";
+export { ConversationCognitionProviderV2, ConversationCognitionRejectionErrorV2, CONVERSATION_COGNITION_SYSTEM_PROMPT_V2, CONVERSATION_COGNITION_PROPOSAL_V2_JSON_SCHEMA, buildConversationSubjectDataV2 } from "./providers/behavior/conversation-cognition-provider-v2.js";
 export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
   CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V2,

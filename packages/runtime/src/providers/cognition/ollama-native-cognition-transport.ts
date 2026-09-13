@@ -19,9 +19,11 @@
  * Fixed request policy (NONE caller-controlled): stream = false, think = false,
  * options.temperature = 0, options.num_predict = configured output budget,
  * options.num_ctx = configured context budget. Exactly one request; no retry, no
- * fallback, no repair, no format field
- * (OLLAMA_FORMAT_MODE NONE — the frozen prompt + parser remain the authority),
- * no Authorization header (native local Ollama needs no fake OpenAI auth).
+ * fallback or repair. When the caller requests a provider-portable JSON Schema
+ * serialization constraint, this adapter maps it to Ollama's native `format`
+ * field. The frozen prompt, parser and host validators remain authoritative.
+ * Requests without a constraint retain the prior byte-identical wire shape.
+ * No Authorization header is sent (native local Ollama needs no fake auth).
  *
  * CONTEXT BUDGET MIGRATION POLICY (COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0):
  * every construction of this transport now sends an explicit `num_ctx`. Making
@@ -233,6 +235,9 @@ export class OllamaNativeCognitionTransportV0 implements ModelTransportV0 {
         role: message.role,
         content: message.content
       })),
+      ...(request.structured_output === undefined
+        ? {}
+        : { format: request.structured_output.schema }),
       think: false,
       stream: false,
       options: {

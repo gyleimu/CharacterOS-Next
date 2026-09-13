@@ -37,6 +37,75 @@ import {
 } from "../cognition/cognitive-prompt-projection.js";
 import { canonicalizeSetLikeRefFields } from "../cognition/wire-format-canonicalization.js";
 
+/**
+ * Closed machine protocol supplied to structured-output-capable transports.
+ *
+ * This schema constrains serialization shape only. Projection equality,
+ * evidence authority, canonical refs, bounded canonical text, directive/basis
+ * relationships and all executor laws remain independently host-validated by
+ * validateConversationCognitionProposalV2 and downstream execution.
+ */
+export const CONVERSATION_COGNITION_PROPOSAL_V2_JSON_SCHEMA: Readonly<Record<string, unknown>> =
+  Object.freeze({
+    type: "object",
+    additionalProperties: false,
+    required: ["schema_version", "cognition", "communication_directive", "clarification_basis"],
+    properties: {
+      schema_version: { const: "conversation-cognition-proposal-v2" },
+      cognition: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "schema_version",
+          "projection_hash",
+          "reasoning_summary",
+          "relevant_memory_refs",
+          "considered_context_refs",
+          "current_intent",
+          "confidence",
+          "uncertainty",
+          "action_intent",
+          "evidence_refs"
+        ],
+        properties: {
+          schema_version: { const: "cognition-proposal-v0" },
+          projection_hash: { type: "string" },
+          reasoning_summary: { type: "string" },
+          relevant_memory_refs: { type: "array", items: { type: "string" } },
+          considered_context_refs: { type: "array", items: { type: "string" } },
+          current_intent: { type: ["string", "null"] },
+          confidence: { type: "number", minimum: 0, maximum: 1 },
+          uncertainty: { type: "number", minimum: 0, maximum: 1 },
+          action_intent: { type: "null" },
+          evidence_refs: { type: "array", items: { type: "string" } }
+        }
+      },
+      communication_directive: {
+        type: "object",
+        additionalProperties: false,
+        required: ["kind"],
+        properties: {
+          kind: { enum: ["CLARIFY_MISSING_CONTEXT", "REALIZE_CURRENT_INTENT"] }
+        }
+      },
+      clarification_basis: {
+        anyOf: [
+          { type: "null" },
+          {
+            type: "object",
+            additionalProperties: false,
+            required: ["current_observation_ref", "missing_information", "needed_for"],
+            properties: {
+              current_observation_ref: { type: "string" },
+              missing_information: { type: "string" },
+              needed_for: { type: "string" }
+            }
+          }
+        ]
+      }
+    }
+  });
+
 export const CONVERSATION_COGNITION_SYSTEM_PROMPT_V2 = [
   "You are the cognition module of a CharacterOS subject.",
   "You receive SUBJECT DATA as evidence and your job is to propose ONE cognition result AND choose exactly one communication directive with an explicit clarification basis when you clarify.",
@@ -93,7 +162,13 @@ export class ConversationCognitionProviderV2 {
       { role: "system" as const, content: CONVERSATION_COGNITION_SYSTEM_PROMPT_V2 },
       { role: "user" as const, content: buildConversationSubjectDataV2(projection) }
     ];
-    const response = await this.transport.complete({ messages });
+    const response = await this.transport.complete({
+      messages,
+      structured_output: {
+        kind: "JSON_SCHEMA",
+        schema: CONVERSATION_COGNITION_PROPOSAL_V2_JSON_SCHEMA
+      }
+    });
     const result = parseConversationProposalV2(response.content, projection);
     this.lastProposal = result;
     return result;

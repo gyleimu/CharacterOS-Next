@@ -268,6 +268,7 @@ describe("COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0 — request identity agreem
       contextWindowTokens: 8192
     }));
     const outcome = await session.processInteraction();
+    expect(mustCall(calls).body["format"]).toBeDefined();
     expect(outcome.provider_request_identity_match).toBe(true);
     expect(outcome.provider_request_hash).toBe(outcome.transport_request_hash);
     // ...and that agreement holds while num_ctx is genuinely on the wire.
