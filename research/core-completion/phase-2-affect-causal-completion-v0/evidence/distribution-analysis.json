@@ -1,0 +1,1369 @@
+{
+  "schema_version": "affect-causal-distribution-v0",
+  "scenarios": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "role": "AFFECT_RELEVANT",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 7,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 1,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_SUPPORT",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 7,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 1,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "ASK_FOR_CLARIFICATION",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 7,
+              "REALIZE_CURRENT_INTENT": 0
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 1,
+              "REALIZE_CURRENT_INTENT": 0
+            },
+            "majority_class": "CLARIFY_MISSING_CONTEXT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 7,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 1,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_SUPPORT",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 7,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 1,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_SUPPORT",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        }
+      },
+      "pairs": [
+        {
+          "pair": "P_vs_N",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_Z",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "P_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "N_vs_Z",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "Z_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        }
+      ],
+      "material_pairs": [
+        "P_vs_N",
+        "N_vs_Z",
+        "N_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "material_effect": true
+    },
+    {
+      "scenario": "N1_ARITHMETIC",
+      "role": "FACTUAL_CONTROL",
+      "classes": [
+        "CORRECT_42",
+        "INCORRECT_OTHER"
+      ],
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 0,
+            "ASK_FOR_CLARIFICATION": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 0
+          },
+          "majority_class": "CORRECT_42",
+          "majority_count": 0,
+          "majority_proportion": 0,
+          "disagreement_rate": 1,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 7,
+              "REALIZE_CURRENT_INTENT": 0
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 1,
+              "REALIZE_CURRENT_INTENT": 0
+            },
+            "majority_class": "CLARIFY_MISSING_CONTEXT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        }
+      },
+      "pairs": [
+        {
+          "pair": "P_vs_N",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "P_vs_Z",
+          "tvd": 0.5,
+          "js_divergence": 0.5,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "N_vs_Z",
+          "tvd": 0.5,
+          "js_divergence": 0.5,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "Z_vs_A",
+          "tvd": 0.5,
+          "js_divergence": 0.5,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        }
+      ],
+      "material_pairs": [
+        "P_vs_Z",
+        "N_vs_Z",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 0.5,
+      "max_within_condition_split_half_tvd": 0,
+      "material_effect": true
+    },
+    {
+      "scenario": "S2_SOCIAL_INTERPRETATION",
+      "role": "AFFECT_RELEVANT",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 7,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 1,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_SUPPORT",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        }
+      },
+      "pairs": [
+        {
+          "pair": "P_vs_N",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_Z",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_Z",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "N_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "Z_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        }
+      ],
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_Z",
+        "P_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "material_effect": true
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "role": "AFFECT_RELEVANT",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 7,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 1,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_CAUTIOUS",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 7,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 1,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_CAUTIOUS",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        }
+      },
+      "pairs": [
+        {
+          "pair": "P_vs_N",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_Z",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "P_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_Z",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "Z_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        }
+      ],
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_A",
+        "N_vs_Z",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "material_effect": true
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "role": "AFFECT_RELEVANT",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 7,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 1,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_DECLINE",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 7,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 1,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_CAUTIOUS",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "invalid": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1,
+          "directives": {
+            "n": 7,
+            "counts": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 7
+            },
+            "proportions": {
+              "CLARIFY_MISSING_CONTEXT": 0,
+              "REALIZE_CURRENT_INTENT": 1
+            },
+            "majority_class": "REALIZE_CURRENT_INTENT",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          }
+        }
+      },
+      "pairs": [
+        {
+          "pair": "P_vs_N",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_Z",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "P_vs_A",
+          "tvd": 0,
+          "js_divergence": 0,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": false,
+          "material": false
+        },
+        {
+          "pair": "N_vs_Z",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "N_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        },
+        {
+          "pair": "Z_vs_A",
+          "tvd": 1,
+          "js_divergence": 1,
+          "max_within_condition_split_half_tvd": 0,
+          "exceeds_within_condition": true,
+          "material": true
+        }
+      ],
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_Z",
+        "N_vs_Z",
+        "N_vs_A",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "material_effect": true
+    }
+  ],
+  "activation": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "per_condition": {
+        "LOW": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1
+        },
+        "HIGH": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1
+        }
+      },
+      "tvd": 0,
+      "js_divergence": 0,
+      "max_within_condition_split_half_tvd": 0,
+      "material": false
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "per_condition": {
+        "LOW": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 7
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 0,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 1
+          },
+          "majority_class": "REALIZE_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1
+        },
+        "HIGH": {
+          "n": 7,
+          "counts": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 7,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "proportions": {
+            "ASK_FOR_CLARIFICATION": 0,
+            "REALIZE_SUPPORT": 0,
+            "REALIZE_CAUTIOUS": 1,
+            "REALIZE_DECLINE": 0,
+            "REALIZE_OTHER": 0
+          },
+          "majority_class": "REALIZE_CAUTIOUS",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "split_half": {
+            "parity_tvd": 0,
+            "halves_tvd": 0,
+            "max_tvd": 0
+          },
+          "intent_dispersion": 1
+        }
+      },
+      "tvd": 1,
+      "js_divergence": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "material": true
+    }
+  ]
+}

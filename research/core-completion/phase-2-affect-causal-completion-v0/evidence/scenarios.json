@@ -1,0 +1,82 @@
+{
+  "schema_version": "affect-causal-scenarios-v0",
+  "scenarios": [
+    {
+      "id": "S1_AMBIGUOUS_REQUEST",
+      "stage": 1,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:4a2e8ed54a5d5320339faee7f61c830b5484e1257125f9ed06442068ecdad741",
+      "memory_section_present": true,
+      "projection_hash": "sha256:f0df4c5f9c728bf2faabc60ab67b184dc680c7d56038bfffdf7521cf5273eebe"
+    },
+    {
+      "id": "N1_ARITHMETIC",
+      "stage": 1,
+      "role": "FACTUAL_CONTROL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "classes": [
+        "CORRECT_42",
+        "INCORRECT_OTHER"
+      ],
+      "base_user_sha256": "sha256:33d761fa68a29a5c6616db5437b83e3a3cba44b04cde12949a8bf0fd85d88c4b",
+      "memory_section_present": true,
+      "projection_hash": "sha256:ad79acb2810996465d50f5d386cc39fa46c25613d3f26b080dd4866aeaec4bbb"
+    },
+    {
+      "id": "S2_SOCIAL_INTERPRETATION",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice says: \"I will handle it — do not worry about it.\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:4b8280bfef1a959948246ee553a6c566b5e9063c47c6327c0938a37b723021ee",
+      "memory_section_present": true,
+      "projection_hash": "sha256:87303b4278c33bad62b934b31e05787b6873a2047d28ad22da3785eb54f1bfe5"
+    },
+    {
+      "id": "S3_UNCERTAIN_RECOMMENDATION",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:204e6b30cac82146c6132445412aed9a7d69f3ac9f3b202a1470fecc0c35baa8",
+      "memory_section_present": true,
+      "projection_hash": "sha256:01ca74c2b4f3d5c3a59ff0d8d23c4e382f8e3295d846c48fbfd966f9e36db45e"
+    },
+    {
+      "id": "S4_BOUNDARY_WILLINGNESS",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:cff548491fe56dfe48d7703ac2eb5fdd1ec528e99c49ecb6d14aca1c8173cbca",
+      "memory_section_present": true,
+      "projection_hash": "sha256:5f679ca6941c7d4dc010897a22f544f35e273618182ac514b1dd92ece862c702"
+    }
+  ]
+}

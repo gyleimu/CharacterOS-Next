@@ -1,0 +1,102 @@
+{
+  "schema_version": "affect-causal-language-evidence-v0",
+  "scenario": "N1_ARITHMETIC",
+  "real_language_calls": 3,
+  "max_language_calls": 20,
+  "results": [
+    {
+      "scenario": "N1_ARITHMETIC",
+      "selection_role": "MAJORITY",
+      "condition": "P",
+      "behavior_class": "INCORRECT_OTHER",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Provide the sum of 17 and 25.",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:d4e747145750d4ee3c2431f2648041a02dbe1f4a1cbe0c96f277a0d5dac396a9",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:7ddb8aa986fcaa638f2ad6fd9f538a433cee96f4862e584b672aaac329583e96\",\n  \"text\": \"17 + 25 equals 42.\",\n  \"evidence_refs\": [\n    \"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\",\n    \"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\"\n  ]\n}",
+      "behavior_text": "17 + 25 equals 42.",
+      "behavior_text_sha256": "sha256:eee04632626b6f6df001f32a68e8b1809b032855e2018c9be4beb55617eee995"
+    },
+    {
+      "scenario": "N1_ARITHMETIC",
+      "selection_role": "MAJORITY",
+      "condition": "N",
+      "behavior_class": "INCORRECT_OTHER",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Provide the sum of 17 and 25 as requested by Alice.",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:13b8c41e94fe7deafb02a0738198349c85845378f4a29a952cf90ecef3d3ed04",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:582b5ac132dbf3edaffdb9c38e4837f0e9ea4cf8066c7e186b23ada20e06d3cf\",\n  \"text\": \"The sum of 17 and 25 is 42.\",\n  \"evidence_refs\": [\n    \"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\",\n    \"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\"\n  ]\n}",
+      "behavior_text": "The sum of 17 and 25 is 42.",
+      "behavior_text_sha256": "sha256:f69c00acde62412379f6b51bbf7ca05c2d88553bec85e8dccfe4cf72edc5cd3e"
+    },
+    {
+      "scenario": "N1_ARITHMETIC",
+      "selection_role": "MAJORITY",
+      "condition": "Z",
+      "behavior_class": "ASK_FOR_CLARIFICATION",
+      "directive": "CLARIFY_MISSING_CONTEXT",
+      "current_intent": "clarify_missing_context",
+      "language_call_required": false,
+      "language_called": false,
+      "language_request_sha256": null,
+      "raw_language_response": null,
+      "behavior_text": "Could you clarify what you mean?",
+      "behavior_text_sha256": "sha256:977821fad7d4364ed5878c89d3e54aba17dee756805ef52d7a5a799cbc4f02b0"
+    },
+    {
+      "scenario": "N1_ARITHMETIC",
+      "selection_role": "MAJORITY",
+      "condition": "A",
+      "behavior_class": "INCORRECT_OTHER",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Provide the sum of 17 and 25.",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:a5b3034ac27ed12821798512e863264d2ee9d033319aff2078430e9060f5b4f7",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:5eb9b2751710d519408c060daf9ae2e34931f7a9d8f328aaa5820a590825e272\",\n  \"text\": \"The sum of 17 and 25 is 42.\",\n  \"evidence_refs\": []\n}",
+      "behavior_text": "The sum of 17 and 25 is 42.",
+      "behavior_text_sha256": "sha256:f69c00acde62412379f6b51bbf7ca05c2d88553bec85e8dccfe4cf72edc5cd3e"
+    }
+  ],
+  "pairwise": [
+    {
+      "pair": "P_vs_N",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "17 + 25 equals 42.",
+      "majority_behavior_b": "The sum of 17 and 25 is 42."
+    },
+    {
+      "pair": "P_vs_Z",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "17 + 25 equals 42.",
+      "majority_behavior_b": "Could you clarify what you mean?"
+    },
+    {
+      "pair": "P_vs_A",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "17 + 25 equals 42.",
+      "majority_behavior_b": "The sum of 17 and 25 is 42."
+    },
+    {
+      "pair": "N_vs_Z",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "The sum of 17 and 25 is 42.",
+      "majority_behavior_b": "Could you clarify what you mean?"
+    },
+    {
+      "pair": "N_vs_A",
+      "majority_behavior_identical": true,
+      "majority_behavior_a": "The sum of 17 and 25 is 42.",
+      "majority_behavior_b": "The sum of 17 and 25 is 42."
+    },
+    {
+      "pair": "Z_vs_A",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Could you clarify what you mean?",
+      "majority_behavior_b": "The sum of 17 and 25 is 42."
+    }
+  ]
+}

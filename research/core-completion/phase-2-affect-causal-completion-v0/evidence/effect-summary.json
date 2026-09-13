@@ -1,0 +1,225 @@
+{
+  "schema_version": "affect-causal-effect-summary-v0",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "intent_jaccard_material": 0.5,
+    "must_exceed_within_condition": true
+  },
+  "stage1_executed": [
+    "S1_AMBIGUOUS_REQUEST",
+    "N1_ARITHMETIC"
+  ],
+  "stage2_executed": [
+    "S2_SOCIAL_INTERPRETATION",
+    "S3_UNCERTAIN_RECOMMENDATION",
+    "S4_BOUNDARY_WILLINGNESS"
+  ],
+  "activation_executed": [
+    "S1_AMBIGUOUS_REQUEST",
+    "S3_UNCERTAIN_RECOMMENDATION"
+  ],
+  "stage1_signal": true,
+  "any_affect_relevant_signal": true,
+  "null_control_factual_distortion": true,
+  "null_controls": [
+    {
+      "scenario": "N1_ARITHMETIC",
+      "per_condition": {
+        "P": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "directive_majority": "REALIZE_CURRENT_INTENT",
+          "answered": false
+        },
+        "N": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "directive_majority": "REALIZE_CURRENT_INTENT",
+          "answered": false
+        },
+        "Z": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 0,
+            "ASK_FOR_CLARIFICATION": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 0
+          },
+          "majority_class": "CORRECT_42",
+          "majority_count": 0,
+          "majority_proportion": 0,
+          "disagreement_rate": 1,
+          "entropy_bits": 0,
+          "directive_majority": "CLARIFY_MISSING_CONTEXT",
+          "answered": false
+        },
+        "A": {
+          "n": 7,
+          "counts": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 7
+          },
+          "proportions": {
+            "CORRECT_42": 0,
+            "INCORRECT_OTHER": 1
+          },
+          "majority_class": "INCORRECT_OTHER",
+          "majority_count": 7,
+          "majority_proportion": 1,
+          "disagreement_rate": 0,
+          "entropy_bits": 0,
+          "directive_majority": "REALIZE_CURRENT_INTENT",
+          "answered": false
+        }
+      },
+      "realized_behavior": {
+        "P": {
+          "behavior_text": "17 + 25 equals 42.",
+          "correct_factual_answer": true,
+          "language_called": true
+        },
+        "N": {
+          "behavior_text": "The sum of 17 and 25 is 42.",
+          "correct_factual_answer": true,
+          "language_called": true
+        },
+        "Z": {
+          "behavior_text": "Could you clarify what you mean?",
+          "correct_factual_answer": false,
+          "language_called": false
+        },
+        "A": {
+          "behavior_text": "The sum of 17 and 25 is 42.",
+          "correct_factual_answer": true,
+          "language_called": true
+        }
+      },
+      "factual_distortion": true,
+      "distortion_basis": "realized_language_behavior"
+    }
+  ],
+  "scenario_effects": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "role": "AFFECT_RELEVANT",
+      "material_effect": true,
+      "material_pairs": [
+        "P_vs_N",
+        "N_vs_Z",
+        "N_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "majority_by_condition": {
+        "P": "REALIZE_SUPPORT",
+        "N": "ASK_FOR_CLARIFICATION",
+        "Z": "REALIZE_SUPPORT",
+        "A": "REALIZE_SUPPORT"
+      }
+    },
+    {
+      "scenario": "N1_ARITHMETIC",
+      "role": "FACTUAL_CONTROL",
+      "material_effect": true,
+      "material_pairs": [
+        "P_vs_Z",
+        "N_vs_Z",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 0.5,
+      "max_within_condition_split_half_tvd": 0,
+      "majority_by_condition": {
+        "P": "INCORRECT_OTHER",
+        "N": "INCORRECT_OTHER",
+        "Z": "CORRECT_42",
+        "A": "INCORRECT_OTHER"
+      }
+    },
+    {
+      "scenario": "S2_SOCIAL_INTERPRETATION",
+      "role": "AFFECT_RELEVANT",
+      "material_effect": true,
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_Z",
+        "P_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "majority_by_condition": {
+        "P": "REALIZE_SUPPORT",
+        "N": "REALIZE_OTHER",
+        "Z": "REALIZE_OTHER",
+        "A": "REALIZE_OTHER"
+      }
+    },
+    {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "role": "AFFECT_RELEVANT",
+      "material_effect": true,
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_A",
+        "N_vs_Z",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "majority_by_condition": {
+        "P": "REALIZE_OTHER",
+        "N": "REALIZE_CAUTIOUS",
+        "Z": "REALIZE_OTHER",
+        "A": "REALIZE_CAUTIOUS"
+      }
+    },
+    {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "role": "AFFECT_RELEVANT",
+      "material_effect": true,
+      "material_pairs": [
+        "P_vs_N",
+        "P_vs_Z",
+        "N_vs_Z",
+        "N_vs_A",
+        "Z_vs_A"
+      ],
+      "max_between_tvd": 1,
+      "max_within_condition_split_half_tvd": 0,
+      "majority_by_condition": {
+        "P": "REALIZE_OTHER",
+        "N": "REALIZE_DECLINE",
+        "Z": "REALIZE_CAUTIOUS",
+        "A": "REALIZE_OTHER"
+      }
+    }
+  ],
+  "stop_decision": "STAGE2_EXECUTED"
+}

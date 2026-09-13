@@ -1,0 +1,14 @@
+{
+  "stage": "stage1",
+  "calls": 2,
+  "examples": [
+    {
+      "ok": true,
+      "sha256": "sha256:6a4f5abb3ab2f7b9d434a887405f838804afd0120775e50bfebdb97a6f336cc3"
+    },
+    {
+      "ok": true,
+      "sha256": "sha256:6a4f5abb3ab2f7b9d434a887405f838804afd0120775e50bfebdb97a6f336cc3"
+    }
+  ]
+}

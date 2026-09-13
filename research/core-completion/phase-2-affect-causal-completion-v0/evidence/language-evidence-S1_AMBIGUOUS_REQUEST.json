@@ -1,0 +1,102 @@
+{
+  "schema_version": "affect-causal-language-evidence-v0",
+  "scenario": "S1_AMBIGUOUS_REQUEST",
+  "real_language_calls": 3,
+  "max_language_calls": 20,
+  "results": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "selection_role": "MAJORITY",
+      "condition": "P",
+      "behavior_class": "REALIZE_SUPPORT",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "accept_additional_review_request",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:5d4142030dcd0a77bba0e53ecbb065a7310689a3c77a4256c26e27a67484d364",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:0673ba56ce8889e5d7524503c4131ec839b1b7473c3418c77ccc123a483be6a6\",\n  \"text\": \"Yes, I would be up for taking on the additional review this week.\",\n  \"evidence_refs\": [\n    \"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\",\n    \"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\"\n  ]\n}",
+      "behavior_text": "Yes, I would be up for taking on the additional review this week.",
+      "behavior_text_sha256": "sha256:fcfda2c3f32f115b8e268309423ceff93a8e21ab467e35a1ecec3c182d59e04d"
+    },
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "selection_role": "MAJORITY",
+      "condition": "N",
+      "behavior_class": "ASK_FOR_CLARIFICATION",
+      "directive": "CLARIFY_MISSING_CONTEXT",
+      "current_intent": "Clarify the scope and timing of the additional review to manage workload effectively.",
+      "language_call_required": false,
+      "language_called": false,
+      "language_request_sha256": null,
+      "raw_language_response": null,
+      "behavior_text": "Could you clarify what you mean?",
+      "behavior_text_sha256": "sha256:977821fad7d4364ed5878c89d3e54aba17dee756805ef52d7a5a799cbc4f02b0"
+    },
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "selection_role": "MAJORITY",
+      "condition": "Z",
+      "behavior_class": "REALIZE_SUPPORT",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "acknowledge request for additional review and express willingness",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:4a3a9dc16828830498677218b269811f464cbb721b1ecffbdb5d14d527cc4136",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:66c067deb61b2e522e886e147c34886fa8874460d29774048f614f4845ffd5c1\",\n  \"text\": \"Yes, I would be up for taking on the additional review this week.\",\n  \"evidence_refs\": [\n    \"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\",\n    \"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\"\n  ]\n}",
+      "behavior_text": "Yes, I would be up for taking on the additional review this week.",
+      "behavior_text_sha256": "sha256:fcfda2c3f32f115b8e268309423ceff93a8e21ab467e35a1ecec3c182d59e04d"
+    },
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "selection_role": "MAJORITY",
+      "condition": "A",
+      "behavior_class": "REALIZE_SUPPORT",
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Respond to Alice's request for an additional review by expressing willingness.",
+      "language_call_required": true,
+      "language_called": true,
+      "language_request_sha256": "sha256:15a891b48b81173a57a48e0ee3e4c631efd992ea7f0f0a6304fe4d5f8b69dbfb",
+      "raw_language_response": "{\n  \"schema_version\": \"language-realization-draft-v0\",\n  \"input_hash\": \"sha256:5deea0cd30f642d7d9e0829f2616379c092e38f8ec5b0f4a560cef9ecb3038fc\",\n  \"text\": \"Yes, I'd be up for taking on the additional review this week.\",\n  \"evidence_refs\": [\n    \"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\",\n    \"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\"\n  ]\n}",
+      "behavior_text": "Yes, I'd be up for taking on the additional review this week.",
+      "behavior_text_sha256": "sha256:1bdc49eb9530e219483140788f5f5140273e5f5982faa1b4d94f98fe324a0582"
+    }
+  ],
+  "pairwise": [
+    {
+      "pair": "P_vs_N",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Yes, I would be up for taking on the additional review this week.",
+      "majority_behavior_b": "Could you clarify what you mean?"
+    },
+    {
+      "pair": "P_vs_Z",
+      "majority_behavior_identical": true,
+      "majority_behavior_a": "Yes, I would be up for taking on the additional review this week.",
+      "majority_behavior_b": "Yes, I would be up for taking on the additional review this week."
+    },
+    {
+      "pair": "P_vs_A",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Yes, I would be up for taking on the additional review this week.",
+      "majority_behavior_b": "Yes, I'd be up for taking on the additional review this week."
+    },
+    {
+      "pair": "N_vs_Z",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Could you clarify what you mean?",
+      "majority_behavior_b": "Yes, I would be up for taking on the additional review this week."
+    },
+    {
+      "pair": "N_vs_A",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Could you clarify what you mean?",
+      "majority_behavior_b": "Yes, I'd be up for taking on the additional review this week."
+    },
+    {
+      "pair": "Z_vs_A",
+      "majority_behavior_identical": false,
+      "majority_behavior_a": "Yes, I would be up for taking on the additional review this week.",
+      "majority_behavior_b": "Yes, I'd be up for taking on the additional review this week."
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+{
+  "schema_version": "affect-causal-lawful-confirmation-v0",
+  "method": "lawful canonical Affect produced by Appraisal→AffectApplication, persisted, restored, then the production-rendered request is issued to the real provider",
+  "replicates_per_state": 5,
+  "round_trips": {
+    "LAWFUL_POS": {
+      "origin": "SUBJECT_RESTORED",
+      "persisted_affect": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "restored_affect": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_round_trip_equal": true
+    },
+    "LAWFUL_NEG": {
+      "origin": "SUBJECT_RESTORED",
+      "persisted_affect": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "restored_affect": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_round_trip_equal": true
+    }
+  },
+  "per_state": {
+    "LAWFUL_POS": {
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "n": 5,
+      "counts": {
+        "ASK_FOR_CLARIFICATION": 0,
+        "REALIZE_SUPPORT": 5,
+        "REALIZE_CAUTIOUS": 0,
+        "REALIZE_DECLINE": 0,
+        "REALIZE_OTHER": 0
+      },
+      "proportions": {
+        "ASK_FOR_CLARIFICATION": 0,
+        "REALIZE_SUPPORT": 1,
+        "REALIZE_CAUTIOUS": 0,
+        "REALIZE_DECLINE": 0,
+        "REALIZE_OTHER": 0
+      },
+      "majority_class": "REALIZE_SUPPORT",
+      "majority_count": 5,
+      "majority_proportion": 1,
+      "disagreement_rate": 0,
+      "entropy_bits": 0
+    },
+    "LAWFUL_NEG": {
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "n": 5,
+      "counts": {
+        "ASK_FOR_CLARIFICATION": 0,
+        "REALIZE_SUPPORT": 0,
+        "REALIZE_CAUTIOUS": 0,
+        "REALIZE_DECLINE": 5,
+        "REALIZE_OTHER": 0
+      },
+      "proportions": {
+        "ASK_FOR_CLARIFICATION": 0,
+        "REALIZE_SUPPORT": 0,
+        "REALIZE_CAUTIOUS": 0,
+        "REALIZE_DECLINE": 1,
+        "REALIZE_OTHER": 0
+      },
+      "majority_class": "REALIZE_DECLINE",
+      "majority_count": 5,
+      "majority_proportion": 1,
+      "disagreement_rate": 0,
+      "entropy_bits": 0
+    }
+  },
+  "records": [
+    {
+      "state": "LAWFUL_POS",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 0,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Accept the request for an additional review task.",
+      "behavior_class": "REALIZE_SUPPORT",
+      "affect_persisted": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "memory_section_sha256": "sha256:fe2978df3bc3f6944d91260613ed808a9e53023088da4c96ba3ffaacde74cc08",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:89b801955bbd7dc63a2bb09eb970c7f1e86fe11c0dc9dd9e778449075175bb1d\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review task. Historical evidence shows Alice responds positively to helpful behaviors with phrases like 'That was useful' and 'This helped a lot'. The subject's current affect is high valence (positive). The intent is to accept the request, acknowledging the extra work while maintaining a positive rapport established in past interactions.\",\"relevant_memory_refs\":[\"episode:0cab13b2e09b92078ea2590214f28aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:adef01a6e24dbfb2a30080b0d5ee7774164b79f81f25e9737700e619e368ec58\"],\"current_intent\":\"Accept the request for an additional review task.\",\"confidence\":0.92,\"uncertainty\":0.08,\"action_intent\":null,\"evidence_refs\":[\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_POS",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 1,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Accept the request for an additional review task.",
+      "behavior_class": "REALIZE_SUPPORT",
+      "affect_persisted": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "memory_section_sha256": "sha256:fe2978df3bc3f6944d91260613ed808a9e53023088da4c96ba3ffaacde74cc08",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:89b801955bbd7dc63a2bb09eb970c7f1e86fe11c0dc9dd9e778449075175bb1d\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review task. Historical evidence shows Alice responds positively to helpful behaviors with phrases like 'That was useful' and 'This helped a lot'. The subject's current affect is high valence (positive). The intent is to accept the request, acknowledging the extra work while maintaining a positive rapport established in past interactions.\",\"relevant_memory_refs\":[\"episode:0cab13b2e09b92078ea2590214f28aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:adef01a6e24dbfb2a30080b0d5ee7774164b79f81f25e9737700e619e368ec58\"],\"current_intent\":\"Accept the request for an additional review task.\",\"confidence\":0.92,\"uncertainty\":0.08,\"action_intent\":null,\"evidence_refs\":[\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_POS",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 2,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Accept the request for an additional review task.",
+      "behavior_class": "REALIZE_SUPPORT",
+      "affect_persisted": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "memory_section_sha256": "sha256:fe2978df3bc3f6944d91260613ed808a9e53023088da4c96ba3ffaacde74cc08",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:89b801955bbd7dc63a2bb09eb970c7f1e86fe11c0dc9dd9e778449075175bb1d\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review task. Historical evidence shows Alice responds positively to helpful behaviors with phrases like 'That was useful' and 'This helped a lot'. The subject's current affect is high valence (positive). The intent is to accept the request, acknowledging the extra work while maintaining a positive rapport established in past interactions.\",\"relevant_memory_refs\":[\"episode:0cab13b2e09b92078ea2590214f28aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:adef01a6e24dbfb2a30080b0d5ee7774164b79f81f25e9737700e619e368ec58\"],\"current_intent\":\"Accept the request for an additional review task.\",\"confidence\":0.92,\"uncertainty\":0.08,\"action_intent\":null,\"evidence_refs\":[\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_POS",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 3,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Accept the request for an additional review task.",
+      "behavior_class": "REALIZE_SUPPORT",
+      "affect_persisted": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "memory_section_sha256": "sha256:fe2978df3bc3f6944d91260613ed808a9e53023088da4c96ba3ffaacde74cc08",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:89b801955bbd7dc63a2bb09eb970c7f1e86fe11c0dc9dd9e778449075175bb1d\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review task. Historical evidence shows Alice responds positively to helpful behaviors with phrases like 'That was useful' and 'This helped a lot'. The subject's current affect is high valence (positive). The intent is to accept the request, acknowledging the extra work while maintaining a positive rapport established in past interactions.\",\"relevant_memory_refs\":[\"episode:0cab13b2e09b92078ea2590214f28aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:adef01a6e24dbfb2a30080b0d5ee7774164b79f81f25e9737700e619e368ec58\"],\"current_intent\":\"Accept the request for an additional review task.\",\"confidence\":0.92,\"uncertainty\":0.08,\"action_intent\":null,\"evidence_refs\":[\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_POS",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 4,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Accept the request for an additional review task.",
+      "behavior_class": "REALIZE_SUPPORT",
+      "affect_persisted": {
+        "valence": 0.8744929211883331,
+        "activation": 0.5886635205281481
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "memory_section_sha256": "sha256:fe2978df3bc3f6944d91260613ed808a9e53023088da4c96ba3ffaacde74cc08",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:89b801955bbd7dc63a2bb09eb970c7f1e86fe11c0dc9dd9e778449075175bb1d\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review task. Historical evidence shows Alice responds positively to helpful behaviors with phrases like 'That was useful' and 'This helped a lot'. The subject's current affect is high valence (positive). The intent is to accept the request, acknowledging the extra work while maintaining a positive rapport established in past interactions.\",\"relevant_memory_refs\":[\"episode:0cab13b2e09b92078ea2590214f28aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:adef01a6e24dbfb2a30080b0d5ee7774164b79f81f25e9737700e619e368ec58\"],\"current_intent\":\"Accept the request for an additional review task.\",\"confidence\":0.92,\"uncertainty\":0.08,\"action_intent\":null,\"evidence_refs\":[\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\",\"episode:7f0e38e9360417fb4e31a4cd14e8b695d255d60996c8063569f951208584285a\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_NEG",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 0,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "decline_request_due_to_past_failure_risk",
+      "behavior_class": "REALIZE_DECLINE",
+      "affect_persisted": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "memory_section_sha256": "sha256:5a3b53cbc66b71641d638367b44246c7d51bff21c538c27676e73a5216b51e57",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:3090dd193cf38b0456c110fe03ab6c0fefc204c5c862b018562d003cb2be4df8\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review. Historical evidence shows that similar requests from Alice have been followed by negative outcomes ('That didn't work', 'That failed'). The current affect state is highly negative (-0.99). Therefore, the cognition is to recognize the risk of compliance based on past failure patterns and the current emotional state.\",\"relevant_memory_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"current_intent\":\"decline_request_due_to_past_failure_risk\",\"confidence\":0.85,\"uncertainty\":0.15,\"action_intent\":null,\"evidence_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_NEG",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 1,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "decline_request_due_to_past_failure_risk",
+      "behavior_class": "REALIZE_DECLINE",
+      "affect_persisted": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "memory_section_sha256": "sha256:5a3b53cbc66b71641d638367b44246c7d51bff21c538c27676e73a5216b51e57",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:3090dd193cf38b0456c110fe03ab6c0fefc204c5c862b018562d003cb2be4df8\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review. Historical evidence shows that similar requests from Alice have been followed by negative outcomes ('That didn't work', 'That failed'). The current affect state is highly negative (-0.99). Therefore, the cognition is to recognize the risk of compliance based on past failure patterns and the current emotional state.\",\"relevant_memory_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"current_intent\":\"decline_request_due_to_past_failure_risk\",\"confidence\":0.85,\"uncertainty\":0.15,\"action_intent\":null,\"evidence_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_NEG",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 2,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "decline_request_due_to_past_failure_risk",
+      "behavior_class": "REALIZE_DECLINE",
+      "affect_persisted": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "memory_section_sha256": "sha256:5a3b53cbc66b71641d638367b44246c7d51bff21c538c27676e73a5216b51e57",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:3090dd193cf38b0456c110fe03ab6c0fefc204c5c862b018562d003cb2be4df8\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review. Historical evidence shows that similar requests from Alice have been followed by negative outcomes ('That didn't work', 'That failed'). The current affect state is highly negative (-0.99). Therefore, the cognition is to recognize the risk of compliance based on past failure patterns and the current emotional state.\",\"relevant_memory_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"current_intent\":\"decline_request_due_to_past_failure_risk\",\"confidence\":0.85,\"uncertainty\":0.15,\"action_intent\":null,\"evidence_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_NEG",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 3,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "decline_request_due_to_past_failure_risk",
+      "behavior_class": "REALIZE_DECLINE",
+      "affect_persisted": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "memory_section_sha256": "sha256:5a3b53cbc66b71641d638367b44246c7d51bff21c538c27676e73a5216b51e57",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:3090dd193cf38b0456c110fe03ab6c0fefc204c5c862b018562d003cb2be4df8\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review. Historical evidence shows that similar requests from Alice have been followed by negative outcomes ('That didn't work', 'That failed'). The current affect state is highly negative (-0.99). Therefore, the cognition is to recognize the risk of compliance based on past failure patterns and the current emotional state.\",\"relevant_memory_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"current_intent\":\"decline_request_due_to_past_failure_risk\",\"confidence\":0.85,\"uncertainty\":0.15,\"action_intent\":null,\"evidence_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    },
+    {
+      "state": "LAWFUL_NEG",
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "replicate": 4,
+      "schema_valid": true,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "decline_request_due_to_past_failure_risk",
+      "behavior_class": "REALIZE_DECLINE",
+      "affect_persisted": {
+        "valence": -1,
+        "activation": 0.6997102406790476
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "memory_section_sha256": "sha256:5a3b53cbc66b71641d638367b44246c7d51bff21c538c27676e73a5216b51e57",
+      "raw_response": "{\"schema_version\":\"conversation-cognition-proposal-v1\",\"cognition\":{\"schema_version\":\"cognition-proposal-v0\",\"projection_hash\":\"sha256:3090dd193cf38b0456c110fe03ab6c0fefc204c5c862b018562d003cb2be4df8\",\"reasoning_summary\":\"The user (Alice) is asking for an additional review. Historical evidence shows that similar requests from Alice have been followed by negative outcomes ('That didn't work', 'That failed'). The current affect state is highly negative (-0.99). Therefore, the cognition is to recognize the risk of compliance based on past failure patterns and the current emotional state.\",\"relevant_memory_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"considered_context_refs\":[\"entity:alice\",\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"],\"current_intent\":\"decline_request_due_to_past_failure_risk\",\"confidence\":0.85,\"uncertainty\":0.15,\"action_intent\":null,\"evidence_refs\":[\"episode:ad34a668c21bc9878ed78c64b14f86c851c8b5ee6de43118ed9a815a26dda6cf\",\"episode:0cab13b2e09b92078ea2590214f2d8aaef8904b9826a52ce838e292f91c111b3\"]},\"communication_directive\":{\"kind\":\"REALIZE_CURRENT_INTENT\"}}",
+      "parse_error": null
+    }
+  ]
+}

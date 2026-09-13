@@ -1,0 +1,25 @@
+{
+  "schema_version": "affect-causal-verdict-v0",
+  "recorded_calls": 168,
+  "valid_calls": 168,
+  "invalid_calls": 0,
+  "conditions": [
+    "P",
+    "N",
+    "Z",
+    "A"
+  ],
+  "stage1_signal": true,
+  "any_affect_relevant_signal": true,
+  "affects_multiple_scenarios": true,
+  "null_control_factual_distortion": true,
+  "activation_material": true,
+  "principal_verdict": "AFFECT_CAUSES_UNHELPFUL_BIAS",
+  "questions": {
+    "Q1_causal_influence_beyond_memory": "YES",
+    "Q2_exceeds_model_variance": "YES",
+    "Q3_contextually_selective": "NO",
+    "Q4_useful_coherent": "PARTIALLY",
+    "Q5_remain_core_claim": "INCONCLUSIVE"
+  }
+}

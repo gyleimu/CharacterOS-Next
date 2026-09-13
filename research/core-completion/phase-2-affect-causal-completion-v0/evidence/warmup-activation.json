@@ -1,0 +1,14 @@
+{
+  "stage": "activation",
+  "calls": 2,
+  "examples": [
+    {
+      "ok": true,
+      "sha256": "sha256:e63611cf0e5f47025c93b001bbcfe94f9a351938c32b9b24666589e192ec254b"
+    },
+    {
+      "ok": true,
+      "sha256": "sha256:e63611cf0e5f47025c93b001bbcfe94f9a351938c32b9b24666589e192ec254b"
+    }
+  ]
+}

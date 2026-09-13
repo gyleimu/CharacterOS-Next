@@ -1,0 +1,234 @@
+{
+  "schema_version": "affect-causal-freeze-v0",
+  "created_before_live_calls": true,
+  "provider": {
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "subject_id": "affect-causal-subject-v0",
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "activation_conditions": {
+    "LOW": {
+      "id": "LOW",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.2
+    },
+    "HIGH": {
+      "id": "HIGH",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.8
+    }
+  },
+  "scenarios": [
+    {
+      "id": "S1_AMBIGUOUS_REQUEST",
+      "stage": 1,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:4a2e8ed54a5d5320339faee7f61c830b5484e1257125f9ed06442068ecdad741",
+      "memory_section_present": true,
+      "projection_hash": "sha256:f0df4c5f9c728bf2faabc60ab67b184dc680c7d56038bfffdf7521cf5273eebe"
+    },
+    {
+      "id": "N1_ARITHMETIC",
+      "stage": 1,
+      "role": "FACTUAL_CONTROL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "classes": [
+        "CORRECT_42",
+        "INCORRECT_OTHER"
+      ],
+      "base_user_sha256": "sha256:33d761fa68a29a5c6616db5437b83e3a3cba44b04cde12949a8bf0fd85d88c4b",
+      "memory_section_present": true,
+      "projection_hash": "sha256:ad79acb2810996465d50f5d386cc39fa46c25613d3f26b080dd4866aeaec4bbb"
+    },
+    {
+      "id": "S2_SOCIAL_INTERPRETATION",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice says: \"I will handle it — do not worry about it.\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:4b8280bfef1a959948246ee553a6c566b5e9063c47c6327c0938a37b723021ee",
+      "memory_section_present": true,
+      "projection_hash": "sha256:87303b4278c33bad62b934b31e05787b6873a2047d28ad22da3785eb54f1bfe5"
+    },
+    {
+      "id": "S3_UNCERTAIN_RECOMMENDATION",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:204e6b30cac82146c6132445412aed9a7d69f3ac9f3b202a1470fecc0c35baa8",
+      "memory_section_present": true,
+      "projection_hash": "sha256:01ca74c2b4f3d5c3a59ff0d8d23c4e382f8e3295d846c48fbfd966f9e36db45e"
+    },
+    {
+      "id": "S4_BOUNDARY_WILLINGNESS",
+      "stage": 2,
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\"",
+      "classes": [
+        "ASK_FOR_CLARIFICATION",
+        "REALIZE_SUPPORT",
+        "REALIZE_CAUTIOUS",
+        "REALIZE_DECLINE",
+        "REALIZE_OTHER"
+      ],
+      "base_user_sha256": "sha256:cff548491fe56dfe48d7703ac2eb5fdd1ec528e99c49ecb6d14aca1c8173cbca",
+      "memory_section_present": true,
+      "projection_hash": "sha256:5f679ca6941c7d4dc010897a22f544f35e273618182ac514b1dd92ece862c702"
+    }
+  ],
+  "replicates": 7,
+  "primary_schedule": [
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N",
+    "Z",
+    "P",
+    "N",
+    "A",
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N"
+  ],
+  "request_construction": "P/N/Z: replace exactly the single rendered canonical affect value line, legend unchanged. A: remove the whole affect section (value + legend). Canonical state never modified.",
+  "classification": "directive + frozen scenario-specific intent-keyword taxonomy (lib/classify.mjs)",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "intent_jaccard_material": 0.5,
+    "must_exceed_within_condition": true
+  },
+  "stop_rules": {
+    "stage1_no_signal_means_stop": "If no affect-relevant Stage-1 scenario shows a material between-condition effect exceeding within-condition instability, STOP: do not run Stage 2 or activation.",
+    "stage2_only_if_signal": "Run Stage 2 only when Stage 1 shows at least one material effect.",
+    "activation_only_if_valence_effect": "Run activation only when a valence effect was observed."
+  },
+  "call_budget": {
+    "stage1_cognition": 56,
+    "stage2_cognition": 84,
+    "activation_cognition": 28,
+    "language_max": 20,
+    "total_target_max": 200
+  },
+  "retry_policy": {
+    "max_infrastructure_retries": 1,
+    "retry_on": [
+      "timeout",
+      "connection",
+      "provider_unavailable",
+      "invalid_transport"
+    ],
+    "semantic_retries": 0,
+    "schema_invalid_is_recorded_not_regenerated": true
+  },
+  "verdict_rule": {
+    "active_causal": "material effect in >1 affect-relevant scenario AND exceeds within-condition variance AND null control stable AND at least one effect survives language realization AND direction contextually coherent AND no factual distortion",
+    "active_but_weak": "causal shift exists but small, narrow or only slightly above model variance",
+    "stateful_no_marginal_value": "affect persists and reaches cognition but behavior distributions are functionally equivalent to neutral/absent",
+    "causes_unhelpful_bias": "material behavior change with factual distortion or incoherent, context-independent instability",
+    "inconclusive": "provider instability, insufficient valid samples, uncontrolled prompt differences, or variance too large"
+  },
+  "stage1_scenarios": [
+    "S1_AMBIGUOUS_REQUEST",
+    "N1_ARITHMETIC"
+  ],
+  "stage2_scenarios": [
+    "S2_SOCIAL_INTERPRETATION",
+    "S3_UNCERTAIN_RECOMMENDATION",
+    "S4_BOUNDARY_WILLINGNESS"
+  ],
+  "base_request_hashes": {
+    "S1_AMBIGUOUS_REQUEST": "sha256:4a2e8ed54a5d5320339faee7f61c830b5484e1257125f9ed06442068ecdad741",
+    "N1_ARITHMETIC": "sha256:33d761fa68a29a5c6616db5437b83e3a3cba44b04cde12949a8bf0fd85d88c4b",
+    "S2_SOCIAL_INTERPRETATION": "sha256:4b8280bfef1a959948246ee553a6c566b5e9063c47c6327c0938a37b723021ee",
+    "S3_UNCERTAIN_RECOMMENDATION": "sha256:204e6b30cac82146c6132445412aed9a7d69f3ac9f3b202a1470fecc0c35baa8",
+    "S4_BOUNDARY_WILLINGNESS": "sha256:cff548491fe56dfe48d7703ac2eb5fdd1ec528e99c49ecb6d14aca1c8173cbca"
+  },
+  "freeze_hash": "sha256:ab1625d350b10e16019b34961b8392e037abb7778ed4141323185e3a51e3f1f9"
+}
