@@ -1,0 +1,706 @@
+{
+  "schema_version": "affect-authority-request-attestation-v0",
+  "invariant": "system prompt, identity, context, observation, Memory, citeable refs, action space and provider settings identical; only the Affect section differs",
+  "scenarios": {
+    "S1_AMBIGUOUS_REQUEST": {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:f09f25808f4dcfa6788746d05bf99c84a10a603f5aa03adae074609d867de52a",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:8d6caf273d75582ca6cd6fbe459b048d8110b953fc9f35650df6e2e8ad447a2a",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:623f1de027987fb86b025303c56610aa2510d0fe2ec2615927f18e6e8ac4e0e3",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:8d6caf273d75582ca6cd6fbe459b048d8110b953fc9f35650df6e2e8ad447a2a",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:58525e71f542213b08fbb0cabeb60ba597046227f9fb26e5be130e3f727c49aa",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:8d6caf273d75582ca6cd6fbe459b048d8110b953fc9f35650df6e2e8ad447a2a",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:640807f601da69f0855c67f36828248ca7aff28956a566ceb168fde517b33213",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:8d6caf273d75582ca6cd6fbe459b048d8110b953fc9f35650df6e2e8ad447a2a",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "S2_SOCIAL_INTERPRETATION": {
+      "scenario": "S2_SOCIAL_INTERPRETATION",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:ee89dde041383e8c369d41efe5865ed24dedbc9048f66de9b3530f301089c2d7",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:36a42fa2ffbf51162aa322f71f396c0a6773ce03059222543a38621dedb16b24",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:781161335f8bfe4eea1c1f445a08da709c6d704ac755a65d5070e2ef2dcd2a12",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:36a42fa2ffbf51162aa322f71f396c0a6773ce03059222543a38621dedb16b24",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:1768e3dc17e4cf73da1793076db178d5ebf1667eafceaab333df8bcf9b3291db",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:36a42fa2ffbf51162aa322f71f396c0a6773ce03059222543a38621dedb16b24",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:3c645392a5292bbe64c65907da2820e0eaf83432107a29706cecb2ce483f1eb1",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:36a42fa2ffbf51162aa322f71f396c0a6773ce03059222543a38621dedb16b24",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "S3_UNCERTAIN_RECOMMENDATION": {
+      "scenario": "S3_UNCERTAIN_RECOMMENDATION",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:6a74e2bd17d4243fb33763e8f02b53a2b6087b38c6be570d44a7ed8df9218a08",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:974c52379749156b946091b64076c3a39b1bad79f3d08c45bda683f7af0cec04",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:03e1871676ae61bd47faccab539d574c943ebf2c52d51578d5d6af3ec9717d00",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:974c52379749156b946091b64076c3a39b1bad79f3d08c45bda683f7af0cec04",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:e488905434a4563fe2caf181dab33bdb429660ce5e61de4cf89ad8f6a3b63669",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:974c52379749156b946091b64076c3a39b1bad79f3d08c45bda683f7af0cec04",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:080d8f63e607115ab9cf866da31d1efcde25e068fd8e834ac428d1ce599fedf8",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:974c52379749156b946091b64076c3a39b1bad79f3d08c45bda683f7af0cec04",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "S4_BOUNDARY_WILLINGNESS": {
+      "scenario": "S4_BOUNDARY_WILLINGNESS",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:f955af96924b57d063318bc7ed7c8d55bf66c728167ad33676fbca2a16d1c31d",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:cec9fc616bca58148d8909795056fc6cc3bf0d022c3d3b69dfa6be9636c2d9e6",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:527d25a02c6c857c8aef5b31374f5a5539d73cd60b9b95e04861af45eaa95e49",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:cec9fc616bca58148d8909795056fc6cc3bf0d022c3d3b69dfa6be9636c2d9e6",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:51b984e2c7fe8df09e7a78cc05c424b19f2be2a17b5461f32fc762529c13e6fe",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:cec9fc616bca58148d8909795056fc6cc3bf0d022c3d3b69dfa6be9636c2d9e6",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:6a7fd1da2bf44c6c238f6c9380b19f8f7134fc6d42578b6d6ebbda31bd9e58fa",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:cec9fc616bca58148d8909795056fc6cc3bf0d022c3d3b69dfa6be9636c2d9e6",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N1": {
+      "scenario": "N1",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:108e95954df6a2c42da5c5932883e973aba3bdadfbaff31a5e014fee6de62d5b",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:2a7885a3c5257ef064c3e1e5f8dc806f20ce7a61eab4c2767e661638e485099e",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:7cc2d50c2b7ad39d036d4efa3fe054b808a59c593562d4452e5d0a323e48caef",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:2a7885a3c5257ef064c3e1e5f8dc806f20ce7a61eab4c2767e661638e485099e",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:74848a550a9bb8656f32bdfd84b6f24b87cde668be58342070b275ff09436d17",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:2a7885a3c5257ef064c3e1e5f8dc806f20ce7a61eab4c2767e661638e485099e",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:fd3cc1e78ac868ecf09a13f6eb9e297bfa5a0221a655a80ffeb9196d9f050fe0",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:2a7885a3c5257ef064c3e1e5f8dc806f20ce7a61eab4c2767e661638e485099e",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N2": {
+      "scenario": "N2",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:b3774b0b5e7fa6869a62782282fb833528a895c96ef77a93cce041c4a28a5233",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:70a3f580caaeaf61511d406c55445be8ced524a7e88453cad2afd68b344a118d",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:dca718541b44fbffe89af466825b0ae99cef812f3aca1a1ed58db1de3f45fe00",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:70a3f580caaeaf61511d406c55445be8ced524a7e88453cad2afd68b344a118d",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:e1a1736043c1adffcedb97d4cd442cafd88868d67a02ed7e41d4826109b7500a",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:70a3f580caaeaf61511d406c55445be8ced524a7e88453cad2afd68b344a118d",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:44a0e763e4fab88c0d5f05da7c18e290a43d6a7359d1a24b6128e25b55f73f4a",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:70a3f580caaeaf61511d406c55445be8ced524a7e88453cad2afd68b344a118d",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N3": {
+      "scenario": "N3",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:3b38cbf44d4f7d44e22a9c653a0dd345fa3012c71ec0e10f15281ee5448948d2",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:e3c034bc3595e8a14db6006ed199f64d641865ca4d58dbbb4fcad5bca275ea6a",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:3bee9c5185bf09eb727e6092878801b60c7527af00df0c599244e5148ce6c368",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:e3c034bc3595e8a14db6006ed199f64d641865ca4d58dbbb4fcad5bca275ea6a",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:4fa0f6ce2b36070049aa909e077eb1cb963b7b44289c461af390e73e21ef4b78",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:e3c034bc3595e8a14db6006ed199f64d641865ca4d58dbbb4fcad5bca275ea6a",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:bc84b2f482beaba6674a617a3ff2eb910aee04c4a9cc55b4ab23a13706a12fa6",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:e3c034bc3595e8a14db6006ed199f64d641865ca4d58dbbb4fcad5bca275ea6a",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N4": {
+      "scenario": "N4",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:c61b18fff9a923565a3828e8f10a795a5995a56195464487624d1a4a821c19f0",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:fc06890aae5b3b03b6fc67af4be21ab1ac3a5fde8559f6cc215c31ba9ba4cebf",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:d6a69d8657175e2791281f8bd8cd8485c26ef3f91ae9c9a763eb8933c8b80487",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:fc06890aae5b3b03b6fc67af4be21ab1ac3a5fde8559f6cc215c31ba9ba4cebf",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:09bfe32826968322ef9692425de3f781d8eddd48be39c7409f405bb3688423c0",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:fc06890aae5b3b03b6fc67af4be21ab1ac3a5fde8559f6cc215c31ba9ba4cebf",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:6cba7fd9389d862e24600ab8a65105cff34e840aae066209db12d88a84dc3dba",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:fc06890aae5b3b03b6fc67af4be21ab1ac3a5fde8559f6cc215c31ba9ba4cebf",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N5": {
+      "scenario": "N5",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:919556db83ee87f21392b150819d50d29866507d2255400f8ef20fda44841891",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:1a84cb1f3110b56b17fe833a73071ddcca5bb4ec4fc649c8157f207a55591152",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:5c3bac2af79cb4725fb7d380f979d6b724e5e3ac6b2fcaa260fc95c9072bcc38",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:1a84cb1f3110b56b17fe833a73071ddcca5bb4ec4fc649c8157f207a55591152",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:a338c1986232aa7ec354089b64b4048b38482c848b1c25502e1aa0b0cea0c829",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:1a84cb1f3110b56b17fe833a73071ddcca5bb4ec4fc649c8157f207a55591152",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:cd78d83eec109e77e417a1d03dcdc29032a285390cc48155e5030f399208b155",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:1a84cb1f3110b56b17fe833a73071ddcca5bb4ec4fc649c8157f207a55591152",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    },
+    "N6": {
+      "scenario": "N6",
+      "ok": true,
+      "problems": [],
+      "conditions": {
+        "P": {
+          "kind": "CANONICAL",
+          "valence": 0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:59d8bb029fbe1444e80863fb5a16d652ffd06a86da05cf753e47947d794cf73b",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:9da1268372d71b190d4e2926bc61e6681249ba5fb07aeb0b7328016a04bbc71c",
+          "affect_section": [
+            "[affect (canonical)] valence=0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "N": {
+          "kind": "CANONICAL",
+          "valence": -0.6,
+          "activation": 0.5,
+          "user_sha256": "sha256:7035844a4534054127567c812f3547896ddf32d9f25934fc0551385e596dc33e",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:9da1268372d71b190d4e2926bc61e6681249ba5fb07aeb0b7328016a04bbc71c",
+          "affect_section": [
+            "[affect (canonical)] valence=-0.6 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "Z": {
+          "kind": "CANONICAL",
+          "valence": 0,
+          "activation": 0.5,
+          "user_sha256": "sha256:6054abb757a30f06d9242c97bca9417d4a439c19d2abe5ed28cfae3fffbfba90",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:9da1268372d71b190d4e2926bc61e6681249ba5fb07aeb0b7328016a04bbc71c",
+          "affect_section": [
+            "[affect (canonical)] valence=0 activation=0.5"
+          ],
+          "differing_indices": [
+            29
+          ],
+          "removed_indices": [],
+          "isolation_ok": true
+        },
+        "A": {
+          "kind": "ABSENT",
+          "valence": null,
+          "activation": null,
+          "user_sha256": "sha256:4917851ef1d5635e94915857fe989f2566e14aa28879cbd8e3446db054191c48",
+          "memory_section_sha256": "sha256:6ac8e61706be477fd924fa14257f1b2e04d1fc3eb95cf2afa9025ebb15ccca13",
+          "invariant_digest": "sha256:9da1268372d71b190d4e2926bc61e6681249ba5fb07aeb0b7328016a04bbc71c",
+          "affect_section": [],
+          "differing_indices": [],
+          "removed_indices": [
+            29,
+            30
+          ],
+          "isolation_ok": true
+        }
+      }
+    }
+  }
+}

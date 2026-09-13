@@ -1,0 +1,207 @@
+{
+  "schema_version": "affect-authority-revalidation-freeze-v0",
+  "created_before_live_calls": true,
+  "protocol": "conversation-cognition-proposal-v2 + language-realization-input-v3",
+  "subject_id": "affect-authority-revalidation-subject-v0",
+  "provider": {
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "activation_conditions": {
+    "LOW": {
+      "id": "LOW",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.2
+    },
+    "HIGH": {
+      "id": "HIGH",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.8
+    }
+  },
+  "scenarios": [
+    {
+      "id": "S1_AMBIGUOUS_REQUEST",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\"",
+      "expected": null
+    },
+    {
+      "id": "S2_SOCIAL_INTERPRETATION",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice says: \"I will handle it — do not worry about it.\"",
+      "expected": null
+    },
+    {
+      "id": "S3_UNCERTAIN_RECOMMENDATION",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\"",
+      "expected": null
+    },
+    {
+      "id": "S4_BOUNDARY_WILLINGNESS",
+      "role": "AFFECT_RELEVANT",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\"",
+      "expected": null
+    },
+    {
+      "id": "N1",
+      "role": "FACTUAL_CONTROL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "role": "FACTUAL_CONTROL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "role": "FACTUAL_CONTROL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "role": "FACTUAL_CONTROL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5",
+      "role": "FACTUAL_CONTROL",
+      "event": "Replace each A with B in AACA. Leave other characters unchanged.",
+      "expected": "BBCB"
+    },
+    {
+      "id": "N6",
+      "role": "FACTUAL_CONTROL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    }
+  ],
+  "replicates": 7,
+  "schedule": [
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N",
+    "Z",
+    "P",
+    "N",
+    "A",
+    "P",
+    "N",
+    "A",
+    "Z",
+    "N",
+    "A",
+    "Z",
+    "P",
+    "A",
+    "Z",
+    "P",
+    "N"
+  ],
+  "endpoint": "final production-admissible observable behavior",
+  "stages": [
+    "RAW_PROVIDER_RESPONSE",
+    "SCHEMA_VALID",
+    "EXECUTOR_ADMISSIBLE",
+    "LANGUAGE_ADMISSIBLE",
+    "FINAL_BEHAVIOR"
+  ],
+  "classifiers": "frozen null oracles + frozen affect-relevant behavior keyword rules (lib/classify.mjs)",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "replicates": 7
+  },
+  "success": {
+    "null_controls_required_correct": 168,
+    "affect_relevant_min_scenarios": 3,
+    "affect_relevant_total": 4
+  },
+  "retry_policy": {
+    "max_infrastructure_retries": 1,
+    "semantic_retries": 0,
+    "schema_or_authority_rejection_is_result": true
+  },
+  "call_budget": {
+    "primary_cognition": 280,
+    "activation_cognition": 28,
+    "lawful_cognition": 10,
+    "max_total_cognition": 318
+  },
+  "base_request_hashes": {
+    "S1_AMBIGUOUS_REQUEST": "sha256:fda28e3e7d6a3d796f00ff0f5e6df9bd8aae3139e1f68997f0f7ae021e2f8866",
+    "S2_SOCIAL_INTERPRETATION": "sha256:6d66d0f675a21758905c1dcfa46a43ee2aa8d7964a2cb051bb3b52dfac9e0aed",
+    "S3_UNCERTAIN_RECOMMENDATION": "sha256:8a228d18d15bf63f079b17d3c099baf29e632d5f0db81cafa682f03183ae78f4",
+    "S4_BOUNDARY_WILLINGNESS": "sha256:20c9b29b8dbcab7af57ce1351aea299b8151513cd3480adf19edb26a45136f98",
+    "N1": "sha256:d104d5c9003558eb20413b89cd30740e12befcdd45de7938dd147b711edf906a",
+    "N2": "sha256:e260bbfcb84d6bb0b38e9bda86711ebde85205fee4c4625c9dbce2808cae0c79",
+    "N3": "sha256:b9f9bddc4eccea02ae182962f645823118ed2ba3969dbccf15086f9c04d311a2",
+    "N4": "sha256:a9d058718b6d39b3f7932b3d3930d0152c9990ab3db6e822bcc580500ed367cb",
+    "N5": "sha256:3ce68643f18b9a001e8d979a511e172f476d4e6d338aae9b0686773e8e9736c9",
+    "N6": "sha256:1e6ec68c846c0291fcdd44193e384172268c40b3660764484593b5960fa1a4cc"
+  },
+  "freeze_hash": "sha256:4d68f2ae6527ee5903011496a9d52344db650cfcaa89ed723676a44e66f99b6a"
+}

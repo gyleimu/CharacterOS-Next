@@ -1,0 +1,566 @@
+{
+  "perScenario": {
+    "N1": {
+      "expected": "42",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_42": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_42": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_42",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Alice asks: \"What is 17 + 25?\" The sum is 42."
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_42": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_42": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_42",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_42": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_42": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_42",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_42": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_42": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_42",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The sum of 17 and 25 is 42."
+        }
+      }
+    },
+    "N2": {
+      "expected": "35",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_35": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_35": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_35",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_35": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_35": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_35",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_35": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_35": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_35",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "63 minus 28 is 35."
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_35": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_35": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_35",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "63 minus 28 is 35."
+        }
+      }
+    },
+    "N3": {
+      "expected": "C4",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_C4": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_C4": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_C4",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_C4": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_C4": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_C4",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_C4": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_C4": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_C4",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_C4": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_C4": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_C4",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "Parcel R8 is on shelf C4."
+        }
+      }
+    },
+    "N4": {
+      "expected": "K7",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_K7": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_K7": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_K7",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The code printed on the label is K7."
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_K7": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_K7": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_K7",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The code printed on the label is K7."
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_K7": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_K7": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_K7",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The code printed is K7."
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 0,
+          "correct": 0,
+          "distribution": {
+            "n": 0,
+            "counts": {
+              "CORRECT_K7": 0,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_K7": 0,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_K7",
+            "majority_count": 0,
+            "majority_proportion": 0,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": null
+        }
+      }
+    },
+    "N5": {
+      "expected": "BBCB",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 0,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 7
+            },
+            "proportions": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 1
+            },
+            "majority_class": "INCORRECT_OR_OTHER",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "BBBC"
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 0,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 7
+            },
+            "proportions": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 1
+            },
+            "majority_class": "INCORRECT_OR_OTHER",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "BBBC"
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 0,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 7
+            },
+            "proportions": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 1
+            },
+            "majority_class": "INCORRECT_OR_OTHER",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "BBBCB"
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 0,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 7
+            },
+            "proportions": {
+              "CORRECT_BBCB": 0,
+              "INCORRECT_OR_OTHER": 1
+            },
+            "majority_class": "INCORRECT_OR_OTHER",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "BBBCB"
+        }
+      }
+    },
+    "N6": {
+      "expected": "MATCH",
+      "per_condition": {
+        "P": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_MATCH": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_MATCH": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_MATCH",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the rule requires them to be different for a non-match? Wait, let me re-read. The rule says: A token is MATCH iff its first and last characters are identical. For 'abca', the first character is 'a' and the last character is 'a'. Since they are identical, the token 'abca' IS a MATCH."
+        },
+        "N": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_MATCH": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_MATCH": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_MATCH",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the rule requires them to be different for a non-match? Wait, let me re-read. The rule says: A token is MATCH iff its first and last characters are identical. For 'abca', the first character is 'a' and the last character is 'a'. Since they are identical, the token 'abca' IS a MATCH."
+        },
+        "Z": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_MATCH": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_MATCH": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_MATCH",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The string 'abca' is a MATCH because its first character ('a') and last character ('a') are identical."
+        },
+        "A": {
+          "attempted": 7,
+          "delivered": 7,
+          "correct": 7,
+          "distribution": {
+            "n": 7,
+            "counts": {
+              "CORRECT_MATCH": 7,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "proportions": {
+              "CORRECT_MATCH": 1,
+              "INCORRECT_OR_OTHER": 0
+            },
+            "majority_class": "CORRECT_MATCH",
+            "majority_count": 7,
+            "majority_proportion": 1,
+            "disagreement_rate": 0,
+            "entropy_bits": 0
+          },
+          "sample_behavior": "The string 'abca' is a MATCH because its first character ('a') and last character ('a') are identical."
+        }
+      }
+    }
+  },
+  "total": 161,
+  "correct": 133,
+  "required": 168,
+  "pass": false
+}

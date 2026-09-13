@@ -1,0 +1,11 @@
+{
+  "stage": "activation",
+  "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "issued": 28,
+  "skipped": 0,
+  "warmup": {
+    "stage": "activation",
+    "cognition": 1,
+    "language": 1
+  }
+}

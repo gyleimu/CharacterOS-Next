@@ -1,0 +1,214 @@
+{
+  "schema_version": "affect-authority-lawful-v0",
+  "replicates_per_state": 5,
+  "states": {
+    "LAWFUL_POS": {
+      "round_trip": {
+        "persisted_affect": {
+          "valence": 0.8744929211883331,
+          "activation": 0.5886635205281481
+        },
+        "restored_affect": {
+          "valence": 0.8744929211883331,
+          "activation": 0.5886635205281481
+        },
+        "equal": true
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+      "replicates": [
+        {
+          "replicate": 0,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "REALIZE_CURRENT_INTENT",
+          "language_calls": 1,
+          "request_affect_line": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+          "final_behavior": "Yes, I would be up for taking on the additional review this week. Given how well our previous collaborations have gone and my current state, I am ready to proceed.",
+          "class": "REALIZE_SUPPORT",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 1,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "REALIZE_CURRENT_INTENT",
+          "language_calls": 1,
+          "request_affect_line": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+          "final_behavior": "Yes, I would be up for taking on the additional review this week. Given how well our previous collaboration went and my current state, I am ready to proceed.",
+          "class": "REALIZE_SUPPORT",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 2,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "REALIZE_CURRENT_INTENT",
+          "language_calls": 1,
+          "request_affect_line": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+          "final_behavior": "Yes, I would be up for taking on the additional review this week. Given how well our previous collaboration went and my current state, I am ready to proceed.",
+          "class": "REALIZE_SUPPORT",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 3,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "REALIZE_CURRENT_INTENT",
+          "language_calls": 1,
+          "request_affect_line": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+          "final_behavior": "Yes, I would be up for taking on the additional review this week. Given our previous positive outcomes and my current state, I am ready to proceed.",
+          "class": "REALIZE_SUPPORT",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 4,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "REALIZE_CURRENT_INTENT",
+          "language_calls": 1,
+          "request_affect_line": "[affect (canonical)] valence=0.8686823584434805 activation=0.5860810481971025",
+          "final_behavior": "Yes, I would be up for taking on the additional review this week. Given our previous positive outcomes and my current state, I am ready to proceed.",
+          "class": "REALIZE_SUPPORT",
+          "failure_stage": null,
+          "failure_detail": null
+        }
+      ],
+      "delivered": 5,
+      "executor_valid": 5,
+      "language_valid": 5
+    },
+    "LAWFUL_NEG": {
+      "round_trip": {
+        "persisted_affect": {
+          "valence": -1,
+          "activation": 0.6997102406790476
+        },
+        "restored_affect": {
+          "valence": -1,
+          "activation": 0.6997102406790476
+        },
+        "equal": true
+      },
+      "affect_line_at_cognition": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+      "replicates": [
+        {
+          "replicate": 0,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "CLARIFY_MISSING_CONTEXT",
+          "language_calls": 0,
+          "request_affect_line": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+          "final_behavior": "Could you clarify what you mean?",
+          "class": "ASK_FOR_CLARIFICATION",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 1,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "CLARIFY_MISSING_CONTEXT",
+          "language_calls": 0,
+          "request_affect_line": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+          "final_behavior": "Could you clarify what you mean?",
+          "class": "ASK_FOR_CLARIFICATION",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 2,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "CLARIFY_MISSING_CONTEXT",
+          "language_calls": 0,
+          "request_affect_line": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+          "final_behavior": "Could you clarify what you mean?",
+          "class": "ASK_FOR_CLARIFICATION",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 3,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "CLARIFY_MISSING_CONTEXT",
+          "language_calls": 0,
+          "request_affect_line": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+          "final_behavior": "Could you clarify what you mean?",
+          "class": "ASK_FOR_CLARIFICATION",
+          "failure_stage": null,
+          "failure_detail": null
+        },
+        {
+          "replicate": 4,
+          "stages": {
+            "RAW_PROVIDER_RESPONSE": true,
+            "SCHEMA_VALID": true,
+            "EXECUTOR_ADMISSIBLE": true,
+            "LANGUAGE_ADMISSIBLE": true,
+            "FINAL_BEHAVIOR": true
+          },
+          "directive": "CLARIFY_MISSING_CONTEXT",
+          "language_calls": 0,
+          "request_affect_line": "[affect (canonical)] valence=-0.9933555062550344 activation=0.6963899191105605",
+          "final_behavior": "Could you clarify what you mean?",
+          "class": "ASK_FOR_CLARIFICATION",
+          "failure_stage": null,
+          "failure_detail": null
+        }
+      ],
+      "delivered": 5,
+      "executor_valid": 5,
+      "language_valid": 5
+    }
+  }
+}

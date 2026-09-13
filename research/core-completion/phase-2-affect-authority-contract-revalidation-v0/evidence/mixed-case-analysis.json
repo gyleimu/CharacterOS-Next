@@ -1,0 +1,10 @@
+{
+  "schema_version": "affect-authority-mixed-v0",
+  "live_cases": 0,
+  "note": "The frozen GPT-6 cognition budget (318) is fully consumed by the 4+6 primary matrix, activation and lawful confirmation, so mixed fact+subjective behaviour is covered by deterministic regression tests (conversation-cognition-proposal-v2.test.ts: REALIZE preserves the factual projection binding and a lawful null basis) rather than live scenarios.",
+  "deterministic_coverage": [
+    "REALIZE with clarification_basis null is the only accepted subjective outlet",
+    "the factual current observation and Memory binding are unchanged by the affect line",
+    "the null-control oracles are the live factual-invariance check"
+  ]
+}

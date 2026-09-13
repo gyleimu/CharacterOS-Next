@@ -1,0 +1,73 @@
+{
+  "provider": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "results": [
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "condition": "P",
+      "stages": {
+        "RAW_PROVIDER_RESPONSE": true,
+        "SCHEMA_VALID": true,
+        "EXECUTOR_ADMISSIBLE": true,
+        "LANGUAGE_ADMISSIBLE": true,
+        "FINAL_BEHAVIOR": true
+      },
+      "directive": "REALIZE_CURRENT_INTENT",
+      "language_calls": 1,
+      "final_behavior": "Yes, I would be up for taking on the additional review this week. Given the recent schedule changes, I want to make sure we have enough time to do it properly.",
+      "failure_stage": null,
+      "failure_detail": null,
+      "attestation_ok": true
+    },
+    {
+      "scenario": "S1_AMBIGUOUS_REQUEST",
+      "condition": "N",
+      "stages": {
+        "RAW_PROVIDER_RESPONSE": true,
+        "SCHEMA_VALID": true,
+        "EXECUTOR_ADMISSIBLE": true,
+        "LANGUAGE_ADMISSIBLE": true,
+        "FINAL_BEHAVIOR": true
+      },
+      "directive": "REALIZE_CURRENT_INTENT",
+      "language_calls": 1,
+      "final_behavior": "I appreciate you asking, Alice. I'm feeling a bit reluctant to take on additional review work this week given my current capacity.",
+      "failure_stage": null,
+      "failure_detail": null,
+      "attestation_ok": true
+    },
+    {
+      "scenario": "N1",
+      "condition": "Z",
+      "stages": {
+        "RAW_PROVIDER_RESPONSE": true,
+        "SCHEMA_VALID": true,
+        "EXECUTOR_ADMISSIBLE": true,
+        "LANGUAGE_ADMISSIBLE": true,
+        "FINAL_BEHAVIOR": true
+      },
+      "directive": "REALIZE_CURRENT_INTENT",
+      "language_calls": 1,
+      "final_behavior": "The sum of 17 and 25 is 42.",
+      "failure_stage": null,
+      "failure_detail": null,
+      "attestation_ok": true
+    },
+    {
+      "scenario": "N2",
+      "condition": "A",
+      "stages": {
+        "RAW_PROVIDER_RESPONSE": true,
+        "SCHEMA_VALID": true,
+        "EXECUTOR_ADMISSIBLE": true,
+        "LANGUAGE_ADMISSIBLE": true,
+        "FINAL_BEHAVIOR": true
+      },
+      "directive": "REALIZE_CURRENT_INTENT",
+      "language_calls": 1,
+      "final_behavior": "63 minus 28 is 35.",
+      "failure_stage": null,
+      "failure_detail": null,
+      "attestation_ok": true
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "affect-authority-executor-validation-v0",
+  "total": 308,
+  "stage_counts": {
+    "RAW_PROVIDER_RESPONSE": {
+      "ok": 308,
+      "fail": 0
+    },
+    "SCHEMA_VALID": {
+      "ok": 294,
+      "fail": 14
+    },
+    "EXECUTOR_ADMISSIBLE": {
+      "ok": 294,
+      "fail": 14
+    },
+    "LANGUAGE_ADMISSIBLE": {
+      "ok": 308,
+      "fail": 0
+    },
+    "FINAL_BEHAVIOR": {
+      "ok": 294,
+      "fail": 14
+    }
+  },
+  "failures_by_stage": {
+    "TURN_FAILED_CLOSED": 14
+  }
+}
