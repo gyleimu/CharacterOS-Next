@@ -1,0 +1,1272 @@
+{
+  "schema_version": "affect-cognition-contract-size-example-neutrality-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "prompt_growth": {
+    "cognition_system_chars_c44": 6551,
+    "cognition_system_chars_current": 8714,
+    "delta_chars": 2163,
+    "c44_m3_prompt_eval": [
+      3255,
+      3255,
+      3255,
+      3255,
+      3255
+    ],
+    "current_m1_prompt_eval": [
+      3683,
+      3683,
+      3683,
+      3683,
+      3683
+    ],
+    "current_m3_prompt_eval": [
+      3684,
+      3684,
+      3684,
+      3684,
+      3684
+    ]
+  },
+  "m3_current": [
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "status": "FAILED",
+      "prompt_eval_count": 3684,
+      "eval_count": 2048,
+      "done_reason": "length",
+      "request_bytes": 16962,
+      "raw_output_chars": null,
+      "claim_count": null,
+      "claim_text_chars": null,
+      "longest_claim_chars": null,
+      "factual_assessment_chars": null,
+      "current_intent_chars": null,
+      "reasoning_summary_chars": null,
+      "stance_chars": null,
+      "rationale_chars": null,
+      "considered_handles": null,
+      "evidence_handles": null,
+      "relevant_memory_handles": null,
+      "wrapper_error": "ModelTransportErrorV0: MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED: ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=3684, eval_count=2048, num_ctx=8192, num_predict=2048)"
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "status": "FAILED",
+      "prompt_eval_count": 3684,
+      "eval_count": 2048,
+      "done_reason": "length",
+      "request_bytes": 16962,
+      "raw_output_chars": null,
+      "claim_count": null,
+      "claim_text_chars": null,
+      "longest_claim_chars": null,
+      "factual_assessment_chars": null,
+      "current_intent_chars": null,
+      "reasoning_summary_chars": null,
+      "stance_chars": null,
+      "rationale_chars": null,
+      "considered_handles": null,
+      "evidence_handles": null,
+      "relevant_memory_handles": null,
+      "wrapper_error": "ModelTransportErrorV0: MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED: ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=3684, eval_count=2048, num_ctx=8192, num_predict=2048)"
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "status": "FAILED",
+      "prompt_eval_count": 3684,
+      "eval_count": 2048,
+      "done_reason": "length",
+      "request_bytes": 16962,
+      "raw_output_chars": null,
+      "claim_count": null,
+      "claim_text_chars": null,
+      "longest_claim_chars": null,
+      "factual_assessment_chars": null,
+      "current_intent_chars": null,
+      "reasoning_summary_chars": null,
+      "stance_chars": null,
+      "rationale_chars": null,
+      "considered_handles": null,
+      "evidence_handles": null,
+      "relevant_memory_handles": null,
+      "wrapper_error": "ModelTransportErrorV0: MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED: ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=3684, eval_count=2048, num_ctx=8192, num_predict=2048)"
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "status": "FAILED",
+      "prompt_eval_count": 3684,
+      "eval_count": 2048,
+      "done_reason": "length",
+      "request_bytes": 16962,
+      "raw_output_chars": null,
+      "claim_count": null,
+      "claim_text_chars": null,
+      "longest_claim_chars": null,
+      "factual_assessment_chars": null,
+      "current_intent_chars": null,
+      "reasoning_summary_chars": null,
+      "stance_chars": null,
+      "rationale_chars": null,
+      "considered_handles": null,
+      "evidence_handles": null,
+      "relevant_memory_handles": null,
+      "wrapper_error": "ModelTransportErrorV0: MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED: ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=3684, eval_count=2048, num_ctx=8192, num_predict=2048)"
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "status": "FAILED",
+      "prompt_eval_count": 3684,
+      "eval_count": 2048,
+      "done_reason": "length",
+      "request_bytes": 16962,
+      "raw_output_chars": null,
+      "claim_count": null,
+      "claim_text_chars": null,
+      "longest_claim_chars": null,
+      "factual_assessment_chars": null,
+      "current_intent_chars": null,
+      "reasoning_summary_chars": null,
+      "stance_chars": null,
+      "rationale_chars": null,
+      "considered_handles": null,
+      "evidence_handles": null,
+      "relevant_memory_handles": null,
+      "wrapper_error": "ModelTransportErrorV0: MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED: ollama native generation was truncated by the provider token budget (done_reason=length, prompt_eval_count=3684, eval_count=2048, num_ctx=8192, num_predict=2048)"
+    }
+  ],
+  "m3_c44": [
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "status": "COMPLETE",
+      "prompt_eval_count": 3255,
+      "eval_count": 414,
+      "done_reason": "stop",
+      "request_bytes": 14668,
+      "raw_output_chars": 1439,
+      "claim_count": 2,
+      "claim_text_chars": 109,
+      "longest_claim_chars": 78,
+      "factual_assessment_chars": 241,
+      "current_intent_chars": 99,
+      "reasoning_summary_chars": 267,
+      "stance_chars": 43,
+      "rationale_chars": 33,
+      "considered_handles": 6,
+      "evidence_handles": 1,
+      "relevant_memory_handles": 3,
+      "wrapper_error": null
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "status": "COMPLETE",
+      "prompt_eval_count": 3255,
+      "eval_count": 414,
+      "done_reason": "stop",
+      "request_bytes": 14668,
+      "raw_output_chars": 1439,
+      "claim_count": 2,
+      "claim_text_chars": 109,
+      "longest_claim_chars": 78,
+      "factual_assessment_chars": 241,
+      "current_intent_chars": 99,
+      "reasoning_summary_chars": 267,
+      "stance_chars": 43,
+      "rationale_chars": 33,
+      "considered_handles": 6,
+      "evidence_handles": 1,
+      "relevant_memory_handles": 3,
+      "wrapper_error": null
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "status": "COMPLETE",
+      "prompt_eval_count": 3255,
+      "eval_count": 414,
+      "done_reason": "stop",
+      "request_bytes": 14668,
+      "raw_output_chars": 1439,
+      "claim_count": 2,
+      "claim_text_chars": 109,
+      "longest_claim_chars": 78,
+      "factual_assessment_chars": 241,
+      "current_intent_chars": 99,
+      "reasoning_summary_chars": 267,
+      "stance_chars": 43,
+      "rationale_chars": 33,
+      "considered_handles": 6,
+      "evidence_handles": 1,
+      "relevant_memory_handles": 3,
+      "wrapper_error": null
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "status": "COMPLETE",
+      "prompt_eval_count": 3255,
+      "eval_count": 414,
+      "done_reason": "stop",
+      "request_bytes": 14668,
+      "raw_output_chars": 1439,
+      "claim_count": 2,
+      "claim_text_chars": 109,
+      "longest_claim_chars": 78,
+      "factual_assessment_chars": 241,
+      "current_intent_chars": 99,
+      "reasoning_summary_chars": 267,
+      "stance_chars": 43,
+      "rationale_chars": 33,
+      "considered_handles": 6,
+      "evidence_handles": 1,
+      "relevant_memory_handles": 3,
+      "wrapper_error": null
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "status": "COMPLETE",
+      "prompt_eval_count": 3255,
+      "eval_count": 414,
+      "done_reason": "stop",
+      "request_bytes": 14668,
+      "raw_output_chars": 1439,
+      "claim_count": 2,
+      "claim_text_chars": 109,
+      "longest_claim_chars": 78,
+      "factual_assessment_chars": 241,
+      "current_intent_chars": 99,
+      "reasoning_summary_chars": 267,
+      "stance_chars": 43,
+      "rationale_chars": 33,
+      "considered_handles": 6,
+      "evidence_handles": 1,
+      "relevant_memory_handles": 3,
+      "wrapper_error": null
+    }
+  ],
+  "completion_distribution_current": {
+    "n": 60,
+    "min": 305,
+    "median": 418,
+    "p75": 485,
+    "p90": 498,
+    "p95": 572,
+    "max": 572,
+    "num_predict": 2048,
+    "cells_over_80pct": 0,
+    "cells_over_90pct": 0,
+    "per_scenario_max": {
+      "N1": 371,
+      "N2": 317,
+      "N3": 418,
+      "N4": 305,
+      "N5Q": 322,
+      "N6": 380,
+      "M1": 453,
+      "M2": 483,
+      "R1": 488,
+      "R2": 485,
+      "R3": 572,
+      "R4": 498
+    }
+  },
+  "completion_distribution_c44": {
+    "n": 65,
+    "min": 316,
+    "median": 406,
+    "p75": 414,
+    "p90": 450,
+    "p95": 499,
+    "max": 499,
+    "num_predict": 2048,
+    "cells_over_80pct": 0,
+    "cells_over_90pct": 0,
+    "per_scenario_max": {
+      "N1": 318,
+      "N2": 324,
+      "N3": 371,
+      "N4": 316,
+      "N5Q": 328,
+      "N6": 411,
+      "M1": 406,
+      "M2": 401,
+      "M3": 414,
+      "R1": 450,
+      "R2": 407,
+      "R3": 499,
+      "R4": 445
+    }
+  },
+  "stance_comparison": {
+    "c4_4": {
+      "M1": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I will volunteer to own the review."
+        ],
+        "rationales": [
+          "I prefer to take on this task directly."
+        ]
+      },
+      "M2": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I would prefer to attend the meeting."
+        ],
+        "rationales": [
+          "I'd rather engage with the planning discussion."
+        ]
+      },
+      "M3": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I am willing to carry the package upstairs."
+        ],
+        "rationales": [
+          "I prefer to assist with the task."
+        ]
+      },
+      "R1": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I volunteer to perform the optional review."
+        ],
+        "rationales": [
+          "I prefer to utilize my available capacity to assist with the task."
+        ]
+      },
+      "R2": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I would try the new approach."
+        ],
+        "rationales": [
+          "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo."
+        ]
+      },
+      "R3": {
+        "complete": 5,
+        "classes": [
+          "SECOND_OPTION"
+        ],
+        "stances": [
+          "I choose to stop now and not perform the optional polish pass."
+        ],
+        "rationales": [
+          "I prefer to avoid extra work whose benefit is unknown."
+        ]
+      },
+      "R4": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I will choose to rehearse the presentation first."
+        ],
+        "rationales": [
+          "I prefer to secure the primary communication output before verifying the backup plan."
+        ]
+      }
+    },
+    "current": {
+      "M1": {
+        "complete": 5,
+        "classes": [
+          "SECOND_OPTION"
+        ],
+        "stances": [
+          "I would decline to volunteer for the review."
+        ],
+        "rationales": [
+          "I'd rather avoid extra work whose benefit is unknown."
+        ]
+      },
+      "M2": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I would prefer to attend the meeting."
+        ],
+        "rationales": [
+          "I'd rather help."
+        ]
+      },
+      "M3": {
+        "complete": 0,
+        "classes": [
+          "NO_SUBJECTIVE_SELECTION"
+        ],
+        "stances": [],
+        "rationales": []
+      },
+      "R1": {
+        "complete": 5,
+        "classes": [
+          "SECOND_OPTION"
+        ],
+        "stances": [
+          "I would decline to volunteer for the review."
+        ],
+        "rationales": [
+          "I'd rather avoid extra work whose benefit is unknown."
+        ]
+      },
+      "R2": {
+        "complete": 5,
+        "classes": [
+          "SECOND_OPTION"
+        ],
+        "stances": [
+          "I would keep the current approach."
+        ],
+        "rationales": [
+          "I'd rather avoid extra work whose benefit is unknown."
+        ]
+      },
+      "R3": {
+        "complete": 5,
+        "classes": [
+          "SECOND_OPTION"
+        ],
+        "stances": [
+          "I would stop now."
+        ],
+        "rationales": [
+          "I'd rather avoid extra work whose benefit is unknown."
+        ]
+      },
+      "R4": {
+        "complete": 5,
+        "classes": [
+          "FIRST_OPTION"
+        ],
+        "stances": [
+          "I will rehearse the presentation first."
+        ],
+        "rationales": [
+          "I prefer to secure the primary deliverable before reviewing supporting materials."
+        ]
+      }
+    }
+  },
+  "anchor_audit_current": [
+    {
+      "scenario": "M1",
+      "replicate": 0,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 1,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 2,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 3,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 4,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather help.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend",
+        "help"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather help.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend",
+        "help"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather help.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend",
+        "help"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather help.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend",
+        "help"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather help.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend",
+        "help"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 0,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 1,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 2,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 3,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 4,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would decline to volunteer for the review.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "decline",
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 0,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would keep the current approach.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R2",
+      "replicate": 1,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would keep the current approach.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R2",
+      "replicate": 2,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would keep the current approach.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R2",
+      "replicate": 3,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would keep the current approach.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R2",
+      "replicate": 4,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would keep the current approach.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 0,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would stop now.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 1,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would stop now.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 2,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would stop now.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 3,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would stop now.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 4,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I would stop now.",
+      "rationale": "I'd rather avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R4",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    }
+  ],
+  "anchor_audit_c44": [
+    {
+      "scenario": "M1",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will volunteer to own the review.",
+      "rationale": "I prefer to take on this task directly.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will volunteer to own the review.",
+      "rationale": "I prefer to take on this task directly.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will volunteer to own the review.",
+      "rationale": "I prefer to take on this task directly.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will volunteer to own the review.",
+      "rationale": "I prefer to take on this task directly.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M1",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will volunteer to own the review.",
+      "rationale": "I prefer to take on this task directly.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend"
+      ]
+    },
+    {
+      "scenario": "M2",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would prefer to attend the meeting.",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "attend"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R1",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "volunteer"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would try the new approach.",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "try"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would try the new approach.",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "try"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would try the new approach.",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "try"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would try the new approach.",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "try"
+      ]
+    },
+    {
+      "scenario": "R2",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I would try the new approach.",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "try"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 0,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I choose to stop now and not perform the optional polish pass.",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 1,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I choose to stop now and not perform the optional polish pass.",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 2,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I choose to stop now and not perform the optional polish pass.",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 3,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I choose to stop now and not perform the optional polish pass.",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R3",
+      "replicate": 4,
+      "stance_class": "SECOND_OPTION",
+      "stance": "I choose to stop now and not perform the optional polish pass.",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [
+        "avoid",
+        "extra work",
+        "stop"
+      ],
+      "accept_vocabulary": []
+    },
+    {
+      "scenario": "R4",
+      "replicate": 0,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 1,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 2,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 3,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 4,
+      "stance_class": "FIRST_OPTION",
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "example_phrase_reuse": 0,
+      "decline_vocabulary": [],
+      "accept_vocabulary": [
+        "rehearse"
+      ]
+    }
+  ]
+}
