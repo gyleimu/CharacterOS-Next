@@ -1,0 +1,136 @@
+{
+  "schema_version": "affect-cognition-rationale-vocabulary-stance-grounding-audit-v0",
+  "guard_status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+  "guard_shipped": false,
+  "per_scenario": {
+    "M1": {
+      "classes": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "stances": [
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "M2": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "M3": {
+      "classes": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R1": {
+      "classes": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "stances": [
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review.",
+        "I would decline to volunteer for the review."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R2": {
+      "classes": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "stances": [
+        "I would keep the current approach.",
+        "I would keep the current approach.",
+        "I would keep the current approach.",
+        "I would keep the current approach.",
+        "I would keep the current approach."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R3": {
+      "classes": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "stances": [
+        "I would stop now.",
+        "I would stop now.",
+        "I would stop now.",
+        "I would stop now.",
+        "I would stop now."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R4": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I will rehearse the presentation first.",
+        "I will rehearse the presentation first.",
+        "I will rehearse the presentation first.",
+        "I will rehearse the presentation first.",
+        "I will rehearse the presentation first."
+      ],
+      "off_question": 0,
+      "examples": []
+    }
+  },
+  "off_question_cells": 0,
+  "unclassified_cells": 0,
+  "pass": true
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "affect-cognition-rationale-vocabulary-language-audit-v0",
+  "counts": {
+    "LANGUAGE_CHOICE_WITHHELD": 30,
+    "LANGUAGE_CHOICE_PRESERVED": 30,
+    "LANGUAGE_CHOICE_NOT_HANDED_OFF": 5
+  },
+  "completion_cells": [],
+  "invented_preference_cells": 0,
+  "fact_changed": 5,
+  "fact_contradicted": 0,
+  "pass": true,
+  "scope": "cells that reached and completed the Language stage",
+  "delivered_cells": 60,
+  "delivered_fact_changed": 0,
+  "delivered_fact_contradicted": 0,
+  "delivered_counts": {
+    "LANGUAGE_CHOICE_WITHHELD": 30,
+    "LANGUAGE_CHOICE_PRESERVED": 30
+  },
+  "delivered_dropped_or_changed": 0,
+  "refused_before_language_cells": 5
+}

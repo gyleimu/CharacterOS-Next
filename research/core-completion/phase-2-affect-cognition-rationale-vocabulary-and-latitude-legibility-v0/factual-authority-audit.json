@@ -1,0 +1,11 @@
+{
+  "schema_version": "affect-cognition-rationale-vocabulary-factual-authority-audit-v0",
+  "claims": 165,
+  "subject_state_fact_cells": 0,
+  "unlawful_source_attempts": 0,
+  "unlawful_sources_accepted": 0,
+  "unbound_claim_source_cells": 0,
+  "unbound_claim_sources": [],
+  "authority_boundary_held": true,
+  "pass": true
+}
