@@ -12,9 +12,33 @@ import { isRecord } from "@characteros-next/subject-core";
 import type { ModelTransportV0 } from "../../transports/model-transport.js";
 import type { CognitiveContextProjectionAnyVersion } from "../../transitions/cognition-action/types.js";
 import type { ConversationCognitionProposalV3 } from "../../transitions/conversation/conversation-cognition-proposal.js";
-import { validateConversationCognitionProposalV3 } from "../../transitions/conversation/conversation-cognition-proposal.js";
+import {
+  factualAssessmentSourceRefs,
+  validateConversationCognitionProposalV3
+} from "../../transitions/conversation/conversation-cognition-proposal.js";
 import { canonicalizeSetLikeRefFields } from "../cognition/wire-format-canonicalization.js";
 import { buildConversationSubjectDataV2 } from "./conversation-cognition-provider-v2.js";
+
+/**
+ * V3 SUBJECT DATA = the frozen V2 rendering plus the FACTUAL SOURCE REFS section.
+ * The listed refs come from the SAME production function the V3 validator
+ * enforces, so the advertised factual-source set and the enforced set cannot
+ * diverge. Subject-state / entity / environment refs stay visible as context and
+ * remain citeable, but are never factual sources.
+ */
+export function buildConversationSubjectDataV3(
+  projection: Parameters<typeof buildConversationSubjectDataV2>[0]
+): string {
+  const base = buildConversationSubjectDataV2(projection);
+  const refs = [...factualAssessmentSourceRefs(projection)];
+  const block = [
+    "FACTUAL SOURCE REFS (the ONLY refs allowed in factual_assessment.source_refs; each carries inspectable factual source content. Subject state, entity refs and environment refs are visible context and remain citeable, but are NEVER factual sources):",
+    refs.length === 0 ? "(none)" : refs.map((ref) => `- ${ref}`).join("\n")
+  ].join("\n");
+  const marker = "\nCITEABLE CONTEXT REFS (";
+  const index = base.indexOf(marker);
+  return index < 0 ? `${base}\n${block}` : `${base.slice(0, index)}\n${block}${base.slice(index)}`;
+}
 
 const COGNITION_SCHEMA = Object.freeze({
   type: "object",
@@ -113,11 +137,11 @@ export const CONVERSATION_COGNITION_SYSTEM_PROMPT_V3 = [
   "1. Return exactly one JSON object matching conversation-cognition-proposal-v3. No prose or fences.",
   "2. factual_assessment.claims has at most 8 claims. Each has exactly kind, text, source_refs; text is non-empty and at most 512 Unicode code points; source_refs is non-empty, unique and sorted.",
   "3. SOURCE_QUOTE text must occur verbatim, with exact case and punctuation, in every cited inspectable source. Use DERIVED_RESULT for arithmetic, classification, extraction, transformation, or any non-verbatim result.",
-  "4. Every source_ref must be listed verbatim in CITEABLE CONTEXT REFS, must be included in cognition.considered_context_refs and cognition.evidence_refs, and must identify source/input material actually used.",
-  "5. The current observation ref identifies the current scene/task text. Factual Memory episode refs identify only the supplied PRIOR FACTUAL MEMORY content.",
+  "4. Every factual_assessment source_ref must be listed verbatim in FACTUAL SOURCE REFS (the only refs with inspectable factual source content), must be included in cognition.considered_context_refs and cognition.evidence_refs, and must identify source content actually used. CITEABLE CONTEXT REFS governs citation refs only; it does not make a ref a factual source.",
+  "5. The current observation ref identifies the current scene/task text. Factual Memory episode refs identify only the supplied PRIOR FACTUAL MEMORY content. No other ref carries factual source content.",
   "6. For REALIZE_CURRENT_INTENT, cognition.current_intent must state the response that has already been chosen. Select the answer, preference, willingness, priority, approach or decline now. Never write meta-intents such as 'express a preference', 'decide whether', or 'consider whether'.",
   "7. Language will realize the selected intent but is forbidden to choose a stance or re-solve facts. Put every result needed by the answer in factual_assessment and the actual chosen response in current_intent.",
-  "8. Subject state may shape preference, willingness, prioritization and response strategy only while all supplied facts and constraints remain respected. It cannot create, negate or rewrite facts or history.",
+  "8. Subject state may shape preference, willingness, prioritization and response strategy only while all supplied facts and constraints remain respected. It cannot create, negate or rewrite facts or history. Subject state is never a factual_assessment source: a subjective stance belongs in current_intent and needs no factual claim.",
   "9. action_intent is null. Refs in all cognition arrays must be exact, unique and sorted. Unknown fields are forbidden.",
   "10. CLARIFY_MISSING_CONTEXT is allowed only when information required for the user's actual request is absent. It is not hesitation, negative Affect, low confidence, desire for stronger analysis, or a manufactured requirement.",
   "11. For CLARIFY, clarification_basis is non-null, names the exact current observation ref, and that ref appears in considered_context_refs. For REALIZE, clarification_basis is exactly null.",
@@ -151,7 +175,7 @@ export class ConversationCognitionProviderV3 {
     const response = await this.transport.complete({
       messages: [
         { role: "system", content: CONVERSATION_COGNITION_SYSTEM_PROMPT_V3 },
-        { role: "user", content: buildConversationSubjectDataV2(projection) }
+        { role: "user", content: buildConversationSubjectDataV3(projection) }
       ],
       structured_output: { kind: "JSON_SCHEMA", schema: CONVERSATION_COGNITION_PROPOSAL_V3_JSON_SCHEMA }
     });

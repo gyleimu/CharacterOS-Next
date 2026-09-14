@@ -983,7 +983,8 @@ export {
   ConversationCognitionProviderV3,
   ConversationCognitionRejectionErrorV3,
   CONVERSATION_COGNITION_SYSTEM_PROMPT_V3,
-  CONVERSATION_COGNITION_PROPOSAL_V3_JSON_SCHEMA
+  CONVERSATION_COGNITION_PROPOSAL_V3_JSON_SCHEMA,
+  buildConversationSubjectDataV3
 } from "./providers/behavior/conversation-cognition-provider-v3.js";
 export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
@@ -1002,6 +1003,7 @@ export {
   FACTUAL_ASSESSMENT_CLAIM_TEXT_MAX_CODE_POINTS_V0,
   validateConversationCognitionProposalV3,
   deriveConversationCognitionProposalHashV3,
+  factualAssessmentSourceRefs,
   type ConversationCognitionProposalV3,
   type FactualAssessmentV0,
   type FactualAssessmentClaimV0,

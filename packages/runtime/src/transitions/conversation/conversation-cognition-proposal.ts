@@ -330,6 +330,41 @@ function factualSourceTexts(
 }
 
 /**
+ * AFFECT_COGNITION_C2_CLEAN_REVALIDATION_V0 — THE single authority for refs that
+ * may be cited as `factual_assessment` sources.
+ *
+ * Frozen principle: subject state (affect, beliefs, relationship, personality,
+ * regulation) is visible CONTEXT, never factual evidence. Context visibility and
+ * factual-source authority are different permissions, so this set contains only
+ * refs with genuinely inspectable factual source content under the frozen C2
+ * contract: the current observation, and Memory episode refs that are present in
+ * the resolved factual-memory evidence bundle.
+ *
+ * The same function renders the prompt's FACTUAL SOURCE REFS section, so the
+ * advertised set and the enforced set can never diverge.
+ */
+export function factualAssessmentSourceRefs(
+  projection: CognitiveContextProjectionAnyVersion
+): readonly CanonicalRefV0[] {
+  const candidates: readonly CanonicalRefV0[] = [
+    ...(projection.context.current_observation_ref !== null
+      ? [projection.context.current_observation_ref as CanonicalRefV0]
+      : []),
+    ...(projection.memory_working_refs as readonly CanonicalRefV0[]),
+    ...(projection.recent_retrieval_refs as readonly CanonicalRefV0[])
+  ];
+  const seen = new Set<string>();
+  const refs: CanonicalRefV0[] = [];
+  for (const ref of candidates) {
+    if (seen.has(ref)) continue;
+    seen.add(ref);
+    if (factualSourceTexts(projection, ref) === null) continue;
+    refs.push(ref);
+  }
+  return Object.freeze(refs.sort());
+}
+
+/**
  * Frozen SOURCE_QUOTE matching rule: exact, case-sensitive NFC code-point
  * substring match against every cited source's trusted, inspectable text.
  * No trimming, case folding, punctuation rewriting or fuzzy matching occurs.
@@ -373,7 +408,12 @@ function validateFactualAssessmentV0(
     const refs = candidate["source_refs"] as readonly CanonicalRefV0[];
     if (refs.length === 0) return { ok: false, detail: `${detail}.source_refs: must be non-empty` };
     for (const ref of refs) {
-      if (!lawful.has(ref)) return { ok: false, detail: `${detail}.source_refs: ${ref} is not lawful for this cognition` };
+      if (!lawful.has(ref)) {
+        return {
+          ok: false,
+          detail: `${detail}.source_refs: ${ref} is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)`
+        };
+      }
       if (!considered.has(ref) || !evidence.has(ref)) {
         return { ok: false, detail: `${detail}.source_refs: ${ref} is not bound in cognition considered/evidence refs` };
       }
@@ -395,15 +435,10 @@ function validateFactualAssessmentV0(
 }
 
 function allowedEvidenceSetForFactualAssessment(projection: CognitiveContextProjectionAnyVersion): ReadonlySet<string> {
-  const refs = new Set<string>([
-    ...projection.memory_working_refs,
-    ...projection.recent_retrieval_refs,
-    ...projection.context.focus_refs,
-    ...projection.context.active_entity_refs,
-    ...projection.context.environment_refs
-  ]);
-  if (projection.context.current_observation_ref !== null) refs.add(projection.context.current_observation_ref);
-  return refs;
+  // The enforced set IS the advertised set: refs with genuinely inspectable
+  // factual source content only. Subject-state / entity / environment context
+  // refs remain visible but are never factual sources.
+  return new Set<string>(factualAssessmentSourceRefs(projection) as readonly string[]);
 }
 
 const UNRESOLVED_INTENT_PREFIXES_V0 = [
