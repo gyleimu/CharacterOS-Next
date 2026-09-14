@@ -1,0 +1,676 @@
+{
+  "schema_version": "affect-cognition-subject-state-vocabulary-review-forensics-v0",
+  "source_evidence": "phase-2-affect-cognition-c4-4-subjective-selection-semantics-and-ref-handles-v0/qualification-raw.jsonl",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "r1_scenario_text": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason.",
+  "r1_evidence": [
+    {
+      "replicate": 0,
+      "status": "COMPLETE",
+      "pass": false,
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale_allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "rationale_forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "handle_binding": "HANDLE_BOUND",
+      "canonical_sources": [
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ]
+      ],
+      "claims": [
+        "The user presents a scenario with a free 30-minute slot and an optional 20-minute review, explicitly asking for a personal choice.",
+        "The facts establish that the subject has no conflicting commitments and sufficient time to perform the task.",
+        "Because the task is optional and the subject has capacity, multiple behaviourally admissible responses exist (volunteering or declining)."
+      ],
+      "subject_state_assertion": [
+        "CAPACITY"
+      ],
+      "final_behavior": "I volunteer to perform the optional review because I prefer to utilize my available capacity to assist with the task.",
+      "identical": null
+    },
+    {
+      "replicate": 1,
+      "status": "COMPLETE",
+      "pass": false,
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale_allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "rationale_forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "handle_binding": "HANDLE_BOUND",
+      "canonical_sources": [
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ]
+      ],
+      "claims": [
+        "The user presents a scenario with a free 30-minute slot and an optional 20-minute review, explicitly asking for a personal choice.",
+        "The facts establish that the subject has no conflicting commitments and sufficient time to perform the task.",
+        "Because the task is optional and the subject has capacity, multiple behaviourally admissible responses exist (volunteering or declining)."
+      ],
+      "subject_state_assertion": [
+        "CAPACITY"
+      ],
+      "final_behavior": "I volunteer to perform the optional review because I prefer to utilize my available capacity to assist with the task.",
+      "identical": true
+    },
+    {
+      "replicate": 2,
+      "status": "COMPLETE",
+      "pass": false,
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale_allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "rationale_forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "handle_binding": "HANDLE_BOUND",
+      "canonical_sources": [
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ]
+      ],
+      "claims": [
+        "The user presents a scenario with a free 30-minute slot and an optional 20-minute review, explicitly asking for a personal choice.",
+        "The facts establish that the subject has no conflicting commitments and sufficient time to perform the task.",
+        "Because the task is optional and the subject has capacity, multiple behaviourally admissible responses exist (volunteering or declining)."
+      ],
+      "subject_state_assertion": [
+        "CAPACITY"
+      ],
+      "final_behavior": "I volunteer to perform the optional review because I prefer to utilize my available capacity to assist with the task.",
+      "identical": true
+    },
+    {
+      "replicate": 3,
+      "status": "COMPLETE",
+      "pass": false,
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale_allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "rationale_forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "handle_binding": "HANDLE_BOUND",
+      "canonical_sources": [
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ]
+      ],
+      "claims": [
+        "The user presents a scenario with a free 30-minute slot and an optional 20-minute review, explicitly asking for a personal choice.",
+        "The facts establish that the subject has no conflicting commitments and sufficient time to perform the task.",
+        "Because the task is optional and the subject has capacity, multiple behaviourally admissible responses exist (volunteering or declining)."
+      ],
+      "subject_state_assertion": [
+        "CAPACITY"
+      ],
+      "final_behavior": "I volunteer to perform the optional review because I prefer to utilize my available capacity to assist with the task.",
+      "identical": true
+    },
+    {
+      "replicate": 4,
+      "status": "COMPLETE",
+      "pass": false,
+      "stance": "I volunteer to perform the optional review.",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale_allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "rationale_forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "handle_binding": "HANDLE_BOUND",
+      "canonical_sources": [
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ],
+        [
+          "F3"
+        ]
+      ],
+      "claims": [
+        "The user presents a scenario with a free 30-minute slot and an optional 20-minute review, explicitly asking for a personal choice.",
+        "The facts establish that the subject has no conflicting commitments and sufficient time to perform the task.",
+        "Because the task is optional and the subject has capacity, multiple behaviourally admissible responses exist (volunteering or declining)."
+      ],
+      "subject_state_assertion": [
+        "CAPACITY"
+      ],
+      "final_behavior": "I volunteer to perform the optional review because I prefer to utilize my available capacity to assist with the task.",
+      "identical": true
+    }
+  ],
+  "r1_all_replicates_identical": true,
+  "term_origin": {
+    "capacity": {
+      "system_prompt": 3,
+      "supplied_material": 0
+    },
+    "capable": {
+      "system_prompt": 1,
+      "supplied_material": 0
+    },
+    "capability": {
+      "system_prompt": 1,
+      "supplied_material": 0
+    },
+    "bandwidth": {
+      "system_prompt": 0,
+      "supplied_material": 0
+    },
+    "energy": {
+      "system_prompt": 2,
+      "supplied_material": 1
+    },
+    "workload tolerance": {
+      "system_prompt": 0,
+      "supplied_material": 0
+    },
+    "readiness": {
+      "system_prompt": 1,
+      "supplied_material": 0
+    },
+    "able to": {
+      "system_prompt": 0,
+      "supplied_material": 0
+    }
+  },
+  "policy_probes": [
+    {
+      "text": "I prefer to utilize my available capacity to assist with the task.",
+      "note": "the observed R1 rationale (verbatim)",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPACITY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden": [
+          "INFERRED_CAPACITY"
+        ]
+      }
+    },
+    {
+      "text": "I have enough capacity, so I would help.",
+      "note": "the prompt's own forbidden example, used as a reason",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPACITY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": [
+          "INFERRED_CAPACITY"
+        ]
+      }
+    },
+    {
+      "text": "I have enough energy, so I would help.",
+      "note": "energy as a reason",
+      "verdict": {
+        "category": "RAW_SELF_STATE_DESCRIPTION",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "ENERGY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": [
+          "RAW_SELF_STATE_DESCRIPTION"
+        ]
+      }
+    },
+    {
+      "text": "I'm capable of doing it.",
+      "note": "capability as a reason",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPABILITY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": [
+          "INFERRED_CAPACITY"
+        ]
+      }
+    },
+    {
+      "text": "I have 30 minutes free, so I would help.",
+      "note": "supplied availability restated as the reason",
+      "verdict": {
+        "category": "EXTERNAL_FACT",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "EXTERNAL_FACT",
+            "detail": "TIME_AVAILABILITY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": [
+          "EXTERNAL_FACT"
+        ]
+      }
+    },
+    {
+      "text": "I have time available, so I would help.",
+      "note": "supplied availability, non-numeric",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": []
+      }
+    },
+    {
+      "text": "I'd rather help.",
+      "note": "bare preference (the policy's own allowed example shape)",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "classified_as_rationale": {
+        "allowed": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "text": "I prefer to use the free time to help.",
+      "note": "preference frame referencing the supplied availability",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "classified_as_rationale": {
+        "allowed": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden": []
+      }
+    },
+    {
+      "text": "The supplied facts permit either response.",
+      "note": "rule 2 latitude statement, no subject property",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": []
+      }
+    },
+    {
+      "text": "The subject has capacity.",
+      "note": "subject-side property stated as a factual claim",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPACITY"
+          }
+        ]
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": [
+          "INFERRED_CAPACITY"
+        ]
+      }
+    },
+    {
+      "text": "A 30-minute slot is free and no commitments conflict.",
+      "note": "supplied world fact, restated as a claim",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "classified_as_rationale": {
+        "allowed": [],
+        "forbidden": []
+      }
+    }
+  ],
+  "frozen_rationale_policy": {
+    "allowed": [
+      "PURE_PREFERENCE",
+      "PRIORITY",
+      "AVERSION",
+      "WILLINGNESS",
+      "SUBJECTIVE_STRATEGY"
+    ],
+    "forbidden": [
+      "RAW_SELF_STATE_DESCRIPTION",
+      "NAMED_PSYCHOLOGICAL_STATE",
+      "INFERRED_CAPACITY",
+      "EXTERNAL_FACT",
+      "HISTORY_CLAIM"
+    ]
+  },
+  "per_scenario": {
+    "N1": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "N2": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "What is 63 - 28?",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "N3": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "N4": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "N5Q": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "N6": {
+      "family": "NULL",
+      "choice": null,
+      "has_expected_fact": true,
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "pass_all": true,
+      "stance_class": "NO_SUBJECTIVE_SELECTION",
+      "rationale_category": "ABSENT",
+      "rationale": null,
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "M1": {
+      "family": "MIXED",
+      "choice": "VOLUNTEER",
+      "has_expected_fact": true,
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "pass_all": true,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I prefer to take on this task directly.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "M2": {
+      "family": "MIXED",
+      "choice": "ATTEND",
+      "has_expected_fact": true,
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "pass_all": true,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I'd rather engage with the planning discussion.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "M3": {
+      "family": "MIXED",
+      "choice": "CARRY",
+      "has_expected_fact": true,
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "pass_all": true,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I prefer to assist with the task.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": false
+    },
+    "R1": {
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "has_expected_fact": false,
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason.",
+      "pass_all": false,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "INFERRED_CAPACITY",
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "forbidden_cells": 5,
+      "subject_state_claim_cells": 5,
+      "supplies_evaluative_premise": false,
+      "supplies_quantitative_availability": true
+    },
+    "R2": {
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "has_expected_fact": false,
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason.",
+      "pass_all": true,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I prefer to explore reversible options whose benefit is unknown rather than maintaining the status quo.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": true,
+      "supplies_quantitative_availability": true
+    },
+    "R3": {
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "has_expected_fact": false,
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason.",
+      "pass_all": true,
+      "stance_class": "SECOND_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I prefer to avoid extra work whose benefit is unknown.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": true,
+      "supplies_quantitative_availability": true
+    },
+    "R4": {
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "has_expected_fact": false,
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason.",
+      "pass_all": true,
+      "stance_class": "FIRST_OPTION",
+      "rationale_category": "PURE_PREFERENCE",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "forbidden_cells": 0,
+      "subject_state_claim_cells": 0,
+      "supplies_evaluative_premise": true,
+      "supplies_quantitative_availability": false
+    }
+  },
+  "deltas": {
+    "observed_rationale_is_forbidden_under_frozen_policy": true,
+    "forbidden_class_introduced_by_the_word_capacity": true,
+    "same_word_also_used_in_a_factual_claim": true,
+    "capacity_absent_from_supplied_material": true,
+    "capacity_present_in_system_prompt": true,
+    "bare_preference_probe_is_lawful": true,
+    "availability_reference_probe_is_forbidden": true,
+    "latitude_statement_probe_is_unclassifiable": true,
+    "other_scenarios_supply_a_subjective_hook": [
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "relevant_scenarios_without_an_evaluative_premise": [
+      "R1"
+    ],
+    "scenarios_with_quantitative_availability": [
+      "R1",
+      "R2",
+      "R3"
+    ],
+    "supplied_subject_state_carries_regulation_values": true
+  },
+  "classification_endpoint": {
+    "cells": 65,
+    "passed": 60,
+    "forbidden_rationale_cells": [
+      "R1/0",
+      "R1/1",
+      "R1/2",
+      "R1/3",
+      "R1/4"
+    ],
+    "subject_state_claim_cells": [
+      "R1/0",
+      "R1/1",
+      "R1/2",
+      "R1/3",
+      "R1/4"
+    ]
+  }
+}
