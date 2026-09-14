@@ -1201,7 +1201,8 @@ export function buildSourceHandleMapV0(
     factualSourceHandles.push(handle);
     if (!refToHandle.has(ref)) refToHandle.set(ref, handle);
   });
-  evidenceRefs.slice(0, MAX_ADVERTISED_HANDLES_V0).forEach((ref, index) => {
+  const contextOnlyRefs = evidenceRefs.filter((ref) => !factualRefs.includes(ref));
+  contextOnlyRefs.slice(0, MAX_ADVERTISED_HANDLES_V0).forEach((ref, index) => {
     const handle = `C${index + 1}`;
     handleToRef.set(handle, ref);
     contextHandles.push(handle);
