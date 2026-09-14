@@ -767,3 +767,250 @@ export function validateHostBoundConversationCognitionProposalV4(
     projection.projection_hash
   );
 }
+
+// ---------------------------------------------------------------------------------
+// C4 (AFFECT_COGNITION_C4_CHOICE_APPLICABILITY_AND_SUBJECTIVE_BASIS_V0)
+// ---------------------------------------------------------------------------------
+
+export const CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5 =
+  "conversation-cognition-proposal-v5" as const;
+export const CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V5 =
+  "characteros-next/runtime/conversation-cognition-proposal/v5/v1" as const;
+export const SUBJECTIVE_RATIONALE_MAX_CODE_POINTS_V1 = 256 as const;
+
+export const SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1 = "NOT_APPLICABLE" as const;
+export const SUBJECTIVE_CHOICE_KIND_SELECTED_V1 = "SELECTED" as const;
+
+/**
+ * C4 choice applicability. The tag answers ONE question — "did the subject make a
+ * turn-local subjective selection?" — and lives only on this field. It is NOT a
+ * response-mode enum and carries no task taxonomy: a mixed turn is naturally
+ * `factual_assessment` plus a `SELECTED` choice.
+ *
+ * `subjective_rationale` expresses preference, priority, aversion, willingness or
+ * subjective strategy. It carries ZERO factual authority: no evidence refs, no
+ * persistence, no canonical state, and nothing about the world, history, time,
+ * resources or the subject's own condition may be established by it.
+ */
+export type SubjectiveChoiceV1 =
+  | {
+      readonly kind: typeof SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1;
+    }
+  | {
+      readonly kind: typeof SUBJECTIVE_CHOICE_KIND_SELECTED_V1;
+      readonly stance: string;
+      readonly subjective_rationale: string | null;
+    };
+
+/** Closed C4 conversation cognition proposal (CognitionProposalV0 unchanged). */
+export interface ConversationCognitionProposalV5 {
+  readonly schema_version: typeof CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5;
+  readonly factual_assessment: FactualAssessmentV0;
+  readonly cognition: CognitionProposalV0;
+  readonly subjective_choice: SubjectiveChoiceV1;
+  readonly communication_directive: CommunicationDirectiveV0;
+  readonly clarification_basis: ClarificationBasisV0 | null;
+}
+
+const OUTER_KEYS_V5: readonly string[] = [
+  "schema_version",
+  "factual_assessment",
+  "cognition",
+  "subjective_choice",
+  "communication_directive",
+  "clarification_basis"
+];
+const SUBJECTIVE_CHOICE_NOT_APPLICABLE_KEYS_V1: readonly string[] = ["kind"];
+const SUBJECTIVE_CHOICE_SELECTED_KEYS_V1: readonly string[] = ["kind", "stance", "subjective_rationale"];
+
+/** The frozen C3 stance rules, carried over unchanged to the C4 carrier. */
+function validateStanceTextV1(
+  value: unknown,
+  detail: string
+): { ok: true; stance: string } | { ok: false; detail: string } {
+  const textCheck = validateCanonicalText(value, `${detail}.stance`);
+  if (!textCheck.ok) return { ok: false, detail: textCheck.error.detail };
+  const stance = textCheck.value;
+  if (stance.trim().length === 0) return { ok: false, detail: `${detail}.stance: must be non-empty` };
+  if ([...stance].length > SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0) {
+    return { ok: false, detail: `${detail}.stance: exceeds ${SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0} code points` };
+  }
+  const normalized = stance.trim().toLocaleUpperCase("en-US");
+  if (DIRECTIVE_ENUM_TOKENS_V0.includes(normalized)) {
+    return { ok: false, detail: `${detail}.stance: directive enum echo is not a subject choice` };
+  }
+  const lowered = stance.trim().toLocaleLowerCase("en-US");
+  if (UNRESOLVED_STANCE_PREFIXES_V0.some((prefix) => lowered.startsWith(prefix))) {
+    return { ok: false, detail: `${detail}.stance: states no selected choice` };
+  }
+  return { ok: true, stance };
+}
+
+/** Bounded, canonical, non-authoritative subjective basis (null is lawful). */
+function validateSubjectiveRationaleV1(
+  value: unknown,
+  detail: string
+): { ok: true; rationale: string | null } | { ok: false; detail: string } {
+  if (value === null) return { ok: true, rationale: null };
+  const textCheck = validateCanonicalText(value, `${detail}.subjective_rationale`);
+  if (!textCheck.ok) return { ok: false, detail: textCheck.error.detail };
+  const rationale = textCheck.value;
+  if (rationale.trim().length === 0) {
+    return { ok: false, detail: `${detail}.subjective_rationale: must be non-empty` };
+  }
+  if ([...rationale].length > SUBJECTIVE_RATIONALE_MAX_CODE_POINTS_V1) {
+    return { ok: false, detail: `${detail}.subjective_rationale: exceeds ${SUBJECTIVE_RATIONALE_MAX_CODE_POINTS_V1} code points` };
+  }
+  return { ok: true, rationale };
+}
+
+/** Closed C4 choice validation: the applicability tag decides the branch. */
+export function validateSubjectiveChoiceV1(
+  value: unknown
+): { ok: true; choice: SubjectiveChoiceV1 } | { ok: false; detail: string } {
+  const detail = "subjective_choice";
+  if (!isRecord(value)) return { ok: false, detail: `${detail}: expected object` };
+  const kind = value["kind"];
+  if (kind === SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1) {
+    const keyFailure = exactClosedKeys(value, SUBJECTIVE_CHOICE_NOT_APPLICABLE_KEYS_V1, detail);
+    if (keyFailure !== null) return { ok: false, detail: keyFailure };
+    return { ok: true, choice: Object.freeze({ kind: SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1 }) };
+  }
+  if (kind === SUBJECTIVE_CHOICE_KIND_SELECTED_V1) {
+    const keyFailure = exactClosedKeys(value, SUBJECTIVE_CHOICE_SELECTED_KEYS_V1, detail);
+    if (keyFailure !== null) return { ok: false, detail: keyFailure };
+    const stanceCheck = validateStanceTextV1(value["stance"], detail);
+    if (!stanceCheck.ok) return { ok: false, detail: stanceCheck.detail };
+    const rationaleCheck = validateSubjectiveRationaleV1(value["subjective_rationale"], detail);
+    if (!rationaleCheck.ok) return { ok: false, detail: rationaleCheck.detail };
+    return {
+      ok: true,
+      choice: Object.freeze({
+        kind: SUBJECTIVE_CHOICE_KIND_SELECTED_V1,
+        stance: stanceCheck.stance,
+        subjective_rationale: rationaleCheck.rationale
+      })
+    };
+  }
+  return {
+    ok: false,
+    detail: `${detail}.kind: expected ${SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1} or ${SUBJECTIVE_CHOICE_KIND_SELECTED_V1}`
+  };
+}
+
+/**
+ * Strict C4 validation. `authoritativeProjectionHash` MUST come from the exact
+ * outstanding cognition invocation captured by the host before the call.
+ *
+ * CLARIFY ⇒ the choice must be `NOT_APPLICABLE` (nothing is selected while
+ * clarification is unresolved). REALIZE ⇒ either branch is structurally lawful;
+ * WHICH branch should apply is not knowable by the host from natural language and
+ * is enforced by experiment qualification (no production task taxonomy).
+ */
+export function validateConversationCognitionProposalV5(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): { ok: true; proposal: ConversationCognitionProposalV5 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const keyFailure = exactClosedKeys(value, OUTER_KEYS_V5, "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v5" };
+  }
+  const directiveCheck = validateCommunicationDirectiveV0(value["communication_directive"]);
+  if (!directiveCheck.ok) return { ok: false, detail: `conversation proposal.communication_directive: ${directiveCheck.detail}` };
+  const directive = directiveCheck.directive as CommunicationDirectiveV0;
+
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const cognitionKeyFailure = exactClosedKeys(cognitionValue, COGNITION_SEMANTIC_KEYS_V0, "conversation proposal.cognition");
+  if (cognitionKeyFailure !== null) return { ok: false, detail: cognitionKeyFailure };
+  const cognitionCheck = validateCognitionProposal({ ...cognitionValue, projection_hash: authoritativeProjectionHash });
+  if (!cognitionCheck.ok) return { ok: false, detail: `conversation proposal.cognition: ${cognitionCheck.error.detail}` };
+  const cognition = cognitionCheck.value as CognitionProposalV0;
+  if (cognition.action_intent !== null) {
+    return { ok: false, detail: "conversation proposal.cognition.action_intent: must be null for text-response path" };
+  }
+
+  const factualCheck = validateFactualAssessmentV0(value["factual_assessment"], projection, cognition);
+  if (!factualCheck.ok) return { ok: false, detail: `conversation proposal.${factualCheck.detail}` };
+
+  const choiceCheck = validateSubjectiveChoiceV1(value["subjective_choice"]);
+  if (!choiceCheck.ok) return { ok: false, detail: `conversation proposal.${choiceCheck.detail}` };
+  const subjectiveChoice = choiceCheck.choice;
+
+  let clarificationBasis: ClarificationBasisV0 | null = null;
+  if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
+    if (subjectiveChoice.kind !== SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1) {
+      return { ok: false, detail: "conversation proposal.subjective_choice: CLARIFY requires NOT_APPLICABLE" };
+    }
+    if (value["clarification_basis"] === null || value["clarification_basis"] === undefined) {
+      return { ok: false, detail: "conversation proposal.clarification_basis: CLARIFY requires a non-null basis" };
+    }
+    const basisCheck = validateClarificationBasisV0(value["clarification_basis"], projection);
+    if (!basisCheck.ok) return { ok: false, detail: `conversation proposal.${basisCheck.detail}` };
+    if (!cognition.considered_context_refs.includes(basisCheck.basis.current_observation_ref)) {
+      return {
+        ok: false,
+        detail: "conversation proposal.clarification_basis.current_observation_ref: must appear in considered_context_refs"
+      };
+    }
+    clarificationBasis = basisCheck.basis;
+  } else if (value["clarification_basis"] !== null) {
+    return { ok: false, detail: "conversation proposal.clarification_basis: REALIZE requires exactly null" };
+  }
+
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5,
+      factual_assessment: factualCheck.assessment,
+      cognition,
+      subjective_choice: subjectiveChoice,
+      communication_directive: directive,
+      clarification_basis: clarificationBasis
+    })
+  };
+}
+
+/** Distinct C4 hash domain covering every V5 field, including the tagged choice. */
+export async function deriveConversationCognitionProposalHashV5(
+  proposal: ConversationCognitionProposalV5
+): Promise<HashV1> {
+  return hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V5, {
+    schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5,
+    factual_assessment: proposal.factual_assessment,
+    cognition: proposal.cognition,
+    subjective_choice: proposal.subjective_choice,
+    communication_directive: proposal.communication_directive,
+    clarification_basis: proposal.clarification_basis
+  });
+}
+
+/**
+ * Revalidates an ALREADY host-bound V5 proposal (the value produced by the V5
+ * provider, whose `cognition.projection_hash` was injected by the host).
+ */
+export function validateHostBoundConversationCognitionProposalV5(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): { ok: true; proposal: ConversationCognitionProposalV5 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const cognition = value["cognition"];
+  if (!isRecord(cognition)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const declared = cognition["projection_hash"];
+  if (typeof declared !== "string" || declared !== projection.projection_hash) {
+    return {
+      ok: false,
+      detail: "conversation proposal.cognition.projection_hash: does not match the authoritative projection binding"
+    };
+  }
+  const { projection_hash: _ignored, ...semanticCognition } = cognition as Record<string, unknown>;
+  void _ignored;
+  return validateConversationCognitionProposalV5(
+    { ...(value as Record<string, unknown>), cognition: semanticCognition },
+    projection,
+    projection.projection_hash
+  );
+}

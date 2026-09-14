@@ -476,8 +476,10 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v4",
-          subjective_choice: cognitionIntent === null ? null : { stance: cognitionIntent },
+          schema_version: "conversation-cognition-proposal-v5",
+          subjective_choice: cognitionIntent === null
+            ? { kind: "NOT_APPLICABLE" }
+            : { kind: "SELECTED", stance: cognitionIntent, subjective_rationale: null },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
@@ -500,12 +502,12 @@ async function executeDownstreamProof(
     complete: async (request) => {
       languageRequests.push(request);
       const input = inputObjectFromLanguageRequest(request);
-      const choice = input["selected_subjective_choice"] as { readonly stance?: string } | null;
+      const choice = input["selected_subjective_choice"] as { readonly kind?: string; readonly stance?: string } | null;
       return {
         model: "fake-language-realizer",
         content: JSON.stringify({
           schema_version: "language-realization-semantic-draft-v1",
-          text: `deterministic behavior: ${String(choice?.stance ?? null)}`,
+          text: `deterministic behavior: ${String(choice?.kind === "SELECTED" ? choice.stance : null)}`,
           evidence_refs: []
         })
       };
@@ -548,7 +550,7 @@ async function executeDownstreamProof(
   const cognitionRequest = cognitionRequests[0];
   const languageRequest = languageRequests[0];
   if (cognitionRequests.length !== 1 || languageRequests.length !== 1 || cognitionRequest === undefined || languageRequest === undefined) {
-    throw new Error("downstream proof expected exactly one call at each fake provider seam");
+    throw new Error(`downstream proof expected exactly one call at each fake provider seam (cognition=${cognitionRequests.length} language=${languageRequests.length} result=${result.kind}${result.kind === "FAILED" ? ` stage=${result.stage} detail=${result.detail ?? ""}` : ""})`);
   }
   return {
     result,
@@ -960,10 +962,10 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultB.result.kind).toBe("OUTPUT_READY");
     if (resultA.result.kind !== "OUTPUT_READY" || resultB.result.kind !== "OUTPUT_READY") return;
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
-    expect(resultA.language_input["selected_subjective_choice"]).toEqual({ stance: resultA.cognition_intent });
-    expect(resultB.language_input["selected_subjective_choice"]).toEqual({ stance: resultB.cognition_intent });
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v5");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v5");
+    expect(resultA.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: resultA.cognition_intent, subjective_rationale: null });
+    expect(resultB.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: resultB.cognition_intent, subjective_rationale: null });
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v6");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v6");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
@@ -992,8 +994,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     const result = await executeDownstreamProof(world, () => selected, "response-downstream-selected");
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
-    expect(result.language_input["selected_subjective_choice"]).toEqual({ stance: selected });
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v5");
+    expect(result.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: selected, subjective_rationale: null });
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v6");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1010,8 +1012,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v4",
-          subjective_choice: null,
+            schema_version: "conversation-cognition-proposal-v5",
+          subjective_choice: { kind: "NOT_APPLICABLE" },
             factual_assessment: { claims: [] },
             cognition: {
               schema_version: "cognition-proposal-v0",

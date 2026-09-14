@@ -86,8 +86,8 @@ function cognitionTransport(counter: CallCounter): ModelTransportV0 {
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v4",
-          subjective_choice: null,
+          schema_version: "conversation-cognition-proposal-v5",
+          subjective_choice: { kind: "NOT_APPLICABLE" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",

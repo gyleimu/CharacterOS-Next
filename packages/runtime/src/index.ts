@@ -1048,6 +1048,37 @@ export {
   type BuildLanguageRealizationInputV5Result
 } from "./transitions/conversation/language-realization-input.js";
 export {
+  ConversationCognitionProviderV5,
+  ConversationCognitionRejectionErrorV5,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V5,
+  CONVERSATION_COGNITION_PROPOSAL_V5_JSON_SCHEMA,
+  COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V1,
+  COGNITION_INVOCATION_BINDING_HASH_PROJECTION_V1,
+  deriveCognitionInvocationBindingHashV1,
+  type CognitionInvocationBindingV1
+} from "./providers/behavior/conversation-cognition-provider-v5.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V5,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V5,
+  SUBJECTIVE_RATIONALE_MAX_CODE_POINTS_V1,
+  SUBJECTIVE_CHOICE_KIND_NOT_APPLICABLE_V1,
+  SUBJECTIVE_CHOICE_KIND_SELECTED_V1,
+  validateConversationCognitionProposalV5,
+  deriveConversationCognitionProposalHashV5,
+  validateHostBoundConversationCognitionProposalV5,
+  validateSubjectiveChoiceV1,
+  type ConversationCognitionProposalV5,
+  type SubjectiveChoiceV1
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
+  LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V6,
+  LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V6,
+  type LanguageRealizationInputV6,
+  type LanguageCommunicationBindingV5,
+  type BuildLanguageRealizationInputV6Request,
+  type BuildLanguageRealizationInputV6Result
+} from "./transitions/conversation/language-realization-input.js";
+export {
   LANGUAGE_REALIZATION_SYSTEM_PROMPT_V1,
   LANGUAGE_REALIZATION_SEMANTIC_DRAFT_V1_JSON_SCHEMA,
   LANGUAGE_INVOCATION_BINDING_SCHEMA_VERSION_V0,
