@@ -62,7 +62,7 @@ function wire(overrides: Record<string, unknown> = {}) {
     factual_assessment: { claims: [{ kind: "DERIVED_RESULT", text: "63 minus 28 equals 35.", source_handles: [OBS_HANDLE] }] },
     cognition: {
       schema_version: "cognition-proposal-v0", reasoning_summary: "subtract",
-      relevant_memory_handles: [], considered_context_handles: [OBS_HANDLE], current_intent: "state the difference",
+      relevant_memory_handles: [], considered_handles: [OBS_HANDLE], current_intent: "state the difference",
       confidence: 1, uncertainty: 0, action_intent: null, evidence_handles: [OBS_HANDLE]
     },
     subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
@@ -125,7 +125,7 @@ describe("C4.4 CHANGE B — model-wire handles", () => {
     const contextHandle = map.contextHandles.find((handle) => map.handleToRef.get(handle) === "entity:alice");
     const withContext = canonicalize(wire({
       factual_assessment: { claims: [] },
-      cognition: { ...(wire()["cognition"] as object), considered_context_handles: [contextHandle], evidence_handles: [contextHandle] }
+      cognition: { ...(wire()["cognition"] as object), considered_handles: [contextHandle], evidence_handles: [contextHandle] }
     }));
     expect(withContext.ok).toBe(true);
     if (withContext.ok) expect(withContext.proposal.cognition.considered_context_refs).toEqual(["entity:alice"]);
@@ -136,7 +136,7 @@ describe("C4.4 CHANGE B — model-wire handles", () => {
     expect(unknownSource.ok).toBe(false);
     if (!unknownSource.ok) expect(unknownSource.detail).toContain("UNKNOWN_SOURCE_HANDLE");
 
-    const unknownContext = canonicalize(wire({ cognition: { ...(wire()["cognition"] as object), considered_context_handles: ["C99"] } }));
+    const unknownContext = canonicalize(wire({ cognition: { ...(wire()["cognition"] as object), considered_handles: ["C99"] } }));
     expect(unknownContext.ok).toBe(false);
     if (!unknownContext.ok) expect(unknownContext.detail).toContain("UNKNOWN_CONTEXT_HANDLE");
 
@@ -176,7 +176,7 @@ describe("C4.4 CHANGE B — model-wire handles", () => {
     expect(handle).toBeDefined();
     const checked = canonicalize(wire({
       factual_assessment: { claims: [{ kind: "DERIVED_RESULT", text: "The user states that 10 minutes of time is available.", source_handles: [handle] }] },
-      cognition: { ...(wire()["cognition"] as object), considered_context_handles: [handle], evidence_handles: [handle] }
+      cognition: { ...(wire()["cognition"] as object), considered_handles: [handle], evidence_handles: [handle] }
     }), p);
     expect(checked.ok).toBe(true);
     if (checked.ok) {
@@ -186,7 +186,7 @@ describe("C4.4 CHANGE B — model-wire handles", () => {
     // an invented handle on the same shape still fails
     const invented = canonicalize(wire({
       factual_assessment: { claims: [{ kind: "DERIVED_RESULT", text: "x", source_handles: ["F7"] }] },
-      cognition: { ...(wire()["cognition"] as object), considered_context_handles: ["F7"], evidence_handles: ["F7"] }
+      cognition: { ...(wire()["cognition"] as object), considered_handles: ["F7"], evidence_handles: ["F7"] }
     }), p);
     expect(invented.ok).toBe(false);
   });

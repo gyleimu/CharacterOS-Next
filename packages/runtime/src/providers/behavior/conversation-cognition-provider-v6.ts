@@ -57,7 +57,7 @@ const COGNITION_WIRE_JSON_SCHEMA = Object.freeze({
     "schema_version",
     "reasoning_summary",
     "relevant_memory_handles",
-    "considered_context_handles",
+    "considered_handles",
     "current_intent",
     "confidence",
     "uncertainty",
@@ -68,7 +68,7 @@ const COGNITION_WIRE_JSON_SCHEMA = Object.freeze({
     schema_version: { const: "cognition-proposal-v0" },
     reasoning_summary: { type: "string" },
     relevant_memory_handles: { type: "array", items: { type: "string" } },
-    considered_context_handles: { type: "array", items: { type: "string" } },
+    considered_handles: { type: "array", items: { type: "string" } },
     current_intent: { type: ["string", "null"] },
     confidence: { type: "number", minimum: 0, maximum: 1 },
     uncertainty: { type: "number", minimum: 0, maximum: 1 },
@@ -180,8 +180,8 @@ export const CONVERSATION_COGNITION_SYSTEM_PROMPT_V6 = [
   "5b. FORBIDDEN rationale content: describing your own condition or state (energy, stress, fatigue, arousal, freshness, mood, alertness, readiness), claiming capacity or capability (\"I have enough capacity\", \"I am capable\", \"within my operational scope\", \"I can manage it\"), naming a psychological condition, or newly asserting a world/history fact. Your state may shape your choice but must stay LATENT: never narrate it.",
   "5c. No numeric or linguistic mapping exists between your regulation/affect values and psychological language. Do not create one.",
   "6. AUTHORITY OF REASONS: an EXTERNAL premise (time, deadline, reversibility, resources, history, measured benefit, environment) MUST appear as a claim in factual_assessment with a lawful source. A SUBJECT-SIDE premise belongs ONLY in subjective_rationale. Never convert a subjective preference into a factual claim.",
-  "7. EVIDENCE HANDLES: the request advertises FACTUAL SOURCE HANDLES (F1, F2, …) and CONTEXT HANDLES (C1, C2, …). You never write a canonical ref; you select the advertised handle. Every factual source has exactly ONE handle, an F handle; the CONTEXT HANDLES list contains only the OTHER context items, which carry C handles. factual_assessment.claims[*].source_handles may contain ONLY F handles. cognition.relevant_memory_handles, cognition.considered_context_handles and cognition.evidence_handles may contain F and C handles. To bind a source you cite, repeat its F handle there. Never invent a handle: a handle you were not given is rejected and the whole turn is refused.",
-  "7a. CITATION BINDING: every F handle you use in a claim's source_handles must ALSO appear in cognition.considered_context_handles AND in cognition.evidence_handles. A claim whose source is bound in only one of those arrays is rejected.",
+  "7. EVIDENCE HANDLES: the request advertises FACTUAL SOURCE HANDLES (F1, F2, …) and CONTEXT HANDLES (C1, C2, …). You never write a canonical ref; you select the advertised handle. Every factual source has exactly ONE handle, an F handle; the CONTEXT HANDLES list contains only the OTHER context items, which carry C handles. factual_assessment.claims[*].source_handles may contain ONLY F handles. cognition.relevant_memory_handles, cognition.considered_handles and cognition.evidence_handles may contain F and C handles. To bind a source you cite, repeat its F handle there. Never invent a handle: a handle you were not given is rejected and the whole turn is refused.",
+  "7a. CITATION BINDING (binding, with example): every F handle you use in a claim's source_handles must be listed AGAIN in BOTH cognition.considered_handles AND cognition.evidence_handles. Both arrays accept F and C handles; 'considered' means everything you took into account, not only context items. So if a claim cites F2, then cognition.considered_handles must contain F2 and cognition.evidence_handles must contain F2, for example: {\"claims\":[{\"kind\":\"DERIVED_RESULT\",\"text\":\"...\",\"source_handles\":[\"F2\"]}],\"cognition\":{\"considered_handles\":[\"F2\",\"C1\"],\"evidence_handles\":[\"F2\"]}}. A claim whose source is bound in only one of the two arrays is rejected and the whole turn is refused.",
   "7b. C handles are visible context only: they are never factual sources, so a C handle can never appear in a claim's source_handles.",
   "8. FACTUAL ASSESSMENT: at most 8 claims; each has exactly kind, text, source_handles; text is non-empty and at most 512 code points; source_handles is non-empty and unique.",
   "9. SOURCE_QUOTE text must occur verbatim, with exact case and punctuation, in every cited source. Use DERIVED_RESULT for arithmetic, classification, extraction, transformation or any non-verbatim result.",
@@ -306,7 +306,7 @@ export class ConversationCognitionProviderV6 {
       const canonicalized = canonicalizeSetLikeRefFields({
         ...cognition,
         relevant_memory_refs: cognition["relevant_memory_handles"] ?? [],
-        considered_context_refs: cognition["considered_context_handles"] ?? [],
+        considered_context_refs: cognition["considered_handles"] ?? [],
         evidence_refs: cognition["evidence_handles"] ?? []
       }) as Record<string, unknown>;
       candidate["cognition"] = {

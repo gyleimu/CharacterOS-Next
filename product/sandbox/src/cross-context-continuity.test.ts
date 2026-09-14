@@ -58,7 +58,7 @@ function cognitionTransport(recorder: { requests: string[] }): ModelTransportV0 
 
             reasoning_summary: "offline cross-context cognition",
             relevant_memory_handles: [],
-            considered_context_handles: [],
+            considered_handles: [],
             current_intent: "respond",
             confidence: 0.7,
             uncertainty: 0.3,

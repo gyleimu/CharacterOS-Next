@@ -51,7 +51,7 @@ function cognitionTransport(): ModelTransportV0 {
 
             reasoning_summary: "offline cognition",
             relevant_memory_handles: [],
-            considered_context_handles: [],
+            considered_handles: [],
             current_intent: "respond to the user",
             confidence: 0.7,
             uncertainty: 0.3,

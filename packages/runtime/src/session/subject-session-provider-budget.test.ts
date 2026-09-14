@@ -171,7 +171,7 @@ function stubOllama(metadata: Record<string, unknown>): { calls: CapturedCall[] 
 
         reasoning_summary: "offline budget conformance cognition",
         relevant_memory_handles: [],
-        considered_context_handles: [handleForAdvertisedRef(user, observationRef)],
+        considered_handles: [handleForAdvertisedRef(user, observationRef)],
         current_intent: "report the current status",
         confidence: 0.7,
         uncertainty: 0.3,

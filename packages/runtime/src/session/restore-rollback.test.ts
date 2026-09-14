@@ -58,7 +58,7 @@ const cognitionTransport: ModelTransportV0 = {
         schema_version: "conversation-cognition-proposal-v6",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
         factual_assessment: { claims: [] },
-        cognition: { schema_version: "cognition-proposal-v0",  reasoning_summary: "x", relevant_memory_handles: [], considered_context_handles: [handleForAdvertisedRef(user, observationRef)], current_intent: "respond", confidence: 0.7, uncertainty: 0.3, action_intent: null, evidence_handles: [] },
+        cognition: { schema_version: "cognition-proposal-v0",  reasoning_summary: "x", relevant_memory_handles: [], considered_handles: [handleForAdvertisedRef(user, observationRef)], current_intent: "respond", confidence: 0.7, uncertainty: 0.3, action_intent: null, evidence_handles: [] },
         communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
       , clarification_basis: String("CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
       model: "fake"

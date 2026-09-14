@@ -71,7 +71,7 @@ export const preview = (world: Parameters<typeof observeResponse>[0], empty = fa
 
 /** A real cognition result may change current_intent; every other language field
  * is fixed by history/evidence. Never compare real intent to the fake response. */
-export function fixedLanguage(input: NonNullable<Observation["language"]>["input"]) {
+export function fixedLanguage(input: NonNullable<Observation["language"]>["input"]): NonNullable<Observation["language"]>["input"] {
   return { ...input, cognition_proposal_binding: { ...input.cognition_proposal_binding, current_intent: null } };
 }
 export async function assertActual(o: Observation, expected: Observation, arm: Arm, stage: "cognition" | "language") {

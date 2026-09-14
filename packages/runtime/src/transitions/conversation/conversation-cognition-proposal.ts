@@ -1084,7 +1084,7 @@ const COGNITION_WIRE_KEYS_V6: readonly string[] = [
   "schema_version",
   "reasoning_summary",
   "relevant_memory_handles",
-  "considered_context_handles",
+  "considered_handles",
   "current_intent",
   "confidence",
   "uncertainty",
@@ -1272,7 +1272,7 @@ export function renderHandleBlocksV0(
   return [
     "FACTUAL SOURCE HANDLES (the ONLY handles allowed in factual_assessment.claims[*].source_handles; each F handle resolves to a host-owned canonical factual source ref):",
     factual.length === 0 ? "(none)" : factual,
-    "CONTEXT HANDLES (allowed in relevant_memory_handles, considered_context_handles and evidence_handles; these are visible context and are NEVER factual sources, so a C handle can never be a claim source):",
+    "CONTEXT HANDLES (allowed in relevant_memory_handles, considered_handles and evidence_handles; these are visible context and are NEVER factual sources, so a C handle can never be a claim source):",
     context.length === 0 ? "(none)" : context
   ].join("\n");
 }
@@ -1301,7 +1301,7 @@ export function canonicalizeConversationCognitionModelOutputV6(
   if (cognitionKeyFailure !== null) return { ok: false, detail: cognitionKeyFailure };
   const memory = resolveHandleArrayV0(cognitionValue["relevant_memory_handles"], map, "conversation proposal.cognition.relevant_memory_handles", true);
   if (!memory.ok) return memory;
-  const context = resolveHandleArrayV0(cognitionValue["considered_context_handles"], map, "conversation proposal.cognition.considered_context_handles", true);
+  const context = resolveHandleArrayV0(cognitionValue["considered_handles"], map, "conversation proposal.cognition.considered_handles", true);
   if (!context.ok) return context;
   const evidence = resolveHandleArrayV0(cognitionValue["evidence_handles"], map, "conversation proposal.cognition.evidence_handles", true);
   if (!evidence.ok) return evidence;

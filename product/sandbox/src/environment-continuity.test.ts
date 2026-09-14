@@ -60,7 +60,7 @@ function cognitionTransport(recorder: { requests: string[] }): ModelTransportV0 
 
             reasoning_summary: "offline environment cognition",
             relevant_memory_handles: [],
-            considered_context_handles: [],
+            considered_handles: [],
             current_intent: "answer Alice's review question",
             confidence: 0.7,
             uncertainty: 0.3,

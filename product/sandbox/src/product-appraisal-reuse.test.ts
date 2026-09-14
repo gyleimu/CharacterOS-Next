@@ -287,7 +287,7 @@ function cognitionTransport(mode: CognitionMode): ModelTransportV0 {
 
             reasoning_summary: "offline",
             relevant_memory_handles: [],
-            considered_context_handles: mode === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
+            considered_handles: mode === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
             current_intent: "respond",
             confidence: 0.7,
             uncertainty: 0.3,

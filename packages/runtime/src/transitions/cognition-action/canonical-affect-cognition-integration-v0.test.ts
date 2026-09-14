@@ -501,7 +501,7 @@ async function executeDownstreamProof(
 
             reasoning_summary: "deterministic provider seam summary",
             relevant_memory_handles: [],
-            considered_context_handles: [],
+            considered_handles: [],
             current_intent: cognitionIntent,
             confidence: 0.8,
             uncertainty: 0.2,
@@ -1035,7 +1035,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
 
               reasoning_summary: "clarification is required",
               relevant_memory_handles: [],
-              considered_context_handles: [handleForAdvertisedRef(user, observationRef)],
+              considered_handles: [handleForAdvertisedRef(user, observationRef)],
               current_intent: "proceed as if the missing context were known",
               confidence: 0.8,
               uncertainty: 0.2,

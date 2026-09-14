@@ -134,7 +134,7 @@ function fakeCognitionTransport(mode: () => Mode, intents: string[]): ModelTrans
 
             reasoning_summary: "offline test cognition",
             relevant_memory_handles: [],
-            considered_context_handles: selected === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
+            considered_handles: selected === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
             current_intent: intent,
             confidence: 0.7,
             uncertainty: 0.3,
