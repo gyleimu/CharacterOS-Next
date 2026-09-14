@@ -1,0 +1,15 @@
+{
+  "schema_version": "affect-cognition-c3-language-fidelity-v0",
+  "CHOICE_PRESERVED": 20,
+  "CHOICE_CHANGED": 0,
+  "CHOICE_INVENTED": 0,
+  "CHOICE_DROPPED": 0,
+  "CHOICE_CHANGED_AT_HANDOFF": 15,
+  "CHOICE_NOT_HANDED_OFF": 0,
+  "CHOICE_ABSENT_AT_COGNITION": 0,
+  "FACT_PRESERVED": 40,
+  "FACT_CHANGED": 5,
+  "FACT_CONTRADICTED": 0,
+  "UNSUPPORTED_REASON_ADDED": 10,
+  "pass": false
+}

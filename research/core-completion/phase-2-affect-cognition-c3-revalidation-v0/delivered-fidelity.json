@@ -1,0 +1,14 @@
+{
+  "schema_version": "affect-cognition-c3-delivered-fidelity-v0",
+  "scope": "cells that reached and completed the Language stage",
+  "delivered_cells": 50,
+  "choice_cells": 20,
+  "choice_preserved": 20,
+  "choice_changed": 0,
+  "choice_invented": 0,
+  "fact_preserved": 40,
+  "fact_changed": 0,
+  "fact_contradicted": 0,
+  "unsupported_reasons": 0,
+  "pass": true
+}

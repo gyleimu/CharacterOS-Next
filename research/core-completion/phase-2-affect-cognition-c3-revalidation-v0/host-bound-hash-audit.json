@@ -1,0 +1,8 @@
+{
+  "schema_version": "affect-cognition-c3-host-bound-hash-audit-v0",
+  "model_emitted_projection_hash_cells": 0,
+  "schema_advertises_projection_hash": 0,
+  "prompt_asks_for_hash": 0,
+  "cells": 65,
+  "pass": true
+}

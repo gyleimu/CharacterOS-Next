@@ -1,0 +1,477 @@
+{
+  "schema_version": "affect-cognition-c3-choice-endpoint-audit-v0",
+  "freeze_hash": "sha256:b8f2223f09bbb3f7973a6742a0fc1f76908520eda7e0e5d42af0dcdacc79baf3",
+  "primary_endpoint": "CHOICE_SELECTED_AT_COGNITION",
+  "required": {
+    "choice_bearing_cells": 35,
+    "null_cells": 30
+  },
+  "per_scenario": {
+    "N1": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "N2": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "N3": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "N4": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "N5Q": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "N6": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required": "CHOICE_CORRECTLY_NULL",
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH."
+      ],
+      "choice_fidelity": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "compliant": 0,
+      "total": 5
+    },
+    "M1": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review."
+      ],
+      "choice_fidelity": [
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "M2": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting."
+      ],
+      "choice_fidelity": [
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "M3": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs."
+      ],
+      "choice_fidelity": [
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "R1": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts."
+      ],
+      "choice_fidelity": [
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "R2": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial."
+      ],
+      "choice_fidelity": [
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED",
+        "CHOICE_PRESERVED"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "R3": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost."
+      ],
+      "choice_fidelity": [
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF"
+      ],
+      "compliant": 5,
+      "total": 5
+    },
+    "R4": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required": "CHOICE_SELECTED_AT_COGNITION",
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stances": [
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward."
+      ],
+      "choice_fidelity": [
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF",
+        "CHOICE_CHANGED_AT_HANDOFF"
+      ],
+      "compliant": 5,
+      "total": 5
+    }
+  },
+  "aggregates": {
+    "choice_cells_selected": 35,
+    "choice_cells_required": 35,
+    "null_cells_correctly_null": 0,
+    "null_cells_required": 30,
+    "enum_echo_cells": 0,
+    "placeholder_cells": 0,
+    "null_choice_cells_on_choice_scenarios": 0,
+    "unexpected_choice_cells_on_null_scenarios": 30
+  },
+  "pass": false
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "affect-cognition-c3-qualification-verdict-v0",
+  "repository_head": "b47a326e2b0c18fbfd91082baddf83dd0b2a27d0",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v4",
+  "rows": 65,
+  "flags": {
+    "implementation_intact": true,
+    "protocol_failures": 15,
+    "host_refused_cells": 15,
+    "null_facts_pass": true,
+    "authority_boundary_held": true,
+    "lawful_sourcing_pass": false,
+    "factual_assessment_pass": false,
+    "host_bound_hash_pass": true,
+    "choice_endpoint_pass": false,
+    "null_cell_pass": false,
+    "language_fidelity_pass": true,
+    "language_fidelity_raw_pass": false,
+    "handoff_divergence_pass": true,
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_triggered": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_C3_FACTUAL_ASSESSMENT_FAILED",
+  "co_present": "AFFECT_COGNITION_C3_CHOICE_PRODUCTION_FAILED",
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}

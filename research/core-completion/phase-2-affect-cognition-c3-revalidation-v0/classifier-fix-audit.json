@@ -1,0 +1,72 @@
+{
+  "schema_version": "affect-cognition-c3-classifier-fix-audit-v0",
+  "legacy_rule": "phase-2-affect-cognition-c2-clean-revalidation-v0/lib/classify.mjs factualClass",
+  "current_rule": "lib/classify.mjs factualClass (echo stripping + arithmetic-operand guard)",
+  "deltas": [],
+  "legacy_only_failures": 5,
+  "current_failures": 5,
+  "per_scenario": {
+    "N1": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "N2": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "N3": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "N4": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "N5Q": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "N6": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "M1": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "M2": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "M3": {
+      "legacy_failures": 5,
+      "current_failures": 5
+    },
+    "R1": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "R2": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "R3": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    },
+    "R4": {
+      "legacy_failures": 0,
+      "current_failures": 0
+    }
+  },
+  "artifact_fixed": true,
+  "c2_evidence_counterexample": {
+    "source": "phase-2-affect-cognition-c2-clean-revalidation-v0/qualification-raw.jsonl",
+    "scenario": "N1",
+    "replicate": 1,
+    "final_behavior": "Alice asks: \"What is 17 + 25?\" The sum of 17 and 25 is 42.",
+    "c2_label_in_that_evidence": "FACTUAL_CONTRADICTION",
+    "legacy_rule_label_now": "FACTUAL_CONTRADICTION",
+    "current_rule_label_now": "FACT_CORRECT"
+  }
+}

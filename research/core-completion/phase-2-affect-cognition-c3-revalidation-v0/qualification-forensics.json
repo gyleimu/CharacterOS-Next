@@ -1,0 +1,899 @@
+{
+  "schema_version": "affect-cognition-c3-family-d-falsification-v0",
+  "threshold": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "scenario_ids_evaluated": [
+    "M1",
+    "M2",
+    "M3",
+    "R1",
+    "R2",
+    "R3",
+    "R4"
+  ],
+  "triggered_scenarios": [],
+  "triggered": false,
+  "per_scenario": {
+    "N1": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice.",
+        "I would provide the calculated sum of 42 to Alice."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "detail": null
+        }
+      ]
+    },
+    "N2": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35.",
+        "I would provide the calculated answer of 35."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "detail": null
+        }
+      ]
+    },
+    "N3": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8.",
+        "I would confirm that shelf C4 holds parcel R8."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "detail": null
+        }
+      ]
+    },
+    "N4": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7.",
+        "I would state that the code printed is K7."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "detail": null
+        }
+      ]
+    },
+    "N5Q": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R.",
+        "I would reverse the characters in the token R8K2 to produce 2K8R."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "detail": null
+        }
+      ]
+    },
+    "N6": {
+      "choice_bearing": false,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION",
+        "CHOICE_UNEXPECTED_AT_COGNITION"
+      ],
+      "defects": [
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE",
+        "UNEXPECTED_CHOICE"
+      ],
+      "stances": [
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH.",
+        "I would classify 'abca' as a MATCH."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "endpoint": "CHOICE_UNEXPECTED_AT_COGNITION",
+          "defect": "UNEXPECTED_CHOICE",
+          "fact": "FACT_CORRECT",
+          "choice_fidelity": "NOT_APPLICABLE",
+          "unsupported": [],
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "detail": null
+        }
+      ]
+    },
+    "M1": {
+      "choice_bearing": true,
+      "passed": 5,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review."
+      ],
+      "failures": []
+    },
+    "M2": {
+      "choice_bearing": true,
+      "passed": 5,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting."
+      ],
+      "failures": []
+    },
+    "M3": {
+      "choice_bearing": true,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs.",
+        "I would be willing to carry the sealed package upstairs."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "FACT_MISSING_OR_WRONG",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would be willing to carry the sealed package upstairs.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "FACT_MISSING_OR_WRONG",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would be willing to carry the sealed package upstairs.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "FACT_MISSING_OR_WRONG",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would be willing to carry the sealed package upstairs.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "FACT_MISSING_OR_WRONG",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would be willing to carry the sealed package upstairs.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "FACT_MISSING_OR_WRONG",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would be willing to carry the sealed package upstairs.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        }
+      ]
+    },
+    "R1": {
+      "choice_bearing": true,
+      "passed": 5,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts.",
+        "I would volunteer to do the review because I have a free slot and no conflicts."
+      ],
+      "failures": []
+    },
+    "R2": {
+      "choice_bearing": true,
+      "passed": 5,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial.",
+        "I would try the new approach for the reversible 10-minute trial."
+      ],
+      "failures": []
+    },
+    "R3": {
+      "choice_bearing": true,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+        "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        }
+      ]
+    },
+    "R4": {
+      "choice_bearing": true,
+      "passed": 0,
+      "total": 5,
+      "endpoints": [
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION",
+        "CHOICE_SELECTED_AT_COGNITION"
+      ],
+      "defects": [],
+      "stances": [
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+        "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [],
+          "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [],
+          "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [],
+          "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [],
+          "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "endpoint": "CHOICE_SELECTED_AT_COGNITION",
+          "defect": null,
+          "fact": "NOT_APPLICABLE",
+          "choice_fidelity": "CHOICE_CHANGED_AT_HANDOFF",
+          "unsupported": [],
+          "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        }
+      ]
+    }
+  }
+}

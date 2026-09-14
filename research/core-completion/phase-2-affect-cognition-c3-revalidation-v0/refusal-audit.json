@@ -1,0 +1,30 @@
+{
+  "schema_version": "affect-cognition-c3-refusal-audit-v0",
+  "source": "rejection-forensic.json (recorded responses replayed; zero model calls)",
+  "refused_cells": 15,
+  "replays_matching_original": 15,
+  "projection_bindings_verified": 15,
+  "reasons": {
+    "MODEL_SCHEMA_INVALID:environment": 5,
+    "MODEL_SCHEMA_INVALID:subject": 10
+  },
+  "per_scenario": {
+    "M3": {
+      "cells": 5,
+      "code": "MODEL_SCHEMA_INVALID",
+      "offending_ref": "environment:room-1"
+    },
+    "R3": {
+      "cells": 5,
+      "code": "MODEL_SCHEMA_INVALID",
+      "offending_ref": "subject:affect-cognition-c3-subject-v0"
+    },
+    "R4": {
+      "cells": 5,
+      "code": "MODEL_SCHEMA_INVALID",
+      "offending_ref": "subject:affect-cognition-c3-subject-v0"
+    }
+  },
+  "language_calls_on_refused_cells": 0,
+  "pass": true
+}

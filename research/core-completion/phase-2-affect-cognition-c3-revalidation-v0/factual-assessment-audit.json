@@ -1,0 +1,136 @@
+{
+  "schema_version": "affect-cognition-c3-factual-assessment-audit-v0",
+  "claims": 285,
+  "source_quote_claims": 15,
+  "derived_result_claims": 270,
+  "accepted_claims": 50,
+  "unlawful_source_attempts": 20,
+  "subject_state_source_attempts": 15,
+  "environment_source_attempts": 5,
+  "unlawful_sources_accepted": 0,
+  "non_factual_source_attempts": [
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "ref": "environment:room-1",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "ref": "environment:room-1",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "ref": "environment:room-1",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "ref": "environment:room-1",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "ref": "environment:room-1",
+      "accepted": false
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R3",
+      "replicate": 0,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R3",
+      "replicate": 1,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R3",
+      "replicate": 2,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R3",
+      "replicate": 3,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R3",
+      "replicate": 4,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R4",
+      "replicate": 0,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R4",
+      "replicate": 1,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R4",
+      "replicate": 2,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R4",
+      "replicate": 3,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    },
+    {
+      "scenario": "R4",
+      "replicate": 4,
+      "ref": "subject:affect-cognition-c3-subject-v0",
+      "accepted": false
+    }
+  ],
+  "authority_boundary_held": true,
+  "lawful_sourcing_pass": false,
+  "pass": false
+}

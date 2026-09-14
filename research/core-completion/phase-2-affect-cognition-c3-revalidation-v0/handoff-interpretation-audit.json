@@ -1,0 +1,11 @@
+{
+  "schema_version": "affect-cognition-c3-handoff-interpretation-audit-v0",
+  "label": "CHOICE_CHANGED_AT_HANDOFF",
+  "cells": 15,
+  "cognition_refused_before_language": 15,
+  "genuine_handoff_divergence": 0,
+  "delivered_choice_cells": 20,
+  "preserved_cells": 20,
+  "invented_cells": 0,
+  "pass": true
+}

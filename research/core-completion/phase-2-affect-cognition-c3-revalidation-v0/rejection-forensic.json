@@ -1,0 +1,263 @@
+{
+  "schema_version": "affect-cognition-c3-rejection-forensic-v0",
+  "method": "recorded raw provider responses replayed through the production runtime with the provider prototype patched to capture the exact projection and rejection code",
+  "model_calls": 0,
+  "replays_matching_original_outcome": 15,
+  "replays": [
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[3].source_refs: environment:room-1 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would be willing to carry the sealed package upstairs.",
+      "offending_refs": [
+        "environment:room-1",
+        "subject:affect-cognition-c3-subject-v0"
+      ]
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[3].source_refs: environment:room-1 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would be willing to carry the sealed package upstairs.",
+      "offending_refs": [
+        "environment:room-1",
+        "subject:affect-cognition-c3-subject-v0"
+      ]
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[3].source_refs: environment:room-1 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would be willing to carry the sealed package upstairs.",
+      "offending_refs": [
+        "environment:room-1",
+        "subject:affect-cognition-c3-subject-v0"
+      ]
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[3].source_refs: environment:room-1 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would be willing to carry the sealed package upstairs.",
+      "offending_refs": [
+        "environment:room-1",
+        "subject:affect-cognition-c3-subject-v0"
+      ]
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[3].source_refs: environment:room-1 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would be willing to carry the sealed package upstairs.",
+      "offending_refs": [
+        "environment:room-1",
+        "subject:affect-cognition-c3-subject-v0"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 0,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 1,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 2,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 3,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R3",
+      "replicate": 4,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would perform the optional polish pass because the time is available and it offers a chance for improvement without cost.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 0,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 1,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 2,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 3,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    },
+    {
+      "scenario": "R4",
+      "replicate": 4,
+      "original_status": "FAILED",
+      "replay_status": "FAILED",
+      "projection_hash_matches": true,
+      "rejection": {
+        "name": "ConversationCognitionRejectionErrorV4",
+        "code": "MODEL_SCHEMA_INVALID",
+        "message": "CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.factual_assessment.claims[7].source_refs: subject:affect-cognition-c3-subject-v0 is not a lawful FACTUAL SOURCE REF (subject state and non-inspectable context refs are never factual sources)"
+      },
+      "stance": "I would rehearse the presentation first because it requires active recall and flow, while inspecting the backup plan can be done as a verification step afterward.",
+      "offending_refs": [
+        "subject:affect-cognition-c3-subject-v0",
+        "environment:room-1"
+      ]
+    }
+  ]
+}

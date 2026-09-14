@@ -1,0 +1,237 @@
+{
+  "schema_version": "affect-cognition-c3-null-cell-audit-v0",
+  "defect": "a declared subjective_choice on a turn that requires exactly null",
+  "per_scenario": {
+    "N1": {
+      "expected": "42",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would provide the calculated sum of 42 to Alice.",
+          "final_behavior": "The sum of 17 and 25 is 42.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    },
+    "N2": {
+      "expected": "35",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would provide the calculated answer of 35.",
+          "final_behavior": "The arithmetic result of subtracting 28 from 63 is 35.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    },
+    "N3": {
+      "expected": "C4",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would confirm that shelf C4 holds parcel R8.",
+          "final_behavior": "I would confirm that shelf C4 holds parcel R8.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    },
+    "N4": {
+      "expected": "K7",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would state that the code printed is K7.",
+          "final_behavior": "The code printed on the label is K7.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    },
+    "N5Q": {
+      "expected": "2K8R",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_behavior": "I would reverse the characters in the token R8K2 to produce 2K8R.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    },
+    "N6": {
+      "expected": "MATCH",
+      "cells": 5,
+      "correctly_null": 0,
+      "declared_stances": [
+        {
+          "replicate": 0,
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 1,
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 2,
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 3,
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "final_fact": "FACT_CORRECT"
+        },
+        {
+          "replicate": 4,
+          "stance": "I would classify 'abca' as a MATCH.",
+          "final_behavior": "The token 'abca' has first character 'a' and last character 'a'. The condition for a MATCH is that the first and last characters are identical. Since the first and last characters of 'abca' are identical, the token matches the condition. I would classify 'abca' as a MATCH.",
+          "final_fact": "FACT_CORRECT"
+        }
+      ],
+      "fact_correct": 5
+    }
+  },
+  "violating_cells": 30,
+  "compliant_cells": 0,
+  "pass": false
+}
