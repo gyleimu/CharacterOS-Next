@@ -1,0 +1,449 @@
+{
+  "schema_version": "affect-cognition-c4-2-formal-freeze-v0",
+  "repository_head": "3cfbfacd83d62d2678437f969b226b06288e4313",
+  "created_before_model_calls": true,
+  "subject_id": "affect-cognition-c42-subject-v0",
+  "provider": {
+    "version": "0.34.0",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_ctx": 8192,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048
+  },
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "retry_policy": {
+    "infrastructure_retries": 0,
+    "semantic_retries": 0
+  },
+  "endpoint": "final production-admissible observable behavior",
+  "protocol": "conversation-cognition-proposal-v5 + language-realization-input-v6 + language-realization-semantic-draft-v1",
+  "version_policy": "no schema or protocol version bump: C4.2 changes prompt and validation semantics only, so proposal-v5 and language-input-v6 are unchanged; the new prompt content is bound into this freeze by digest",
+  "host_owned_integrity": "HOST_BOUND_PROJECTION_HASH_OUTSIDE_MODEL_OUTPUT",
+  "native_structured_output": true,
+  "rationale_policy": {
+    "allowed": [
+      "PURE_PREFERENCE",
+      "PRIORITY",
+      "AVERSION",
+      "WILLINGNESS",
+      "SUBJECTIVE_STRATEGY"
+    ],
+    "forbidden": [
+      "RAW_SELF_STATE_DESCRIPTION",
+      "NAMED_PSYCHOLOGICAL_STATE",
+      "INFERRED_CAPACITY",
+      "EXTERNAL_FACT",
+      "HISTORY_CLAIM"
+    ]
+  },
+  "grounding": {
+    "guard_status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "guard_shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "production_rule": "stance remains the free-text choice authority; Language must not semantically complete it",
+    "experiment_rule": "a SELECTED stance must be classifiable within the scenario's requested option pair, otherwise OFF_QUESTION_STANCE",
+    "off_question_rejection_code": "OFF_QUESTION_STANCE",
+    "guard_rejection_code": "STANCE_NOT_TURN_GROUNDED"
+  },
+  "paraphrase_suite_result": {
+    "suite_sha256": "sha256:2e810540b4c273d6061444914f09f315f863b617cdc61116663ef11dcd96d21e",
+    "lawful_accepted": 34,
+    "lawful_total": 40,
+    "invalid_detected": 15,
+    "invalid_total": 20,
+    "shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "falsification": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "schema_authority": {
+    "proposal_v5_schema_sha256": "sha256:6c7a4618182274bf555c7f59bdac312ba5546bbcb114ae5f8b41a1dc150d69ab",
+    "semantic_draft_schema_sha256": "sha256:2cc9aaf602addd4c1ac52422a83fd0d3912db16eeb8b087827fc75c0d50c93d6",
+    "cognition_prompt_sha256": "sha256:e8191ea498bef603bee6e5f1b9a6c0fcda5a6bc0fcd38c3dfbb5cc734d9ca6fb",
+    "language_prompt_sha256": "sha256:d9260458a2e707b014923beb9037644600fc36dea5b4b7bb23dd5a967493a219",
+    "factual_source_authority": "subject:, entity: and environment: refs remain non-factual sources; only FACTUAL SOURCE REFS may appear in factual_assessment.source_refs",
+    "host_binding": "CognitionInvocationBindingV1 / LanguageInvocationBindingV0 in-flight bindings; no model-emitted projection_hash"
+  },
+  "session_id_policy": "opaque UUID per cell (c42-<uuid>), no scenario/condition/replicate identity",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "within_split": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5,
+        6
+      ]
+    ]
+  },
+  "call_budget": {
+    "qualification": 65,
+    "formal": 476,
+    "lawful": 10,
+    "maximum": 551
+  },
+  "primary_endpoint": "RATIONALE_LAWFUL_AND_ON_QUESTION_STANCE",
+  "harness": {
+    "classify_sha256": "sha256:45f2db9148e79209e226ba0c33b3593c73e75163083978a48b2fd7474e05ea09",
+    "pipeline_sha256": "sha256:0a0ae447678e164e6cc99e9dcefd9dd0e2fd2c45069c4c1c9187fcbcf68d5b64",
+    "config_sha256": "sha256:21f90e3ae6ab235b1e9ecad98c5581795b0992ab040ddae7f3be2c9f24b7e723",
+    "grounding_guard_sha256": "sha256:ba28a5a6c702e78f7356f378b723ee8f1ffbd22cfadb38f39956aa7abd07373a"
+  },
+  "prerequisite": "qualification freeze sha256:28e69a5681c1bb2ffafd1b0a23491b098bc0c02d3c3aad91178be704f0461b32 must pass 65/65",
+  "scenarios": [
+    {
+      "id": "N1",
+      "family": "NULL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "family": "NULL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "family": "NULL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "family": "NULL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5Q",
+      "family": "NULL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "id": "N6",
+      "family": "NULL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "M1",
+      "family": "MIXED",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "expected": "Thursday",
+      "choice": "VOLUNTEER"
+    },
+    {
+      "id": "M2",
+      "family": "MIXED",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "expected": "15:00",
+      "choice": "ATTEND"
+    },
+    {
+      "id": "M3",
+      "family": "MIXED",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "expected": "4 kg",
+      "choice": "CARRY"
+    },
+    {
+      "id": "R1",
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason."
+    },
+    {
+      "id": "R2",
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason."
+    },
+    {
+      "id": "R3",
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason."
+    },
+    {
+      "id": "R4",
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason."
+    },
+    {
+      "id": "S1",
+      "family": "HISTORICAL",
+      "choice": "VOLUNTEER",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\""
+    },
+    {
+      "id": "S2",
+      "family": "HISTORICAL",
+      "choice": "SOCIAL",
+      "event": "Alice says: \"I will handle it — do not worry about it.\""
+    },
+    {
+      "id": "S3",
+      "family": "HISTORICAL",
+      "choice": "TRY",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\""
+    },
+    {
+      "id": "S4",
+      "family": "HISTORICAL",
+      "choice": "STAY",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\""
+    }
+  ],
+  "replicates": 7,
+  "opaque_session_ids": {
+    "N1": [
+      "c42-f2976560-b926-4d70-b649-dbc3e17bc32f",
+      "c42-50b3663f-3dca-4215-ade5-17658e9190a6",
+      "c42-84a66567-7690-463b-9cce-52b5e24d36e8",
+      "c42-ec14dd4a-2b2a-426f-b24a-cf5f21dc2497",
+      "c42-f55729a9-1f18-4815-8aa9-3c6d29915896",
+      "c42-fedc9f30-12fa-43c6-ad56-f77b0aa4b6e0",
+      "c42-8cfd8f6f-5a19-4c21-9f39-7383ef378e30"
+    ],
+    "N2": [
+      "c42-70ad20f6-1bc3-4e51-9c33-7f4156b4861e",
+      "c42-9c1985b0-f602-46d9-9bc1-cc1d15f2c48c",
+      "c42-63474b33-8d70-4caf-bc53-2b51710c477b",
+      "c42-2adb2330-a2fa-4108-95be-609050682bbd",
+      "c42-c9981a2d-17fc-4061-a028-5e6ced7bbdb7",
+      "c42-e0f53aa6-276b-4ab8-a2d9-da9d4b43d4ae",
+      "c42-a00dfd21-8598-4c62-91f5-46c3b48ae98d"
+    ],
+    "N3": [
+      "c42-da6e7e7f-d2a2-4c1e-b6cc-6204059a296c",
+      "c42-0c6428a1-c843-42a8-be2f-db291392908a",
+      "c42-e851788b-7349-4226-a991-23b8b70782d3",
+      "c42-074b2e5b-7ee5-4a01-941a-7700af0d8d50",
+      "c42-db5aabdd-1e86-4976-9015-8216861189f4",
+      "c42-299dfc38-3e28-40f0-8125-264959ccb7ee",
+      "c42-32aa50e5-8442-47fb-bb1e-e8c11ee94bd9"
+    ],
+    "N4": [
+      "c42-6a2f0f33-c6c4-4ac1-8ff8-8401920bd864",
+      "c42-41dca69d-a9c1-4d14-974b-437ede6421e5",
+      "c42-03b3b266-2949-4376-b1d0-1ac677a1f368",
+      "c42-57a1ffed-57b9-4061-aa6e-8e8b46b0a571",
+      "c42-8075ce81-6416-4f93-bde2-417881ef7a8f",
+      "c42-63211f34-e2bb-436e-9559-87256d18afa2",
+      "c42-813b3aca-eb4d-44c3-aa23-6a6bf6a055e6"
+    ],
+    "N5Q": [
+      "c42-e2dd7251-5108-4587-9a47-6b985ac9b501",
+      "c42-0ba4bdf3-9915-48a2-844e-83c688402f7b",
+      "c42-505e5d6b-ae68-4748-bc2a-0f21aac8f875",
+      "c42-db553a3e-ccf9-426d-a52e-0dd451c0c1e4",
+      "c42-bfbcf5f1-d104-4a9e-920c-164ff5ecc12e",
+      "c42-93d6770b-a2be-483f-90c9-b678e2b4ee26",
+      "c42-9b1e7945-427d-4620-96f0-5b4268872059"
+    ],
+    "N6": [
+      "c42-016acf18-70ce-40cc-8fd7-ced93e123f68",
+      "c42-cc509b1f-2163-41aa-9162-3b6eabe16c0b",
+      "c42-90d5c65f-5355-4787-acf3-3832482fe84c",
+      "c42-a0c0e911-422e-4156-8c1e-6fd4ad7fb6d5",
+      "c42-ff4abe7c-329e-4d13-81ab-a638f28ed9f7",
+      "c42-8719032a-0485-41f8-8265-3c58d3c4ab62",
+      "c42-d5e1945d-8fda-4c73-ba33-f63dd963d03c"
+    ],
+    "M1": [
+      "c42-bf0fcd5e-da29-4bd9-ac8a-8f8a7b9252a7",
+      "c42-993b91dd-446e-4fd6-b6b3-e5ad00228faa",
+      "c42-6af3ab12-8c08-4128-9031-f7c86c5cec16",
+      "c42-7f8192da-d5fe-4cdf-8693-981dfe037ab4",
+      "c42-6a62eb4e-72bf-4708-a8f8-829ceb112b9a",
+      "c42-027f2e2e-1423-4573-a6d2-3be3e105e94b",
+      "c42-ef9c9ecc-43e5-49e7-9be5-76fd0b69038b"
+    ],
+    "M2": [
+      "c42-97ad4071-ec94-4446-a343-2ccc3978e2e3",
+      "c42-9f379115-449e-4afa-a0c5-4ab441b3efb1",
+      "c42-c5284c4c-901a-4d7c-861c-8cf99663cab2",
+      "c42-8214ca05-f809-4291-b755-2c40e070d189",
+      "c42-e6229f17-2350-4350-9753-dedb486af7da",
+      "c42-3497520f-79a3-4806-84fe-81d4d173af41",
+      "c42-5114138c-6b82-40e1-be68-b32903834ec3"
+    ],
+    "M3": [
+      "c42-41174dd6-d1a0-4fdb-bbc8-5c759ec528b1",
+      "c42-e62e28b4-b903-40e3-9dab-f6a05584b02c",
+      "c42-d9b031ca-33d2-4efc-b601-bbe87b29c433",
+      "c42-da6d589d-4ef1-409f-a2fb-7d23f6eb2e44",
+      "c42-e775b5eb-7102-4f4f-a39c-b2eb0ebe026d",
+      "c42-f0e8db4b-1438-46d0-9586-3bb03dd9ae9c",
+      "c42-eb574f7a-82bb-4b53-88a4-73898d9c96fb"
+    ],
+    "R1": [
+      "c42-b7f2ef9c-1d70-4eda-b96a-2e354e5230fb",
+      "c42-9637b318-398e-42c7-9adc-5f3edef85791",
+      "c42-eed06e18-df5b-4cc3-8a39-0d0692cf1d94",
+      "c42-18fcdfe1-1656-4b50-bacd-a9479c9711d4",
+      "c42-dec2e02e-e817-4c66-b4de-b280defc0cdd",
+      "c42-e7880522-bf07-4501-99e1-08b4ca1ff127",
+      "c42-19765684-bff8-4390-b093-a938607615b3"
+    ],
+    "R2": [
+      "c42-ae405976-bb39-4e0d-9b5e-a12d0293b1a9",
+      "c42-d3a3cd52-a515-432d-a39a-f13a4138560a",
+      "c42-1a20d9e6-78db-4d1d-b4a9-104d8f8af332",
+      "c42-93de587f-4aa4-40d3-866c-b7d8f8b24222",
+      "c42-fac16d16-cd80-43a2-9acc-75455c9ef711",
+      "c42-cc54fe5e-7117-4efa-abe8-b9dcd4ddd49e",
+      "c42-aecba3c2-e543-49dd-afaa-125c31b1d1ee"
+    ],
+    "R3": [
+      "c42-fe852831-3421-44a2-a612-66d98b39192a",
+      "c42-19ae3b31-694a-47d6-95a9-8fdfed45b74c",
+      "c42-b0ae61c9-7a81-4e53-b3b0-8d60b6e3ad79",
+      "c42-27db9705-411b-473d-9b4b-50a560b6fbb2",
+      "c42-6103f3e4-646c-49bc-9c55-c90f615081c4",
+      "c42-1ff19ed4-dd39-4eb4-a6c9-7d675a3a9468",
+      "c42-35cef4c3-6366-4e31-84d5-abcd0087183f"
+    ],
+    "R4": [
+      "c42-340ea809-f946-44fb-9835-99cd42ec508a",
+      "c42-4e7430a7-55c6-4e1e-a41a-fc88e2e9de29",
+      "c42-b216a52a-892b-4105-ac24-953d48ab0b6d",
+      "c42-cc2ab022-e16f-4031-89ca-6427d2751c5c",
+      "c42-2647fae1-f91e-41a2-bd6e-15d1c805c7ae",
+      "c42-2ad351a2-e363-4322-91f6-c98a2b7c5fe1",
+      "c42-3afcced5-6e2d-4485-a09a-c41c7aa938ab"
+    ],
+    "S1": [
+      "c42-1ad66033-3de1-49d1-a876-2bb0a8c79472",
+      "c42-225a68ab-2281-42c3-9da4-0cfe0d40f673",
+      "c42-ffa68c60-6d1e-4bf9-a289-dd62bdada1d6",
+      "c42-03eb0f3f-51b2-48f0-a707-a1947081ac71",
+      "c42-0bad9bd6-20a4-47c1-9d15-dbf61d1f9df1",
+      "c42-bb189bf2-4b92-4575-92d2-2094b39b3af7",
+      "c42-94a00654-f12d-4dab-9af8-66fdc124d8e4"
+    ],
+    "S2": [
+      "c42-83e44d5d-1ce4-4ce1-9754-050ce7fac239",
+      "c42-adbd4dd4-a8de-48bd-8fa9-bf8cb27fc5e3",
+      "c42-78aa3590-7994-4576-b63b-65c0b7506ba8",
+      "c42-dcf4937e-4f83-4e80-a15f-285d857a6eca",
+      "c42-478b8c6b-175f-4d55-85b9-6af8932a1f20",
+      "c42-78f21ffc-be2e-470d-bab2-ce7265a12e8b",
+      "c42-1bbede0d-a528-4ab7-8c15-6c98cac5dab2"
+    ],
+    "S3": [
+      "c42-5c3a33ac-e902-49f6-8f9d-2f5347173b41",
+      "c42-a271fed4-103e-4cc5-b2a3-ca564cd4afa6",
+      "c42-dc7fdfff-0530-4f1d-b2e0-7756ac9e2b86",
+      "c42-f97078f8-c14e-4fa5-a558-7e2f7c54ffd2",
+      "c42-f3eefbcd-3e27-4f82-8b2a-2319d12530d5",
+      "c42-b6b55749-2089-4bf7-ab01-3b40905cde77",
+      "c42-0046f1c9-cda1-40dd-abc2-511f670b4ed2"
+    ],
+    "S4": [
+      "c42-703c99fa-5b49-4bae-ade0-cc2f16e47eea",
+      "c42-347afaa5-6323-48e7-91e3-39e5c44af6e1",
+      "c42-e4e4e1a7-9f4a-4074-9003-7963a1263c40",
+      "c42-dcec5643-b3fa-486b-a984-4e8e7b55bf50",
+      "c42-b44b1a19-36ba-48bc-8ccc-1eeb065757bc",
+      "c42-a5009c66-9b75-4234-bc60-9121c217c96b",
+      "c42-1e2c6910-c32b-41d8-bc8f-823ecbe45c35"
+    ]
+  },
+  "lawful_opaque_session_ids": {
+    "LAWFUL_POS": [
+      "c42-fa6d3717-9f05-4811-8fcd-33f385a68f7c",
+      "c42-bea740bb-c298-451c-88db-6cb545692d3d",
+      "c42-2eaeae55-dfa1-4e77-82da-49f5e2b477c4",
+      "c42-a7f4ca32-d62f-4102-9739-1ae46e04ab8c",
+      "c42-932138c2-4bab-4f90-8f72-b2be813f39df"
+    ],
+    "LAWFUL_NEG": [
+      "c42-54578ed5-e229-4690-9ec2-864c29d4747b",
+      "c42-5fc811dd-e3af-4363-9f14-bc1369c33f51",
+      "c42-b2999891-b432-4b56-bf9d-f073aed09b46",
+      "c42-c350467b-0aa6-402a-9b83-236a4cfcc824",
+      "c42-b538f00e-0dbe-4203-b014-62daf6b1539d"
+    ]
+  },
+  "conditions_schedule": "round-robin P,N,A,Z rotated by replicate",
+  "success": {
+    "null": "168/168 NOT_APPLICABLE, correct fact, no invented preference",
+    "mixed_facts": "84/84",
+    "mixed_choices": "84/84 SELECTED on-question with lawful rationale",
+    "mixed_material": ">=1/3",
+    "relevant_material": ">=3/4",
+    "forbidden_rationale": 0,
+    "off_question_stances": 0,
+    "language_completions": 0,
+    "self_state_facts": 0,
+    "unlawful_sources": 0,
+    "false_clarify": 0,
+    "protocol_failures": 0
+  },
+  "freeze_hash": "sha256:4e17a4956ea24e17f5c094bcb65c84f125afe362621b89a23f6ba78f2eeb8c63"
+}

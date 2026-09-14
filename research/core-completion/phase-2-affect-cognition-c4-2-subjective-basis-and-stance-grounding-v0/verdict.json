@@ -1,0 +1,36 @@
+{
+  "schema_version": "affect-cognition-c4-2-qualification-verdict-v0",
+  "repository_head": "3cfbfacd83d62d2678437f969b226b06288e4313",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v5",
+  "rows": 65,
+  "passed": 60,
+  "flags": {
+    "implementation_intact": true,
+    "protocol_failures": 5,
+    "applicability_pass": true,
+    "null_applicability_pass": true,
+    "rationale_pass": true,
+    "stance_grounding_pass": true,
+    "language_pass": true,
+    "factual_pass": false,
+    "authority_boundary_held": true,
+    "unbound_claim_source_cells": 5,
+    "protocol_failures_named": "host refusals caused by a factual_assessment claim citing a source that is not bound into cognition.considered_context_refs/evidence_refs",
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "guard_shipped": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_C4_2_FACTUAL_ASSESSMENT_FAILED",
+  "co_present": [],
+  "lexical_guard": {
+    "shipped": false,
+    "status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}

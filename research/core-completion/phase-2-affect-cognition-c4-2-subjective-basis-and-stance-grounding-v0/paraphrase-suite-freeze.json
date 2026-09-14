@@ -1,0 +1,48 @@
+{
+  "schema_version": "affect-cognition-c4-2-paraphrase-suite-freeze-v0",
+  "frozen_before_guard_evaluation": true,
+  "repository_head": "55a48ba4e12db3fff58348cbdf356bb46cb9235c",
+  "model_calls": 0,
+  "suite": {
+    "lawful_examples": 40,
+    "invalid_examples": 20,
+    "lexical_ceiling_diagnostic_examples": 3,
+    "lawful_categories": [
+      "BINARY",
+      "WILLINGNESS",
+      "PREFERENCE",
+      "PRIORITY",
+      "CONDITIONAL",
+      "OPEN_ENDED",
+      "MIXED",
+      "SYNONYM",
+      "ELLIPSIS"
+    ],
+    "invalid_categories": [
+      "HISTORICAL_M2",
+      "PLAN_NOT_CHOICE",
+      "DIRECTIVE_ENUM",
+      "PLACEHOLDER",
+      "EMPTY",
+      "OFF_QUESTION",
+      "VAGUE",
+      "ECHO",
+      "WRONG_TARGET"
+    ],
+    "acceptance_standard": {
+      "lawful_required": 38,
+      "lawful_preferred": 40,
+      "invalid_required": 20,
+      "lawful_total": 40,
+      "invalid_total": 20
+    },
+    "suite_sha256": "sha256:2e810540b4c273d6061444914f09f315f863b617cdc61116663ef11dcd96d21e"
+  },
+  "guard_rule_under_evaluation": {
+    "definition": "a SELECTED stance is grounded when it shares >= 1 content token with (turn request text UNION lawful claim texts)",
+    "content_token": "lowercase [a-z0-9]{4,} run, excluding the frozen stopword/connector list",
+    "normalization": "deterministic, no embeddings, no second model, no task taxonomy, no option list",
+    "guard_source_sha256": "sha256:ba28a5a6c702e78f7356f378b723ee8f1ffbd22cfadb38f39956aa7abd07373a",
+    "note": "the rule and its stopword list were frozen together with the suite; no post-hoc tuning is permitted"
+  }
+}

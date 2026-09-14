@@ -1,0 +1,6 @@
+{
+  "schema_version": "affect-cognition-c4-2-condition-leakage-v0",
+  "rows": 65,
+  "violations": 0,
+  "pass": true
+}

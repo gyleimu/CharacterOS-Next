@@ -1,0 +1,103 @@
+{
+  "schema_version": "affect-cognition-c4-2-historical-replay-v0",
+  "model_calls": 0,
+  "source": "phase-2-affect-cognition-c4-choice-applicability-and-subjective-basis-v0/qualification-raw.jsonl (read-only)",
+  "protocol": "conversation-cognition-proposal-v5",
+  "regressions": {
+    "M1": {
+      "scenario": "M1",
+      "cells": 5,
+      "rationale_categories": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "rationale_forbidden": 5,
+      "off_question": 0,
+      "language_completed": 0,
+      "completion_tokens": [],
+      "examples": [
+        {
+          "stance": "I would volunteer to own the review.",
+          "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+          "delivered": "The code review deadline is Thursday. I would volunteer to own the review."
+        }
+      ]
+    },
+    "R4": {
+      "scenario": "R4",
+      "cells": 5,
+      "rationale_categories": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "rationale_forbidden": 5,
+      "off_question": 0,
+      "language_completed": 0,
+      "completion_tokens": [],
+      "examples": [
+        {
+          "stance": "I would rehearse the presentation first.",
+          "rationale": "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+          "delivered": "I would rehearse the presentation first. Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan."
+        }
+      ]
+    },
+    "M3": {
+      "scenario": "M3",
+      "cells": 5,
+      "rationale_categories": [
+        "INFERRED_CAPACITY"
+      ],
+      "rationale_forbidden": 5,
+      "off_question": 0,
+      "language_completed": 0,
+      "completion_tokens": [],
+      "examples": [
+        {
+          "stance": "I would be willing to carry it upstairs.",
+          "rationale": "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles.",
+          "delivered": "The sealed package weighs 4 kg. I would be willing to carry it upstairs."
+        }
+      ]
+    },
+    "M2": {
+      "scenario": "M2",
+      "cells": 5,
+      "rationale_categories": [
+        "SUBJECTIVE_STRATEGY"
+      ],
+      "rationale_forbidden": 0,
+      "off_question": 5,
+      "language_completed": 5,
+      "completion_tokens": [
+        "attend"
+      ],
+      "examples": [
+        {
+          "stance": "I would volunteer.",
+          "rationale": "Volunteering aligns with a proactive approach to the task at hand.",
+          "delivered": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+        }
+      ]
+    }
+  },
+  "totals": {
+    "rationale_forbidden_cells": 15,
+    "off_question_cells": 5,
+    "language_completion_cells": 5,
+    "passing_cells_under_c42": 35,
+    "total_cells": 65
+  },
+  "c4_vs_c42": {
+    "c4_rationale_unlawful_cells": 5,
+    "c42_rationale_forbidden_cells": 15,
+    "c4_language_changed_cells": 5,
+    "c42_off_question_cells": 5,
+    "c42_language_completion_cells": 5
+  },
+  "expectations_met": {
+    "M1_raw_self_state": true,
+    "R4_forbidden_self_state": true,
+    "M3_inferred_capacity": true,
+    "M2_off_question": true,
+    "M2_language_completion": true
+  }
+}

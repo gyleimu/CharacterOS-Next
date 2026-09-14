@@ -1,0 +1,1088 @@
+{
+  "schema_version": "affect-cognition-c4-2-lexical-guard-evaluation-v0",
+  "suite_sha256": "sha256:2e810540b4c273d6061444914f09f315f863b617cdc61116663ef11dcd96d21e",
+  "model_calls": 0,
+  "rule": "grounded = shares >= 1 content token with (request text UNION lawful claim texts)",
+  "scores": {
+    "lawful_accepted": 34,
+    "lawful_total": 40,
+    "lawful_rejected": 6,
+    "invalid_detected": 15,
+    "invalid_total": 20,
+    "invalid_missed": 5,
+    "lexical_ceiling_undetectable": 3,
+    "lexical_ceiling_total": 3
+  },
+  "acceptance_standard": {
+    "lawful_required": 38,
+    "lawful_preferred": 40,
+    "invalid_required": 20,
+    "lawful_total": 40,
+    "invalid_total": 20
+  },
+  "shipped": false,
+  "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+  "lawful_rejections": [
+    {
+      "id": "L29",
+      "category": "OPEN_ENDED",
+      "stance": "I would review the outstanding items next.",
+      "stance_tokens": [
+        "review",
+        "outstanding",
+        "items"
+      ],
+      "request": "Alice asks: \"What would you do next?\""
+    },
+    {
+      "id": "L35",
+      "category": "SYNONYM",
+      "stance": "I'd join.",
+      "stance_tokens": [
+        "join"
+      ],
+      "request": "Alice asks: \"Would you attend the meeting?\""
+    },
+    {
+      "id": "L36",
+      "category": "SYNONYM",
+      "stance": "I'd be up for it.",
+      "stance_tokens": [],
+      "request": "Alice asks: \"Would you volunteer for the review?\""
+    },
+    {
+      "id": "L37",
+      "category": "SYNONYM",
+      "stance": "I'd stick with what we're using.",
+      "stance_tokens": [
+        "stick",
+        "using"
+      ],
+      "request": "Alice asks: \"Try the new approach or keep the current one?\""
+    },
+    {
+      "id": "L38",
+      "category": "SYNONYM",
+      "stance": "I'd call it done.",
+      "stance_tokens": [
+        "call"
+      ],
+      "request": "Alice asks: \"Do the polish pass or stop?\""
+    },
+    {
+      "id": "L39",
+      "category": "ELLIPSIS",
+      "stance": "I'd start with the rehearsal.",
+      "stance_tokens": [
+        "start",
+        "rehearsal"
+      ],
+      "request": "Alice asks: \"Which task first?\""
+    }
+  ],
+  "invalid_misses": [
+    {
+      "id": "X02",
+      "category": "PLAN_NOT_CHOICE",
+      "stance": "I would provide the calculated sum of 42 to Alice.",
+      "shared": [
+        "alice"
+      ]
+    },
+    {
+      "id": "X11",
+      "category": "OFF_QUESTION",
+      "stance": "I would respond to Alice.",
+      "shared": [
+        "alice"
+      ]
+    },
+    {
+      "id": "X18",
+      "category": "ECHO",
+      "stance": "Would you prefer to attend the planning meeting, or skip it?",
+      "shared": [
+        "prefer",
+        "attend",
+        "planning",
+        "meeting",
+        "skip"
+      ]
+    },
+    {
+      "id": "X19",
+      "category": "ECHO",
+      "stance": "The planning meeting is at 15:00.",
+      "shared": [
+        "planning",
+        "meeting"
+      ]
+    },
+    {
+      "id": "X20",
+      "category": "WRONG_TARGET",
+      "stance": "I would prefer to finish the report today.",
+      "shared": [
+        "prefer"
+      ]
+    }
+  ],
+  "lexical_ceiling": [
+    {
+      "id": "D01",
+      "stance": "I would attend to the report instead of the meeting.",
+      "shared": [
+        "attend",
+        "meeting"
+      ]
+    },
+    {
+      "id": "D02",
+      "stance": "I would try to keep both approaches open.",
+      "shared": [
+        "keep"
+      ]
+    },
+    {
+      "id": "D03",
+      "stance": "I would review the code, not own it.",
+      "shared": [
+        "review",
+        "code"
+      ]
+    }
+  ],
+  "per_case": {
+    "lawful": [
+      {
+        "id": "L01",
+        "category": "BINARY",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting, or skip it?\" State your choice.",
+        "stance": "I would attend the planning meeting.",
+        "grounded": true,
+        "stance_tokens": [
+          "attend",
+          "planning",
+          "meeting"
+        ],
+        "shared_tokens": [
+          "attend",
+          "planning",
+          "meeting"
+        ],
+        "source_token_count": 7
+      },
+      {
+        "id": "L02",
+        "category": "BINARY",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting, or skip it?\" State your choice.",
+        "stance": "I would rather skip it.",
+        "grounded": true,
+        "stance_tokens": [
+          "rather",
+          "skip"
+        ],
+        "shared_tokens": [
+          "skip"
+        ],
+        "source_token_count": 7
+      },
+      {
+        "id": "L03",
+        "category": "BINARY",
+        "request": "Alice asks: \"Should we try the new approach or keep the current one?\"",
+        "stance": "I would try the new approach.",
+        "grounded": true,
+        "stance_tokens": [
+          "approach"
+        ],
+        "shared_tokens": [
+          "approach"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L04",
+        "category": "BINARY",
+        "request": "Alice asks: \"Should we try the new approach or keep the current one?\"",
+        "stance": "I would keep the current approach.",
+        "grounded": true,
+        "stance_tokens": [
+          "keep",
+          "current",
+          "approach"
+        ],
+        "shared_tokens": [
+          "keep",
+          "current",
+          "approach"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L05",
+        "category": "BINARY",
+        "request": "Alice asks: \"Do the polish pass or stop now?\"",
+        "stance": "I would do the polish pass.",
+        "grounded": true,
+        "stance_tokens": [
+          "polish",
+          "pass"
+        ],
+        "shared_tokens": [
+          "polish",
+          "pass"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L06",
+        "category": "BINARY",
+        "request": "Alice asks: \"Do the polish pass or stop now?\"",
+        "stance": "I would stop now.",
+        "grounded": true,
+        "stance_tokens": [
+          "stop"
+        ],
+        "shared_tokens": [
+          "stop"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L07",
+        "category": "BINARY",
+        "request": "Two preparation tasks are due tomorrow: rehearse the presentation or inspect the backup plan. Which would you do first?",
+        "stance": "I would rehearse the presentation first.",
+        "grounded": true,
+        "stance_tokens": [
+          "rehearse",
+          "presentation"
+        ],
+        "shared_tokens": [
+          "rehearse",
+          "presentation"
+        ],
+        "source_token_count": 7
+      },
+      {
+        "id": "L08",
+        "category": "BINARY",
+        "request": "Two preparation tasks are due tomorrow: rehearse the presentation or inspect the backup plan. Which would you do first?",
+        "stance": "I would inspect the backup plan first.",
+        "grounded": true,
+        "stance_tokens": [
+          "inspect",
+          "backup",
+          "plan"
+        ],
+        "shared_tokens": [
+          "inspect",
+          "backup",
+          "plan"
+        ],
+        "source_token_count": 7
+      },
+      {
+        "id": "L09",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Would you volunteer to own the code review?\"",
+        "stance": "I would volunteer to own the code review.",
+        "grounded": true,
+        "stance_tokens": [
+          "volunteer",
+          "code",
+          "review"
+        ],
+        "shared_tokens": [
+          "volunteer",
+          "code",
+          "review"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L10",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Would you volunteer to own the code review?\"",
+        "stance": "I would not volunteer for the code review.",
+        "grounded": true,
+        "stance_tokens": [
+          "volunteer",
+          "code",
+          "review"
+        ],
+        "shared_tokens": [
+          "volunteer",
+          "code",
+          "review"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L11",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Are you willing to carry the package upstairs?\"",
+        "stance": "I am willing to carry the package upstairs.",
+        "grounded": true,
+        "stance_tokens": [
+          "willing",
+          "carry",
+          "package",
+          "upstairs"
+        ],
+        "shared_tokens": [
+          "willing",
+          "carry",
+          "package",
+          "upstairs"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L12",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Are you willing to carry the package upstairs?\"",
+        "stance": "I am not willing to carry the package upstairs.",
+        "grounded": true,
+        "stance_tokens": [
+          "willing",
+          "carry",
+          "package",
+          "upstairs"
+        ],
+        "shared_tokens": [
+          "willing",
+          "carry",
+          "package",
+          "upstairs"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L13",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Would you stay late tonight to finish this?\"",
+        "stance": "I would stay late tonight to finish this.",
+        "grounded": true,
+        "stance_tokens": [
+          "stay",
+          "late",
+          "tonight",
+          "finish"
+        ],
+        "shared_tokens": [
+          "stay",
+          "late",
+          "tonight",
+          "finish"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L14",
+        "category": "WILLINGNESS",
+        "request": "Alice asks: \"Would you stay late tonight to finish this?\"",
+        "stance": "I would not stay late tonight.",
+        "grounded": true,
+        "stance_tokens": [
+          "stay",
+          "late",
+          "tonight"
+        ],
+        "shared_tokens": [
+          "stay",
+          "late",
+          "tonight"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L15",
+        "category": "PREFERENCE",
+        "request": "Alice asks: \"Which do you prefer, the reversible trial or the current process?\"",
+        "stance": "I prefer the reversible trial.",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "reversible",
+          "trial"
+        ],
+        "shared_tokens": [
+          "prefer",
+          "reversible",
+          "trial"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L16",
+        "category": "PREFERENCE",
+        "request": "Alice asks: \"Which do you prefer, the reversible trial or the current process?\"",
+        "stance": "I prefer the current process.",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "current",
+          "process"
+        ],
+        "shared_tokens": [
+          "prefer",
+          "current",
+          "process"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L17",
+        "category": "PREFERENCE",
+        "request": "Alice asks: \"What do you prefer here?\"",
+        "stance": "I prefer to keep things as they are.",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "keep",
+          "things"
+        ],
+        "shared_tokens": [
+          "prefer"
+        ],
+        "source_token_count": 2
+      },
+      {
+        "id": "L18",
+        "category": "PREFERENCE",
+        "request": "Alice asks: \"Would you rather finish now or continue tomorrow?\"",
+        "stance": "I would rather finish now.",
+        "grounded": true,
+        "stance_tokens": [
+          "rather",
+          "finish"
+        ],
+        "shared_tokens": [
+          "rather",
+          "finish"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L19",
+        "category": "PRIORITY",
+        "request": "Alice asks: \"Which task should come first, the rehearsal or the backup inspection?\"",
+        "stance": "The rehearsal should come first.",
+        "grounded": true,
+        "stance_tokens": [
+          "rehearsal",
+          "come"
+        ],
+        "shared_tokens": [
+          "rehearsal",
+          "come"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L20",
+        "category": "PRIORITY",
+        "request": "Alice asks: \"Which task should come first, the rehearsal or the backup inspection?\"",
+        "stance": "The backup inspection should come first.",
+        "grounded": true,
+        "stance_tokens": [
+          "backup",
+          "inspection",
+          "come"
+        ],
+        "shared_tokens": [
+          "backup",
+          "inspection",
+          "come"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L21",
+        "category": "PRIORITY",
+        "request": "Alice asks: \"Which should I prioritize, the documentation or the testing?\"",
+        "stance": "I would prioritize the documentation.",
+        "grounded": true,
+        "stance_tokens": [
+          "prioritize",
+          "documentation"
+        ],
+        "shared_tokens": [
+          "prioritize",
+          "documentation"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L22",
+        "category": "PRIORITY",
+        "request": "Alice asks: \"Which should I prioritize, the documentation or the testing?\"",
+        "stance": "I would prioritize the testing.",
+        "grounded": true,
+        "stance_tokens": [
+          "prioritize",
+          "testing"
+        ],
+        "shared_tokens": [
+          "prioritize",
+          "testing"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L23",
+        "category": "CONDITIONAL",
+        "request": "Alice asks: \"Would you volunteer if the deadline moves to Friday?\"",
+        "stance": "I would volunteer if the deadline moves to Friday.",
+        "grounded": true,
+        "stance_tokens": [
+          "volunteer",
+          "deadline",
+          "moves",
+          "friday"
+        ],
+        "shared_tokens": [
+          "volunteer",
+          "deadline",
+          "moves",
+          "friday"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L24",
+        "category": "CONDITIONAL",
+        "request": "Alice asks: \"Would you attend if the meeting moves online?\"",
+        "stance": "I would attend if the meeting moves online.",
+        "grounded": true,
+        "stance_tokens": [
+          "attend",
+          "meeting",
+          "moves",
+          "online"
+        ],
+        "shared_tokens": [
+          "attend",
+          "meeting",
+          "moves",
+          "online"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L25",
+        "category": "CONDITIONAL",
+        "request": "Alice asks: \"Would you try the new approach provided the trial stays reversible?\"",
+        "stance": "I would try the new approach, provided the trial stays reversible.",
+        "grounded": true,
+        "stance_tokens": [
+          "approach",
+          "provided",
+          "trial",
+          "stays",
+          "reversible"
+        ],
+        "shared_tokens": [
+          "approach",
+          "provided",
+          "trial",
+          "stays",
+          "reversible"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L26",
+        "category": "CONDITIONAL",
+        "request": "Alice asks: \"Would you carry it if the elevator is available?\"",
+        "stance": "I would carry it if the elevator is available.",
+        "grounded": true,
+        "stance_tokens": [
+          "carry",
+          "elevator",
+          "available"
+        ],
+        "shared_tokens": [
+          "carry",
+          "elevator",
+          "available"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "L27",
+        "category": "OPEN_ENDED",
+        "request": "Alice asks: \"What would you do about the failing test?\"",
+        "stance": "I would investigate the failing test.",
+        "grounded": true,
+        "stance_tokens": [
+          "investigate",
+          "failing",
+          "test"
+        ],
+        "shared_tokens": [
+          "failing",
+          "test"
+        ],
+        "source_token_count": 3
+      },
+      {
+        "id": "L28",
+        "category": "OPEN_ENDED",
+        "request": "Alice asks: \"How would you respond to the request?\"",
+        "stance": "I would acknowledge the request and answer it directly.",
+        "grounded": true,
+        "stance_tokens": [
+          "acknowledge",
+          "request",
+          "answer",
+          "directly"
+        ],
+        "shared_tokens": [
+          "request"
+        ],
+        "source_token_count": 2
+      },
+      {
+        "id": "L29",
+        "category": "OPEN_ENDED",
+        "request": "Alice asks: \"What would you do next?\"",
+        "stance": "I would review the outstanding items next.",
+        "grounded": false,
+        "stance_tokens": [
+          "review",
+          "outstanding",
+          "items"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 1
+      },
+      {
+        "id": "L30",
+        "category": "OPEN_ENDED",
+        "request": "Alice asks: \"How would you handle the review?\"",
+        "stance": "I would handle the review myself.",
+        "grounded": true,
+        "stance_tokens": [
+          "handle",
+          "review",
+          "myself"
+        ],
+        "shared_tokens": [
+          "handle",
+          "review"
+        ],
+        "source_token_count": 3
+      },
+      {
+        "id": "L31",
+        "category": "MIXED",
+        "request": "Alice says: \"The code review deadline is Thursday. Say whether you would volunteer to own the review.\"",
+        "stance": "I would volunteer to own the review.",
+        "grounded": true,
+        "stance_tokens": [
+          "volunteer",
+          "review"
+        ],
+        "shared_tokens": [
+          "volunteer",
+          "review"
+        ],
+        "source_token_count": 7
+      },
+      {
+        "id": "L32",
+        "category": "MIXED",
+        "request": "Alice says: \"The planning meeting is at 15:00. Say whether you would prefer to attend.\"",
+        "stance": "I would prefer to attend.",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "attend"
+        ],
+        "shared_tokens": [
+          "prefer",
+          "attend"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "L33",
+        "category": "MIXED",
+        "request": "Alice says: \"The sealed package weighs 4 kg. Say whether you would be willing to carry it upstairs.\"",
+        "stance": "I would be willing to carry it upstairs.",
+        "grounded": true,
+        "stance_tokens": [
+          "willing",
+          "carry",
+          "upstairs"
+        ],
+        "shared_tokens": [
+          "willing",
+          "carry",
+          "upstairs"
+        ],
+        "source_token_count": 8
+      },
+      {
+        "id": "L34",
+        "category": "MIXED",
+        "request": "Alice says: \"The backup plan is due tomorrow. Say which you would do first, the rehearsal or the backup inspection.\"",
+        "stance": "I would do the rehearsal first.",
+        "grounded": true,
+        "stance_tokens": [
+          "rehearsal"
+        ],
+        "shared_tokens": [
+          "rehearsal"
+        ],
+        "source_token_count": 5
+      },
+      {
+        "id": "L35",
+        "category": "SYNONYM",
+        "request": "Alice asks: \"Would you attend the meeting?\"",
+        "stance": "I'd join.",
+        "grounded": false,
+        "stance_tokens": [
+          "join"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 3
+      },
+      {
+        "id": "L36",
+        "category": "SYNONYM",
+        "request": "Alice asks: \"Would you volunteer for the review?\"",
+        "stance": "I'd be up for it.",
+        "grounded": false,
+        "stance_tokens": [],
+        "shared_tokens": [],
+        "source_token_count": 3
+      },
+      {
+        "id": "L37",
+        "category": "SYNONYM",
+        "request": "Alice asks: \"Try the new approach or keep the current one?\"",
+        "stance": "I'd stick with what we're using.",
+        "grounded": false,
+        "stance_tokens": [
+          "stick",
+          "using"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 4
+      },
+      {
+        "id": "L38",
+        "category": "SYNONYM",
+        "request": "Alice asks: \"Do the polish pass or stop?\"",
+        "stance": "I'd call it done.",
+        "grounded": false,
+        "stance_tokens": [
+          "call"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 4
+      },
+      {
+        "id": "L39",
+        "category": "ELLIPSIS",
+        "request": "Alice asks: \"Which task first?\"",
+        "stance": "I'd start with the rehearsal.",
+        "grounded": false,
+        "stance_tokens": [
+          "start",
+          "rehearsal"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 2
+      },
+      {
+        "id": "L40",
+        "category": "ELLIPSIS",
+        "request": "Alice asks: \"Attend or skip?\"",
+        "stance": "Attend.",
+        "grounded": true,
+        "stance_tokens": [
+          "attend"
+        ],
+        "shared_tokens": [
+          "attend"
+        ],
+        "source_token_count": 3
+      }
+    ],
+    "invalid": [
+      {
+        "id": "X01",
+        "category": "HISTORICAL_M2",
+        "request": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+        "stance": "I would volunteer.",
+        "grounded": false,
+        "stance_tokens": [
+          "volunteer"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 7
+      },
+      {
+        "id": "X02",
+        "category": "PLAN_NOT_CHOICE",
+        "request": "Alice asks: \"Would you volunteer to own the code review?\"",
+        "stance": "I would provide the calculated sum of 42 to Alice.",
+        "grounded": true,
+        "stance_tokens": [
+          "provide",
+          "calculated",
+          "alice"
+        ],
+        "shared_tokens": [
+          "alice"
+        ],
+        "source_token_count": 4
+      },
+      {
+        "id": "X03",
+        "category": "DIRECTIVE_ENUM",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "REALIZE_CURRENT_INTENT",
+        "grounded": false,
+        "stance_tokens": [
+          "realize",
+          "current",
+          "intent"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X04",
+        "category": "PLACEHOLDER",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "choose an option",
+        "grounded": false,
+        "stance_tokens": [
+          "choose",
+          "option"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X05",
+        "category": "PLACEHOLDER",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "I would decide later.",
+        "grounded": false,
+        "stance_tokens": [
+          "decide"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X06",
+        "category": "PLACEHOLDER",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "express a preference",
+        "grounded": false,
+        "stance_tokens": [
+          "express",
+          "preference"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X07",
+        "category": "EMPTY",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "",
+        "grounded": false,
+        "stance_tokens": [],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X08",
+        "category": "EMPTY",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "   ",
+        "grounded": false,
+        "stance_tokens": [],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X09",
+        "category": "OFF_QUESTION",
+        "request": "Alice asks: \"Attend or skip?\"",
+        "stance": "I would handle the review.",
+        "grounded": false,
+        "stance_tokens": [
+          "handle",
+          "review"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 3
+      },
+      {
+        "id": "X10",
+        "category": "OFF_QUESTION",
+        "request": "Alice asks: \"Which task first, the rehearsal or the backup inspection?\"",
+        "stance": "I would work on the testing.",
+        "grounded": false,
+        "stance_tokens": [
+          "work",
+          "testing"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X11",
+        "category": "OFF_QUESTION",
+        "request": "Alice asks: \"Would you volunteer for the review?\"",
+        "stance": "I would respond to Alice.",
+        "grounded": true,
+        "stance_tokens": [
+          "alice"
+        ],
+        "shared_tokens": [
+          "alice"
+        ],
+        "source_token_count": 3
+      },
+      {
+        "id": "X12",
+        "category": "OFF_QUESTION",
+        "request": "Alice asks: \"Would you volunteer to own the code review?\"",
+        "stance": "I would restate the deadline.",
+        "grounded": false,
+        "stance_tokens": [
+          "restate",
+          "deadline"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 4
+      },
+      {
+        "id": "X13",
+        "category": "VAGUE",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "I am not sure.",
+        "grounded": false,
+        "stance_tokens": [
+          "sure"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X14",
+        "category": "VAGUE",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "It depends.",
+        "grounded": false,
+        "stance_tokens": [
+          "depends"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X15",
+        "category": "VAGUE",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "Sure.",
+        "grounded": false,
+        "stance_tokens": [
+          "sure"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X16",
+        "category": "VAGUE",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "Okay.",
+        "grounded": false,
+        "stance_tokens": [
+          "okay"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X17",
+        "category": "VAGUE",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "Fine.",
+        "grounded": false,
+        "stance_tokens": [
+          "fine"
+        ],
+        "shared_tokens": [],
+        "source_token_count": 5
+      },
+      {
+        "id": "X18",
+        "category": "ECHO",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting, or skip it?\"",
+        "stance": "Would you prefer to attend the planning meeting, or skip it?",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "attend",
+          "planning",
+          "meeting",
+          "skip"
+        ],
+        "shared_tokens": [
+          "prefer",
+          "attend",
+          "planning",
+          "meeting",
+          "skip"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "X19",
+        "category": "ECHO",
+        "request": "Alice says: \"The planning meeting is at 15:00. Say whether you would prefer to attend.\"",
+        "stance": "The planning meeting is at 15:00.",
+        "grounded": true,
+        "stance_tokens": [
+          "planning",
+          "meeting"
+        ],
+        "shared_tokens": [
+          "planning",
+          "meeting"
+        ],
+        "source_token_count": 6
+      },
+      {
+        "id": "X20",
+        "category": "WRONG_TARGET",
+        "request": "Alice asks: \"Would you prefer to attend the planning meeting?\"",
+        "stance": "I would prefer to finish the report today.",
+        "grounded": true,
+        "stance_tokens": [
+          "prefer",
+          "finish",
+          "report"
+        ],
+        "shared_tokens": [
+          "prefer"
+        ],
+        "source_token_count": 5
+      }
+    ]
+  }
+}

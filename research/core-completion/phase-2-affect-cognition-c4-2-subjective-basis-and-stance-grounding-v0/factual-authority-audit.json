@@ -1,0 +1,47 @@
+{
+  "schema_version": "affect-cognition-c4-2-factual-authority-audit-v0",
+  "claims": 165,
+  "subject_state_fact_cells": 0,
+  "unlawful_source_attempts": 0,
+  "unlawful_sources_accepted": 0,
+  "unbound_claim_source_cells": 5,
+  "unbound_claim_sources": [
+    {
+      "scenario": "N2",
+      "replicate": 0,
+      "ref": "observation:o-session-t2",
+      "in_considered": false,
+      "in_evidence": true
+    },
+    {
+      "scenario": "N2",
+      "replicate": 1,
+      "ref": "observation:o-session-t2",
+      "in_considered": false,
+      "in_evidence": true
+    },
+    {
+      "scenario": "N2",
+      "replicate": 2,
+      "ref": "observation:o-session-t2",
+      "in_considered": false,
+      "in_evidence": true
+    },
+    {
+      "scenario": "N2",
+      "replicate": 3,
+      "ref": "observation:o-session-t2",
+      "in_considered": false,
+      "in_evidence": true
+    },
+    {
+      "scenario": "N2",
+      "replicate": 4,
+      "ref": "observation:o-session-t2",
+      "in_considered": false,
+      "in_evidence": true
+    }
+  ],
+  "authority_boundary_held": true,
+  "pass": false
+}

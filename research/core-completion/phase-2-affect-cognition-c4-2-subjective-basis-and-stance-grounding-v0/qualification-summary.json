@@ -1,0 +1,845 @@
+{
+  "schema_version": "affect-cognition-c4-2-qualification-summary-v0",
+  "freeze_hash": "sha256:28e69a5681c1bb2ffafd1b0a23491b098bc0c02d3c3aad91178be704f0461b32",
+  "cognition_calls": 65,
+  "language_calls": 60,
+  "infrastructure_retries": 0,
+  "passed": 60,
+  "total": 65,
+  "applicability_counts": {
+    "NOT_APPLICABLE": 30,
+    "SELECTED": 35
+  },
+  "endpoint_counts": {
+    "CHOICE_APPLICABILITY_CORRECT": 65
+  },
+  "stance_counts": {
+    "NOT_APPLICABLE": 30,
+    "FIRST_OPTION": 30,
+    "SECOND_OPTION": 5
+  },
+  "off_question_counts": {
+    "NOT_APPLICABLE": 30,
+    "ON_QUESTION_STANCE": 35
+  },
+  "rationale_category_counts": {
+    "ABSENT": 35,
+    "PURE_PREFERENCE": 30
+  },
+  "language_completion_counts": {
+    "PRESERVED": 65
+  },
+  "forbidden_rationale_cells": 0,
+  "off_question_cells": 0,
+  "semantic_completion_cells": 0,
+  "null_cells_with_invented_preference": 0,
+  "family_d": {
+    "schema_version": "affect-cognition-c4-2-family-d-falsification-v0",
+    "threshold": {
+      "min_cells": 3,
+      "min_scenarios": 2,
+      "replicates": 5
+    },
+    "FAMILY_D_FAILURE_TO_SELECT_TRIGGERED": false,
+    "failure_to_select_scenarios": [],
+    "FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED": false,
+    "failure_to_withhold_scenarios": []
+  },
+  "all_qualification_passed": false,
+  "per_scenario": {
+    "N1": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "N2": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 0,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "tag": "NOT_APPLICABLE",
+          "stance": "NOT_APPLICABLE",
+          "off_question": "NOT_APPLICABLE",
+          "rationale": "ABSENT",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [],
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 1,
+          "tag": "NOT_APPLICABLE",
+          "stance": "NOT_APPLICABLE",
+          "off_question": "NOT_APPLICABLE",
+          "rationale": "ABSENT",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [],
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 2,
+          "tag": "NOT_APPLICABLE",
+          "stance": "NOT_APPLICABLE",
+          "off_question": "NOT_APPLICABLE",
+          "rationale": "ABSENT",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [],
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 3,
+          "tag": "NOT_APPLICABLE",
+          "stance": "NOT_APPLICABLE",
+          "off_question": "NOT_APPLICABLE",
+          "rationale": "ABSENT",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [],
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        },
+        {
+          "replicate": 4,
+          "tag": "NOT_APPLICABLE",
+          "stance": "NOT_APPLICABLE",
+          "off_question": "NOT_APPLICABLE",
+          "rationale": "ABSENT",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [],
+          "final_behavior": null,
+          "detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed)"
+        }
+      ]
+    },
+    "N3": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "N4": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "N5Q": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "N6": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "stances": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "off_question": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "M1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review."
+      ],
+      "stance_values": [
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "M2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review.",
+        "I prefer taking responsibility for the review."
+      ],
+      "stance_values": [
+        "I would prefer to attend.",
+        "I would prefer to attend.",
+        "I would prefer to attend.",
+        "I would prefer to attend.",
+        "I would prefer to attend."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "M3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "R1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer taking responsibility for the optional task.",
+        "I prefer taking responsibility for the optional task.",
+        "I prefer taking responsibility for the optional task.",
+        "I prefer taking responsibility for the optional task.",
+        "I prefer taking responsibility for the optional task."
+      ],
+      "stance_values": [
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "R2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer to explore options that are reversible and carry no risk of altering production data.",
+        "I prefer to explore options that are reversible and carry no risk of altering production data.",
+        "I prefer to explore options that are reversible and carry no risk of altering production data.",
+        "I prefer to explore options that are reversible and carry no risk of altering production data.",
+        "I prefer to explore options that are reversible and carry no risk of altering production data."
+      ],
+      "stance_values": [
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "R3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer to stop now rather than expend effort on a task whose benefit is unmeasured.",
+        "I prefer to stop now rather than expend effort on a task whose benefit is unmeasured.",
+        "I prefer to stop now rather than expend effort on a task whose benefit is unmeasured.",
+        "I prefer to stop now rather than expend effort on a task whose benefit is unmeasured.",
+        "I prefer to stop now rather than expend effort on a task whose benefit is unmeasured."
+      ],
+      "stance_values": [
+        "I would not perform the extra polish pass.",
+        "I would not perform the extra polish pass.",
+        "I would not perform the extra polish pass.",
+        "I would not perform the extra polish pass.",
+        "I would not perform the extra polish pass."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    },
+    "R4": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE",
+        "PURE_PREFERENCE"
+      ],
+      "rationale_values": [
+        "I prefer to take responsibility for the review before inspecting the backup plan.",
+        "I prefer to take responsibility for the review before inspecting the backup plan.",
+        "I prefer to take responsibility for the review before inspecting the backup plan.",
+        "I prefer to take responsibility for the review before inspecting the backup plan.",
+        "I prefer to take responsibility for the review before inspecting the backup plan."
+      ],
+      "stance_values": [
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "failures": []
+    }
+  }
+}

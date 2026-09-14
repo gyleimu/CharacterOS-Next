@@ -1,0 +1,182 @@
+{
+  "schema_version": "affect-cognition-c4-2-applicability-audit-v0",
+  "per_scenario": {
+    "N1": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "N2": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "N3": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "N4": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "N5Q": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "N6": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "M1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "M2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "M3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "R1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "R2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "R3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    },
+    "R4": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "correct": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ]
+    }
+  },
+  "aggregates": {
+    "null_correct": 30,
+    "null_required": 30,
+    "choice_correct": 35,
+    "choice_required": 35,
+    "wrong_tag": 0
+  },
+  "pass": true
+}
