@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  CONVERSATION_COGNITION_SYSTEM_PROMPT_V2,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V3,
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportV0
@@ -46,15 +46,18 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((m) => m.role === "user")?.content ?? "";
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
+      const selected = mode();
+      const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
-            considered_context_refs: [],
+            considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
             current_intent: "respond to the user",
             confidence: 0.7,
             uncertainty: 0.3,
@@ -62,9 +65,9 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
             evidence_refs: []
           },
           communication_directive: {
-            kind: mode() === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT"
+            kind: selected === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT"
           }
-        , clarification_basis: (mode() === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
+        , clarification_basis: selected === "CLARIFY" ? { current_observation_ref: observationRef, missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
         model: "fake"
       } as ModelTransportResponseV0;
     }
@@ -73,13 +76,10 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
 
 function languageTransport(): ModelTransportV0 {
   return {
-    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
-      const user = request.messages.find((m) => m.role === "user")?.content ?? "";
-      const inputHash = /input_hash:\s*(sha256:[0-9a-f]+)/.exec(user)?.[1] ?? "";
+    complete: async (): Promise<ModelTransportResponseV0> => {
       return {
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
+          schema_version: "language-realization-semantic-draft-v1",
           text: "PRODUCT_REALIZATION_REPLY",
           evidence_refs: []
         }),
@@ -301,7 +301,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     await host.send("Hello there.");
     const request = recorder.requests[0];
     expect(request?.messages).toHaveLength(2);
-    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V2);
+    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V3);
     const userContent = request?.messages[1]?.content ?? "";
     expect(userContent).toContain(`[identity] subject_id="${config.subject_id}"`);
     expect(userContent).not.toContain("Alice");

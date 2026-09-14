@@ -36,6 +36,7 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((m) => m.role === "user")?.content ?? "";
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
+      const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       const selected = mode();
       if (selected === "MALFORMED") return { content: "{ not json", model: "fake" } as ModelTransportResponseV0;
       if (selected === "TRUNCATED") {
@@ -46,13 +47,14 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       }
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
-            considered_context_refs: [],
+            considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
             current_intent: "respond to the user",
             confidence: 0.7,
             uncertainty: 0.3,
@@ -71,13 +73,10 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
 
 function languageTransport(): ModelTransportV0 {
   return {
-    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
-      const user = request.messages.find((m) => m.role === "user")?.content ?? "";
-      const inputHash = /input_hash:\s*(sha256:[0-9a-f]+)/.exec(user)?.[1] ?? "";
+    complete: async (): Promise<ModelTransportResponseV0> => {
       return {
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
+          schema_version: "language-realization-semantic-draft-v1",
           text: "PRODUCT_REALIZATION_REPLY",
           evidence_refs: []
         }),

@@ -87,7 +87,8 @@ function cognitionTransport(counter: CallCounter): ModelTransportV0 {
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -110,14 +111,11 @@ function cognitionTransport(counter: CallCounter): ModelTransportV0 {
 
 function languageTransport(counter: CallCounter): ModelTransportV0 {
   return {
-    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
+    complete: async (): Promise<ModelTransportResponseV0> => {
       counter.count += 1;
-      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const inputHash = /input_hash:\s*(sha256:[0-9a-f]+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
+          schema_version: "language-realization-semantic-draft-v1",
           text: "Noted.",
           evidence_refs: []
         }),

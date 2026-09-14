@@ -65,17 +65,19 @@ function countingAppraisalProvider(counter: { calls: number }): FactualEventAppr
 function cognitionTransport(): ModelTransportV0 {
   return {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
-      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
-      return {
-        content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+    const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+    const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
+    const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
+    return {
+      content: JSON.stringify({
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
-            considered_context_refs: [],
+            considered_context_refs: [observationRef],
             current_intent: "respond",
             confidence: 0.7,
             uncertainty: 0.3,

@@ -243,7 +243,8 @@ export class ConversationTextResponseExecutorV0 {
           OUTPUT_TOO_LARGE: "LANGUAGE_SCHEMA_INVALID",
           MODEL_SCHEMA_INVALID: "LANGUAGE_SCHEMA_INVALID",
           INPUT_HASH_MISMATCH: "LANGUAGE_SCHEMA_INVALID",
-          EVIDENCE_INVALID: "LANGUAGE_EVIDENCE_INVALID"
+          EVIDENCE_INVALID: "LANGUAGE_EVIDENCE_INVALID",
+          INVOCATION_BINDING_INVALID: "LANGUAGE_SCHEMA_INVALID"
         };
         return failed(mapping[error.code], error.message);
       }

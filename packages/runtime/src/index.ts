@@ -979,6 +979,12 @@ export {
 } from "./transitions/conversation/conversation-text-response-executor-v1.js";
 export { ConversationCognitionProviderV1, ConversationCognitionRejectionErrorV1, CONVERSATION_COGNITION_SYSTEM_PROMPT_V1 } from "./providers/behavior/conversation-cognition-provider.js";
 export { ConversationCognitionProviderV2, ConversationCognitionRejectionErrorV2, CONVERSATION_COGNITION_SYSTEM_PROMPT_V2, CONVERSATION_COGNITION_PROPOSAL_V2_JSON_SCHEMA, buildConversationSubjectDataV2 } from "./providers/behavior/conversation-cognition-provider-v2.js";
+export {
+  ConversationCognitionProviderV3,
+  ConversationCognitionRejectionErrorV3,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V3,
+  CONVERSATION_COGNITION_PROPOSAL_V3_JSON_SCHEMA
+} from "./providers/behavior/conversation-cognition-provider-v3.js";
 export { CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V1, validateConversationCognitionProposalV1, type ConversationCognitionProposalV1 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
   CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V2,
@@ -989,6 +995,34 @@ export {
   type ConversationCognitionProposalV2,
   type ClarificationBasisV0
 } from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V3,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V3,
+  FACTUAL_ASSESSMENT_MAX_CLAIMS_V0,
+  FACTUAL_ASSESSMENT_CLAIM_TEXT_MAX_CODE_POINTS_V0,
+  validateConversationCognitionProposalV3,
+  deriveConversationCognitionProposalHashV3,
+  type ConversationCognitionProposalV3,
+  type FactualAssessmentV0,
+  type FactualAssessmentClaimV0,
+  type FactualAssessmentClaimKindV0
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
+  LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V4,
+  LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V4,
+  validateLanguageRealizationInputAnyVersion,
+  deriveLanguageRealizationInputHashAnyVersion,
+  type LanguageRealizationInputV4,
+  type BuildLanguageRealizationInputV4Request,
+  type BuildLanguageRealizationInputV4Result
+} from "./transitions/conversation/language-realization-input.js";
+export {
+  LANGUAGE_REALIZATION_SYSTEM_PROMPT_V1,
+  LANGUAGE_REALIZATION_SEMANTIC_DRAFT_V1_JSON_SCHEMA,
+  LANGUAGE_INVOCATION_BINDING_SCHEMA_VERSION_V0,
+  LANGUAGE_INVOCATION_BINDING_HASH_PROJECTION_V0,
+  type LanguageInvocationBindingV0
+} from "./providers/behavior/language-realization-provider.js";
 
 // --- BEHAVIOR_EXPERIENCE_FEEDBACK_V0 — behavior→experience→memory feedback ------------
 

@@ -105,15 +105,17 @@ function cognitionTransport(clock: Clock, recorder: Recorder, mode: CognitionMod
       }
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
+      const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
             reasoning_summary: "offline",
             relevant_memory_refs: [],
-            considered_context_refs: [],
+            considered_context_refs: mode === "CLARIFY" ? [observationRef] : [],
             current_intent: "respond",
             confidence: 0.7,
             uncertainty: 0.3,
@@ -132,15 +134,12 @@ function cognitionTransport(clock: Clock, recorder: Recorder, mode: CognitionMod
 
 function languageTransport(clock: Clock, recorder: Recorder): ModelTransportV0 {
   return {
-    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
+    complete: async (): Promise<ModelTransportResponseV0> => {
       recorder.order.push("language");
       clock.value += LANGUAGE_MS;
-      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const inputHash = /input_hash:\s*(sha256:[0-9a-f]+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
+          schema_version: "language-realization-semantic-draft-v1",
           text: "Noted.",
           evidence_refs: []
         }),

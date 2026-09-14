@@ -434,7 +434,9 @@ interface DownstreamProofResult {
 function inputObjectFromLanguageRequest(request: ModelTransportRequestV0): Record<string, unknown> {
   const user = request.messages.find((message) => message.role === "user")?.content ?? "";
   const jsonStart = user.indexOf("{");
-  const jsonEnd = user.lastIndexOf("\ninput_hash:");
+  const legacyEnd = user.lastIndexOf("\ninput_hash:");
+  const semanticEnd = user.lastIndexOf("\nReturn exactly language-realization-semantic-draft-v1");
+  const jsonEnd = legacyEnd >= 0 ? legacyEnd : semanticEnd;
   if (jsonStart < 0 || jsonEnd < 0) throw new Error("language request input JSON missing");
   const parsed = JSON.parse(user.slice(jsonStart, jsonEnd)) as Record<string, unknown>;
   const { input_hash: ignoredInputHash, ...input } = parsed;
@@ -474,7 +476,8 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
@@ -495,17 +498,12 @@ async function executeDownstreamProof(
   const languageTransport: ModelTransportV0 = {
     complete: async (request) => {
       languageRequests.push(request);
-      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const inputHash = /input_hash: (sha256:[0-9a-f]{64})/.exec(user)?.[1];
-      if (inputHash === undefined) throw new Error("fake language did not receive input hash");
       const input = inputObjectFromLanguageRequest(request);
-      const binding = input["cognition_proposal_binding"] as { current_intent: string | null };
       return {
         model: "fake-language-realizer",
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
-          text: `deterministic behavior: ${binding.current_intent ?? "<null>"}`,
+          schema_version: "language-realization-semantic-draft-v1",
+          text: `deterministic behavior: ${String(input["selected_current_intent"])}`,
           evidence_refs: []
         })
       };
@@ -928,7 +926,7 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — north-star two-subject p
 // ----------------------------------------------------------------------------------
 
 describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETERMINISTIC_INTEGRATION_PROOF", () => {
-  it("lawful history → Affect → cognition intent → V2 input → distinct existing behavior artifacts", async () => {
+  it("lawful history → Affect → selected cognition intent → V4 input → distinct existing behavior artifacts", async () => {
     const worldA = await buildWorld();
     const aPrior = await admitEvent(worldA, "evt-downstream-prior", "重做一下。");
     worldA.dimensionOverrides.set(aPrior.eventRef, { relevance: 1, goal_congruence: 1, intensity: 1 });
@@ -960,12 +958,10 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultB.result.kind).toBe("OUTPUT_READY");
     if (resultA.result.kind !== "OUTPUT_READY" || resultB.result.kind !== "OUTPUT_READY") return;
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
-    const bindingA = resultA.language_input["cognition_proposal_binding"] as Record<string, unknown>;
-    const bindingB = resultB.language_input["cognition_proposal_binding"] as Record<string, unknown>;
-    expect(bindingA["current_intent"]).toBe(resultA.cognition_intent);
-    expect(bindingB["current_intent"]).toBe(resultB.cognition_intent);
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v3");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v3");
+    expect(resultA.language_input["selected_current_intent"]).toBe(resultA.cognition_intent);
+    expect(resultB.language_input["selected_current_intent"]).toBe(resultB.cognition_intent);
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v4");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v4");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("canonical_affect");
       expect(input).not.toHaveProperty("affect_channels");
@@ -986,15 +982,15 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultA.result.trace.realization_source).toBe("LANGUAGE_PROVIDER_V0");
   });
 
-  it("explicit v4 preserves lawful null through REALIZE without inventing an intent", async () => {
+  it("explicit C2 preserves an already-selected conditional intent without re-choosing it", async () => {
     const world = await buildWorld();
     await admitAppraiseApply(world, "evt-downstream-null", "现在感觉怎么样？");
-    const result = await executeDownstreamProof(world, () => null, "response-downstream-null");
+    const selected = "I will answer if the current conditions remain unchanged.";
+    const result = await executeDownstreamProof(world, () => selected, "response-downstream-selected");
     expect(result.result.kind).toBe("OUTPUT_READY");
-    const binding = result.language_input["cognition_proposal_binding"] as Record<string, unknown>;
-    expect(result.cognition_intent).toBeNull();
-    expect(binding["current_intent"]).toBeNull();
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v3");
+    expect(result.cognition_intent).toBe(selected);
+    expect(result.language_input["selected_current_intent"]).toBe(selected);
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v4");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1006,17 +1002,19 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
       complete: async (request) => {
         const user = request.messages.find((message) => message.role === "user")?.content ?? "";
         const projectionHash = /\[projection_hash\] (sha256:[0-9a-f]{64})/.exec(user)?.[1];
+        const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
         if (projectionHash === undefined) throw new Error("projection hash missing");
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v2",
+            schema_version: "conversation-cognition-proposal-v3",
+            factual_assessment: { claims: [] },
             cognition: {
               schema_version: "cognition-proposal-v0",
               projection_hash: projectionHash,
               reasoning_summary: "clarification is required",
               relevant_memory_refs: [],
-              considered_context_refs: [],
+              considered_context_refs: [observationRef],
               current_intent: "proceed as if the missing context were known",
               confidence: 0.8,
               uncertainty: 0.2,

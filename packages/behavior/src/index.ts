@@ -15,6 +15,11 @@ export {
   type LanguageRealizationDraftV0
 } from "./language-realization-draft.js";
 export {
+  LANGUAGE_REALIZATION_SEMANTIC_DRAFT_SCHEMA_VERSION_V1,
+  validateLanguageRealizationSemanticDraftV1,
+  type LanguageRealizationSemanticDraftV1
+} from "./language-realization-semantic-draft.js";
+export {
   CHARACTER_LANGUAGE_BEHAVIOR_SCHEMA_VERSION_V0,
   CHARACTER_LANGUAGE_BEHAVIOR_ID_PROJECTION_V0,
   buildCharacterLanguageBehaviorV0,

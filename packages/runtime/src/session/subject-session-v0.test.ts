@@ -103,6 +103,7 @@ function fakeCognitionTransport(mode: () => Mode, intents: string[]): ModelTrans
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
+      const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       const selected = mode();
       if (selected === "FAIL") {
         return { content: "{ not json", model: "fake" } as ModelTransportResponseV0;
@@ -111,13 +112,14 @@ function fakeCognitionTransport(mode: () => Mode, intents: string[]): ModelTrans
       call += 1;
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v2",
+          schema_version: "conversation-cognition-proposal-v3",
+          factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
             projection_hash: projectionHash,
             reasoning_summary: "offline test cognition",
             relevant_memory_refs: [],
-            considered_context_refs: [],
+            considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
             current_intent: intent,
             confidence: 0.7,
             uncertainty: 0.3,
@@ -134,16 +136,13 @@ function fakeCognitionTransport(mode: () => Mode, intents: string[]): ModelTrans
   } as ModelTransportV0;
 }
 
-/** Fake language transport: echoes the input hash from the rendered input. */
+/** Fake language transport: returns semantic content; the host owns integrity. */
 function fakeLanguageTransport(): ModelTransportV0 {
   return {
-    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
-      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const inputHash = /input_hash:\s*(sha256:[0-9a-f]+)/.exec(user)?.[1] ?? "";
+    complete: async (): Promise<ModelTransportResponseV0> => {
       return {
         content: JSON.stringify({
-          schema_version: "language-realization-draft-v0",
-          input_hash: inputHash,
+          schema_version: "language-realization-semantic-draft-v1",
           text: "Yes, the review document is on track and the outstanding item is noted.",
           evidence_refs: []
         }),
