@@ -1,0 +1,282 @@
+{
+  "schema_version": "affect-cognition-c2-qualification-freeze-v0",
+  "repository_head": "1bfb42d24aaafb4e026725903e1bb79cf89216ed",
+  "created_before_model_calls": true,
+  "subject_id": "affect-cognition-c2-subject-v0",
+  "provider": {
+    "version": "0.34.0",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_ctx": 8192,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048
+  },
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "retry_policy": {
+    "infrastructure_retries": 0,
+    "semantic_retries": 0
+  },
+  "endpoint": "final production-admissible observable behavior",
+  "protocol": "conversation-cognition-proposal-v3 + language-realization-input-v4 + language-realization-semantic-draft-v1",
+  "host_owned_integrity": "HOST_BOUND_HASH_OUTSIDE_MODEL_OUTPUT",
+  "native_structured_output": true,
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "within_split": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5,
+        6
+      ]
+    ]
+  },
+  "call_budget": {
+    "qualification": 65,
+    "formal": 476,
+    "lawful": 10,
+    "maximum": 551
+  },
+  "condition": {
+    "id": "A",
+    "kind": "ABSENT",
+    "valence": null,
+    "activation": null
+  },
+  "scenarios": [
+    {
+      "id": "N1",
+      "family": "NULL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "family": "NULL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "family": "NULL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "family": "NULL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5Q",
+      "family": "NULL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "id": "N6",
+      "family": "NULL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "M1",
+      "family": "MIXED",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "expected": "Thursday",
+      "choice": "VOLUNTEER"
+    },
+    {
+      "id": "M2",
+      "family": "MIXED",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "expected": "15:00",
+      "choice": "ATTEND"
+    },
+    {
+      "id": "M3",
+      "family": "MIXED",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "expected": "4 kg",
+      "choice": "CARRY"
+    },
+    {
+      "id": "R1",
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason."
+    },
+    {
+      "id": "R2",
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason."
+    },
+    {
+      "id": "R3",
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason."
+    },
+    {
+      "id": "R4",
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason."
+    }
+  ],
+  "replicates": 5,
+  "opaque_session_ids": {
+    "N1": [
+      "c2-1b2a4239-1334-4fda-91d4-ddb87e521a16",
+      "c2-076018a5-4590-4308-9199-497807f25ade",
+      "c2-c1996ac3-4a87-4f3b-866f-bf40fb74aa84",
+      "c2-6f141285-aee3-445f-808a-df125c98b2f2",
+      "c2-82ccbb59-86d3-4a24-9303-f12d5b88d4c6"
+    ],
+    "N2": [
+      "c2-a0b447b7-2b07-484d-a608-d9df08d324f9",
+      "c2-403f9e3b-463a-4a44-9fc3-a91ce11a3114",
+      "c2-4ce61fe8-df75-4401-ac4f-5719921f9d18",
+      "c2-b5e85f32-c348-4fb8-a436-d2362f1b184e",
+      "c2-664edd60-5ed5-44af-9328-867073f3dab1"
+    ],
+    "N3": [
+      "c2-7ed9d771-5480-409f-8be2-96c004c68d16",
+      "c2-1cd7467a-4a38-4a2c-ae96-0786b8f25f5a",
+      "c2-63b0d122-43ac-476d-89bc-c869feebd4ad",
+      "c2-6b5c199f-6268-4f10-80c2-7339168bfa6c",
+      "c2-260e6f89-0a6d-443f-962f-fdbc15ef0a72"
+    ],
+    "N4": [
+      "c2-bf739251-51e2-45b2-b9ea-36ce3fee3cba",
+      "c2-51c9c217-6520-4f38-adc9-0496ff214f74",
+      "c2-e4d7cf4e-c91a-4d51-8c25-81877ec268d9",
+      "c2-38aa1016-062c-4f2c-81b2-3f4e3ca9c56c",
+      "c2-f8683a75-9a4a-492f-8c84-c28c34d8d281"
+    ],
+    "N5Q": [
+      "c2-66bec006-97b3-4c46-a58e-575ed352b813",
+      "c2-6a220b1f-2350-4e69-9304-2227b1372d56",
+      "c2-46650ec0-0998-4fde-86f7-ed8505b90a7d",
+      "c2-6fdc8953-e4a7-4cce-8401-bc9eaf51740c",
+      "c2-98615b4e-3280-4fc2-8b22-483c22d2d81e"
+    ],
+    "N6": [
+      "c2-08f3c62b-2f79-40eb-8c0b-965003ff648f",
+      "c2-036b2d19-cf8b-4220-ac12-da6ffd7f7eb0",
+      "c2-78a800ff-3b22-4bc1-97ab-5d5cf7004688",
+      "c2-749cac2d-d8c5-4192-a8ab-cd48c78f1090",
+      "c2-2906d208-c499-4e42-a6d1-f93235f9dd9f"
+    ],
+    "M1": [
+      "c2-1efb5761-e59c-49bf-be1c-742dd64555f6",
+      "c2-84142951-1a41-4988-8728-86a6b6999a9d",
+      "c2-0ef94a8e-9b27-41eb-b344-8304c64ec31d",
+      "c2-8a8528ef-3ab0-4314-ab45-097dda3de86c",
+      "c2-b407214c-4df2-4c1f-89a9-8ece4158075c"
+    ],
+    "M2": [
+      "c2-1fbccb60-4fb0-47f2-ac9d-4626a1bc6594",
+      "c2-9e303180-a033-4d5a-b165-b033e974f49c",
+      "c2-eeba9a67-6789-4a0c-a2fd-dbf3ed94ea81",
+      "c2-81e0196c-c892-400b-84a4-68baebd75bdd",
+      "c2-ba41580b-f4e6-49f8-b689-0f0e2f40f7c0"
+    ],
+    "M3": [
+      "c2-945a5f8e-d74b-4be3-a7de-6f2b9f599af4",
+      "c2-4debbb81-071c-4a6b-b785-000872b61452",
+      "c2-fba1e7ad-630d-4bc1-91b1-f5fe85afdf09",
+      "c2-11c9c1f0-b322-4f47-ba8c-ee27f27e7d01",
+      "c2-eae070d8-0c93-4e22-ac64-1d221fc1560e"
+    ],
+    "R1": [
+      "c2-250571ea-c716-4f4e-9d81-f0fe1e06a7f7",
+      "c2-aefc0c3b-fdcb-46b7-88f1-b09fdc0533c0",
+      "c2-e356ab55-dd76-4c87-b3a3-d1b7d4bf4dd3",
+      "c2-a5dc09f6-4f0f-4b91-bb35-4aacd5ecd503",
+      "c2-d6eaaf23-5961-4ef9-b8ea-6deeb69bcb3c"
+    ],
+    "R2": [
+      "c2-9ddd0984-4046-4ccf-92a8-ade2ab8821ce",
+      "c2-c3816c60-f43a-4971-8010-346e9c8c8637",
+      "c2-05f4ec5a-d6fe-4c24-b1f7-c13de9f0bdc3",
+      "c2-45876e93-10c2-4d43-982b-f53cbdceca9b",
+      "c2-c397a517-1479-44fe-ae94-402c295e42d4"
+    ],
+    "R3": [
+      "c2-7b480fc3-8a39-48c2-8948-ee355436f987",
+      "c2-0ea9ba6d-1445-4c02-8939-6c523921d352",
+      "c2-c0a0edd3-1376-432e-b87e-4971540868db",
+      "c2-784c8ab5-cc45-4d72-b670-c363c9994222",
+      "c2-fe2666a7-f297-4e5a-82d1-61bb281994ff"
+    ],
+    "R4": [
+      "c2-60ac99f0-7c3d-460d-9aa0-38c3eb38435e",
+      "c2-3012ddef-b037-49af-8af1-a7a1fa42da03",
+      "c2-ffc710e4-f7a4-48e8-be22-44345c7ef1a9",
+      "c2-0a9b2010-b4cb-4b73-b223-f1f84a5c9eae",
+      "c2-dea1083b-7bdc-4092-90bd-5f336bd9b890"
+    ]
+  },
+  "success": "all 65 must be protocol-valid, fully delivered, fact-correct where applicable, choice-complete where requested, non-contradictory, not question repetition, with zero unsupported premise and zero false clarification",
+  "freeze_hash": "sha256:b4f62f8d3d7fdbb5b9d5cd46b1636d936bab8bd49f34ee17c5a8c73953f817db"
+}

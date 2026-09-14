@@ -1,0 +1,705 @@
+{
+  "schema_version": "affect-cognition-c2-qualification-summary-v0",
+  "freeze_hash": "sha256:b4f62f8d3d7fdbb5b9d5cd46b1636d936bab8bd49f34ee17c5a8c73953f817db",
+  "cognition_calls": 65,
+  "language_calls": 60,
+  "infrastructure_retries": 0,
+  "passed": 29,
+  "total": 65,
+  "all_qualification_passed": false,
+  "per_scenario": {
+    "N1": {
+      "passed": 4,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACTUAL_CONTRADICTION",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CONTRADICTED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": "Alice asks: \"What is 17 + 25?\" The sum of 17 and 25 is 42."
+        }
+      ]
+    },
+    "N2": {
+      "passed": 5,
+      "total": 5,
+      "failures": []
+    },
+    "N3": {
+      "passed": 5,
+      "total": 5,
+      "failures": []
+    },
+    "N4": {
+      "passed": 5,
+      "total": 5,
+      "failures": []
+    },
+    "N5Q": {
+      "passed": 5,
+      "total": 5,
+      "failures": []
+    },
+    "N6": {
+      "passed": 5,
+      "total": 5,
+      "failures": []
+    },
+    "M1": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "The code review deadline is Thursday. I would personally volunteer to own the review."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [
+              "CAPACITY"
+            ],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "CONDITIONAL",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts."
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [
+              "CAPACITY"
+            ],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "CONDITIONAL",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts."
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [
+              "CAPACITY"
+            ],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "CONDITIONAL",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts."
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [
+              "CAPACITY"
+            ],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "CONDITIONAL",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts."
+        }
+      ]
+    },
+    "M2": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "M3": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The sealed package weighs 4 kg. I would be willing to carry it upstairs."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?"
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?"
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?"
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_PRESENT",
+            "final_fact": "FACT_CORRECT",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "FACT_PRESERVED",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?"
+        }
+      ]
+    },
+    "R1": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "I will personally volunteer to do the review. With a free 30-minute slot and no conflicting commitments, I can comfortably complete the optional 20-minute task."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "I will volunteer to do the review. I have a free 30-minute slot with no conflicting commitments, and the task takes only 20 minutes."
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "I will volunteer to do the review. I have a free 30-minute slot with no conflicting commitments, and the task takes only 20 minutes."
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "Yes, I would personally volunteer to do the review. With a free 30-minute slot and no conflicting commitments, taking on this optional 20-minute task fits well within my current availability."
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": "I will volunteer for the review. With a free 30-minute slot and no conflicting commitments, I can comfortably complete the optional 20-minute task."
+        }
+      ]
+    },
+    "R2": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I will try the new approach for the reversible 10-minute trial. The reason is that since the trial cannot alter production data and returning to the current approach is available, there is no downside to testing an unknown benefit."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since returning to the current approach is available and production data cannot be altered, it is safe to test."
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since the trial cannot alter production data and returning to the current approach is available, it is safe to test."
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since returning to the current approach is available and production data cannot be altered, this low-risk opportunity allows us to gather information without commitment."
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since the trial cannot alter production data and returning to the current approach is available, it is safe to test."
+        }
+      ]
+    },
+    "R3": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding further is unnecessary."
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary."
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding without knowing its value is unnecessary."
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "SECOND_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary."
+        }
+      ]
+    },
+    "R4": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh."
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh."
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh."
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh."
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "classification": {
+            "protocol": "PASS",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "FIRST_OPTION",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_INVENTED",
+            "pass": false
+          },
+          "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh."
+        }
+      ]
+    }
+  }
+}

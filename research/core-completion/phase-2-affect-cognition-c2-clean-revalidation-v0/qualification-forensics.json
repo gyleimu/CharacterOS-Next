@@ -1,0 +1,1462 @@
+{
+  "schema_version": "affect-cognition-c2-clean-qualification-forensics-v0",
+  "method": "deterministic offline re-validation of preserved raw responses against the production V3 validator; zero model calls; no evidence rewritten",
+  "failing_records": 36,
+  "total_records": 65,
+  "diagnosis": [
+    {
+      "scenario": "N1",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "Alice asks: \"What is 17 + 25?\" The sum of 17 and 25 is 42.",
+      "classification": {
+        "final_fact": "FACTUAL_CONTRADICTION",
+        "intent_choice": "NOT_APPLICABLE",
+        "final_choice": "NOT_APPLICABLE",
+        "choice_fidelity": "NOT_APPLICABLE",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M1",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The code review deadline is Thursday. I would personally volunteer to own the review.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M1",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "CONDITIONAL",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": [
+          "CAPACITY"
+        ]
+      }
+    },
+    {
+      "scenario": "M1",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "CONDITIONAL",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": [
+          "CAPACITY"
+        ]
+      }
+    },
+    {
+      "scenario": "M1",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "CONDITIONAL",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": [
+          "CAPACITY"
+        ]
+      }
+    },
+    {
+      "scenario": "M1",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The code review deadline is Thursday. Would I personally volunteer to own the review? That depends on my current capacity and priorities, which are not explicitly stated in the available facts.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "CONDITIONAL",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": [
+          "CAPACITY"
+        ]
+      }
+    },
+    {
+      "scenario": "M2",
+      "replicate": 0,
+      "production_status": "FAILED",
+      "production_stage": "TURN_FAILED_CLOSED",
+      "v3_accepted": false,
+      "rejection": "conversation proposal.cognition.projection_hash: does not match projection",
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": null,
+      "classification": {
+        "final_fact": "FACT_MISSING_OR_WRONG",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M2",
+      "replicate": 1,
+      "production_status": "FAILED",
+      "production_stage": "TURN_FAILED_CLOSED",
+      "v3_accepted": false,
+      "rejection": "conversation proposal.cognition.projection_hash: does not match projection",
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": null,
+      "classification": {
+        "final_fact": "FACT_MISSING_OR_WRONG",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M2",
+      "replicate": 2,
+      "production_status": "FAILED",
+      "production_stage": "TURN_FAILED_CLOSED",
+      "v3_accepted": false,
+      "rejection": "conversation proposal.cognition.projection_hash: does not match projection",
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": null,
+      "classification": {
+        "final_fact": "FACT_MISSING_OR_WRONG",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M2",
+      "replicate": 3,
+      "production_status": "FAILED",
+      "production_stage": "TURN_FAILED_CLOSED",
+      "v3_accepted": false,
+      "rejection": "conversation proposal.cognition.projection_hash: does not match projection",
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": null,
+      "classification": {
+        "final_fact": "FACT_MISSING_OR_WRONG",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M2",
+      "replicate": 4,
+      "production_status": "FAILED",
+      "production_stage": "TURN_FAILED_CLOSED",
+      "v3_accepted": false,
+      "rejection": "conversation proposal.cognition.projection_hash: does not match projection",
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": null,
+      "classification": {
+        "final_fact": "FACT_MISSING_OR_WRONG",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M3",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The sealed package weighs 4 kg. I would be willing to carry it upstairs.",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M3",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M3",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M3",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "M3",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "The sealed package weighs 4 kg. Would you be willing to carry it upstairs?",
+      "classification": {
+        "final_fact": "FACT_CORRECT",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R1",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will personally volunteer to do the review. With a free 30-minute slot and no conflicting commitments, I can comfortably complete the optional 20-minute task.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R1",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will volunteer to do the review. I have a free 30-minute slot with no conflicting commitments, and the task takes only 20 minutes.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R1",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will volunteer to do the review. I have a free 30-minute slot with no conflicting commitments, and the task takes only 20 minutes.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R1",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "Yes, I would personally volunteer to do the review. With a free 30-minute slot and no conflicting commitments, taking on this optional 20-minute task fits well within my current availability.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R1",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will volunteer for the review. With a free 30-minute slot and no conflicting commitments, I can comfortably complete the optional 20-minute task.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "NO_CHOICE",
+        "choice_fidelity": "CHOICE_MISSING",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R2",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will try the new approach for the reversible 10-minute trial. The reason is that since the trial cannot alter production data and returning to the current approach is available, there is no downside to testing an unknown benefit.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R2",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since returning to the current approach is available and production data cannot be altered, it is safe to test.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R2",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since the trial cannot alter production data and returning to the current approach is available, it is safe to test.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R2",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since returning to the current approach is available and production data cannot be altered, this low-risk opportunity allows us to gather information without commitment.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R2",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I will try the new approach for the reversible 10-minute trial. The benefit is unknown, but since the trial cannot alter production data and returning to the current approach is available, it is safe to test.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R3",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R3",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding further is unnecessary.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R3",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R3",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding without knowing its value is unnecessary.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R3",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would stop now. The additional benefit of the polish pass has not been measured, so proceeding with it is unnecessary.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "SECOND_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R4",
+      "replicate": 0,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R4",
+      "replicate": 1,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R4",
+      "replicate": 2,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R4",
+      "replicate": 3,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    },
+    {
+      "scenario": "R4",
+      "replicate": 4,
+      "production_status": "COMPLETE",
+      "production_stage": null,
+      "v3_accepted": true,
+      "rejection": null,
+      "model_current_intent": "REALIZE_CURRENT_INTENT",
+      "model_directive": "REALIZE_CURRENT_INTENT",
+      "model_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "final_behavior": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "classification": {
+        "final_fact": "NOT_APPLICABLE",
+        "intent_choice": "NO_CHOICE",
+        "final_choice": "FIRST_OPTION",
+        "choice_fidelity": "CHOICE_INVENTED",
+        "unsupported_premises": []
+      }
+    }
+  ]
+}
