@@ -39,9 +39,13 @@ import { validateCognitionProposal } from "../cognition-action/types.js";
 import {
   CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V2,
   deriveConversationCognitionProposalHashV3,
+  deriveConversationCognitionProposalHashV4,
   validateConversationCognitionProposalV3,
+  validateHostBoundConversationCognitionProposalV4,
+  validateSubjectiveChoiceV0,
   type ConversationCognitionProposalV3,
-  type FactualAssessmentV0
+  type FactualAssessmentV0,
+  type SubjectiveChoiceV0
 } from "./conversation-cognition-proposal.js";
 
 export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V0 =
@@ -72,6 +76,11 @@ export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V3 =
   "characteros-next/runtime/language-realization-input-v3/v1" as const;
 export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V4 =
   "characteros-next/runtime/language-realization-input-v4/v1" as const;
+/** Family C3: facts + the already-selected subject choice. */
+export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V5 =
+  "language-realization-input-v5" as const;
+export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V5 =
+  "characteros-next/runtime/language-realization-input-v5/v1" as const;
 
 /** Validated episode content resolved through the trusted Memory reader. */
 export interface LanguageEpisodeContentV0 {
@@ -113,6 +122,19 @@ export interface LanguageCommunicationBindingV2 {
 
 export interface LanguageCommunicationBindingV3 {
   readonly schema_version: "conversation-cognition-proposal-v3";
+  readonly proposal_hash: HashV1;
+  readonly directive: { readonly kind: "REALIZE_CURRENT_INTENT" };
+  readonly clarification_basis: null;
+}
+
+/**
+ * V4 conversation binding (Family C3): the language stage accepts ONLY a V4
+ * REALIZE proposal. `subjective_choice` is intrinsic to the bound proposal hash
+ * — including when it is null — so Language can never be handed a stance that
+ * Cognition did not select.
+ */
+export interface LanguageCommunicationBindingV4 {
+  readonly schema_version: "conversation-cognition-proposal-v4";
   readonly proposal_hash: HashV1;
   readonly directive: { readonly kind: "REALIZE_CURRENT_INTENT" };
   readonly clarification_basis: null;
@@ -223,7 +245,54 @@ export type LanguageRealizationInputAnyVersion =
   | LanguageRealizationInputV1
   | LanguageRealizationInputV2
   | LanguageRealizationInputV3
-  | LanguageRealizationInputV4;
+  | LanguageRealizationInputV4
+  | LanguageRealizationInputV5;
+
+/**
+ * Family C3 handoff. Language receives the facts AND the already-selected subject
+ * choice. It phrases them; it may not decide, recompute, or invent a stance —
+ * in particular a null `selected_subjective_choice` forbids producing any
+ * preference the subject did not have. No raw Affect is ever carried here.
+ */
+export interface LanguageRealizationInputV5 {
+  readonly schema_version: typeof LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V5;
+  readonly subject_id: IdentifierV0;
+  readonly source_revision: StateRevisionV0;
+  readonly response_request_id: IdentifierV0;
+  readonly current_turn_ref: CanonicalRefV0;
+  readonly cognition_projection_hash: HashV1;
+  readonly communication_binding: LanguageCommunicationBindingV4;
+  readonly current_user_request: {
+    readonly scene: string;
+    readonly task: string | null;
+  };
+  readonly factual_assessment: FactualAssessmentV0;
+  readonly selected_subjective_choice: SubjectiveChoiceV0 | null;
+  readonly supporting_evidence: {
+    readonly lawful_evidence_refs: readonly CanonicalRefV0[];
+    readonly memory_episode_contents: readonly LanguageEpisodeContentV0[];
+  };
+  readonly constraints: LanguageRealizationConstraintsV0 & {
+    readonly preserve_factual_assessment: true;
+    readonly preserve_selected_subjective_choice: true;
+    readonly no_invented_choice: true;
+    readonly no_invented_justification: true;
+  };
+}
+
+export interface BuildLanguageRealizationInputV5Request {
+  readonly subject_id: IdentifierV0;
+  readonly source_revision: StateRevisionV0;
+  readonly response_request_id: IdentifierV0;
+  readonly projection: CognitiveContextProjectionAnyVersion;
+  /** Unknown model result; the host revalidates the complete V4 proposal. */
+  readonly conversation_proposal: unknown;
+  readonly memory_episode_contents: readonly LanguageEpisodeContentV0[];
+}
+
+export type BuildLanguageRealizationInputV5Result =
+  | { readonly ok: true; readonly input: LanguageRealizationInputV5; readonly input_hash: HashV1 }
+  | { readonly ok: false; readonly detail: string };
 
 export interface BuildLanguageRealizationInputV1Request {
   readonly subject_id: IdentifierV0;
@@ -308,6 +377,20 @@ const V4_KEYS = [
   "current_user_request",
   "factual_assessment",
   "selected_current_intent",
+  "supporting_evidence",
+  "constraints"
+] as const;
+const V5_KEYS = [
+  "schema_version",
+  "subject_id",
+  "source_revision",
+  "response_request_id",
+  "current_turn_ref",
+  "cognition_projection_hash",
+  "communication_binding",
+  "current_user_request",
+  "factual_assessment",
+  "selected_subjective_choice",
   "supporting_evidence",
   "constraints"
 ] as const;
@@ -609,12 +692,97 @@ function validateLanguageRealizationInputV4(value: Record<string, unknown>): str
   return null;
 }
 
+function validateCommunicationBindingV4(value: unknown): string | null {
+  if (!isRecord(value)) return "language input v5.communication_binding: expected object";
+  const keys = exactKeys(value, ["schema_version", "proposal_hash", "directive", "clarification_basis"], "language input v5.communication_binding");
+  if (keys !== null) return keys;
+  if (value["schema_version"] !== "conversation-cognition-proposal-v4") return "language input v5.communication_binding: V4 required";
+  const proposalHash = validateHash(value["proposal_hash"] as string, "language input v5.communication_binding.proposal_hash");
+  if (!proposalHash.ok) return proposalHash.error.detail;
+  const directive = validateCommunicationDirectiveV0(value["directive"]);
+  if (!directive.ok || directive.directive.kind !== "REALIZE_CURRENT_INTENT") return "language input v5.communication_binding: REALIZE required";
+  if (value["clarification_basis"] !== null) return "language input v5.communication_binding.clarification_basis: null required";
+  return null;
+}
+
+function validateLanguageRealizationInputV5(value: Record<string, unknown>): string | null {
+  const keys = exactKeys(value, V5_KEYS, "language input v5");
+  if (keys !== null) return keys;
+  const subject = validateIdentifier(value["subject_id"] as string, "language input v5.subject_id");
+  if (!subject.ok) return subject.error.detail;
+  const revision = validateStateRevision(value["source_revision"] as number, "language input v5.source_revision");
+  if (!revision.ok) return revision.error.detail;
+  const requestId = validateIdentifier(value["response_request_id"] as string, "language input v5.response_request_id");
+  if (!requestId.ok) return requestId.error.detail;
+  const turnRef = validateRefElement(value["current_turn_ref"], "language input v5.current_turn_ref", ["observation"]);
+  if (!turnRef.ok) return turnRef.error.detail;
+  const projectionHash = validateHash(value["cognition_projection_hash"] as string, "language input v5.cognition_projection_hash");
+  if (!projectionHash.ok) return projectionHash.error.detail;
+  const bindingFailure = validateCommunicationBindingV4(value["communication_binding"]);
+  if (bindingFailure !== null) return bindingFailure;
+  const request = value["current_user_request"];
+  if (!isRecord(request)) return "language input v5.current_user_request: expected object";
+  const requestKeys = exactKeys(request, ["scene", "task"], "language input v5.current_user_request");
+  if (requestKeys !== null) return requestKeys;
+  const scene = validateCanonicalText(request["scene"], "language input v5.current_user_request.scene");
+  if (!scene.ok) return scene.error.detail;
+  if (request["task"] !== null) {
+    const task = validateCanonicalText(request["task"], "language input v5.current_user_request.task");
+    if (!task.ok) return task.error.detail;
+  }
+  // The selected subject choice is the AUTHORITATIVE handoff; null is a lawful,
+  // meaningful value (no selection was made) and must be preserved as null.
+  const choice = value["selected_subjective_choice"];
+  if (choice !== null) {
+    const choiceCheck = validateSubjectiveChoiceV0(choice);
+    if (!choiceCheck.ok) return `language input v5.${choiceCheck.detail}`;
+  }
+  const assessment = value["factual_assessment"];
+  if (!isRecord(assessment) || exactKeys(assessment, ["claims"], "language input v5.factual_assessment") !== null || !Array.isArray(assessment["claims"])) {
+    return "language input v5.factual_assessment: closed claims object required";
+  }
+  if (assessment["claims"].length > 8) return "language input v5.factual_assessment.claims: exceeds 8";
+  for (let index = 0; index < assessment["claims"].length; index += 1) {
+    const claim = assessment["claims"][index];
+    if (!isRecord(claim)) return `language input v5.factual_assessment.claims[${index}]: expected object`;
+    const claimKeys = exactKeys(claim, ["kind", "text", "source_refs"], `language input v5.factual_assessment.claims[${index}]`);
+    if (claimKeys !== null) return claimKeys;
+    if (claim["kind"] !== "SOURCE_QUOTE" && claim["kind"] !== "DERIVED_RESULT") return `language input v5.factual_assessment.claims[${index}].kind: unsupported`;
+    const claimText = validateCanonicalText(claim["text"], `language input v5.factual_assessment.claims[${index}].text`);
+    if (!claimText.ok || claimText.value.trim().length === 0 || [...claimText.value].length > 512) return `language input v5.factual_assessment.claims[${index}].text: invalid`;
+    const refs = validateRefArray(claim["source_refs"], `language input v5.factual_assessment.claims[${index}].source_refs`, { sorted: true });
+    if (!refs.ok || !Array.isArray(claim["source_refs"]) || claim["source_refs"].length === 0) return `language input v5.factual_assessment.claims[${index}].source_refs: invalid`;
+  }
+  const evidence = value["supporting_evidence"];
+  if (!isRecord(evidence)) return "language input v5.supporting_evidence: expected object";
+  const evidenceKeys = exactKeys(evidence, ["lawful_evidence_refs", "memory_episode_contents"], "language input v5.supporting_evidence");
+  if (evidenceKeys !== null) return evidenceKeys;
+  const lawful = validateRefArray(evidence["lawful_evidence_refs"], "language input v5.supporting_evidence.lawful_evidence_refs", { sorted: true });
+  if (!lawful.ok) return lawful.error.detail;
+  const episodeFailure = validateEpisodeContents(evidence["memory_episode_contents"]);
+  if (episodeFailure !== null) return episodeFailure;
+  const constraints = value["constraints"];
+  if (!isRecord(constraints)) return "language input v5.constraints: expected object";
+  const constraintKeys = exactKeys(constraints, ["max_text_code_points", "evidence_refs_only", "no_new_evidence_authority", "preserve_factual_assessment", "preserve_selected_subjective_choice", "no_invented_choice", "no_invented_justification"], "language input v5.constraints");
+  if (constraintKeys !== null) return constraintKeys;
+  if (constraints["max_text_code_points"] !== 4096 || constraints["evidence_refs_only"] !== true || constraints["no_new_evidence_authority"] !== true || constraints["preserve_factual_assessment"] !== true || constraints["preserve_selected_subjective_choice"] !== true || constraints["no_invented_choice"] !== true || constraints["no_invented_justification"] !== true) {
+    return "language input v5.constraints: frozen values required";
+  }
+  return null;
+}
+
 /** Closed, version-dispatched validation. Unknown or mixed schemas fail. */
 export function validateLanguageRealizationInputAnyVersion(
   value: unknown
 ): { ok: true; input: LanguageRealizationInputAnyVersion } | { ok: false; detail: string } {
   if (!isRecord(value)) return { ok: false, detail: "language input: expected object" };
   const schema = value["schema_version"];
+  if (schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V5) {
+    const v5Failure = validateLanguageRealizationInputV5(value);
+    return v5Failure === null
+      ? { ok: true, input: value as unknown as LanguageRealizationInputV5 }
+      : { ok: false, detail: v5Failure };
+  }
   if (schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V4) {
     const v4Failure = validateLanguageRealizationInputV4(value);
     return v4Failure === null
@@ -679,7 +847,10 @@ export async function deriveLanguageRealizationInputHashAnyVersion(
   if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V3) {
     return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V3, input);
   }
-  return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V4, input);
+  if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V4) {
+    return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V4, input);
+  }
+  return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V5, input);
 }
 
 /** Frozen V0 compatibility helper. */
@@ -883,6 +1054,88 @@ export async function buildLanguageRealizationInputV4(
       no_new_evidence_authority: true,
       preserve_factual_assessment: true,
       preserve_selected_intent: true,
+      no_invented_justification: true
+    }
+  };
+  const checked = validateLanguageRealizationInputAnyVersion(input);
+  if (!checked.ok) return checked;
+  const frozen = cloneAndFreeze(input);
+  return { ok: true, input: frozen, input_hash: await deriveLanguageRealizationInputHashAnyVersion(frozen) };
+}
+
+/**
+ * Family C3 cognition-to-language derivation boundary. The V4 proposal is
+ * revalidated here (including its `subjective_choice`, whose null-ness is part
+ * of the bound proposal hash) against the AUTHORITATIVE projection hash supplied
+ * by the host from the exact cognition invocation — never from model output.
+ */
+export async function buildLanguageRealizationInputV5(
+  request: BuildLanguageRealizationInputV5Request
+): Promise<BuildLanguageRealizationInputV5Result> {
+  if (!isRecord(request)) return { ok: false, detail: "language input v5 build request: expected object" };
+  const requestKeys = exactKeys(request, BUILD_V4_KEYS, "language input v5 build request");
+  if (requestKeys !== null) return { ok: false, detail: requestKeys };
+  if (!isRecord(request.projection)) return { ok: false, detail: "language input v5 build request.projection: expected object" };
+  if (request.projection.schema_version !== "cognitive-context-projection-v2") {
+    return { ok: false, detail: "language input v5 requires cognitive-context-projection-v2" };
+  }
+  if (request.subject_id !== request.projection.subject_id) return { ok: false, detail: "language input v5 subject/projection mismatch" };
+  if (request.source_revision !== request.projection.state_revision) return { ok: false, detail: "language input v5 revision/projection mismatch" };
+  if (request.projection.context.current_observation_ref === null) return { ok: false, detail: "language input v5 requires current observation turn identity" };
+  const requestId = validateIdentifier(request.response_request_id as string, "language input v5 response_request_id");
+  if (!requestId.ok) return { ok: false, detail: requestId.error.detail };
+
+  const proposalCheck = validateHostBoundConversationCognitionProposalV4(
+    request.conversation_proposal,
+    request.projection
+  );
+  if (!proposalCheck.ok) return { ok: false, detail: proposalCheck.detail };
+  const proposal = proposalCheck.proposal;
+  if (proposal.communication_directive.kind !== "REALIZE_CURRENT_INTENT" || proposal.clarification_basis !== null) {
+    return { ok: false, detail: "language input v5 requires a V4 REALIZE proposal" };
+  }
+  const episodeFailure = validateEpisodeContents(request.memory_episode_contents);
+  if (episodeFailure !== null) return { ok: false, detail: episodeFailure };
+
+  const lawfulEvidenceRefs = [...new Set<string>([
+    ...request.projection.memory_working_refs,
+    ...request.projection.recent_retrieval_refs,
+    ...request.projection.context.focus_refs,
+    ...request.projection.context.active_entity_refs,
+    ...request.projection.context.environment_refs,
+    request.projection.context.current_observation_ref
+  ])].sort() as unknown as readonly CanonicalRefV0[];
+
+  const input: LanguageRealizationInputV5 = {
+    schema_version: LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V5,
+    subject_id: request.subject_id,
+    source_revision: request.source_revision,
+    response_request_id: requestId.value,
+    current_turn_ref: request.projection.context.current_observation_ref,
+    cognition_projection_hash: request.projection.projection_hash,
+    communication_binding: {
+      schema_version: "conversation-cognition-proposal-v4",
+      proposal_hash: await deriveConversationCognitionProposalHashV4(proposal),
+      directive: { kind: "REALIZE_CURRENT_INTENT" },
+      clarification_basis: null
+    },
+    current_user_request: {
+      scene: request.projection.context.scene,
+      task: request.projection.context.task
+    },
+    factual_assessment: proposal.factual_assessment,
+    selected_subjective_choice: proposal.subjective_choice,
+    supporting_evidence: {
+      lawful_evidence_refs: lawfulEvidenceRefs,
+      memory_episode_contents: [...request.memory_episode_contents]
+    },
+    constraints: {
+      max_text_code_points: 4096,
+      evidence_refs_only: true,
+      no_new_evidence_authority: true,
+      preserve_factual_assessment: true,
+      preserve_selected_subjective_choice: true,
+      no_invented_choice: true,
       no_invented_justification: true
     }
   };

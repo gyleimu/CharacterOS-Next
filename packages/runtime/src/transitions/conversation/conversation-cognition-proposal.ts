@@ -533,3 +533,237 @@ export async function deriveConversationCognitionProposalHashV3(
     clarification_basis: proposal.clarification_basis
   });
 }
+
+// ---------------------------------------------------------------------------
+// AFFECT_COGNITION_C3_REVALIDATION_V0 — Family C3 explicit subjective choice.
+//
+// Facts constrain the lawful response space; persistent subject state may
+// influence the subject's CHOICE within that space. The choice is an explicit,
+// turn-local protocol field — never canonical state, never persisted, and never
+// a second factual-claim channel. Model output carries semantics only: identity
+// and integrity metadata (the projection hash) are host-bound outside it.
+// ---------------------------------------------------------------------------
+
+export const CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4 =
+  "conversation-cognition-proposal-v4" as const;
+
+export const CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V4 =
+  "characteros-next/runtime/conversation-cognition-proposal/v4" as const;
+
+/** Frozen bound for the stance text. */
+export const SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0 = 256 as const;
+
+/**
+ * A turn-local, already-selected, fact-compatible subject stance. It is a model
+ * PROPOSAL for this turn only: not canonical, not persisted, not a Goal/Need/
+ * Desire/Commitment/Action/Relationship state, and it needs no factual evidence
+ * of its own (any factual premise it rests on must be established separately by
+ * `factual_assessment`).
+ */
+export interface SubjectiveChoiceV0 {
+  readonly stance: string;
+}
+
+/** Closed V4 conversation cognition proposal (CognitionProposalV0 unchanged). */
+export interface ConversationCognitionProposalV4 {
+  readonly schema_version: typeof CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4;
+  readonly factual_assessment: FactualAssessmentV0;
+  readonly cognition: CognitionProposalV0;
+  readonly subjective_choice: SubjectiveChoiceV0 | null;
+  readonly communication_directive: CommunicationDirectiveV0;
+  readonly clarification_basis: ClarificationBasisV0 | null;
+}
+
+const OUTER_KEYS_V4: readonly string[] = [
+  "schema_version",
+  "factual_assessment",
+  "cognition",
+  "subjective_choice",
+  "communication_directive",
+  "clarification_basis"
+];
+const SUBJECTIVE_CHOICE_KEYS: readonly string[] = ["stance"];
+
+/**
+ * Directive enum tokens. A stance equal to one of these is the observed
+ * enum-copy failure (`current_intent = "REALIZE_CURRENT_INTENT"`), rejected
+ * structurally rather than by wording.
+ */
+const DIRECTIVE_ENUM_TOKENS_V0: readonly string[] = ["REALIZE_CURRENT_INTENT", "CLARIFY_MISSING_CONTEXT"];
+
+/**
+ * Non-choice placeholders. A stance that defers the selection is not a stance:
+ * the subject must state the choice (a conditional stance states its condition)
+ * or use lawful CLARIFY when information is genuinely required.
+ */
+const UNRESOLVED_STANCE_PREFIXES_V0: readonly string[] = [
+  ...UNRESOLVED_INTENT_PREFIXES_V0,
+  "choose an option",
+  "select an option"
+];
+
+export function validateSubjectiveChoiceV0(
+  value: unknown
+): { ok: true; choice: SubjectiveChoiceV0 } | { ok: false; detail: string } {
+  const detail = "subjective_choice";
+  if (!isRecord(value)) return { ok: false, detail: `${detail}: expected object` };
+  const keyFailure = exactClosedKeys(value, SUBJECTIVE_CHOICE_KEYS, detail);
+  if (keyFailure !== null) return { ok: false, detail: keyFailure };
+  const textCheck = validateCanonicalText(value["stance"], `${detail}.stance`);
+  if (!textCheck.ok) return { ok: false, detail: textCheck.error.detail };
+  const stance = textCheck.value;
+  if (stance.trim().length === 0) return { ok: false, detail: `${detail}.stance: must be non-empty` };
+  if ([...stance].length > SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0) {
+    return { ok: false, detail: `${detail}.stance: exceeds ${SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0} code points` };
+  }
+  const normalized = stance.trim().toLocaleUpperCase("en-US");
+  if (DIRECTIVE_ENUM_TOKENS_V0.includes(normalized)) {
+    return { ok: false, detail: `${detail}.stance: directive enum echo is not a subject choice` };
+  }
+  const lowered = stance.trim().toLocaleLowerCase("en-US");
+  if (UNRESOLVED_STANCE_PREFIXES_V0.some((prefix) => lowered.startsWith(prefix))) {
+    return { ok: false, detail: `${detail}.stance: states no selected choice` };
+  }
+  return { ok: true, choice: Object.freeze({ stance }) };
+}
+
+/**
+ * CognitionProposalV0 keys minus `projection_hash`: for V4 the model proposes
+ * SEMANTICS ONLY. The authoritative projection hash is host-bound from the exact
+ * in-flight invocation and injected by the host before the frozen
+ * CognitionProposalV0 validator runs, so a model that echoes (or mis-formats)
+ * integrity metadata can no longer fail or forge the turn.
+ */
+export const COGNITION_SEMANTIC_KEYS_V0: readonly string[] = [
+  "schema_version",
+  "reasoning_summary",
+  "relevant_memory_refs",
+  "considered_context_refs",
+  "current_intent",
+  "confidence",
+  "uncertainty",
+  "action_intent",
+  "evidence_refs"
+];
+
+/**
+ * Strict C3 validation. `authoritativeProjectionHash` MUST come from the exact
+ * outstanding cognition invocation captured by the host before the call — never
+ * from the model output and never from a re-read of "the current" projection.
+ */
+export function validateConversationCognitionProposalV4(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): { ok: true; proposal: ConversationCognitionProposalV4 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const keyFailure = exactClosedKeys(value, OUTER_KEYS_V4, "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v4" };
+  }
+  const directiveCheck = validateCommunicationDirectiveV0(value["communication_directive"]);
+  if (!directiveCheck.ok) return { ok: false, detail: `conversation proposal.communication_directive: ${directiveCheck.detail}` };
+  const directive = directiveCheck.directive as CommunicationDirectiveV0;
+
+  // Model cognition = semantics only. A model-emitted projection_hash is an
+  // unknown key here and fails closed; the host injects the authoritative one.
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const cognitionKeyFailure = exactClosedKeys(cognitionValue, COGNITION_SEMANTIC_KEYS_V0, "conversation proposal.cognition");
+  if (cognitionKeyFailure !== null) return { ok: false, detail: cognitionKeyFailure };
+  const cognitionCheck = validateCognitionProposal({ ...cognitionValue, projection_hash: authoritativeProjectionHash });
+  if (!cognitionCheck.ok) return { ok: false, detail: `conversation proposal.cognition: ${cognitionCheck.error.detail}` };
+  const cognition = cognitionCheck.value as CognitionProposalV0;
+  if (cognition.action_intent !== null) {
+    return { ok: false, detail: "conversation proposal.cognition.action_intent: must be null for text-response path" };
+  }
+
+  const factualCheck = validateFactualAssessmentV0(value["factual_assessment"], projection, cognition);
+  if (!factualCheck.ok) return { ok: false, detail: `conversation proposal.${factualCheck.detail}` };
+
+  let subjectiveChoice: SubjectiveChoiceV0 | null = null;
+  if (value["subjective_choice"] !== null && value["subjective_choice"] !== undefined) {
+    const choiceCheck = validateSubjectiveChoiceV0(value["subjective_choice"]);
+    if (!choiceCheck.ok) return { ok: false, detail: `conversation proposal.${choiceCheck.detail}` };
+    subjectiveChoice = choiceCheck.choice;
+  }
+
+  let clarificationBasis: ClarificationBasisV0 | null = null;
+  if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
+    // Nothing is selected while clarifying.
+    if (subjectiveChoice !== null) {
+      return { ok: false, detail: "conversation proposal.subjective_choice: CLARIFY requires exactly null" };
+    }
+    if (value["clarification_basis"] === null || value["clarification_basis"] === undefined) {
+      return { ok: false, detail: "conversation proposal.clarification_basis: CLARIFY requires a non-null basis" };
+    }
+    const basisCheck = validateClarificationBasisV0(value["clarification_basis"], projection);
+    if (!basisCheck.ok) return { ok: false, detail: `conversation proposal.${basisCheck.detail}` };
+    if (!cognition.considered_context_refs.includes(basisCheck.basis.current_observation_ref)) {
+      return {
+        ok: false,
+        detail: "conversation proposal.clarification_basis.current_observation_ref: must appear in considered_context_refs"
+      };
+    }
+    clarificationBasis = basisCheck.basis;
+  } else if (value["clarification_basis"] !== null) {
+    return { ok: false, detail: "conversation proposal.clarification_basis: REALIZE requires exactly null" };
+  }
+
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4,
+      factual_assessment: factualCheck.assessment,
+      cognition,
+      subjective_choice: subjectiveChoice,
+      communication_directive: directive,
+      clarification_basis: clarificationBasis
+    })
+  };
+}
+
+/** Distinct C3 hash domain covering every V4 field, including both nulls. */
+export async function deriveConversationCognitionProposalHashV4(
+  proposal: ConversationCognitionProposalV4
+): Promise<HashV1> {
+  return hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V4, {
+    schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4,
+    factual_assessment: proposal.factual_assessment,
+    cognition: proposal.cognition,
+    subjective_choice: proposal.subjective_choice,
+    communication_directive: proposal.communication_directive,
+    clarification_basis: proposal.clarification_basis
+  });
+}
+
+/**
+ * Revalidates an ALREADY host-bound V4 proposal (the value produced by the V4
+ * provider, whose `cognition.projection_hash` was injected by the host). Used by
+ * downstream derivation boundaries (Language V5) so a validated proposal can be
+ * re-checked without pretending it is the raw model shape. The declared hash
+ * MUST equal the authoritative projection hash, so a swapped proposal fails closed.
+ */
+export function validateHostBoundConversationCognitionProposalV4(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): { ok: true; proposal: ConversationCognitionProposalV4 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const cognition = value["cognition"];
+  if (!isRecord(cognition)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const declared = cognition["projection_hash"];
+  if (typeof declared !== "string" || declared !== projection.projection_hash) {
+    return {
+      ok: false,
+      detail: "conversation proposal.cognition.projection_hash: does not match the authoritative projection binding"
+    };
+  }
+  const { projection_hash: _ignored, ...semanticCognition } = cognition as Record<string, unknown>;
+  void _ignored;
+  return validateConversationCognitionProposalV4(
+    { ...(value as Record<string, unknown>), cognition: semanticCognition },
+    projection,
+    projection.projection_hash
+  );
+}

@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  CONVERSATION_COGNITION_SYSTEM_PROMPT_V3,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V4,
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportV0
@@ -45,16 +45,16 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((m) => m.role === "user")?.content ?? "";
-      const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       const selected = mode();
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v3",
+          schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
-            projection_hash: projectionHash,
+
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
             considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
@@ -301,7 +301,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     await host.send("Hello there.");
     const request = recorder.requests[0];
     expect(request?.messages).toHaveLength(2);
-    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V3);
+    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V4);
     const userContent = request?.messages[1]?.content ?? "";
     expect(userContent).toContain(`[identity] subject_id="${config.subject_id}"`);
     expect(userContent).not.toContain("Alice");

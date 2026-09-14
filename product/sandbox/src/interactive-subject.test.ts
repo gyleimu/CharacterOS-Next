@@ -35,7 +35,6 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((m) => m.role === "user")?.content ?? "";
-      const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       const selected = mode();
       if (selected === "MALFORMED") return { content: "{ not json", model: "fake" } as ModelTransportResponseV0;
@@ -47,11 +46,12 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       }
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v3",
+          schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
-            projection_hash: projectionHash,
+
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
             considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],

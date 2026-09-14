@@ -73,15 +73,15 @@ function cognitionTransport(recorder: TransportRecorder): ModelTransportV0 {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v3",
+          schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
-            projection_hash: projectionHash,
+
             reasoning_summary: "offline cognition",
             relevant_memory_refs: [],
             considered_context_refs: [observationRef],

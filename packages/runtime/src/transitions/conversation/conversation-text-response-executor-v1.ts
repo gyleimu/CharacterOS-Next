@@ -27,15 +27,15 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
-import { ConversationCognitionProviderV3 } from "../../providers/behavior/conversation-cognition-provider-v3.js";
+import { ConversationCognitionProviderV4 } from "../../providers/behavior/conversation-cognition-provider-v4.js";
 import {
-  deriveConversationCognitionProposalHashV3,
+  deriveConversationCognitionProposalHashV4,
   type ClarificationBasisV0,
-  type ConversationCognitionProposalV3
+  type ConversationCognitionProposalV4
 } from "./conversation-cognition-proposal.js";
 import {
   buildLanguageRealizationInputV1,
-  buildLanguageRealizationInputV4,
+  buildLanguageRealizationInputV5,
   type LanguageEpisodeContentV0
 } from "./language-realization-input.js";
 
@@ -55,15 +55,22 @@ export interface ConversationResponseTraceV1 {
   readonly communication_directive_kind: string;
   readonly conversation_cognition_proposal_hash: string;
   /**
-   * AFFECT_COGNITION_AUTHORITY_CONTRACT_AND_REVALIDATION_V0 — protocol lineage.
-   * V2 is the Family C contract: CLARIFY carries a structural basis, REALIZE
-   * requires exactly `clarification_basis: null`.
+   * AFFECT_COGNITION_C3_REVALIDATION_V0 — protocol lineage. V4 is the Family C3
+   * contract: an explicit turn-local subjective choice, with the projection
+   * identity host-bound outside model output.
    */
   readonly conversation_proposal_schema_version?:
     | "conversation-cognition-proposal-v1"
     | "conversation-cognition-proposal-v2"
-    | "conversation-cognition-proposal-v3";
+    | "conversation-cognition-proposal-v3"
+    | "conversation-cognition-proposal-v4";
   readonly clarification_basis?: ClarificationBasisV0 | null;
+  /**
+   * C3 diagnostic only: the selected turn-local subject choice (null when the
+   * turn required none). `cognition.current_intent` is descriptive and is NEVER
+   * the choice authority.
+   */
+  readonly subjective_choice?: { readonly stance: string } | null;
   readonly cognition_projection_hash: string;
   readonly realization_input_hash: string;
   readonly realization_source: RealizationSourceV0;
@@ -172,9 +179,9 @@ export class ConversationTextResponseExecutorV1 {
       } as unknown as RuntimeContext;
     })());
 
-    // ---- shared cognition pipeline; current canonical projections use C2 V3 -------
+    // ---- shared cognition pipeline; current canonical projections use C3 V4 -------
     const legacyConversationProvider = new ConversationCognitionProviderV2(conversationTransport);
-    const c2ConversationProvider = new ConversationCognitionProviderV3(conversationTransport);
+    const c2ConversationProvider = new ConversationCognitionProviderV4(conversationTransport);
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = projection.schema_version === "cognitive-context-projection-v2"
@@ -259,18 +266,18 @@ export class ConversationTextResponseExecutorV1 {
     const clarificationBasis = conversationProposal.clarification_basis;
     const evidenceProjection = cognitionResult.projection;
     // Version-appropriate protocol hash domain. The v4 canonical surface binds
-    // the V2 proposal (cognition + directive + clarification_basis, explicitly
-    // null for REALIZE); the frozen v3 surface keeps its historical V1 domain
-    // and null-intent language handoff.
+    // the V4 proposal (facts + descriptive cognition + subjective choice +
+    // directive + clarification_basis, explicitly null where absent); the frozen
+    // v3 surface keeps its historical V1 domain and null-intent language handoff.
     const conversationProposalHash = isV2Projection
-      ? await deriveConversationCognitionProposalHashV3(conversationProposal as ConversationCognitionProposalV3)
+      ? await deriveConversationCognitionProposalHashV4(conversationProposal as ConversationCognitionProposalV4)
       : await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
           schema_version: "conversation-cognition-proposal-v1",
           cognition: cognitionResult.cognition,
           communication_directive: directive
         });
     const proposalSchemaVersion = isV2Projection
-      ? ("conversation-cognition-proposal-v3" as const)
+      ? ("conversation-cognition-proposal-v4" as const)
       : ("conversation-cognition-proposal-v1" as const);
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
@@ -285,7 +292,7 @@ export class ConversationTextResponseExecutorV1 {
       requestId.value,
       evidenceProjection,
       cognitionResult.cognition,
-      isV2Projection ? conversationProposal as ConversationCognitionProposalV3 : null,
+      isV2Projection ? conversationProposal as ConversationCognitionProposalV4 : null,
       conversationProposalHash,
       proposalSchemaVersion,
       directive,
@@ -300,7 +307,7 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4",
     clarificationBasis: ClarificationBasisV0,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
@@ -336,6 +343,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: clarificationBasis,
+        subjective_choice: null,
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "HOST_CLARIFICATION_V0"
@@ -349,9 +357,9 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     cognition: CognitionProposalV0,
-    c2Proposal: ConversationCognitionProposalV3 | null,
+    c2Proposal: ConversationCognitionProposalV4 | null,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4",
     directive: CommunicationDirectiveV0,
     lawfulEvidence: ReadonlySet<string>,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
@@ -387,7 +395,7 @@ export class ConversationTextResponseExecutorV1 {
           communication_directive: directive,
           memory_episode_contents: episodeContents
         })
-      : await buildLanguageRealizationInputV4({
+      : await buildLanguageRealizationInputV5({
           subject_id: snapshot.identity.subject_id,
           source_revision: sourceRevision as never,
           response_request_id: requestId,
@@ -440,6 +448,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: null,
+        subjective_choice: c2Proposal?.subjective_choice ?? null,
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "LANGUAGE_PROVIDER_V0"

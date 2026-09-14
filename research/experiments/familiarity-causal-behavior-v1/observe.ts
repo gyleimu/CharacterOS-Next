@@ -38,9 +38,9 @@ export interface Observation {
   source: { subject_id: string; state_revision: number; canonical_head: unknown; repository_binding: unknown };
   projection: CognitiveContextProjectionV0 | null;
   validated_cognition: CognitionProposalV0 | null;
-  // C2 added LanguageRealizationInputV4 (host-bound shape) to the union; this
+  // C2 added LanguageRealizationInputV4 (host-bound shape) and C3 added V5; this
   // frozen experiment consumes the historical structured language input only.
-  language: { input: Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" }>; input_hash: string; lawful_evidence_refs: string[] } | null;
+  language: { input: Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" }>; input_hash: string; lawful_evidence_refs: string[] } | null;
   validated_draft: LanguageRealizationDraftV0 | null;
   cognition_stage: StageTrace;
   language_stage: StageTrace;
@@ -139,7 +139,7 @@ export async function observeResponse(world: World, transports: { cognition: Mod
     const realize = provider.realize.bind(provider);
     // Decorate the production-created instance, not a replacement provider.
     provider.realize = async request => {
-      o.language = { input: structuredClone(request.input) as Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" }>, input_hash: request.input_hash,
+      o.language = { input: structuredClone(request.input) as Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" }>, input_hash: request.input_hash,
         lawful_evidence_refs: [...request.lawful_evidence_refs].sort() };
       await save("language-input", o.language);
       try {

@@ -69,14 +69,14 @@ function cognitionTransport(mode: CognitionMode): ModelTransportV0 {
         throw new ModelTransportErrorV0("MODEL_CONNECTION_FAILURE", null, "connect ECONNREFUSED 127.0.0.1:11434");
       }
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-      const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v3",
+          schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
-            projection_hash: projectionHash,
+
             reasoning_summary: "offline",
             relevant_memory_refs: [],
             considered_context_refs: [],

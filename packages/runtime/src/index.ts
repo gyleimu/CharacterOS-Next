@@ -1010,6 +1010,27 @@ export {
   type FactualAssessmentClaimKindV0
 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
+  ConversationCognitionProviderV4,
+  ConversationCognitionRejectionErrorV4,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V4,
+  CONVERSATION_COGNITION_PROPOSAL_V4_JSON_SCHEMA,
+  COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V0,
+  COGNITION_INVOCATION_BINDING_HASH_PROJECTION_V0,
+  deriveCognitionInvocationBindingHashV0,
+  type CognitionInvocationBindingV0
+} from "./providers/behavior/conversation-cognition-provider-v4.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V4,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V4,
+  SUBJECTIVE_CHOICE_STANCE_MAX_CODE_POINTS_V0,
+  COGNITION_SEMANTIC_KEYS_V0,
+  validateConversationCognitionProposalV4,
+  deriveConversationCognitionProposalHashV4,
+  validateSubjectiveChoiceV0,
+  type ConversationCognitionProposalV4,
+  type SubjectiveChoiceV0
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
   LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V4,
   LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V4,
   validateLanguageRealizationInputAnyVersion,
@@ -1017,6 +1038,14 @@ export {
   type LanguageRealizationInputV4,
   type BuildLanguageRealizationInputV4Request,
   type BuildLanguageRealizationInputV4Result
+} from "./transitions/conversation/language-realization-input.js";
+export {
+  LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V5,
+  LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V5,
+  type LanguageRealizationInputV5,
+  type LanguageCommunicationBindingV4,
+  type BuildLanguageRealizationInputV5Request,
+  type BuildLanguageRealizationInputV5Result
 } from "./transitions/conversation/language-realization-input.js";
 export {
   LANGUAGE_REALIZATION_SYSTEM_PROMPT_V1,

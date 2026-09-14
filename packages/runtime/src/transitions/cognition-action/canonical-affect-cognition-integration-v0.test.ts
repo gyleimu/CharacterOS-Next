@@ -476,11 +476,12 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v3",
+          schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: cognitionIntent === null ? null : { stance: cognitionIntent },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
-            projection_hash: projectionHash,
+
             reasoning_summary: "deterministic provider seam summary",
             relevant_memory_refs: [],
             considered_context_refs: [],
@@ -499,11 +500,12 @@ async function executeDownstreamProof(
     complete: async (request) => {
       languageRequests.push(request);
       const input = inputObjectFromLanguageRequest(request);
+      const choice = input["selected_subjective_choice"] as { readonly stance?: string } | null;
       return {
         model: "fake-language-realizer",
         content: JSON.stringify({
           schema_version: "language-realization-semantic-draft-v1",
-          text: `deterministic behavior: ${String(input["selected_current_intent"])}`,
+          text: `deterministic behavior: ${String(choice?.stance ?? null)}`,
           evidence_refs: []
         })
       };
@@ -926,7 +928,7 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — north-star two-subject p
 // ----------------------------------------------------------------------------------
 
 describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETERMINISTIC_INTEGRATION_PROOF", () => {
-  it("lawful history → Affect → selected cognition intent → V4 input → distinct existing behavior artifacts", async () => {
+  it("lawful history → Affect → explicit subjective choice → V5 input → distinct existing behavior artifacts", async () => {
     const worldA = await buildWorld();
     const aPrior = await admitEvent(worldA, "evt-downstream-prior", "重做一下。");
     worldA.dimensionOverrides.set(aPrior.eventRef, { relevance: 1, goal_congruence: 1, intensity: 1 });
@@ -958,11 +960,12 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultB.result.kind).toBe("OUTPUT_READY");
     if (resultA.result.kind !== "OUTPUT_READY" || resultB.result.kind !== "OUTPUT_READY") return;
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
-    expect(resultA.language_input["selected_current_intent"]).toBe(resultA.cognition_intent);
-    expect(resultB.language_input["selected_current_intent"]).toBe(resultB.cognition_intent);
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v4");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v4");
+    expect(resultA.language_input["selected_subjective_choice"]).toEqual({ stance: resultA.cognition_intent });
+    expect(resultB.language_input["selected_subjective_choice"]).toEqual({ stance: resultB.cognition_intent });
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v5");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v5");
     for (const input of [resultA.language_input, resultB.language_input]) {
+      expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
       expect(input).not.toHaveProperty("affect_channels");
       expect(input).not.toHaveProperty("mood_baseline");
@@ -982,15 +985,15 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultA.result.trace.realization_source).toBe("LANGUAGE_PROVIDER_V0");
   });
 
-  it("explicit C2 preserves an already-selected conditional intent without re-choosing it", async () => {
+  it("explicit C3 carries an already-selected conditional stance without re-choosing it", async () => {
     const world = await buildWorld();
     await admitAppraiseApply(world, "evt-downstream-null", "现在感觉怎么样？");
     const selected = "I will answer if the current conditions remain unchanged.";
     const result = await executeDownstreamProof(world, () => selected, "response-downstream-selected");
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
-    expect(result.language_input["selected_current_intent"]).toBe(selected);
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v4");
+    expect(result.language_input["selected_subjective_choice"]).toEqual({ stance: selected });
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v5");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1007,11 +1010,12 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v3",
+            schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
             factual_assessment: { claims: [] },
             cognition: {
               schema_version: "cognition-proposal-v0",
-              projection_hash: projectionHash,
+
               reasoning_summary: "clarification is required",
               relevant_memory_refs: [],
               considered_context_refs: [observationRef],

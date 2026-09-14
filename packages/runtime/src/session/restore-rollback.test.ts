@@ -37,13 +37,13 @@ function appraisal(): FactualEventAppraisalProviderV0 {
 const cognitionTransport: ModelTransportV0 = {
   complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
     const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-    const projectionHash = /\[projection_hash\]\s+(\S+)/.exec(user)?.[1] ?? "";
     const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
     return {
       content: JSON.stringify({
-        schema_version: "conversation-cognition-proposal-v3",
+        schema_version: "conversation-cognition-proposal-v4",
+          subjective_choice: null,
         factual_assessment: { claims: [] },
-        cognition: { schema_version: "cognition-proposal-v0", projection_hash: projectionHash, reasoning_summary: "x", relevant_memory_refs: [], considered_context_refs: [observationRef], current_intent: "respond", confidence: 0.7, uncertainty: 0.3, action_intent: null, evidence_refs: [] },
+        cognition: { schema_version: "cognition-proposal-v0",  reasoning_summary: "x", relevant_memory_refs: [], considered_context_refs: [observationRef], current_intent: "respond", confidence: 0.7, uncertainty: 0.3, action_intent: null, evidence_refs: [] },
         communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
       , clarification_basis: String("CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),
       model: "fake"
