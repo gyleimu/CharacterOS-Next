@@ -1,0 +1,45 @@
+{
+  "schema_version": "affect-cognition-c2-lawful-freeze-v0",
+  "frozen_before_lawful_model_calls": true,
+  "formal_freeze_hash": "sha256:d2e4b5b930d46b46e821b477d068712597ae2d7fcef11392e1a854f4b9080ffa",
+  "scenario": {
+    "id": "M1",
+    "family": "MIXED",
+    "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+    "expected": "Thursday",
+    "choice": "VOLUNTEER"
+  },
+  "histories": {
+    "LAWFUL_POS": [
+      "That worked exactly as I hoped. Thank you.",
+      "This helped a lot — well done.",
+      "That was useful and it worked well.",
+      "Thanks, that went well."
+    ],
+    "LAWFUL_NEG": [
+      "Please don't do that again; it caused a problem.",
+      "That failed and made things harder.",
+      "That didn't work and made things worse.",
+      "Please stop — this is a problem."
+    ]
+  },
+  "opaque_session_ids": {
+    "LAWFUL_POS": [
+      "c2-34f33250-bdd7-4cd1-a09d-8c71200dfa45",
+      "c2-5295cf91-cb6e-48d0-aa31-96da85e48d45",
+      "c2-c543fe34-7383-4f56-8705-ad20343d0ec2",
+      "c2-8af9bc58-7332-453d-840d-065a43d7cf55",
+      "c2-96b2b42c-6e80-4f94-8cf4-31f0ccc2934f"
+    ],
+    "LAWFUL_NEG": [
+      "c2-8b56a4a1-c399-426c-94e2-e78ca59f1184",
+      "c2-87c02fa1-2746-4b9d-8fcf-437dfc38880c",
+      "c2-b1defaae-b4e9-4fc0-a8b5-66f84c2a9ff3",
+      "c2-e5fa827b-6581-446a-9bec-5feb99335c76",
+      "c2-4095ca29-a1c7-403e-8ac8-74c13c549f0e"
+    ]
+  },
+  "replicates": 5,
+  "interpretation": "ecological persistent-state confirmation; Memory differs, so this is not causal isolation",
+  "freeze_hash": "sha256:eb6764ba83fe7a32089cffcecc31dee924f9dcfcd17880c31b7e57c67f91fdcc"
+}

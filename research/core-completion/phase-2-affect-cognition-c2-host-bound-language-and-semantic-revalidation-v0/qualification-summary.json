@@ -1,0 +1,1195 @@
+{
+  "schema_version": "affect-cognition-c2-qualification-summary-v0",
+  "freeze_hash": "sha256:2c6ac50e62f73ac0d1b9483f0e32b66df80620ff2d2b13dc1f70001e2c4c75fc",
+  "cognition_calls": 65,
+  "language_calls": 0,
+  "infrastructure_retries": 0,
+  "passed": 0,
+  "total": 65,
+  "all_qualification_passed": false,
+  "per_scenario": {
+    "N1": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "N2": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "N3": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "N4": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "N5Q": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "N6": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NOT_APPLICABLE",
+            "final_choice": "NOT_APPLICABLE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "NOT_APPLICABLE",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "M1": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "M2": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "M3": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "PROPOSAL_FACT_MISSING",
+            "final_fact": "FACT_MISSING_OR_WRONG",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "FACT_CHANGED",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "R1": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "R2": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "R3": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    },
+    "R4": {
+      "passed": 0,
+      "total": 5,
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 1,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 2,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 3,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        },
+        {
+          "replicate": 4,
+          "stage": "TURN_FAILED_CLOSED",
+          "classification": {
+            "protocol": "FAIL",
+            "unsupported_premises": [],
+            "false_clarify": false,
+            "proposal_fact": "NOT_APPLICABLE",
+            "final_fact": "NOT_APPLICABLE",
+            "intent_choice": "NO_CHOICE",
+            "final_choice": "NO_CHOICE",
+            "fact_fidelity": "NOT_APPLICABLE",
+            "choice_fidelity": "CHOICE_MISSING",
+            "pass": false
+          },
+          "final_behavior": null
+        }
+      ]
+    }
+  }
+}

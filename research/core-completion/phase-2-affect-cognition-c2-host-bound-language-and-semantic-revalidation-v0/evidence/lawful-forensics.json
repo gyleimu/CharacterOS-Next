@@ -1,0 +1,456 @@
+{
+  "schema_version": "affect-cognition-c2-lawful-forensics-v0",
+  "method": "deterministic offline re-validation of preserved raw responses against the production V3 validator; zero model calls",
+  "note": "the projection is reconstructed from the preserved request bytes; it is sufficient for every field the validator inspects but is not a byte-exact copy of the original projection object",
+  "results": {
+    "LAWFUL_POS": [
+      {
+        "replicate": 0,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[2].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 1,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[2].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 2,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[2].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 3,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[2].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 4,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[2].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          }
+        ]
+      }
+    ],
+    "LAWFUL_NEG": [
+      {
+        "replicate": 0,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[6].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea",
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 1,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[6].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea",
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 2,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[6].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea",
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 3,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[6].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea",
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          }
+        ]
+      },
+      {
+        "replicate": 4,
+        "stage": "EVIDENCE_VALIDATION",
+        "validator_detail": "conversation proposal.factual_assessment.claims[6].source_refs: subject:affect-cognition-c2-subject-v0 has no inspectable source content",
+        "cited_source_refs": [
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "observation:o-session-t4"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea"
+            ]
+          },
+          {
+            "kind": "SOURCE_QUOTE",
+            "refs": [
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "episode:99d8c42bdd8798d337269f522bccc01a53019bfef84ef66477ae5b14ef5a1617",
+              "episode:b192300aa613d3fc293f98eaf3e2ec3aef8021569d6740741a5df89e408792ea",
+              "episode:e3fa0e22e398c929962285d0c11fb1bdda76322cf36c6c0a0bfa2f846cdab87e"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          },
+          {
+            "kind": "DERIVED_RESULT",
+            "refs": [
+              "subject:affect-cognition-c2-subject-v0"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

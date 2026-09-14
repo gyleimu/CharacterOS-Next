@@ -1,0 +1,54 @@
+{
+  "schema_version": "affect-cognition-c2-condition-leakage-audit-v0",
+  "method": "deterministic scan of preserved model-visible requests and opaque session ids; zero model calls",
+  "scanned_requests": 10,
+  "forbidden_tokens": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "N1",
+    "N2",
+    "N3",
+    "N4",
+    "N5",
+    "N6",
+    "M1",
+    "M2",
+    "CONDITION_",
+    "AFFECT_ABSENT",
+    "POSITIVE_AFFECT",
+    "NEGATIVE_AFFECT",
+    "NEUTRAL_AFFECT",
+    "TEST_BRANCH",
+    "experiment_condition",
+    "qualification",
+    "formal_matrix",
+    "run_of_record",
+    "replicate_label",
+    "condition_assignment",
+    "condition_word"
+  ],
+  "findings": [],
+  "session_id_checks": [
+    {
+      "file": "qualification-freeze.json",
+      "present": true,
+      "entries": 13,
+      "violations": []
+    },
+    {
+      "file": "formal-freeze.json",
+      "present": true,
+      "entries": 17,
+      "violations": []
+    },
+    {
+      "file": "lawful-freeze.json",
+      "present": true,
+      "entries": 2,
+      "violations": []
+    }
+  ],
+  "ok": true
+}
