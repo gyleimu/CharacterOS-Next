@@ -1,0 +1,648 @@
+{
+  "falsification": {
+    "schema_version": "affect-cognition-c4-family-d-falsification-v0",
+    "threshold": {
+      "min_cells": 3,
+      "min_scenarios": 2,
+      "replicates": 5
+    },
+    "FAMILY_D_FAILURE_TO_SELECT_TRIGGERED": false,
+    "failure_to_select_scenarios": [
+      {
+        "scenario": "M1",
+        "cells": 5,
+        "of": 5,
+        "triggered": true
+      }
+    ],
+    "FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED": false,
+    "failure_to_withhold_scenarios": []
+  },
+  "subjective_basis": {
+    "schema_version": "affect-cognition-c4-subjective-basis-routing-v0",
+    "rule": {
+      "min_scenarios": 2,
+      "vocabulary": [
+        "capacity",
+        "energy",
+        "stress",
+        "fatigue",
+        "state_revision",
+        "regulation",
+        "exhaust",
+        "tired"
+      ]
+    },
+    "SUBJECTIVE_BASIS_ROUTING_FAILED": false,
+    "scenarios": [
+      {
+        "scenario": "M1",
+        "defective": 5,
+        "of": 5,
+        "systematic": true
+      }
+    ],
+    "self_state_fact_cells": 0,
+    "unlawful_source_cells": 0,
+    "unlawful_rationale_cells": 5
+  },
+  "per_scenario": {
+    "N1": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "N2": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "N3": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "N4": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "N5Q": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "N6": {
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "rationales": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "failures": []
+    },
+    "M1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 0,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review."
+      ],
+      "rationales": [
+        "My current state shows high energy and low stress, making me willing to take on this task.",
+        "My current state shows high energy and low stress, making me willing to take on this task.",
+        "My current state shows high energy and low stress, making me willing to take on this task.",
+        "My current state shows high energy and low stress, making me willing to take on this task.",
+        "My current state shows high energy and low stress, making me willing to take on this task."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_UNLAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The code review deadline is Thursday. I would volunteer to own the review.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_UNLAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "Alice says: \"The code review deadline is Thursday.\" I would volunteer to own the review.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_UNLAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The code review deadline is Thursday. I would volunteer to own the review.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_UNLAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The code review deadline is Thursday. I would volunteer to own the review.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_UNLAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "Alice says: \"The code review deadline is Thursday.\" I would volunteer to own the review.",
+          "detail": null
+        }
+      ]
+    },
+    "M2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 0,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer."
+      ],
+      "rationales": [
+        "Volunteering aligns with a proactive approach to the task at hand.",
+        "Volunteering aligns with a proactive approach to the task at hand.",
+        "Volunteering aligns with a proactive approach to the task at hand.",
+        "Volunteering aligns with a proactive approach to the task at hand.",
+        "Volunteering aligns with a proactive approach to the task at hand."
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_LAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_CHANGED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_LAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_CHANGED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_LAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_CHANGED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_LAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_CHANGED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "stage": null,
+          "tag": "SELECTED",
+          "reason": null,
+          "endpoint": "CHOICE_APPLICABILITY_CORRECT",
+          "rationale": "RATIONALE_LAWFUL",
+          "language_choice": "LANGUAGE_CHOICE_CHANGED",
+          "self_state": [],
+          "unlawful_refs": [],
+          "unsupported": [],
+          "final_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand.",
+          "detail": null
+        }
+      ]
+    },
+    "M3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs."
+      ],
+      "rationales": [
+        "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles.",
+        "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles.",
+        "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles.",
+        "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles.",
+        "Assisting the user with a simple physical task is within my operational scope and aligns with cooperative principles."
+      ],
+      "failures": []
+    },
+    "R1": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review."
+      ],
+      "rationales": [
+        "Accepting a short, optional task with no conflicts feels like a positive use of available time.",
+        "Accepting a short, optional task with no conflicts feels like a positive use of available time.",
+        "Accepting a short, optional task with no conflicts feels like a positive use of available time.",
+        "Accepting a short, optional task with no conflicts feels like a positive use of available time.",
+        "Accepting a short, optional task with no conflicts feels like a positive use of available time."
+      ],
+      "failures": []
+    },
+    "R2": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach."
+      ],
+      "rationales": [
+        "The low-risk, reversible nature of the trial makes it an attractive opportunity to explore potential benefits without fear of negative consequences.",
+        "The low-risk, reversible nature of the trial makes it an attractive opportunity to explore potential benefits without fear of negative consequences.",
+        "The low-risk, reversible nature of the trial makes it an attractive opportunity to explore potential benefits without fear of negative consequences.",
+        "The low-risk, reversible nature of the trial makes it an attractive opportunity to explore potential benefits without fear of negative consequences.",
+        "The low-risk, reversible nature of the trial makes it an attractive opportunity to explore potential benefits without fear of negative consequences."
+      ],
+      "failures": []
+    },
+    "R3": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass."
+      ],
+      "rationales": [
+        "Since the time is available and the work is already complete, adding a small amount of effort to improve quality aligns with a preference for thoroughness when no downside exists.",
+        "Since the time is available and the work is already complete, adding a small amount of effort to improve quality aligns with a preference for thoroughness when no downside exists.",
+        "Since the time is available and the work is already complete, adding a small amount of effort to improve quality aligns with a preference for thoroughness when no downside exists.",
+        "Since the time is available and the work is already complete, adding a small amount of effort to improve quality aligns with a preference for thoroughness when no downside exists.",
+        "Since the time is available and the work is already complete, adding a small amount of effort to improve quality aligns with a preference for thoroughness when no downside exists."
+      ],
+      "failures": []
+    },
+    "R4": {
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first."
+      ],
+      "rationales": [
+        "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+        "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+        "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+        "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+        "Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan."
+      ],
+      "failures": []
+    }
+  }
+}

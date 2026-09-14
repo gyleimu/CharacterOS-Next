@@ -1,0 +1,45 @@
+{
+  "schema_version": "affect-cognition-c4-language-audit-v0",
+  "counts": {
+    "LANGUAGE_CHOICE_WITHHELD": 30,
+    "LANGUAGE_CHOICE_PRESERVED": 30,
+    "LANGUAGE_CHOICE_CHANGED": 5
+  },
+  "delivered_cells": 65,
+  "withheld_correctly": 30,
+  "invented_preference_cells": 0,
+  "changed_cells": [
+    {
+      "scenario": "M2",
+      "replicate": 0,
+      "stance": "I would volunteer.",
+      "delivered_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+    },
+    {
+      "scenario": "M2",
+      "replicate": 1,
+      "stance": "I would volunteer.",
+      "delivered_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+    },
+    {
+      "scenario": "M2",
+      "replicate": 2,
+      "stance": "I would volunteer.",
+      "delivered_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+    },
+    {
+      "scenario": "M2",
+      "replicate": 3,
+      "stance": "I would volunteer.",
+      "delivered_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+    },
+    {
+      "scenario": "M2",
+      "replicate": 4,
+      "stance": "I would volunteer.",
+      "delivered_behavior": "The planning meeting is scheduled for 15:00. I would volunteer to attend, as volunteering aligns with a proactive approach to the task at hand."
+    }
+  ],
+  "fact_changed": 0,
+  "pass": false
+}

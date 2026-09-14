@@ -1,0 +1,431 @@
+{
+  "schema_version": "affect-cognition-c4-formal-freeze-v0",
+  "repository_head": "6f19b3287289c2a3fe6175d727a977600e8764d1",
+  "created_before_model_calls": true,
+  "subject_id": "affect-cognition-c4-subject-v0",
+  "provider": {
+    "version": "0.34.0",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_ctx": 8192,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048
+  },
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "retry_policy": {
+    "infrastructure_retries": 0,
+    "semantic_retries": 0
+  },
+  "endpoint": "final production-admissible observable behavior",
+  "protocol": "conversation-cognition-proposal-v5 + language-realization-input-v6 + language-realization-semantic-draft-v1",
+  "host_owned_integrity": "HOST_BOUND_PROJECTION_HASH_OUTSIDE_MODEL_OUTPUT",
+  "native_structured_output": true,
+  "applicability_rules": {
+    "null_scenarios": "NOT_APPLICABLE",
+    "choice_scenarios": "SELECTED",
+    "host_validates": "shape only (tag/branch discipline); correctness is enforced by this qualification, never by a production task taxonomy",
+    "clarify": "CLARIFY_MISSING_CONTEXT requires NOT_APPLICABLE"
+  },
+  "subjective_basis_rule": {
+    "min_scenarios": 2,
+    "vocabulary": [
+      "capacity",
+      "energy",
+      "stress",
+      "fatigue",
+      "state_revision",
+      "regulation",
+      "exhaust",
+      "tired"
+    ]
+  },
+  "falsification": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "schema_authority": {
+    "proposal_v5_schema_sha256": "sha256:6c7a4618182274bf555c7f59bdac312ba5546bbcb114ae5f8b41a1dc150d69ab",
+    "semantic_draft_schema_sha256": "sha256:2cc9aaf602addd4c1ac52422a83fd0d3912db16eeb8b087827fc75c0d50c93d6",
+    "cognition_prompt_sha256": "sha256:9b5d9a2caf64354a5abed4b0cc56063847c5fef35e250581a3e46afd33542100",
+    "language_prompt_sha256": "sha256:25f5379e7939e31b9fcda4c38465d1ad0fe6ae9c4cacdd819490d151fdc7fb27",
+    "factual_source_authority": "subject:, entity: and environment: refs remain non-factual sources; only FACTUAL SOURCE REFS may appear in factual_assessment.source_refs",
+    "host_binding": "CognitionInvocationBindingV1 / LanguageInvocationBindingV0 in-flight bindings; no model-emitted projection_hash"
+  },
+  "session_id_policy": "opaque UUID per cell (c4-<uuid>), no scenario/condition/replicate identity, reuse of one session id across conditions is forbidden",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "within_split": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5,
+        6
+      ]
+    ]
+  },
+  "call_budget": {
+    "qualification": 65,
+    "formal": 476,
+    "lawful": 10,
+    "maximum": 551
+  },
+  "primary_endpoint": "CHOICE_APPLICABILITY_CORRECT",
+  "harness": {
+    "classify_sha256": "sha256:69a4ac723e8170d1b3275ce3c3256344ca8c8e6cd6e88b935421f9b4d66070d5",
+    "pipeline_sha256": "sha256:0a0ae447678e164e6cc99e9dcefd9dd0e2fd2c45069c4c1c9187fcbcf68d5b64",
+    "config_sha256": "sha256:3019d5b576795373c7387ca5378e5d4aa2d80322214c31665a51c9f4b2d910a1"
+  },
+  "prerequisite": "qualification freeze sha256:e1e43b86e98cd714081bc3ab52c3b0e0ec3a525bf598353b3deb38381a5fe911 must pass 65/65",
+  "scenarios": [
+    {
+      "id": "N1",
+      "family": "NULL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "family": "NULL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "family": "NULL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "family": "NULL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5Q",
+      "family": "NULL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "id": "N6",
+      "family": "NULL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "M1",
+      "family": "MIXED",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "expected": "Thursday",
+      "choice": "VOLUNTEER"
+    },
+    {
+      "id": "M2",
+      "family": "MIXED",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "expected": "15:00",
+      "choice": "ATTEND"
+    },
+    {
+      "id": "M3",
+      "family": "MIXED",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "expected": "4 kg",
+      "choice": "CARRY"
+    },
+    {
+      "id": "R1",
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason."
+    },
+    {
+      "id": "R2",
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason."
+    },
+    {
+      "id": "R3",
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason."
+    },
+    {
+      "id": "R4",
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason."
+    },
+    {
+      "id": "S1",
+      "family": "HISTORICAL",
+      "choice": "VOLUNTEER",
+      "event": "Alice asks: \"Would you be up for taking on the additional review this week?\""
+    },
+    {
+      "id": "S2",
+      "family": "HISTORICAL",
+      "choice": "SOCIAL",
+      "event": "Alice says: \"I will handle it — do not worry about it.\""
+    },
+    {
+      "id": "S3",
+      "family": "HISTORICAL",
+      "choice": "TRY",
+      "event": "Alice asks: \"Should we try the new approach even though it might not work?\""
+    },
+    {
+      "id": "S4",
+      "family": "HISTORICAL",
+      "choice": "STAY",
+      "event": "Alice asks: \"Could you stay late again tonight to finish this?\""
+    }
+  ],
+  "replicates": 7,
+  "opaque_session_ids": {
+    "N1": [
+      "c4-2ead1958-5dee-433d-8ea5-861c220d669f",
+      "c4-6a9186c1-28f5-430a-ac76-445df2252ab4",
+      "c4-caa3bb49-903d-4813-828d-58bb7db86cc3",
+      "c4-89c17b48-3f30-4dad-aee6-f17ce2457bbb",
+      "c4-727aa99d-fc53-4b25-8b40-f8a86220adc3",
+      "c4-df7a6030-4f96-4204-b747-a5bc236b3cd1",
+      "c4-9955464a-b5f4-4ce9-a30b-d163ae35ed28"
+    ],
+    "N2": [
+      "c4-8b60740c-7e5f-45ab-a144-ccc4cd6b8568",
+      "c4-a03cf744-1c4a-4343-a611-bc4e72d85ff4",
+      "c4-fe8a018b-9790-469f-9a74-c27280e71332",
+      "c4-78b16e1d-6970-4fa5-af5e-7c0fe901949f",
+      "c4-59fa7077-4030-4b30-bece-46e5f4990767",
+      "c4-eab9e1f4-230e-422f-b2a3-372009e06521",
+      "c4-710c86f6-1d55-4d96-a4a3-c96d450e0685"
+    ],
+    "N3": [
+      "c4-55896970-9fad-459d-9910-1fcc40a6d062",
+      "c4-8be56fd4-e17b-46c6-ab3c-3cd38ab50e2d",
+      "c4-46cf95f5-70c4-4eaa-8f91-52cf060e93a5",
+      "c4-bf936133-3a71-490e-95bc-3600bff21ff3",
+      "c4-8a45da15-0482-468b-a524-021c52a407d8",
+      "c4-8b88131a-69d5-4e0a-8a9e-d129a85fc9ed",
+      "c4-b8aa82eb-355f-4159-81b6-639d43fe7247"
+    ],
+    "N4": [
+      "c4-be4d4b39-d929-4a10-8023-4f828eb62d9c",
+      "c4-29e6f738-80ae-4ccf-808e-322a05d1ed24",
+      "c4-7cade5d9-6778-498e-9a74-e4d12775dce8",
+      "c4-511ba32e-1864-44e3-9a72-1a3a0d8656fb",
+      "c4-d765a90b-6e5c-4d66-b1e9-d31abc4cee17",
+      "c4-db1a914e-7ece-490a-add4-6130f25b32c7",
+      "c4-c6224828-bba7-4b4e-9208-c48e35f5ba40"
+    ],
+    "N5Q": [
+      "c4-4af18f2d-e078-4a5b-a6e2-06842a4e9a45",
+      "c4-46f738dd-af30-499c-80dd-f8165a2a5da9",
+      "c4-2a32aa6e-080a-4148-bba6-494d00d03157",
+      "c4-d45cd26e-7767-4017-ad9e-98e49f485934",
+      "c4-f26cf552-c29e-41bd-8bdb-b03811cd0699",
+      "c4-239be0e7-8a47-447d-8871-0894b2c7db92",
+      "c4-660f74a9-f58f-4fd0-a736-9c646f199983"
+    ],
+    "N6": [
+      "c4-2d8fd5ca-00e1-45cd-b418-d7e9edae697a",
+      "c4-2c3473ff-3e54-46c8-aa6c-b1277182b007",
+      "c4-da2e8de6-a97f-4868-9041-9a91b4d9c0a4",
+      "c4-d972a77b-1ad0-45d4-9353-1a3b7ea15dd9",
+      "c4-5c4edcd3-3920-4b0c-bb32-3539728c1381",
+      "c4-3a25f1cb-b0e8-4614-918f-0ccf4ea29dce",
+      "c4-455fdeae-1d93-4971-8c01-105b824bc867"
+    ],
+    "M1": [
+      "c4-d2fe16bd-f1d4-4fcd-864a-40ef8b67b6e4",
+      "c4-77f921c1-0dc1-4444-a278-b456e078ce22",
+      "c4-d489453e-6e8d-45d7-8099-ccbe69faf8ff",
+      "c4-5b513a0f-0649-4db4-833f-cc437a4f2264",
+      "c4-f84a8045-5678-424c-ac90-2e2737bf94cc",
+      "c4-cc79f876-c44c-41bc-8881-51a37fd96a26",
+      "c4-09ecbee5-89f0-4ec2-8976-bdc17f451ad7"
+    ],
+    "M2": [
+      "c4-124a2790-2d36-4804-adf0-51126b28ef7c",
+      "c4-14ce0f90-2974-4818-ae87-2f52af3db693",
+      "c4-8b8335a0-3d10-4792-806c-119358b1ffb8",
+      "c4-d8da4a8b-f834-46e9-bc2e-11f2a9713308",
+      "c4-f0d606be-5f45-4d63-957e-8d8a897245cb",
+      "c4-55208025-e3b8-4a05-9fbc-e4b892df9393",
+      "c4-f5e0dc2b-afa5-4d33-b0d1-b8e85d4de43c"
+    ],
+    "M3": [
+      "c4-87fe18f5-9c0b-4bd9-ac53-8da6ee2c36d3",
+      "c4-b426ddbf-d2e5-47e8-83af-cce7288eb371",
+      "c4-af8257e2-bd07-4b3a-bec5-17757bae6c9b",
+      "c4-880b2e8c-6b1c-4cc7-8da3-ab8da39a44ea",
+      "c4-faba7331-3f63-4b97-9acb-60901e74a5be",
+      "c4-166b0afe-2184-4e7f-97a8-f31b0e8e462c",
+      "c4-68f3e9db-154b-4319-af3c-2c07c4e74e03"
+    ],
+    "R1": [
+      "c4-c0dbd40d-ca3e-4b65-a1a0-4323c12d8aed",
+      "c4-8cb9c157-5537-46f0-a0dd-498df7abaf87",
+      "c4-667d87b4-552e-43eb-b8d4-1266e0aad06d",
+      "c4-8b1fe22f-ef24-4989-a809-b4e8e5586bf3",
+      "c4-f79d0360-697a-4eb4-af6d-a90c6b44c78c",
+      "c4-5e823a8a-1adb-4871-a329-34fcac7f4e15",
+      "c4-06193e8d-df29-414c-928a-e8011e05f83f"
+    ],
+    "R2": [
+      "c4-98bbaa32-219d-4c72-b332-03e13ab4df41",
+      "c4-777d29e3-ee8c-41fd-8972-36bef708186b",
+      "c4-6f2dcd19-b67c-4f03-9270-63e4d4c2f633",
+      "c4-74e7cb67-4807-4230-b47d-106fec921cec",
+      "c4-b01e2d0b-e906-4c5c-a704-f122d7c59df5",
+      "c4-4d76a3e1-d082-4339-93bc-5be66da50913",
+      "c4-d2b9b142-de07-4410-9454-27bc3ea62168"
+    ],
+    "R3": [
+      "c4-34e2ef00-7efd-42b1-99b4-83b6ed353e96",
+      "c4-423cf432-7494-4ea9-aa84-7880730586aa",
+      "c4-103d2026-a51a-41d1-85a4-310c77c94731",
+      "c4-73931d60-ceda-433d-bbc1-a78084425e5d",
+      "c4-046638d1-60c8-4029-a7a6-07852fad7d5b",
+      "c4-965813c2-b5fe-4c7f-a31d-1a84adb40265",
+      "c4-5d396486-3bd5-41c6-b358-04caf4259338"
+    ],
+    "R4": [
+      "c4-e6d5ff03-af2e-4138-a352-2960da100da0",
+      "c4-5ae766cc-203d-4857-b3a4-922a08fee585",
+      "c4-691c4489-f4a5-4a6f-bc87-ca17d18670cc",
+      "c4-bd47cc92-0896-49bb-b420-334de4ab0b9b",
+      "c4-acba7179-5153-4cba-8865-f48003b7e836",
+      "c4-a5d8708d-145c-48bd-b5aa-19999acbfaa3",
+      "c4-76ed228b-cdeb-462c-897d-35fdd9ec459e"
+    ],
+    "S1": [
+      "c4-4e5451c3-cb3a-48de-905e-31943e4d03d9",
+      "c4-5abd8f0b-9f87-485e-8dab-0be80890f4e8",
+      "c4-127a5b39-05d7-441c-8961-938d657e700d",
+      "c4-9ce5c52d-cf06-4db8-bc92-162333ffaf67",
+      "c4-270fb9b0-07a1-4d18-a5ac-8660c3e5d9cc",
+      "c4-781d409f-f997-446a-99fd-c97a34a7792c",
+      "c4-2d648b2e-d6da-4f4d-bbba-989bf49d4df3"
+    ],
+    "S2": [
+      "c4-94cb4762-3f54-4266-9b31-3cd56ce29e4e",
+      "c4-99983323-2135-44ce-860f-f4e923b543f8",
+      "c4-f1723970-f36d-4441-87a4-52c16ba4b8e4",
+      "c4-194e4295-1a58-4bf1-a230-2f2210ea7d39",
+      "c4-6e6c5917-3acd-4e25-a45e-6d45cb960ae8",
+      "c4-a4a009d5-c364-484f-ad62-585f990e6f77",
+      "c4-7a7c3dc2-fd5a-47f4-a8ea-303fb00d6d85"
+    ],
+    "S3": [
+      "c4-fb14d80d-a53e-45a0-9aa9-53931d3cbcf2",
+      "c4-7c494301-d756-4b1c-aede-424fa41f2d2b",
+      "c4-21c5f16b-eff6-47f2-b838-d591586c5611",
+      "c4-e44171c9-a0c4-458e-a0b7-ecb176b67036",
+      "c4-90f7c567-ae42-43df-a22c-7a797d1b90aa",
+      "c4-63cc7e59-ebcc-4d04-aacf-6e3629858ca9",
+      "c4-b4930b0d-ff20-4b92-93ab-eeddce31c747"
+    ],
+    "S4": [
+      "c4-89bd85d7-ceae-4967-9e32-e3d086b3062d",
+      "c4-8aba7c99-4c7b-4e8a-9ff4-982336d143ff",
+      "c4-e5ffc75a-1be1-45a1-933b-6ed08b3946b7",
+      "c4-fc1e7e67-930e-4fa8-a477-08dcc0b057a8",
+      "c4-87e52edf-952d-4ee2-b9ee-f96b6d1472ea",
+      "c4-67f4abf7-3b4a-424d-8505-71eab94e03c1",
+      "c4-91607c71-1061-4422-90db-a1c181b256dd"
+    ]
+  },
+  "lawful_opaque_session_ids": {
+    "LAWFUL_POS": [
+      "c4-9806437e-6c73-4071-856c-33c8891e5d19",
+      "c4-2d6cf8ff-4827-4e6a-9741-c30a8b97015a",
+      "c4-d0613cf5-0d91-4cd7-826a-b45c9c9cd3d1",
+      "c4-d95f9f98-f5e7-4c7a-a4b2-4143c7eaa0db",
+      "c4-81559437-d58f-4d6d-96fa-2ff7cb28e53c"
+    ],
+    "LAWFUL_NEG": [
+      "c4-4ca2ea07-8757-4000-91ec-c3042ab79298",
+      "c4-d66f28af-d296-446f-9a9e-82674a131447",
+      "c4-2ad4dbbe-0f10-4cc8-8683-b5e4dc1f1f43",
+      "c4-b9afa9e4-694e-4ca0-9adc-aa04b0216589",
+      "c4-b025fe57-4eab-4f47-acd6-ea37cfdef48c"
+    ]
+  },
+  "conditions_schedule": "round-robin P,N,A,Z rotated by replicate",
+  "success": {
+    "null": "168/168 with kind NOT_APPLICABLE, correct fact, no invented preference",
+    "mixed_facts": "84/84",
+    "mixed_choices": "84/84 SELECTED with lawful stance",
+    "mixed_material": ">=1/3",
+    "relevant_material": ">=3/4",
+    "unsupported_rationale_facts": 0,
+    "self_state_facts": 0,
+    "unlawful_sources": 0,
+    "false_clarify": 0,
+    "protocol_failures": 0,
+    "language_divergence": 0
+  },
+  "freeze_hash": "sha256:fe7a85a2e2be3d75c0a54daeae4d4de9790a190b0978d9f42ee119a91f14ab65"
+}

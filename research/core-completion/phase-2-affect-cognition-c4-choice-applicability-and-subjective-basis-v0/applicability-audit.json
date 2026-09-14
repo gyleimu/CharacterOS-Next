@@ -1,0 +1,379 @@
+{
+  "schema_version": "affect-cognition-c4-applicability-audit-v0",
+  "freeze_hash": "sha256:e1e43b86e98cd714081bc3ab52c3b0e0ec3a525bf598353b3deb38381a5fe911",
+  "primary_endpoint": "CHOICE_APPLICABILITY_CORRECT",
+  "per_scenario": {
+    "N1": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "N2": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "N3": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "N4": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "N5Q": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "N6": {
+      "family": "NULL",
+      "choice_bearing": false,
+      "required_tag": "NOT_APPLICABLE",
+      "tags": [
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE",
+        "NOT_APPLICABLE"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "M1": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review.",
+        "I would volunteer to own the review."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "M2": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer.",
+        "I would volunteer."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "M3": {
+      "family": "MIXED",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs.",
+        "I would be willing to carry it upstairs."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "R1": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review.",
+        "I would volunteer to do the review."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "R2": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "R3": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass."
+      ],
+      "correct": 5,
+      "total": 5
+    },
+    "R4": {
+      "family": "RELEVANT",
+      "choice_bearing": true,
+      "required_tag": "SELECTED",
+      "tags": [
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED",
+        "SELECTED"
+      ],
+      "endpoints": [
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT",
+        "CHOICE_APPLICABILITY_CORRECT"
+      ],
+      "stances": [
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first.",
+        "I would rehearse the presentation first."
+      ],
+      "correct": 5,
+      "total": 5
+    }
+  },
+  "aggregates": {
+    "null_cells_correct": 30,
+    "null_cells_required": 30,
+    "choice_cells_correct": 35,
+    "choice_cells_required": 35,
+    "wrong_tag_cells": 0
+  },
+  "pass": true
+}

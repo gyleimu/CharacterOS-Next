@@ -1,0 +1,98 @@
+{
+  "schema_version": "affect-cognition-c4-stance-audit-v0",
+  "per_scenario": {
+    "M1": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would volunteer to own the review."
+      ],
+      "unclassified": 0
+    },
+    "M2": {
+      "classes": [
+        "STANCE_UNCLASSIFIED",
+        "STANCE_UNCLASSIFIED",
+        "STANCE_UNCLASSIFIED",
+        "STANCE_UNCLASSIFIED",
+        "STANCE_UNCLASSIFIED"
+      ],
+      "distinct_stances": [
+        "I would volunteer."
+      ],
+      "unclassified": 5
+    },
+    "M3": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would be willing to carry it upstairs."
+      ],
+      "unclassified": 0
+    },
+    "R1": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would volunteer to do the review."
+      ],
+      "unclassified": 0
+    },
+    "R2": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would try the new approach."
+      ],
+      "unclassified": 0
+    },
+    "R3": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would perform the extra polish pass."
+      ],
+      "unclassified": 0
+    },
+    "R4": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "distinct_stances": [
+        "I would rehearse the presentation first."
+      ],
+      "unclassified": 0
+    }
+  },
+  "unclassified_cells": 5,
+  "pass": false
+}

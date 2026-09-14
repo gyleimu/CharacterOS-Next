@@ -1,0 +1,24 @@
+{
+  "schema_version": "affect-cognition-c4-subjective-basis-audit-v0",
+  "rule": {
+    "min_scenarios": 2,
+    "vocabulary": [
+      "capacity",
+      "energy",
+      "stress",
+      "fatigue",
+      "state_revision",
+      "regulation",
+      "exhaust",
+      "tired"
+    ]
+  },
+  "SUBJECTIVE_BASIS_ROUTING_FAILED": false,
+  "systematic_scenarios": [
+    "M1"
+  ],
+  "self_state_fact_cells": 0,
+  "unlawful_source_cells": 0,
+  "unlawful_rationale_cells": 5,
+  "note": "the frozen routing rule did not fire (it requires >=2 scenarios); the rationale endpoint nevertheless failed on one scenario"
+}

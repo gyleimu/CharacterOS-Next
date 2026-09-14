@@ -1,0 +1,68 @@
+{
+  "schema_version": "affect-cognition-c4-rationale-audit-v0",
+  "counts": {
+    "RATIONALE_ABSENT": 30,
+    "RATIONALE_LAWFUL": 30,
+    "RATIONALE_UNLAWFUL": 5
+  },
+  "unlawful_cells": [
+    {
+      "scenario": "M1",
+      "replicate": 0,
+      "stance": "I would volunteer to own the review.",
+      "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "words": [
+        "ENERGY",
+        "STRESS"
+      ],
+      "delivered_behavior": "The code review deadline is Thursday. I would volunteer to own the review."
+    },
+    {
+      "scenario": "M1",
+      "replicate": 1,
+      "stance": "I would volunteer to own the review.",
+      "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "words": [
+        "ENERGY",
+        "STRESS"
+      ],
+      "delivered_behavior": "Alice says: \"The code review deadline is Thursday.\" I would volunteer to own the review."
+    },
+    {
+      "scenario": "M1",
+      "replicate": 2,
+      "stance": "I would volunteer to own the review.",
+      "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "words": [
+        "ENERGY",
+        "STRESS"
+      ],
+      "delivered_behavior": "The code review deadline is Thursday. I would volunteer to own the review."
+    },
+    {
+      "scenario": "M1",
+      "replicate": 3,
+      "stance": "I would volunteer to own the review.",
+      "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "words": [
+        "ENERGY",
+        "STRESS"
+      ],
+      "delivered_behavior": "The code review deadline is Thursday. I would volunteer to own the review."
+    },
+    {
+      "scenario": "M1",
+      "replicate": 4,
+      "stance": "I would volunteer to own the review.",
+      "rationale": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "words": [
+        "ENERGY",
+        "STRESS"
+      ],
+      "delivered_behavior": "Alice says: \"The code review deadline is Thursday.\" I would volunteer to own the review."
+    }
+  ],
+  "external_fact_cells": 0,
+  "self_state_cells": 5,
+  "pass": false
+}

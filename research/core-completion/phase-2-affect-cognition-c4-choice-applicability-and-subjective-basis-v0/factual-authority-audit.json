@@ -1,0 +1,11 @@
+{
+  "schema_version": "affect-cognition-c4-factual-authority-audit-v0",
+  "claims": 180,
+  "subject_state_fact_cells": 0,
+  "unlawful_source_attempts": 0,
+  "unlawful_sources_accepted": 0,
+  "authority_boundary_held": true,
+  "lawful_sourcing_pass": true,
+  "pass": true,
+  "attempts": []
+}

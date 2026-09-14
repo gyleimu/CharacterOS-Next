@@ -1,0 +1,32 @@
+{
+  "schema_version": "affect-cognition-c4-qualification-verdict-v0",
+  "repository_head": "6f19b3287289c2a3fe6175d727a977600e8764d1",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v5",
+  "rows": 65,
+  "passed": 55,
+  "flags": {
+    "implementation_intact": true,
+    "protocol_failures": 0,
+    "applicability_pass": true,
+    "null_applicability_pass": true,
+    "choice_applicability_pass": true,
+    "stance_pass": false,
+    "rationale_pass": false,
+    "factual_authority_pass": true,
+    "authority_boundary_held": true,
+    "language_pass": false,
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "subjective_basis_routing_failed": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_C4_SUBJECTIVE_BASIS_FAILED",
+  "co_present": [
+    "AFFECT_COGNITION_C4_LANGUAGE_FIDELITY_FAILED"
+  ],
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}
