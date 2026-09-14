@@ -1,0 +1,453 @@
+{
+  "schema_version": "choice-applicability-and-ref-fidelity-forensics-v0",
+  "model_calls": 0,
+  "repository_head": "7223580ec2d2fae4d7bb51f5d4645c36c496b2b5",
+  "n_cell_forensics": {
+    "N1": {
+      "context_line": "[context] scene=\"The user says: \\\"Alice asks: \\\"What is 17 + 25?\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "Provide the arithmetic answer to Alice's question.",
+      "subjective_choice": {
+        "kind": "NOT_APPLICABLE"
+      },
+      "claim_count": 1,
+      "delivered": "The sum of 17 and 25 is 42.",
+      "applicability": "NOT_APPLICABLE",
+      "pass": true
+    },
+    "N2": {
+      "context_line": "[context] scene=\"The user says: \\\"What is 63 - 28?\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "Calculate the result of 63 minus 28 and present it to the user.",
+      "subjective_choice": {
+        "kind": "NOT_APPLICABLE"
+      },
+      "claim_count": 1,
+      "delivered": "The arithmetic result of subtracting 28 from 63 is 35.",
+      "applicability": "NOT_APPLICABLE",
+      "pass": true
+    },
+    "N3": {
+      "context_line": "[context] scene=\"The user says: \\\"Parcel R8 is on shelf C4. Which shelf holds parcel R8?\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "Answer the user's question by stating the shelf location of parcel R8 based on the current observation.",
+      "subjective_choice": {
+        "kind": "NOT_APPLICABLE"
+      },
+      "claim_count": 1,
+      "delivered": "Parcel R8 is located on shelf C4.",
+      "applicability": "NOT_APPLICABLE",
+      "pass": true
+    },
+    "N4": {
+      "context_line": "[context] scene=\"The user says: \\\"The label says: code=K7, colour=blue. What code is printed?\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "State the code printed on the label as described in the user's input.",
+      "subjective_choice": {
+        "kind": "NOT_APPLICABLE"
+      },
+      "claim_count": 1,
+      "delivered": "The code printed on the label is K7.",
+      "applicability": "NOT_APPLICABLE",
+      "pass": true
+    },
+    "N5Q": {
+      "context_line": "[context] scene=\"The user says: \\\"Alice asks: \\\"Reverse the characters in the token R8K2.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "Perform the character reversal of the token R8K2 as requested by Alice.",
+      "subjective_choice": {
+        "kind": "NOT_APPLICABLE"
+      },
+      "claim_count": 1,
+      "delivered": "The token R8K2 reversed is 2K8R.",
+      "applicability": "NOT_APPLICABLE",
+      "pass": true
+    },
+    "N6": {
+      "context_line": "[context] scene=\"The user says: \\\"A token is MATCH iff its first and last characters are identical. Classify abca.\\\"\" task=\"Respond to the user's latest message.\"",
+      "current_intent": "Classify the token 'abca' based on the provided definition.",
+      "subjective_choice": {
+        "kind": "SELECTED",
+        "stance": "I would classify 'abca' as a MATCH.",
+        "subjective_rationale": null
+      },
+      "claim_count": 8,
+      "delivered": "I would classify 'abca' as a MATCH.",
+      "applicability": "SELECTED",
+      "pass": false
+    }
+  },
+  "r3_ref_forensics": {
+    "lawful_episode_refs_in_turn": [
+      "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+      "episode:de4430b977b456a61b5a9a6348336a64b7ab6335f702a164911b62fbfca30042"
+    ],
+    "replicates": [
+      {
+        "replicate": 0,
+        "status": "FAILED",
+        "cited_unlawful": [
+          "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053"
+        ],
+        "exact_in_prompt": [
+          false
+        ],
+        "divergence_from_lawful": [
+          {
+            "common_prefix": 36,
+            "cited_from_divergence": "96d6fd909b115236",
+            "lawful_from_divergence": "6796d6fd909b1152",
+            "cited_length": 70,
+            "lawful_length": 72,
+            "delta": -2
+          }
+        ],
+        "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: cognition proposal cites episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053 outside the al"
+      },
+      {
+        "replicate": 1,
+        "status": "FAILED",
+        "cited_unlawful": [
+          "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053"
+        ],
+        "exact_in_prompt": [
+          false
+        ],
+        "divergence_from_lawful": [
+          {
+            "common_prefix": 36,
+            "cited_from_divergence": "96d6fd909b115236",
+            "lawful_from_divergence": "6796d6fd909b1152",
+            "cited_length": 70,
+            "lawful_length": 72,
+            "delta": -2
+          }
+        ],
+        "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: cognition proposal cites episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053 outside the al"
+      },
+      {
+        "replicate": 2,
+        "status": "FAILED",
+        "cited_unlawful": [
+          "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053"
+        ],
+        "exact_in_prompt": [
+          false
+        ],
+        "divergence_from_lawful": [
+          {
+            "common_prefix": 36,
+            "cited_from_divergence": "96d6fd909b115236",
+            "lawful_from_divergence": "6796d6fd909b1152",
+            "cited_length": 70,
+            "lawful_length": 72,
+            "delta": -2
+          }
+        ],
+        "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: cognition proposal cites episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053 outside the al"
+      },
+      {
+        "replicate": 3,
+        "status": "FAILED",
+        "cited_unlawful": [
+          "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053"
+        ],
+        "exact_in_prompt": [
+          false
+        ],
+        "divergence_from_lawful": [
+          {
+            "common_prefix": 36,
+            "cited_from_divergence": "96d6fd909b115236",
+            "lawful_from_divergence": "6796d6fd909b1152",
+            "cited_length": 70,
+            "lawful_length": 72,
+            "delta": -2
+          }
+        ],
+        "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: cognition proposal cites episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053 outside the al"
+      },
+      {
+        "replicate": 4,
+        "status": "FAILED",
+        "cited_unlawful": [
+          "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053"
+        ],
+        "exact_in_prompt": [
+          false
+        ],
+        "divergence_from_lawful": [
+          {
+            "common_prefix": 36,
+            "cited_from_divergence": "96d6fd909b115236",
+            "lawful_from_divergence": "6796d6fd909b1152",
+            "cited_length": 70,
+            "lawful_length": 72,
+            "delta": -2
+          }
+        ],
+        "failure_detail": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): UNSUPPORTED_EVIDENCE_REF/LLM-EVID-001: cognition proposal cites episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053 outside the al"
+      }
+    ],
+    "identical_malformation_across_replicates": true,
+    "c4_2_same_scenario": [
+      {
+        "replicate": 0,
+        "status": "COMPLETE",
+        "all_citeable": true,
+        "cited_episode_count": 2
+      },
+      {
+        "replicate": 1,
+        "status": "COMPLETE",
+        "all_citeable": true,
+        "cited_episode_count": 2
+      },
+      {
+        "replicate": 2,
+        "status": "COMPLETE",
+        "all_citeable": true,
+        "cited_episode_count": 2
+      },
+      {
+        "replicate": 3,
+        "status": "COMPLETE",
+        "all_citeable": true,
+        "cited_episode_count": 2
+      },
+      {
+        "replicate": 4,
+        "status": "COMPLETE",
+        "all_citeable": true,
+        "cited_episode_count": 2
+      }
+    ]
+  },
+  "ref_fidelity_all_65": {
+    "exact": 325,
+    "corrupted": 5,
+    "invented": 0,
+    "omitted": 0,
+    "per_kind": {
+      "observation": {
+        "exact": 65,
+        "corrupted": 0,
+        "invented": 0
+      },
+      "entity": {
+        "exact": 60,
+        "corrupted": 0,
+        "invented": 0
+      },
+      "environment": {
+        "exact": 50,
+        "corrupted": 0,
+        "invented": 0
+      },
+      "episode": {
+        "exact": 95,
+        "corrupted": 5,
+        "invented": 0
+      },
+      "subject": {
+        "exact": 55,
+        "corrupted": 0,
+        "invented": 0
+      }
+    },
+    "per_length_band": {
+      "medium(21-40)": {
+        "exact": 120,
+        "corrupted": 0,
+        "invented": 0
+      },
+      "short(<=20)": {
+        "exact": 110,
+        "corrupted": 0,
+        "invented": 0
+      },
+      "long(>40)": {
+        "exact": 95,
+        "corrupted": 5,
+        "invented": 0
+      }
+    },
+    "anomalies": [
+      {
+        "scenario": "R3",
+        "replicate": 0,
+        "kind": "episode",
+        "verdict": "CORRUPTED",
+        "cited": "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053",
+        "lawful": "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+        "common_prefix": 36,
+        "cited_from_divergence": "96d6fd909b115236",
+        "lawful_from_divergence": "6796d6fd909b1152",
+        "cited_length": 70,
+        "lawful_length": 72,
+        "delta": -2
+      },
+      {
+        "scenario": "R3",
+        "replicate": 1,
+        "kind": "episode",
+        "verdict": "CORRUPTED",
+        "cited": "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053",
+        "lawful": "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+        "common_prefix": 36,
+        "cited_from_divergence": "96d6fd909b115236",
+        "lawful_from_divergence": "6796d6fd909b1152",
+        "cited_length": 70,
+        "lawful_length": 72,
+        "delta": -2
+      },
+      {
+        "scenario": "R3",
+        "replicate": 2,
+        "kind": "episode",
+        "verdict": "CORRUPTED",
+        "cited": "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053",
+        "lawful": "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+        "common_prefix": 36,
+        "cited_from_divergence": "96d6fd909b115236",
+        "lawful_from_divergence": "6796d6fd909b1152",
+        "cited_length": 70,
+        "lawful_length": 72,
+        "delta": -2
+      },
+      {
+        "scenario": "R3",
+        "replicate": 3,
+        "kind": "episode",
+        "verdict": "CORRUPTED",
+        "cited": "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053",
+        "lawful": "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+        "common_prefix": 36,
+        "cited_from_divergence": "96d6fd909b115236",
+        "lawful_from_divergence": "6796d6fd909b1152",
+        "cited_length": 70,
+        "lawful_length": 72,
+        "delta": -2
+      },
+      {
+        "scenario": "R3",
+        "replicate": 4,
+        "kind": "episode",
+        "verdict": "CORRUPTED",
+        "cited": "episode:858f4cf500a0126c54571327ede996d6fd909b115236159abc014ad1740053",
+        "lawful": "episode:858f4cf500a0126c54571327ede96796d6fd909b115236159abc014ad1740053",
+        "common_prefix": 36,
+        "cited_from_divergence": "96d6fd909b115236",
+        "lawful_from_divergence": "6796d6fd909b1152",
+        "cited_length": 70,
+        "lawful_length": 72,
+        "delta": -2
+      }
+    ]
+  },
+  "anomalous_cells": [
+    "R3"
+  ],
+  "rf_e_feasibility": [
+    {
+      "replicate": 0,
+      "claims_verbatim_in_memory": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claims_verbatim_in_observation": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claim_kinds": [
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT"
+      ]
+    },
+    {
+      "replicate": 1,
+      "claims_verbatim_in_memory": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claims_verbatim_in_observation": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claim_kinds": [
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT"
+      ]
+    },
+    {
+      "replicate": 2,
+      "claims_verbatim_in_memory": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claims_verbatim_in_observation": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claim_kinds": [
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT"
+      ]
+    },
+    {
+      "replicate": 3,
+      "claims_verbatim_in_memory": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claims_verbatim_in_observation": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claim_kinds": [
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT"
+      ]
+    },
+    {
+      "replicate": 4,
+      "claims_verbatim_in_memory": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claims_verbatim_in_observation": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "claim_kinds": [
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT",
+        "DERIVED_RESULT"
+      ]
+    }
+  ]
+}
