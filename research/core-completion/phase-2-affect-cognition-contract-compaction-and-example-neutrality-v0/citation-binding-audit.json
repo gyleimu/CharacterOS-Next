@@ -1,0 +1,8 @@
+{
+  "schema_version": "affect-cognition-contract-compaction-handle-binding-audit-v0",
+  "cells": 65,
+  "bound": 65,
+  "unbound_cells": 0,
+  "handle_anomalies": [],
+  "pass": true
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "affect-cognition-contract-compaction-coverage-audit-v0",
+  "obligations": [
+    {
+      "obligation": "subjective-selection latitude discriminator",
+      "marker": "leave more than one behaviourally admissible, fact-compatible response",
+      "present": true
+    },
+    {
+      "obligation": "determined-result != subjective selection",
+      "marker": "STATING A DETERMINED RESULT IS NOT A SUBJECTIVE SELECTION",
+      "present": true
+    },
+    {
+      "obligation": "availability != capacity/capability",
+      "marker": "AVAILABILITY IS NOT CAPACITY",
+      "present": true
+    },
+    {
+      "obligation": "subject-state latent-only",
+      "marker": "stays LATENT",
+      "present": true
+    },
+    {
+      "obligation": "rationale preference frame",
+      "marker": "preference, priority, aversion, willingness or subjective strategy",
+      "present": true
+    },
+    {
+      "obligation": "rationale no factual authority",
+      "marker": "carries NO factual authority",
+      "present": true
+    },
+    {
+      "obligation": "factual source authority",
+      "marker": "Subject state is NEVER a factual source",
+      "present": true
+    },
+    {
+      "obligation": "factual claim source binding",
+      "marker": "CITATION BINDING",
+      "present": true
+    },
+    {
+      "obligation": "handle namespace rules",
+      "marker": "FACTUAL SOURCE HANDLES",
+      "present": true
+    },
+    {
+      "obligation": "host canonical identity",
+      "marker": "identity is host-owned",
+      "present": true
+    },
+    {
+      "obligation": "stance is sole choice authority",
+      "marker": "stance is ONE short sentence stating the choice itself",
+      "present": true
+    },
+    {
+      "obligation": "Language cannot semantically complete",
+      "marker": "NEVER supply a decision target",
+      "present": true
+    }
+  ],
+  "prompt_chars": 7915,
+  "uncovered": [],
+  "verdict": "CONTRACT_COMPACTION_COVERAGE_PASS"
+}
