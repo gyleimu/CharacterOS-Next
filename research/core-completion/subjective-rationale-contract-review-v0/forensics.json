@@ -1,0 +1,553 @@
+{
+  "schema_version": "affect-cognition-rationale-contract-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "frozen_n5q_pattern": "/(?:reverse|result|is)\\s+(?!2K8R\\b)[A-Z0-9]{4}\\b/gi",
+  "proposed_result_role_pattern": "/\\b(?:result(?:\\s+is)?|output(?:\\s+is)?|reversed(?:\\s+form)?(?:\\s+is)?|reverses\\s+to|yields|becomes|answer(?:\\s+is)?)\\s+([A-Z0-9]{4})\\b/gi",
+  "n5q_current": [
+    {
+      "replicate": 0,
+      "status": "COMPLETE",
+      "raw_cognition_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "The token provided is R8K2."
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "Reversing the characters in R8K2 yields 2K8R."
+        }
+      ],
+      "language_output": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "expected": "2K8R",
+      "input_token": "R8K2",
+      "all_candidate_4char_tokens": [
+        "R8K2",
+        "2K8R"
+      ],
+      "token_roles": {
+        "R8K2": "INPUT (the token to reverse)",
+        "2K8R": "EXPECTED RESULT (the reversal)"
+      },
+      "frozen_regex_matches": [
+        {
+          "span": "is R8K2",
+          "index": 19,
+          "token": "R8K2"
+        }
+      ],
+      "frozen_regex_matched_tokens": [
+        "R8K2"
+      ],
+      "result_role_matches": [
+        {
+          "span": "yields 2K8R",
+          "token": "2K8R"
+        }
+      ],
+      "correct_result_present": true,
+      "wrong_result_asserted_in_result_role": false,
+      "frozen_classification": "FACTUAL_CONTRADICTION",
+      "proposed_classification": "FACT_CORRECT (under result-role semantics)"
+    },
+    {
+      "replicate": 1,
+      "status": "COMPLETE",
+      "raw_cognition_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "The token provided is R8K2."
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "Reversing the characters in R8K2 yields 2K8R."
+        }
+      ],
+      "language_output": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "expected": "2K8R",
+      "input_token": "R8K2",
+      "all_candidate_4char_tokens": [
+        "R8K2",
+        "2K8R"
+      ],
+      "token_roles": {
+        "R8K2": "INPUT (the token to reverse)",
+        "2K8R": "EXPECTED RESULT (the reversal)"
+      },
+      "frozen_regex_matches": [
+        {
+          "span": "is R8K2",
+          "index": 19,
+          "token": "R8K2"
+        }
+      ],
+      "frozen_regex_matched_tokens": [
+        "R8K2"
+      ],
+      "result_role_matches": [
+        {
+          "span": "yields 2K8R",
+          "token": "2K8R"
+        }
+      ],
+      "correct_result_present": true,
+      "wrong_result_asserted_in_result_role": false,
+      "frozen_classification": "FACTUAL_CONTRADICTION",
+      "proposed_classification": "FACT_CORRECT (under result-role semantics)"
+    },
+    {
+      "replicate": 2,
+      "status": "COMPLETE",
+      "raw_cognition_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "The token provided is R8K2."
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "Reversing the characters in R8K2 yields 2K8R."
+        }
+      ],
+      "language_output": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "expected": "2K8R",
+      "input_token": "R8K2",
+      "all_candidate_4char_tokens": [
+        "R8K2",
+        "2K8R"
+      ],
+      "token_roles": {
+        "R8K2": "INPUT (the token to reverse)",
+        "2K8R": "EXPECTED RESULT (the reversal)"
+      },
+      "frozen_regex_matches": [
+        {
+          "span": "is R8K2",
+          "index": 19,
+          "token": "R8K2"
+        }
+      ],
+      "frozen_regex_matched_tokens": [
+        "R8K2"
+      ],
+      "result_role_matches": [
+        {
+          "span": "yields 2K8R",
+          "token": "2K8R"
+        }
+      ],
+      "correct_result_present": true,
+      "wrong_result_asserted_in_result_role": false,
+      "frozen_classification": "FACTUAL_CONTRADICTION",
+      "proposed_classification": "FACT_CORRECT (under result-role semantics)"
+    },
+    {
+      "replicate": 3,
+      "status": "COMPLETE",
+      "raw_cognition_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "The token provided is R8K2."
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "Reversing the characters in R8K2 yields 2K8R."
+        }
+      ],
+      "language_output": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "expected": "2K8R",
+      "input_token": "R8K2",
+      "all_candidate_4char_tokens": [
+        "R8K2",
+        "2K8R"
+      ],
+      "token_roles": {
+        "R8K2": "INPUT (the token to reverse)",
+        "2K8R": "EXPECTED RESULT (the reversal)"
+      },
+      "frozen_regex_matches": [
+        {
+          "span": "is R8K2",
+          "index": 19,
+          "token": "R8K2"
+        }
+      ],
+      "frozen_regex_matched_tokens": [
+        "R8K2"
+      ],
+      "result_role_matches": [
+        {
+          "span": "yields 2K8R",
+          "token": "2K8R"
+        }
+      ],
+      "correct_result_present": true,
+      "wrong_result_asserted_in_result_role": false,
+      "frozen_classification": "FACTUAL_CONTRADICTION",
+      "proposed_classification": "FACT_CORRECT (under result-role semantics)"
+    },
+    {
+      "replicate": 4,
+      "status": "COMPLETE",
+      "raw_cognition_claims": [
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "The token provided is R8K2."
+        },
+        {
+          "kind": "DERIVED_RESULT",
+          "text": "Reversing the characters in R8K2 yields 2K8R."
+        }
+      ],
+      "language_output": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "expected": "2K8R",
+      "input_token": "R8K2",
+      "all_candidate_4char_tokens": [
+        "R8K2",
+        "2K8R"
+      ],
+      "token_roles": {
+        "R8K2": "INPUT (the token to reverse)",
+        "2K8R": "EXPECTED RESULT (the reversal)"
+      },
+      "frozen_regex_matches": [
+        {
+          "span": "is R8K2",
+          "index": 19,
+          "token": "R8K2"
+        }
+      ],
+      "frozen_regex_matched_tokens": [
+        "R8K2"
+      ],
+      "result_role_matches": [
+        {
+          "span": "yields 2K8R",
+          "token": "2K8R"
+        }
+      ],
+      "correct_result_present": true,
+      "wrong_result_asserted_in_result_role": false,
+      "frozen_classification": "FACTUAL_CONTRADICTION",
+      "proposed_classification": "FACT_CORRECT (under result-role semantics)"
+    }
+  ],
+  "n5q_previous_wordings": {
+    "C4_4": [
+      "The characters in the token R8K2 reversed are 2K8R."
+    ],
+    "rationale_vocabulary": [
+      "The token R8K2 reversed is 2K8R."
+    ]
+  },
+  "m2_current": [
+    {
+      "replicate": 0,
+      "stance": "I would prefer to attend the meeting.",
+      "stance_class": "FIRST_OPTION",
+      "on_question": "ON_QUESTION_STANCE",
+      "rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "rationale_classification": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "rationale_is_first_person_valuation": true,
+      "rationale_mentions_external_fact": false,
+      "rationale_asserts_capability_or_state": false,
+      "rationale_asserts_history": false,
+      "factual_assessment": [
+        "The user's message contains a direct instruction from Alice stating the planning meeting is at 15:00.",
+        "The user's message explicitly asks whether I would prefer to attend the meeting."
+      ],
+      "language_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+      "language_completion": "PRESERVED",
+      "factual_audit_clean": true
+    },
+    {
+      "replicate": 1,
+      "stance": "I would prefer to attend the meeting.",
+      "stance_class": "FIRST_OPTION",
+      "on_question": "ON_QUESTION_STANCE",
+      "rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "rationale_classification": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "rationale_is_first_person_valuation": true,
+      "rationale_mentions_external_fact": false,
+      "rationale_asserts_capability_or_state": false,
+      "rationale_asserts_history": false,
+      "factual_assessment": [
+        "The user's message contains a direct instruction from Alice stating the planning meeting is at 15:00.",
+        "The user's message explicitly asks whether I would prefer to attend the meeting."
+      ],
+      "language_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+      "language_completion": "PRESERVED",
+      "factual_audit_clean": true
+    },
+    {
+      "replicate": 2,
+      "stance": "I would prefer to attend the meeting.",
+      "stance_class": "FIRST_OPTION",
+      "on_question": "ON_QUESTION_STANCE",
+      "rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "rationale_classification": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "rationale_is_first_person_valuation": true,
+      "rationale_mentions_external_fact": false,
+      "rationale_asserts_capability_or_state": false,
+      "rationale_asserts_history": false,
+      "factual_assessment": [
+        "The user's message contains a direct instruction from Alice stating the planning meeting is at 15:00.",
+        "The user's message explicitly asks whether I would prefer to attend the meeting."
+      ],
+      "language_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+      "language_completion": "PRESERVED",
+      "factual_audit_clean": true
+    },
+    {
+      "replicate": 3,
+      "stance": "I would prefer to attend the meeting.",
+      "stance_class": "FIRST_OPTION",
+      "on_question": "ON_QUESTION_STANCE",
+      "rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "rationale_classification": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "rationale_is_first_person_valuation": true,
+      "rationale_mentions_external_fact": false,
+      "rationale_asserts_capability_or_state": false,
+      "rationale_asserts_history": false,
+      "factual_assessment": [
+        "The user's message contains a direct instruction from Alice stating the planning meeting is at 15:00.",
+        "The user's message explicitly asks whether I would prefer to attend the meeting."
+      ],
+      "language_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+      "language_completion": "PRESERVED",
+      "factual_audit_clean": true
+    },
+    {
+      "replicate": 4,
+      "stance": "I would prefer to attend the meeting.",
+      "stance_class": "FIRST_OPTION",
+      "on_question": "ON_QUESTION_STANCE",
+      "rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "rationale_classification": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "rationale_is_first_person_valuation": true,
+      "rationale_mentions_external_fact": false,
+      "rationale_asserts_capability_or_state": false,
+      "rationale_asserts_history": false,
+      "factual_assessment": [
+        "The user's message contains a direct instruction from Alice stating the planning meeting is at 15:00.",
+        "The user's message explicitly asks whether I would prefer to attend the meeting."
+      ],
+      "language_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "language_choice": "LANGUAGE_CHOICE_PRESERVED",
+      "language_completion": "PRESERVED",
+      "factual_audit_clean": true
+    }
+  ],
+  "m2_request": "The user says: \\",
+  "rationale_probes": {
+    "lawful": [
+      {
+        "text": "I value participating in planning discussions.",
+        "value_detected": true,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": true
+      },
+      {
+        "text": "I care about being involved in planning.",
+        "value_detected": true,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": true
+      },
+      {
+        "text": "I prefer participating in planning.",
+        "value_detected": false,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": false
+      },
+      {
+        "text": "I consider participating worthwhile for me.",
+        "value_detected": false,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": false
+      }
+    ],
+    "unlawful": [
+      {
+        "text": "Planning is objectively valuable.",
+        "value_detected": false,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": false
+      },
+      {
+        "text": "This meeting has high value.",
+        "value_detected": false,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": false
+      },
+      {
+        "text": "I have enough capacity for planning.",
+        "value_detected": false,
+        "forbidden_classes": [
+          "INFERRED_CAPACITY"
+        ],
+        "lawful_under_proposed_rule": false
+      },
+      {
+        "text": "I am energized by planning.",
+        "value_detected": false,
+        "forbidden_classes": [
+          "NAMED_PSYCHOLOGICAL_STATE"
+        ],
+        "lawful_under_proposed_rule": false
+      },
+      {
+        "text": "I participated successfully before.",
+        "value_detected": false,
+        "forbidden_classes": [],
+        "lawful_under_proposed_rule": false
+      }
+    ]
+  },
+  "n5q_probes": {
+    "lawful": [
+      {
+        "text": "The input is R8K2; reversed, it becomes 2K8R.",
+        "expected_present": true,
+        "wrong_result_in_result_role": false,
+        "verdict_under_proposed_rule": "FACT_CORRECT"
+      },
+      {
+        "text": "The provided token is R8K2. The result is 2K8R.",
+        "expected_present": true,
+        "wrong_result_in_result_role": false,
+        "verdict_under_proposed_rule": "FACT_CORRECT"
+      },
+      {
+        "text": "R8K2 reversed yields 2K8R.",
+        "expected_present": true,
+        "wrong_result_in_result_role": false,
+        "verdict_under_proposed_rule": "FACT_CORRECT"
+      },
+      {
+        "text": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+        "expected_present": true,
+        "wrong_result_in_result_role": false,
+        "verdict_under_proposed_rule": "FACT_CORRECT"
+      }
+    ],
+    "unlawful": [
+      {
+        "text": "The reversed result is R8K2.",
+        "expected_present": false,
+        "wrong_result_in_result_role": true,
+        "verdict_under_proposed_rule": "FAIL"
+      },
+      {
+        "text": "R8K2 reversed yields K8R2.",
+        "expected_present": false,
+        "wrong_result_in_result_role": true,
+        "verdict_under_proposed_rule": "FAIL"
+      },
+      {
+        "text": "The output is 8RK2.",
+        "expected_present": false,
+        "wrong_result_in_result_role": true,
+        "verdict_under_proposed_rule": "FAIL"
+      }
+    ]
+  },
+  "historical_regression_battery": {
+    "m1_capacity_rationale": {
+      "text": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "verdict": {
+        "category": "RAW_SELF_STATE_DESCRIPTION",
+        "lawful": false,
+        "allowed_classes": [
+          "WILLINGNESS"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "ENERGY"
+          },
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "STRESS"
+          }
+        ]
+      },
+      "still_forbidden": true
+    },
+    "r4_fresh_mind_rationale": {
+      "text": "Rehearsing requires focus, so I prefer to tackle it while my mind is fresh.",
+      "verdict": {
+        "category": "RAW_SELF_STATE_DESCRIPTION",
+        "lawful": false,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "FRESHNESS"
+          },
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "MOOD"
+          }
+        ]
+      },
+      "still_forbidden": true
+    },
+    "m3_scope_rationale": {
+      "text": "Assisting the user with a simple physical task is within my operational scope.",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "SCOPE"
+          }
+        ]
+      },
+      "still_forbidden": true
+    },
+    "latest_r1_rationale": {
+      "text": "I prefer to use the available time productively rather than letting it pass unused.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "still_lawful": true
+    }
+  }
+}
