@@ -292,6 +292,21 @@ async function buildWorld(): Promise<World> {
   return world;
 }
 
+/**
+ * C4.4: the model selects advertised items by handle. Test fixtures resolve the
+ * handle the prompt advertised for a given canonical ref (FACTUAL SOURCE HANDLES
+ * and CONTEXT HANDLES blocks), exactly as the host maps them.
+ */
+function handleForAdvertisedRef(userContent: string, ref: string): string {
+  for (const line of userContent.split("\n")) {
+    const match = /^-\s*([FC][0-9]+):\s*(\S+)\s*$/.exec(line.trim());
+    if (match === null || match[2] !== ref) continue;
+    const handle = match[1];
+    if (handle !== undefined) return handle;
+  }
+  throw new Error(`no advertised handle for ${ref}`);
+}
+
 async function readSnapshot(world: World): Promise<SubjectStateV4> {
   const snapshot = await world.assembly.facade.readCurrentSnapshot(SUBJECT as never);
   if (snapshot === null) throw new Error("snapshot must exist");
@@ -476,22 +491,22 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: cognitionIntent === null
-            ? { kind: "NOT_APPLICABLE" }
-            : { kind: "SELECTED", stance: cognitionIntent, subjective_rationale: null },
+          schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: cognitionIntent === null
+            ? { kind: "NO_SUBJECTIVE_SELECTION" }
+            : { kind: "SUBJECTIVE_SELECTION", stance: cognitionIntent, subjective_rationale: null },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
 
             reasoning_summary: "deterministic provider seam summary",
-            relevant_memory_refs: [],
-            considered_context_refs: [],
+            relevant_memory_handles: [],
+            considered_context_handles: [],
             current_intent: cognitionIntent,
             confidence: 0.8,
             uncertainty: 0.2,
             action_intent: null,
-            evidence_refs: []
+            evidence_handles: []
           },
           communication_directive: { kind: "REALIZE_CURRENT_INTENT" }
         , clarification_basis: String("REALIZE_CURRENT_INTENT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null })
@@ -502,12 +517,12 @@ async function executeDownstreamProof(
     complete: async (request) => {
       languageRequests.push(request);
       const input = inputObjectFromLanguageRequest(request);
-      const choice = input["selected_subjective_choice"] as { readonly kind?: string; readonly stance?: string } | null;
+      const choice = input["selected_subjective_selection"] as { readonly kind?: string; readonly stance?: string } | null;
       return {
         model: "fake-language-realizer",
         content: JSON.stringify({
           schema_version: "language-realization-semantic-draft-v1",
-          text: `deterministic behavior: ${String(choice?.kind === "SELECTED" ? choice.stance : null)}`,
+          text: `deterministic behavior: ${String(choice?.kind === "SUBJECTIVE_SELECTION" ? choice.stance : null)}`,
           evidence_refs: []
         })
       };
@@ -962,10 +977,10 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultB.result.kind).toBe("OUTPUT_READY");
     if (resultA.result.kind !== "OUTPUT_READY" || resultB.result.kind !== "OUTPUT_READY") return;
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
-    expect(resultA.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: resultA.cognition_intent, subjective_rationale: null });
-    expect(resultB.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: resultB.cognition_intent, subjective_rationale: null });
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v6");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v6");
+    expect(resultA.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultA.cognition_intent, subjective_rationale: null });
+    expect(resultB.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultB.cognition_intent, subjective_rationale: null });
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v7");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v7");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
@@ -994,8 +1009,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     const result = await executeDownstreamProof(world, () => selected, "response-downstream-selected");
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
-    expect(result.language_input["selected_subjective_choice"]).toEqual({ kind: "SELECTED", stance: selected, subjective_rationale: null });
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v6");
+    expect(result.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: selected, subjective_rationale: null });
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v7");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1012,20 +1027,20 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: { kind: "NOT_APPLICABLE" },
+            schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
             factual_assessment: { claims: [] },
             cognition: {
               schema_version: "cognition-proposal-v0",
 
               reasoning_summary: "clarification is required",
-              relevant_memory_refs: [],
-              considered_context_refs: [observationRef],
+              relevant_memory_handles: [],
+              considered_context_handles: [handleForAdvertisedRef(user, observationRef)],
               current_intent: "proceed as if the missing context were known",
               confidence: 0.8,
               uncertainty: 0.2,
               action_intent: null,
-              evidence_refs: []
+              evidence_handles: []
             },
             communication_directive: { kind: "CLARIFY_MISSING_CONTEXT" }
           , clarification_basis: String("CLARIFY_MISSING_CONTEXT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null })

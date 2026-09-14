@@ -27,16 +27,16 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
-import { ConversationCognitionProviderV5 } from "../../providers/behavior/conversation-cognition-provider-v5.js";
+import { ConversationCognitionProviderV6 } from "../../providers/behavior/conversation-cognition-provider-v6.js";
 import {
-  deriveConversationCognitionProposalHashV5,
+  deriveConversationCognitionProposalHashV6,
   type ClarificationBasisV0,
-  type ConversationCognitionProposalV5,
-  type SubjectiveChoiceV1
+  type ConversationCognitionProposalV6,
+  type SubjectiveSelectionV1
 } from "./conversation-cognition-proposal.js";
 import {
   buildLanguageRealizationInputV1,
-  buildLanguageRealizationInputV6,
+  buildLanguageRealizationInputV7,
   type LanguageEpisodeContentV0
 } from "./language-realization-input.js";
 
@@ -65,14 +65,16 @@ export interface ConversationResponseTraceV1 {
     | "conversation-cognition-proposal-v2"
     | "conversation-cognition-proposal-v3"
     | "conversation-cognition-proposal-v4"
-    | "conversation-cognition-proposal-v5";
+    | "conversation-cognition-proposal-v5"
+    | "conversation-cognition-proposal-v6";
   readonly clarification_basis?: ClarificationBasisV0 | null;
   /**
-   * C4 diagnostic only: the tagged turn-local subject choice — applicability plus
-   * (when selected) the stance and its non-authoritative subjective rationale.
-   * `cognition.current_intent` is descriptive and is NEVER the choice authority.
+   * C4.4 diagnostic only: the tagged turn-local subjective selection — the
+   * applicability CATEGORY plus (when selected) the stance and its
+   * non-authoritative subjective rationale. `cognition.current_intent` is
+   * descriptive and is NEVER the selection authority.
    */
-  readonly subjective_choice?: SubjectiveChoiceV1;
+  readonly subjective_selection?: SubjectiveSelectionV1;
   readonly cognition_projection_hash: string;
   readonly realization_input_hash: string;
   readonly realization_source: RealizationSourceV0;
@@ -183,7 +185,7 @@ export class ConversationTextResponseExecutorV1 {
 
     // ---- shared cognition pipeline; current canonical projections use C3 V4 -------
     const legacyConversationProvider = new ConversationCognitionProviderV2(conversationTransport);
-    const c2ConversationProvider = new ConversationCognitionProviderV5(conversationTransport);
+    const c2ConversationProvider = new ConversationCognitionProviderV6(conversationTransport);
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = projection.schema_version === "cognitive-context-projection-v2"
@@ -272,14 +274,14 @@ export class ConversationTextResponseExecutorV1 {
     // directive + clarification_basis, explicitly null where absent); the frozen
     // v3 surface keeps its historical V1 domain and null-intent language handoff.
     const conversationProposalHash = isV2Projection
-      ? await deriveConversationCognitionProposalHashV5(conversationProposal as ConversationCognitionProposalV5)
+      ? await deriveConversationCognitionProposalHashV6(conversationProposal as ConversationCognitionProposalV6)
       : await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
           schema_version: "conversation-cognition-proposal-v1",
           cognition: cognitionResult.cognition,
           communication_directive: directive
         });
     const proposalSchemaVersion = isV2Projection
-      ? ("conversation-cognition-proposal-v5" as const)
+      ? ("conversation-cognition-proposal-v6" as const)
       : ("conversation-cognition-proposal-v1" as const);
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
@@ -294,7 +296,7 @@ export class ConversationTextResponseExecutorV1 {
       requestId.value,
       evidenceProjection,
       cognitionResult.cognition,
-      isV2Projection ? conversationProposal as ConversationCognitionProposalV5 : null,
+      isV2Projection ? conversationProposal as ConversationCognitionProposalV6 : null,
       conversationProposalHash,
       proposalSchemaVersion,
       directive,
@@ -309,7 +311,7 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6",
     clarificationBasis: ClarificationBasisV0,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
   ): Promise<ConversationTextResponseResultV1> {
@@ -345,7 +347,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: clarificationBasis,
-        subjective_choice: { kind: "NOT_APPLICABLE" },
+        subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "HOST_CLARIFICATION_V0"
@@ -359,9 +361,9 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     cognition: CognitionProposalV0,
-    c2Proposal: ConversationCognitionProposalV5 | null,
+    c2Proposal: ConversationCognitionProposalV6 | null,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6",
     directive: CommunicationDirectiveV0,
     lawfulEvidence: ReadonlySet<string>,
     factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
@@ -397,7 +399,7 @@ export class ConversationTextResponseExecutorV1 {
           communication_directive: directive,
           memory_episode_contents: episodeContents
         })
-      : await buildLanguageRealizationInputV6({
+      : await buildLanguageRealizationInputV7({
           subject_id: snapshot.identity.subject_id,
           source_revision: sourceRevision as never,
           response_request_id: requestId,
@@ -450,7 +452,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: null,
-        subjective_choice: c2Proposal?.subjective_choice ?? { kind: "NOT_APPLICABLE" },
+        subjective_selection: c2Proposal?.subjective_selection ?? { kind: "NO_SUBJECTIVE_SELECTION" },
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
         realization_source: "LANGUAGE_PROVIDER_V0"

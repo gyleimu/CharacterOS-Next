@@ -32,6 +32,7 @@ interface TransportRecorder {
   readonly requests: { readonly messages: readonly { readonly role: string; readonly content: string }[] }[];
 }
 
+
 function fakeAppraisalProvider(): FactualEventAppraisalProviderV0 {
   return {
     proposeFactualEventAppraisal: async (context: never) => {
@@ -64,20 +65,20 @@ function cognitionTransport(recorder: TransportRecorder): ModelTransportV0 {
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: { kind: "NOT_APPLICABLE" },
+          schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
 
             reasoning_summary: "offline cognition",
-            relevant_memory_refs: [],
-            considered_context_refs: [],
+            relevant_memory_handles: [],
+            considered_context_handles: [],
             current_intent: "respond to the user",
             confidence: 0.7,
             uncertainty: 0.3,
             action_intent: null,
-            evidence_refs: []
+            evidence_handles: []
           },
           communication_directive: { kind: "REALIZE_CURRENT_INTENT" }
         , clarification_basis: String("REALIZE_CURRENT_INTENT") === "CLARIFY_MISSING_CONTEXT" ? { current_observation_ref: (/^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? ""), missing_information: "the specific unresolved detail", needed_for: "completing the current response" } : null }),

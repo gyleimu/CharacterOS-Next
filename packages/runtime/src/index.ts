@@ -1071,6 +1071,44 @@ export {
   type SubjectiveChoiceV1
 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
+  ConversationCognitionProviderV6,
+  ConversationCognitionRejectionErrorV6,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V6,
+  CONVERSATION_COGNITION_PROPOSAL_V6_JSON_SCHEMA,
+  COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V2,
+  COGNITION_INVOCATION_BINDING_HASH_PROJECTION_V2,
+  deriveCognitionInvocationBindingHashV2,
+  buildConversationSubjectDataV4,
+  type CognitionInvocationBindingV2
+} from "./providers/behavior/conversation-cognition-provider-v6.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V6,
+  SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1,
+  SUBJECTIVE_SELECTION_KIND_SELECTED_V1,
+  SUBJECTIVE_SELECTION_MAX_CODE_POINTS_V1,
+  SUBJECTIVE_SELECTION_RATIONALE_MAX_CODE_POINTS_V1,
+  MAX_ADVERTISED_HANDLES_V0,
+  validateSubjectiveSelectionV1,
+  validateConversationCognitionProposalV6,
+  canonicalizeConversationCognitionModelOutputV6,
+  deriveConversationCognitionProposalHashV6,
+  validateHostBoundConversationCognitionProposalV6,
+  buildSourceHandleMapV0,
+  resolveHandleArrayV0,
+  type SubjectiveSelectionV1,
+  type ConversationCognitionProposalV6,
+  type SourceHandleMapV0
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
+  LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V7,
+  LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V7,
+  type LanguageRealizationInputV7,
+  type LanguageCommunicationBindingV6,
+  type BuildLanguageRealizationInputV7Request,
+  type BuildLanguageRealizationInputV7Result
+} from "./transitions/conversation/language-realization-input.js";
+export {
   LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V6,
   LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V6,
   type LanguageRealizationInputV6,

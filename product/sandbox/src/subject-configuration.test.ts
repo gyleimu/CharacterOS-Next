@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  CONVERSATION_COGNITION_SYSTEM_PROMPT_V5,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V6,
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportV0
@@ -40,6 +40,20 @@ interface TransportRecorder {
   readonly requests: { readonly messages: readonly { readonly role: string; readonly content: string }[] }[];
 }
 
+/**
+ * C4.4: the model selects advertised items by handle. This fixture resolves the
+ * handle the prompt advertised for a canonical ref, exactly as the host maps them.
+ */
+function handleForAdvertisedRef(userContent: string, ref: string): string {
+  for (const line of userContent.split("\n")) {
+    const match = /^-\s*([FC][0-9]+):\s*(\S+)\s*$/.exec(line.trim());
+    if (match === null || match[2] !== ref) continue;
+    const handle = match[1];
+    if (handle !== undefined) return handle;
+  }
+  throw new Error(`no advertised handle for ${ref}`);
+}
+
 function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): ModelTransportV0 {
   return {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
@@ -49,20 +63,20 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: { kind: "NOT_APPLICABLE" },
+          schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
 
             reasoning_summary: "offline cognition",
-            relevant_memory_refs: [],
-            considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
+            relevant_memory_handles: [],
+            considered_context_handles: selected === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
             current_intent: "respond to the user",
             confidence: 0.7,
             uncertainty: 0.3,
             action_intent: null,
-            evidence_refs: []
+            evidence_handles: []
           },
           communication_directive: {
             kind: selected === "REALIZE" ? "REALIZE_CURRENT_INTENT" : "CLARIFY_MISSING_CONTEXT"
@@ -301,7 +315,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     await host.send("Hello there.");
     const request = recorder.requests[0];
     expect(request?.messages).toHaveLength(2);
-    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V5);
+    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V6);
     const userContent = request?.messages[1]?.content ?? "";
     expect(userContent).toContain(`[identity] subject_id="${config.subject_id}"`);
     expect(userContent).not.toContain("Alice");

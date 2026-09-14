@@ -46,6 +46,20 @@ const LANGUAGE_MS = 500;
 const RELATIONSHIP_MS = 300;
 
 const tempDirs: string[] = [];
+/**
+ * C4.4: the model selects advertised items by handle. This fixture resolves the
+ * handle the prompt advertised for a canonical ref, exactly as the host maps them.
+ */
+function handleForAdvertisedRef(userContent: string, ref: string): string {
+  for (const line of userContent.split("\n")) {
+    const match = /^-\s*([FC][0-9]+):\s*(\S+)\s*$/.exec(line.trim());
+    if (match === null || match[2] !== ref) continue;
+    const handle = match[1];
+    if (handle !== undefined) return handle;
+  }
+  throw new Error(`no advertised handle for ${ref}`);
+}
+
 function makeTempDir(): string {
   const dir = mkdtempSync(join(tmpdir(), "characteros-progress-"));
   tempDirs.push(dir);
@@ -107,20 +121,20 @@ function cognitionTransport(clock: Clock, recorder: Recorder, mode: CognitionMod
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: { kind: "NOT_APPLICABLE" },
+          schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
 
             reasoning_summary: "offline",
-            relevant_memory_refs: [],
-            considered_context_refs: mode === "CLARIFY" ? [observationRef] : [],
+            relevant_memory_handles: [],
+            considered_context_handles: mode === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
             current_intent: "respond",
             confidence: 0.7,
             uncertainty: 0.3,
             action_intent: null,
-            evidence_refs: []
+            evidence_handles: []
           },
           communication_directive: {
             kind: mode === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT"

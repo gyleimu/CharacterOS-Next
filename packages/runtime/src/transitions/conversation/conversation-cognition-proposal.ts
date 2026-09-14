@@ -11,7 +11,7 @@
 import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
 import type { CognitiveContextProjectionAnyVersion, CognitionProposalV0 } from "../cognition-action/types.js";
-import { validateCognitionProposal } from "../cognition-action/types.js";
+import { allowedEvidenceSet, validateCognitionProposal } from "../cognition-action/types.js";
 import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
 import { hashEnvelope, isRecord, validateCanonicalText, validateRefArray, validateRefElement } from "@characteros-next/subject-core";
 
@@ -1009,6 +1009,444 @@ export function validateHostBoundConversationCognitionProposalV5(
   const { projection_hash: _ignored, ...semanticCognition } = cognition as Record<string, unknown>;
   void _ignored;
   return validateConversationCognitionProposalV5(
+    { ...(value as Record<string, unknown>), cognition: semanticCognition },
+    projection,
+    projection.projection_hash
+  );
+}
+
+// ---------------------------------------------------------------------------------
+// C4.4 (AFFECT_COGNITION_C4_4_SUBJECTIVE_SELECTION_SEMANTICS_AND_REF_HANDLES_V0)
+//
+// CHANGE A — applicability semantics. The tag names the CATEGORY ("subjective
+// selection"), not the carrier. A subjective selection exists ONLY when the
+// supplied facts and rules leave more than one behaviourally admissible,
+// fact-compatible response and the subject selects among them; stating,
+// reporting, calculating, extracting, reversing or classifying a determined
+// result is NOT a subjective selection.
+//
+// CHANGE B — model-wire reference handles. The model SELECTS advertised items by
+// short host-issued handle; the host owns canonical identity and resolves exact
+// handles to canonical refs before the (unchanged) validators run. Canonical refs
+// remain the authoritative stored representation.
+// ---------------------------------------------------------------------------------
+
+export const CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6 =
+  "conversation-cognition-proposal-v6" as const;
+export const CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V6 =
+  "characteros-next/runtime/conversation-cognition-proposal/v6/v1" as const;
+
+export const SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1 = "NO_SUBJECTIVE_SELECTION" as const;
+export const SUBJECTIVE_SELECTION_KIND_SELECTED_V1 = "SUBJECTIVE_SELECTION" as const;
+
+export const SUBJECTIVE_SELECTION_MAX_CODE_POINTS_V1 = 256 as const;
+export const SUBJECTIVE_SELECTION_RATIONALE_MAX_CODE_POINTS_V1 = 256 as const;
+export const MAX_ADVERTISED_HANDLES_V0 = 64 as const;
+
+/**
+ * C4.4 tagged subjective selection. `NO_SUBJECTIVE_SELECTION` means the supplied
+ * facts and rules determine the response content; `SUBJECTIVE_SELECTION` means the
+ * subject had behavioural latitude and selected a stance.
+ */
+export type SubjectiveSelectionV1 =
+  | {
+      readonly kind: typeof SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1;
+    }
+  | {
+      readonly kind: typeof SUBJECTIVE_SELECTION_KIND_SELECTED_V1;
+      readonly stance: string;
+      readonly subjective_rationale: string | null;
+    };
+
+/** Closed C4.4 authoritative proposal (canonical refs; CognitionProposalV0 unchanged). */
+export interface ConversationCognitionProposalV6 {
+  readonly schema_version: typeof CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6;
+  readonly factual_assessment: FactualAssessmentV0;
+  readonly cognition: CognitionProposalV0;
+  readonly subjective_selection: SubjectiveSelectionV1;
+  readonly communication_directive: CommunicationDirectiveV0;
+  readonly clarification_basis: ClarificationBasisV0 | null;
+}
+
+const OUTER_KEYS_V6: readonly string[] = [
+  "schema_version",
+  "factual_assessment",
+  "cognition",
+  "subjective_selection",
+  "communication_directive",
+  "clarification_basis"
+];
+const SUBJECTIVE_SELECTION_NO_SELECTION_KEYS_V1: readonly string[] = ["kind"];
+const SUBJECTIVE_SELECTION_SELECTED_KEYS_V1: readonly string[] = ["kind", "stance", "subjective_rationale"];
+
+/** Model-wire cognition keys: the three ref arrays become handle arrays. */
+const COGNITION_WIRE_KEYS_V6: readonly string[] = [
+  "schema_version",
+  "reasoning_summary",
+  "relevant_memory_handles",
+  "considered_context_handles",
+  "current_intent",
+  "confidence",
+  "uncertainty",
+  "action_intent",
+  "evidence_handles"
+];
+const CLAIM_WIRE_KEYS_V6: readonly string[] = ["kind", "text", "source_handles"];
+const HANDLE_PATTERN_V0 = /^([FC])([1-9][0-9]*)$/;
+
+/** The frozen stance rules, carried over unchanged to the C4.4 carrier. */
+function validateStanceTextV6(
+  value: unknown,
+  detail: string
+): { ok: true; stance: string } | { ok: false; detail: string } {
+  const textCheck = validateCanonicalText(value, `${detail}.stance`);
+  if (!textCheck.ok) return { ok: false, detail: textCheck.error.detail };
+  const stance = textCheck.value;
+  if (stance.trim().length === 0) return { ok: false, detail: `${detail}.stance: must be non-empty` };
+  if ([...stance].length > SUBJECTIVE_SELECTION_MAX_CODE_POINTS_V1) {
+    return { ok: false, detail: `${detail}.stance: exceeds ${SUBJECTIVE_SELECTION_MAX_CODE_POINTS_V1} code points` };
+  }
+  const normalized = stance.trim().toLocaleUpperCase("en-US");
+  if (DIRECTIVE_ENUM_TOKENS_V0.includes(normalized)) {
+    return { ok: false, detail: `${detail}.stance: directive enum echo is not a subject choice` };
+  }
+  const lowered = stance.trim().toLocaleLowerCase("en-US");
+  if (UNRESOLVED_STANCE_PREFIXES_V0.some((prefix) => lowered.startsWith(prefix))) {
+    return { ok: false, detail: `${detail}.stance: states no selected choice` };
+  }
+  return { ok: true, stance };
+}
+
+/** Bounded, canonical, non-authoritative subjective basis (null is lawful). */
+function validateSubjectiveRationaleV6(
+  value: unknown,
+  detail: string
+): { ok: true; rationale: string | null } | { ok: false; detail: string } {
+  if (value === null) return { ok: true, rationale: null };
+  const textCheck = validateCanonicalText(value, `${detail}.subjective_rationale`);
+  if (!textCheck.ok) return { ok: false, detail: textCheck.error.detail };
+  const rationale = textCheck.value;
+  if (rationale.trim().length === 0) return { ok: false, detail: `${detail}.subjective_rationale: must be non-empty` };
+  if ([...rationale].length > SUBJECTIVE_SELECTION_RATIONALE_MAX_CODE_POINTS_V1) {
+    return { ok: false, detail: `${detail}.subjective_rationale: exceeds ${SUBJECTIVE_SELECTION_RATIONALE_MAX_CODE_POINTS_V1} code points` };
+  }
+  return { ok: true, rationale };
+}
+
+/** Closed C4.4 selection validation: the category tag decides the branch. */
+export function validateSubjectiveSelectionV1(
+  value: unknown
+): { ok: true; selection: SubjectiveSelectionV1 } | { ok: false; detail: string } {
+  const detail = "subjective_selection";
+  if (!isRecord(value)) return { ok: false, detail: `${detail}: expected object` };
+  const kind = value["kind"];
+  if (kind === SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1) {
+    const keyFailure = exactClosedKeys(value, SUBJECTIVE_SELECTION_NO_SELECTION_KEYS_V1, detail);
+    if (keyFailure !== null) return { ok: false, detail: keyFailure };
+    return { ok: true, selection: Object.freeze({ kind: SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1 }) };
+  }
+  if (kind === SUBJECTIVE_SELECTION_KIND_SELECTED_V1) {
+    const keyFailure = exactClosedKeys(value, SUBJECTIVE_SELECTION_SELECTED_KEYS_V1, detail);
+    if (keyFailure !== null) return { ok: false, detail: keyFailure };
+    const stanceCheck = validateStanceTextV6(value["stance"], detail);
+    if (!stanceCheck.ok) return { ok: false, detail: stanceCheck.detail };
+    const rationaleCheck = validateSubjectiveRationaleV6(value["subjective_rationale"], detail);
+    if (!rationaleCheck.ok) return { ok: false, detail: rationaleCheck.detail };
+    return {
+      ok: true,
+      selection: Object.freeze({
+        kind: SUBJECTIVE_SELECTION_KIND_SELECTED_V1,
+        stance: stanceCheck.stance,
+        subjective_rationale: rationaleCheck.rationale
+      })
+    };
+  }
+  return {
+    ok: false,
+    detail: `${detail}.kind: expected ${SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1} or ${SUBJECTIVE_SELECTION_KIND_SELECTED_V1}`
+  };
+}
+
+// ---------------------------------------------------------------------------------
+// Model-wire handles (host-issued, turn-local, exact)
+// ---------------------------------------------------------------------------------
+
+export interface SourceHandleMapV0 {
+  /** ordered advertised handles, e.g. ["F1","F2"] then ["C1",...] */
+  readonly advertised: readonly string[];
+  readonly handleToRef: ReadonlyMap<string, string>;
+  readonly refToHandle: ReadonlyMap<string, string>;
+  readonly factualSourceHandles: readonly string[];
+  readonly contextHandles: readonly string[];
+}
+
+/**
+ * Builds the invocation-local handle map from the EXISTING authority sets, in the
+ * frozen deterministic order of those sets (sorted refs), so the same projection
+ * always yields the same map. `F*` covers the lawful factual sources, `C*` the
+ * citeable evidence set; the namespaces are never interchangeable.
+ */
+export function buildSourceHandleMapV0(
+  projection: CognitiveContextProjectionAnyVersion
+): SourceHandleMapV0 {
+  const factualRefs = [...new Set<string>(factualAssessmentSourceRefs(projection) as readonly string[])].sort();
+  const evidenceRefs = [...new Set<string>(allowedEvidenceSetForHandles(projection) as readonly string[])].sort();
+  const handleToRef = new Map<string, string>();
+  const refToHandle = new Map<string, string>();
+  const factualSourceHandles: string[] = [];
+  const contextHandles: string[] = [];
+  factualRefs.slice(0, MAX_ADVERTISED_HANDLES_V0).forEach((ref, index) => {
+    const handle = `F${index + 1}`;
+    handleToRef.set(handle, ref);
+    factualSourceHandles.push(handle);
+    if (!refToHandle.has(ref)) refToHandle.set(ref, handle);
+  });
+  evidenceRefs.slice(0, MAX_ADVERTISED_HANDLES_V0).forEach((ref, index) => {
+    const handle = `C${index + 1}`;
+    handleToRef.set(handle, ref);
+    contextHandles.push(handle);
+    if (!refToHandle.has(ref)) refToHandle.set(ref, handle);
+  });
+  return Object.freeze({
+    advertised: Object.freeze([...factualSourceHandles, ...contextHandles]),
+    handleToRef,
+    refToHandle,
+    factualSourceHandles: Object.freeze(factualSourceHandles),
+    contextHandles: Object.freeze(contextHandles)
+  });
+}
+
+/**
+ * Resolves one handle array. `allowContext` is false for factual claim sources
+ * (namespace escalation is forbidden). Unknown handles fail closed with a
+ * structural code; duplication is rejected; the resolved refs are returned in the
+ * canonical (lexicographic) order the authoritative validators require.
+ */
+export function resolveHandleArrayV0(
+  value: unknown,
+  map: SourceHandleMapV0,
+  detail: string,
+  allowContext: boolean
+): { ok: true; refs: readonly string[] } | { ok: false; detail: string } {
+  if (!Array.isArray(value)) return { ok: false, detail: `${detail}: expected array` };
+  const refs: string[] = [];
+  const seen = new Set<string>();
+  for (const entry of value) {
+    if (typeof entry !== "string") return { ok: false, detail: `${detail}: handle must be a string` };
+    const match = HANDLE_PATTERN_V0.exec(entry);
+    if (match === null) return { ok: false, detail: `${detail}: ${entry} is not a valid handle` };
+    const isContext = match[1] === "C";
+    if (isContext && !allowContext) {
+      return { ok: false, detail: `${detail}: ${entry} is a context handle and can never be a factual claim source` };
+    }
+    const ref = map.handleToRef.get(entry);
+    if (ref === undefined) {
+      return {
+        ok: false,
+        detail: isContext
+          ? `${detail}: UNKNOWN_CONTEXT_HANDLE ${entry}`
+          : `${detail}: UNKNOWN_SOURCE_HANDLE ${entry}`
+      };
+    }
+    if (seen.has(ref)) return { ok: false, detail: `${detail}: duplicate handle for ${ref}` };
+    seen.add(ref);
+    refs.push(ref);
+  }
+  return { ok: true, refs: Object.freeze([...refs].sort()) };
+}
+
+/** Citeable-evidence set used for the `C*` namespace (same authority as §15). */
+function allowedEvidenceSetForHandles(projection: CognitiveContextProjectionAnyVersion): readonly string[] {
+  return [...allowedEvidenceSet(projection) as ReadonlySet<string>].sort();
+}
+
+/** Renders the two handle blocks appended to the frozen subject-data rendering. */
+export function renderHandleBlocksV0(
+  projection: CognitiveContextProjectionAnyVersion,
+  map: SourceHandleMapV0
+): string {
+  const factual = map.factualSourceHandles.map((handle) => `- ${handle}: ${map.handleToRef.get(handle)}`).join("\n");
+  const context = map.contextHandles.map((handle) => `- ${handle}: ${map.handleToRef.get(handle)}`).join("\n");
+  void projection;
+  return [
+    "FACTUAL SOURCE HANDLES (the ONLY handles allowed in factual_assessment.claims[*].source_handles; each F handle resolves to a host-owned canonical factual source ref):",
+    factual.length === 0 ? "(none)" : factual,
+    "CONTEXT HANDLES (allowed in relevant_memory_handles, considered_context_handles and evidence_handles; these are visible context and are NEVER factual sources, so a C handle can never be a claim source):",
+    context.length === 0 ? "(none)" : context
+  ].join("\n");
+}
+
+/**
+ * Validates the C4.4 MODEL WIRE output (handles), canonicalizes it to authoritative
+ * canonical refs, and runs the frozen authoritative validators unchanged. This is
+ * the single boundary where identity leaves model authority.
+ */
+export function canonicalizeConversationCognitionModelOutputV6(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): { ok: true; proposal: ConversationCognitionProposalV6 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const keyFailure = exactClosedKeys(value, OUTER_KEYS_V6, "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v6" };
+  }
+  const map = buildSourceHandleMapV0(projection);
+
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const cognitionKeyFailure = exactClosedKeys(cognitionValue, COGNITION_WIRE_KEYS_V6, "conversation proposal.cognition");
+  if (cognitionKeyFailure !== null) return { ok: false, detail: cognitionKeyFailure };
+  const memory = resolveHandleArrayV0(cognitionValue["relevant_memory_handles"], map, "conversation proposal.cognition.relevant_memory_handles", true);
+  if (!memory.ok) return memory;
+  const context = resolveHandleArrayV0(cognitionValue["considered_context_handles"], map, "conversation proposal.cognition.considered_context_handles", true);
+  if (!context.ok) return context;
+  const evidence = resolveHandleArrayV0(cognitionValue["evidence_handles"], map, "conversation proposal.cognition.evidence_handles", true);
+  if (!evidence.ok) return evidence;
+
+  const assessmentValue = value["factual_assessment"];
+  if (!isRecord(assessmentValue)) return { ok: false, detail: "conversation proposal.factual_assessment: expected object" };
+  const assessmentKeys = exactClosedKeys(assessmentValue, ["claims"], "conversation proposal.factual_assessment");
+  if (assessmentKeys !== null) return { ok: false, detail: assessmentKeys };
+  if (!Array.isArray(assessmentValue["claims"])) return { ok: false, detail: "conversation proposal.factual_assessment.claims: expected array" };
+  const claims: unknown[] = [];
+  for (let index = 0; index < assessmentValue["claims"].length; index += 1) {
+    const claim = assessmentValue["claims"][index];
+    const detail = `conversation proposal.factual_assessment.claims[${index}]`;
+    if (!isRecord(claim)) return { ok: false, detail: `${detail}: expected object` };
+    const claimKeys = exactClosedKeys(claim, CLAIM_WIRE_KEYS_V6, detail);
+    if (claimKeys !== null) return { ok: false, detail: claimKeys };
+    const resolved = resolveHandleArrayV0(claim["source_handles"], map, `${detail}.source_handles`, false);
+    if (!resolved.ok) return resolved;
+    claims.push({ kind: claim["kind"], text: claim["text"], source_refs: resolved.refs });
+  }
+
+  const canonical = {
+    schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6,
+    factual_assessment: { claims },
+    cognition: {
+      schema_version: cognitionValue["schema_version"],
+      reasoning_summary: cognitionValue["reasoning_summary"],
+      relevant_memory_refs: memory.refs,
+      considered_context_refs: context.refs,
+      current_intent: cognitionValue["current_intent"],
+      confidence: cognitionValue["confidence"],
+      uncertainty: cognitionValue["uncertainty"],
+      action_intent: cognitionValue["action_intent"],
+      evidence_refs: evidence.refs
+    },
+    subjective_selection: value["subjective_selection"],
+    communication_directive: value["communication_directive"],
+    clarification_basis: value["clarification_basis"]
+  };
+  return validateConversationCognitionProposalV6(canonical, projection, authoritativeProjectionHash);
+}
+
+/**
+ * Strict C4.4 validation of the AUTHORITATIVE (already canonicalized) proposal.
+ * Identical obligations to C4/V5: lawful factual sources, citation binding into
+ * both cognition arrays, CLARIFY discipline, action_intent null.
+ */
+export function validateConversationCognitionProposalV6(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): { ok: true; proposal: ConversationCognitionProposalV6 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const keyFailure = exactClosedKeys(value, OUTER_KEYS_V6, "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v6" };
+  }
+  const directiveCheck = validateCommunicationDirectiveV0(value["communication_directive"]);
+  if (!directiveCheck.ok) return { ok: false, detail: `conversation proposal.communication_directive: ${directiveCheck.detail}` };
+  const directive = directiveCheck.directive as CommunicationDirectiveV0;
+
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const cognitionKeyFailure = exactClosedKeys(cognitionValue, COGNITION_SEMANTIC_KEYS_V0, "conversation proposal.cognition");
+  if (cognitionKeyFailure !== null) return { ok: false, detail: cognitionKeyFailure };
+  const cognitionCheck = validateCognitionProposal({ ...cognitionValue, projection_hash: authoritativeProjectionHash });
+  if (!cognitionCheck.ok) return { ok: false, detail: `conversation proposal.cognition: ${cognitionCheck.error.detail}` };
+  const cognition = cognitionCheck.value as CognitionProposalV0;
+  if (cognition.action_intent !== null) {
+    return { ok: false, detail: "conversation proposal.cognition.action_intent: must be null for text-response path" };
+  }
+
+  const factualCheck = validateFactualAssessmentV0(value["factual_assessment"], projection, cognition);
+  if (!factualCheck.ok) return { ok: false, detail: `conversation proposal.${factualCheck.detail}` };
+
+  const selectionCheck = validateSubjectiveSelectionV1(value["subjective_selection"]);
+  if (!selectionCheck.ok) return { ok: false, detail: `conversation proposal.${selectionCheck.detail}` };
+  const subjectiveSelection = selectionCheck.selection;
+
+  let clarificationBasis: ClarificationBasisV0 | null = null;
+  if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
+    if (subjectiveSelection.kind !== SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1) {
+      return { ok: false, detail: "conversation proposal.subjective_selection: CLARIFY requires NO_SUBJECTIVE_SELECTION" };
+    }
+    if (value["clarification_basis"] === null || value["clarification_basis"] === undefined) {
+      return { ok: false, detail: "conversation proposal.clarification_basis: CLARIFY requires a non-null basis" };
+    }
+    const basisCheck = validateClarificationBasisV0(value["clarification_basis"], projection);
+    if (!basisCheck.ok) return { ok: false, detail: `conversation proposal.${basisCheck.detail}` };
+    if (!cognition.considered_context_refs.includes(basisCheck.basis.current_observation_ref)) {
+      return {
+        ok: false,
+        detail: "conversation proposal.clarification_basis.current_observation_ref: must appear in considered_context_refs"
+      };
+    }
+    clarificationBasis = basisCheck.basis;
+  } else if (value["clarification_basis"] !== null) {
+    return { ok: false, detail: "conversation proposal.clarification_basis: REALIZE requires exactly null" };
+  }
+
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6,
+      factual_assessment: factualCheck.assessment,
+      cognition,
+      subjective_selection: subjectiveSelection,
+      communication_directive: directive,
+      clarification_basis: clarificationBasis
+    })
+  };
+}
+
+/** Distinct C4.4 hash domain over the CANONICAL authoritative representation. */
+export async function deriveConversationCognitionProposalHashV6(
+  proposal: ConversationCognitionProposalV6
+): Promise<HashV1> {
+  return hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V6, {
+    schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V6,
+    factual_assessment: proposal.factual_assessment,
+    cognition: proposal.cognition,
+    subjective_selection: proposal.subjective_selection,
+    communication_directive: proposal.communication_directive,
+    clarification_basis: proposal.clarification_basis
+  });
+}
+
+/** Revalidates an ALREADY host-bound C4.4 proposal. */
+export function validateHostBoundConversationCognitionProposalV6(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): { ok: true; proposal: ConversationCognitionProposalV6 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object" };
+  const cognition = value["cognition"];
+  if (!isRecord(cognition)) return { ok: false, detail: "conversation proposal.cognition: expected object" };
+  const declared = cognition["projection_hash"];
+  if (typeof declared !== "string" || declared !== projection.projection_hash) {
+    return {
+      ok: false,
+      detail: "conversation proposal.cognition.projection_hash: does not match the authoritative projection binding"
+    };
+  }
+  const { projection_hash: _ignored, ...semanticCognition } = cognition as Record<string, unknown>;
+  void _ignored;
+  return validateConversationCognitionProposalV6(
     { ...(value as Record<string, unknown>), cognition: semanticCognition },
     projection,
     projection.projection_hash

@@ -69,6 +69,21 @@ class TestEnvironment implements SubjectEnvironmentV0 {
 }
 
 /** Fake appraisal provider: always a terminal APPRAISED disposition. */
+/**
+ * C4.4: the model selects advertised items by handle. This fixture resolves the
+ * handle the prompt advertised for a canonical ref (FACTUAL SOURCE HANDLES /
+ * CONTEXT HANDLES blocks), exactly as the host maps them.
+ */
+function handleForAdvertisedRef(userContent: string, ref: string): string {
+  for (const line of userContent.split("\n")) {
+    const match = /^-\s*([FC][0-9]+):\s*(\S+)\s*$/.exec(line.trim());
+    if (match === null || match[2] !== ref) continue;
+    const handle = match[1];
+    if (handle !== undefined) return handle;
+  }
+  throw new Error(`no advertised handle for ${ref}`);
+}
+
 function fakeAppraisalProvider(): FactualEventAppraisalProviderV0 {
   return {
     proposeFactualEventAppraisal: async (context: never) => {
@@ -111,20 +126,20 @@ function fakeCognitionTransport(mode: () => Mode, intents: string[]): ModelTrans
       call += 1;
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v5",
-          subjective_choice: { kind: "NOT_APPLICABLE" },
+          schema_version: "conversation-cognition-proposal-v6",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
 
             reasoning_summary: "offline test cognition",
-            relevant_memory_refs: [],
-            considered_context_refs: selected === "CLARIFY" ? [observationRef] : [],
+            relevant_memory_handles: [],
+            considered_context_handles: selected === "CLARIFY" ? [handleForAdvertisedRef(user, observationRef)] : [],
             current_intent: intent,
             confidence: 0.7,
             uncertainty: 0.3,
             action_intent: null,
-            evidence_refs: []
+            evidence_handles: []
           },
           communication_directive: {
             kind: selected === "CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT"
