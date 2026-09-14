@@ -1,0 +1,39 @@
+{
+  "schema_version": "affect-cognition-c4-3-qualification-verdict-v0",
+  "repository_head": "572151792d51f2754e48d9163152f64676174a57",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v5",
+  "rows": 65,
+  "passed": 55,
+  "flags": {
+    "implementation_intact": true,
+    "protocol_failures": 5,
+    "applicability_pass": false,
+    "null_applicability_pass": false,
+    "citation_binding_pass": true,
+    "applicability_regression": true,
+    "applicability_regression_note": "the frozen C4 property \"null tasks read NOT_APPLICABLE\" regressed on N6 x5; the frozen verdict space names no applicability verdict, so this is recorded and mapped to REVALIDATION_INCONCLUSIVE rather than misreported as an implementation failure",
+    "rationale_pass": true,
+    "stance_grounding_pass": true,
+    "language_pass": true,
+    "factual_pass": true,
+    "authority_boundary_held": true,
+    "unbound_claim_source_cells": 0,
+    "protocol_failures_named": "host refusals caused by a factual_assessment claim citing a source that is not bound into cognition.considered_context_refs/evidence_refs",
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "guard_shipped": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_C4_3_REVALIDATION_INCONCLUSIVE",
+  "co_present": [],
+  "lexical_guard": {
+    "shipped": false,
+    "status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}
