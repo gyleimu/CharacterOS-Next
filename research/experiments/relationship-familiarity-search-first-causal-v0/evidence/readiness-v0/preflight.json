@@ -1,0 +1,120 @@
+{
+  "schema_version": "familiarity-search-first-preflight-v0",
+  "model_calls": 0,
+  "same_corpus": {
+    "digest": "sha256:ea8db0fa05c58a84a748c9de6740c511c5d0d74958c758acc281e8e26fa1f6da",
+    "refs": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:alice-05",
+      "episode:alice-06",
+      "episode:alice-07",
+      "episode:alice-08",
+      "episode:alice-09",
+      "episode:alice-10",
+      "episode:alice-11",
+      "episode:alice-12",
+      "episode:alice-13",
+      "episode:alice-14",
+      "episode:alice-15",
+      "episode:alice-16",
+      "episode:bob-clinic-01",
+      "episode:generic-habit-01"
+    ],
+    "digest_equal_across_conditions": true,
+    "repository_binding_equal": true
+  },
+  "familiarity": {
+    "LOW": 0.03125,
+    "HIGH": 0.5
+  },
+  "manipulation": {
+    "LOW": {
+      "queries": 0,
+      "mediator_visible": false,
+      "strategy": "BASIC_CONTEXT_FIRST"
+    },
+    "HIGH": {
+      "queries": 1,
+      "selected_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:alice-05",
+        "episode:alice-06",
+        "episode:alice-07",
+        "episode:alice-08",
+        "episode:alice-09",
+        "episode:alice-10",
+        "episode:alice-11",
+        "episode:alice-12",
+        "episode:alice-13",
+        "episode:alice-14",
+        "episode:alice-15",
+        "episode:alice-16"
+      ],
+      "selected_content_hashes": [
+        "sha256:db2e5bcf1b3058508022adf1018ea63934e5dac5f636105e169bf0857a43d3a7",
+        "sha256:d376145059f76c3210e31f59f9bc541b5edbafc40a11a4de4c06b812ffa9129d",
+        "sha256:0de0a46736faea911ffb92d403bc9215ef184e3c71e1674854841639d3c59166",
+        "sha256:d02d47e9432debfeedc2a15b8cd938830a2d15f73f1d3a74cd277bac6327c186",
+        "sha256:784f11c3827742374406d538772e56f72f8c256292c70159abf10b1e8940498e",
+        "sha256:97e22227cf7f3e8f840d382fcd86a9acc23bf02de47fcb6a902cd3fb5aa5d6d4",
+        "sha256:d92ebc1ef7ddbfaea1294b09ce75ceea4bf92a9ffc19527e3a5c062d99a1782b",
+        "sha256:46b9c1c8435c16304cd5efbe26591f836f213aa9ae4e4c20b11459b00063a78d",
+        "sha256:4055fab1e1d1b22abb153121f0b0c607cc23e28c9f2af0149edd977290877d1c",
+        "sha256:dc94444b5b6b681012dea122772541489d3e12c6692072e8dea5a400e45b10b0",
+        "sha256:829dbff99b357943e1f0572b5aec1f8fac5007938076407afa274543190d56c9",
+        "sha256:19762673b50204eba4849eaa08c17092880c0837c2daa561a6d79b13e5e187be",
+        "sha256:2c11177da3f1da331fa37693bdc64df35493323bcb317385fec5e7a3a9ca46bd",
+        "sha256:981b22dd5b60a0179ee946e0b75d9493dfb3295a5f277bdbeb4255b9d5bcd547",
+        "sha256:09aa1b6bbc02d50f62d5db2fd456f84d2f84083e6b6a7a3b9190b81330aeb760",
+        "sha256:b0dc3ddaeb57aebb2a26487f3f7c9ae357b917c85f057b9b87472f576c586ff0"
+      ],
+      "mediator_visible": true,
+      "strategy": "COUNTERPART_CONTEXT_SEARCH_FIRST"
+    },
+    "HIGH_SEARCH_ABLATED": {
+      "queries": 1,
+      "mediator_visible": false,
+      "replaced_with_empty": true
+    }
+  },
+  "offline_classes": {
+    "LOW": "ASKS_FOR_FRAMING",
+    "HIGH": "USES_RETRIEVED_COUNTERPART_CONTEXT",
+    "HIGH_SEARCH_ABLATED": "ASKS_FOR_FRAMING"
+  },
+  "live_chain": {
+    "language_schema": "language-realization-input-v10",
+    "atom": "PRIMARY_FACT",
+    "system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4"
+  },
+  "restore_proof": [
+    {
+      "condition": "LOW",
+      "familiarity": 0.03125,
+      "state_revision": 2,
+      "material_digest": "sha256:c3bb5954ac98cc463be6ccf449355f0ce287f88ca57358ccc67e687cad407594",
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "result_kind": "OUTPUT_READY",
+      "scenario": "S1_STATUS_UPDATE_REQUEST",
+      "matches_parent": true
+    },
+    {
+      "condition": "HIGH",
+      "familiarity": 0.5,
+      "state_revision": 17,
+      "material_digest": "sha256:635e747c92b82020c10de99bbfd8bacb50abd15f8c4e34cdb3f1194e4efe46ec",
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=16/32",
+      "result_kind": "OUTPUT_READY",
+      "scenario": "S1_STATUS_UPDATE_REQUEST",
+      "matches_parent": true
+    }
+  ],
+  "scheduled_scenes": 48,
+  "scheduled_calls_maximum": 98
+}

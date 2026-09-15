@@ -1,0 +1,48 @@
+{
+  "schema_version": "familiarity-completion-manifest-v0",
+  "experiment_id": "RELATIONSHIP_FAMILIARITY_SEARCH_FIRST_CAUSAL_EXPERIMENT_V0",
+  "harness_head": "13c963a3c1830280d8d993c7489632925a657dd1",
+  "worktree_clean_at_freeze": true,
+  "preflight_hash": "sha256:9834c0098aff94431387a2507af5affc84cc2814de5a92fc7697976c887a270f",
+  "scheduled_scenes": 48,
+  "scheduled_calls_maximum": 98,
+  "call_budget": {
+    "readiness": 2,
+    "per_scene_cognition": 1,
+    "per_scene_language_max": 1,
+    "max_total": 100,
+    "retries": 0
+  },
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 240000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "provider": {
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "details": {
+      "parent_model": "",
+      "format": "gguf",
+      "family": "qwen35",
+      "families": [
+        "qwen35"
+      ],
+      "parameter_size": "9.7B",
+      "quantization_level": "Q4_K_M",
+      "context_length": 262144,
+      "embedding_length": 4096
+    }
+  },
+  "frozen_at": "2026-09-15T12:29:01.506Z"
+}
