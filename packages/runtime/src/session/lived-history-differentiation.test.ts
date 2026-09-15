@@ -91,7 +91,7 @@ function cognitionTransport(recorder: TransportRecorder): ModelTransportV0 {
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v6",
+          schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {

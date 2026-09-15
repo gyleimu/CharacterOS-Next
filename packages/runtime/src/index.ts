@@ -1115,6 +1115,47 @@ export {
   type BuildLanguageRealizationInputV7Result
 } from "./transitions/conversation/language-realization-input.js";
 export {
+  LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V8,
+  LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V8,
+  type LanguageRealizationInputV8,
+  type LanguageCommunicationBindingV7,
+  type BuildLanguageRealizationInputV8Request,
+  type BuildLanguageRealizationInputV8Result
+} from "./transitions/conversation/language-realization-input.js";
+export {
+  FACTUAL_CLAIM_AUTHORIZATION_POLICY_VERSION_V0,
+  HOST_VERIFIABLE_DERIVATION_OPERATIONS_V0,
+  authorizeFactualClaimV1,
+  factualAuthorizationTraceV0,
+  type HostVerifiableDerivationOperationV0,
+  type FactualClaimAuthorizationRejectionCodeV0,
+  type FactualAssessmentClaimV1,
+  type FactualAssessmentV1,
+  type FactualClaimAuthorizationV0,
+  type FactualClaimAuthorizationTraceV0,
+  type FactualSourceTextResolverV0
+} from "./transitions/conversation/factual-claim-authorization.js";
+export {
+  ConversationCognitionProviderV7,
+  ConversationCognitionRejectionErrorV7,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V7,
+  CONVERSATION_COGNITION_PROPOSAL_V7_JSON_SCHEMA,
+  COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V3,
+  COGNITION_INVOCATION_BINDING_HASH_PROJECTION_V3,
+  deriveCognitionInvocationBindingHashV3,
+  type CognitionInvocationBindingV3
+} from "./providers/behavior/conversation-cognition-provider-v7.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V7,
+  canonicalizeConversationCognitionModelOutputV7,
+  validateConversationCognitionProposalV7,
+  validateHostBoundConversationCognitionProposalV7,
+  deriveConversationCognitionProposalHashV7,
+  type ConversationCognitionProposalV7,
+  type ConversationCognitionProposalV7Validation
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
   LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V6,
   LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V6,
   type LanguageRealizationInputV6,

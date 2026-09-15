@@ -16,6 +16,12 @@ import {
   authorizeSubjectiveRationaleV0,
   type SubjectiveRationaleAuthorizationV0
 } from "./subjective-rationale-authorization.js";
+import {
+  authorizeFactualClaimV1,
+  factualAuthorizationTraceV0,
+  type FactualAssessmentV1,
+  type FactualClaimAuthorizationTraceV0
+} from "./factual-claim-authorization.js";
 import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
 import { hashEnvelope, isRecord, validateCanonicalText, validateRefArray, validateRefElement } from "@characteros-next/subject-core";
 
@@ -1474,4 +1480,323 @@ export function validateHostBoundConversationCognitionProposalV6(
     projection,
     projection.projection_hash
   );
+}
+
+// ---------------------------------------------------------------------------------
+// V7 — closed factual authority (exact quote or host-verifiable derivation only)
+// ---------------------------------------------------------------------------------
+
+export const CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7 =
+  "conversation-cognition-proposal-v7" as const;
+export const CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V7 =
+  "characteros-next/runtime/conversation-cognition-proposal/v7" as const;
+
+export interface ConversationCognitionProposalV7 {
+  readonly schema_version: typeof CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7;
+  readonly factual_assessment: FactualAssessmentV1;
+  readonly cognition: CognitionProposalV0;
+  readonly subjective_selection: SubjectiveSelectionV1;
+  readonly communication_directive: CommunicationDirectiveV0;
+  readonly clarification_basis: ClarificationBasisV0 | null;
+}
+
+export type ConversationCognitionProposalV7Validation =
+  | {
+      readonly ok: true;
+      readonly proposal: ConversationCognitionProposalV7;
+      readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+    }
+  | {
+      readonly ok: false;
+      readonly detail: string;
+      readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+    };
+
+const OUTER_KEYS_V7 = OUTER_KEYS_V6;
+
+function validateV7FactualProvenance(
+  refs: readonly CanonicalRefV0[],
+  projection: CognitiveContextProjectionAnyVersion,
+  cognition: CognitionProposalV0,
+  detail: string
+): string | null {
+  const lawful = allowedEvidenceSetForFactualAssessment(projection);
+  const considered = new Set<string>(cognition.considered_context_refs);
+  const evidence = new Set<string>(cognition.evidence_refs);
+  for (const ref of refs) {
+    if (!lawful.has(ref)) return `${detail}.source_refs: ${ref} is not a lawful FACTUAL SOURCE REF`;
+    if (!considered.has(ref) || !evidence.has(ref)) {
+      return `${detail}.source_refs: ${ref} is not bound in cognition considered/evidence refs`;
+    }
+    if (factualSourceTexts(projection, ref) === null) return `${detail}.source_refs: ${ref} has no inspectable source content`;
+  }
+  return null;
+}
+
+function validateAndAuthorizeFactualAssessmentV1(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  cognition: CognitionProposalV0,
+  mode: "WIRE_CANONICALIZED" | "AUTHORITATIVE"
+):
+  | { readonly ok: true; readonly assessment: FactualAssessmentV1; readonly trace: readonly FactualClaimAuthorizationTraceV0[] }
+  | { readonly ok: false; readonly detail: string; readonly trace: readonly FactualClaimAuthorizationTraceV0[] } {
+  const trace: FactualClaimAuthorizationTraceV0[] = [];
+  if (!isRecord(value) || exactClosedKeys(value, FACTUAL_ASSESSMENT_KEYS, "factual_assessment") !== null || !Array.isArray(value["claims"])) {
+    return { ok: false, detail: "factual_assessment: closed claims object required", trace };
+  }
+  if (value["claims"].length > FACTUAL_ASSESSMENT_MAX_CLAIMS_V0) {
+    return { ok: false, detail: `factual_assessment.claims: exceeds ${FACTUAL_ASSESSMENT_MAX_CLAIMS_V0}`, trace };
+  }
+  const claims: FactualAssessmentV1["claims"][number][] = [];
+  for (let index = 0; index < value["claims"].length; index += 1) {
+    const raw = value["claims"][index];
+    const detail = `factual_assessment.claims[${index}]`;
+    if (!isRecord(raw)) return { ok: false, detail: `${detail}: expected object`, trace };
+    const refsCheck = validateRefArray(raw["source_refs"], `${detail}.source_refs`, { sorted: true });
+    if (!refsCheck.ok || !Array.isArray(raw["source_refs"]) || raw["source_refs"].length === 0) {
+      return { ok: false, detail: `${detail}.source_refs: nonempty sorted canonical refs required`, trace };
+    }
+    const refs = Object.freeze([...(raw["source_refs"] as readonly CanonicalRefV0[])]);
+    const provenanceFailure = validateV7FactualProvenance(refs, projection, cognition, detail);
+    if (provenanceFailure !== null) {
+      const rejected = {
+        status: "REJECTED" as const,
+        code: "REJECTED_SOURCE_BINDING" as const,
+        detail: provenanceFailure
+      };
+      trace.push(factualAuthorizationTraceV0(raw, refs, rejected));
+      return { ok: false, detail: provenanceFailure, trace: Object.freeze(trace) };
+    }
+    let candidate: unknown = raw;
+    if (mode === "AUTHORITATIVE" && raw["kind"] === "HOST_VERIFIABLE_DERIVATION") {
+      const keys = Object.keys(raw).sort();
+      const expected = ["derivation", "kind", "operation", "source_refs", "text"];
+      if (keys.length !== expected.length || keys.some((key, position) => key !== expected[position])) {
+        return { ok: false, detail: `${detail}: authoritative derivation has unexpected keys`, trace };
+      }
+      candidate = {
+        kind: raw["kind"],
+        operation: raw["operation"],
+        source_refs: refs,
+        derivation: raw["derivation"]
+      };
+    }
+    const authorization = authorizeFactualClaimV1(
+      candidate,
+      (ref) => factualSourceTexts(projection, ref)
+    );
+    trace.push(factualAuthorizationTraceV0(raw, refs, authorization));
+    if (authorization.status === "REJECTED") {
+      return {
+        ok: false,
+        detail: `${detail}: ${authorization.code} ${authorization.detail}`,
+        trace: Object.freeze(trace)
+      };
+    }
+    if (mode === "AUTHORITATIVE") {
+      const expected = authorization.authoritative_claim;
+      if (raw["text"] !== expected.text) {
+        return { ok: false, detail: `${detail}.text: does not equal the canonical host renderer`, trace: Object.freeze(trace) };
+      }
+      if (raw["kind"] === "HOST_VERIFIABLE_DERIVATION" && JSON.stringify(raw["derivation"]) !== JSON.stringify(expected.kind === "HOST_VERIFIABLE_DERIVATION" ? expected.derivation : null)) {
+        return { ok: false, detail: `${detail}.derivation: not canonical`, trace: Object.freeze(trace) };
+      }
+    }
+    claims.push(authorization.authoritative_claim);
+  }
+  return {
+    ok: true,
+    assessment: Object.freeze({ claims: Object.freeze(claims) }),
+    trace: Object.freeze(trace)
+  };
+}
+
+/** V7 wire boundary: handle canonicalization then factual content authority. */
+export function canonicalizeConversationCognitionModelOutputV7(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): ConversationCognitionProposalV7Validation {
+  const emptyTrace: readonly FactualClaimAuthorizationTraceV0[] = Object.freeze([]);
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object", factual_authorization_trace: emptyTrace };
+  const keyFailure = exactClosedKeys(value, OUTER_KEYS_V7, "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure, factual_authorization_trace: emptyTrace };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v7", factual_authorization_trace: emptyTrace };
+  }
+  const map = buildSourceHandleMapV0(projection);
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object", factual_authorization_trace: emptyTrace };
+  const cognitionKeys = exactClosedKeys(cognitionValue, COGNITION_WIRE_KEYS_V6, "conversation proposal.cognition");
+  if (cognitionKeys !== null) return { ok: false, detail: cognitionKeys, factual_authorization_trace: emptyTrace };
+  const memory = resolveHandleArrayV0(cognitionValue["relevant_memory_handles"], map, "conversation proposal.cognition.relevant_memory_handles", true);
+  if (!memory.ok) return { ...memory, factual_authorization_trace: emptyTrace };
+  const context = resolveHandleArrayV0(cognitionValue["considered_handles"], map, "conversation proposal.cognition.considered_handles", true);
+  if (!context.ok) return { ...context, factual_authorization_trace: emptyTrace };
+  const evidence = resolveHandleArrayV0(cognitionValue["evidence_handles"], map, "conversation proposal.cognition.evidence_handles", true);
+  if (!evidence.ok) return { ...evidence, factual_authorization_trace: emptyTrace };
+  const cognitionCheck = validateCognitionProposal({
+    schema_version: cognitionValue["schema_version"],
+    projection_hash: authoritativeProjectionHash,
+    reasoning_summary: cognitionValue["reasoning_summary"],
+    relevant_memory_refs: memory.refs,
+    considered_context_refs: context.refs,
+    current_intent: cognitionValue["current_intent"],
+    confidence: cognitionValue["confidence"],
+    uncertainty: cognitionValue["uncertainty"],
+    action_intent: cognitionValue["action_intent"],
+    evidence_refs: evidence.refs
+  });
+  if (!cognitionCheck.ok) {
+    return { ok: false, detail: `conversation proposal.cognition: ${cognitionCheck.error.detail}`, factual_authorization_trace: emptyTrace };
+  }
+  const cognition = cognitionCheck.value as CognitionProposalV0;
+  if (cognition.action_intent !== null) {
+    return { ok: false, detail: "conversation proposal.cognition.action_intent: must be null for text-response path", factual_authorization_trace: emptyTrace };
+  }
+
+  const assessmentValue = value["factual_assessment"];
+  if (!isRecord(assessmentValue) || exactClosedKeys(assessmentValue, ["claims"], "conversation proposal.factual_assessment") !== null || !Array.isArray(assessmentValue["claims"])) {
+    return { ok: false, detail: "conversation proposal.factual_assessment: closed claims object required", factual_authorization_trace: emptyTrace };
+  }
+  const canonicalClaims: unknown[] = [];
+  for (let index = 0; index < assessmentValue["claims"].length; index += 1) {
+    const claim = assessmentValue["claims"][index];
+    if (!isRecord(claim)) return { ok: false, detail: `conversation proposal.factual_assessment.claims[${index}]: expected object`, factual_authorization_trace: emptyTrace };
+    const resolved = resolveHandleArrayV0(claim["source_handles"], map, `conversation proposal.factual_assessment.claims[${index}].source_handles`, false);
+    if (!resolved.ok) return { ...resolved, factual_authorization_trace: emptyTrace };
+    const { source_handles: _ignored, ...withoutHandles } = claim;
+    void _ignored;
+    canonicalClaims.push({ ...withoutHandles, source_refs: resolved.refs });
+  }
+  const factual = validateAndAuthorizeFactualAssessmentV1(
+    { claims: canonicalClaims },
+    projection,
+    cognition,
+    "WIRE_CANONICALIZED"
+  );
+  if (!factual.ok) {
+    return { ok: false, detail: `conversation proposal.${factual.detail}`, factual_authorization_trace: factual.trace };
+  }
+
+  const directiveCheck = validateCommunicationDirectiveV0(value["communication_directive"]);
+  if (!directiveCheck.ok) return { ok: false, detail: `conversation proposal.communication_directive: ${directiveCheck.detail}`, factual_authorization_trace: factual.trace };
+  const directive = directiveCheck.directive as CommunicationDirectiveV0;
+  const selectionCheck = validateSubjectiveSelectionV1(value["subjective_selection"]);
+  if (!selectionCheck.ok) return { ok: false, detail: `conversation proposal.${selectionCheck.detail}`, factual_authorization_trace: factual.trace };
+  let clarificationBasis: ClarificationBasisV0 | null = null;
+  if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
+    if (selectionCheck.selection.kind !== SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1) {
+      return { ok: false, detail: "conversation proposal.subjective_selection: CLARIFY requires NO_SUBJECTIVE_SELECTION", factual_authorization_trace: factual.trace };
+    }
+    if (value["clarification_basis"] === null || value["clarification_basis"] === undefined) {
+      return { ok: false, detail: "conversation proposal.clarification_basis: CLARIFY requires a non-null basis", factual_authorization_trace: factual.trace };
+    }
+    const basis = validateClarificationBasisV0(value["clarification_basis"], projection);
+    if (!basis.ok) return { ok: false, detail: `conversation proposal.${basis.detail}`, factual_authorization_trace: factual.trace };
+    if (!cognition.considered_context_refs.includes(basis.basis.current_observation_ref)) {
+      return { ok: false, detail: "conversation proposal.clarification_basis.current_observation_ref: must appear in considered_context_refs", factual_authorization_trace: factual.trace };
+    }
+    clarificationBasis = basis.basis;
+  } else if (value["clarification_basis"] !== null) {
+    return { ok: false, detail: "conversation proposal.clarification_basis: REALIZE requires exactly null", factual_authorization_trace: factual.trace };
+  }
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7,
+      factual_assessment: factual.assessment,
+      cognition,
+      subjective_selection: selectionCheck.selection,
+      communication_directive: directive,
+      clarification_basis: clarificationBasis
+    }),
+    factual_authorization_trace: factual.trace
+  };
+}
+
+/** Revalidate an already authoritative V7 proposal without interpreting V6. */
+export function validateConversationCognitionProposalV7(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): ConversationCognitionProposalV7Validation {
+  const emptyTrace: readonly FactualClaimAuthorizationTraceV0[] = Object.freeze([]);
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object", factual_authorization_trace: emptyTrace };
+  const keys = exactClosedKeys(value, OUTER_KEYS_V7, "conversation proposal");
+  if (keys !== null) return { ok: false, detail: keys, factual_authorization_trace: emptyTrace };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v7", factual_authorization_trace: emptyTrace };
+  }
+  const cognitionValue = value["cognition"];
+  if (!isRecord(cognitionValue)) return { ok: false, detail: "conversation proposal.cognition: expected object", factual_authorization_trace: emptyTrace };
+  const cognitionKeys = exactClosedKeys(cognitionValue, COGNITION_SEMANTIC_KEYS_V0, "conversation proposal.cognition");
+  if (cognitionKeys !== null) return { ok: false, detail: cognitionKeys, factual_authorization_trace: emptyTrace };
+  const cognitionCheck = validateCognitionProposal({ ...cognitionValue, projection_hash: authoritativeProjectionHash });
+  if (!cognitionCheck.ok) return { ok: false, detail: `conversation proposal.cognition: ${cognitionCheck.error.detail}`, factual_authorization_trace: emptyTrace };
+  const cognition = cognitionCheck.value as CognitionProposalV0;
+  if (cognition.action_intent !== null) return { ok: false, detail: "conversation proposal.cognition.action_intent: must be null", factual_authorization_trace: emptyTrace };
+  const factual = validateAndAuthorizeFactualAssessmentV1(value["factual_assessment"], projection, cognition, "AUTHORITATIVE");
+  if (!factual.ok) return { ok: false, detail: `conversation proposal.${factual.detail}`, factual_authorization_trace: factual.trace };
+  const directiveCheck = validateCommunicationDirectiveV0(value["communication_directive"]);
+  if (!directiveCheck.ok) return { ok: false, detail: `conversation proposal.communication_directive: ${directiveCheck.detail}`, factual_authorization_trace: factual.trace };
+  const directive = directiveCheck.directive as CommunicationDirectiveV0;
+  const selectionCheck = validateSubjectiveSelectionV1(value["subjective_selection"]);
+  if (!selectionCheck.ok) return { ok: false, detail: `conversation proposal.${selectionCheck.detail}`, factual_authorization_trace: factual.trace };
+  let clarificationBasis: ClarificationBasisV0 | null = null;
+  if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
+    if (selectionCheck.selection.kind !== SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1) return { ok: false, detail: "conversation proposal.subjective_selection: CLARIFY requires NO_SUBJECTIVE_SELECTION", factual_authorization_trace: factual.trace };
+    const basis = validateClarificationBasisV0(value["clarification_basis"], projection);
+    if (!basis.ok) return { ok: false, detail: `conversation proposal.${basis.detail}`, factual_authorization_trace: factual.trace };
+    if (!cognition.considered_context_refs.includes(basis.basis.current_observation_ref)) return { ok: false, detail: "conversation proposal.clarification_basis.current_observation_ref: must appear in considered_context_refs", factual_authorization_trace: factual.trace };
+    clarificationBasis = basis.basis;
+  } else if (value["clarification_basis"] !== null) {
+    return { ok: false, detail: "conversation proposal.clarification_basis: REALIZE requires exactly null", factual_authorization_trace: factual.trace };
+  }
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7,
+      factual_assessment: factual.assessment,
+      cognition,
+      subjective_selection: selectionCheck.selection,
+      communication_directive: directive,
+      clarification_basis: clarificationBasis
+    }),
+    factual_authorization_trace: factual.trace
+  };
+}
+
+export function validateHostBoundConversationCognitionProposalV7(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): ConversationCognitionProposalV7Validation {
+  const emptyTrace: readonly FactualClaimAuthorizationTraceV0[] = Object.freeze([]);
+  if (!isRecord(value) || !isRecord(value["cognition"])) {
+    return { ok: false, detail: "conversation proposal/cognition: expected object", factual_authorization_trace: emptyTrace };
+  }
+  if (value["cognition"]["projection_hash"] !== projection.projection_hash) {
+    return { ok: false, detail: "conversation proposal.cognition.projection_hash: does not match the authoritative projection binding", factual_authorization_trace: emptyTrace };
+  }
+  const { projection_hash: _ignored, ...semanticCognition } = value["cognition"] as Record<string, unknown>;
+  void _ignored;
+  return validateConversationCognitionProposalV7(
+    { ...value, cognition: semanticCognition },
+    projection,
+    projection.projection_hash
+  );
+}
+
+export async function deriveConversationCognitionProposalHashV7(
+  proposal: ConversationCognitionProposalV7
+): Promise<HashV1> {
+  return hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V7, {
+    schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7,
+    factual_assessment: proposal.factual_assessment,
+    cognition: proposal.cognition,
+    subjective_selection: proposal.subjective_selection,
+    communication_directive: proposal.communication_directive,
+    clarification_basis: proposal.clarification_basis
+  });
 }

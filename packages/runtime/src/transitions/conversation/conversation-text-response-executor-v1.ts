@@ -27,16 +27,17 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
-import { ConversationCognitionProviderV6 } from "../../providers/behavior/conversation-cognition-provider-v6.js";
+import { ConversationCognitionProviderV7 } from "../../providers/behavior/conversation-cognition-provider-v7.js";
 import {
-  deriveConversationCognitionProposalHashV6,
+  deriveConversationCognitionProposalHashV7,
   type ClarificationBasisV0,
-  type ConversationCognitionProposalV6,
+  type ConversationCognitionProposalV7,
   type SubjectiveSelectionV1
 } from "./conversation-cognition-proposal.js";
+import type { FactualClaimAuthorizationTraceV0 } from "./factual-claim-authorization.js";
 import {
   buildLanguageRealizationInputV1,
-  buildLanguageRealizationInputV7,
+  buildLanguageRealizationInputV8,
   type LanguageEpisodeContentV0
 } from "./language-realization-input.js";
 
@@ -66,7 +67,9 @@ export interface ConversationResponseTraceV1 {
     | "conversation-cognition-proposal-v3"
     | "conversation-cognition-proposal-v4"
     | "conversation-cognition-proposal-v5"
-    | "conversation-cognition-proposal-v6";
+    | "conversation-cognition-proposal-v6"
+    | "conversation-cognition-proposal-v7";
+  readonly factual_authorization_trace?: readonly FactualClaimAuthorizationTraceV0[];
   readonly clarification_basis?: ClarificationBasisV0 | null;
   /**
    * C4.4 diagnostic only: the tagged turn-local subjective selection — the
@@ -101,10 +104,24 @@ export type ConversationTextResponseResultV1 =
       readonly kind: "FAILED";
       readonly stage: ConversationResponseFailureStageV1;
       readonly detail: string;
+      readonly diagnostics?: {
+        readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+      };
     };
 
-function failed(stage: ConversationResponseFailureStageV1, detail: string): ConversationTextResponseResultV1 {
-  return { kind: "FAILED", stage, detail };
+function failed(
+  stage: ConversationResponseFailureStageV1,
+  detail: string,
+  factualTrace?: readonly FactualClaimAuthorizationTraceV0[]
+): ConversationTextResponseResultV1 {
+  return {
+    kind: "FAILED",
+    stage,
+    detail,
+    ...(factualTrace !== undefined && factualTrace.length > 0
+      ? { diagnostics: { factual_authorization_trace: factualTrace } }
+      : {})
+  };
 }
 
 export class ConversationTextResponseExecutorV1 {
@@ -185,7 +202,7 @@ export class ConversationTextResponseExecutorV1 {
 
     // ---- shared cognition pipeline; current canonical projections use C3 V4 -------
     const legacyConversationProvider = new ConversationCognitionProviderV2(conversationTransport);
-    const c2ConversationProvider = new ConversationCognitionProviderV6(conversationTransport);
+    const c2ConversationProvider = new ConversationCognitionProviderV7(conversationTransport);
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = projection.schema_version === "cognitive-context-projection-v2"
@@ -244,7 +261,11 @@ export class ConversationTextResponseExecutorV1 {
         cognitionCapabilities
       );
     } catch (error) {
-      return failed("COGNITION_FAILED", error instanceof Error ? error.message : String(error));
+      return failed(
+        "COGNITION_FAILED",
+        error instanceof Error ? error.message : String(error),
+        c2ConversationProvider.lastFactualAuthorizationTrace
+      );
     }
     if (cognitionResult.outcome.kind !== "NO_OP") {
       return failed("COGNITION_FAILED", `cognition outcome: ${cognitionResult.outcome.kind}`);
@@ -274,21 +295,24 @@ export class ConversationTextResponseExecutorV1 {
     // directive + clarification_basis, explicitly null where absent); the frozen
     // v3 surface keeps its historical V1 domain and null-intent language handoff.
     const conversationProposalHash = isV2Projection
-      ? await deriveConversationCognitionProposalHashV6(conversationProposal as ConversationCognitionProposalV6)
+      ? await deriveConversationCognitionProposalHashV7(conversationProposal as ConversationCognitionProposalV7)
       : await hashEnvelope("characteros-next/runtime/conversation-cognition-proposal/v1", {
           schema_version: "conversation-cognition-proposal-v1",
           cognition: cognitionResult.cognition,
           communication_directive: directive
         });
     const proposalSchemaVersion = isV2Projection
-      ? ("conversation-cognition-proposal-v6" as const)
+      ? ("conversation-cognition-proposal-v7" as const)
       : ("conversation-cognition-proposal-v1" as const);
+    const factualAuthorizationTrace = isV2Projection
+      ? c2ConversationProvider.lastFactualAuthorizationTrace
+      : undefined;
 
     if (directive.kind === "CLARIFY_MISSING_CONTEXT") {
       if (clarificationBasis === null) {
         return failed("COGNITION_FAILED", "CLARIFY without a lawful clarification basis");
       }
-      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, proposalSchemaVersion, clarificationBasis, factualAppraisalTrace);
+      return this.clarifyBranch(snapshot, sourceRevision, requestId.value, evidenceProjection, conversationProposalHash, proposalSchemaVersion, clarificationBasis, factualAppraisalTrace, factualAuthorizationTrace);
     }
     return this.realizeBranch(
       snapshot,
@@ -296,12 +320,13 @@ export class ConversationTextResponseExecutorV1 {
       requestId.value,
       evidenceProjection,
       cognitionResult.cognition,
-      isV2Projection ? conversationProposal as ConversationCognitionProposalV6 : null,
+      isV2Projection ? conversationProposal as ConversationCognitionProposalV7 : null,
       conversationProposalHash,
       proposalSchemaVersion,
       directive,
       lawfulEvidence(evidenceProjection),
-      factualAppraisalTrace
+      factualAppraisalTrace,
+      factualAuthorizationTrace
     );
   }
 
@@ -311,9 +336,10 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6" | "conversation-cognition-proposal-v7",
     clarificationBasis: ClarificationBasisV0,
-    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
+    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string },
+    factualAuthorizationTrace?: readonly FactualClaimAuthorizationTraceV0[]
   ): Promise<ConversationTextResponseResultV1> {
     const built = await buildClarificationBehaviorV0({
       subject_id: snapshot.identity.subject_id,
@@ -347,6 +373,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: clarificationBasis,
+        ...(factualAuthorizationTrace !== undefined ? { factual_authorization_trace: factualAuthorizationTrace } : {}),
         subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,
@@ -361,12 +388,13 @@ export class ConversationTextResponseExecutorV1 {
     requestId: IdentifierV0,
     evidenceProjection: CognitiveContextProjectionAnyVersion,
     cognition: CognitionProposalV0,
-    c2Proposal: ConversationCognitionProposalV6 | null,
+    c2Proposal: ConversationCognitionProposalV7 | null,
     conversationProposalHash: string,
-    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6",
+    proposalSchemaVersion: "conversation-cognition-proposal-v1" | "conversation-cognition-proposal-v2" | "conversation-cognition-proposal-v3" | "conversation-cognition-proposal-v4" | "conversation-cognition-proposal-v5" | "conversation-cognition-proposal-v6" | "conversation-cognition-proposal-v7",
     directive: CommunicationDirectiveV0,
     lawfulEvidence: ReadonlySet<string>,
-    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string }
+    factualAppraisalTrace?: { outcome: "COMMITTED" | "ALREADY_COMPLETED" | "INSUFFICIENT_CONTEXT"; appraisal_ref: string },
+    factualAuthorizationTrace?: readonly FactualClaimAuthorizationTraceV0[]
   ): Promise<ConversationTextResponseResultV1> {
     const languageProvider = this.deps.languageRealizationProvider;
     if (languageProvider === null) return failed("REQUEST_INVALID", "language realization provider not wired");
@@ -399,7 +427,7 @@ export class ConversationTextResponseExecutorV1 {
           communication_directive: directive,
           memory_episode_contents: episodeContents
         })
-      : await buildLanguageRealizationInputV7({
+      : await buildLanguageRealizationInputV8({
           subject_id: snapshot.identity.subject_id,
           source_revision: sourceRevision as never,
           response_request_id: requestId,
@@ -452,6 +480,7 @@ export class ConversationTextResponseExecutorV1 {
         conversation_cognition_proposal_hash: conversationProposalHash,
         conversation_proposal_schema_version: proposalSchemaVersion,
         clarification_basis: null,
+        ...(factualAuthorizationTrace !== undefined ? { factual_authorization_trace: factualAuthorizationTrace } : {}),
         subjective_selection: c2Proposal?.subjective_selection ?? { kind: "NO_SUBJECTIVE_SELECTION" },
         cognition_projection_hash: evidenceProjection.projection_hash,
         realization_input_hash: inputHash,

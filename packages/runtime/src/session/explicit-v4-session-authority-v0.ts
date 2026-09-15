@@ -42,6 +42,7 @@ import type { RuntimeContext } from "../types/runtime-context.js";
 import { InMemoryConversationDeliveryLedger, type ConversationDeliveryLedgerAuthority } from "../transitions/conversation/behavior-delivery-ledger.js";
 import { InMemoryConversationIngressLedger, type ConversationIngressLedgerAuthority } from "../transitions/conversation/conversation-ingress-ledger.js";
 import { ConversationTextResponseExecutorV1, type ConversationResponseTraceV1 } from "../transitions/conversation/conversation-text-response-executor-v1.js";
+import type { FactualClaimAuthorizationTraceV0 } from "../transitions/conversation/factual-claim-authorization.js";
 import { FactualEventAppraisalExecutorV0 } from "../factual-event-appraisal/factual-event-appraisal-executor.js";
 import { createCanonicalAffectApplicationV0ForExplicitV4 } from "../transitions/affect-application/affect-application-executor-v0.js";
 import { InMemoryAffectEventAuthorityV0 } from "../authority/affect-event-authority-v0.js";
@@ -158,6 +159,8 @@ export interface SessionResponseResultV0 {
   readonly cognitionTrace: ConversationResponseTraceV1 | null;
   readonly validationStage: string | null;
   readonly validationDetail: string | null;
+  /** Diagnostic-only; never authoritative and never model-visible. */
+  readonly factualAuthorizationTrace: readonly FactualClaimAuthorizationTraceV0[] | null;
 }
 
 /** One completed unit of mandatory prior-event lifecycle work. */
@@ -1012,7 +1015,15 @@ export class ExplicitV4SessionAuthorityV0 {
       capabilities as never
     );
     if (result.kind !== "OUTPUT_READY") {
-      return { kind: "FAILED", behavior: null, directive: null, cognitionTrace: null, validationStage: result.stage, validationDetail: result.detail };
+      return {
+        kind: "FAILED",
+        behavior: null,
+        directive: null,
+        cognitionTrace: null,
+        validationStage: result.stage,
+        validationDetail: result.detail,
+        factualAuthorizationTrace: result.diagnostics?.factual_authorization_trace ?? null
+      };
     }
     return {
       kind: "OUTPUT_READY",
@@ -1020,7 +1031,8 @@ export class ExplicitV4SessionAuthorityV0 {
       directive: result.trace.communication_directive_kind,
       cognitionTrace: result.trace,
       validationStage: null,
-      validationDetail: null
+      validationDetail: null,
+      factualAuthorizationTrace: result.trace.factual_authorization_trace ?? null
     };
   }
 

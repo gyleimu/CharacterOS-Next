@@ -40,7 +40,7 @@ export interface Observation {
   validated_cognition: CognitionProposalV0 | null;
   // C2 added LanguageRealizationInputV4 (host-bound shape), C3 added V5, C4 added V6 and C4.4 added V7; this
   // frozen experiment consumes the historical structured language input only.
-  language: { input: Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" | "language-realization-input-v6" | "language-realization-input-v7" }>; input_hash: string; lawful_evidence_refs: string[] } | null;
+  language: { input: Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" | "language-realization-input-v6" | "language-realization-input-v7" | "language-realization-input-v8" }>; input_hash: string; lawful_evidence_refs: string[] } | null;
   validated_draft: LanguageRealizationDraftV0 | null;
   cognition_stage: StageTrace;
   language_stage: StageTrace;
@@ -139,7 +139,7 @@ export async function observeResponse(world: World, transports: { cognition: Mod
     const realize = provider.realize.bind(provider);
     // Decorate the production-created instance, not a replacement provider.
     provider.realize = async request => {
-      o.language = { input: structuredClone(request.input) as Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" | "language-realization-input-v6" | "language-realization-input-v7" }>, input_hash: request.input_hash,
+      o.language = { input: structuredClone(request.input) as Exclude<LanguageRealizationRequestV0["input"], { schema_version: "language-realization-input-v4" | "language-realization-input-v5" | "language-realization-input-v6" | "language-realization-input-v7" | "language-realization-input-v8" }>, input_hash: request.input_hash,
         lawful_evidence_refs: [...request.lawful_evidence_refs].sort() };
       await save("language-input", o.language);
       try {

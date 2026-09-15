@@ -40,6 +40,7 @@ import {
 } from "../transitions/personality/index.js";
 import type { PendingLifecycleWorkV0, SessionDurableStateV0 } from "./session-contracts-v0.js";
 import type { BeliefAdaptationTurnReportV0 } from "./belief-adaptation-wiring-v0.js";
+import type { FactualClaimAuthorizationTraceV0 } from "../transitions/conversation/factual-claim-authorization.js";
 import {
   ExplicitV4SessionAuthorityV0,
   type ExplicitV4SessionAuthorityOptionsV0,
@@ -91,6 +92,8 @@ export interface InteractiveTurnOutcomeV0 {
   readonly current_intent: string | null;
   readonly language_call_required: boolean;
   readonly language_status: string;
+  /** Diagnostic-only factual authorization trace; never authoritative. */
+  readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[] | null;
   /** Feedback committed for the PREVIOUS turn's delivered behavior on this turn. */
   readonly completed_prior_outcome: {
     readonly turn_index: number;
@@ -498,6 +501,7 @@ export class InteractiveSubjectRuntimeV0 {
     let beliefAdaptation: BeliefAdaptationTurnReportV0 | null = null;
     let personalityAdaptation: unknown = null;
     let relationshipFamiliarity: RelationshipFamiliarityTurnReportV0 | null = null;
+    let factualAuthorizationTrace: readonly FactualClaimAuthorizationTraceV0[] | null = null;
 
     try {
       await this.authority.advanceTime(this.options.interval_ticks ?? 1, tag);
@@ -526,6 +530,7 @@ export class InteractiveSubjectRuntimeV0 {
           observation_ref: admitted.observation_ref
         }
       });
+      factualAuthorizationTrace = response.factualAuthorizationTrace;
       if (response.kind !== "OUTPUT_READY" || response.behavior === null) {
         throw new Error(
           `cognition/language path failed (${response.validationStage ?? "UNKNOWN"}): ${response.validationDetail ?? "no detail"}`
@@ -643,6 +648,7 @@ export class InteractiveSubjectRuntimeV0 {
         current_intent: readCurrentIntent(parsedRaw),
         language_call_required: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0",
         language_status: response.cognitionTrace?.realization_source === "LANGUAGE_PROVIDER_V0" ? "VALID" : "NOT_REQUIRED_CLARIFY",
+        factual_authorization_trace: factualAuthorizationTrace,
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
         personality_adaptation: personalityAdaptation,
@@ -690,6 +696,7 @@ export class InteractiveSubjectRuntimeV0 {
         current_intent: null,
         language_call_required: false,
         language_status: "NOT_REACHED",
+        factual_authorization_trace: factualAuthorizationTrace,
         completed_prior_outcome: completedPriorOutcome,
         belief_adaptation: beliefAdaptation,
         personality_adaptation: personalityAdaptation,

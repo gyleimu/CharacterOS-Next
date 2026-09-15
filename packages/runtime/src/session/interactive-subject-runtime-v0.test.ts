@@ -83,7 +83,7 @@ function fakeCognitionTransport(mode: () => Mode, recorder: TransportRecorder): 
       }
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v6",
+          schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {

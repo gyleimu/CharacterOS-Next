@@ -163,7 +163,7 @@ function stubOllama(metadata: Record<string, unknown>): { calls: CapturedCall[] 
     const user = body.messages?.find((message) => message.role === "user")?.content ?? "";
     const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
     const content = JSON.stringify({
-      schema_version: "conversation-cognition-proposal-v6",
+      schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
       factual_assessment: { claims: [] },
       cognition: {

@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
-  CONVERSATION_COGNITION_SYSTEM_PROMPT_V6,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V7,
   type ModelTransportRequestV0,
   type ModelTransportResponseV0,
   type ModelTransportV0
@@ -63,7 +63,7 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v6",
+          schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {
@@ -315,7 +315,7 @@ describe("PERSISTENT_SUBJECT_CONFIGURATION_V0 — configuration + resolution", (
     await host.send("Hello there.");
     const request = recorder.requests[0];
     expect(request?.messages).toHaveLength(2);
-    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V6);
+    expect(request?.messages[0]?.content).toBe(CONVERSATION_COGNITION_SYSTEM_PROMPT_V7);
     const userContent = request?.messages[1]?.content ?? "";
     expect(userContent).toContain(`[identity] subject_id="${config.subject_id}"`);
     expect(userContent).not.toContain("Alice");

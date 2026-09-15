@@ -491,7 +491,7 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v6",
+          schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: cognitionIntent === null
             ? { kind: "NO_SUBJECTIVE_SELECTION" }
             : { kind: "SUBJECTIVE_SELECTION", stance: cognitionIntent, subjective_rationale: null },
@@ -979,8 +979,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
     expect(resultA.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultA.cognition_intent, subjective_rationale: null });
     expect(resultB.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultB.cognition_intent, subjective_rationale: null });
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v7");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v7");
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v8");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v8");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
@@ -1010,7 +1010,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
     expect(result.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: selected, subjective_rationale: null });
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v7");
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v8");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1027,7 +1027,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v6",
+            schema_version: "conversation-cognition-proposal-v7",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
             factual_assessment: { claims: [] },
             cognition: {
@@ -1082,6 +1082,102 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(result.behavior.text).toBe("Could you clarify what you mean?");
     expect(result.trace.realization_source).toBe("HOST_CLARIFICATION_V0");
     expect(languageCalls).toBe(0);
+  });
+
+  it("R1 invalid factual authority rejects before proposal hash, Language, delivery, or persistence", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(
+      world,
+      "evt-downstream-r1-authority",
+      "There is a free 30-minute slot with no conflicting commitments. The optional review would take 20 minutes."
+    );
+    let languageCalls = 0;
+    const conversationTransport: ModelTransportV0 = {
+      complete: async (request) => {
+        const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+        const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
+        const observationHandle = handleForAdvertisedRef(user, observationRef);
+        return {
+          model: "fake-canonical-cognition",
+          content: JSON.stringify({
+            schema_version: "conversation-cognition-proposal-v7",
+            factual_assessment: {
+              claims: [{
+                kind: "DERIVED_RESULT",
+                text: "Because the task is optional and the subject has capacity, the facts permit either volunteering or declining.",
+                source_handles: [observationHandle]
+              }]
+            },
+            cognition: {
+              schema_version: "cognition-proposal-v0",
+              reasoning_summary: "choose whether to volunteer",
+              relevant_memory_handles: [],
+              considered_handles: [observationHandle],
+              current_intent: "volunteer for the review",
+              confidence: 0.8,
+              uncertainty: 0.2,
+              action_intent: null,
+              evidence_handles: [observationHandle]
+            },
+            subjective_selection: {
+              kind: "SUBJECTIVE_SELECTION",
+              stance: "I would volunteer for the review.",
+              subjective_rationale: "I prefer to help."
+            },
+            communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+            clarification_basis: null
+          })
+        };
+      }
+    };
+    const root = new RuntimeCompositionRoot({
+      subjectCore: world.assembly.facade as never,
+      producerAuthorizationIssuer: world.issuer,
+      memoryRepository: world.repo,
+      retrieval: { retrieve: async () => { throw new Error("no retrieval"); } } as never,
+      cognitionProvider: { propose: async () => { throw new Error("wrong provider"); } } as never,
+      conversationCognitionTransport: conversationTransport,
+      languageTransport: {
+        complete: async () => {
+          languageCalls += 1;
+          throw new Error("language must not be called after factual rejection");
+        }
+      },
+      episodeContentReader: createEpisodeContentReaderV0(world.repo)
+    });
+    const snapshot = await readSnapshot(world);
+    const minter = createMiclStageMinter(world.assembly.facade as never, new InMemoryMiclWorkflowStore(), {
+      micl_id: "micl-downstream-r1-authority" as never,
+      micl_request_fingerprint: "sha256:abababababababababababababababababababababababababababababababab" as never,
+      stage_key: "OBSERVATION"
+    });
+    const executor = new ConversationTextResponseExecutorV1({
+      ...root.dependencies(),
+      subjectCore: minter.core()
+    });
+    const bundlesBefore = world.assembly.storeRead.getCommittedBundles().length;
+    const result = await executor.execute(
+      ctxOf(snapshot),
+      { response_request_id: "response-downstream-r1-authority" as never, cause_refs: [] },
+      minter.capabilities(await currentBindings(world.repo, snapshot)) as never
+    );
+    expect(result.kind).toBe("FAILED");
+    if (result.kind !== "FAILED") return;
+    expect(result.stage).toBe("COGNITION_FAILED");
+    expect(result.detail).toContain("cognition provider failed");
+    expect(result).not.toHaveProperty("trace.conversation_cognition_proposal_hash");
+    expect(result.diagnostics?.factual_authorization_trace[0]).toMatchObject({
+      status: "REJECTED",
+      rejection_code: "REJECTED_UNSUPPORTED_CLAIM_KIND",
+      claim_kind: "DERIVED_RESULT",
+      canonical_source_refs: [snapshot.context.current_observation_ref]
+    });
+    expect(result.diagnostics?.factual_authorization_trace[0]?.raw_claim).toMatchObject({
+      kind: "DERIVED_RESULT",
+      source_handles: [expect.stringMatching(/^F[1-9][0-9]*$/)]
+    });
+    expect(languageCalls).toBe(0);
+    expect(world.assembly.storeRead.getCommittedBundles()).toHaveLength(bundlesBefore);
   });
 });
 
