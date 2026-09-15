@@ -53,6 +53,7 @@ export {
   VOICE_RUNTIME_DEFAULT_BASE_URL_V0,
   VOICE_RUNTIME_HEALTH_PATH_V0,
   VOICE_RUNTIME_TTS_PATH_V0,
+  VOICE_RUNTIME_TTS_CANCEL_PATH_V0,
   VOICE_RUNTIME_TTS_STREAM_PATH_V0,
   VOICE_RUNTIME_VOICES_PATH_V0,
   VoiceRuntimeClientV0,
@@ -60,12 +61,15 @@ export {
   type AsrListenResultV0,
   type AsrRuntimeRequestV0,
   type AsrRuntimeResultV0,
+  type SpeechStreamChunkV0,
+  type SpeechStreamResultV0,
   type TtsRuntimeRequestV0,
   type TtsRuntimeResultV0,
   type VoiceListResultV0,
   type VoiceModelStatusV0,
   type VoiceRuntimeConfigV0,
   type VoiceRuntimeHealthV0,
+  type VoiceRuntimeStateV0,
   type VoiceVramStatusV0
 } from "./runtime-client.js";
 

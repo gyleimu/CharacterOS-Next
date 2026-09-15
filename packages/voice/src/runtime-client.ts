@@ -24,6 +24,7 @@ export const VOICE_RUNTIME_DEFAULT_BASE_URL_V0 = "http://127.0.0.1:8181" as cons
 export const VOICE_RUNTIME_HEALTH_PATH_V0 = "/health" as const;
 export const VOICE_RUNTIME_TTS_PATH_V0 = "/tts" as const;
 export const VOICE_RUNTIME_TTS_STREAM_PATH_V0 = "/tts/stream" as const;
+export const VOICE_RUNTIME_TTS_CANCEL_PATH_V0 = "/tts/cancel" as const;
 export const VOICE_RUNTIME_ASR_PATH_V0 = "/asr" as const;
 export const VOICE_RUNTIME_ASR_LISTEN_PATH_V0 = "/asr/listen" as const;
 export const VOICE_RUNTIME_VOICES_PATH_V0 = "/voices" as const;
@@ -60,6 +61,8 @@ export interface VoiceModelStatusV0 {
   readonly model_id: string;
   readonly device: string;
   readonly load_ms: number | null;
+  /** Why the model is unavailable, when it is. */
+  readonly error: string | null;
 }
 
 export interface VoiceVramStatusV0 {
@@ -68,8 +71,22 @@ export interface VoiceVramStatusV0 {
   readonly peak_mb: number;
 }
 
+/**
+ * Whole-runtime lifecycle, as reported by the service.
+ *
+ * `LOADING`  models are still coming up; speech requests may be refused.
+ * `READY`    both recognition and synthesis are usable.
+ * `DEGRADED` exactly one of them is usable — the runtime stays partly useful.
+ * `FAILED`   neither is usable; CharacterOS falls back to text.
+ */
+export type VoiceRuntimeStateV0 = "LOADING" | "READY" | "DEGRADED" | "FAILED";
+
 export interface VoiceRuntimeHealthV0 {
   readonly status: "ok";
+  readonly state: VoiceRuntimeStateV0;
+  readonly device: string;
+  readonly fp16: boolean;
+  readonly uptime_ms: number;
   readonly asr: VoiceModelStatusV0;
   readonly tts: VoiceModelStatusV0;
   readonly vram: VoiceVramStatusV0 | null;
@@ -144,6 +161,38 @@ export interface VoiceListResultV0 {
   readonly voices: readonly VoiceProfileV0[];
 }
 
+/**
+ * One increment of streamed audio: raw signed-16-bit little-endian mono PCM.
+ *
+ * Deliberately headerless. The sample rate is known from the response and does
+ * not change mid-stream, so per-chunk framing would only add overhead.
+ */
+export interface SpeechStreamChunkV0 {
+  readonly pcm: Uint8Array;
+  readonly sample_rate: number;
+  /** Index of this chunk within the utterance, starting at 0. */
+  readonly index: number;
+  /** Milliseconds from request start to this chunk arriving. */
+  readonly elapsed_ms: number;
+}
+
+/**
+ * Measurements for one streamed utterance.
+ *
+ * `ttfa_ms` is the number that matters: request start → first audio chunk the
+ * caller could play. It is measured on the client side of the socket, so it
+ * includes transport and is not a model-internal figure.
+ */
+export interface SpeechStreamResultV0 {
+  readonly sample_rate: number;
+  readonly chunks: number;
+  readonly bytes: number;
+  readonly audio_ms: number;
+  readonly ttfa_ms: number | null;
+  readonly total_ms: number;
+  readonly cancelled: boolean;
+}
+
 // ----------------------------------------------------------------------------------
 // §4 Failure classification
 // ----------------------------------------------------------------------------------
@@ -151,12 +200,15 @@ export interface VoiceListResultV0 {
 function classifyNetworkError(error: unknown, timeout_ms: number): VoiceFailureV0 {
   if (error instanceof VoiceFailureV0) return error;
   const name = error instanceof Error ? error.name : "";
-  if (name === "TimeoutError" || name === "AbortError") {
+  if (name === "TimeoutError") {
     return new VoiceFailureV0(
       "VOICE_RUNTIME_TIMEOUT",
       `voice runtime did not answer within ${timeout_ms}ms`,
       error
     );
+  }
+  if (name === "AbortError") {
+    return new VoiceFailureV0("VOICE_CANCELLED", "voice request was cancelled", error);
   }
   const detail = error instanceof Error ? error.message : String(error);
   return new VoiceFailureV0("VOICE_RUNTIME_UNAVAILABLE", detail, error);
@@ -233,15 +285,119 @@ export class VoiceRuntimeClientV0 {
     }
   }
 
+  /**
+   * One complete utterance, generated in a single pass.
+   *
+   * Audio is only returned when the caller asked for it (`return_audio`); the
+   * runtime can also play it and/or write it to `save_path` on its own host.
+   */
   async synthesize(
     request: TtsRuntimeRequestV0,
     signal?: AbortSignal
   ): Promise<TtsRuntimeResultV0> {
     return await this.requestJson<TtsRuntimeResultV0>(
-      request.stream ? VOICE_RUNTIME_TTS_STREAM_PATH_V0 : VOICE_RUNTIME_TTS_PATH_V0,
-      { method: "POST", body: request, timeout_ms: this.config.tts_timeout_ms },
+      VOICE_RUNTIME_TTS_PATH_V0,
+      { method: "POST", body: { ...request, stream: false }, timeout_ms: this.config.tts_timeout_ms },
       signal
     );
+  }
+
+  /**
+   * Streams one utterance as PCM chunks, invoking `onChunk` as each arrives.
+   *
+   * This is genuinely incremental: chunks are read off the socket as the model
+   * produces them, so a caller can begin playback before generation finishes.
+   * `ttfa_ms` is measured here, on the client side of the socket.
+   */
+  async synthesizeStream(
+    request: TtsRuntimeRequestV0,
+    options?: {
+      readonly onChunk?: (chunk: SpeechStreamChunkV0) => void;
+      readonly signal?: AbortSignal;
+    }
+  ): Promise<SpeechStreamResultV0> {
+    const timeout_ms = this.config.tts_timeout_ms;
+    const signals: AbortSignal[] = [AbortSignal.timeout(timeout_ms)];
+    if (options?.signal !== undefined) signals.push(options.signal);
+    const started = performance.now();
+
+    let response: Response;
+    try {
+      response = await fetch(`${this.config.base_url}${VOICE_RUNTIME_TTS_STREAM_PATH_V0}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...request, stream: true }),
+        signal: AbortSignal.any(signals)
+      });
+    } catch (error) {
+      throw classifyNetworkError(error, timeout_ms);
+    }
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      throw new VoiceFailureV0(
+        "VOICE_RUNTIME_REJECTED",
+        `streaming synthesis returned ${response.status}: ${detail.slice(0, 500)}`
+      );
+    }
+    if (response.body === null) {
+      throw new VoiceFailureV0("VOICE_RUNTIME_MALFORMED", "streaming response had no body");
+    }
+    const sample_rate = Number(response.headers.get("X-Voice-Sample-Rate") ?? 24000);
+
+    const reader = response.body.getReader();
+    let index = 0;
+    let bytes = 0;
+    let ttfa_ms: number | null = null;
+    let cancelled = false;
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value === undefined || value.byteLength === 0) continue;
+        const elapsed_ms = Math.round(performance.now() - started);
+        if (ttfa_ms === null) ttfa_ms = elapsed_ms;
+        bytes += value.byteLength;
+        options?.onChunk?.({ pcm: value, sample_rate, index, elapsed_ms });
+        index += 1;
+      }
+    } catch (error) {
+      if (options?.signal?.aborted === true) {
+        cancelled = true;
+      } else {
+        throw classifyNetworkError(error, timeout_ms);
+      }
+    } finally {
+      reader.releaseLock();
+    }
+
+    return {
+      sample_rate,
+      chunks: index,
+      bytes,
+      audio_ms: Math.round((bytes / 2 / sample_rate) * 1000),
+      ttfa_ms,
+      total_ms: Math.round(performance.now() - started),
+      cancelled
+    };
+  }
+
+  /**
+   * Stops the runtime's in-flight generation and playback.
+   *
+   * Best effort by design: it exists so that a user interruption can silence the
+   * speaker, and a runtime that is already gone has nothing to cancel. It never
+   * throws, and it never touches CharacterOS state.
+   */
+  async cancel(signal?: AbortSignal): Promise<void> {
+    try {
+      await this.requestJson<{ cancelled: boolean }>(
+        VOICE_RUNTIME_TTS_CANCEL_PATH_V0,
+        { method: "POST", body: {}, timeout_ms: this.config.health_timeout_ms },
+        signal
+      );
+    } catch {
+      // Cancellation is a courtesy; the caller has already stopped listening.
+    }
   }
 
   async transcribe(

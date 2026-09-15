@@ -37,6 +37,7 @@ import {
 } from "./projection.js";
 import type { SpeechRecognitionResultV0, VoiceAsrAdapterV0 } from "./adapters/sensevoice-asr-adapter.js";
 import type { SpeechSynthesisResultV0, VoiceTtsAdapterV0 } from "./adapters/cosyvoice-tts-adapter.js";
+import type { SpeechStreamResultV0 } from "./runtime-client.js";
 
 // ----------------------------------------------------------------------------------
 // §1 The narrow CharacterOS port
@@ -79,6 +80,8 @@ export interface VoiceSessionTurnV0 {
   readonly expression: SpeechExpressionV0 | null;
   /** `null` when synthesis was not attempted or failed. */
   readonly speech: SpeechSynthesisResultV0 | null;
+  /** Measurements when the reply was streamed; `null` for one-pass synthesis. */
+  readonly speech_stream: SpeechStreamResultV0 | null;
   /**
    * Why speech is missing, when it is. Present so callers can report a degraded
    * channel without treating it as a turn failure.
@@ -113,6 +116,9 @@ export interface VoiceSessionDepsV0 {
 }
 
 export class VoiceSessionV0 {
+  /** Controller for the utterance currently being spoken, if any. */
+  private activeSpeech: AbortController | null = null;
+
   constructor(
     private readonly config: VoiceSessionConfigV0,
     private readonly deps: VoiceSessionDepsV0
@@ -126,6 +132,30 @@ export class VoiceSessionV0 {
   /** True when this deployment can speak. */
   canSpeak(): boolean {
     return this.deps.tts !== undefined;
+  }
+
+  /** True while a reply is being spoken. */
+  isSpeaking(): boolean {
+    return this.activeSpeech !== null;
+  }
+
+  /**
+   * Interruption: stops the reply currently being spoken.
+   *
+   * Aborts the local request AND asks the runtime to stop generating and stop
+   * the speaker, so an interruption actually silences the room rather than just
+   * detaching the client. Deliberately minimal — there is no full-duplex
+   * turn-taking here — and it can never touch CharacterOS state: the turn has
+   * already committed by the time anything is spoken.
+   */
+  async cancelSpeech(): Promise<void> {
+    const controller = this.activeSpeech;
+    this.activeSpeech = null;
+    controller?.abort();
+    const tts = this.deps.tts;
+    if (tts?.cancel !== undefined) {
+      await tts.cancel();
+    }
   }
 
   /**
@@ -237,12 +267,21 @@ export class VoiceSessionV0 {
         turn,
         expression: null,
         speech: null,
+        speech_stream: null,
         speech_failure: null
       };
     }
 
     if (!this.config.speak || this.deps.tts === undefined) {
-      return { turn_ref: ref, recognized, turn, expression: null, speech: null, speech_failure: null };
+      return {
+        turn_ref: ref,
+        recognized,
+        turn,
+        expression: null,
+        speech: null,
+        speech_stream: null,
+        speech_failure: null
+      };
     }
 
     let expression: SpeechExpressionV0;
@@ -260,6 +299,7 @@ export class VoiceSessionV0 {
         turn,
         expression: null,
         speech: null,
+        speech_stream: null,
         speech_failure:
           error instanceof VoiceFailureV0
             ? error
@@ -267,12 +307,38 @@ export class VoiceSessionV0 {
       };
     }
 
+    const request = this.buildRequest(turn.reply_text, expression);
+    const tts = this.deps.tts;
+    // One controller per utterance, so `cancelSpeech()` can silence exactly the
+    // speech that is playing and nothing else.
+    const controller = new AbortController();
+    this.activeSpeech = controller;
+    const combined = signal === undefined ? controller.signal : AbortSignal.any([signal, controller.signal]);
+
     try {
-      const speech = await this.deps.tts.synthesize(this.buildRequest(turn.reply_text, expression), {
-        play: true,
-        ...(signal === undefined ? {} : { signal })
-      });
-      return { turn_ref: ref, recognized, turn, expression, speech, speech_failure: null };
+      const useStreaming = this.config.streaming && tts.synthesizeStream !== undefined;
+      if (useStreaming && tts.synthesizeStream !== undefined) {
+        const stream = await tts.synthesizeStream(request, { play: true, signal: combined });
+        return {
+          turn_ref: ref,
+          recognized,
+          turn,
+          expression,
+          speech: null,
+          speech_stream: stream,
+          speech_failure: null
+        };
+      }
+      const speech = await tts.synthesize(request, { play: true, signal: combined });
+      return {
+        turn_ref: ref,
+        recognized,
+        turn,
+        expression,
+        speech,
+        speech_stream: null,
+        speech_failure: null
+      };
     } catch (error) {
       // GRACEFUL DEGRADATION: the text turn stands; only the audio is missing.
       return {
@@ -281,11 +347,14 @@ export class VoiceSessionV0 {
         turn,
         expression,
         speech: null,
+        speech_stream: null,
         speech_failure:
           error instanceof VoiceFailureV0
             ? error
             : new VoiceFailureV0("VOICE_RUNTIME_UNAVAILABLE", "speech synthesis failed", error)
       };
+    } finally {
+      if (this.activeSpeech === controller) this.activeSpeech = null;
     }
   }
 }
