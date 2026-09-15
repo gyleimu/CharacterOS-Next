@@ -1,0 +1,1117 @@
+{
+  "schema_version": "zero-factual-authority-review-inventory-v0",
+  "model_calls": 0,
+  "scanned_files": 60,
+  "files_with_zero_claim_fixtures": 36,
+  "message_type_counts": {
+    "OTHER_NONFACTUAL_CONTINUATION": 101,
+    "INSTRUCTIONAL_HOST_COMMAND": 27,
+    "GREETING": 13,
+    "QUESTION_MAYBE_FACTUAL": 15,
+    "ACKNOWLEDGEMENT": 4
+  },
+  "inventory": [
+    {
+      "file": "product/sandbox/src/appraisal-call-boundaries.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "First factual event.",
+        "Second factual event.",
+        "/memory"
+      ],
+      "message_types": [
+        {
+          "message": "First factual event.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second factual event.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/memory",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/cross-context-continuity.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Alice asks how the review document should be organized.",
+        "Alice asks whether the checklist item can be closed.",
+        "Alice asks about the review.",
+        "Alice asks something else while stale."
+      ],
+      "message_types": [
+        {
+          "message": "Alice asks how the review document should be organized.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Alice asks whether the checklist item can be closed.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Alice asks about the review.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Alice asks something else while stale.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/environment-adaptation-parity.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Alice asks for the review status."
+      ],
+      "message_types": [
+        {
+          "message": "Alice asks for the review status.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/environment-continuity.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "product/sandbox/src/explicit-time-advance.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Alice asks about the review."
+      ],
+      "message_types": [
+        {
+          "message": "Alice asks about the review.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/external-observation-ingress.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Alice says hello.",
+        "Alice asks what happened at the front door."
+      ],
+      "message_types": [
+        {
+          "message": "Alice says hello.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Alice asks what happened at the front door.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/interactive-subject.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello there.",
+        "one",
+        "two",
+        "Hello.",
+        "Again?",
+        "First.",
+        "I usually drink coffee without sugar.",
+        "Thanks, noted.",
+        "I'm getting coffee. How should I order it?",
+        "My favorite color is teal.",
+        "I'm buying a notebook. Any color suggestions?",
+        "/status"
+      ],
+      "message_types": [
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        },
+        {
+          "message": "one",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "two",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Hello.",
+          "type": "GREETING"
+        },
+        {
+          "message": "Again?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "First.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I usually drink coffee without sugar.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Thanks, noted.",
+          "type": "ACKNOWLEDGEMENT"
+        },
+        {
+          "message": "I'm getting coffee. How should I order it?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "My favorite color is teal.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I'm buying a notebook. Any color suggestions?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "/status",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/memory-inspection.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "/memory",
+        "My favorite color is teal.",
+        "That's good to know.",
+        "Remember this.",
+        "Observation one.",
+        "Outcome one.",
+        "/memory 1",
+        "/help",
+        "Debug memory.",
+        "Some memory."
+      ],
+      "message_types": [
+        {
+          "message": "/memory",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "My favorite color is teal.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "That's good to know.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Remember this.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Observation one.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Outcome one.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/memory 1",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/help",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Debug memory.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Some memory.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/personality-genesis-prior.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello there."
+      ],
+      "message_types": [
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/personality-lived-evidence.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Another unfamiliar option appeared.",
+        "I tried yet another unfamiliar option.",
+        "The weather is unremarkable.",
+        "Nothing of note happened.",
+        "Something happened."
+      ],
+      "message_types": [
+        {
+          "message": "Another unfamiliar option appeared.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I tried yet another unfamiliar option.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "The weather is unremarkable.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Nothing of note happened.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Something happened.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/product-appraisal-reuse.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "First message.",
+        "Second message closes the previous reply.",
+        "/exit",
+        "Second message.",
+        "/diagnostics"
+      ],
+      "message_types": [
+        {
+          "message": "First message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second message closes the previous reply.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/exit",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Second message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/diagnostics",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/product-configuration.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "/config",
+        "Hello, remember this.",
+        "/help"
+      ],
+      "message_types": [
+        {
+          "message": "/config",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Hello, remember this.",
+          "type": "GREETING"
+        },
+        {
+          "message": "/help",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/product-one-life.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "What should I keep in mind about my notebook?",
+        "/help",
+        "/status",
+        "/state",
+        "Hello, this is a human experience.",
+        "/environment 1",
+        "/time 30",
+        "/memory",
+        "/life",
+        "First lived event.",
+        "/time 0",
+        "A human message becomes lived history."
+      ],
+      "message_types": [
+        {
+          "message": "What should I keep in mind about my notebook?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "/help",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/status",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/state",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Hello, this is a human experience.",
+          "type": "GREETING"
+        },
+        {
+          "message": "/environment 1",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/time 30",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/memory",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "/life",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "First lived event.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/time 0",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "A human message becomes lived history.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/product-runtime.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "person-entered-001",
+        "person-entered-002"
+      ],
+      "message_types": [
+        {
+          "message": "person-entered-001",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "person-entered-002",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/product-turn-progress.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello there.",
+        "First message.",
+        "Second message.",
+        "Ambiguous message.",
+        "/diagnostics",
+        "This will time out.",
+        "Retry the message.",
+        "Fail.",
+        "A normal turn.",
+        "Secret user text should not appear in debug progress.",
+        "Identical message."
+      ],
+      "message_types": [
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        },
+        {
+          "message": "First message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Ambiguous message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/diagnostics",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "This will time out.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Retry the message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Fail.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "A normal turn.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Secret user text should not appear in debug progress.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Identical message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/provider-resilience.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello there.",
+        "This will fail at cognition.",
+        "This will time out.",
+        "/diagnostics",
+        "Malformed response.",
+        "Fail closed.",
+        "Fail.",
+        "/exit",
+        "Establish the subject.",
+        "Talk during outage.",
+        "A normal turn."
+      ],
+      "message_types": [
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        },
+        {
+          "message": "This will fail at cognition.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "This will time out.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/diagnostics",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Malformed response.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Fail closed.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Fail.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "/exit",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Establish the subject.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Talk during outage.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "A normal turn.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/relationship-lived-evidence.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello, it is good to talk with you.",
+        "I enjoyed that conversation.",
+        "First message.",
+        "Second message.",
+        "We have talked before.",
+        "We meet again.",
+        "Unremarkable.",
+        "Still unremarkable.",
+        "Something happened."
+      ],
+      "message_types": [
+        {
+          "message": "Hello, it is good to talk with you.",
+          "type": "GREETING"
+        },
+        {
+          "message": "I enjoyed that conversation.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "First message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "We have talked before.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "We meet again.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Unremarkable.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Still unremarkable.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Something happened.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "product/sandbox/src/subject-configuration.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello, please remember this first message.",
+        "First message.",
+        "One interaction.",
+        "My favorite color is teal.",
+        "I'm buying a notebook. Any color suggestions?",
+        "Hello there.",
+        "Hello.",
+        "/status"
+      ],
+      "message_types": [
+        {
+          "message": "Hello, please remember this first message.",
+          "type": "GREETING"
+        },
+        {
+          "message": "First message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "One interaction.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "My favorite color is teal.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I'm buying a notebook. Any color suggestions?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        },
+        {
+          "message": "Hello.",
+          "type": "GREETING"
+        },
+        {
+          "message": "/status",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/appraisal-content-boundary.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Thank you, that really helped.",
+        "Stop doing that. That made things worse.",
+        "A fixed deterministic message.",
+        "First message content here.",
+        "Second message content here.",
+        "Suggest something for my desk.",
+        "That fixed it, thanks.",
+        "Pre-restart event text.",
+        "Post-restart event text.",
+        "Content stays out of canonical state.",
+        "This must fail closed."
+      ],
+      "message_types": [
+        {
+          "message": "Thank you, that really helped.",
+          "type": "ACKNOWLEDGEMENT"
+        },
+        {
+          "message": "Stop doing that. That made things worse.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "A fixed deterministic message.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "First message content here.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second message content here.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Suggest something for my desk.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "That fixed it, thanks.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Pre-restart event text.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Post-restart event text.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Content stays out of canonical state.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "This must fail closed.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/content-sensitive-appraisal-pipeline.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "That worked exactly as I hoped.",
+        "That made the situation worse.",
+        "One event only.",
+        "Must fail closed."
+      ],
+      "message_types": [
+        {
+          "message": "That worked exactly as I hoped.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "That made the situation worse.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "One event only.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Must fail closed.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/counterpart-feedback.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Can you suggest a simple way to organize my desk?",
+        "That fixed it, thanks.",
+        "How should I organize my desk?",
+        "That didn't solve it.",
+        "Which notebook should I use?",
+        "No, I meant the blue one.",
+        "Got it, that works.",
+        "That was helpful.",
+        "Suggest an approach.",
+        "Anything else I should try?",
+        "That was helpful; keeping only today's items on the desk works for me.",
+        "I'm about to tidy up — anything to keep in mind?"
+      ],
+      "message_types": [
+        {
+          "message": "Can you suggest a simple way to organize my desk?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "That fixed it, thanks.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "How should I organize my desk?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "That didn't solve it.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Which notebook should I use?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "No, I meant the blue one.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Got it, that works.",
+          "type": "ACKNOWLEDGEMENT"
+        },
+        {
+          "message": "That was helpful.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Suggest an approach.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Anything else I should try?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "That was helpful; keeping only today's items on the desk works for me.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I'm about to tidy up — anything to keep in mind?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/interactive-belief-adaptation.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Alice kept her promise again, she delivered on time.",
+        "How is the weather task going?",
+        "Alice kept her promise, she delivered on time.",
+        "A neutral unrelated message about coffee.",
+        "I am thinking about reorganizing my bookshelf this weekend.",
+        "Alice broke that promise she made about the review, she never delivered."
+      ],
+      "message_types": [
+        {
+          "message": "Alice kept her promise again, she delivered on time.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "How is the weather task going?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "Alice kept her promise, she delivered on time.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "A neutral unrelated message about coffee.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I am thinking about reorganizing my bookshelf this weekend.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Alice broke that promise she made about the review, she never delivered.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/interactive-subject-runtime-v0.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "Hello there.",
+        "I usually drink coffee without sugar.",
+        "I'm getting coffee. How should I order it?",
+        "Please report the status.",
+        "Hello.",
+        "First.",
+        "Second.",
+        "Thanks, noted.",
+        "Please suggest a color for my notebook.",
+        "I'm buying a notebook. Any color suggestions?"
+      ],
+      "message_types": [
+        {
+          "message": "Hello there.",
+          "type": "GREETING"
+        },
+        {
+          "message": "I usually drink coffee without sugar.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I'm getting coffee. How should I order it?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "Please report the status.",
+          "type": "INSTRUCTIONAL_HOST_COMMAND"
+        },
+        {
+          "message": "Hello.",
+          "type": "GREETING"
+        },
+        {
+          "message": "First.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Thanks, noted.",
+          "type": "ACKNOWLEDGEMENT"
+        },
+        {
+          "message": "Please suggest a color for my notebook.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "I'm buying a notebook. Any color suggestions?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/lifecycle-abstention.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "An event the appraisal provider cannot appraise.",
+        "first unappraisable event",
+        "second unappraisable event"
+      ],
+      "message_types": [
+        {
+          "message": "An event the appraisal provider cannot appraise.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "first unappraisable event",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "second unappraisable event",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/lived-history-differentiation.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/session/lived-memory-inspection.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "My favorite color is teal.",
+        "How should I organize my desk?",
+        "That was helpful.",
+        "First observation.",
+        "First outcome reply.",
+        "Second outcome reply.",
+        "Observation one.",
+        "Outcome reply one.",
+        "Outcome reply two.",
+        "Remember this.",
+        "Immutable?",
+        "That's good to know."
+      ],
+      "message_types": [
+        {
+          "message": "My favorite color is teal.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "How should I organize my desk?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "That was helpful.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "First observation.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "First outcome reply.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Second outcome reply.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Observation one.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Outcome reply one.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Outcome reply two.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Remember this.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "Immutable?",
+          "type": "QUESTION_MAYBE_FACTUAL"
+        },
+        {
+          "message": "That's good to know.",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/restore-rollback.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [
+        "first event",
+        "second event"
+      ],
+      "message_types": [
+        {
+          "message": "first event",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        },
+        {
+          "message": "second event",
+          "type": "OTHER_NONFACTUAL_CONTINUATION"
+        }
+      ]
+    },
+    {
+      "file": "packages/runtime/src/session/subject-session-provider-budget.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/session/subject-session-v0.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/conversation-cognition-proposal-v3.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "other/legacy",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/conversation-cognition-proposal-v4.test.ts",
+      "zero_claim_sites": 2,
+      "wire": "other/legacy",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/conversation-cognition-proposal-v5.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "other/legacy",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/language-authority-completeness.test.ts",
+      "zero_claim_sites": 1,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/language-realization-input-v5.test.ts",
+      "zero_claim_sites": 2,
+      "wire": "other/legacy",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/conversation/language-realization-input-v6.test.ts",
+      "zero_claim_sites": 2,
+      "wire": "other/legacy",
+      "messages": [],
+      "message_types": []
+    },
+    {
+      "file": "packages/runtime/src/transitions/cognition-action/canonical-affect-cognition-integration-v0.test.ts",
+      "zero_claim_sites": 3,
+      "wire": "v7",
+      "messages": [],
+      "message_types": []
+    }
+  ]
+}
