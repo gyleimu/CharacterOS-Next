@@ -8,6 +8,7 @@
  * preferred for it.
  */
 
+import { OBSERVATION_JSON_SCHEMA_V0 } from "./observation-schema.js";
 import { buildVisionPromptV0 } from "./prompts.js";
 import {
   boundedDetailV0,
@@ -67,7 +68,10 @@ export function createOpenAiCompatibleVisionProviderV0(
             stream: false,
             temperature: 0,
             max_tokens: config.max_tokens,
-            response_format: { type: "json_object" },
+            response_format: {
+              type: "json_schema",
+              json_schema: { name: "visual_observation", strict: true, schema: OBSERVATION_JSON_SCHEMA_V0 }
+            },
             messages: [
               { role: "system", content: prompt.system },
               {

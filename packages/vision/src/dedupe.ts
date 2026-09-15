@@ -40,32 +40,64 @@ export function observationDedupeKeyV0(observation: VisualObservationV0): string
   return createHash("sha256").update(JSON.stringify(semantic)).digest("hex");
 }
 
-export class ObservationDedupeRingV0 {
-  private readonly keys: string[] = [];
+/** Meaning-bearing tokens of a description, for near-duplicate comparison. */
+export function observationTokensV0(text: string): ReadonlySet<string> {
+  return new Set(normalizeObservationTextV0(text).split(" ").filter((token) => token.length > 0));
+}
 
-  constructor(private readonly size: number) {
+/** Jaccard similarity of two descriptions, 0..1. No embeddings involved. */
+export function observationSimilarityV0(a: ReadonlySet<string>, b: ReadonlySet<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let shared = 0;
+  for (const token of a) if (b.has(token)) shared += 1;
+  return shared / (a.size + b.size - shared);
+}
+
+export interface DedupeDecisionV0 {
+  readonly duplicate: boolean;
+  readonly exact: boolean;
+  readonly similarity: number;
+}
+
+interface DedupeEntryV0 {
+  readonly key: string;
+  readonly tokens: ReadonlySet<string>;
+}
+
+export class ObservationDedupeRingV0 {
+  private readonly entries: DedupeEntryV0[] = [];
+
+  constructor(
+    private readonly size: number,
+    /**
+     * Exact keys catch a repeated description; near-duplicates catch a small
+     * model restating the same scene in different words, which is what actually
+     * happened in the acceptance runs (a wall with framed pictures described
+     * four different ways). Measured example: 0.73 similarity for the same scene.
+     */
+    private readonly nearDuplicateThreshold = 0.7
+  ) {
     if (!Number.isSafeInteger(size) || size < 1) throw new Error("dedupe ring size must be a positive integer");
   }
 
-  /** Reports whether the key is inside the current window (no side effect). */
-  contains(key: string): boolean {
-    return this.keys.includes(key);
+  /** Reports whether this observation was already emitted (no side effect). */
+  inspect(key: string, tokens: ReadonlySet<string>): DedupeDecisionV0 {
+    let best = 0;
+    for (const entry of this.entries) {
+      if (entry.key === key) return { duplicate: true, exact: true, similarity: 1 };
+      best = Math.max(best, observationSimilarityV0(tokens, entry.tokens));
+    }
+    const near = best >= this.nearDuplicateThreshold;
+    return { duplicate: near, exact: false, similarity: Math.round(best * 100) / 100 };
   }
 
-  /** Remembers a key once it has been delivered to the sink. */
-  record(key: string): void {
-    this.keys.push(key);
-    while (this.keys.length > this.size) this.keys.shift();
-  }
-
-  /** Records the key and reports whether it was already inside the window. */
-  isDuplicateAndRecord(key: string): boolean {
-    const duplicate = this.contains(key);
-    this.record(key);
-    return duplicate;
+  /** Remembers an observation once it has been delivered to the sink. */
+  record(key: string, tokens: ReadonlySet<string>): void {
+    this.entries.push({ key, tokens });
+    while (this.entries.length > this.size) this.entries.shift();
   }
 
   reset(): void {
-    this.keys.length = 0;
+    this.entries.length = 0;
   }
 }

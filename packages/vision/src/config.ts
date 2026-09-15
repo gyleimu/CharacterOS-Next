@@ -248,7 +248,7 @@ export function resolveVisionConfigV0(
       endpoint: readStringV0(environment, "VISION_ENDPOINT", "http://127.0.0.1:11434"),
       model: readStringV0(environment, "VISION_MODEL", "minicpm-v4.6"),
       timeout_ms: readIntV0(environment, "VISION_TIMEOUT_MS", 60000, 1000, 600000),
-      num_predict: readIntV0(environment, "VISION_NUM_PREDICT", 320, 32, 4096),
+      num_predict: readIntV0(environment, "VISION_NUM_PREDICT", 900, 32, 4096),
       keep_alive: readStringV0(environment, "VISION_KEEP_ALIVE", "5m"),
       think: thinkRaw === null ? false : ["1", "true", "yes", "on"].includes(thinkRaw.toLowerCase()),
       api_key: readOptionalStringV0(environment, "VISION_API_KEY")

@@ -1,33 +1,21 @@
 /**
  * Fixed prompts. Kept stable on purpose: a vision adapter whose instructions
- * drift cannot be evaluated. Both prompts demand strict JSON and forbid exactly
- * the inferences the adapter must never carry into CharacterOS (emotion, intent,
- * personality, relationships) except as directly visible appearance.
+ * drift cannot be evaluated. The system prompts forbid exactly the inferences
+ * that must never travel into CharacterOS (emotion, intent, personality,
+ * relationships), except as directly visible appearance.
+ *
+ * Note: the machine-readable output contract lives in `observation-schema.ts`
+ * and is enforced by the decoder. These prompts only tell the model WHAT to look
+ * at, never how to type it.
  */
 
 import type { VisionSourceKindV0 } from "../types.js";
+import { OBSERVATION_FIELD_GUIDANCE_V0 } from "./observation-schema.js";
 
 export interface VisionPromptV0 {
   readonly system: string;
   readonly instruction: string;
 }
-
-const JSON_CONTRACT = `Return STRICT JSON only — no markdown, no code fences, no commentary — with exactly these keys:
-{
-  "description": string,
-  "confidence": number | null,
-  "entities": [ { "type": string, "description": string, "confidence": number | null } ],
-  "activities": [ string ],
-  "visible_text": [ string ],
-  "notable_events": [ string ],
-  "uncertainty": [ string ],
-  "application": string | null
-}
-Rules:
-- "description" is required, non-empty and at most two short sentences.
-- Use [] for a list with nothing to report; use null where a value is unknown.
-- "visible_text" contains only text you can actually read in the image.
-- Put anything you are unsure about into "uncertainty" instead of guessing.`;
 
 const CAMERA_SYSTEM = `You are a visual perception module.
 
@@ -66,12 +54,14 @@ If uncertain, explicitly mark uncertainty.
 
 Return strict JSON.`;
 
-const CAMERA_APPENDIX = `For this camera frame: report a person as an entity of type "person" when one is visible, state posture and visible actions in "activities", and leave "application" null. Appearance facts (for example "eyes closed", "mouth open") are allowed; emotional or mental-state conclusions are not.`;
+const CAMERA_APPENDIX = `Report a visible person as an entity of type "person", state posture and visible actions in "activities", and leave "application" null. Appearance facts (for example "eyes closed") are allowed; emotional or mental-state conclusions are not.`;
 
-const DESKTOP_APPENDIX = `For this desktop frame: name the application that dominates the screen in "application" (or null), put the user's visible activity in "activities", and keep readable on-screen text in "visible_text".`;
+const DESKTOP_APPENDIX = `Name the application that dominates the screen in "application" (or null), put the visible activity in "activities", and keep readable on-screen text in "visible_text".`;
 
 export function buildVisionPromptV0(source: VisionSourceKindV0): VisionPromptV0 {
-  return source === "camera"
-    ? { system: CAMERA_SYSTEM, instruction: `${CAMERA_APPENDIX}\n\n${JSON_CONTRACT}` }
-    : { system: DESKTOP_SYSTEM, instruction: `${DESKTOP_APPENDIX}\n\n${JSON_CONTRACT}` };
+  const appendix = source === "camera" ? CAMERA_APPENDIX : DESKTOP_APPENDIX;
+  return {
+    system: source === "camera" ? CAMERA_SYSTEM : DESKTOP_SYSTEM,
+    instruction: `${appendix}\n\n${OBSERVATION_FIELD_GUIDANCE_V0}`
+  };
 }

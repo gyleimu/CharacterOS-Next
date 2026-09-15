@@ -10,6 +10,7 @@ interface MutableSourceMetricsV0 {
   frames_captured: number;
   frames_skipped_cadence: number;
   frames_dropped_no_change: number;
+  frames_dropped_no_still: number;
   frames_dropped_rate_limit: number;
   frames_dropped_superseded: number;
   frames_analyzed: number;
@@ -22,6 +23,7 @@ function emptySourceMetricsV0(): MutableSourceMetricsV0 {
     frames_captured: 0,
     frames_skipped_cadence: 0,
     frames_dropped_no_change: 0,
+    frames_dropped_no_still: 0,
     frames_dropped_rate_limit: 0,
     frames_dropped_superseded: 0,
     frames_analyzed: 0,
@@ -59,6 +61,10 @@ export class VisionMetricsV0 {
   }
   recordFrameDroppedNoChange(source: VisionSourceKindV0): void {
     this.sources[source].frames_dropped_no_change += 1;
+  }
+  /** A real change arrived before the first full-resolution still did. */
+  recordFrameDroppedNoStill(source: VisionSourceKindV0): void {
+    this.sources[source].frames_dropped_no_still += 1;
   }
   recordFrameDroppedRateLimit(source: VisionSourceKindV0): void {
     this.sources[source].frames_dropped_rate_limit += 1;
@@ -127,6 +133,8 @@ export class VisionMetricsV0 {
         this.sources.camera.frames_skipped_cadence + this.sources.desktop.frames_skipped_cadence,
       frames_dropped_no_change:
         this.sources.camera.frames_dropped_no_change + this.sources.desktop.frames_dropped_no_change,
+      frames_dropped_no_still:
+        this.sources.camera.frames_dropped_no_still + this.sources.desktop.frames_dropped_no_still,
       frames_dropped_rate_limit:
         this.sources.camera.frames_dropped_rate_limit + this.sources.desktop.frames_dropped_rate_limit,
       frames_dropped_superseded:

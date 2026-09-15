@@ -28,7 +28,7 @@ import {
 } from "./capture/ffmpeg-source.js";
 import { listDshowVideoDevicesV0 } from "./capture/dshow-devices.js";
 import { resolveVisionConfigV0, type VisionConfigV0 } from "./config.js";
-import { ObservationDedupeRingV0, observationDedupeKeyV0 } from "./dedupe.js";
+import { ObservationDedupeRingV0, observationDedupeKeyV0, observationTokensV0 } from "./dedupe.js";
 import { createOllamaVisionProviderV0 } from "./inference/ollama-provider.js";
 import { createOpenAiCompatibleVisionProviderV0 } from "./inference/openai-compatible-provider.js";
 import type { VisionInferenceProviderV0 } from "./inference/provider.js";
@@ -347,12 +347,16 @@ export class VisionPerceptionV0 {
     }
     const still = runtime.latest_still;
     if (still === null) {
-      this.metrics.recordCaptureError(frame.source);
+      // Startup transient: the thumbnail stream runs faster than the still
+      // stream, so the very first ticks can decide before any still exists. The
+      // change is NOT lost — the reference does not advance, so it is
+      // re-detected on the next tick.
+      this.metrics.recordFrameDroppedNoStill(frame.source);
       this.emitLog({
-        level: "warn",
-        code: "CAPTURE_FAILED",
+        level: "info",
+        code: "STILL_PENDING",
         source: frame.source,
-        detail: "no still available for an analysis decision"
+        detail: "waiting for the first full-resolution still"
       });
       return;
     }
@@ -450,20 +454,23 @@ export class VisionPerceptionV0 {
       frame_jpeg: pending.still.jpeg,
       clock: (atMs) => new Date(atMs).toISOString()
     });
-    if (runtime !== undefined && runtime.dedupe.contains(observationDedupeKeyV0(observation))) {
+    const tokens = observationTokensV0(observation.description);
+    const decision = runtime?.dedupe.inspect(observationDedupeKeyV0(observation), tokens);
+    if (decision?.duplicate === true) {
       this.metrics.recordObservationDeduplicated();
       this.emitLog({
         level: "info",
         code: "OBSERVATION_DEDUPLICATED",
         source: pending.source,
         observation_id: observation.observation_id,
+        detail: decision.exact ? "identical description" : `restated scene (similarity ${decision.similarity})`,
         latency_ms: outcome.latency_ms,
         change_score: roundChangeScoreV0(pending.change_score)
       });
       return;
     }
     const delivered = await this.deliver(observation, pending, outcome.latency_ms);
-    if (delivered && runtime !== undefined) runtime.dedupe.record(observationDedupeKeyV0(observation));
+    if (delivered && runtime !== undefined) runtime.dedupe.record(observationDedupeKeyV0(observation), tokens);
   }
 
   private async deliver(

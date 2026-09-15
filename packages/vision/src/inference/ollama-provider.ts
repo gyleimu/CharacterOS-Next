@@ -8,6 +8,7 @@
  * decision this adapter makes rather than a runtime default.
  */
 
+import { OBSERVATION_JSON_SCHEMA_V0 } from "./observation-schema.js";
 import { buildVisionPromptV0 } from "./prompts.js";
 import {
   boundedDetailV0,
@@ -82,7 +83,7 @@ export function createOllamaVisionProviderV0(config: OllamaVisionProviderConfigV
       const body: Record<string, unknown> = {
         model: config.model,
         stream: false,
-        format: "json",
+        format: OBSERVATION_JSON_SCHEMA_V0,
         keep_alive: config.keep_alive,
         options: { temperature: 0, num_predict: config.num_predict },
         messages: [

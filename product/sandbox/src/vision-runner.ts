@@ -40,6 +40,7 @@ function metricsLineV0(snapshot: VisionMetricsSnapshotV0): string {
     frames_captured: snapshot.frames_captured,
     frames_skipped_cadence: snapshot.frames_skipped_cadence,
     frames_dropped_no_change: snapshot.frames_dropped_no_change,
+    frames_dropped_no_still: snapshot.frames_dropped_no_still,
     frames_dropped_rate_limit: snapshot.frames_dropped_rate_limit,
     frames_dropped_superseded: snapshot.frames_dropped_superseded,
     frames_analyzed: snapshot.frames_analyzed,
@@ -95,6 +96,27 @@ async function main(): Promise<number> {
       local_only: true
     })
   );
+
+  // FROZEN CONTRACT: `submitExternalObservationV0` reports to an ALREADY
+  // persisted shared canonical subject; a brand-new subject has no shared source
+  // until the product itself has lived something (a human turn, an environment
+  // interaction, an explicit time advance). Vision must not invent one, so it
+  // fails closed with actionable guidance instead.
+  const state = await runtime.stateView();
+  if (state.shared_revision === null) {
+    process.stderr.write(
+      [
+        `Vision has no character to report to yet: subject ${bootstrap.identity.display_name} (${bootstrap.identity.subject_id}) has not been persisted.`,
+        "  The external observation ingress only reports to an existing shared canonical subject.",
+        "  Run the product once so the character lives something first, for example:",
+        "    pnpm interactive      (send one message, then quit)",
+        "  then start vision again. Vision itself never fabricates subject state."
+      ].join("\n") + "\n"
+    );
+    write(JSON.stringify({ code: "VISION_BLOCKED_NO_SUBJECT", subject_id: bootstrap.identity.subject_id }));
+    await runtime.shutdown();
+    return 1;
+  }
 
   const perception = new VisionPerceptionV0({
     config,

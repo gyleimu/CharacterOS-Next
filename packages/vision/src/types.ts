@@ -97,6 +97,7 @@ export interface VisionLogEventV0 {
     | "VISION_PAUSED"
     | "VISION_RESUMED"
     | "ATTENTION_CHANGED"
+    | "STILL_PENDING"
     | "MODEL_RELEASED";
   readonly source?: VisionSourceKindV0;
   readonly detail?: string;
@@ -135,6 +136,8 @@ export interface SourceMetricsV0 {
   readonly frames_captured: number;
   readonly frames_skipped_cadence: number;
   readonly frames_dropped_no_change: number;
+  /** A change was detected before the first full-resolution still arrived. */
+  readonly frames_dropped_no_still: number;
   readonly frames_dropped_rate_limit: number;
   readonly frames_dropped_superseded: number;
   readonly frames_analyzed: number;
@@ -151,6 +154,7 @@ export interface VisionMetricsSnapshotV0 {
   readonly frames_captured: number;
   readonly frames_skipped_cadence: number;
   readonly frames_dropped_no_change: number;
+  readonly frames_dropped_no_still: number;
   readonly frames_dropped_rate_limit: number;
   readonly frames_dropped_superseded: number;
   readonly frames_analyzed: number;

@@ -113,7 +113,7 @@ Everything below is optional; the adapter is usable with an empty environment.
 | `VISION_ENDPOINT` | `http://127.0.0.1:11434` | model runtime |
 | `VISION_MODEL` | `minicpm-v4.6` | model name |
 | `VISION_TIMEOUT_MS` | `60000` | per-call timeout |
-| `VISION_NUM_PREDICT` | `320` | answer length bound |
+| `VISION_NUM_PREDICT` | `900` | answer length bound |
 | `VISION_KEEP_ALIVE` | `5m` | model residency |
 | `VISION_THINK` | `false` | thinking phase, where supported |
 | `VISION_DEDUPE_HISTORY` | `3` | remembered observation keys per source |
@@ -154,14 +154,70 @@ Call `VisionPerceptionV0.setAttentionLevel(level)` to change it at runtime.
 `inference_calls_per_minute`, `average_inference_latency_ms`, plus a per-source
 breakdown.
 
+## Structured output is enforced by the decoder
+
+A 1.3B model does not follow a prose type signature. Measured on the real
+desktop with MiniCPM-V 4.6 (`temperature 0`, `think: false`):
+
+| prompt / decoding | result |
+| --- | --- |
+| prose type signature, `format: "json"` | `"confidence": 5` (1-10 scale), `entities` as an array of strings |
+| prose + filled example, `format: "json"` | correct shape, but invalid JSON (missing comma) on 3/3 deterministic runs |
+| **JSON Schema as decoding grammar** | valid JSON, exact shape, 3/3 runs |
+
+So the runtime is handed `OBSERVATION_JSON_SCHEMA_V0` as a grammar. The bounds
+inside it (`maxItems`, `maxLength`) are load-bearing: a text-dense screen made
+the model enumerate on-screen text past the token budget, truncating the answer
+mid-JSON. Capping the grammar took a failing call from `900` truncated tokens to
+a complete `133`-token answer.
+
+`parseModelObservationV0` remains the fail-closed backstop. Nothing malformed is
+ever coerced, repaired, or degraded into natural language — it becomes
+`INVALID_MODEL_OUTPUT` and is dropped.
+
+## Deduplication
+
+Two layers, both embedding-free:
+
+1. an exact normalized key (`observationDedupeKeyV0`) — case, punctuation and
+   whitespace insensitive, over description + semantic fields;
+2. a token-set Jaccard similarity against the recent window
+   (default threshold `0.7`), because the acceptance runs showed the model
+   restating one unchanged scene four different ways. Two observations that
+   differ only in wording are not two experiences.
+
+## Measured behaviour (RTX 4060 Laptop 8 GB, Windows)
+
+| measurement | value |
+| --- | --- |
+| warm inference, one observation | **1.5 - 1.6 s** (≈93 tok/s, 125-136 output tokens, ~750 prompt tokens) |
+| cold inference (model loaded from disk) | 4 - 11 s |
+| desktop-only run, 95 s | 187 frames captured, 114 skipped by cadence, **52 dropped as unchanged**, 6 model calls (3.8/min), 6 observations |
+| camera + desktop run, 5.7 min | 1017 frames captured, 612 skipped by cadence, **252 dropped as unchanged**, 8 model calls (**1.4/min**), 8 observations, 0 errors, 0 restarts |
+| node process | 7-112 MB resident, ~0.8 % of one core |
+| ffmpeg (both sources, persistent) | ~121 MB each, ~12.6 % of one core combined |
+
+The dominant risk is **VRAM contention, not this adapter**: with a resident 9B
+chat model (5.6 GB) on the same 8 GB card, per-observation latency measured
+**18-43 s** instead of ~1.5 s, because the vision model kept being evicted. On
+an 8 GB laptop GPU a resident chat model and a resident vision model cannot both
+be fast.
+
 ## Limitations (V0)
 
-- Change detection is global per source: a small change in a corner of a
-  flickering full-screen video can keep the source "interesting". The minimum
-  inference interval is what bounds the model cost.
-- Attention is a static three-level enum; nothing automatically raises it yet.
-- The observation schema is fixed by prompt, not by grammar. A model that cannot
-  follow it produces `INVALID_MODEL_OUTPUT`, i.e. dropped frames rather than
-  partial data.
+- Change detection is global per source: a small change anywhere on a busy
+  screen keeps the source "interesting", and the minimum inference interval is
+  what ultimately bounds the model cost.
+- Attention is a static three-level enum; nothing automatically raises it yet
+  (`setAttentionLevel` is the hook, deliberately not wired to cognition).
+- Readability is partial: the model reliably identifies the application, the
+  activity and the composition of a screen, but does not transcribe small
+  on-screen text verbatim.
+- Entity `type` values come from the model and are occasionally field names
+  rather than object kinds; they are normalized to lawful identifier refs but
+  not otherwise policed.
 - `frame_ref` (a content address) has no lawful field in the canonical ingress
   and stops at the adapter boundary.
+- Vision can only report to a subject the product has already persisted: the
+  frozen ingress refuses to invent one, and the runner fails closed with
+  guidance instead.

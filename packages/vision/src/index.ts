@@ -82,12 +82,20 @@ export {
 export {
   normalizeObservationTextV0,
   observationDedupeKeyV0,
-  ObservationDedupeRingV0
+  observationSimilarityV0,
+  observationTokensV0,
+  ObservationDedupeRingV0,
+  type DedupeDecisionV0
 } from "./dedupe.js";
 
 export { VisionMetricsV0 } from "./metrics.js";
 
 export { buildVisionPromptV0, type VisionPromptV0 } from "./inference/prompts.js";
+
+export {
+  OBSERVATION_FIELD_GUIDANCE_V0,
+  OBSERVATION_JSON_SCHEMA_V0
+} from "./inference/observation-schema.js";
 
 export {
   boundedDetailV0,
