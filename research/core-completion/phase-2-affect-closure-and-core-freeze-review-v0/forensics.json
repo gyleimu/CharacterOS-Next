@@ -1,0 +1,89 @@
+{
+  "schema_version": "affect-phase2-closure-core-freeze-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "conversational_mode": {
+    "plan": {
+      "schema_version": "language-realization-plan-v0",
+      "mode": "NO_FACTUAL_PRIMARY_RESPONSE",
+      "references": []
+    },
+    "model_facing_payload_keys": [
+      "schema_version",
+      "subject_id",
+      "source_revision",
+      "current_turn_ref",
+      "cognition_projection_hash",
+      "communication_binding",
+      "current_user_request",
+      "factual_assessment",
+      "selected_subjective_selection",
+      "supporting_evidence",
+      "constraints",
+      "realization_plan"
+    ],
+    "model_facing_payload": {
+      "schema_version": "language-realization-input-v9",
+      "subject_id": "subject-closure-review",
+      "source_revision": 1,
+      "current_turn_ref": "observation:o-review-closure",
+      "cognition_projection_hash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "communication_binding": {
+        "schema_version": "conversation-cognition-proposal-v7",
+        "proposal_hash": "sha256:b5487775723aa295705bc175354a133ae3a82296e272f87fd2fed9480247a4d9",
+        "directive": {
+          "kind": "REALIZE_CURRENT_INTENT"
+        },
+        "clarification_basis": null
+      },
+      "current_user_request": {
+        "scene": "Alice says: \"Hello there.\"",
+        "task": "Respond to the user's latest message."
+      },
+      "factual_assessment": {
+        "claims": []
+      },
+      "selected_subjective_selection": {
+        "kind": "NO_SUBJECTIVE_SELECTION"
+      },
+      "supporting_evidence": {
+        "lawful_evidence_refs": [
+          "entity:alice",
+          "environment:room-1",
+          "observation:o-review-closure"
+        ],
+        "memory_episode_contents": []
+      },
+      "constraints": {
+        "max_text_code_points": 4096,
+        "evidence_refs_only": true,
+        "no_new_evidence_authority": true,
+        "preserve_factual_assessment": true,
+        "preserve_selected_subjective_selection": true,
+        "no_invented_choice": true,
+        "no_invented_justification": true,
+        "no_factual_authority_for_rationale": true,
+        "realize_authorized_atoms_only": true
+      },
+      "realization_plan": {
+        "schema_version": "language-realization-plan-v0",
+        "mode": "NO_FACTUAL_PRIMARY_RESPONSE",
+        "references": []
+      }
+    },
+    "response_request_id_in_payload": false,
+    "authoritative_atoms_in_payload": {
+      "factual_claims": 0,
+      "selection_kind": "NO_SUBJECTIVE_SELECTION",
+      "plan_references": 0
+    }
+  },
+  "n6_shape_rejection": {
+    "code": "SEMANTIC_COMPLETENESS_FAILED",
+    "detail": "determined-content turn requires an authorized host-verifiable derivation as the primary response; the authoritative proposal contains none"
+  },
+  "under_asserted_zero_claim_turn": {
+    "admitted": true,
+    "mode": "NO_FACTUAL_PRIMARY_RESPONSE"
+  }
+}
