@@ -1,0 +1,21 @@
+{
+  "schema_version": "affect-cognition-reproducibility-diagnostic-summary-v0",
+  "correction_note": "the first summary compared cognition replays against final_behavior (Language output). Corrected here against raw_cognition_response, the correct comparison object.",
+  "round_A_cognition_reproduced_exactly": "3/3",
+  "round_B_cognition_reproduced_exactly": "3/3",
+  "round_A_replay_unique_outputs": 1,
+  "round_B_replay_unique_outputs": 1,
+  "seeded_42_matches_unseeded_B_exactly": true,
+  "seeded_42_unique_outputs": 1,
+  "historical_A_rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+  "historical_B_rationale": "I find structured planning sessions useful for aligning on upcoming tasks.",
+  "replayed_A_rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+  "replayed_B_rationale": "I find structured planning sessions useful for aligning on upcoming tasks.",
+  "interpretation": {
+    "deterministic_given_identical_provider_bytes": true,
+    "seed_is_inert_at_temperature_zero": true,
+    "cross_round_divergence_cause": "input bytes: the per-slice subject-id rename changes every derived ref (episode/experience/event) and the projection hash; greedy sampling at temperature 0 flips on that context change",
+    "provider_nondeterminism_observed": false,
+    "restart_sensitivity": "not tested in this review (no provider restart was performed)"
+  }
+}

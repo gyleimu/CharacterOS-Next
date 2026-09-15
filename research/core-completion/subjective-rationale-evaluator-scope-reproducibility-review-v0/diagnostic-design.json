@@ -1,0 +1,16 @@
+{
+  "schema_version": "affect-cognition-reproducibility-diagnostic-design-v0",
+  "purpose": "separate input-driven cross-round divergence from provider nondeterminism; NOT qualification evidence",
+  "scenario": "M2",
+  "model": "qwen3.5:9b",
+  "options": {
+    "temperature": 0,
+    "num_predict": 2048,
+    "num_ctx": 8192
+  },
+  "calls_planned": 9,
+  "round_A_exact_request_sha256": "80f221a4e3060798e9c67db405772860c402e85e89a3d106c01b5519884b90f3",
+  "round_B_exact_request_sha256": "1e29290272c7c903d564fa6dedd8a8048a9fdb767e618523ad2d47bc7cbe5a73",
+  "round_A_historical_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+  "round_B_historical_output": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I find structured planning sessions useful for aligning on upcoming tasks."
+}

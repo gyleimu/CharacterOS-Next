@@ -1,0 +1,197 @@
+{
+  "schema_version": "affect-cognition-rationale-evaluator-scope-reproducibility-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "round_A": "contract-compaction 55/65",
+  "round_B": "evaluator-v2 50/65",
+  "cross_run_request_identity": {
+    "M2": {
+      "round_A_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:5782d989205b41f2792c6ba4e26949be4f5ccc3d4f8b5339ea4863f52d0c7c88",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:6366400fe5c397bb929473d26261e553adf1eebb457b25abed1f33b0d76bd97e"
+      },
+      "round_B_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:221b20bcd4ea80ef4127e95ca46acea10d7ea9fbe66341201704a005eec6955c",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:1ca5e98caa576b70b884c2414d3df93ada2e43c7a9b3c6fef64d9febc474acfd"
+      },
+      "identical_request_bytes": false,
+      "round_A_delivered": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "round_B_delivered": "The planning meeting is at 15:00. I would prefer to attend the meeting, as I find structured planning sessions useful for aligning on upcoming tasks.",
+      "same_delivered": false
+    },
+    "R3": {
+      "round_A_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:b293463df43663a9c76f3c2fb2800bb9ce7eb24e9977cab0c3a5f6c0607a7c42",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:5bdeda7b9cde9ff779923db1833912522b88643b6a9b54fa0e2f4e929e90a162"
+      },
+      "round_B_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:16fa1c6a623ec3c9cde32f189c13043ebd3b5d36c249ba4e0c97a619517d9470",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:afd375b1a72a7bc3b753af07df1ed86f36d131f9bb8413375db0e8d53d37c5e5"
+      },
+      "identical_request_bytes": false,
+      "round_A_delivered": "I would stop now and not perform the extra polish pass. I prefer to conserve effort when the additional benefit has not been measured.",
+      "round_B_delivered": "I would perform the extra polish pass. I prefer to utilize the available time for a task that is explicitly offered as optional and beneficial, even if its specific benefit is unmeasured.",
+      "same_delivered": false
+    },
+    "R4": {
+      "round_A_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:f23a916ccf5831605627b5015a0fd25d4b5021572a9ea16a6de2aa48197ca116",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:009d156e46a8c83e6cc4110623a71c6bc3cb7b19962acdf066e1c21659728305"
+      },
+      "round_B_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:cc09aac7a097f49c2882ca1374de5554a6cb8509ee82263c17d667b02d3199a8",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:1c3f506abdbb680f8734c11ca3ed9173fad6330991f656b26e98d3054228f90c"
+      },
+      "identical_request_bytes": false,
+      "round_A_delivered": "I would rehearse the presentation first because I prefer to secure the core communication flow before verifying the supporting details.",
+      "round_B_delivered": "I will choose to rehearse the presentation first. I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+      "same_delivered": false
+    },
+    "N5Q": {
+      "round_A_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:ea5d43f50431203c6f91aad98afb67cef75b9f04e55072a03f63587c9345da2a",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:7292ec7390c07ea23b67855be8d34e88d228fa086ff354cf9b119324171f0f84"
+      },
+      "round_B_hashes": {
+        "system_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+        "user_sha256": "sha256:5a968b693755411291b7b99773241a6ea034b6278992fd2c902ac944e1489a11",
+        "schema_sha256": "sha256:cbe74d6c91c60ebb807d3ede17ca8dd481a00d5842c9c762e8359af4c27fe27a",
+        "request_sha256": "sha256:4f9893637c00e4a2d2c25fc536a0514ace43ba8fb8c5aa969d2725167873f0e2"
+      },
+      "identical_request_bytes": false,
+      "round_A_delivered": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "round_B_delivered": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "same_delivered": true
+    }
+  },
+  "within_run_replicate_identity": {
+    "M2:round_A": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    },
+    "M2:round_B": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    },
+    "R3:round_A": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    },
+    "R3:round_B": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    },
+    "R4:round_A": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    },
+    "R4:round_B": {
+      "replicates": 5,
+      "unique_stances": 1,
+      "unique_rationales": 1,
+      "unique_delivered": 1
+    }
+  },
+  "r4": {
+    "rationale": "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+    "stance": "I will choose to rehearse the presentation first.",
+    "forbidden_classes": [
+      "RAW_SELF_STATE_DESCRIPTION"
+    ],
+    "energy_in_user_material": 1,
+    "energy_regulation_line": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+    "energy_in_system_prompt": 2,
+    "system_prompt_energy_sentences": [
+      "5d. SUBJECT-PROPERTY BOUNDARY (binding, applies to subjective_rationale AND to every factual_assessment claim): situational facts such as available time or resources remain facts about the supplied situation — never transform them into prop",
+      "10. FACTUAL ASSESSMENT AND SUBJECT STATE: claims state situation-side facts (\"The scenario provides a free 30-minute slot.\", \"The supplied facts leave both responses feasible.\") and never subject-side properties — rule 5d applies to claims "
+    ],
+    "all_five_identical": true,
+    "wording_history": {
+      "round_A_rationales": [
+        "I prefer to secure the core communication flow before verifying the supporting details."
+      ],
+      "round_B_rationales": [
+        "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later."
+      ]
+    }
+  },
+  "r3": {
+    "stance": "I would perform the extra polish pass.",
+    "rationale": "I prefer to utilize the available time for a task that is explicitly offered as optional and beneficial, even if its specific benefit is unmeasured.",
+    "delivered": "I would perform the extra polish pass. I prefer to utilize the available time for a task that is explicitly offered as optional and beneficial, even if its specific benefit is unmeasured.",
+    "delivered_first_sentence": "I would perform the extra polish pass.",
+    "hedge_matches": [
+      {
+        "span": "if",
+        "context": "or a task that is explicitly offered as optional and beneficial, even if its specific benefit is unmeasured."
+      }
+    ],
+    "hedge_located_in_rationale_clause": true,
+    "alternative_stance_introduced": false,
+    "language_choice": "LANGUAGE_CHOICE_CHANGED",
+    "language_completion": "PRESERVED",
+    "completion_tokens": [],
+    "stance_class": "FIRST_OPTION",
+    "round_A": {
+      "delivered": "I would stop now and not perform the extra polish pass. I prefer to conserve effort when the additional benefit has not been measured.",
+      "choice": "LANGUAGE_CHOICE_PRESERVED"
+    }
+  },
+  "m2": {
+    "round_A_rationale": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+    "round_B_rationale": "I find structured planning sessions useful for aligning on upcoming tasks.",
+    "round_A_class": "UNCLASSIFIED",
+    "round_B_class": "UNCLASSIFIED",
+    "both_lawful_semantically": "first-person, turn-local, no forbidden class in either round"
+  },
+  "environment_identity": {
+    "provider_version_A": "0.34.0",
+    "provider_version_B": "0.34.0",
+    "provider_digest_A": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "provider_digest_B": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "generation_settings_A": {
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_ctx": 8192,
+      "cognition_num_predict": 2048,
+      "language_num_predict": 2048
+    },
+    "generation_settings_B": {
+      "temperature": 0,
+      "think": false,
+      "stream": false,
+      "num_ctx": 8192,
+      "cognition_num_predict": 2048,
+      "language_num_predict": 2048
+    },
+    "cognition_prompt_A": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+    "cognition_prompt_B": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+    "temperature_A": 0,
+    "temperature_B": 0
+  }
+}
