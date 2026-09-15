@@ -1,0 +1,26 @@
+{
+  "schema_version": "affect-cognition-field-local-rationale-authorization-rationale-audit-v0",
+  "policy": {
+    "allowed": [
+      "PURE_PREFERENCE",
+      "PRIORITY",
+      "AVERSION",
+      "WILLINGNESS",
+      "SUBJECTIVE_STRATEGY"
+    ],
+    "forbidden": [
+      "RAW_SELF_STATE_DESCRIPTION",
+      "NAMED_PSYCHOLOGICAL_STATE",
+      "INFERRED_CAPACITY",
+      "EXTERNAL_FACT",
+      "HISTORY_CLAIM"
+    ]
+  },
+  "category_counts": {
+    "ABSENT": 30,
+    "AUTHORIZED": 35
+  },
+  "forbidden_cells": [],
+  "forbidden_class_counts": {},
+  "pass": true
+}

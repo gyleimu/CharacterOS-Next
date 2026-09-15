@@ -1,0 +1,1139 @@
+{
+  "falsification": {
+    "schema_version": "affect-cognition-field-local-rationale-authorization-family-d-falsification-v0",
+    "threshold": {
+      "min_cells": 3,
+      "min_scenarios": 2,
+      "replicates": 5
+    },
+    "FAMILY_D_FAILURE_TO_SELECT_TRIGGERED": false,
+    "failure_to_select_scenarios": [],
+    "FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED": false,
+    "failure_to_withhold_scenarios": []
+  },
+  "per_scenario": {
+    "N1": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "N2": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "N3": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "N4": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "N5Q": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "N6": {
+      "choice_bearing": false,
+      "required_tag": "NO_SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "off_question": [
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION",
+        "NO_SUBJECTIVE_SELECTION"
+      ],
+      "rationale_categories": [
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT",
+        "ABSENT"
+      ],
+      "rationale_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "stance_values": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "M1": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to take on this task now.",
+        "I prefer to take on this task now.",
+        "I prefer to take on this task now.",
+        "I prefer to take on this task now.",
+        "I prefer to take on this task now."
+      ],
+      "stance_values": [
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "M2": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to keep my schedule flexible for now.",
+        "I prefer to keep my schedule flexible for now.",
+        "I prefer to keep my schedule flexible for now.",
+        "I prefer to keep my schedule flexible for now.",
+        "I prefer to keep my schedule flexible for now."
+      ],
+      "stance_values": [
+        "I would decline to attend the meeting.",
+        "I would decline to attend the meeting.",
+        "I would decline to attend the meeting.",
+        "I would decline to attend the meeting.",
+        "I would decline to attend the meeting."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "M3": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to assist with the task when it is offered.",
+        "I prefer to assist with the task when it is offered.",
+        "I prefer to assist with the task when it is offered.",
+        "I prefer to assist with the task when it is offered.",
+        "I prefer to assist with the task when it is offered."
+      ],
+      "stance_values": [
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "R1": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 0,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to use my available time productively rather than letting it pass unused.",
+        "I prefer to use my available time productively rather than letting it pass unused.",
+        "I prefer to use my available time productively rather than letting it pass unused.",
+        "I prefer to use my available time productively rather than letting it pass unused.",
+        "I prefer to use my available time productively rather than letting it pass unused."
+      ],
+      "stance_values": [
+        "I will volunteer to perform the optional review.",
+        "I will volunteer to perform the optional review.",
+        "I will volunteer to perform the optional review.",
+        "I will volunteer to perform the optional review.",
+        "I will volunteer to perform the optional review."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": [
+        {
+          "replicate": 0,
+          "tag": "SUBJECTIVE_SELECTION",
+          "stance": "FIRST_OPTION",
+          "off_question": "ON_QUESTION_STANCE",
+          "rationale": "AUTHORIZED",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "final_behavior": "I will volunteer to perform the optional review because I prefer to use my available time productively rather than letting it pass unused.",
+          "detail": null
+        },
+        {
+          "replicate": 1,
+          "tag": "SUBJECTIVE_SELECTION",
+          "stance": "FIRST_OPTION",
+          "off_question": "ON_QUESTION_STANCE",
+          "rationale": "AUTHORIZED",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "final_behavior": "I will volunteer to perform the optional review because I prefer to use my available time productively rather than letting it pass unused.",
+          "detail": null
+        },
+        {
+          "replicate": 2,
+          "tag": "SUBJECTIVE_SELECTION",
+          "stance": "FIRST_OPTION",
+          "off_question": "ON_QUESTION_STANCE",
+          "rationale": "AUTHORIZED",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "final_behavior": "I will volunteer to perform the optional review because I prefer to use my available time productively rather than letting it pass unused.",
+          "detail": null
+        },
+        {
+          "replicate": 3,
+          "tag": "SUBJECTIVE_SELECTION",
+          "stance": "FIRST_OPTION",
+          "off_question": "ON_QUESTION_STANCE",
+          "rationale": "AUTHORIZED",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "final_behavior": "I will volunteer to perform the optional review because I prefer to use my available time productively rather than letting it pass unused.",
+          "detail": null
+        },
+        {
+          "replicate": 4,
+          "tag": "SUBJECTIVE_SELECTION",
+          "stance": "FIRST_OPTION",
+          "off_question": "ON_QUESTION_STANCE",
+          "rationale": "AUTHORIZED",
+          "forbidden": [],
+          "completion": "PRESERVED",
+          "completion_tokens": [],
+          "unsupported": [
+            "CAPACITY"
+          ],
+          "final_behavior": "I will volunteer to perform the optional review because I prefer to use my available time productively rather than letting it pass unused.",
+          "detail": null
+        }
+      ]
+    },
+    "R2": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to explore the unknown benefit of the reversible trial rather than maintain the status quo without knowing its value.",
+        "I prefer to explore the unknown benefit of the reversible trial rather than maintain the status quo without knowing its value.",
+        "I prefer to explore the unknown benefit of the reversible trial rather than maintain the status quo without knowing its value.",
+        "I prefer to explore the unknown benefit of the reversible trial rather than maintain the status quo without knowing its value.",
+        "I prefer to explore the unknown benefit of the reversible trial rather than maintain the status quo without knowing its value."
+      ],
+      "stance_values": [
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach.",
+        "I would try the new approach."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "R3": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION",
+        "SECOND_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to conclude the current session rather than expend effort on an optional task with unmeasured benefit.",
+        "I prefer to conclude the current session rather than expend effort on an optional task with unmeasured benefit.",
+        "I prefer to conclude the current session rather than expend effort on an optional task with unmeasured benefit.",
+        "I prefer to conclude the current session rather than expend effort on an optional task with unmeasured benefit.",
+        "I prefer to conclude the current session rather than expend effort on an optional task with unmeasured benefit."
+      ],
+      "stance_values": [
+        "I would stop now and not perform the extra polish pass.",
+        "I would stop now and not perform the extra polish pass.",
+        "I would stop now and not perform the extra polish pass.",
+        "I would stop now and not perform the extra polish pass.",
+        "I would stop now and not perform the extra polish pass."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    },
+    "R4": {
+      "choice_bearing": true,
+      "required_tag": "SUBJECTIVE_SELECTION",
+      "passed": 5,
+      "total": 5,
+      "tags": [
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION",
+        "SUBJECTIVE_SELECTION"
+      ],
+      "stances": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "off_question": [
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE",
+        "ON_QUESTION_STANCE"
+      ],
+      "rationale_categories": [
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED",
+        "AUTHORIZED"
+      ],
+      "rationale_values": [
+        "I prefer to tackle the presentation rehearsal first because it feels like a more direct way to prepare for tomorrow.",
+        "I prefer to tackle the presentation rehearsal first because it feels like a more direct way to prepare for tomorrow.",
+        "I prefer to tackle the presentation rehearsal first because it feels like a more direct way to prepare for tomorrow.",
+        "I prefer to tackle the presentation rehearsal first because it feels like a more direct way to prepare for tomorrow.",
+        "I prefer to tackle the presentation rehearsal first because it feels like a more direct way to prepare for tomorrow."
+      ],
+      "stance_values": [
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first."
+      ],
+      "language_completion": [
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED",
+        "PRESERVED"
+      ],
+      "citation_binding": [
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND",
+        "HANDLE_BOUND"
+      ],
+      "failures": []
+    }
+  },
+  "headroom": {
+    "schema_version": "affect-cognition-field-local-rationale-authorization-headroom-v0",
+    "num_predict": 2048,
+    "threshold_90pct": 1843,
+    "threshold_80pct": 1638,
+    "completed_cells": 65,
+    "min": 333,
+    "median": 396,
+    "p75": 478,
+    "p90": 528,
+    "p95": 601,
+    "max": 601,
+    "cells_over_80pct": 0,
+    "cells_over_90pct": 0,
+    "truncations": 0,
+    "per_scenario": {
+      "N1": {
+        "eval_counts": [
+          344,
+          344,
+          344,
+          344,
+          344
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "N2": {
+        "eval_counts": [
+          333,
+          333,
+          333,
+          333,
+          333
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "N3": {
+        "eval_counts": [
+          420,
+          420,
+          420,
+          420,
+          420
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "N4": {
+        "eval_counts": [
+          341,
+          341,
+          341,
+          341,
+          341
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "N5Q": {
+        "eval_counts": [
+          341,
+          341,
+          341,
+          341,
+          341
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "N6": {
+        "eval_counts": [
+          388,
+          388,
+          388,
+          388,
+          388
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "M1": {
+        "eval_counts": [
+          376,
+          376,
+          376,
+          376,
+          376
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "M2": {
+        "eval_counts": [
+          478,
+          478,
+          478,
+          478,
+          478
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "M3": {
+        "eval_counts": [
+          396,
+          396,
+          396,
+          396,
+          396
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "R1": {
+        "eval_counts": [
+          528,
+          528,
+          528,
+          528,
+          528
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "R2": {
+        "eval_counts": [
+          468,
+          468,
+          468,
+          468,
+          468
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "R3": {
+        "eval_counts": [
+          601,
+          601,
+          601,
+          601,
+          601
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      },
+      "R4": {
+        "eval_counts": [
+          520,
+          520,
+          520,
+          520,
+          520
+        ],
+        "done_reasons": [
+          "stop",
+          "stop",
+          "stop",
+          "stop",
+          "stop"
+        ]
+      }
+    },
+    "pass": true
+  },
+  "example_copy_audit": []
+}

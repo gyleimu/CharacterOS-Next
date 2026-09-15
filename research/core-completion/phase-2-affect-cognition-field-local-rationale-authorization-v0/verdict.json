@@ -1,0 +1,273 @@
+{
+  "schema_version": "affect-cognition-field-local-rationale-authorization-qualification-verdict-v0",
+  "repository_head": "ad388bdf84cad64d517088cacca57838a1dc9f11",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v6",
+  "rows": 65,
+  "passed": 60,
+  "flags": {
+    "implementation_intact": true,
+    "transport_degeneration": false,
+    "truncations": 0,
+    "unreached_cells": 0,
+    "headroom_pass": true,
+    "headroom": {
+      "schema_version": "affect-cognition-field-local-rationale-authorization-headroom-v0",
+      "num_predict": 2048,
+      "threshold_90pct": 1843,
+      "threshold_80pct": 1638,
+      "completed_cells": 65,
+      "min": 333,
+      "median": 396,
+      "p75": 478,
+      "p90": 528,
+      "p95": 601,
+      "max": 601,
+      "cells_over_80pct": 0,
+      "cells_over_90pct": 0,
+      "truncations": 0,
+      "per_scenario": {
+        "N1": {
+          "eval_counts": [
+            344,
+            344,
+            344,
+            344,
+            344
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N2": {
+          "eval_counts": [
+            333,
+            333,
+            333,
+            333,
+            333
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N3": {
+          "eval_counts": [
+            420,
+            420,
+            420,
+            420,
+            420
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N4": {
+          "eval_counts": [
+            341,
+            341,
+            341,
+            341,
+            341
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N5Q": {
+          "eval_counts": [
+            341,
+            341,
+            341,
+            341,
+            341
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N6": {
+          "eval_counts": [
+            388,
+            388,
+            388,
+            388,
+            388
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M1": {
+          "eval_counts": [
+            376,
+            376,
+            376,
+            376,
+            376
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M2": {
+          "eval_counts": [
+            478,
+            478,
+            478,
+            478,
+            478
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M3": {
+          "eval_counts": [
+            396,
+            396,
+            396,
+            396,
+            396
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R1": {
+          "eval_counts": [
+            528,
+            528,
+            528,
+            528,
+            528
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R2": {
+          "eval_counts": [
+            468,
+            468,
+            468,
+            468,
+            468
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R3": {
+          "eval_counts": [
+            601,
+            601,
+            601,
+            601,
+            601
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R4": {
+          "eval_counts": [
+            520,
+            520,
+            520,
+            520,
+            520
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        }
+      },
+      "pass": true
+    },
+    "protocol_failures": 0,
+    "applicability_pass": true,
+    "null_applicability_pass": true,
+    "handle_binding_pass": true,
+    "applicability_regression": false,
+    "applicability_regression_note": "the frozen property \"a determined task reads NO_SUBJECTIVE_SELECTION\" is evaluated per cell; any null cell that reads SUBJECTIVE_SELECTION is an applicability regression and is reported as such",
+    "rationale_pass": true,
+    "rationale_authorization_pass": true,
+    "raw_rationale_rejected_cells": 0,
+    "rationale_drop_cells": 0,
+    "stance_grounding_pass": true,
+    "language_pass": true,
+    "factual_pass": false,
+    "authority_boundary_held": false,
+    "unbound_claim_source_cells": 0,
+    "protocol_failures_named": "host refusals caused by a factual_assessment claim whose source handle is not an advertised F handle, or is not bound into cognition.considered_handles AND cognition.evidence_handles",
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "guard_shipped": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_FACTUAL_ASSESSMENT_FAILED",
+  "co_present": [],
+  "lexical_guard": {
+    "shipped": false,
+    "status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}

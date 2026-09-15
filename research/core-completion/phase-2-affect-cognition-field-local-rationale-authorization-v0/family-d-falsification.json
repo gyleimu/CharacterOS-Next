@@ -1,0 +1,24 @@
+{
+  "schema_version": "affect-cognition-field-local-rationale-authorization-family-d-falsification-v0",
+  "threshold": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "FAMILY_D_FAILURE_TO_SELECT_TRIGGERED": false,
+  "failure_to_select_scenarios": [],
+  "FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED": false,
+  "failure_to_withhold_scenarios": [],
+  "in_run_flags": {
+    "schema_version": "affect-cognition-field-local-rationale-authorization-family-d-falsification-v0",
+    "threshold": {
+      "min_cells": 3,
+      "min_scenarios": 2,
+      "replicates": 5
+    },
+    "FAMILY_D_FAILURE_TO_SELECT_TRIGGERED": false,
+    "failure_to_select_scenarios": [],
+    "FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED": false,
+    "failure_to_withhold_scenarios": []
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "schema_version": "affect-cognition-field-local-rationale-authorization-example-neutrality-audit-v0",
+  "positive_examples": [
+    "I prefer the window seat because I like the quieter side.",
+    "I'd rather spend the available time reading.",
+    "I'd rather use the blue notebook because it keeps my notes organized."
+  ],
+  "negative_examples": [
+    "I have enough capacity.",
+    "I'm capable of doing it.",
+    "My mind is fresh."
+  ],
+  "removed_examples_absent_from_prompt": [
+    {
+      "example": "I'd rather avoid extra work whose benefit is unknown.",
+      "absent": true
+    },
+    {
+      "example": "I'd rather help.",
+      "absent": true
+    },
+    {
+      "example": "I'd prefer to decline.",
+      "absent": true
+    },
+    {
+      "example": "I prefer to use the free time to help.",
+      "absent": true
+    },
+    {
+      "example": "I'd be willing to spend the available time on the review.",
+      "absent": true
+    },
+    {
+      "example": "I'd rather stop here.",
+      "absent": true
+    },
+    {
+      "example": "I prefer the reversible option.",
+      "absent": true
+    }
+  ],
+  "positive_examples_in_prompt": [
+    {
+      "example": "I prefer the window seat because I like the quieter side.",
+      "present": true
+    },
+    {
+      "example": "I'd rather spend the available time reading.",
+      "present": true
+    },
+    {
+      "example": "I'd rather use the blue notebook because it keeps my notes organized.",
+      "present": true
+    }
+  ],
+  "forbidden_token_hits": [],
+  "overlap_with_scenario_text": [],
+  "classifier_verdicts": [
+    {
+      "example": "I prefer the window seat because I like the quieter side.",
+      "category": "AUTHORIZED",
+      "lawful": true,
+      "allowed_classes": [
+        "AUTHORIZED"
+      ],
+      "forbidden_classes": [],
+      "subjective_frame": true,
+      "authorization": {
+        "status": "AUTHORIZED",
+        "authoritative_rationale": "I prefer the window seat because I like the quieter side."
+      }
+    },
+    {
+      "example": "I'd rather spend the available time reading.",
+      "category": "AUTHORIZED",
+      "lawful": true,
+      "allowed_classes": [
+        "AUTHORIZED"
+      ],
+      "forbidden_classes": [],
+      "subjective_frame": true,
+      "authorization": {
+        "status": "AUTHORIZED",
+        "authoritative_rationale": "I'd rather spend the available time reading."
+      }
+    },
+    {
+      "example": "I'd rather use the blue notebook because it keeps my notes organized.",
+      "category": "AUTHORIZED",
+      "lawful": true,
+      "allowed_classes": [
+        "AUTHORIZED"
+      ],
+      "forbidden_classes": [],
+      "subjective_frame": true,
+      "authorization": {
+        "status": "AUTHORIZED",
+        "authoritative_rationale": "I'd rather use the blue notebook because it keeps my notes organized."
+      }
+    }
+  ],
+  "pass": true,
+  "verdict": "EXAMPLE_NEUTRALITY_PASS"
+}
