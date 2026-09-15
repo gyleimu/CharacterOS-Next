@@ -55,7 +55,8 @@ const cognitionTransport: ModelTransportV0 = {
     const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
     return {
       content: JSON.stringify({
-        schema_version: "conversation-cognition-proposal-v7",
+        response_semantics: { kind: "PRIMARY_CLARIFICATION" },
+        schema_version: "conversation-cognition-proposal-v8",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
         factual_assessment: { claims: [] },
         cognition: { schema_version: "cognition-proposal-v0",  reasoning_summary: "x", relevant_memory_handles: [], considered_handles: [handleForAdvertisedRef(user, observationRef)], current_intent: "respond", confidence: 0.7, uncertainty: 0.3, action_intent: null, evidence_handles: [] },

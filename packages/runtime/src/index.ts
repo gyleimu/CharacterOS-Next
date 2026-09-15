@@ -1156,6 +1156,30 @@ export {
   type ConversationCognitionProposalV7Validation
 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
+  ConversationCognitionProviderV8,
+  ConversationCognitionRejectionErrorV8,
+  CONVERSATION_COGNITION_SYSTEM_PROMPT_V8,
+  CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA,
+  COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V4,
+  COGNITION_INVOCATION_BINDING_HASH_PROJECTION_V4,
+  deriveCognitionInvocationBindingHashV4,
+  type CognitionInvocationBindingV4,
+  type ConversationCognitionRejectionCodeV8
+} from "./providers/behavior/conversation-cognition-provider-v8.js";
+export {
+  CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8,
+  CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V8,
+  CONVERSATIONAL_ACT_KINDS_V0,
+  canonicalizeConversationCognitionModelOutputV8,
+  validateConversationCognitionProposalV8,
+  validateHostBoundConversationCognitionProposalV8,
+  deriveConversationCognitionProposalHashV8,
+  type ConversationalActKindV0,
+  type ResponseSemanticsAtomV0,
+  type ConversationCognitionProposalV8,
+  type ConversationCognitionProposalV8Validation
+} from "./transitions/conversation/conversation-cognition-proposal.js";
+export {
   LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V6,
   LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V6,
   type LanguageRealizationInputV6,

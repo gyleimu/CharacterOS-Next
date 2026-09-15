@@ -60,7 +60,8 @@ function cognitionTransport(mode: () => Mode, recorder: TransportRecorder): Mode
       }
       return {
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v7",
+          response_semantics: selected === "CLARIFY" ? { kind: "PRIMARY_CLARIFICATION" } : { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "ACKNOWLEDGE" },
+          schema_version: "conversation-cognition-proposal-v8",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
           factual_assessment: { claims: [] },
           cognition: {

@@ -1800,3 +1800,268 @@ export async function deriveConversationCognitionProposalHashV7(
     clarification_basis: proposal.clarification_basis
   });
 }
+
+// ---------------------------------------------------------------------------------
+// AFFECT_COGNITION_RESPONSE_SEMANTICS_ATOM_V0 — live proposal V8
+// ---------------------------------------------------------------------------------
+/**
+ * Cognition V8 adds exactly one field to the V7 proposal: \`response_semantics\`, the
+ * explicitly proposed response atom Language is asked to realize. The atom designates
+ * ALREADY-AUTHORIZED semantics (an authorized factual claim, the authoritative stance,
+ * the authorized clarification basis) or a closed conversational/generative act bounded
+ * to the current turn. It creates no authority of its own; the host validates it
+ * structurally and re-renders the authoritative form.
+ */
+export const CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8 =
+  "conversation-cognition-proposal-v8" as const;
+export const CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V8 =
+  "characteros-next/runtime/conversation-cognition-proposal/v8" as const;
+
+export const PRIMARY_RESPONSE_KIND_FACT_V0 = "PRIMARY_FACT" as const;
+export const PRIMARY_RESPONSE_KIND_STANCE_V0 = "PRIMARY_STANCE" as const;
+export const PRIMARY_RESPONSE_KIND_CLARIFICATION_V0 = "PRIMARY_CLARIFICATION" as const;
+export const PRIMARY_RESPONSE_KIND_CONVERSATIONAL_ACT_V0 = "PRIMARY_CONVERSATIONAL_ACT" as const;
+
+/** The frozen minimal act registry (workload-inventory justified; no fourth act). */
+export const CONVERSATIONAL_ACT_KINDS_V0 = Object.freeze([
+  "GREET",
+  "ACKNOWLEDGE",
+  "GENERATIVE"
+] as const);
+export type ConversationalActKindV0 = (typeof CONVERSATIONAL_ACT_KINDS_V0)[number];
+
+export type ResponseSemanticsAtomV0 =
+  | {
+      readonly kind: typeof PRIMARY_RESPONSE_KIND_FACT_V0;
+      readonly claim_index: number;
+    }
+  | { readonly kind: typeof PRIMARY_RESPONSE_KIND_STANCE_V0 }
+  | { readonly kind: typeof PRIMARY_RESPONSE_KIND_CLARIFICATION_V0 }
+  | {
+      readonly kind: typeof PRIMARY_RESPONSE_KIND_CONVERSATIONAL_ACT_V0;
+      readonly act: ConversationalActKindV0;
+      /** Host-stamped current-turn binding; never model-supplied. */
+      readonly target_ref: CanonicalRefV0;
+    };
+
+export interface ConversationCognitionProposalV8 {
+  readonly schema_version: typeof CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8;
+  readonly factual_assessment: FactualAssessmentV1;
+  readonly cognition: CognitionProposalV0;
+  readonly subjective_selection: SubjectiveSelectionV1;
+  readonly communication_directive: CommunicationDirectiveV0;
+  readonly clarification_basis: ClarificationBasisV0 | null;
+  readonly response_semantics: ResponseSemanticsAtomV0;
+}
+
+export type ConversationCognitionProposalV8Validation =
+  | {
+      readonly ok: true;
+      readonly proposal: ConversationCognitionProposalV8;
+      readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+    }
+  | {
+      readonly ok: false;
+      readonly detail: string;
+      readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+    };
+
+const RESPONSE_SEMANTICS_SCHEMA_VERSION_V0 = "response-semantics-v0" as const;
+
+const FACT_ATOM_KEYS = Object.freeze(["kind", "claim_index"]);
+const STANCE_ATOM_KEYS = Object.freeze(["kind"]);
+const CONVERSATIONAL_ATOM_KEYS = Object.freeze(["kind", "act", "target_ref"]);
+const CONVERSATIONAL_WIRE_KEYS = Object.freeze(["kind", "act"]);
+
+/**
+ * Validates one response atom against the ALREADY-AUTHORITATIVE proposal parts. Used for
+ * both the canonicalized wire atom and the authoritative (host-re-stamped) form; the
+ * \`requireTarget\` flag distinguishes "authoritative form must carry the host target"
+ * from the wire form, which never carries a target.
+ */
+function validateResponseSemanticsAtomV0(
+  value: unknown,
+  proposal: {
+    readonly factual_assessment: FactualAssessmentV1;
+    readonly subjective_selection: SubjectiveSelectionV1;
+    readonly communication_directive: CommunicationDirectiveV0;
+    readonly clarification_basis: ClarificationBasisV0 | null;
+  },
+  currentObservationRef: CanonicalRefV0 | null,
+  requireTarget: boolean,
+  detail: string
+): { ok: true; atom: ResponseSemanticsAtomV0 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: `${detail}: expected object` };
+  const kind = value["kind"];
+  if (kind === PRIMARY_RESPONSE_KIND_FACT_V0) {
+    const keys = exactClosedKeys(value, FACT_ATOM_KEYS, detail);
+    if (keys !== null) return { ok: false, detail: keys };
+    const claimIndex = value["claim_index"];
+    if (!Number.isInteger(claimIndex) || (claimIndex as number) < 0 || (claimIndex as number) >= proposal.factual_assessment.claims.length) {
+      return { ok: false, detail: `${detail}.claim_index: must reference an authorized factual claim` };
+    }
+    return { ok: true, atom: Object.freeze({ kind: PRIMARY_RESPONSE_KIND_FACT_V0, claim_index: claimIndex as number }) };
+  }
+  if (kind === PRIMARY_RESPONSE_KIND_STANCE_V0) {
+    const keys = exactClosedKeys(value, STANCE_ATOM_KEYS, detail);
+    if (keys !== null) return { ok: false, detail: keys };
+    if (proposal.subjective_selection.kind !== SUBJECTIVE_SELECTION_KIND_SELECTED_V1) {
+      return { ok: false, detail: `${detail}: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance` };
+    }
+    return { ok: true, atom: Object.freeze({ kind: PRIMARY_RESPONSE_KIND_STANCE_V0 }) };
+  }
+  if (kind === PRIMARY_RESPONSE_KIND_CLARIFICATION_V0) {
+    const keys = exactClosedKeys(value, STANCE_ATOM_KEYS, detail);
+    if (keys !== null) return { ok: false, detail: keys };
+    if (proposal.communication_directive.kind !== "CLARIFY_MISSING_CONTEXT" || proposal.clarification_basis === null) {
+      return { ok: false, detail: `${detail}: PRIMARY_CLARIFICATION requires an authorized clarification basis` };
+    }
+    return { ok: true, atom: Object.freeze({ kind: PRIMARY_RESPONSE_KIND_CLARIFICATION_V0 }) };
+  }
+  if (kind === PRIMARY_RESPONSE_KIND_CONVERSATIONAL_ACT_V0) {
+    if (requireTarget) {
+      const keys = exactClosedKeys(value, CONVERSATIONAL_ATOM_KEYS, detail);
+      if (keys !== null) return { ok: false, detail: keys };
+    } else {
+      const keys = exactClosedKeys(value, CONVERSATIONAL_WIRE_KEYS, detail);
+      if (keys !== null) return { ok: false, detail: keys };
+    }
+    const act = value["act"];
+    if (!CONVERSATIONAL_ACT_KINDS_V0.includes(act as ConversationalActKindV0)) {
+      return { ok: false, detail: `${detail}.act: not in the frozen conversational-act registry` };
+    }
+    if (proposal.communication_directive.kind !== "REALIZE_CURRENT_INTENT") {
+      return { ok: false, detail: `${detail}: conversational acts are lawful only on REALIZE turns` };
+    }
+    if (proposal.subjective_selection.kind !== SUBJECTIVE_SELECTION_KIND_NO_SELECTION_V1) {
+      return { ok: false, detail: `${detail}: a turn with an authoritative stance must realize that stance` };
+    }
+    if (currentObservationRef === null) return { ok: false, detail: `${detail}.target_ref: no current-turn identity available` };
+    if (requireTarget && value["target_ref"] !== currentObservationRef) {
+      return { ok: false, detail: `${detail}.target_ref: must be the current turn observation ref` };
+    }
+    return {
+      ok: true,
+      atom: Object.freeze({
+        kind: PRIMARY_RESPONSE_KIND_CONVERSATIONAL_ACT_V0,
+        act: act as ConversationalActKindV0,
+        target_ref: currentObservationRef
+      })
+    };
+  }
+  return { ok: false, detail: `${detail}.kind: must be PRIMARY_FACT, PRIMARY_STANCE, PRIMARY_CLARIFICATION or PRIMARY_CONVERSATIONAL_ACT` };
+}
+
+/** V8 wire boundary: V7 canonicalization (unchanged) plus the response-semantics atom. */
+export function canonicalizeConversationCognitionModelOutputV8(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion,
+  authoritativeProjectionHash: HashV1
+): ConversationCognitionProposalV8Validation {
+  const emptyTrace: readonly FactualClaimAuthorizationTraceV0[] = Object.freeze([]);
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal: expected object", factual_authorization_trace: emptyTrace };
+  if (value["response_semantics"] === undefined) {
+    // §2/§23 zero-authority invariant: checked before closed-key reporting so the
+    // rejection is always the typed completeness failure.
+    return { ok: false, detail: "SEMANTIC_COMPLETENESS_FAILED: response_semantics atom is required", factual_authorization_trace: emptyTrace };
+  }
+  const keyFailure = exactClosedKeys(value, [...OUTER_KEYS_V7, "response_semantics"], "conversation proposal");
+  if (keyFailure !== null) return { ok: false, detail: keyFailure, factual_authorization_trace: emptyTrace };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8) {
+    return { ok: false, detail: "conversation proposal.schema_version: expected conversation-cognition-proposal-v8", factual_authorization_trace: emptyTrace };
+  }
+  if (value["response_semantics"] === undefined) {
+    // §2 zero-authority invariant: no REALIZE turn may reach Language without an atom.
+    return { ok: false, detail: "SEMANTIC_COMPLETENESS_FAILED: response_semantics atom is required", factual_authorization_trace: emptyTrace };
+  }
+  const { response_semantics: rawAtom, ...v7Shape } = value;
+  const v7Checked = canonicalizeConversationCognitionModelOutputV7(
+    { ...v7Shape, schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7 },
+    projection,
+    authoritativeProjectionHash
+  );
+  if (!v7Checked.ok) return { ok: false, detail: v7Checked.detail, factual_authorization_trace: v7Checked.factual_authorization_trace };
+  const atomCheck = validateResponseSemanticsAtomV0(
+    rawAtom,
+    v7Checked.proposal,
+    projection.context.current_observation_ref,
+    false,
+    "conversation proposal.response_semantics"
+  );
+  if (!atomCheck.ok) {
+    return { ok: false, detail: `SEMANTIC_COMPLETENESS_FAILED: ${atomCheck.detail}`, factual_authorization_trace: v7Checked.factual_authorization_trace };
+  }
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      ...v7Checked.proposal,
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8,
+      response_semantics: atomCheck.atom
+    }),
+    factual_authorization_trace: v7Checked.factual_authorization_trace
+  };
+}
+
+/** Revalidate an already authoritative V8 proposal without interpreting V7. */
+export function validateConversationCognitionProposalV8(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): { ok: true; proposal: ConversationCognitionProposalV8 } | { ok: false; detail: string } {
+  if (!isRecord(value)) return { ok: false, detail: "conversation proposal v8: expected object" };
+  if (value["schema_version"] !== CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8) {
+    return { ok: false, detail: "conversation proposal v8.schema_version: expected conversation-cognition-proposal-v8" };
+  }
+  if (!isRecord(value["cognition"]) || value["cognition"]["projection_hash"] !== projection.projection_hash) {
+    return { ok: false, detail: "conversation proposal v8.cognition.projection_hash: does not match the authoritative projection binding" };
+  }
+  const { response_semantics: rawAtom, ...v7Shape } = value;
+  const { projection_hash: _ignoredHash, ...semanticCognition } = value["cognition"] as Record<string, unknown>;
+  void _ignoredHash;
+  const v7Checked = validateConversationCognitionProposalV7(
+    { ...v7Shape, cognition: semanticCognition, schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V7 },
+    projection,
+    projection.projection_hash
+  );
+  if (!v7Checked.ok) return { ok: false, detail: v7Checked.detail };
+  const atomCheck = validateResponseSemanticsAtomV0(
+    rawAtom,
+    v7Checked.proposal,
+    projection.context.current_observation_ref,
+    true,
+    "conversation proposal v8.response_semantics"
+  );
+  if (!atomCheck.ok) return { ok: false, detail: `SEMANTIC_COMPLETENESS_FAILED: ${atomCheck.detail}` };
+  return {
+    ok: true,
+    proposal: Object.freeze({
+      ...v7Checked.proposal,
+      cognition: Object.freeze({ ...v7Checked.proposal.cognition, projection_hash: projection.projection_hash }),
+      schema_version: CONVERSATION_COGNITION_PROPOSAL_SCHEMA_VERSION_V8,
+      response_semantics: atomCheck.atom
+    })
+  };
+}
+
+export async function deriveConversationCognitionProposalHashV8(
+  proposal: ConversationCognitionProposalV8
+): Promise<HashV1> {
+  return hashEnvelope(CONVERSATION_COGNITION_PROPOSAL_HASH_PROJECTION_V8, proposal);
+}
+
+/** Host-bound authoritative V8 proposal: the hash is host-owned, never model-emitted. */
+export async function validateHostBoundConversationCognitionProposalV8(
+  value: unknown,
+  projection: CognitiveContextProjectionAnyVersion
+): Promise<
+  | { ok: true; proposal: ConversationCognitionProposalV8; proposal_hash: HashV1 }
+  | { ok: false; detail: string }
+> {
+  const checked = validateConversationCognitionProposalV8(value, projection);
+  if (!checked.ok) return checked;
+  if (checked.proposal.cognition.projection_hash !== projection.projection_hash) {
+    return { ok: false, detail: "conversation proposal v8.cognition.projection_hash: host binding mismatch" };
+  }
+  return { ok: true, proposal: checked.proposal, proposal_hash: await deriveConversationCognitionProposalHashV8(checked.proposal) };
+}
+
+export const RESPONSE_SEMANTICS_SCHEMA_VERSION = RESPONSE_SEMANTICS_SCHEMA_VERSION_V0;

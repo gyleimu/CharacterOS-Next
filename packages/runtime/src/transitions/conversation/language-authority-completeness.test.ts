@@ -1,5 +1,11 @@
 /**
- * LANGUAGE AUTHORITY HARDENING + INPUT ISOLATION — production tests.
+ * LANGUAGE AUTHORITY HARDENING + INPUT ISOLATION — HISTORICAL protocol coverage.
+ *
+ * The live path moved to the authoritative response-semantics atom (V8 proposal → V10
+ * language input); the V9 realization-plan semantics below are retained as readable,
+ * verified history (schema compatibility §46) and are never invoked by the live
+ * executor. Live behavior is proven by response-semantics-atom.test.ts and the
+ * canonical-affect integration suite.
  *
  * Proves the V9 contract:
  *  - the pre-Language realization completeness gate (LC-C) refuses determined-content

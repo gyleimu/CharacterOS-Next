@@ -491,10 +491,15 @@ async function executeDownstreamProof(
       return {
         model: "fake-canonical-cognition",
         content: JSON.stringify({
-          schema_version: "conversation-cognition-proposal-v7",
+          schema_version: "conversation-cognition-proposal-v8",
           subjective_selection: cognitionIntent === null
             ? { kind: "NO_SUBJECTIVE_SELECTION" }
             : { kind: "SUBJECTIVE_SELECTION", stance: cognitionIntent, subjective_rationale: null },
+          // the primary response is the selected stance; the stance-free branch is a
+          // conversational continuation (the honest act for this deterministic provider seam)
+          response_semantics: cognitionIntent === null
+            ? { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "ACKNOWLEDGE" }
+            : { kind: "PRIMARY_STANCE" },
           factual_assessment: { claims: [] },
           cognition: {
             schema_version: "cognition-proposal-v0",
@@ -945,7 +950,7 @@ describe("CANONICAL_AFFECT_COGNITION_INTEGRATION_V0 — north-star two-subject p
 // ----------------------------------------------------------------------------------
 
 describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETERMINISTIC_INTEGRATION_PROOF", () => {
-  it("lawful history → Affect → explicit subjective choice → V5 input → distinct existing behavior artifacts", async () => {
+  it("lawful history → Affect → explicit subjective choice → V10 input → distinct existing behavior artifacts", async () => {
     const worldA = await buildWorld();
     const aPrior = await admitEvent(worldA, "evt-downstream-prior", "重做一下。");
     worldA.dimensionOverrides.set(aPrior.eventRef, { relevance: 1, goal_congruence: 1, intensity: 1 });
@@ -979,8 +984,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
     expect(resultA.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultA.cognition_intent, subjective_rationale: null });
     expect(resultB.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultB.cognition_intent, subjective_rationale: null });
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v9");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v9");
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v10");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v10");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
@@ -1010,7 +1015,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
     expect(result.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: selected, subjective_rationale: null });
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v9");
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v10");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1027,8 +1032,9 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v7",
+            schema_version: "conversation-cognition-proposal-v8",
           subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+            response_semantics: { kind: "PRIMARY_CLARIFICATION" },
             factual_assessment: { claims: [] },
             cognition: {
               schema_version: "cognition-proposal-v0",
@@ -1100,7 +1106,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
         return {
           model: "fake-canonical-cognition",
           content: JSON.stringify({
-            schema_version: "conversation-cognition-proposal-v7",
+            schema_version: "conversation-cognition-proposal-v8",
             factual_assessment: {
               claims: [{
                 kind: "DERIVED_RESULT",
@@ -1124,6 +1130,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
               stance: "I would volunteer for the review.",
               subjective_rationale: "I prefer to help."
             },
+            response_semantics: { kind: "PRIMARY_STANCE" },
             communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
             clarification_basis: null
           })
@@ -1201,7 +1208,7 @@ describe("CORE_INTEGRITY_AUDIT_V0 — explicit-v4 additional retrieval evidence"
   });
 });
 
-describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Language completeness", () => {
+describe("AUTHORITATIVE_RESPONSE_SEMANTICS_ATOM_V0 — pre-Language completeness and input isolation", () => {
   /** Decode the rendered [context] scene back to the canonical scene bytes. */
   function canonicalSceneOf(user: string): string {
     const line = user.split("\n").find((candidate) => candidate.startsWith("[context] scene=")) ?? "";
@@ -1209,7 +1216,7 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
     return rendered.replace(/\\"/g, '"').replace(/\\n/g, "\n").replace(/\\\\/g, "\\");
   }
 
-  async function executeV9Proof(
+  async function executeAtomProof(
     world: World,
     cognitionWire: (user: string) => Record<string, unknown>,
     responseRequestId: string
@@ -1224,14 +1231,14 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
       complete: async (request) => {
         cognitionRequests.push(request);
         const user = request.messages.find((message) => message.role === "user")?.content ?? "";
-        return { model: "fake-v9-cognition", content: JSON.stringify(cognitionWire(user)) };
+        return { model: "fake-atom-cognition", content: JSON.stringify(cognitionWire(user)) };
       }
     };
     const languageTransport: ModelTransportV0 = {
       complete: async (request) => {
         languageRequests.push(request);
         return {
-          model: "fake-v9-language",
+          model: "fake-atom-language",
           content: JSON.stringify({
             schema_version: "language-realization-semantic-draft-v1",
             text: "Wait, let me re-read the rule: this reasoning text must never be delivered.",
@@ -1244,7 +1251,7 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
       subjectCore: world.assembly.facade as never,
       producerAuthorizationIssuer: world.issuer,
       memoryRepository: world.repo,
-      retrieval: { retrieve: async () => { throw new Error("V9 proof must not retrieve"); } } as never,
+      retrieval: { retrieve: async () => { throw new Error("atom proof must not retrieve"); } } as never,
       cognitionProvider: { propose: async () => { throw new Error("ordinary cognition provider must not be called"); } } as never,
       conversationCognitionTransport: conversationTransport,
       languageTransport,
@@ -1265,17 +1272,16 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
     return { result, cognitionRequests, languageRequests };
   }
 
-  const n6ShapedWire = (user: string): Record<string, unknown> => {
+  const quoteWire = (user: string, text: string): Record<string, unknown> => {
     const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
     const handle = handleForAdvertisedRef(user, observationRef);
-    const scene = canonicalSceneOf(user);
-    const quote = /[A-Za-z][A-Za-z ,.''-]{24,}/.exec(scene)?.[0] ?? scene.slice(0, 32);
     return {
-      schema_version: "conversation-cognition-proposal-v7",
-      factual_assessment: { claims: [{ kind: "SOURCE_QUOTE", text: quote, source_handles: [handle] }] },
+      schema_version: "conversation-cognition-proposal-v8",
+      factual_assessment: { claims: [{ kind: "SOURCE_QUOTE", text, source_handles: [handle] }] },
+      response_semantics: { kind: "PRIMARY_FACT", claim_index: 0 },
       cognition: {
         schema_version: "cognition-proposal-v0",
-        reasoning_summary: "deterministic V9 proof summary",
+        reasoning_summary: "deterministic atom proof summary",
         relevant_memory_handles: [],
         considered_handles: [handle],
         current_intent: "answer the request",
@@ -1290,8 +1296,14 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
     };
   };
 
+  /** A promised quote that is an EXACT substring of the cited source (lawful PRIMARY_FACT). */
+  const exactQuoteWire = (user: string): Record<string, unknown> => quoteWire(user, canonicalSceneOf(user));
+  /** The same designated primary fact, but its "quote" is a paraphrase no source contains. */
+  const unauthorizedQuoteWire = (user: string): Record<string, unknown> =>
+    quoteWire(user, "Question one, which the subject has asked.");
+
   const subjectiveWire = (): Record<string, unknown> => ({
-    schema_version: "conversation-cognition-proposal-v7",
+    schema_version: "conversation-cognition-proposal-v8",
     factual_assessment: { claims: [] },
     cognition: {
       schema_version: "cognition-proposal-v0",
@@ -1305,38 +1317,89 @@ describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Languag
       evidence_handles: []
     },
     subjective_selection: { kind: "SUBJECTIVE_SELECTION", stance: "I would rather help with the revision.", subjective_rationale: null },
+    response_semantics: { kind: "PRIMARY_STANCE" },
     communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
     clarification_basis: null
   });
 
-  it("a determined-content turn without an authorized derivation fails closed BEFORE Language", async () => {
+  const atomlessWire = (user: string): Record<string, unknown> => {
+    const { response_semantics: _dropped, ...rest } = exactQuoteWire(user);
+    void _dropped;
+    return rest;
+  };
+
+  it("a designated primary fact whose quote is an exact source substring reaches Language", async () => {
     const world = await buildWorld();
-    await admitAppraiseApply(world, "evt-v9-incomplete", "Question one.");
+    await admitAppraiseApply(world, "evt-atom-exact", "Question one.");
+    const proof = await executeAtomProof(world, exactQuoteWire, "req-atom-exact");
+    expect(proof.result.kind).toBe("OUTPUT_READY");
+    if (proof.result.kind !== "OUTPUT_READY") {
+      throw new Error(`unexpected result: ${JSON.stringify(proof.result)}`);
+    }
+    expect(proof.languageRequests).toHaveLength(1);
+    const cognitionUser = proof.cognitionRequests[0]?.messages.find((message) => message.role === "user")?.content ?? "";
+    const quoted = canonicalSceneOf(cognitionUser);
+    expect(quoted.length).toBeGreaterThan(0);
+    const user = proof.languageRequests[0]?.messages.find((message) => message.role === "user")?.content ?? "";
+    expect(user).toContain("PRIMARY_FACT");
+    expect(user).toContain("SOURCE_QUOTE");
+    // the exact authorized quote text rides the payload the model must realize
+    expect(user).toContain(quoted);
+  });
+
+  it("a designated primary fact whose quote is not authorized fails closed BEFORE Language", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-atom-incomplete", "Question one.");
     const bundlesBefore = world.assembly.storeRead.getCommittedBundles().length;
-    const proof = await executeV9Proof(world, n6ShapedWire, "req-v9-incomplete");
+    const proof = await executeAtomProof(world, unauthorizedQuoteWire, "req-atom-incomplete");
+    expect(proof.result.kind).toBe("FAILED");
+    if (proof.result.kind !== "FAILED") return;
+    expect(proof.result.stage).toBe("COGNITION_FAILED");
+    expect(proof.result.detail).toContain("REJECTED_SOURCE_BINDING");
+    expect(proof.result.detail).toContain("not an exact substring");
+    expect(proof.result.diagnostics?.factual_authorization_trace[0]).toMatchObject({
+      status: "REJECTED",
+      rejection_code: "REJECTED_SOURCE_BINDING",
+      claim_kind: "SOURCE_QUOTE"
+    });
+    // neither the reasoning text nor the unauthorized quote can be delivered: Language was
+    // never invoked, no proposal hash was minted, no bundle was committed
+    expect(proof.languageRequests).toHaveLength(0);
+    expect(proof.result).not.toHaveProperty("trace.conversation_cognition_proposal_hash");
+    expect(world.assembly.storeRead.getCommittedBundles()).toHaveLength(bundlesBefore);
+  });
+
+  it("a REALIZE turn with zero authoritative atoms fails closed as SEMANTIC_COMPLETENESS_FAILED", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-atom-missing", "Question one.");
+    const bundlesBefore = world.assembly.storeRead.getCommittedBundles().length;
+    const proof = await executeAtomProof(world, atomlessWire, "req-atom-missing");
     expect(proof.result.kind).toBe("FAILED");
     if (proof.result.kind !== "FAILED") return;
     expect(proof.result.stage).toBe("COGNITION_FAILED");
     expect(proof.result.detail).toContain("SEMANTIC_COMPLETENESS_FAILED");
-    // the reasoning text can never be delivered because Language was never invoked
+    // §2 zero-authority invariant through the live executor: no Language call, no behavior,
+    // no proposal hash, no committed bundle
     expect(proof.languageRequests).toHaveLength(0);
+    expect(proof.result).not.toHaveProperty("trace.conversation_cognition_proposal_hash");
     expect(world.assembly.storeRead.getCommittedBundles()).toHaveLength(bundlesBefore);
   });
 
-  it("an authoritative stance still reaches Language with the V9 payload and no request identity", async () => {
+  it("an authoritative stance still reaches Language with the V10 payload and no request identity", async () => {
     const world = await buildWorld();
-    await admitAppraiseApply(world, "evt-v9-subjective", "Question two.");
-    const proof = await executeV9Proof(world, subjectiveWire, "req-v9-subjective");
+    await admitAppraiseApply(world, "evt-atom-subjective", "Question two.");
+    const proof = await executeAtomProof(world, subjectiveWire, "req-atom-subjective");
     expect(proof.result.kind).toBe("OUTPUT_READY");
     if (proof.result.kind !== "OUTPUT_READY") {
       throw new Error(`unexpected result: ${JSON.stringify(proof.result)}`);
     }
     expect(proof.languageRequests).toHaveLength(1);
     const user = proof.languageRequests[0]?.messages.find((message) => message.role === "user")?.content ?? "";
-    expect(user).toContain("LANGUAGE REALIZATION INPUT V9");
+    expect(user).toContain("LANGUAGE REALIZATION INPUT V10");
     expect(user).toContain("realization_plan");
+    expect(user).toContain("PRIMARY_STANCE");
     expect(user).not.toContain("response_request_id");
-    expect(user).not.toContain("req-v9-subjective");
+    expect(user).not.toContain("req-atom-subjective");
     expect(proof.result.behavior.text).toBe("Wait, let me re-read the rule: this reasoning text must never be delivered.");
   });
 });
