@@ -12,6 +12,9 @@ tmp/
 *.log
 cerh/
 
+# vision adapter debug stills (written only when VISION_DEBUG_SAVE_FRAMES=true)
+vision-debug-frames/
+
 # product runtime data (local persistent subject state; never committed)
 product/sandbox/.data/
 

@@ -214,10 +214,29 @@ export default tseslint.config(
     "runtime may consume only active domain packages through public roots."
   ),
   packageBoundaryConfig(
+    "packages/vision/src/**/*.ts",
+    [
+      "@characteros-next/vision",
+      // VISUAL_PERCEPTION_ADAPTER_V0 — a standalone leaf adapter: it drives
+      // ffmpeg capture processes, a loopback still socket and an HTTP call to a
+      // local model runtime. It imports NO workspace package, so the dependency
+      // arrow stays product → vision, never vision → core.
+      "node:child_process",
+      "node:crypto",
+      "node:fs",
+      "node:fs/promises",
+      "node:net",
+      "node:path",
+      "node:process"
+    ],
+    "vision is a standalone local adapter; it may use node built-ins and must not import a CharacterOS domain package."
+  ),
+  packageBoundaryConfig(
     "product/sandbox/src/**/*.ts",
     [
       "@characteros-next/sandbox",
       "@characteros-next/runtime",
+      "@characteros-next/vision",
       // PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — the composition root is
       // the ONLY layer allowed to bridge runtime and the personality domain: the
       // session accepts an opaque PersonalityAdaptationPortV0 (dependency

@@ -18,6 +18,7 @@
     "typecheck:auxiliary": "tsc -p tsconfig.auxiliary.json",
     "typecheck:workspaces": "tsc -p tsconfig.workspaces.json",
     "verify": "pnpm governance && pnpm typecheck && pnpm build && pnpm typecheck:auxiliary && pnpm lint && pnpm test",
+    "vision": "pnpm --filter @characteros-next/sandbox build && pnpm --filter @characteros-next/sandbox vision",
     "web": "pnpm --filter @characteros-next/product-web build && pnpm --filter @characteros-next/product-web start"
   },
   "devDependencies": {

@@ -128,6 +128,8 @@ importers:
 
   packages/subject-core: {}
 
+  packages/vision: {}
+
   product/sandbox:
     dependencies:
       '@characteros-next/personality':
@@ -136,6 +138,9 @@ importers:
       '@characteros-next/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
+      '@characteros-next/vision':
+        specifier: workspace:*
+        version: link:../../packages/vision
 
   product/web:
     dependencies:

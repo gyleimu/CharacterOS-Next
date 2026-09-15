@@ -176,6 +176,17 @@ export type {
   ProductObservationRequestResultV0
 } from "./product-observation.js";
 export { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
+// VISUAL_PERCEPTION_PRODUCT_BRIDGE_V0 — maps a camera/desktop vision observation
+// onto the FROZEN external structured observation ingress, without touching
+// canonical code.
+export {
+  createProductVisionSinkV0,
+  visionEntityRefV0,
+  visionEntityRefsV0,
+  visionSceneTextV0,
+  VISION_FALLBACK_ENTITY_REF_V0,
+  VISION_SOURCE_REF_BY_KIND_V0
+} from "./product-vision-bridge.js";
 export { ProductLifeOperationsV0 } from "./product-life-operations.js";
 export type { ProductLifeViewV0, ProductStateViewV0 } from "./product-life-operations.js";
 export {
