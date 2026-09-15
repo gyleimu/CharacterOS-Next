@@ -129,6 +129,14 @@ export interface SpeechExpressionConfigV0 {
  *
  *   low valence + LOW activation   ⇒ slower, softer, longer pauses, withdrawn
  *   low valence + HIGH activation  ⇒ faster, louder, sharper, forceful
+ *
+ * `speaking_rate.energy` is deliberately small. A subject's regulatory energy at
+ * GENESIS is 1.0 (read from the real seed: energy 1, stress 0, arousal 0.5,
+ * fatigue 0), so a large energy weight would push an ordinary rested subject
+ * past the rate threshold on its own and instruct it to speak as fast as
+ * possible without anything having happened to it. Energy is therefore a mild
+ * modifier on tempo, and the directive thresholds are set so that only a MARKED
+ * deviation is quantized into a max-speed / min-speed instruction.
  */
 export const DEFAULT_SPEECH_EXPRESSION_CONFIG_V0: SpeechExpressionConfigV0 = {
   config_id: "characteros-next/voice/speech-expression-config/default-v0",
@@ -154,7 +162,7 @@ export const DEFAULT_SPEECH_EXPRESSION_CONFIG_V0: SpeechExpressionConfigV0 = {
       fatigue: 0.2
     },
     hesitation: { base: 0.1, stress: 0.35, fatigue: 0.3, low_energy: 0.25, activation: 0.35 },
-    speaking_rate: { activation: 0.55, energy: 0.25, fatigue: 0.2 },
+    speaking_rate: { activation: 0.55, energy: 0.1, fatigue: 0.2 },
     volume: { activation: 0.5, intensity: 0.6 },
     pause_bias: { base: 0.1, fatigue: 0.35, low_activation: 0.45, energy: 0.25 },
     expressiveness: { intensity: 0.7, activation: 0.3 },

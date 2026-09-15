@@ -29,8 +29,10 @@ import {
   type SpeechOutputRequestV0
 } from "../contracts.js";
 import {
-  DEFAULT_VOICE_RUNTIME_CONFIG_V0,
   VoiceRuntimeClientV0,
+  DEFAULT_VOICE_RUNTIME_CONFIG_V0,
+  type SpeechStreamChunkV0,
+  type SpeechStreamResultV0,
   type TtsRuntimeResultV0,
   type VoiceRuntimeConfigV0
 } from "../runtime-client.js";
@@ -64,7 +66,7 @@ export const DEFAULT_COSYVOICE_INSTRUCTION_CONFIG_V0: CosyVoiceInstructionConfig
   config_id: "characteros-next/voice/cosyvoice-instruction/default-v0",
   prefix: "You are a helpful assistant. ",
   terminator: "<|endofprompt|>",
-  rate_threshold: 0.18,
+  rate_threshold: 0.25,
   volume_threshold: 0.18,
   slow_directive: "请用尽可能慢地语速说一句话。",
   fast_directive: "请用尽可能快地语速说一句话。",
@@ -123,9 +125,9 @@ export interface SpeechSynthesisResultV0 {
 /**
  * Replaceable TTS backend.
  *
- * A second engine (Kokoro, Qwen3-TTS, a cloud provider) implements this same
- * interface; nothing above it changes. Only CosyVoice3 is implemented today —
- * no speculative empty backends.
+ * A second engine (Kokoro, a cloud provider) implements this same interface;
+ * nothing above it changes. Only CosyVoice3 is implemented today — no
+ * speculative empty backends.
  */
 export interface VoiceTtsAdapterV0 {
   readonly adapter_id: string;
@@ -138,6 +140,28 @@ export interface VoiceTtsAdapterV0 {
       readonly signal?: AbortSignal;
     }
   ): Promise<SpeechSynthesisResultV0>;
+  /**
+   * Streams the utterance, invoking `onChunk` as audio arrives.
+   *
+   * Optional so that a backend without incremental synthesis remains usable:
+   * callers fall back to `synthesize` when it is absent. When present it must be
+   * genuinely incremental, not pre-generated audio sliced up.
+   */
+  synthesizeStream?(
+    request: SpeechOutputRequestV0,
+    options?: {
+      readonly play?: boolean;
+      readonly onChunk?: (chunk: SpeechStreamChunkV0) => void;
+      readonly signal?: AbortSignal;
+    }
+  ): Promise<SpeechStreamResultV0>;
+  /**
+   * Stops in-flight generation and playback.
+   *
+   * Optional because it is a courtesy to the audio device, not a correctness
+   * requirement: aborting the request already stops the caller listening.
+   */
+  cancel?(signal?: AbortSignal): Promise<void>;
 }
 
 // ----------------------------------------------------------------------------------
@@ -216,6 +240,48 @@ export class CosyVoiceTtsAdapterV0 implements VoiceTtsAdapterV0 {
       audio: result.audio_base64 === null ? null : decodeBase64V0(result.audio_base64),
       instruct
     };
+  }
+
+  /**
+   * Streams the utterance; the runtime plays each chunk as it is produced.
+   *
+   * Playback stays on the runtime side because that is where the audio device
+   * and the model are; the CharacterOS process never needs an audio stack. The
+   * chunks are still surfaced through `onChunk`, so a caller can observe
+   * progress and measure real time-to-first-audio.
+   */
+  async synthesizeStream(
+    request: SpeechOutputRequestV0,
+    options?: {
+      readonly play?: boolean;
+      readonly onChunk?: (chunk: SpeechStreamChunkV0) => void;
+      readonly signal?: AbortSignal;
+    }
+  ): Promise<SpeechStreamResultV0> {
+    if (request.text.trim().length === 0) {
+      throw new VoiceFailureV0("VOICE_REQUEST_INVALID", "cannot synthesize empty text");
+    }
+    const instruct = this.instructionFor(request.expression);
+    return await this.client.synthesizeStream(
+      {
+        text: request.text,
+        voice_id: request.voice_id,
+        instruct,
+        play: options?.play ?? false,
+        stream: true,
+        save_path: null,
+        return_audio: false
+      },
+      {
+        ...(options?.onChunk === undefined ? {} : { onChunk: options.onChunk }),
+        ...(options?.signal === undefined ? {} : { signal: options.signal })
+      }
+    );
+  }
+
+  /** Stops the runtime's in-flight generation and playback. */
+  async cancel(signal?: AbortSignal): Promise<void> {
+    await this.client.cancel(signal);
   }
 }
 
