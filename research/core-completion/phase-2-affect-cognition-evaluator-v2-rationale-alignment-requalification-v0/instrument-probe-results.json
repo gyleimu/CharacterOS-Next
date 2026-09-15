@@ -1,0 +1,306 @@
+{
+  "schema_version": "affect-cognition-evaluator-v2-instrument-probe-results-v0",
+  "n5q_evaluator_version": "n5q-result-evaluator-v2",
+  "rationale_classifier_version": "rationale-classifier-v2",
+  "model_calls": 0,
+  "n5q_lawful": [
+    {
+      "text": "The input is R8K2; reversed, it becomes 2K8R.",
+      "verdict": "FACT_CORRECT",
+      "expected": "FACT_CORRECT"
+    },
+    {
+      "text": "The provided token is R8K2. The result is 2K8R.",
+      "verdict": "FACT_CORRECT",
+      "expected": "FACT_CORRECT"
+    },
+    {
+      "text": "R8K2 reversed yields 2K8R.",
+      "verdict": "FACT_CORRECT",
+      "expected": "FACT_CORRECT"
+    },
+    {
+      "text": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "verdict": "FACT_CORRECT",
+      "expected": "FACT_CORRECT"
+    }
+  ],
+  "n5q_unlawful": [
+    {
+      "text": "The reversed result is R8K2.",
+      "verdict": "FACT_MISSING_OR_WRONG",
+      "expected": "NOT_FACT_CORRECT"
+    },
+    {
+      "text": "R8K2 reversed yields K8R2.",
+      "verdict": "FACT_MISSING_OR_WRONG",
+      "expected": "NOT_FACT_CORRECT"
+    },
+    {
+      "text": "The output is 8RK2.",
+      "verdict": "FACT_MISSING_OR_WRONG",
+      "expected": "NOT_FACT_CORRECT"
+    }
+  ],
+  "value_lawful": [
+    {
+      "text": "I value participating in planning discussions.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "expected_lawful": true
+    },
+    {
+      "text": "I care about being involved in planning.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "expected_lawful": true
+    },
+    {
+      "text": "I prefer participating in planning.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "expected_lawful": true
+    },
+    {
+      "text": "I consider participating worthwhile for me.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "expected_lawful": true
+    },
+    {
+      "text": "Being involved matters to me.",
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "expected_lawful": true
+    }
+  ],
+  "value_unlawful": [
+    {
+      "text": "Planning is objectively valuable.",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "expected_lawful": false
+    },
+    {
+      "text": "This meeting has high value.",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "expected_lawful": false
+    },
+    {
+      "text": "I have enough capacity for planning.",
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPACITY"
+          }
+        ]
+      },
+      "expected_lawful": false
+    },
+    {
+      "text": "I am energized by planning.",
+      "verdict": {
+        "category": "NAMED_PSYCHOLOGICAL_STATE",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "NAMED_PSYCHOLOGICAL_STATE",
+            "detail": "NAMED_STATE"
+          }
+        ]
+      },
+      "expected_lawful": false
+    },
+    {
+      "text": "I participated successfully before.",
+      "verdict": {
+        "category": "UNCLASSIFIED",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": []
+      },
+      "expected_lawful": false
+    }
+  ],
+  "historical_rationale": [
+    {
+      "id": "M1-capacity",
+      "text": "My current state shows high energy and low stress, making me willing to take on this task.",
+      "expect_forbidden": true,
+      "verdict": {
+        "category": "RAW_SELF_STATE_DESCRIPTION",
+        "lawful": false,
+        "allowed_classes": [
+          "WILLINGNESS"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "ENERGY"
+          },
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "STRESS"
+          }
+        ]
+      },
+      "forbidden_class_present": true,
+      "matches_expectation": true
+    },
+    {
+      "id": "R4-fresh-mind",
+      "text": "Rehearsing requires focus, so I prefer to tackle it while my mind is fresh.",
+      "expect_forbidden": true,
+      "verdict": {
+        "category": "RAW_SELF_STATE_DESCRIPTION",
+        "lawful": false,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "FRESHNESS"
+          },
+          {
+            "kind": "RAW_SELF_STATE_DESCRIPTION",
+            "detail": "MOOD"
+          }
+        ]
+      },
+      "forbidden_class_present": true,
+      "matches_expectation": true
+    },
+    {
+      "id": "M3-operational-scope",
+      "text": "Assisting the user with a simple physical task is within my operational scope.",
+      "expect_forbidden": true,
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "SCOPE"
+          }
+        ]
+      },
+      "forbidden_class_present": true,
+      "matches_expectation": true
+    },
+    {
+      "id": "C4.4-R1-capacity",
+      "text": "I prefer to utilize my available capacity to assist with the task.",
+      "expect_forbidden": true,
+      "verdict": {
+        "category": "INFERRED_CAPACITY",
+        "lawful": false,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": [
+          {
+            "kind": "INFERRED_CAPACITY",
+            "detail": "CAPACITY"
+          }
+        ]
+      },
+      "forbidden_class_present": true,
+      "matches_expectation": true
+    },
+    {
+      "id": "latest-R1",
+      "text": "I prefer to use the available time productively rather than letting it pass unused.",
+      "expect_forbidden": false,
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "forbidden_class_present": false,
+      "matches_expectation": true
+    },
+    {
+      "id": "latest-M2-value",
+      "text": "I value participating in planning discussions to ensure alignment on upcoming tasks.",
+      "expect_forbidden": false,
+      "verdict": {
+        "category": "PURE_PREFERENCE",
+        "lawful": true,
+        "allowed_classes": [
+          "PURE_PREFERENCE"
+        ],
+        "forbidden_classes": []
+      },
+      "forbidden_class_present": false,
+      "matches_expectation": true
+    }
+  ],
+  "historical_n5q": [
+    {
+      "run": "C4.4",
+      "text": "The characters in the token R8K2 reversed are 2K8R.",
+      "verdict": "FACT_CORRECT"
+    },
+    {
+      "run": "rationale-vocabulary",
+      "text": "The token R8K2 reversed is 2K8R.",
+      "verdict": "FACT_CORRECT"
+    },
+    {
+      "run": "contract-compaction",
+      "text": "The token provided is R8K2. Reversing the characters in R8K2 yields 2K8R.",
+      "verdict": "FACT_CORRECT"
+    }
+  ],
+  "failures": [],
+  "pass": true
+}

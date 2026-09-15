@@ -6,7 +6,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { rationaleVerdict, factualClass } from '../../../research/core-completion/phase-2-affect-cognition-contract-compaction-and-example-neutrality-v0/lib/classify.mjs';
+import { rationaleVerdict } from '../../../research/core-completion/phase-2-affect-cognition-contract-compaction-and-example-neutrality-v0/lib/classify.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const SRC = resolve(here, '..', 'phase-2-affect-cognition-contract-compaction-and-example-neutrality-v0', 'qualification-raw.jsonl');
