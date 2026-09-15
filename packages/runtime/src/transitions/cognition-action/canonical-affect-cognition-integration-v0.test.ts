@@ -979,8 +979,8 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(resultA.cognition_intent).not.toBe(resultB.cognition_intent);
     expect(resultA.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultA.cognition_intent, subjective_rationale: null });
     expect(resultB.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: resultB.cognition_intent, subjective_rationale: null });
-    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v8");
-    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v8");
+    expect(resultA.language_input["schema_version"]).toBe("language-realization-input-v9");
+    expect(resultB.language_input["schema_version"]).toBe("language-realization-input-v9");
     for (const input of [resultA.language_input, resultB.language_input]) {
       expect(input).not.toHaveProperty("selected_current_intent");
       expect(input).not.toHaveProperty("canonical_affect");
@@ -1010,7 +1010,7 @@ describe("CANONICAL_AFFECT_DOWNSTREAM_LANGUAGE_BEHAVIOR_INTEGRATION_V0 — DETER
     expect(result.result.kind).toBe("OUTPUT_READY");
     expect(result.cognition_intent).toBe(selected);
     expect(result.language_input["selected_subjective_selection"]).toEqual({ kind: "SUBJECTIVE_SELECTION", stance: selected, subjective_rationale: null });
-    expect(result.language_input["schema_version"]).toBe("language-realization-input-v8");
+    expect(result.language_input["schema_version"]).toBe("language-realization-input-v9");
     expect(result.bundles_after).toBe(result.bundles_before);
   });
 
@@ -1198,5 +1198,145 @@ describe("CORE_INTEGRITY_AUDIT_V0 — explicit-v4 additional retrieval evidence"
     // A v4 snapshot produces the explicit-v4 V2 surface even through the V1 entrypoint.
     expect(String(projection.schema_version)).toBe("cognitive-context-projection-v2");
     expect(projection.recent_retrieval_refs).toContain(extraRef);
+  });
+});
+
+describe("LANGUAGE_AUTHORITY_HARDENING_AND_INPUT_ISOLATION_V0 — V9 pre-Language completeness", () => {
+  /** Decode the rendered [context] scene back to the canonical scene bytes. */
+  function canonicalSceneOf(user: string): string {
+    const line = user.split("\n").find((candidate) => candidate.startsWith("[context] scene=")) ?? "";
+    const rendered = /^\[context\] scene="([\s\S]*)" task=/.exec(line)?.[1] ?? "";
+    return rendered.replace(/\\"/g, '"').replace(/\\n/g, "\n").replace(/\\\\/g, "\\");
+  }
+
+  async function executeV9Proof(
+    world: World,
+    cognitionWire: (user: string) => Record<string, unknown>,
+    responseRequestId: string
+  ): Promise<{
+    readonly result: Awaited<ReturnType<ConversationTextResponseExecutorV1["execute"]>>;
+    readonly cognitionRequests: readonly ModelTransportRequestV0[];
+    readonly languageRequests: readonly ModelTransportRequestV0[];
+  }> {
+    const cognitionRequests: ModelTransportRequestV0[] = [];
+    const languageRequests: ModelTransportRequestV0[] = [];
+    const conversationTransport: ModelTransportV0 = {
+      complete: async (request) => {
+        cognitionRequests.push(request);
+        const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+        return { model: "fake-v9-cognition", content: JSON.stringify(cognitionWire(user)) };
+      }
+    };
+    const languageTransport: ModelTransportV0 = {
+      complete: async (request) => {
+        languageRequests.push(request);
+        return {
+          model: "fake-v9-language",
+          content: JSON.stringify({
+            schema_version: "language-realization-semantic-draft-v1",
+            text: "Wait, let me re-read the rule: this reasoning text must never be delivered.",
+            evidence_refs: []
+          })
+        };
+      }
+    };
+    const root = new RuntimeCompositionRoot({
+      subjectCore: world.assembly.facade as never,
+      producerAuthorizationIssuer: world.issuer,
+      memoryRepository: world.repo,
+      retrieval: { retrieve: async () => { throw new Error("V9 proof must not retrieve"); } } as never,
+      cognitionProvider: { propose: async () => { throw new Error("ordinary cognition provider must not be called"); } } as never,
+      conversationCognitionTransport: conversationTransport,
+      languageTransport,
+      episodeContentReader: createEpisodeContentReaderV0(world.repo)
+    });
+    const snapshot = await readSnapshot(world);
+    const minter = createMiclStageMinter(world.assembly.facade as never, new InMemoryMiclWorkflowStore(), {
+      micl_id: `micl-v9-${responseRequestId}` as never,
+      micl_request_fingerprint: "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" as never,
+      stage_key: "OBSERVATION"
+    });
+    const executor = new ConversationTextResponseExecutorV1({ ...root.dependencies(), subjectCore: minter.core() });
+    const result = await executor.execute(
+      ctxOf(snapshot),
+      { response_request_id: responseRequestId as never, cause_refs: [] },
+      minter.capabilities(await currentBindings(world.repo, snapshot)) as never
+    );
+    return { result, cognitionRequests, languageRequests };
+  }
+
+  const n6ShapedWire = (user: string): Record<string, unknown> => {
+    const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
+    const handle = handleForAdvertisedRef(user, observationRef);
+    const scene = canonicalSceneOf(user);
+    const quote = /[A-Za-z][A-Za-z ,.''-]{24,}/.exec(scene)?.[0] ?? scene.slice(0, 32);
+    return {
+      schema_version: "conversation-cognition-proposal-v7",
+      factual_assessment: { claims: [{ kind: "SOURCE_QUOTE", text: quote, source_handles: [handle] }] },
+      cognition: {
+        schema_version: "cognition-proposal-v0",
+        reasoning_summary: "deterministic V9 proof summary",
+        relevant_memory_handles: [],
+        considered_handles: [handle],
+        current_intent: "answer the request",
+        confidence: 0.8,
+        uncertainty: 0.2,
+        action_intent: null,
+        evidence_handles: [handle]
+      },
+      subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+      communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+      clarification_basis: null
+    };
+  };
+
+  const subjectiveWire = (): Record<string, unknown> => ({
+    schema_version: "conversation-cognition-proposal-v7",
+    factual_assessment: { claims: [] },
+    cognition: {
+      schema_version: "cognition-proposal-v0",
+      reasoning_summary: "deterministic V9 proof summary",
+      relevant_memory_handles: [],
+      considered_handles: [],
+      current_intent: "state the preference",
+      confidence: 0.8,
+      uncertainty: 0.2,
+      action_intent: null,
+      evidence_handles: []
+    },
+    subjective_selection: { kind: "SUBJECTIVE_SELECTION", stance: "I would rather help with the revision.", subjective_rationale: null },
+    communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+    clarification_basis: null
+  });
+
+  it("a determined-content turn without an authorized derivation fails closed BEFORE Language", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-v9-incomplete", "Question one.");
+    const bundlesBefore = world.assembly.storeRead.getCommittedBundles().length;
+    const proof = await executeV9Proof(world, n6ShapedWire, "req-v9-incomplete");
+    expect(proof.result.kind).toBe("FAILED");
+    if (proof.result.kind !== "FAILED") return;
+    expect(proof.result.stage).toBe("COGNITION_FAILED");
+    expect(proof.result.detail).toContain("SEMANTIC_COMPLETENESS_FAILED");
+    // the reasoning text can never be delivered because Language was never invoked
+    expect(proof.languageRequests).toHaveLength(0);
+    expect(world.assembly.storeRead.getCommittedBundles()).toHaveLength(bundlesBefore);
+  });
+
+  it("an authoritative stance still reaches Language with the V9 payload and no request identity", async () => {
+    const world = await buildWorld();
+    await admitAppraiseApply(world, "evt-v9-subjective", "Question two.");
+    const proof = await executeV9Proof(world, subjectiveWire, "req-v9-subjective");
+    expect(proof.result.kind).toBe("OUTPUT_READY");
+    if (proof.result.kind !== "OUTPUT_READY") {
+      throw new Error(`unexpected result: ${JSON.stringify(proof.result)}`);
+    }
+    expect(proof.languageRequests).toHaveLength(1);
+    const user = proof.languageRequests[0]?.messages.find((message) => message.role === "user")?.content ?? "";
+    expect(user).toContain("LANGUAGE REALIZATION INPUT V9");
+    expect(user).toContain("realization_plan");
+    expect(user).not.toContain("response_request_id");
+    expect(user).not.toContain("req-v9-subjective");
+    expect(proof.result.behavior.text).toBe("Wait, let me re-read the rule: this reasoning text must never be delivered.");
   });
 });

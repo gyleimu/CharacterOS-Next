@@ -37,7 +37,7 @@ import {
 import type { FactualClaimAuthorizationTraceV0 } from "./factual-claim-authorization.js";
 import {
   buildLanguageRealizationInputV1,
-  buildLanguageRealizationInputV8,
+  buildLanguageRealizationInputV9,
   type LanguageEpisodeContentV0
 } from "./language-realization-input.js";
 
@@ -427,7 +427,7 @@ export class ConversationTextResponseExecutorV1 {
           communication_directive: directive,
           memory_episode_contents: episodeContents
         })
-      : await buildLanguageRealizationInputV8({
+      : await buildLanguageRealizationInputV9({
           subject_id: snapshot.identity.subject_id,
           source_revision: sourceRevision as never,
           response_request_id: requestId,
@@ -435,7 +435,14 @@ export class ConversationTextResponseExecutorV1 {
           conversation_proposal: c2Proposal,
           memory_episode_contents: episodeContents
         });
-    if (!builtInput.ok) return failed("LANGUAGE_SCHEMA_INVALID", builtInput.detail);
+    if (!builtInput.ok) {
+      // Pre-Language realization completeness gate (LC-C): missing primary authoritative
+      // semantics fails closed BEFORE Language; the reasoning stage is never invoked.
+      if ("code" in builtInput && builtInput.code === "SEMANTIC_COMPLETENESS_FAILED") {
+        return failed("COGNITION_FAILED", `SEMANTIC_COMPLETENESS_FAILED: ${builtInput.detail}`);
+      }
+      return failed("LANGUAGE_SCHEMA_INVALID", builtInput.detail);
+    }
     const languageInput = builtInput.input;
     const inputHash = builtInput.input_hash;
 

@@ -108,6 +108,21 @@ export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V8 =
   "language-realization-input-v8" as const;
 export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V8 =
   "characteros-next/runtime/language-realization-input-v8/v1" as const;
+/**
+ * V9 closes the Language authority gap: the realization plan names which
+ * ALREADY-authorized atoms constitute the primary response, the pre-Language
+ * completeness gate refuses determined-content turns without an authorized
+ * host-verifiable derivation, and the model-facing serialization excludes the
+ * nonsemantic host request identity.
+ */
+export const LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V9 =
+  "language-realization-input-v9" as const;
+export const LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V9 =
+  "characteros-next/runtime/language-realization-input-v9/v1" as const;
+export const LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0 =
+  "language-realization-plan-v0" as const;
+export const LANGUAGE_MODEL_FACING_PAYLOAD_HASH_PROJECTION_V9 =
+  "characteros-next/runtime/language-model-facing-payload/v9" as const;
 
 /** Validated episode content resolved through the trusted Memory reader. */
 export interface LanguageEpisodeContentV0 {
@@ -308,7 +323,8 @@ export type LanguageRealizationInputAnyVersion =
   | LanguageRealizationInputV5
   | LanguageRealizationInputV6
   | LanguageRealizationInputV7
-  | LanguageRealizationInputV8;
+  | LanguageRealizationInputV8
+  | LanguageRealizationInputV9;
 
 /**
  * Family C3 handoff. Language receives the facts AND the already-selected subject
@@ -463,6 +479,61 @@ export interface LanguageRealizationInputV8 {
     readonly no_invented_choice: true;
     readonly no_invented_justification: true;
     readonly no_factual_authority_for_rationale: true;
+  };
+}
+
+/**
+ * Realization plan (LC-D): routing/selection metadata over atoms that are ALREADY
+ * authoritative. It creates no authority of its own — it only names which existing
+ * authorized semantics constitute the primary response Language must realize.
+ */
+export type LanguageRealizationPlanModeV0 =
+  | "FACTUAL_DERIVATION_RESPONSE"
+  | "SUBJECTIVE_SELECTION_RESPONSE"
+  | "NO_FACTUAL_PRIMARY_RESPONSE";
+
+export type LanguageRealizationPlanReferenceV0 =
+  | {
+      readonly kind: "FACTUAL_CLAIM";
+      /** Index into factual_assessment.claims of an already-authorized claim. */
+      readonly claim_index: number;
+    }
+  | { readonly kind: "SUBJECTIVE_STANCE" };
+
+export interface LanguageRealizationPlanV0 {
+  readonly schema_version: typeof LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0;
+  readonly mode: LanguageRealizationPlanModeV0;
+  readonly references: readonly LanguageRealizationPlanReferenceV0[];
+}
+
+/** V9 is the Language carrier with a pre-Language realization completeness contract. */
+export interface LanguageRealizationInputV9 {
+  readonly schema_version: typeof LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V9;
+  readonly subject_id: IdentifierV0;
+  readonly source_revision: StateRevisionV0;
+  /** Host carrier only: bound by input_hash and the invocation binding, never serialized to the model. */
+  readonly response_request_id: IdentifierV0;
+  readonly current_turn_ref: CanonicalRefV0;
+  readonly cognition_projection_hash: HashV1;
+  readonly communication_binding: LanguageCommunicationBindingV7;
+  readonly current_user_request: {
+    readonly scene: string;
+    readonly task: string | null;
+  };
+  readonly factual_assessment: FactualAssessmentV1;
+  readonly selected_subjective_selection: SubjectiveSelectionV1;
+  readonly realization_plan: LanguageRealizationPlanV0;
+  readonly supporting_evidence: {
+    readonly lawful_evidence_refs: readonly CanonicalRefV0[];
+    readonly memory_episode_contents: readonly LanguageEpisodeContentV0[];
+  };
+  readonly constraints: LanguageRealizationConstraintsV0 & {
+    readonly preserve_factual_assessment: true;
+    readonly preserve_selected_subjective_selection: true;
+    readonly no_invented_choice: true;
+    readonly no_invented_justification: true;
+    readonly no_factual_authority_for_rationale: true;
+    readonly realize_authorized_atoms_only: true;
   };
 }
 
@@ -1272,12 +1343,153 @@ function validateLanguageRealizationInputV8(value: Record<string, unknown>): str
   return null;
 }
 
+const V9_KEYS = [...V8_KEYS, "realization_plan"];
+
+function validateRealizationPlanV0(value: unknown, assessment: FactualAssessmentV1, selection: SubjectiveSelectionV1): string | null {
+  if (!isRecord(value)) return "language input v9.realization_plan: expected object";
+  const keys = exactKeys(value, ["schema_version", "mode", "references"], "language input v9.realization_plan");
+  if (keys !== null) return keys;
+  if (value["schema_version"] !== LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0) {
+    return "language input v9.realization_plan.schema_version: unsupported";
+  }
+  const mode = value["mode"];
+  if (mode !== "FACTUAL_DERIVATION_RESPONSE" && mode !== "SUBJECTIVE_SELECTION_RESPONSE" && mode !== "NO_FACTUAL_PRIMARY_RESPONSE") {
+    return "language input v9.realization_plan.mode: unsupported";
+  }
+  const references = value["references"];
+  if (!Array.isArray(references)) return "language input v9.realization_plan.references: expected array";
+  if (mode === "NO_FACTUAL_PRIMARY_RESPONSE" && references.length !== 0) {
+    return "language input v9.realization_plan.references: conversational mode carries no references";
+  }
+  if (mode !== "NO_FACTUAL_PRIMARY_RESPONSE" && references.length === 0) {
+    return "language input v9.realization_plan.references: nonempty array required";
+  }
+  const claims = assessment.claims;
+  let derivationPrimary = false;
+  let stancePrimary = false;
+  for (let index = 0; index < references.length; index += 1) {
+    const reference: unknown = references[index];
+    if (!isRecord(reference)) return `language input v9.realization_plan.references[${index}]: expected object`;
+    if (reference["kind"] === "FACTUAL_CLAIM") {
+      const referenceKeys = exactKeys(reference, ["kind", "claim_index"], `language input v9.realization_plan.references[${index}]`);
+      if (referenceKeys !== null) return referenceKeys;
+      const claimIndex = reference["claim_index"];
+      if (!Number.isInteger(claimIndex) || (claimIndex as number) < 0 || (claimIndex as number) >= claims.length) {
+        return `language input v9.realization_plan.references[${index}].claim_index: out of range`;
+      }
+      if (claims[claimIndex as number]?.kind === "HOST_VERIFIABLE_DERIVATION") derivationPrimary = true;
+      continue;
+    }
+    if (reference["kind"] === "SUBJECTIVE_STANCE") {
+      const referenceKeys = exactKeys(reference, ["kind"], `language input v9.realization_plan.references[${index}]`);
+      if (referenceKeys !== null) return referenceKeys;
+      stancePrimary = true;
+      continue;
+    }
+    return `language input v9.realization_plan.references[${index}].kind: unsupported`;
+  }
+  if (mode === "NO_FACTUAL_PRIMARY_RESPONSE") {
+    if (selection.kind !== "NO_SUBJECTIVE_SELECTION") {
+      return "language input v9.realization_plan.mode: conversational mode requires NO_SUBJECTIVE_SELECTION";
+    }
+    if (assessment.claims.length !== 0) {
+      return "language input v9.realization_plan.mode: conversational mode requires no factual claims";
+    }
+    return null;
+  }
+  if (mode === "FACTUAL_DERIVATION_RESPONSE") {
+    if (selection.kind !== "NO_SUBJECTIVE_SELECTION") {
+      return "language input v9.realization_plan.mode: determined-content mode requires NO_SUBJECTIVE_SELECTION";
+    }
+    if (!derivationPrimary) {
+      return "language input v9.realization_plan.references: determined-content mode requires at least one authorized host-verifiable derivation claim";
+    }
+    if (stancePrimary) return "language input v9.realization_plan.references: stance reference is not lawful in determined-content mode";
+    return null;
+  }
+  if (selection.kind !== "SUBJECTIVE_SELECTION") {
+    return "language input v9.realization_plan.mode: subjective mode requires an authoritative stance";
+  }
+  if (!stancePrimary) return "language input v9.realization_plan.references: subjective mode requires the authoritative stance";
+  if (derivationPrimary) return "language input v9.realization_plan.references: factual claim references are not lawful in subjective mode";
+  return null;
+}
+
+function validateLanguageRealizationInputV9(value: Record<string, unknown>): string | null {
+  const keys = exactKeys(value, V9_KEYS, "language input v9");
+  if (keys !== null) return keys;
+  const subject = validateIdentifier(value["subject_id"] as string, "language input v9.subject_id");
+  if (!subject.ok) return subject.error.detail;
+  const revision = validateStateRevision(value["source_revision"] as number, "language input v9.source_revision");
+  if (!revision.ok) return revision.error.detail;
+  const requestId = validateIdentifier(value["response_request_id"] as string, "language input v9.response_request_id");
+  if (!requestId.ok) return requestId.error.detail;
+  const turnRef = validateRefElement(value["current_turn_ref"], "language input v9.current_turn_ref", ["observation"]);
+  if (!turnRef.ok) return turnRef.error.detail;
+  const projectionHash = validateHash(value["cognition_projection_hash"] as string, "language input v9.cognition_projection_hash");
+  if (!projectionHash.ok) return projectionHash.error.detail;
+  const bindingFailure = validateCommunicationBindingV7(value["communication_binding"]);
+  if (bindingFailure !== null) return bindingFailure;
+  const request = value["current_user_request"];
+  if (!isRecord(request)) return "language input v9.current_user_request: expected object";
+  const requestKeys = exactKeys(request, ["scene", "task"], "language input v9.current_user_request");
+  if (requestKeys !== null) return requestKeys;
+  const scene = validateCanonicalText(request["scene"], "language input v9.current_user_request.scene");
+  if (!scene.ok) return scene.error.detail;
+  if (request["task"] !== null) {
+    const task = validateCanonicalText(request["task"], "language input v9.current_user_request.task");
+    if (!task.ok) return task.error.detail;
+  }
+  const selectionCheck = validateSubjectiveSelectionV1(value["selected_subjective_selection"]);
+  if (!selectionCheck.ok) return `language input v9.${selectionCheck.detail}`;
+  const assessmentFailure = validateFactualAssessmentV1Carrier(value["factual_assessment"]);
+  if (assessmentFailure !== null) return assessmentFailure;
+  const planFailure = validateRealizationPlanV0(
+    value["realization_plan"],
+    value["factual_assessment"] as FactualAssessmentV1,
+    selectionCheck.selection
+  );
+  if (planFailure !== null) return planFailure;
+  const evidence = value["supporting_evidence"];
+  if (!isRecord(evidence)) return "language input v9.supporting_evidence: expected object";
+  const evidenceKeys = exactKeys(evidence, ["lawful_evidence_refs", "memory_episode_contents"], "language input v9.supporting_evidence");
+  if (evidenceKeys !== null) return evidenceKeys;
+  const lawful = validateRefArray(evidence["lawful_evidence_refs"], "language input v9.supporting_evidence.lawful_evidence_refs", { sorted: true });
+  if (!lawful.ok) return lawful.error.detail;
+  const episodeFailure = validateEpisodeContents(evidence["memory_episode_contents"]);
+  if (episodeFailure !== null) return episodeFailure;
+  const constraints = value["constraints"];
+  if (!isRecord(constraints)) return "language input v9.constraints: expected object";
+  const constraintKeys = exactKeys(constraints, ["max_text_code_points", "evidence_refs_only", "no_new_evidence_authority", "preserve_factual_assessment", "preserve_selected_subjective_selection", "no_invented_choice", "no_invented_justification", "no_factual_authority_for_rationale", "realize_authorized_atoms_only"], "language input v9.constraints");
+  if (constraintKeys !== null) return constraintKeys;
+  if (
+    constraints["max_text_code_points"] !== 4096 ||
+    constraints["evidence_refs_only"] !== true ||
+    constraints["no_new_evidence_authority"] !== true ||
+    constraints["preserve_factual_assessment"] !== true ||
+    constraints["preserve_selected_subjective_selection"] !== true ||
+    constraints["no_invented_choice"] !== true ||
+    constraints["no_invented_justification"] !== true ||
+    constraints["no_factual_authority_for_rationale"] !== true ||
+    constraints["realize_authorized_atoms_only"] !== true
+  ) {
+    return "language input v9.constraints: frozen values required";
+  }
+  return null;
+}
+
 /** Closed, version-dispatched validation. Unknown or mixed schemas fail. */
 export function validateLanguageRealizationInputAnyVersion(
   value: unknown
 ): { ok: true; input: LanguageRealizationInputAnyVersion } | { ok: false; detail: string } {
   if (!isRecord(value)) return { ok: false, detail: "language input: expected object" };
   const schema = value["schema_version"];
+  if (schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V9) {
+    const v9Failure = validateLanguageRealizationInputV9(value);
+    return v9Failure === null
+      ? { ok: true, input: value as unknown as LanguageRealizationInputV9 }
+      : { ok: false, detail: v9Failure };
+  }
   if (schema === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V8) {
     const v8Failure = validateLanguageRealizationInputV8(value);
     return v8Failure === null
@@ -1354,6 +1566,9 @@ export function validateLanguageRealizationInputAnyVersion(
 export async function deriveLanguageRealizationInputHashAnyVersion(
   input: LanguageRealizationInputAnyVersion
 ): Promise<HashV1> {
+  if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V9) {
+    return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V9, input);
+  }
   if (input.schema_version === LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V8) {
     return hashEnvelope(LANGUAGE_REALIZATION_INPUT_HASH_PROJECTION_V8, input);
   }
@@ -1902,6 +2117,120 @@ export async function buildLanguageRealizationInputV8(
   if (!checked.ok) return checked;
   const frozen = cloneAndFreeze(input);
   return { ok: true, input: frozen, input_hash: await deriveLanguageRealizationInputHashAnyVersion(frozen) };
+}
+
+export type BuildLanguageRealizationInputV9Request = BuildLanguageRealizationInputV8Request;
+
+export type LanguageRealizationPlanVerdictV0 =
+  | { readonly ok: true; readonly plan: LanguageRealizationPlanV0 }
+  | { readonly ok: false; readonly code: "SEMANTIC_COMPLETENESS_FAILED"; readonly detail: string };
+
+/**
+ * Deterministic pre-Language completeness gate (LC-C). The host derives the plan from
+ * the ALREADY-authorized proposal structure only — it never reads task text, never
+ * invents references and never authorizes new semantics:
+ *   - an authoritative stance exists → the stance is the primary response;
+ *   - a determined-content turn (NO_SUBJECTIVE_SELECTION) requires at least one
+ *     authorized host-verifiable derivation claim as the primary response.
+ * Missing primary semantics is a typed rejection; Language is never invoked.
+ */
+export function deriveLanguageRealizationPlanV0(
+  selection: SubjectiveSelectionV1,
+  assessment: FactualAssessmentV1
+): LanguageRealizationPlanVerdictV0 {
+  if (selection.kind === "SUBJECTIVE_SELECTION") {
+    return {
+      ok: true,
+      plan: Object.freeze({
+        schema_version: LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0,
+        mode: "SUBJECTIVE_SELECTION_RESPONSE",
+        references: Object.freeze([Object.freeze({ kind: "SUBJECTIVE_STANCE" as const })])
+      })
+    };
+  }
+  if (assessment.claims.length === 0) {
+    // A determined-content turn that asserts NO factual claim has no answer semantics to
+    // complete: it is an ordinary conversational realization with no factual content.
+    // (Any asserted claim requires a host-verifiable derivation — see below.)
+    return {
+      ok: true,
+      plan: Object.freeze({
+        schema_version: LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0,
+        mode: "NO_FACTUAL_PRIMARY_RESPONSE" as const,
+        references: Object.freeze([])
+      })
+    };
+  }
+  const derivationIndices: number[] = [];
+  for (let index = 0; index < assessment.claims.length; index += 1) {
+    if (assessment.claims[index]?.kind === "HOST_VERIFIABLE_DERIVATION") derivationIndices.push(index);
+  }
+  if (derivationIndices.length === 0) {
+    return {
+      ok: false,
+      code: "SEMANTIC_COMPLETENESS_FAILED",
+      detail:
+        "determined-content turn requires an authorized host-verifiable derivation as the primary response; the authoritative proposal contains none"
+    };
+  }
+  return {
+    ok: true,
+    plan: Object.freeze({
+      schema_version: LANGUAGE_REALIZATION_PLAN_SCHEMA_VERSION_V0,
+      mode: "FACTUAL_DERIVATION_RESPONSE",
+      references: Object.freeze(derivationIndices.map((claim_index) =>
+        Object.freeze({ kind: "FACTUAL_CLAIM" as const, claim_index })
+      ))
+    })
+  };
+}
+
+export type BuildLanguageRealizationInputV9Result =
+  | { readonly ok: true; readonly input: LanguageRealizationInputV9; readonly input_hash: HashV1 }
+  | { readonly ok: false; readonly code: "SEMANTIC_COMPLETENESS_FAILED" | "INPUT_INVALID"; readonly detail: string };
+
+/** V9 factual-authority + realization-completeness cognition-to-language boundary. */
+export async function buildLanguageRealizationInputV9(
+  request: BuildLanguageRealizationInputV8Request
+): Promise<BuildLanguageRealizationInputV9Result> {
+  if (!isRecord(request)) return { ok: false, code: "INPUT_INVALID", detail: "language input v9 build request: expected object" };
+  const v8Built = await buildLanguageRealizationInputV8(request);
+  if (!v8Built.ok) return { ok: false, code: "INPUT_INVALID", detail: v8Built.detail };
+  const planVerdict = deriveLanguageRealizationPlanV0(
+    v8Built.input.selected_subjective_selection,
+    v8Built.input.factual_assessment
+  );
+  if (!planVerdict.ok) return { ok: false, code: planVerdict.code, detail: planVerdict.detail };
+  const input: LanguageRealizationInputV9 = {
+    ...v8Built.input,
+    schema_version: LANGUAGE_REALIZATION_INPUT_SCHEMA_VERSION_V9,
+    realization_plan: planVerdict.plan,
+    constraints: {
+      ...v8Built.input.constraints,
+      realize_authorized_atoms_only: true
+    }
+  };
+  const checked = validateLanguageRealizationInputAnyVersion(input);
+  if (!checked.ok) return { ok: false, code: "INPUT_INVALID", detail: checked.detail };
+  const frozen = cloneAndFreeze(input);
+  return { ok: true, input: frozen, input_hash: await deriveLanguageRealizationInputHashAnyVersion(frozen) };
+}
+
+/**
+ * RI-D: the MODEL-FACING semantic payload excludes the host-only request identity.
+ * The host carrier object (and every host-side hash/binding over it) is unchanged;
+ * only what the model receives is stripped, so two semantically identical requests
+ * with different request ids produce identical model-facing bytes.
+ */
+export function modelFacingLanguagePayloadV9(input: LanguageRealizationInputV9): Record<string, unknown> {
+  const { response_request_id: hostOnlyRequestId, ...payload } = input as LanguageRealizationInputV9 & { response_request_id: IdentifierV0 };
+  void hostOnlyRequestId;
+  return payload as unknown as Record<string, unknown>;
+}
+
+/** Hash over the identical model-facing payload (not over the host carrier). */
+export async function deriveModelFacingLanguagePayloadHashV9(input: LanguageRealizationInputV9): Promise<HashV1> {
+  return hashEnvelope(LANGUAGE_MODEL_FACING_PAYLOAD_HASH_PROJECTION_V9, modelFacingLanguagePayloadV9(input));
 }
 
 function cloneAndFreeze<T>(value: T): T {
