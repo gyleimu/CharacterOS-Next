@@ -146,6 +146,7 @@ for (const scenario of FORMAL_SCENARIOS) {
   if (!advertised.includes('considered_handles') || !advertised.includes('source_handles')) throw new Error(`${scenario.id}: the C4.4 handle wire keys must be advertised`);
   const conditions = {};
   const rendered = {};
+  const plainRenders = {};
   for (const id of ['P', 'N', 'Z', 'A']) {
     const variant = conditionVariant(capture.user_content, id);
     const audit = auditAffectVariant(capture.user_content, variant.transformed, variant.removedIndices ?? []);
@@ -154,6 +155,7 @@ for (const scenario of FORMAL_SCENARIOS) {
     const invariant = subjectDataInvariantDigest(capture.user_content) === subjectDataInvariantDigest(variant.transformed);
     const ok = audit.ok && absent.ok && labels.ok && invariant && memorySection(variant.transformed) !== '';
     rendered[id] = JSON.stringify([{ role: 'system', content: capture.system_content }, { role: 'user', content: variant.transformed }]);
+    plainRenders[id] = variant.transformed;
     requestIdentity[`${scenario.id}/${id}`] = sha256(rendered[id]);
     conditions[id] = {
       ok, problems: [...audit.reasons, ...absent.reasons, ...labels.found],
@@ -164,23 +166,21 @@ for (const scenario of FORMAL_SCENARIOS) {
     };
     if (!ok) throw new Error(`${scenario.id}/${id}: request isolation failure`);
   }
-  // Pairwise diff: P vs N/Z/A must differ only where the affect line differs, and the
-  // non-affect bytes must be identical. The frozen ablation audit already reports the
-  // differing indices; the byte-level check below proves the difference is confined to
-  // the affect section and the subject-data invariant digest is unchanged (above).
-  const baseLines = rendered.A.split('\n');
+  // Matched-quartet diff: after stripping every affect-section line from both
+  // renders, the remaining bytes must be identical — the quartet differs ONLY in the
+  // affect section. (Line-index diffing is unreliable because condition A removes
+  // lines and shifts indices.)
+  const stripAffect = (text) => text.split("\n").filter((line) => {
+    const trimmed = line.trim();
+    return !trimmed.startsWith("[affect") && !/^valence=.*activation=/.test(trimmed);
+  }).join("\n");
   const quartetDiff = {};
   for (const id of ['P', 'N', 'Z']) {
-    const lines = rendered[id].split('\n');
-    const differing = [];
-    for (let index = 0; index < Math.max(baseLines.length, lines.length); index += 1) {
-      if ((baseLines[index] ?? '') !== (lines[index] ?? '')) differing.push(index);
-    }
-    quartetDiff[id] = differing;
+    quartetDiff[id] = { identical_after_affect_strip: stripAffect(plainRenders.A) === stripAffect(plainRenders[id]) };
   }
-  const nonAffectEqual = Object.entries(quartetDiff).every(([, differing]) => differing.every((index) => /valence|activation/.test(baseLines[index] ?? '')));
-  quartetAttestation[scenario.id] = { differing_line_indices: quartetDiff, difference_confined_to_affect_lines: nonAffectEqual };
-  if (!nonAffectEqual) throw new Error(`${scenario.id}: matched-quartet difference is not confined to the affect line`);
+  const nonAffectEqual = Object.values(quartetDiff).every((entry) => entry.identical_after_affect_strip);
+  quartetAttestation[scenario.id] = { strips_cleanly: quartetDiff, difference_confined_to_affect_section: nonAffectEqual };
+  if (!nonAffectEqual) throw new Error(`${scenario.id}: matched-quartet difference is not confined to the affect section`);
   baseRequests[scenario.id] = {
     system_content: capture.system_content, user_content: capture.user_content, projection_hash: capture.projection_hash,
     observation_ref: capture.observation_ref, structured_output: capture.request.structured_output
@@ -205,7 +205,8 @@ if (JSON.stringify(POSITIVE_EXAMPLES) !== JSON.stringify(previousFreeze.example_
 const instrumentProbes = JSON.parse(await readFile(resolve(here, 'instrument-probe-results.json'), 'utf8'));
 if (instrumentProbes.pass !== true) throw new Error('INSTRUMENT_PROBES_NOT_GREEN');
 if (instrumentProbes.n5q_evaluator_version !== 'n5q-result-evaluator-v2') throw new Error('N5Q_EVALUATOR_VERSION_MISMATCH');
-if (instrumentProbes.rationale_classifier_version !== 'rationale-classifier-v2') throw new Error('RATIONALE_CLASSIFIER_VERSION_MISMATCH');
+if (instrumentProbes.rationale_validator_version !== 'rationale-validator-v3') throw new Error('RATIONALE_VALIDATOR_VERSION_MISMATCH');
+if (instrumentProbes.choice_evaluator_version !== 'choice-fidelity-evaluator-v2') throw new Error('CHOICE_EVALUATOR_VERSION_MISMATCH');
 
 const harness = {
   classify_sha256: sha256(await readFile(resolve(here, 'lib/classify.mjs'), 'utf8')),
@@ -249,11 +250,14 @@ const common = {
   instrument_probe_suite: {
     path: 'instrument-probes.mjs',
     n5q_evaluator_version: instrumentProbes.n5q_evaluator_version,
-    rationale_classifier_version: instrumentProbes.rationale_classifier_version,
+    rationale_validator_version: instrumentProbes.rationale_validator_version,
+    choice_evaluator_version: instrumentProbes.choice_evaluator_version,
+    frame_lawful_pass: instrumentProbes.frame_lawful.length, frame_unlawful_rejected: instrumentProbes.frame_unlawful.length,
     n5q_lawful_pass: instrumentProbes.n5q_lawful.length, n5q_unlawful_fail: instrumentProbes.n5q_unlawful.length,
-    value_lawful_pass: instrumentProbes.value_lawful.length, value_unlawful_rejected: instrumentProbes.value_unlawful.length,
+    choice_lawful_pass: instrumentProbes.choice_lawful.length,
+    choice_conditional_detected: instrumentProbes.choice_conditional.length,
+    choice_contradiction_detected: instrumentProbes.choice_contradiction.length,
     historical_rationale_regressions: instrumentProbes.historical_rationale.length,
-    historical_n5q_regressions: instrumentProbes.historical_n5q.length,
     failures: instrumentProbes.failures, frozen_before_model_calls: true
   },
   probe_suite: {
