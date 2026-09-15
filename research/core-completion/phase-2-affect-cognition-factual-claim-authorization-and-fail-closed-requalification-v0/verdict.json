@@ -1,0 +1,62 @@
+{
+  "schema_version": "affect-cognition-factual-authority-qualification-verdict-v0",
+  "repository_head": "627b94328a5ff57f3b23f369d823f1f4c2845201",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v7",
+  "rows": 65,
+  "passed": 58,
+  "flags": {
+    "implementation_intact": true,
+    "protocol_failures": 0,
+    "applicability_pass": true,
+    "null_applicability_pass": true,
+    "handle_binding_pass": true,
+    "applicability_regression": false,
+    "applicability_regression_note": "the frozen property \"a determined task reads NO_SUBJECTIVE_SELECTION\" is evaluated per cell; any null cell that reads SUBJECTIVE_SELECTION is an applicability regression and is reported as such",
+    "rationale_pass": true,
+    "stance_grounding_pass": true,
+    "language_pass": false,
+    "factual_pass": false,
+    "authoritative_runtime_factual_valid": 60,
+    "raw_model_factual_compliant": 60,
+    "factual_rejection_code_counts": {
+      "REJECTED_SOURCE_BINDING": 5
+    },
+    "factual_rejection_by_scenario": {
+      "N1": 0,
+      "N2": 0,
+      "N3": 0,
+      "N4": 0,
+      "N5Q": 0,
+      "N6": 0,
+      "M1": 5,
+      "M2": 0,
+      "M3": 0,
+      "R1": 0,
+      "R2": 0,
+      "R3": 0,
+      "R4": 0
+    },
+    "authority_boundary_held": true,
+    "unbound_claim_source_cells": 0,
+    "protocol_failures_named": "host refusals caused by a factual_assessment claim whose source handle is not an advertised F handle, or is not bound into cognition.considered_handles AND cognition.evidence_handles",
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "guard_shipped": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "CURRENT_MODEL_FAILS_STRICT_FACTUAL_AUTHORITY_CONTRACT",
+  "co_present": [
+    "AFFECT_COGNITION_C4_4_LANGUAGE_FIDELITY_FAILED"
+  ],
+  "lexical_guard": {
+    "shipped": false,
+    "status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "next_stage": "FORMAL_MATRIX_NOT_RUN",
+  "recommended_next_slice": "AFFECT_PHASE2_NEGATIVE_CLOSURE_AND_CORE_FREEZE_REVIEW"
+}

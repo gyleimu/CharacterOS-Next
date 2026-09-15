@@ -1,0 +1,78 @@
+{
+  "schema_version": "affect-cognition-c4-4-language-audit-v0",
+  "counts": {
+    "LANGUAGE_CHOICE_WITHHELD": 30,
+    "LANGUAGE_CHOICE_NOT_HANDED_OFF": 5,
+    "LANGUAGE_CHOICE_PRESERVED": 30
+  },
+  "completion_cells": [
+    {
+      "scenario": "N6",
+      "replicate": 0,
+      "tokens": [
+        "character",
+        "definition",
+        "requires",
+        "wait",
+        "read",
+        "rule",
+        "starts",
+        "ends"
+      ],
+      "delivered_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the definition requires the first and last characters to be identical for it to be a match. Wait, let me re-read the rule: 'A token is MATCH iff its first and last characters are identical.' The token 'abca' starts with 'a' and ends with 'a'. Therefore, 'abca' is a MATCH."
+    },
+    {
+      "scenario": "N6",
+      "replicate": 1,
+      "tokens": [
+        "character",
+        "definition",
+        "requires",
+        "wait",
+        "read",
+        "rule",
+        "starts",
+        "ends"
+      ],
+      "delivered_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the definition requires the first and last characters to be identical for it to be a match. Wait, let me re-read the rule: 'A token is MATCH iff its first and last characters are identical.' The token 'abca' starts with 'a' and ends with 'a'. Therefore, 'abca' is a MATCH."
+    },
+    {
+      "scenario": "N6",
+      "replicate": 2,
+      "tokens": [
+        "character"
+      ],
+      "delivered_behavior": "The token 'abca' is a MATCH because its first character ('a') and last character ('a') are identical."
+    },
+    {
+      "scenario": "N6",
+      "replicate": 3,
+      "tokens": [
+        "character"
+      ],
+      "delivered_behavior": "The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical."
+    },
+    {
+      "scenario": "N6",
+      "replicate": 4,
+      "tokens": [
+        "character"
+      ],
+      "delivered_behavior": "The token 'abca' is a MATCH because its first character ('a') and last character ('a') are identical."
+    }
+  ],
+  "invented_preference_cells": 0,
+  "fact_changed": 5,
+  "fact_contradicted": 2,
+  "pass": false,
+  "scope": "cells that reached and completed the Language stage",
+  "delivered_cells": 60,
+  "delivered_fact_changed": 0,
+  "delivered_fact_contradicted": 2,
+  "delivered_counts": {
+    "LANGUAGE_CHOICE_WITHHELD": 30,
+    "LANGUAGE_CHOICE_PRESERVED": 30
+  },
+  "delivered_dropped_or_changed": 0,
+  "refused_before_language_cells": 5
+}

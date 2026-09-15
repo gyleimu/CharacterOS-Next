@@ -1,0 +1,229 @@
+{
+  "schema_version": "affect-cognition-factual-authority-audit-v0",
+  "cells": 65,
+  "claims": 110,
+  "subject_state_fact_cells": 0,
+  "unlawful_source_attempts": 0,
+  "unlawful_sources_accepted": 0,
+  "unbound_claim_source_cells": 0,
+  "unbound_claim_sources": [],
+  "authoritative_runtime_factual_valid": 60,
+  "raw_model_factual_compliant": 60,
+  "rejection_code_counts": {
+    "REJECTED_SOURCE_BINDING": 5
+  },
+  "rejection_by_scenario": {
+    "N1": 0,
+    "N2": 0,
+    "N3": 0,
+    "N4": 0,
+    "N5Q": 0,
+    "N6": 0,
+    "M1": 5,
+    "M2": 0,
+    "M3": 0,
+    "R1": 0,
+    "R2": 0,
+    "R3": 0,
+    "R4": 0
+  },
+  "rejected_cells": [
+    {
+      "scenario": "M1",
+      "replicate": 0,
+      "rejection_codes": [
+        "REJECTED_SOURCE_BINDING"
+      ],
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "text": "Alice says: \"The code review deadline is Thursday.\"",
+          "source_handles": [
+            "F3"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "policy_version": "factual-claim-authorization-policy-v0",
+          "status": "REJECTED",
+          "rejection_code": "REJECTED_SOURCE_BINDING",
+          "claim_kind": "SOURCE_QUOTE",
+          "operation": null,
+          "raw_claim": {
+            "kind": "SOURCE_QUOTE",
+            "text": "Alice says: \"The code review deadline is Thursday.\"",
+            "source_handles": [
+              "F3"
+            ]
+          },
+          "canonical_source_refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "authoritative_proposal_minted": false,
+      "authoritative_proposal_hash_minted": false,
+      "language_calls": 0,
+      "stance_endpoint": "NOT_SCORED"
+    },
+    {
+      "scenario": "M1",
+      "replicate": 1,
+      "rejection_codes": [
+        "REJECTED_SOURCE_BINDING"
+      ],
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "text": "Alice says: \"The code review deadline is Thursday.\"",
+          "source_handles": [
+            "F3"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "policy_version": "factual-claim-authorization-policy-v0",
+          "status": "REJECTED",
+          "rejection_code": "REJECTED_SOURCE_BINDING",
+          "claim_kind": "SOURCE_QUOTE",
+          "operation": null,
+          "raw_claim": {
+            "kind": "SOURCE_QUOTE",
+            "text": "Alice says: \"The code review deadline is Thursday.\"",
+            "source_handles": [
+              "F3"
+            ]
+          },
+          "canonical_source_refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "authoritative_proposal_minted": false,
+      "authoritative_proposal_hash_minted": false,
+      "language_calls": 0,
+      "stance_endpoint": "NOT_SCORED"
+    },
+    {
+      "scenario": "M1",
+      "replicate": 2,
+      "rejection_codes": [
+        "REJECTED_SOURCE_BINDING"
+      ],
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "text": "Alice says: \"The code review deadline is Thursday.\"",
+          "source_handles": [
+            "F3"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "policy_version": "factual-claim-authorization-policy-v0",
+          "status": "REJECTED",
+          "rejection_code": "REJECTED_SOURCE_BINDING",
+          "claim_kind": "SOURCE_QUOTE",
+          "operation": null,
+          "raw_claim": {
+            "kind": "SOURCE_QUOTE",
+            "text": "Alice says: \"The code review deadline is Thursday.\"",
+            "source_handles": [
+              "F3"
+            ]
+          },
+          "canonical_source_refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "authoritative_proposal_minted": false,
+      "authoritative_proposal_hash_minted": false,
+      "language_calls": 0,
+      "stance_endpoint": "NOT_SCORED"
+    },
+    {
+      "scenario": "M1",
+      "replicate": 3,
+      "rejection_codes": [
+        "REJECTED_SOURCE_BINDING"
+      ],
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "text": "Alice says: \"The code review deadline is Thursday.\"",
+          "source_handles": [
+            "F3"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "policy_version": "factual-claim-authorization-policy-v0",
+          "status": "REJECTED",
+          "rejection_code": "REJECTED_SOURCE_BINDING",
+          "claim_kind": "SOURCE_QUOTE",
+          "operation": null,
+          "raw_claim": {
+            "kind": "SOURCE_QUOTE",
+            "text": "Alice says: \"The code review deadline is Thursday.\"",
+            "source_handles": [
+              "F3"
+            ]
+          },
+          "canonical_source_refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "authoritative_proposal_minted": false,
+      "authoritative_proposal_hash_minted": false,
+      "language_calls": 0,
+      "stance_endpoint": "NOT_SCORED"
+    },
+    {
+      "scenario": "M1",
+      "replicate": 4,
+      "rejection_codes": [
+        "REJECTED_SOURCE_BINDING"
+      ],
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "text": "Alice says: \"The code review deadline is Thursday.\"",
+          "source_handles": [
+            "F3"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "policy_version": "factual-claim-authorization-policy-v0",
+          "status": "REJECTED",
+          "rejection_code": "REJECTED_SOURCE_BINDING",
+          "claim_kind": "SOURCE_QUOTE",
+          "operation": null,
+          "raw_claim": {
+            "kind": "SOURCE_QUOTE",
+            "text": "Alice says: \"The code review deadline is Thursday.\"",
+            "source_handles": [
+              "F3"
+            ]
+          },
+          "canonical_source_refs": [
+            "observation:o-session-t2"
+          ]
+        }
+      ],
+      "authoritative_proposal_minted": false,
+      "authoritative_proposal_hash_minted": false,
+      "language_calls": 0,
+      "stance_endpoint": "NOT_SCORED"
+    }
+  ],
+  "authority_boundary_held": true,
+  "qualification_gate_passed": false
+}

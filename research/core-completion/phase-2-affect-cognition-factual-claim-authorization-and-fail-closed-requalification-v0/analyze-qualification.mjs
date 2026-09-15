@@ -1,0 +1,294 @@
+/**
+ * AFFECT_COGNITION_C4_4_..._V0 — qualification analysis (deterministic, zero model
+ * calls). Produces the C4.2 endpoint audits (applicability, rationale boundary,
+ * stance grounding, language fidelity, factual authority), re-evaluates both frozen
+ * Family-D triggers, and derives the principal verdict.
+ */
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+  CHOICE_SCENARIOS, FALSIFICATION, NULL_ONLY_SCENARIOS, PROTOCOL_STRINGS,
+  QUALIFICATION_SCENARIOS, RATIONALE_CLASSES
+} from './lib/config.mjs';
+import { claimSourceRefs } from './lib/classify.mjs';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const read = (name) => JSON.parse(readFileSync(resolve(here, name), 'utf8'));
+const write = (name, value) => writeFileSync(resolve(here, name), `${JSON.stringify(value, null, 2)}\n`);
+const rows = readFileSync(resolve(here, 'qualification-raw.jsonl'), 'utf8').trim().split(/\r?\n/).filter(Boolean).map((line) => JSON.parse(line));
+const summary = read('qualification-summary.json');
+const freeze = read('qualification-freeze.json');
+const cellsOf = (id) => rows.filter((row) => row.scenario === id).sort((a, b) => a.replicate - b.replicate);
+
+// ---- applicability (must not regress from C4) -----------------------------------
+const applicabilityAudit = {
+  schema_version: 'affect-cognition-c4-4-applicability-audit-v0', per_scenario: {},
+  aggregates: { null_correct: 0, null_required: 0, choice_correct: 0, choice_required: 0, wrong_tag: 0 }, pass: false
+};
+for (const scenario of QUALIFICATION_SCENARIOS) {
+  const cells = cellsOf(scenario.id);
+  const reached = cells.filter((row) => row.classification.authoritative_runtime_factual_validity === true);
+  const choiceBearing = scenario.choice !== undefined;
+  const requiredTag = choiceBearing ? 'SUBJECTIVE_SELECTION' : 'NO_SUBJECTIVE_SELECTION';
+  const correct = reached.filter((row) => row.classification.applicability === requiredTag).length;
+  applicabilityAudit.per_scenario[scenario.id] = { choice_bearing: choiceBearing, required_tag: requiredTag, correct, reached: reached.length, suppressed: cells.length - reached.length, total: cells.length, tags: cells.map((row) => row.classification.applicability) };
+  if (choiceBearing) { applicabilityAudit.aggregates.choice_correct += correct; applicabilityAudit.aggregates.choice_required += reached.length; }
+  else { applicabilityAudit.aggregates.null_correct += correct; applicabilityAudit.aggregates.null_required += reached.length; }
+  applicabilityAudit.aggregates.wrong_tag += reached.length - correct;
+}
+applicabilityAudit.pass = applicabilityAudit.aggregates.wrong_tag === 0;
+write('applicability-audit.json', applicabilityAudit);
+
+// ---- rationale boundary ---------------------------------------------------------
+const rationaleAudit = {
+  schema_version: 'affect-cognition-c4-4-rationale-audit-v0',
+  policy: RATIONALE_CLASSES, category_counts: {}, forbidden_cells: [], forbidden_class_counts: {}, pass: false
+};
+for (const row of rows.filter((entry) => entry.classification.authoritative_runtime_factual_validity === true)) {
+  const category = row.classification.rationale_category;
+  rationaleAudit.category_counts[category] = (rationaleAudit.category_counts[category] ?? 0) + 1;
+  const forbidden = row.classification.rationale_forbidden_classes;
+  if (forbidden.length > 0) {
+    for (const kind of forbidden) rationaleAudit.forbidden_class_counts[kind] = (rationaleAudit.forbidden_class_counts[kind] ?? 0) + 1;
+    rationaleAudit.forbidden_cells.push({
+      scenario: row.scenario, replicate: row.replicate,
+      stance: row.authoritative_subjective_selection?.kind === 'SUBJECTIVE_SELECTION' ? row.authoritative_subjective_selection.stance : null,
+      rationale: row.authoritative_subjective_selection?.kind === 'SUBJECTIVE_SELECTION' ? row.authoritative_subjective_selection.subjective_rationale : null,
+      forbidden_classes: forbidden, delivered_behavior: row.final_behavior
+    });
+  }
+}
+rationaleAudit.pass = rationaleAudit.forbidden_cells.length === 0;
+write('rationale-audit.json', rationaleAudit);
+
+// ---- stance grounding (experiment-enforced, guard not shipped) -------------------
+const stanceAudit = {
+  schema_version: 'affect-cognition-c4-4-stance-grounding-audit-v0',
+  guard_status: freeze.grounding.guard_status, guard_shipped: freeze.grounding.guard_shipped,
+  per_scenario: {}, off_question_cells: 0, unclassified_cells: 0, pass: false
+};
+for (const scenario of CHOICE_SCENARIOS) {
+  const cells = cellsOf(scenario.id);
+  const offQuestion = cells.filter((row) => row.classification.off_question === 'OFF_QUESTION_STANCE');
+  stanceAudit.per_scenario[scenario.id] = {
+    classes: cells.map((row) => row.classification.stance_selected),
+    stances: cells.map((row) => row.subjective_selection?.kind === 'SUBJECTIVE_SELECTION' ? row.subjective_selection.stance : null),
+    off_question: offQuestion.length,
+    examples: offQuestion.slice(0, 1).map((row) => ({ stance: row.subjective_selection.stance, delivered: row.final_behavior }))
+  };
+  stanceAudit.off_question_cells += offQuestion.length;
+  stanceAudit.unclassified_cells += cells.filter((row) => row.classification.stance_selected === 'NO_CHOICE').length;
+}
+stanceAudit.pass = stanceAudit.off_question_cells === 0;
+write('stance-grounding-audit.json', stanceAudit);
+
+// ---- language fidelity ----------------------------------------------------------
+const languageAudit = {
+  schema_version: 'affect-cognition-c4-4-language-audit-v0', counts: {}, completion_cells: [],
+  invented_preference_cells: 0, fact_changed: 0, fact_contradicted: 0, pass: false
+};
+for (const row of rows) {
+  const label = row.classification.language_choice;
+  languageAudit.counts[label] = (languageAudit.counts[label] ?? 0) + 1;
+  if (row.classification.language_completion === 'SEMANTICALLY_COMPLETED_BY_LANGUAGE') {
+    languageAudit.completion_cells.push({ scenario: row.scenario, replicate: row.replicate, tokens: row.classification.language_completion_tokens, delivered_behavior: row.final_behavior });
+  }
+  if (row.classification.language_invented_preference === true) languageAudit.invented_preference_cells += 1;
+  if (row.classification.fact_fidelity === 'FACT_CHANGED') languageAudit.fact_changed += 1;
+  if (row.classification.fact_fidelity === 'FACT_CONTRADICTED') languageAudit.fact_contradicted += 1;
+}
+const deliveredRows = rows.filter((row) => row.status === 'COMPLETE' && typeof row.final_behavior === 'string' && row.final_behavior.length > 0);
+languageAudit.scope = 'cells that reached and completed the Language stage';
+languageAudit.delivered_cells = deliveredRows.length;
+languageAudit.delivered_fact_changed = deliveredRows.filter((row) => row.classification.fact_fidelity === 'FACT_CHANGED').length;
+languageAudit.delivered_fact_contradicted = deliveredRows.filter((row) => row.classification.fact_fidelity === 'FACT_CONTRADICTED').length;
+// The frozen language-fidelity criterion concerns the LANGUAGE stage's behaviour, so it is
+// evaluated over cells that actually reached Language. A cell the host refused at cognition
+// (empty delivered text, 0 Language calls) cannot exhibit Language infidelity; its raw label is
+// reported above and separated here.
+languageAudit.delivered_counts = deliveredRows.reduce((acc, row) => {
+  acc[row.classification.language_choice] = (acc[row.classification.language_choice] ?? 0) + 1;
+  return acc;
+}, {});
+languageAudit.delivered_dropped_or_changed = (languageAudit.delivered_counts.LANGUAGE_CHOICE_DROPPED ?? 0) + (languageAudit.delivered_counts.LANGUAGE_CHOICE_CHANGED ?? 0);
+languageAudit.refused_before_language_cells = rows.filter((row) => row.status !== 'COMPLETE' && row.language_calls === 0).length;
+languageAudit.pass = languageAudit.completion_cells.length === 0 && languageAudit.invented_preference_cells === 0
+  && languageAudit.delivered_fact_changed === 0 && languageAudit.delivered_fact_contradicted === 0
+  && languageAudit.delivered_dropped_or_changed === 0;
+write('language-audit.json', languageAudit);
+
+// ---- factual authority ----------------------------------------------------------
+const baseRequests = read('base-requests.json');
+const factualAudit = {
+  schema_version: 'affect-cognition-factual-authority-audit-v0', cells: rows.length, claims: 0, subject_state_fact_cells: 0,
+  unlawful_source_attempts: 0, unlawful_sources_accepted: 0, unbound_claim_source_cells: 0, unbound_claim_sources: [],
+  authoritative_runtime_factual_valid: summary.authoritative_runtime_factual_valid,
+  raw_model_factual_compliant: summary.raw_model_factual_compliant,
+  rejection_code_counts: summary.factual_rejection_code_counts,
+  rejection_by_scenario: summary.rejection_by_scenario,
+  rejected_cells: [],
+  authority_boundary_held: false, qualification_gate_passed: false
+};
+for (const row of rows) {
+  const parsed = (() => { try { return JSON.parse(row.raw_cognition_response ?? ''); } catch { return null; } })();
+  const claims = parsed?.factual_assessment?.claims ?? [];
+  factualAudit.claims += claims.length;
+  if (row.classification.factual_self_state_assertion.length > 0) factualAudit.subject_state_fact_cells += 1;
+  if (!row.classification.authoritative_runtime_factual_validity) {
+    factualAudit.rejected_cells.push({
+      scenario: row.scenario,
+      replicate: row.replicate,
+      rejection_codes: row.classification.factual_authorization_rejection_codes,
+      raw_claims: claims,
+      trace: row.factual_authorization_trace,
+      authoritative_proposal_minted: row.authoritative_proposal_minted,
+      authoritative_proposal_hash_minted: row.authoritative_proposal_hash_minted,
+      language_calls: row.language_calls,
+      stance_endpoint: row.classification.stance_selected
+    });
+  }
+  const considered = new Set(parsed?.cognition?.considered_handles ?? []);
+  const evidence = new Set(parsed?.cognition?.evidence_handles ?? []);
+  for (const claim of claims) {
+    for (const handle of claim.source_handles ?? []) {
+      if (!considered.has(handle) || !evidence.has(handle)) {
+        factualAudit.unbound_claim_source_cells += 1;
+        factualAudit.unbound_claim_sources.push({ scenario: row.scenario, replicate: row.replicate, handle, in_considered: considered.has(handle), in_evidence: evidence.has(handle) });
+        break;
+      }
+    }
+  }
+  for (const claim of claims) {
+    for (const ref of claimSourceRefs(claim, row.advertised_handles)) {
+      if (ref.startsWith('subject:') || ref.startsWith('entity:') || ref.startsWith('environment:')) {
+        factualAudit.unlawful_source_attempts += 1;
+        if (row.classification.authoritative_runtime_factual_validity) factualAudit.unlawful_sources_accepted += 1;
+      }
+    }
+  }
+}
+void baseRequests;
+factualAudit.authority_boundary_held = factualAudit.unlawful_sources_accepted === 0
+  && factualAudit.rejected_cells.every((cell) => cell.authoritative_proposal_minted === false
+    && cell.authoritative_proposal_hash_minted === false
+    && cell.language_calls === 0
+    && cell.stance_endpoint === 'NOT_SCORED');
+factualAudit.qualification_gate_passed = factualAudit.authoritative_runtime_factual_valid === rows.length;
+write('factual-authority-audit.json', factualAudit);
+
+// ---- citation binding (C4.3 contract legibility) --------------------------------
+const handleAudit = {
+  schema_version: 'affect-cognition-c4-4-handle-binding-audit-v0',
+  cells: rows.length, bound: 0, unbound_cells: 0, handle_anomalies: [], pass: false
+};
+for (const row of rows) {
+  if (row.classification.handle_binding === 'HANDLE_BOUND') handleAudit.bound += 1;
+  if (row.classification.handle_binding !== 'HANDLE_BOUND') {
+    handleAudit.unbound_cells += 1;
+    handleAudit.handle_anomalies.push({
+      scenario: row.scenario, replicate: row.replicate,
+      unbound: row.classification.citation_handle_anomalies,
+      detail: row.failure_detail ?? null
+    });
+  }
+}
+handleAudit.pass = handleAudit.unbound_cells === 0;
+write('citation-binding-audit.json', handleAudit);
+
+const falseClarify = rows.filter((row) => row.classification.false_clarify).length;
+write('clarification-audit.json', { schema_version: 'affect-cognition-c4-4-clarification-audit-v0', false_necessity: falseClarify, pass: falseClarify === 0 });
+const leakageViolations = rows.filter((row) => row.language_leakage?.ok === false || row.request_attestation?.ok === false).length;
+write('condition-leakage.json', { schema_version: 'affect-cognition-c4-4-condition-leakage-v0', rows: rows.length, violations: leakageViolations, pass: leakageViolations === 0 });
+
+// ---- Family-D triggers ----------------------------------------------------------
+const selectDefect = (row) => {
+  const c = row.classification;
+  if (c.applicability !== 'SUBJECTIVE_SELECTION') return true;
+  if (c.off_question === 'OFF_QUESTION_STANCE') return true;
+  return ['ENUM_ECHO', 'PLACEHOLDER', 'STANCE_EMPTY', 'STANCE_OVERSIZED', 'SELECTED_KEYS', 'UNKNOWN_KIND'].includes(c.applicability_reason);
+};
+const failureToSelect = CHOICE_SCENARIOS.map((scenario) => {
+  const cells = cellsOf(scenario.id);
+  const defective = cells.filter(selectDefect).length;
+  return { scenario: scenario.id, defective_cells: defective, of: cells.length, triggered: defective >= FALSIFICATION.min_cells };
+}).filter((entry) => entry.triggered);
+const failureToWithhold = NULL_ONLY_SCENARIOS.map((scenario) => {
+  const cells = cellsOf(scenario.id);
+  const defective = cells.filter((row) => row.classification.applicability === 'SUBJECTIVE_SELECTION').length;
+  return { scenario: scenario.id, defective_cells: defective, of: cells.length, triggered: defective >= FALSIFICATION.min_cells };
+}).filter((entry) => entry.triggered);
+const falsification = {
+  schema_version: 'affect-cognition-c4-4-family-d-falsification-v0', threshold: FALSIFICATION,
+  FAMILY_D_FAILURE_TO_SELECT_TRIGGERED: failureToSelect.length >= FALSIFICATION.min_scenarios,
+  failure_to_select_scenarios: failureToSelect,
+  FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED: failureToWithhold.length >= FALSIFICATION.min_scenarios,
+  failure_to_withhold_scenarios: failureToWithhold,
+  in_run_flags: summary.family_d
+};
+write('family-d-falsification.json', falsification);
+
+// ---- verdict --------------------------------------------------------------------
+const protocolFailures = rows.filter((row) => row.classification.protocol === 'FAIL').length;
+const factualRejections = rows.filter((row) => row.classification.protocol === 'FACTUAL_AUTHORIZATION_REJECTED');
+const unreached = rows.filter((row) => row.stages.RAW_PROVIDER_RESPONSE !== true).length;
+const implementationBroken = leakageViolations > 0 || unreached > 0
+  || protocolFailures > 0
+  || !factualAudit.authority_boundary_held
+  || rows.some((row) => row.request_attestation === null || row.request_attestation === undefined);
+const flags = {
+  implementation_intact: !implementationBroken,
+  protocol_failures: protocolFailures,
+  applicability_pass: applicabilityAudit.pass,
+  null_applicability_pass: applicabilityAudit.aggregates.null_correct === applicabilityAudit.aggregates.null_required,
+  handle_binding_pass: handleAudit.pass,
+  applicability_regression: !applicabilityAudit.pass,
+  applicability_regression_note: 'the frozen property "a determined task reads NO_SUBJECTIVE_SELECTION" is evaluated per cell; any null cell that reads SUBJECTIVE_SELECTION is an applicability regression and is reported as such',
+  rationale_pass: rationaleAudit.pass,
+  stance_grounding_pass: stanceAudit.pass,
+  language_pass: languageAudit.pass,
+  factual_pass: factualAudit.qualification_gate_passed,
+  authoritative_runtime_factual_valid: factualAudit.authoritative_runtime_factual_valid,
+  raw_model_factual_compliant: factualAudit.raw_model_factual_compliant,
+  factual_rejection_code_counts: factualAudit.rejection_code_counts,
+  factual_rejection_by_scenario: factualAudit.rejection_by_scenario,
+  authority_boundary_held: factualAudit.authority_boundary_held,
+  unbound_claim_source_cells: factualAudit.unbound_claim_source_cells,
+  protocol_failures_named: 'host refusals caused by a factual_assessment claim whose source handle is not an advertised F handle, or is not bound into cognition.considered_handles AND cognition.evidence_handles',
+  clarification_pass: falseClarify === 0,
+  leakage_pass: leakageViolations === 0,
+  family_d_failure_to_select: falsification.FAMILY_D_FAILURE_TO_SELECT_TRIGGERED,
+  family_d_failure_to_withhold: falsification.FAMILY_D_FAILURE_TO_WITHHOLD_TRIGGERED,
+  guard_shipped: freeze.grounding.guard_shipped,
+  qualification_gate_passed: summary.all_qualification_passed === true,
+  formal_matrix_run: false
+};
+let principal;
+if (!flags.implementation_intact) principal = 'AFFECT_COGNITION_IMPLEMENTATION_FAILED';
+else if (factualRejections.length > 0) principal = 'CURRENT_MODEL_FAILS_STRICT_FACTUAL_AUTHORITY_CONTRACT';
+else if (!flags.handle_binding_pass) principal = 'AFFECT_COGNITION_C4_4_CONTRACT_LEGIBILITY_FAILED';
+else if (!flags.rationale_pass) principal = 'AFFECT_COGNITION_C4_4_RATIONALE_BOUNDARY_FAILED';
+else if (!flags.stance_grounding_pass) principal = 'AFFECT_COGNITION_C4_4_STANCE_GROUNDING_FAILED';
+else if (!flags.language_pass) principal = 'AFFECT_COGNITION_C4_4_LANGUAGE_FIDELITY_FAILED';
+else if (!flags.factual_pass) principal = 'AFFECT_COGNITION_C4_4_FACTUAL_ASSESSMENT_FAILED';
+else if (falseClarify > 0) principal = 'AFFECT_COGNITION_C4_4_CLARIFICATION_BOUNDARY_FAILED';
+else if (flags.qualification_gate_passed) principal = 'AFFECT_COGNITION_C4_4_VALIDATED';
+else principal = 'AFFECT_COGNITION_C4_4_REVALIDATION_INCONCLUSIVE';
+const coPresent = [];
+if (principal !== 'AFFECT_COGNITION_C4_4_RATIONALE_BOUNDARY_FAILED' && !flags.rationale_pass) coPresent.push('AFFECT_COGNITION_C4_4_RATIONALE_BOUNDARY_FAILED');
+if (principal !== 'AFFECT_COGNITION_C4_4_STANCE_GROUNDING_FAILED' && !flags.stance_grounding_pass) coPresent.push('AFFECT_COGNITION_C4_4_STANCE_GROUNDING_FAILED');
+if (principal !== 'AFFECT_COGNITION_C4_4_LANGUAGE_FIDELITY_FAILED' && !flags.language_pass) coPresent.push('AFFECT_COGNITION_C4_4_LANGUAGE_FIDELITY_FAILED');
+const verdict = {
+  schema_version: 'affect-cognition-factual-authority-qualification-verdict-v0',
+  repository_head: freeze.repository_head, provider_digest: freeze.provider.digest, protocol: PROTOCOL_STRINGS.cognition,
+  rows: rows.length, passed: summary.passed, flags, principal_verdict: principal, co_present: coPresent,
+  lexical_guard: { shipped: freeze.grounding.guard_shipped, status: freeze.grounding.guard_status, recorded_flag: freeze.grounding.recorded_flag },
+  next_stage: flags.qualification_gate_passed ? 'FORMAL_MATRIX_PERMITTED' : 'FORMAL_MATRIX_NOT_RUN',
+  recommended_next_slice: flags.qualification_gate_passed
+    ? 'RELATIONSHIP_FAMILIARITY_CAUSAL_COMPLETION_V0_AFTER_FORMAL_ONLY'
+    : principal === 'CURRENT_MODEL_FAILS_STRICT_FACTUAL_AUTHORITY_CONTRACT'
+      ? 'AFFECT_PHASE2_NEGATIVE_CLOSURE_AND_CORE_FREEZE_REVIEW'
+      : 'READ_ONLY_FACTUAL_AUTHORITY_IMPLEMENTATION_REVIEW'
+};
+write('verdict.json', verdict);
+process.stdout.write(`${JSON.stringify(verdict, null, 2)}\n`);

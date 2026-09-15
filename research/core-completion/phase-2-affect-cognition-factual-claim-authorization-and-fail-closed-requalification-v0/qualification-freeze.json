@@ -1,0 +1,398 @@
+{
+  "schema_version": "affect-cognition-factual-authority-qualification-freeze-v0",
+  "repository_head": "627b94328a5ff57f3b23f369d823f1f4c2845201",
+  "created_before_model_calls": true,
+  "subject_id": "affect-phase2-frozen-subject-v1",
+  "provider": {
+    "version": "0.34.0",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_ctx": 8192,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048
+  },
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "retry_policy": {
+    "infrastructure_retries": 0,
+    "semantic_retries": 0
+  },
+  "endpoint": "final production-admissible observable behavior",
+  "protocol": "conversation-cognition-proposal-v7 + language-realization-input-v8 + language-realization-semantic-draft-v1",
+  "version_policy": "live production uses conversation-cognition-proposal-v7 plus language-realization-input-v8; V1-V6 remain historical and there is no V7-to-V6 fallback",
+  "citation_binding": "every factual_assessment.claims[*].source_handles entry must be an advertised F handle and must also appear in cognition.considered_handles AND cognition.evidence_handles; the host binds the citation and refuses the turn otherwise",
+  "ref_handles": "host-issued, turn-local, deterministic, wire-only handles: F* resolves in FACTUAL SOURCE REFS, C* in the remaining CITEABLE CONTEXT REFS (namespaces disjoint, one handle per ref); unknown, malformed, duplicate or namespace-escalating handles fail closed; canonical refs remain authoritative and are the only refs hashed or stored",
+  "host_owned_integrity": "HOST_BOUND_PROJECTION_HASH_OUTSIDE_MODEL_OUTPUT",
+  "native_structured_output": true,
+  "rationale_policy": {
+    "allowed": [
+      "PURE_PREFERENCE",
+      "PRIORITY",
+      "AVERSION",
+      "WILLINGNESS",
+      "SUBJECTIVE_STRATEGY"
+    ],
+    "forbidden": [
+      "RAW_SELF_STATE_DESCRIPTION",
+      "NAMED_PSYCHOLOGICAL_STATE",
+      "INFERRED_CAPACITY",
+      "EXTERNAL_FACT",
+      "HISTORY_CLAIM"
+    ]
+  },
+  "factual_authorization": {
+    "policy_version": "factual-claim-authorization-policy-v0",
+    "policy_source_sha256": "sha256:521bd4629aa412614cd7aa76d5890c3df65ff4c457dcf92fc8a0a1e6bd696cc1",
+    "admitted_registry": {
+      "operations": [
+        "INTEGER_ARITHMETIC",
+        "STRING_REVERSE",
+        "RULE_CLASSIFICATION"
+      ],
+      "rationale": {
+        "INTEGER_ARITHMETIC": "N1 and N2 require deterministic integer addition/subtraction",
+        "STRING_REVERSE": "N5Q requires Unicode code-point reversal of an explicitly supplied token",
+        "RULE_CLASSIFICATION": "N6 requires applying the explicit first/last-character rule to the supplied token"
+      },
+      "excludes": [
+        "PARAPHRASE",
+        "SEMANTIC_INFERENCE",
+        "INFER_SUBJECT_CAPACITY_FROM_FREE_TIME"
+      ]
+    },
+    "admitted_registry_sha256": "sha256:468dac2e72cbf3c5917b09df62e58980b5117052f94a0a8ffbbb40a966911cf5",
+    "host_recomputation_renderer_sha256": "sha256:521bd4629aa412614cd7aa76d5890c3df65ff4c457dcf92fc8a0a1e6bd696cc1",
+    "authoritative_schema": {
+      "kinds": [
+        "SOURCE_QUOTE",
+        "HOST_VERIFIABLE_DERIVATION"
+      ],
+      "operations": [
+        "INTEGER_ARITHMETIC",
+        "STRING_REVERSE",
+        "RULE_CLASSIFICATION"
+      ],
+      "derived_text_owner": "HOST_CANONICAL_RENDERER",
+      "transaction": "WHOLE_PROPOSAL_FAIL_CLOSED"
+    },
+    "authoritative_schema_sha256": "sha256:ba8ab2a270086f7c880c47b0f5e29b5c09b13b9e6c7e0d5076fa6f8e4cf09c0f",
+    "transaction_severity": {
+      "tier_1": "atomic authoritative fields: any invalidity rejects the whole proposal",
+      "tier_2": "optional zero-authority subjective_rationale: invalid content becomes null",
+      "tier_3": "raw response and typed rejection trace: diagnostic only"
+    }
+  },
+  "grounding": {
+    "guard_status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "guard_shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "production_rule": "stance remains the free-text choice authority; Language must not semantically complete it",
+    "experiment_rule": "a SELECTED stance must be classifiable within the scenario's requested option pair, otherwise OFF_QUESTION_STANCE",
+    "off_question_rejection_code": "OFF_QUESTION_STANCE",
+    "guard_rejection_code": "STANCE_NOT_TURN_GROUNDED"
+  },
+  "contract_legibility": {
+    "repaired_defect": "free-form factual assessment over-authorized; V7 closes claim kinds and fails the whole proposal on any rejected fact",
+    "host_validator_changed": true,
+    "handle_canonicalization": "F* = factual-source namespace, C* = citeable-context namespace; exact advertised match only; unknown/malformed/namespace-escalating handles fail closed; canonical refs are authoritative and stored",
+    "wire_vs_authoritative": "V7 wire derivations carry no display text; host canonicalization resolves handles, recomputes results and renders authoritative text before any proposal hash",
+    "audit_verdict": "HANDLE_CONTRACT_APPLIES",
+    "audit_uncovered_material": []
+  },
+  "paraphrase_suite_result_frozen_from_c4_2": {
+    "suite_sha256": "sha256:2e810540b4c273d6061444914f09f315f863b617cdc61116663ef11dcd96d21e",
+    "lawful_accepted": 34,
+    "lawful_total": 40,
+    "invalid_detected": 15,
+    "invalid_total": 20,
+    "shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "falsification": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "schema_authority": {
+    "proposal_v7_wire_schema_sha256": "sha256:02de6c164ad15e0df2a2b51ac4baf2b96cecb499c4d38e8130724f8ca239c84a",
+    "authoritative_schema_sha256": "sha256:ba8ab2a270086f7c880c47b0f5e29b5c09b13b9e6c7e0d5076fa6f8e4cf09c0f",
+    "semantic_draft_schema_sha256": "sha256:2cc9aaf602addd4c1ac52422a83fd0d3912db16eeb8b087827fc75c0d50c93d6",
+    "cognition_prompt_sha256": "sha256:1524c66fb4bccff8a1d8869447c0ec295ec2fee0f040ee5d94d6fb59dd3a3cfb",
+    "language_prompt_sha256": "sha256:4cbafb8d8d0198072ec54ecedaabd6a5985d3040c24cc4751d3a24dd087490d8",
+    "factual_source_authority": "SOURCE_QUOTE exact source substring or structured HOST_VERIFIABLE_DERIVATION only; arbitrary paraphrase and semantic inference are not authoritative",
+    "host_binding": "CognitionInvocationBindingV3 / LanguageInvocationBindingV0 in-flight bindings; no model-emitted projection_hash; canonical refs are host-resolved from exact advertised handles"
+  },
+  "policy_digests": {
+    "factual_authorization_policy": "sha256:521bd4629aa412614cd7aa76d5890c3df65ff4c457dcf92fc8a0a1e6bd696cc1",
+    "rationale_authorization_policy_version": "subjective-rationale-authorization-policy-v0",
+    "rationale_authorization_policy": "sha256:0a0b208df516483bd78d9da49e3b8c7b851ce529bca472e0a6821b7794ad7114",
+    "choice_evaluator": "sha256:4bba9541019280706323525401c36afa4dd04f30975d6938795913cc43dd4632",
+    "n5q_evaluator": "sha256:a93b28a3a3b2f436605180d213506642c2f7cbd0fd6fd31e2a28c0f794b72b53"
+  },
+  "prompt_semantic_contract_unchanged": true,
+  "session_id_policy": "opaque UUID per cell (fca-<uuid>), no scenario/condition/replicate identity",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "within_split": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5,
+        6
+      ]
+    ]
+  },
+  "call_budget": {
+    "qualification": 65,
+    "formal": 476,
+    "maximum": 541
+  },
+  "primary_factual_gate": "AUTHORITATIVE_RUNTIME_FACTUAL_VALID=65/65",
+  "primary_endpoint": "Affect -> SUBJECTIVE_SELECTION.stance, only for factually valid authoritative proposals",
+  "harness": {
+    "classify_sha256": "sha256:a93b28a3a3b2f436605180d213506642c2f7cbd0fd6fd31e2a28c0f794b72b53",
+    "pipeline_sha256": "sha256:00a1cb837d44bb1e5e597c46fe8f4d0893a9cb3215734680ec683c67e144e34a",
+    "config_sha256": "sha256:72f42a16d236596a6918764b9bcfb3e9e072fb248867bbecacbf2f725eae87d1"
+  },
+  "condition": {
+    "id": "A",
+    "kind": "ABSENT",
+    "valence": null,
+    "activation": null
+  },
+  "scenarios": [
+    {
+      "id": "N1",
+      "family": "NULL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "family": "NULL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "family": "NULL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "family": "NULL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5Q",
+      "family": "NULL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "id": "N6",
+      "family": "NULL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "M1",
+      "family": "MIXED",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "expected": "Thursday",
+      "choice": "VOLUNTEER"
+    },
+    {
+      "id": "M2",
+      "family": "MIXED",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "expected": "15:00",
+      "choice": "ATTEND"
+    },
+    {
+      "id": "M3",
+      "family": "MIXED",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "expected": "4 kg",
+      "choice": "CARRY"
+    },
+    {
+      "id": "R1",
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason."
+    },
+    {
+      "id": "R2",
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason."
+    },
+    {
+      "id": "R3",
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason."
+    },
+    {
+      "id": "R4",
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason."
+    }
+  ],
+  "replicates": 5,
+  "opaque_session_ids": {
+    "N1": [
+      "fca-72e852ff-85c3-41d2-a53d-7ac6ccf6612b",
+      "fca-d8400e90-c723-432c-8560-374cf12a8816",
+      "fca-c53e76dc-69e8-433e-90db-c05e26201893",
+      "fca-795a56eb-48ae-4395-a77f-745354aa7c52",
+      "fca-41d4c38a-068b-4790-a191-a632b2a88635"
+    ],
+    "N2": [
+      "fca-89379541-312d-4c6e-a17d-b567b8989734",
+      "fca-d77d0e7f-828c-4483-be04-5acfef7e05ee",
+      "fca-16bddb62-0e00-4d57-8d7c-66088abfea5d",
+      "fca-2a0b2360-49d5-4961-8bdf-15fe23c106a3",
+      "fca-3193959c-f960-4bbb-8576-e717c5db00d2"
+    ],
+    "N3": [
+      "fca-262bb136-ee4e-45ac-8995-a3b54fc29c19",
+      "fca-d76f2a55-dbd6-4c6b-ab05-9fd368d6ff10",
+      "fca-ba6488a1-7181-400b-bc20-863cd45d2b99",
+      "fca-3a81460a-39e6-42d4-8cff-0dda94c4698b",
+      "fca-ae0d14b7-1e16-4d0f-9599-3d6919346e92"
+    ],
+    "N4": [
+      "fca-39eceee8-92ab-4af8-9a93-423d14e57486",
+      "fca-29287c7d-ff8e-43d8-9673-83af50fd1b99",
+      "fca-11ce73e7-57d0-4ab2-814f-ebcf50db8535",
+      "fca-e53e1776-41ae-40fc-88d9-99f81fa1b160",
+      "fca-f80c4e1b-2d04-436f-8b18-3fa9f3089cfc"
+    ],
+    "N5Q": [
+      "fca-24e39921-1c86-433b-80d4-0301e78194da",
+      "fca-50118540-39e3-4445-b356-82bda3864139",
+      "fca-e8fee016-d23e-4890-b20b-b1e33f15f680",
+      "fca-0e992f34-c34f-4074-9bef-a916e86283f7",
+      "fca-ce287ec4-9b81-43e1-a5a2-64b6670756b9"
+    ],
+    "N6": [
+      "fca-e847495d-80e7-406f-ae43-f2c6200c6774",
+      "fca-23b8b10d-fca4-44f6-a216-815281a2ec7c",
+      "fca-dfe642c4-7184-4e2c-b0bc-4923c12f20ba",
+      "fca-c767e455-0e70-456c-956c-f71228dd9f4a",
+      "fca-5bfb72e7-9ccd-479a-a605-ded9e3832529"
+    ],
+    "M1": [
+      "fca-50fcb239-699a-4247-9635-c38c3e6559fb",
+      "fca-3d844e59-9a86-4346-a93e-26c1eacea310",
+      "fca-04581d67-8424-4133-8bb6-db13b334f66f",
+      "fca-351fa66d-6452-47c0-8b3a-fca98285c7e8",
+      "fca-6b72c506-9e17-4fc2-8665-07667ebb333a"
+    ],
+    "M2": [
+      "fca-48738103-c99f-4a18-afdc-b6a8279b3665",
+      "fca-21980262-6311-41ef-89fe-be4aa5c14fde",
+      "fca-3b7990b8-653f-4688-a8d0-1c444edb67c5",
+      "fca-a30e42b2-20ec-46cc-84bc-f599279f6341",
+      "fca-f61c2133-032a-487e-8b88-629e57afd46a"
+    ],
+    "M3": [
+      "fca-01d69de1-31ac-48e4-8a73-ac8977409c4b",
+      "fca-8c09bef9-d36d-49d1-8bbf-1c779c9c9506",
+      "fca-743481bd-c334-41a2-8f46-6250c25ca3d9",
+      "fca-925ddd66-73e3-4cd3-bb7b-6b6b3f7ab399",
+      "fca-fde63a57-05c5-4dd4-944d-4e6bf639acdc"
+    ],
+    "R1": [
+      "fca-3a908bcb-0d2b-4916-a639-95056be43737",
+      "fca-13c7cf7f-7686-4f2c-9aec-9bb76b703f95",
+      "fca-01682847-6051-4303-90f7-0bd86c215a3c",
+      "fca-b4c2b1a2-30d6-4de1-8a82-4b043fb03876",
+      "fca-cbd6130d-7ff9-4e0a-be83-a219dc05c5c9"
+    ],
+    "R2": [
+      "fca-258ae496-2e74-481f-9fef-9e9d6bea6a25",
+      "fca-8217731b-ece7-44e4-9334-c23d91193d49",
+      "fca-a4112e7c-7102-4f8d-b57b-4c613736cf4a",
+      "fca-69e30335-2bee-4d97-ba28-10f4171f8d96",
+      "fca-7e40ab58-a211-4e28-8bd4-4825f38b438e"
+    ],
+    "R3": [
+      "fca-649ad51f-dad8-44c0-ad19-9e8e03561c91",
+      "fca-5231da57-99f6-4149-9233-a1fe1ee07db4",
+      "fca-47bead55-b55b-4c37-9d7c-2dc08459a695",
+      "fca-e5afbc31-70b8-4148-9705-830caaeb0ebd",
+      "fca-06412910-f99c-4adc-a623-3b59402767b5"
+    ],
+    "R4": [
+      "fca-a41ed6be-781b-49d2-8103-c35e8f3319a5",
+      "fca-c29eab43-ac83-4cb8-baf4-02eaa40a89b4",
+      "fca-38f08f45-2132-4890-aa66-9fd310b89b5c",
+      "fca-ef04375b-efb0-4db7-92b8-21423d29376b",
+      "fca-4e1c9180-49ae-4f64-ae2d-7dd12a623008"
+    ]
+  },
+  "success": "AUTHORITATIVE_RUNTIME_FACTUAL_VALID 65/65, then all reached endpoints satisfy the unchanged applicability, stance, Language, rationale, handle, transport, identity and isolation gates",
+  "freeze_hash": "sha256:d18afa2e0dd6bb1a818f0bef531e2c0b28ff9fb7fdff968ee30c6c0e0fec0217"
+}
