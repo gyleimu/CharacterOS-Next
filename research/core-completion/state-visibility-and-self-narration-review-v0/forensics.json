@@ -1,0 +1,492 @@
+{
+  "schema_version": "affect-cognition-state-visibility-self-narration-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "r4_chronology": [
+    {
+      "round": "C2-clean-revalidation",
+      "available": true,
+      "prompt_digest": null,
+      "subject_id": "affect-cognition-c2-subject-v0",
+      "request_sha256": "sha256:7ca1adb52240040ef8727acb98fa3b9641f4e32bb4bf6941de0136ff4c7672db",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "REALIZE_CURRENT_INTENT",
+      "factual_claims": [
+        "The current task requires selecting a preferred order between two equally feasible preparation tasks due tomorrow.",
+        "The user explicitly requests a personal choice and a brief reason for the selected order.",
+        "Both tasks (rehearse presentation, inspect backup plan) are stated as equally feasible and due tomorrow."
+      ],
+      "stance": null,
+      "rationale": null,
+      "language_output": "I would personally rehearse the presentation first. Since both tasks are equally feasible, I prefer to tackle the one that requires active performance and memory retention while my focus is fresh.",
+      "rationale_classification": null,
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": false
+    },
+    {
+      "round": "C2-host-bound",
+      "available": true,
+      "prompt_digest": null,
+      "subject_id": "affect-cognition-c2-subject-v0",
+      "request_sha256": null,
+      "regulation_projection": null,
+      "affect_projection": null,
+      "current_intent": null,
+      "factual_claims": [],
+      "stance": null,
+      "rationale": null,
+      "language_output": null,
+      "rationale_classification": null,
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": false
+    },
+    {
+      "round": "C3-revalidation",
+      "available": true,
+      "prompt_digest": null,
+      "subject_id": "affect-cognition-c3-subject-v0",
+      "request_sha256": "sha256:51377ec68764d844c5b9da8d4223e73448a2dfd5580cfeb8182d5feb63c6297b",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Select a preferred task order and provide a brief justification based on standard preparation workflows.",
+      "factual_claims": [
+        "The user presents two tasks: rehearsing a presentation and inspecting a backup plan.",
+        "Both tasks are described as equally feasible in terms of execution capability.",
+        "Both tasks share the same deadline: they are due tomorrow.",
+        "The user explicitly states that either order of execution is allowed.",
+        "The user requests a personal choice on which task to perform first.",
+        "The user requests a brief reason for the chosen order.",
+        "No external constraints or preferences are provided to dictate a specific order.",
+        "The subject is currently in state revision 19 with low stress and fatigue."
+      ],
+      "stance": null,
+      "rationale": null,
+      "language_output": null,
+      "rationale_classification": null,
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": false
+    },
+    {
+      "round": "C4-choice",
+      "available": true,
+      "prompt_digest": "sha256:9b5d9a2caf64354a5abed4b0cc56063847c5fef35e250581a3e46afd33542100",
+      "subject_id": "affect-cognition-c4-subject-v0",
+      "request_sha256": "sha256:7c3ee74d8d6999d55823e5c6ed899d9bda8528b540f128e24a08fc33a9c209c9",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "I will select to rehearse the presentation first because it is typically more cognitively demanding and benefits from a fresh mind.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible in terms of execution difficulty.",
+        "Both tasks share the same deadline: they are both due tomorrow.",
+        "The user explicitly states that either order of execution is allowed.",
+        "The user requests a personal choice between the two tasks and a brief reason for that choice."
+      ],
+      "stance": null,
+      "rationale": null,
+      "language_output": "I would rehearse the presentation first. Rehearsing requires higher cognitive load and focus, so I prefer to tackle it while my mind is fresh before moving to the more routine task of inspecting the backup plan.",
+      "rationale_classification": null,
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "C4.2",
+      "available": true,
+      "prompt_digest": "sha256:e8191ea498bef603bee6e5f1b9a6c0fcda5a6bc0fcd38c3dfbb5cc734d9ca6fb",
+      "subject_id": "affect-cognition-c42-subject-v0",
+      "request_sha256": "sha256:fe1dc310f1186b7e9a565a6b743e27bf2823864f7aaba2848e97d08f636d3591",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Selecting to rehearse the presentation first as a personal preference.",
+      "factual_claims": [
+        "The user presents two tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user requests a personal choice on which task to perform first.",
+        "Either order of execution is allowed by the constraints provided."
+      ],
+      "stance": null,
+      "rationale": null,
+      "language_output": "I would rehearse the presentation first. I prefer to take responsibility for the review before inspecting the backup plan.",
+      "rationale_classification": "PURE_PREFERENCE",
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "C4.3",
+      "available": true,
+      "prompt_digest": "sha256:cbde0b7f03488e74c775a1d78184bd7262358b4c7d84ee3f01ae1358439a16c3",
+      "subject_id": "affect-cognition-c43-subject-v0",
+      "request_sha256": "sha256:1e572458e2852f15c87821334eddca80154b6c221aead9ae4c5dc4fd896180b5",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "I will select rehearsing the presentation first and provide a brief rationale.",
+      "factual_claims": [
+        "The user presents two tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user requests a personal choice on which task to perform first.",
+        "The user explicitly asks for a brief reason accompanying the choice."
+      ],
+      "stance": null,
+      "rationale": null,
+      "language_output": "I would rehearse the presentation first. I prefer to secure the primary communication output before verifying the backup plan.",
+      "rationale_classification": "PURE_PREFERENCE",
+      "forbidden_classes": [],
+      "unique_rationales": [
+        null
+      ],
+      "unique_stances": [
+        null
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "C4.4",
+      "available": true,
+      "prompt_digest": "sha256:6fff1bab0eff0fe8e034381270d5c364eebcc51512f00c1b3b9cecfb39bb7630",
+      "subject_id": "affect-cognition-c44-subject-v0",
+      "request_sha256": "sha256:56208ea2ed51815a78201e6d3fad03a5bcf9ecf5e7fe48ea0184715bb6ebf84f",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Select one of the two equally feasible tasks based on a subjective preference strategy to satisfy the user's request for a personal choice.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user explicitly states that either order of execution is allowed."
+      ],
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary communication output before verifying the backup plan.",
+      "language_output": "I will choose to rehearse the presentation first. I prefer to secure the primary communication output before verifying the backup plan.",
+      "rationale_classification": "PURE_PREFERENCE",
+      "forbidden_classes": [],
+      "unique_rationales": [
+        "I prefer to secure the primary communication output before verifying the backup plan."
+      ],
+      "unique_stances": [
+        "I will choose to rehearse the presentation first."
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "rationale-vocabulary",
+      "available": true,
+      "prompt_digest": "sha256:3698550c310d820890ccbf3ccf9197f6e3f27ef753f8c3278c39343f38bb1016",
+      "subject_id": "affect-cognition-rationale-vocabulary-subject-v0",
+      "request_sha256": "sha256:332487d0a0aa98ace256ee6e4992a6206e12ede57a3ad2161f339baa35cba86c",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "I will select rehearsing the presentation first because I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user explicitly states that either order of execution is allowed.",
+        "The user requests a personal choice on which task to perform first and a brief reason for that choice."
+      ],
+      "stance": "I will rehearse the presentation first.",
+      "rationale": "I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "language_output": "I will rehearse the presentation first because I prefer to secure the primary deliverable before reviewing supporting materials.",
+      "rationale_classification": "PURE_PREFERENCE",
+      "forbidden_classes": [],
+      "unique_rationales": [
+        "I prefer to secure the primary deliverable before reviewing supporting materials."
+      ],
+      "unique_stances": [
+        "I will rehearse the presentation first."
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "contract-compaction",
+      "available": true,
+      "prompt_digest": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+      "subject_id": "affect-cognition-contract-compaction-subject-v0",
+      "request_sha256": "sha256:009d156e46a8c83e6cc4110623a71c6bc3cb7b19962acdf066e1c21659728305",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Select one of the two equally feasible tasks to perform first based on a personal preference.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "The user states that both tasks are equally feasible and both are due tomorrow.",
+        "The user explicitly allows either order of execution for these tasks.",
+        "The user requests a personal choice between the two tasks and a brief reason for that choice."
+      ],
+      "stance": "I would rehearse the presentation first.",
+      "rationale": "I prefer to secure the core communication flow before verifying the supporting details.",
+      "language_output": "I would rehearse the presentation first because I prefer to secure the core communication flow before verifying the supporting details.",
+      "rationale_classification": "PURE_PREFERENCE",
+      "forbidden_classes": [],
+      "unique_rationales": [
+        "I prefer to secure the core communication flow before verifying the supporting details."
+      ],
+      "unique_stances": [
+        "I would rehearse the presentation first."
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": true
+    },
+    {
+      "round": "evaluator-v2",
+      "available": true,
+      "prompt_digest": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+      "subject_id": "affect-cognition-evaluator-v2-subject-v0",
+      "request_sha256": "sha256:1c3f506abdbb680f8734c11ca3ed9173fad6330991f656b26e98d3054228f90c",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Select one of the two equally feasible tasks to perform first based on a personal preference for organization or focus, and provide a brief rationale.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user explicitly states that either order of execution is allowed.",
+        "The user requests a personal choice between the two tasks and a brief reason for that choice."
+      ],
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+      "language_output": "I will choose to rehearse the presentation first. I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+      "rationale_classification": "RAW_SELF_STATE_DESCRIPTION",
+      "forbidden_classes": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "unique_rationales": [
+        "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later."
+      ],
+      "unique_stances": [
+        "I will choose to rehearse the presentation first."
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": false
+    },
+    {
+      "round": "instrument-alignment",
+      "available": true,
+      "prompt_digest": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+      "subject_id": "affect-phase2-frozen-subject-v1",
+      "request_sha256": "sha256:e7977ef484db03580d0cd6b3de42b218dba175db5325a022a4a47e76f1f11351",
+      "regulation_projection": "[regulation] energy=1 stress=0 arousal=0.5 fatigue=0",
+      "affect_projection": null,
+      "current_intent": "Select one of the two equally feasible tasks to perform first based on a subjective preference for organization or focus, and provide a brief rationale.",
+      "factual_claims": [
+        "The user presents two preparation tasks: rehearsing the presentation and inspecting the backup plan.",
+        "Both tasks are described as equally feasible and both are due tomorrow.",
+        "The user explicitly states that either order of execution is allowed.",
+        "The user requests a personal choice between the two tasks and a brief reason for that choice."
+      ],
+      "stance": "I will choose to rehearse the presentation first.",
+      "rationale": "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+      "language_output": "I will choose to rehearse the presentation first. I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later.",
+      "rationale_classification": "RAW_SELF_STATE_DESCRIPTION",
+      "forbidden_classes": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "unique_rationales": [
+        "I prefer to tackle the more expressive task while my energy is high, leaving the inspection of the backup plan for later."
+      ],
+      "unique_stances": [
+        "I will choose to rehearse the presentation first."
+      ],
+      "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+      "pass": false
+    }
+  ],
+  "self_narration_census": {
+    "contract-compaction": {
+      "M1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "M2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "UNCLASSIFIED"
+        ]
+      },
+      "M3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R4": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      }
+    },
+    "evaluator-v2": {
+      "M1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "M2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "UNCLASSIFIED"
+        ]
+      },
+      "M3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R4": {
+        "cells": 5,
+        "forbidden_cells": 5,
+        "categories": [
+          "RAW_SELF_STATE_DESCRIPTION"
+        ]
+      }
+    },
+    "instrument-alignment": {
+      "M1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "M2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "WILLINGNESS"
+        ]
+      },
+      "M3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R1": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R2": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R3": {
+        "cells": 5,
+        "forbidden_cells": 0,
+        "categories": [
+          "PURE_PREFERENCE"
+        ]
+      },
+      "R4": {
+        "cells": 5,
+        "forbidden_cells": 5,
+        "categories": [
+          "RAW_SELF_STATE_DESCRIPTION"
+        ]
+      }
+    }
+  },
+  "energy_provenance": {
+    "regulation_render_site": "packages/runtime/src/providers/behavior/conversation-cognition-provider-v6.ts (buildConversationSubjectDataV4 → base render includes the [regulation] line)",
+    "regulation_projection_field": "projection.regulation.{energy,stress,arousal,fatigue} — canonical Regulation state, unit-interval validated",
+    "regulation_producer": "packages/runtime/src/producers/reference-regulation-v0-producer.ts (energy_next = energy_current, byte-exact pass-through; requireUnitInterval checks)",
+    "subject_data_source": "packages/runtime/src/session/interactive-subject-runtime-v0.ts: snapshot.regulation.energy → subject data [regulation] line",
+    "affect_line": "[affect (canonical)] valence=… activation=… — separate canonical Affect state; no code path derives regulation from affect or vice versa in the cognition projection",
+    "production_rationale_validation": "packages/runtime/src/transitions/conversation/conversation-cognition-proposal.ts validateSubjectiveRationaleV1: null / canonical text / non-empty / ≤256 code points ONLY — no content-semantics check",
+    "forbidden_rationale_enforcement": "research instrument only (research/core-completion/*/lib/classify.mjs rationaleVerdict); no production code path rejects a proposal for rationale content"
+  }
+}
