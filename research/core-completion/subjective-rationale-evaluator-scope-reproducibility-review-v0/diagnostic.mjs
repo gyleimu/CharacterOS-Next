@@ -13,7 +13,7 @@
  *   calls 4-6: round B exact request
  *   calls 7-9: round B exact request WITH explicit seed (42) -- seed-support probe only
  */
-/* globals fetch */
+/* globals fetch, AbortSignal */
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
