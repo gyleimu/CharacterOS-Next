@@ -24,6 +24,7 @@ import { hashEnvelope } from "@characteros-next/subject-core";
 
 import * as relationshipFeatureSemanticsModule from "./relationship-feature-decision-semantics.js";
 import {
+  INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
   RELATIONSHIP_FEATURE_DECISION_DOMAIN_ID_V0,
   RELATIONSHIP_FEATURE_DECISION_ROLES_V0,
   RELATIONSHIP_FEATURE_DECISION_SEMANTICS_CONTRACT_FINGERPRINT_PROJECTION,
@@ -656,6 +657,37 @@ describe("Relationship Feature Decision Semantics Foundation V0", () => {
         expect("value" in admission).toBe(false);
         expect("numeric" in admission).toBe(false);
       }
+    });
+
+    it("distinguishes the ONE storage-admitted feature's denial reason while the verdict stays closed", () => {
+      // REGISTERED / STORAGE-WRITE ADMISSION = 1, DECISION ADMISSION = 0: the
+      // admitted feature is storage-admitted, yet decision use is still
+      // forbidden — and the reason must say WHICH denial this is.
+      const admitted = queryRelationshipFeatureDecisionAdmissionV0(
+        INTERACTION_FAMILIARITY_DIMENSION_ID_V0
+      );
+      expect(admitted).toStrictEqual({
+        decision_admission: "NOT_DECISION_ADMISSIBLE",
+        reason: "NO_TYPED_ACTION_RELATION"
+      });
+
+      const unregistered = queryRelationshipFeatureDecisionAdmissionV0("relationship_core_trust_v0");
+      expect(unregistered).toStrictEqual({
+        decision_admission: "NOT_DECISION_ADMISSIBLE",
+        reason: "UNREGISTERED_FEATURE"
+      });
+
+      // Both reasons carry the identical closed verdict and no numeric field.
+      for (const admission of [admitted, unregistered]) {
+        expect(admission.decision_admission).toBe("NOT_DECISION_ADMISSIBLE");
+        expect(Object.keys(admission).sort()).toStrictEqual(["decision_admission", "reason"]);
+        expect(Object.values(admission).every((v) => typeof v === "string")).toBe(true);
+      }
+
+      // The admitted feature IS in the registry (storage admission ≠ decision admission).
+      expect([...REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0]).toContain(
+        "relationship-interaction-familiarity-semantics-v0"
+      );
     });
   });
 

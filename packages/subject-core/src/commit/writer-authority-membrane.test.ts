@@ -15,7 +15,12 @@
  *     projection, commit_ref bound to it) through the SAME ordinary pipeline
  *   - the ordinary null-authority path stays byte-deterministic
  *
- * REAL_PRODUCTION_GOVERNED_WRITER_ROUNDTRIP = DEFERRED (feature count 0).
+ * REAL_PRODUCTION_GOVERNED_WRITER_ROUNDTRIP = PROVEN OUTSIDE THIS SUITE: the
+ * one storage-admitted feature (interaction familiarity) reaches this membrane
+ * through the production experience-ingestion path
+ * (relationship-interaction-familiarity-ingestion.test.ts). This suite
+ * deliberately stays module-direct so the membrane itself is proven without
+ * registering any feature here.
  * Fully OFFLINE: real engine/assembler/store only.
  */
 

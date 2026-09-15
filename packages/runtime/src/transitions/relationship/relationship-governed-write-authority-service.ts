@@ -36,12 +36,17 @@
  *   7. positive terminal (§23)     — mint the opaque Runtime prepared-
  *      authority capability (WeakSet, deep frozen, fully bound)
  *
- * There is still NO product governed-write path: the service is internal, no
- * product API supplies governed values, and ordinary production V2 commits
- * keep writer_authority = null. The PipelineStageObserver.authorityPreparation
- * callback is NOT consumed — OBSERVATION_ONLY. This is NOT a Relationship-
- * specific commit pipeline: the commit path remains the ONE shared V2
- * production pipeline.
+ * ADMISSION TRACKS (frozen): REGISTERED / STORAGE-WRITE ADMISSION = 1 (the one
+ * admitted real feature, interaction familiarity); DECISION ADMISSION = 0 (no
+ * typed feature×action×counterpart action relation exists). The service is
+ * internal and no caller ever supplies a governed value — the frozen feature
+ * law derives it — but the production experience-ingestion path DOES lawfully
+ * reach this service for that one feature, so a governed production V2 record
+ * for interaction familiarity carries a non-null writer_authority. Ordinary
+ * (non-governed) production V2 commits keep writer_authority = null. The
+ * PipelineStageObserver.authorityPreparation callback is NOT consumed —
+ * OBSERVATION_ONLY. This is NOT a Relationship-specific commit pipeline: the
+ * commit path remains the ONE shared V2 production pipeline.
  */
 
 import {
@@ -148,8 +153,9 @@ export const RELATIONSHIP_PREPARED_AUTHORITY_CAPABILITY_SCHEMA_VERSION_V0 =
  * Opaque Runtime prepared-authority capability: deep frozen, WeakSet-admitted
  * (structural clone rejected), bound to the exact proposal/revision/head/
  * target/operation/semantics/gate/policy/receipt/evidence/prior/epoch facts.
- * Never serialized as authority. With zero admitted features this type is
- * UNREACHABLE from any product path.
+ * Never serialized as authority. Reachable ONLY through the ONE internal
+ * evaluation service above, and only for a storage-write admitted feature; a
+ * caller can neither construct nor supply one.
  */
 export interface RelationshipPreparedAuthorityCapabilityV0 {
   readonly schema_version: typeof RELATIONSHIP_PREPARED_AUTHORITY_CAPABILITY_SCHEMA_VERSION_V0;

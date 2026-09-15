@@ -134,7 +134,7 @@ describe("Historical writer authority registry foundation", () => {
     ).toBeNull();
   });
 
-  it("registers exactly ONE authorization gate and ONE governed write policy (feature count stays ZERO)", async () => {
+  it("registers exactly ONE authorization gate and ONE governed write policy (storage-write admission = 1, decision admission = 0)", async () => {
     expect(Object.isFrozen(REGISTERED_AUTHORIZATION_GATE_IDS_V0)).toBe(true);
     expect([...REGISTERED_AUTHORIZATION_GATE_IDS_V0]).toStrictEqual([
       RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_ID_V0
@@ -148,7 +148,9 @@ describe("Historical writer authority registry foundation", () => {
     expect(gates).toHaveLength(1);
     const policies = await getRegisteredGovernedWritePoliciesV0();
     expect(policies).toHaveLength(1);
-    expect(PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0).toBe("NONE");
+    expect(PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0).toBe(
+      "STORAGE_ADMITTED_FEATURE_ONLY"
+    );
     expect(HOST_DYNAMIC_WRITER_AUTHORITY_REGISTRATION_V0).toBe("NO");
     expect(RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_DESCRIPTOR_V0.feature_admission_requirement).toBe(
       "POSITIVE_EXACT_REGISTERED_BINDING_REQUIRED"
@@ -226,8 +228,9 @@ describe("Historical authority resolver identity binding (§34/§54)", () => {
     // this exact assertion before the resolver repair was applied.
     expect(a.policy_layer).toBe("RESOLVED");
     expect(b.policy_layer).toBe("UNKNOWN");
-    // With the feature registry at ZERO entries, the unadmitted-feature layer
-    // keeps a fully-registered record non-authoritative: NOT RESOLVED_VALID.
+    // The unadmitted-feature layer keeps a fully-registered record whose
+    // feature identity is NOT the one storage-admitted feature
+    // non-authoritative: NOT RESOLVED_VALID.
     expect(a.feature_layer).toBe("UNADMITTED");
     expect(a.status).not.toBe("RESOLVED_VALID");
   });

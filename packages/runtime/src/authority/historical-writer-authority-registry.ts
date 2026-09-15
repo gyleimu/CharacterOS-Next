@@ -569,13 +569,32 @@ export const REGISTERED_GOVERNED_RELATIONSHIP_WRITE_POLICY_IDS_V0: readonly stri
 
 /** Frozen role literals for downstream claims/tests. */
 export const HOST_DYNAMIC_WRITER_AUTHORITY_REGISTRATION_V0 = "NO" as const;
-export const PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0 = "NONE" as const;
+/**
+ * Scope of the live production governed Relationship writer, as an explicit
+ * frozen literal. Storage-write admission and decision admission are DISTINCT
+ * tracks and neither implies the other:
+ *
+ *   REGISTERED / STORAGE-WRITE ADMISSION = 1
+ *     exactly one Relationship feature is storage-write admitted (interaction
+ *     familiarity), and a production governed write for that exact feature is
+ *     live — the caller never supplies a value, the frozen feature law derives
+ *     it and the governed write path revalidates it.
+ *
+ *   DECISION ADMISSION = 0
+ *     no Relationship feature is decision-admissible (decision use requires an
+ *     exact typed feature×action×counterpart action relation, which does not
+ *     exist yet).
+ */
+export const PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0 =
+  "STORAGE_ADMITTED_FEATURE_ONLY" as const;
 /**
  * Exactly ONE CharacterOS-owned static governed write policy exists. The
  * policy REQUIRES positive feature admission plus the admitted feature's own
  * law — one admitted real feature (interaction familiarity) satisfies this
  * only through its exact registered semantics binding and lawful accrual
- * derivation; no production governed Relationship write path exists
- * (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY = NONE).
+ * derivation. A production governed Relationship write path therefore exists
+ * for that ONE storage-admitted feature only
+ * (PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY =
+ * STORAGE_ADMITTED_FEATURE_ONLY); decision admission remains ZERO.
  */
 export const GOVERNED_RELATIONSHIP_WRITE_POLICY_COUNT_V0 = 1 as const;

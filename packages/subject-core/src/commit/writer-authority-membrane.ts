@@ -26,10 +26,27 @@
  * root-exported — the public surface exposes only TYPES plus the generic
  * reserved-target boundary helper (§4 single source of truth).
  *
- * With the Relationship feature registry at ZERO entries no runtime path can
- * lawfully reach the issuer for a real production write, so every ordinary
- * production V2 record keeps writer_authority = null
- * (PRODUCTION_NON_NULL_GOVERNED_WRITER_AUTHORITY_WITH_FEATURE_COUNT_ZERO = ZERO).
+ * ADMISSION TRACKS (frozen distinction — storage admission is NOT decision
+ * admission, and neither one implies the other):
+ *
+ *   REGISTERED / STORAGE-WRITE ADMISSION = 1
+ *     Exactly ONE Relationship feature is storage-write admitted:
+ *     `relationship_core_interaction_familiarity_v0` (interaction familiarity),
+ *     through its exact registered decision-semantics contract binding.
+ *
+ *   DECISION ADMISSION = 0
+ *     NO Relationship feature is decision-admissible. Decision use requires an
+ *     exact typed feature×action×counterpart action relation and no such
+ *     action-relation provider exists.
+ *
+ * CONSEQUENCE (frozen): a runtime path CAN lawfully reach the issuer for a real
+ * production write of the ONE storage-admitted feature, so a governed V2 record
+ * for that exact feature carries a non-null writer_authority. The caller never
+ * supplies the value: it is derived by the frozen feature law and revalidated
+ * here. Every OTHER production V2 record — the ordinary path and every
+ * unadmitted reserved `relationship_core_*` target — keeps
+ * writer_authority = null
+ * (PRODUCTION_NON_NULL_GOVERNED_WRITER_AUTHORITY_ONLY_FOR_STORAGE_ADMITTED_FEATURES).
  */
 
 import type { CanonicalRefV0 } from "../types/ref.js";

@@ -74,6 +74,22 @@ export class InMemoryAtomicCommitStore<
    * Test/fixture seeding affordance (used by the sanctioned in-memory facade
    * assembly for historical-subject fixtures): seeds one already-committed
    * bundle without CAS. Never exposed through the reference storeRead handle.
+   *
+   * SEED IS A TRUSTED FIXTURE / INITIALIZATION BOUNDARY — NOT LIVED HISTORY.
+   * A seeded bundle bypasses the production writer path entirely (no CAS, no
+   * governed authority evaluation, no producer authorization). Consequences
+   * (frozen):
+   *
+   *   - Seeded canonical state is host-authored fixture data. It is legitimate
+   *     for initialization and research, but it is NOT causal evidence that any
+   *     production writer acted.
+   *   - A seeded bundle MUST NOT carry a non-null writer_authority: a non-null
+   *     governed writer authority is evidence of a governed writer product, and
+   *     seeding is not that. `observeSeededGovernedRelationshipStateV0` reports
+   *     any violation.
+   *   - In particular, a governed `relationship_core_*` value that exists only
+   *     because it was seeded MUST NOT be presented as evidence that the
+   *     governed familiarity writer produced it.
    */
   seedCommittedBundle(bundle: TBundle): void {
     this.committedBundles.push(bundle);

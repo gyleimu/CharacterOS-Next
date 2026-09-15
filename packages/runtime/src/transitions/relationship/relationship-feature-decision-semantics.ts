@@ -814,12 +814,29 @@ export function resolveRegisteredRelationshipFeatureDecisionSemanticsV0(
 // ---- default decision admission (§19/§20) -----------------------------------------
 
 /**
+ * §19/§20 Exact closed denial-reason vocabulary. Both members mean the SAME
+ * frozen verdict (decision use is forbidden); the distinction is descriptive
+ * only and grants no authority, no value and no numeric field.
+ *
+ *   UNREGISTERED_FEATURE      no registered decision-semantics contract binds
+ *                             the queried dimension at all
+ *   NO_TYPED_ACTION_RELATION  the queried dimension IS the storage-write
+ *                             admitted feature, but decision use still requires
+ *                             the exact typed feature×action×counterpart
+ *                             action relation, and no action-relation provider
+ *                             exists yet
+ */
+export type RelationshipFeatureDecisionAdmissionReasonV0 =
+  | "UNREGISTERED_FEATURE"
+  | "NO_TYPED_ACTION_RELATION";
+
+/**
  * §19/§20 Tagged, NON-NUMERIC decision-admission result. There is NO numeric
  * field: unregistered canonical features are never coerced into a value.
  */
 export type RelationshipFeatureDecisionAdmissionV0 = {
   readonly decision_admission: "NOT_DECISION_ADMISSIBLE";
-  readonly reason: "UNREGISTERED_FEATURE";
+  readonly reason: RelationshipFeatureDecisionAdmissionReasonV0;
 };
 
 /**
@@ -837,11 +854,18 @@ export type RelationshipFeatureDecisionAdmissionV0 = {
 export function queryRelationshipFeatureDecisionAdmissionV0(
   dimension_id: string
 ): RelationshipFeatureDecisionAdmissionV0 {
-  // Decision use is forbidden for every dimension: no typed action relation
+  // Decision use is forbidden for EVERY dimension: no typed action relation
   // exists. The exact opaque dimension_id is deliberately not pattern-matched
-  // or coerced.
-  void dimension_id;
-  return { decision_admission: "NOT_DECISION_ADMISSIBLE", reason: "UNREGISTERED_FEATURE" };
+  // or coerced — only the ONE exact registered storage-admitted dimension is
+  // recognized, so the denial REASON is truthful without ever changing the
+  // verdict or manufacturing a value.
+  return {
+    decision_admission: "NOT_DECISION_ADMISSIBLE",
+    reason:
+      dimension_id === INTERACTION_FAMILIARITY_DIMENSION_ID_V0
+        ? "NO_TYPED_ACTION_RELATION"
+        : "UNREGISTERED_FEATURE"
+  };
 }
 
 // ---- local helpers -----------------------------------------------------------------

@@ -235,9 +235,14 @@ export {
 export {
   createInMemorySubjectCoreFacade,
   createInMemorySubjectCoreFacadeForExplicitV4V0,
+  observeSeededGovernedRelationshipStateV0,
+  SEEDED_GOVERNED_STATE_CAUSAL_STATUS_V0,
+  SEEDED_GOVERNED_STATE_PROVENANCE_V0,
+  SEED_WRITER_AUTHORITY_POLICY_V0,
   type InMemoryFacadeAssembly,
   type InMemoryFacadeOptions,
-  type ReadOnlyStoreHandle
+  type ReadOnlyStoreHandle,
+  type SeededGovernedRelationshipStateObservationV0
 } from "./commit/reference.js";
 
 export type {

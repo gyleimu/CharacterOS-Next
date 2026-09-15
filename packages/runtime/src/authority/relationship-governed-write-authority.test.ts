@@ -7,9 +7,10 @@
  *   §48 root-export surface: NO authority issuer/verifier/registration
  *      surface is product-exposed
  *   §49 gate/policy/fingerprint injection rejected by the exact resolvers
- *   §50 ZERO-feature state: policy denies every reserved target, no product
- *      path emits non-null writer authority, reserved write fails closed
- *      through the REAL production facade
+ *   §50 unadmitted reserved targets: policy denies every reserved target that
+ *      is NOT the one storage-admitted feature, ordinary production V2 records
+ *      keep writer authority null, reserved write fails closed through the
+ *      REAL production facade
  *   §51 policy receipt determinism vectors + family payload evidence law
  *   §52 exactly-one governed target / removal rejection via the exact
  *      predecessor/candidate diff
@@ -43,6 +44,7 @@ import {
 import * as runtimeIndex from "../index.js";
 import {
   GOVERNED_RELATIONSHIP_WRITE_POLICY_COUNT_V0,
+  PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0,
   RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_ID_V0,
   RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_DESCRIPTOR_V0,
   RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_ID_V0,
@@ -77,6 +79,11 @@ import {
   validateRelationshipGovernedFeatureWriterAuthorityPayloadV0,
   type RelationshipGovernedFeaturePreviousValueV0
 } from "../transitions/relationship/relationship-governed-writer-authority.js";
+import {
+  INTERACTION_FAMILIARITY_DIMENSION_ID_V0,
+  REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0,
+  queryRelationshipFeatureDecisionAdmissionV0
+} from "../transitions/relationship/relationship-feature-decision-semantics.js";
 
 const R0_HASH = "sha256:4444444444444444444444444444444444444444444444444444444444444444";
 const WRONG_HASH = "sha256:2222222222222222222222222222222222222222222222222222222222222222";
@@ -249,7 +256,7 @@ async function commitViaFacade(
 // ---- §47/§48 registry counts and public surface ------------------------------------------
 
 describe("§47/§48 registry counts and public surface", () => {
-  it("asserts the exact registry counts: schema 1, gates 1, policies 1, features 0", async () => {
+  it("asserts the exact registry counts: schema 1, gates 1, policies 1, storage-admitted features 1", async () => {
     expect(RECOGNIZED_WRITER_SCHEMA_CONTRACT_IDS_V0).toHaveLength(1);
     expect(REGISTERED_AUTHORIZATION_GATE_IDS_V0).toStrictEqual([
       RELATIONSHIP_GOVERNED_FEATURE_AUTHORIZATION_GATE_ID_V0
@@ -269,7 +276,26 @@ describe("§47/§48 registry counts and public surface", () => {
     expect(indexKeys).not.toContain("evaluateRelationshipGovernedWriteV0");
   });
 
-  it("§50 the governed write policy denies EVERY reserved target with feature count zero", async () => {
+  it("§47 keeps the two admission tracks distinct: storage-write admission 1, decision admission 0", () => {
+    // REGISTERED / STORAGE-WRITE ADMISSION = 1 — exactly the one real feature.
+    expect([...REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0]).toStrictEqual([
+      "relationship-interaction-familiarity-semantics-v0"
+    ]);
+    expect(REGISTERED_RELATIONSHIP_DECISION_FEATURE_IDS_V0).toHaveLength(1);
+
+    // DECISION ADMISSION = 0 — the admitted feature is still NOT decision-admissible.
+    expect(queryRelationshipFeatureDecisionAdmissionV0(INTERACTION_FAMILIARITY_DIMENSION_ID_V0)).toStrictEqual({
+      decision_admission: "NOT_DECISION_ADMISSIBLE",
+      reason: "NO_TYPED_ACTION_RELATION"
+    });
+
+    // The production governed writer is scoped to exactly that one feature.
+    expect(PRODUCTION_GOVERNED_RELATIONSHIP_WRITER_AUTHORITY_V0).toBe(
+      "STORAGE_ADMITTED_FEATURE_ONLY"
+    );
+  });
+
+  it("§50 the governed write policy denies EVERY unadmitted reserved target", async () => {
     const reservedTargets = [
       "relationship_core_trust_like_v0",
       "relationship_core_closeness_v0",
