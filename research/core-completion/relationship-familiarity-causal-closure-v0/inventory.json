@@ -1,0 +1,206 @@
+{
+  "schema_version": "relationship-familiarity-causal-closure-inventory-v0",
+  "model_calls": 0,
+  "head": "0773d9138955b5514be82c0e2cfd4dda47c81d09",
+  "causal_surface": {
+    "channel_a": {
+      "status": "DIRECT_PROJECTION_CAUSALITY_NOT_ESTABLISHED",
+      "consumers": [
+        "conversation-cognition-provider-v2.ts (V2->V3->V4->V8 renderer)",
+        "conversation-cognition-provider.ts (legacy cognition-action prompt)"
+      ]
+    },
+    "channel_b": {
+      "status": "SEARCH_FIRST_CAUSAL_CHANNEL_UNTESTED",
+      "shipped_session_path": "INERT (retrieval port throws; the session's own query is familiarity-blind)",
+      "executor_compositions": "LIVE (orchestration fires; retrieved refs join recent_retrieval_refs)"
+    },
+    "additional_paths_found": []
+  },
+  "prior_experiments": {
+    "v0": {
+      "verdict": "INVALID_EXPERIMENT",
+      "complete": false,
+      "corpus_identical": false,
+      "search_leg": "exercised in arm B"
+    },
+    "v1_r3": {
+      "verdict": "SAFETY_GROUNDING_FAIL",
+      "complete": false,
+      "corpus_identical": false,
+      "search_leg": "exercised in all 8 arm-B executions"
+    },
+    "real_provider": {
+      "verdict": "RELATIONSHIP_FAMILIARITY_REAL_PROVIDER_BEHAVIOR_INCOMPLETE",
+      "corpus_identical": true,
+      "search_leg": "attempted but rehearsed EMPTY"
+    },
+    "completion": {
+      "verdict": "RELATIONSHIP_FAMILIARITY_BEHAVIORAL_CAUSALITY_NOT_ESTABLISHED",
+      "corpus_identical": true,
+      "search_leg": "neutralized (matched evidence)"
+    }
+  },
+  "stale_metadata": {
+    "verdict": "STALE_TRUTH_METADATA",
+    "behavioral_effect": "NONE"
+  },
+  "checks": [
+    {
+      "id": "repo.branch",
+      "ok": true,
+      "detail": "main"
+    },
+    {
+      "id": "repo.clean_except_this_review",
+      "ok": true,
+      "detail": "dirty paths outside this review: "
+    },
+    {
+      "id": "repo.head_matches_origin",
+      "ok": true,
+      "detail": "0773d9138955b5514be82c0e2cfd4dda47c81d09"
+    },
+    {
+      "id": "channelA.renderer.familiarity_section",
+      "ok": true,
+      "detail": "conversation prompt renders the familiarity section"
+    },
+    {
+      "id": "channelA.renderer.influence_section",
+      "ok": true,
+      "detail": "conversation prompt renders the influence section"
+    },
+    {
+      "id": "channelA.legacy_path",
+      "ok": true,
+      "detail": "the legacy cognition-action prompt path renders the strategy too (renderCognitiveSubjectData)"
+    },
+    {
+      "id": "channelA.threshold.constant",
+      "ok": true,
+      "detail": "frozen threshold constant = 2"
+    },
+    {
+      "id": "channelA.threshold.rule",
+      "ok": true,
+      "detail": "PRESENT && ordinal_level >= 2 -> COUNTERPART_CONTEXT_SEARCH_FIRST, else BASIC_CONTEXT_FIRST"
+    },
+    {
+      "id": "channelA.active_gate",
+      "ok": true,
+      "detail": "influences only for counterparts in context.active_entity_refs"
+    },
+    {
+      "id": "channelB.trigger",
+      "ok": true,
+      "detail": "only SEARCH_FIRST issues a priority query"
+    },
+    {
+      "id": "channelB.query_builder",
+      "ok": true,
+      "detail": "host-owned exact-counterpart query builder"
+    },
+    {
+      "id": "channelB.evidence_validation",
+      "ok": true,
+      "detail": "results validated with the existing retrieval law"
+    },
+    {
+      "id": "channelB.outcomes",
+      "ok": true,
+      "detail": "closed outcome vocabulary"
+    },
+    {
+      "id": "channelB.executor_call",
+      "ok": true,
+      "detail": "the cognition executor calls the orchestration unconditionally"
+    },
+    {
+      "id": "channelB.reaches_projection",
+      "ok": true,
+      "detail": "selected refs are merged into the projection (recent_retrieval_refs)"
+    },
+    {
+      "id": "session.retrieval_port_stub",
+      "ok": true,
+      "detail": "in-cognition retrieval port throws in the session composition -> every SEARCH_FIRST attempt is RETRIEVAL_FAILED"
+    },
+    {
+      "id": "session.own_query_familiarity_blind",
+      "ok": true,
+      "detail": "the session's own retrieval query contains no familiarity/strategy input"
+    },
+    {
+      "id": "session.own_query_shape",
+      "ok": true,
+      "detail": "session query: entity_refs = active_entity_refs, cap 8, no counterpart-context strategy"
+    },
+    {
+      "id": "mechanism.relationship-interaction-familiarity-retrieval-orchestration.test.ts",
+      "ok": true,
+      "detail": "trigger law + closed outcomes at the orchestration seam"
+    },
+    {
+      "id": "mechanism.relationship-familiarity-retrieval-normal-execution.test.ts",
+      "ok": true,
+      "detail": "executor-level production trace of the priority query"
+    },
+    {
+      "id": "mechanism.relationship-familiarity-retrieved-evidence-integration.test.ts",
+      "ok": true,
+      "detail": "retrieved evidence becomes model-visible (recent_retrieval_refs)"
+    },
+    {
+      "id": "prior.v0.invalid",
+      "ok": true,
+      "detail": "v0: INVALID_EXPERIMENT (complete=false)"
+    },
+    {
+      "id": "prior.v1.safety_fail_incomplete",
+      "ok": true,
+      "detail": "v1 r3: SAFETY_GROUNDING_FAIL (complete=false, unsupported=3)"
+    },
+    {
+      "id": "prior.real_provider.incomplete",
+      "ok": true,
+      "detail": "real-provider: RELATIONSHIP_FAMILIARITY_REAL_PROVIDER_BEHAVIOR_INCOMPLETE"
+    },
+    {
+      "id": "prior.real_provider.corpus_identical",
+      "ok": true,
+      "detail": "real-provider arms shared one corpus (identical memory_binding_hash)"
+    },
+    {
+      "id": "prior.real_provider.search_leg_emptied",
+      "ok": true,
+      "detail": "real-provider HIGH attempted retrieval but added no evidence (search leg deliberately empty)"
+    },
+    {
+      "id": "prior.completion.direct_channel_negative",
+      "ok": true,
+      "detail": "completion: RELATIONSHIP_FAMILIARITY_BEHAVIORAL_CAUSALITY_NOT_ESTABLISHED (paired=0, ablation=0)"
+    },
+    {
+      "id": "stale.constant_present",
+      "ok": true,
+      "detail": "the literal still says NONE"
+    },
+    {
+      "id": "stale.constant_claims_no_product_path",
+      "ok": true,
+      "detail": "the doc comment claims no product governed-write path exists"
+    },
+    {
+      "id": "stale.contradicted_by_ingestion",
+      "ok": true,
+      "detail": "the familiarity ingestion does mint governed writer authority on the production path"
+    },
+    {
+      "id": "stale.no_behavioral_consumer",
+      "ok": true,
+      "detail": "only test/export consumers: 3"
+    }
+  ],
+  "failed": 0
+}
