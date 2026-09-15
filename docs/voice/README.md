@@ -242,11 +242,25 @@ conversational loop.
   the machine is not throttled.
 * **Degradation is coarse.** ASR and TTS are enabled per-model from `/health`, but
   there is no retry-after-failure or model-restart policy.
-* **The microphone is not available in this environment** — there is no input
-  device, so a real spoken utterance was never recorded here. The capture and VAD
-  code paths are unexercised end to end; the recognition path itself is verified
-  on WAV files, and the runtime's ASR round-trip works (TTS output transcribed
-  back correctly).
+* **VAD sensitivity is uncalibrated.** A forced 3 s capture and a VAD capture both
+  ran end to end on real hardware (microphone → SenseVoice → text), but in a quiet
+  room the energy gate still triggered on ambient noise and ran to `max_ms`
+  instead of reporting silence. On a WAV file the recognition path is exact; the
+  gate itself needs a noise-floor calibration pass.
+
+## 7b. What was verified on hardware, and how
+
+| Path | Result | Evidence |
+|---|---|---|
+| Microphone capture | works | forced 3 s capture → `captured: true`, 3057 ms, transcribed |
+| VAD silence detection | **over-sensitive** | VAD run consumed the full 6 s `max_ms` on ambient noise |
+| Speaker playback | works | `/tts` with `play: true` → `played: true`, 640 ms audio |
+| TTS | works | real WAVs produced; slow+soft directive measurably changes output |
+| Streaming | works | chunks read incrementally; TTFA measured client-side |
+| ASR | works | TTS output round-tripped back to text |
+| Voice identity | works | second reference voice registered; output measurably different |
+| Interruption | mechanism verified | abort + `/tts/cancel` unit-tested; not exercised against live playback |
+
 * **Regulation is static.** CharacterOS's reference regulation producer has
   identity dynamics, so `energy`/`stress`/`arousal`/`fatigue` stay at their genesis
   values; only affect varies in practice today.
