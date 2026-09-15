@@ -505,6 +505,62 @@ describe("lived familiarity updates end-to-end", () => {
     expect(resolution.feature_layer).toBe("ADMITTED");
   });
 
+  it("a hostile/tense firsthand interaction still credits: familiarity is not affinity", async () => {
+    const hostile = episodeFixture({
+      episode_ref: "episode:e-hostile" as never,
+      context: {
+        scene: "argued with alice; she was hostile and the exchange ended badly",
+        focus_refs: [ALICE as never],
+        environment_refs: []
+      }
+    });
+    const composition = await compose({
+      episodes: [hostile],
+      counterparts: [{ counterpart_ref: ALICE, dimension_id: "arbitrary_host_dimension", value: 0.25 }]
+    });
+    await establishHead(composition, "t-head-1");
+
+    const outcome = await processInteractionExperience(composition.deps, requestFor(hostile));
+    expect(outcome.kind).toBe("QUALIFIED_AND_COMMITTED");
+    if (outcome.kind !== "QUALIFIED_AND_COMMITTED") return;
+    expect(outcome.familiarity.previous).toStrictEqual({ kind: "ABSENT" });
+    expect(outcome.familiarity.next).toBe(1 / 32);
+    const state = (await composition.assembly.storeRead.readCurrentState("subject-s0")) as SubjectStateV0;
+    expect(familiarityOf(state, ALICE)).toBe(1 / 32);
+    // the familiarity credit touched exactly one dimension: no affinity, no other write
+    const dimensions = ((state as unknown as Record<string, unknown>)["relationships"] as {
+      counterparts: readonly { counterpart_ref: string; dimensions: readonly { dimension_id: string; value: number }[] }[];
+    }).counterparts.find((entry) => entry.counterpart_ref === ALICE)?.dimensions ?? [];
+    expect(dimensions.find((dimension) => dimension.dimension_id === "arbitrary_host_dimension")?.value).toBe(0.25);
+    expect(dimensions.filter((dimension) => dimension.dimension_id === FAMILIARITY)).toHaveLength(1);
+  });
+
+  it("a third-party report never credits the subject's familiarity with the reported counterpart", async () => {
+    // Alice reports knowing Bob; the episode references only Alice, so a request for the
+    // subject↔Bob relationship is refused by the host binding (not by the model).
+    const thirdParty = episodeFixture({
+      episode_ref: "episode:e-third-party" as never,
+      context: {
+        scene: "alice says she has known bob for years and trusts him completely",
+        focus_refs: [ALICE as never],
+        environment_refs: []
+      }
+    });
+    const composition = await compose({
+      episodes: [thirdParty],
+      counterparts: [
+        { counterpart_ref: ALICE, dimension_id: "arbitrary_host_dimension", value: 0.25 },
+        { counterpart_ref: BOB, dimension_id: "arbitrary_host_dimension", value: 0.25 }
+      ]
+    });
+    await establishHead(composition, "t-head-1");
+
+    const outcome = await processInteractionExperience(composition.deps, requestFor(thirdParty, BOB));
+    expect(outcome).toMatchObject({ kind: "REJECTED", code: "EPISODE_DOES_NOT_REFERENCE_COUNTERPART" });
+    const state = (await composition.assembly.storeRead.readCurrentState("subject-s0")) as SubjectStateV0;
+    expect(familiarityOf(state, BOB)).toBeNull();
+  });
+
   it("second unique episode: 2/32 with the exact cumulative evidence lineage", async () => {
     const episode1 = episodeFixture({ episode_ref: "episode:e-1" as never });
     const episode2 = episodeFixture({

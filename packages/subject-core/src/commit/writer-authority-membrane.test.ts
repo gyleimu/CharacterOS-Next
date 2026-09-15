@@ -454,6 +454,41 @@ describe("SubjectCore reserved-write guard (§30/§37/§49)", () => {
     }
     expect(ordinaryStore.getCommittedBundles()).toHaveLength(0);
   });
+
+  it("rejects a cross-domain mix even when a valid governed token accompanies the reserved change", async () => {
+    // The `/relationships` path is owned by the "Relationship" transition type alone
+    // (validation/ownership.ts OWNERSHIP), so a foreign-domain delta alongside a
+    // governed reserved change is already refused by the ownership matrix — one layer
+    // BEFORE the engine's governed cross-domain guard. The invariant is the same
+    // (fail closed, commit nothing); this asserts the reachable layer.
+    const base = governedProposal("t-governed-cross-domain", relationshipsWith(0.5));
+    const crossDomainProposal = {
+      ...base,
+      domain_deltas: [
+        ...base.domain_deltas,
+        {
+          producer: "context",
+          domain: "context",
+          expected_repository_revision: null,
+          operations: [{ path: "/context", value: seedState(null).context }],
+          provenance_refs: []
+        }
+      ]
+    } as unknown as CanonicalTransitionProposalV1;
+    const store = new InMemoryAtomicCommitStore();
+    const engine = createCommitEngine({ store });
+    const outcome = await engine.commitTransition(
+      engineInput(crossDomainProposal, seedState(null), {
+        prepared_governed_writer_authority: await mintTokenFor(crossDomainProposal)
+      })
+    );
+    expect(outcome.kind).toBe("REJECTED");
+    if (outcome.kind === "REJECTED") {
+      expect(outcome.failure.error_code).toBe("INVALID_TRANSITION_OWNER");
+      expect(outcome.failure.detail).toContain("/context not writable by transition Relationship");
+    }
+    expect(store.getCommittedBundles()).toHaveLength(0);
+  });
 });
 
 // ---- §28/§29 assembler materialization ---------------------------------------------------

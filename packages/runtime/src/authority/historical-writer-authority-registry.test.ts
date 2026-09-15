@@ -153,6 +153,11 @@ describe("Historical writer authority registry foundation", () => {
     expect(RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_DESCRIPTOR_V0.feature_admission_requirement).toBe(
       "POSITIVE_EXACT_REGISTERED_BINDING_REQUIRED"
     );
+    // frozen policy literals: reinitialization needs explicit policy permission; removal is unsupported
+    expect(RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_DESCRIPTOR_V0.reinitialize_support).toBe(
+      "EXPLICIT_POLICY_PERMISSION_REQUIRED"
+    );
+    expect(RELATIONSHIP_GOVERNED_FEATURE_WRITE_POLICY_DESCRIPTOR_V0.removal_support).toBe("UNSUPPORTED");
   });
 
   it("exposes no dynamic registration, no mutable Map and no authority issuer", () => {
