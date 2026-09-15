@@ -73,13 +73,15 @@ async function prepare(directory: string) {
   process.stdout.write(`FROZEN ${hashJson(manifest)}\n`);
 }
 
-async function run(directory: string) {
-  const fixture = JSON.parse(readFileSync(join(directory, "frozen-fixture.json"), "utf8")) as FrozenFixture;
-  const manifest = JSON.parse(readFileSync(join(directory, "manifest.json"), "utf8")) as { preflight_hash: string; harness_head: string };
+async function run(readinessDir: string, outputDir: string) {
+  const fixture = JSON.parse(readFileSync(join(readinessDir, "frozen-fixture.json"), "utf8")) as FrozenFixture;
+  const manifest = JSON.parse(readFileSync(join(readinessDir, "manifest.json"), "utf8")) as { preflight_hash: string; harness_head: string };
   check(fixture.preflight_hash === manifest.preflight_hash, "frozen fixture matches the manifest");
   const provider = await probeProvider();
-  const verdict = await runQualification(fixture, join(directory, "scenes"));
-  writeFileSync(join(directory, "SUMMARY.md"), [
+  mkdirSync(outputDir, { recursive: true });
+  writeFileSync(join(outputDir, "frozen-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+  const verdict = await runQualification(fixture, join(outputDir, "scenes"));
+  writeFileSync(join(outputDir, "SUMMARY.md"), [
     "# RELATIONSHIP_FAMILIARITY_CAUSAL_COMPLETION_V0 — qualification",
     "",
     `**Principal verdict: \`${verdict.verdict}\`**`,
@@ -99,10 +101,11 @@ async function run(directory: string) {
   process.stdout.write(`${verdict.verdict}\n`);
 }
 
-const [command, directory] = process.argv.slice(2);
+const [command, directory, outputDirectory] = process.argv.slice(2);
 if (command === "prepare" && directory !== undefined) await prepare(directory);
-else if (command === "run" && directory !== undefined) await run(directory);
-else {
-  process.stderr.write("usage: cli.ts prepare|run <directory>\n");
+else if (command === "run" && directory !== undefined) {
+  await run(directory, outputDirectory ?? join(directory, "qualification"));
+} else {
+  process.stderr.write("usage: cli.ts prepare <readiness-dir> | run <readiness-dir> [output-dir]\n");
   process.exitCode = 2;
 }

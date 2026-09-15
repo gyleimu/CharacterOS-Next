@@ -1,0 +1,109 @@
+{
+  "schema_version": "familiarity-completion-preflight-v0",
+  "model_calls": 0,
+  "familiarity": {
+    "LOW": 0.03125,
+    "HIGH": 0.5,
+    "ABSENT": null,
+    "expected": {
+      "LOW": 0.03125,
+      "HIGH": 0.5
+    }
+  },
+  "state_revisions": {
+    "LOW": 2,
+    "HIGH": 17
+  },
+  "repository_revisions": {
+    "LOW": "R0",
+    "HIGH": "R0"
+  },
+  "matched_memory": {
+    "identical_repository_binding_hash": true,
+    "identical_episode_records": true,
+    "low_high_differences": [
+      {
+        "left": "[current state] logical_time=0 state_revision=3",
+        "right": "[current state] logical_time=0 state_revision=18",
+        "allowed": true
+      },
+      {
+        "left": "- entity:alice: presence=PRESENT level=1/32",
+        "right": "- entity:alice: presence=PRESENT level=16/32",
+        "allowed": true
+      },
+      {
+        "left": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "right": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "allowed": true
+      },
+      {
+        "left": "[projection_hash] sha256:176a38efdc09e794b35b333d3ed047868dd86d6e79acc6c8756cbc8fe7d986ce",
+        "right": "[projection_hash] sha256:117fef13344f0759ceaba72bb188bf48c5d9514430643678003f6d2171e88b3d",
+        "allowed": true
+      }
+    ],
+    "substantive_difference_count": 2
+  },
+  "ablation": {
+    "differences": [
+      {
+        "left": "- entity:alice: presence=PRESENT level=16/32",
+        "right": "- entity:alice: presence=ABSENT (no credited firsthand interaction familiarity)",
+        "allowed": true
+      },
+      {
+        "left": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+        "right": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+        "allowed": true
+      }
+    ],
+    "removed": [
+      "- entity:alice: presence=PRESENT level=16/32",
+      "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST"
+    ],
+    "absent_rendering": {
+      "familiarity_entry_line": "- entity:alice: presence=ABSENT (no credited firsthand interaction familiarity)",
+      "influence_lines": [
+        "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST"
+      ],
+      "familiarity_entry_absent_signature": "sha256:320c93a9bd929498e392f9e1f89ba3b4f90821bfeb4420ed88cfe63dac229d92"
+    }
+  },
+  "offline_classes": {
+    "LOW": "ESTABLISHED_CONVENTION_USED",
+    "HIGH": "ESTABLISHED_CONVENTION_USED",
+    "HIGH_ABLATED": "ESTABLISHED_CONVENTION_USED",
+    "ABSENT": "ESTABLISHED_CONVENTION_USED"
+  },
+  "live_chain": {
+    "language_schema": "language-realization-input-v10",
+    "cognition_system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4",
+    "convention_handle": "F1",
+    "primary_scenario": "S1_CONVENTION_REUSE"
+  },
+  "restore_proof": [
+    {
+      "condition": "LOW",
+      "familiarity": 0.03125,
+      "state_revision": 2,
+      "material_digest": "sha256:4bf1b91bb1f3de30c553cb3e915d453017676260e722cff73b84c1a33dd35091",
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "result_kind": "OUTPUT_READY",
+      "scenario": "S1_CONVENTION_REUSE",
+      "matches_parent": true
+    },
+    {
+      "condition": "HIGH",
+      "familiarity": 0.5,
+      "state_revision": 17,
+      "material_digest": "sha256:c27166a3a880b12dee2116ac85e27af1b99456ff3d5cb32f50c3d1c6c70689da",
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=16/32",
+      "result_kind": "OUTPUT_READY",
+      "scenario": "S1_CONVENTION_REUSE",
+      "matches_parent": true
+    }
+  ],
+  "scheduled_scenes": 40,
+  "scheduled_calls_maximum": 82
+}
