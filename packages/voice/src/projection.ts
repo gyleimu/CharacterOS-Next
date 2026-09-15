@@ -181,6 +181,15 @@ function requireBounded(name: string, value: number, min: number, max: number): 
 }
 
 /**
+ * Inputs after normalization: identical to `SpeechExpressionInputsV0` except
+ * that `familiarity` is resolved to a concrete number, so the projection body
+ * never has to re-handle the "no counterpart known" case.
+ */
+export interface ResolvedSpeechExpressionInputsV0 extends SpeechExpressionInputsV0 {
+  readonly familiarity: number;
+}
+
+/**
  * Validates and normalizes the read-only state inputs.
  *
  * Exported so callers can fail before doing any work, and so tests can assert
@@ -189,7 +198,7 @@ function requireBounded(name: string, value: number, min: number, max: number): 
 export function normalizeSpeechExpressionInputsV0(
   inputs: SpeechExpressionInputsV0,
   config: SpeechExpressionConfigV0 = DEFAULT_SPEECH_EXPRESSION_CONFIG_V0
-): SpeechExpressionInputsV0 {
+): ResolvedSpeechExpressionInputsV0 {
   const valence = requireBounded("valence", inputs.valence, -1, 1);
   const activation = requireBounded("activation", inputs.activation, 0, 1);
   const energy = requireBounded("energy", inputs.energy, 0, 1);

@@ -42,6 +42,7 @@ export {
   normalizeSpeechExpressionInputsV0,
   projectSpeechExpressionV0,
   speechExpressionFingerprintV0,
+  type ResolvedSpeechExpressionInputsV0,
   type SpeechExpressionConfigV0
 } from "./projection.js";
 

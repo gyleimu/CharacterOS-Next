@@ -234,7 +234,7 @@ export class VoiceFailureV0 extends Error {
   constructor(
     readonly code: VoiceFailureCodeV0,
     detail: string,
-    readonly cause?: unknown
+    override readonly cause?: unknown
   ) {
     super(`${code}: ${detail}`);
     this.name = "VoiceFailureV0";
