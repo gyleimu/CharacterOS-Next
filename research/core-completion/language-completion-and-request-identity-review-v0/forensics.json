@@ -1,0 +1,431 @@
+{
+  "schema_version": "affect-cognition-language-completion-request-identity-review-forensics-v0",
+  "model_calls": 0,
+  "production_files_changed": 0,
+  "m1": [
+    {
+      "replicate": 0,
+      "canonical_source_line": "[context] scene=\"The user says: \\\"Alice says: \\\"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "canonical_source_decoded": "The user says: \"Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\"",
+      "raw_quote": "Alice says: \"The code review deadline is Thursday.\"",
+      "quote_is_exact_substring": false,
+      "quote_matches_without_trailing_quote": true,
+      "source_contains_attribution_frame": true,
+      "rejection": [
+        {
+          "status": "REJECTED",
+          "code": "REJECTED_SOURCE_BINDING"
+        }
+      ],
+      "language_calls": 0,
+      "authoritative_hash_minted": false,
+      "authoritative_proposal_minted": false,
+      "stance_scored": "NOT_SCORED",
+      "status": "FAILED"
+    },
+    {
+      "replicate": 1,
+      "canonical_source_line": "[context] scene=\"The user says: \\\"Alice says: \\\"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "canonical_source_decoded": "The user says: \"Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\"",
+      "raw_quote": "Alice says: \"The code review deadline is Thursday.\"",
+      "quote_is_exact_substring": false,
+      "quote_matches_without_trailing_quote": true,
+      "source_contains_attribution_frame": true,
+      "rejection": [
+        {
+          "status": "REJECTED",
+          "code": "REJECTED_SOURCE_BINDING"
+        }
+      ],
+      "language_calls": 0,
+      "authoritative_hash_minted": false,
+      "authoritative_proposal_minted": false,
+      "stance_scored": "NOT_SCORED",
+      "status": "FAILED"
+    },
+    {
+      "replicate": 2,
+      "canonical_source_line": "[context] scene=\"The user says: \\\"Alice says: \\\"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "canonical_source_decoded": "The user says: \"Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\"",
+      "raw_quote": "Alice says: \"The code review deadline is Thursday.\"",
+      "quote_is_exact_substring": false,
+      "quote_matches_without_trailing_quote": true,
+      "source_contains_attribution_frame": true,
+      "rejection": [
+        {
+          "status": "REJECTED",
+          "code": "REJECTED_SOURCE_BINDING"
+        }
+      ],
+      "language_calls": 0,
+      "authoritative_hash_minted": false,
+      "authoritative_proposal_minted": false,
+      "stance_scored": "NOT_SCORED",
+      "status": "FAILED"
+    },
+    {
+      "replicate": 3,
+      "canonical_source_line": "[context] scene=\"The user says: \\\"Alice says: \\\"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "canonical_source_decoded": "The user says: \"Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\"",
+      "raw_quote": "Alice says: \"The code review deadline is Thursday.\"",
+      "quote_is_exact_substring": false,
+      "quote_matches_without_trailing_quote": true,
+      "source_contains_attribution_frame": true,
+      "rejection": [
+        {
+          "status": "REJECTED",
+          "code": "REJECTED_SOURCE_BINDING"
+        }
+      ],
+      "language_calls": 0,
+      "authoritative_hash_minted": false,
+      "authoritative_proposal_minted": false,
+      "stance_scored": "NOT_SCORED",
+      "status": "FAILED"
+    },
+    {
+      "replicate": 4,
+      "canonical_source_line": "[context] scene=\"The user says: \\\"Alice says: \\\"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\\\"\\\"\" task=\"Respond to the user's latest message.\"",
+      "canonical_source_decoded": "The user says: \"Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"\"",
+      "raw_quote": "Alice says: \"The code review deadline is Thursday.\"",
+      "quote_is_exact_substring": false,
+      "quote_matches_without_trailing_quote": true,
+      "source_contains_attribution_frame": true,
+      "rejection": [
+        {
+          "status": "REJECTED",
+          "code": "REJECTED_SOURCE_BINDING"
+        }
+      ],
+      "language_calls": 0,
+      "authoritative_hash_minted": false,
+      "authoritative_proposal_minted": false,
+      "stance_scored": "NOT_SCORED",
+      "status": "FAILED"
+    }
+  ],
+  "n6": [
+    {
+      "replicate": 0,
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "authoritative_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "rule_classification_present": false,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Classify the token 'abca' as MATCH based on the rule provided in F3.",
+      "language_request_id": "fca-e847495d-80e7-406f-ae43-f2c6200c6774-t2",
+      "language_request_sha256": "7429d984821ea7ce",
+      "language_response_sha256": "6eade83e13cc0329",
+      "final_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the definition requires the first and last characters to be identical for it to be a match. Wait, let me re-read the rule: 'A token is MATCH iff its first and last characters are identical.' The token 'abca' starts with 'a' and ends with 'a'. Therefore, 'abca' is a MATCH.",
+      "completion": "SEMANTICALLY_COMPLETED_BY_LANGUAGE",
+      "completion_tokens": [
+        "character",
+        "definition",
+        "requires",
+        "wait",
+        "read",
+        "rule",
+        "starts",
+        "ends"
+      ],
+      "final_fact": "FACTUAL_CONTRADICTION",
+      "reasoning_like_text_present": true,
+      "pass": false
+    },
+    {
+      "replicate": 1,
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "authoritative_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "rule_classification_present": false,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Classify the token 'abca' as MATCH based on the rule provided in F3.",
+      "language_request_id": "fca-23b8b10d-fca4-44f6-a216-815281a2ec7c-t2",
+      "language_request_sha256": "d8a66b4d0401b1da",
+      "language_response_sha256": "6eade83e13cc0329",
+      "final_behavior": "The token 'abca' is not a MATCH because its first character ('a') and last character ('a') are identical, but the definition requires the first and last characters to be identical for it to be a match. Wait, let me re-read the rule: 'A token is MATCH iff its first and last characters are identical.' The token 'abca' starts with 'a' and ends with 'a'. Therefore, 'abca' is a MATCH.",
+      "completion": "SEMANTICALLY_COMPLETED_BY_LANGUAGE",
+      "completion_tokens": [
+        "character",
+        "definition",
+        "requires",
+        "wait",
+        "read",
+        "rule",
+        "starts",
+        "ends"
+      ],
+      "final_fact": "FACTUAL_CONTRADICTION",
+      "reasoning_like_text_present": true,
+      "pass": false
+    },
+    {
+      "replicate": 2,
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "authoritative_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "rule_classification_present": false,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Classify the token 'abca' as MATCH based on the rule provided in F3.",
+      "language_request_id": "fca-dfe642c4-7184-4e2c-b0bc-4923c12f20ba-t2",
+      "language_request_sha256": "7e77d034225e8cfb",
+      "language_response_sha256": "96c6bbe2f79e4d47",
+      "final_behavior": "The token 'abca' is a MATCH because its first character ('a') and last character ('a') are identical.",
+      "completion": "SEMANTICALLY_COMPLETED_BY_LANGUAGE",
+      "completion_tokens": [
+        "character"
+      ],
+      "final_fact": "FACT_CORRECT",
+      "reasoning_like_text_present": false,
+      "pass": true
+    },
+    {
+      "replicate": 3,
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "authoritative_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "rule_classification_present": false,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Classify the token 'abca' as MATCH based on the rule provided in F3.",
+      "language_request_id": "fca-c767e455-0e70-456c-956c-f71228dd9f4a-t2",
+      "language_request_sha256": "ace174e5a12f76f8",
+      "language_response_sha256": "0c793a0ef3b9834f",
+      "final_behavior": "The token 'abca' is a MATCH because its first character 'a' and last character 'a' are identical.",
+      "completion": "SEMANTICALLY_COMPLETED_BY_LANGUAGE",
+      "completion_tokens": [
+        "character"
+      ],
+      "final_fact": "FACT_CORRECT",
+      "reasoning_like_text_present": false,
+      "pass": true
+    },
+    {
+      "replicate": 4,
+      "raw_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "authoritative_claims": [
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "A token is MATCH iff its first and last characters are identical."
+        },
+        {
+          "kind": "SOURCE_QUOTE",
+          "operation": null,
+          "text": "Classify abca."
+        }
+      ],
+      "rule_classification_present": false,
+      "directive": "REALIZE_CURRENT_INTENT",
+      "current_intent": "Classify the token 'abca' as MATCH based on the rule provided in F3.",
+      "language_request_id": "fca-5bfb72e7-9ccd-479a-a605-ded9e3832529-t2",
+      "language_request_sha256": "faefb1f5262e0f80",
+      "language_response_sha256": "96c6bbe2f79e4d47",
+      "final_behavior": "The token 'abca' is a MATCH because its first character ('a') and last character ('a') are identical.",
+      "completion": "SEMANTICALLY_COMPLETED_BY_LANGUAGE",
+      "completion_tokens": [
+        "character"
+      ],
+      "final_fact": "FACT_CORRECT",
+      "reasoning_like_text_present": false,
+      "pass": true
+    }
+  ],
+  "identity": {
+    "M1": {
+      "cognition_request_hashes": [
+        "36e7f141c6435dfe",
+        "36e7f141c6435dfe",
+        "36e7f141c6435dfe",
+        "36e7f141c6435dfe",
+        "36e7f141c6435dfe"
+      ],
+      "cognition_response_hashes": [
+        "07cc15875f9cc780",
+        "07cc15875f9cc780",
+        "07cc15875f9cc780",
+        "07cc15875f9cc780",
+        "07cc15875f9cc780"
+      ],
+      "language_request_hashes": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "language_response_hashes": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "unique_language_requests": 1,
+      "unique_language_responses": 1
+    },
+    "N6": {
+      "cognition_request_hashes": [
+        "da097450a11e3c9f",
+        "da097450a11e3c9f",
+        "da097450a11e3c9f",
+        "da097450a11e3c9f",
+        "da097450a11e3c9f"
+      ],
+      "cognition_response_hashes": [
+        "986f923e03a1f729",
+        "986f923e03a1f729",
+        "986f923e03a1f729",
+        "986f923e03a1f729",
+        "986f923e03a1f729"
+      ],
+      "language_request_hashes": [
+        "7429d984821ea7ce",
+        "d8a66b4d0401b1da",
+        "7e77d034225e8cfb",
+        "ace174e5a12f76f8",
+        "faefb1f5262e0f80"
+      ],
+      "language_response_hashes": [
+        "6eade83e13cc0329",
+        "6eade83e13cc0329",
+        "96c6bbe2f79e4d47",
+        "0c793a0ef3b9834f",
+        "96c6bbe2f79e4d47"
+      ],
+      "unique_language_requests": 5,
+      "unique_language_responses": 3
+    }
+  },
+  "language_byte_diff": {
+    "differing_fields": [
+      "response_request_id"
+    ],
+    "samples": [
+      {
+        "message": 1,
+        "line": 5,
+        "base": "  \"response_request_id\": \"fca-e847495d-80e7-406f-ae43-f2c6200c6774-t2\",",
+        "other": "  \"response_request_id\": \"fca-23b8b10d-fca4-44f6-a216-815281a2ec7c-t2\","
+      },
+      {
+        "message": 1,
+        "line": 5,
+        "base": "  \"response_request_id\": \"fca-e847495d-80e7-406f-ae43-f2c6200c6774-t2\",",
+        "other": "  \"response_request_id\": \"fca-dfe642c4-7184-4e2c-b0bc-4923c12f20ba-t2\","
+      },
+      {
+        "message": 1,
+        "line": 5,
+        "base": "  \"response_request_id\": \"fca-e847495d-80e7-406f-ae43-f2c6200c6774-t2\",",
+        "other": "  \"response_request_id\": \"fca-c767e455-0e70-456c-956c-f71228dd9f4a-t2\","
+      },
+      {
+        "message": 1,
+        "line": 5,
+        "base": "  \"response_request_id\": \"fca-e847495d-80e7-406f-ae43-f2c6200c6774-t2\",",
+        "other": "  \"response_request_id\": \"fca-5bfb72e7-9ccd-479a-a605-ded9e3832529-t2\","
+      }
+    ]
+  },
+  "production_language_boundary": {
+    "draft_validator": "validateLanguageRealizationDraftV0 — closed schema + canonical text only",
+    "provider_gates": "raw-size gate, strict JSON, closed draft schema, input_hash echo, evidence_refs allowlist",
+    "semantic_content_gate": "NONE — production has no check that delivered text contains only authorized propositions"
+  },
+  "response_request_id_source": "session runtime: `${session_id}-${tag}` (per-cell opaque id) → V8 payload.response_request_id → serialized into the model-facing language content"
+}
