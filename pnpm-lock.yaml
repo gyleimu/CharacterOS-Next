@@ -138,6 +138,9 @@ importers:
       '@characteros-next/runtime':
         specifier: workspace:*
         version: link:../../packages/runtime
+      '@characteros-next/voice':
+        specifier: workspace:*
+        version: link:../../packages/voice
 
   product/web:
     dependencies:

@@ -189,6 +189,11 @@ export default tseslint.config(
     "voice is a standalone presentation channel; it may use node built-ins and must not import a CharacterOS domain package."
   ),
   packageBoundaryConfig(
+    "packages/voice/src/**/*.test.ts",
+    ["@characteros-next/voice", "node:crypto", "node:http", "node:fs"],
+    "voice tests may additionally stand up a local HTTP double to exercise transport failure classification."
+  ),
+  packageBoundaryConfig(
     "packages/long-term-state-domain/src/**/*.ts",
     ["@characteros-next/long-term-state-domain", "@characteros-next/subject-core"],
     "long-term-state-domain may consume only subject-core public contracts."
@@ -230,6 +235,10 @@ export default tseslint.config(
     [
       "@characteros-next/sandbox",
       "@characteros-next/runtime",
+      // VOICE_VERTICAL_SLICE_V0 — the composition root implements the voice
+      // layer's VoiceSubjectPortV0 over the interactive host, so the arrow stays
+      // product → voice and voice never imports a CharacterOS package.
+      "@characteros-next/voice",
       // PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0 — the composition root is
       // the ONLY layer allowed to bridge runtime and the personality domain: the
       // session accepts an opaque PersonalityAdaptationPortV0 (dependency
