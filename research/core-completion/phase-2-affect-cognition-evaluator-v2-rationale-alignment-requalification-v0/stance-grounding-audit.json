@@ -1,0 +1,136 @@
+{
+  "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-stance-grounding-audit-v0",
+  "guard_status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+  "guard_shipped": false,
+  "per_scenario": {
+    "M1": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review.",
+        "I will volunteer to own the review."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "M2": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting.",
+        "I would prefer to attend the meeting."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "M3": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs.",
+        "I would be willing to carry the package upstairs."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R1": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I choose to volunteer for the optional review.",
+        "I choose to volunteer for the optional review.",
+        "I choose to volunteer for the optional review.",
+        "I choose to volunteer for the optional review.",
+        "I choose to volunteer for the optional review."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R2": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I will try the new approach.",
+        "I will try the new approach.",
+        "I will try the new approach.",
+        "I will try the new approach.",
+        "I will try the new approach."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R3": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass.",
+        "I would perform the extra polish pass."
+      ],
+      "off_question": 0,
+      "examples": []
+    },
+    "R4": {
+      "classes": [
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION",
+        "FIRST_OPTION"
+      ],
+      "stances": [
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first.",
+        "I will choose to rehearse the presentation first."
+      ],
+      "off_question": 0,
+      "examples": []
+    }
+  },
+  "off_question_cells": 0,
+  "unclassified_cells": 0,
+  "pass": true
+}

@@ -1,0 +1,272 @@
+{
+  "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-qualification-verdict-v0",
+  "repository_head": "acbf1ccecc3ef560f33cfe380ac98b2775736097",
+  "provider_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "protocol": "conversation-cognition-proposal-v6",
+  "rows": 65,
+  "passed": 50,
+  "flags": {
+    "implementation_intact": true,
+    "transport_degeneration": false,
+    "truncations": 0,
+    "unreached_cells": 0,
+    "headroom_pass": true,
+    "headroom": {
+      "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-headroom-v0",
+      "num_predict": 2048,
+      "threshold_90pct": 1843,
+      "threshold_80pct": 1638,
+      "completed_cells": 65,
+      "min": 322,
+      "median": 424,
+      "p75": 495,
+      "p90": 523,
+      "p95": 543,
+      "max": 543,
+      "cells_over_80pct": 0,
+      "cells_over_90pct": 0,
+      "truncations": 0,
+      "per_scenario": {
+        "N1": {
+          "eval_counts": [
+            361,
+            361,
+            361,
+            361,
+            361
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N2": {
+          "eval_counts": [
+            331,
+            331,
+            331,
+            331,
+            331
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N3": {
+          "eval_counts": [
+            391,
+            391,
+            391,
+            391,
+            391
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N4": {
+          "eval_counts": [
+            322,
+            322,
+            322,
+            322,
+            322
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N5Q": {
+          "eval_counts": [
+            354,
+            354,
+            354,
+            354,
+            354
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "N6": {
+          "eval_counts": [
+            372,
+            372,
+            372,
+            372,
+            372
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M1": {
+          "eval_counts": [
+            479,
+            479,
+            479,
+            479,
+            479
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M2": {
+          "eval_counts": [
+            497,
+            497,
+            497,
+            497,
+            497
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "M3": {
+          "eval_counts": [
+            424,
+            424,
+            424,
+            424,
+            424
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R1": {
+          "eval_counts": [
+            495,
+            495,
+            495,
+            495,
+            495
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R2": {
+          "eval_counts": [
+            438,
+            438,
+            438,
+            438,
+            438
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R3": {
+          "eval_counts": [
+            543,
+            543,
+            543,
+            543,
+            543
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        },
+        "R4": {
+          "eval_counts": [
+            523,
+            523,
+            523,
+            523,
+            523
+          ],
+          "done_reasons": [
+            "stop",
+            "stop",
+            "stop",
+            "stop",
+            "stop"
+          ]
+        }
+      },
+      "pass": true
+    },
+    "protocol_failures": 0,
+    "applicability_pass": true,
+    "null_applicability_pass": true,
+    "handle_binding_pass": true,
+    "applicability_regression": false,
+    "applicability_regression_note": "the frozen property \"a determined task reads NO_SUBJECTIVE_SELECTION\" is evaluated per cell; any null cell that reads SUBJECTIVE_SELECTION is an applicability regression and is reported as such",
+    "rationale_pass": false,
+    "stance_grounding_pass": true,
+    "language_pass": false,
+    "factual_pass": true,
+    "authority_boundary_held": true,
+    "unbound_claim_source_cells": 0,
+    "protocol_failures_named": "host refusals caused by a factual_assessment claim whose source handle is not an advertised F handle, or is not bound into cognition.considered_handles AND cognition.evidence_handles",
+    "clarification_pass": true,
+    "leakage_pass": true,
+    "family_d_failure_to_select": false,
+    "family_d_failure_to_withhold": false,
+    "guard_shipped": false,
+    "qualification_gate_passed": false,
+    "formal_matrix_run": false
+  },
+  "principal_verdict": "AFFECT_COGNITION_RATIONALE_CONTRACT_FAILED",
+  "co_present": [
+    "AFFECT_COGNITION_LANGUAGE_FIDELITY_FAILED"
+  ],
+  "lexical_guard": {
+    "shipped": false,
+    "status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "next_stage": "FORMAL_MATRIX_NOT_RUN"
+}

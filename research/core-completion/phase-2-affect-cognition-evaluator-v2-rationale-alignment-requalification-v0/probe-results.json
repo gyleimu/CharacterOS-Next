@@ -1,0 +1,541 @@
+{
+  "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-probe-results-v0",
+  "classifier_source": "lib/classify.mjs (byte-identical to the C4.4 frozen instrument)",
+  "model_calls": 0,
+  "probes": [
+    {
+      "id": "LR-1",
+      "channel": "rationale",
+      "text": "I'd rather help.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LR-2",
+      "channel": "rationale",
+      "text": "I prefer to use the free time to help.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LR-3",
+      "channel": "rationale",
+      "text": "I'd be willing to spend the available time helping.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "WILLINGNESS"
+      ],
+      "lawful": true,
+      "category": "WILLINGNESS",
+      "allowed_classes": [
+        "WILLINGNESS"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LR-4",
+      "channel": "rationale",
+      "text": "I'd prefer to decline.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LR-5",
+      "channel": "rationale",
+      "text": "I'd rather keep the reversible option.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LR-6",
+      "channel": "rationale",
+      "text": "I prefer to use the available time for the option I chose.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LN-1",
+      "channel": "rationale",
+      "text": "I prefer the window seat because I like the quieter side.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LN-2",
+      "channel": "rationale",
+      "text": "I'd rather spend the available time reading.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LN-3",
+      "channel": "rationale",
+      "text": "I'd rather use the blue notebook because it keeps my notes organized.",
+      "semantic_expectation": "lawful",
+      "expected_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "lawful": true,
+      "category": "PURE_PREFERENCE",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-1",
+      "channel": "rationale",
+      "text": "I have enough capacity.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-2",
+      "channel": "rationale",
+      "text": "I have available capacity.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-3",
+      "channel": "rationale",
+      "text": "I'm capable of doing it.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPABILITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-4",
+      "channel": "rationale",
+      "text": "I have enough bandwidth.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-5",
+      "channel": "rationale",
+      "text": "My energy is high.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "RAW_SELF_STATE_DESCRIPTION",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "forbidden_details": [
+        "ENERGY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-6",
+      "channel": "rationale",
+      "text": "My stress is low.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "RAW_SELF_STATE_DESCRIPTION",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "forbidden_details": [
+        "STRESS"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-7",
+      "channel": "rationale",
+      "text": "My mind is fresh.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "RAW_SELF_STATE_DESCRIPTION",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "RAW_SELF_STATE_DESCRIPTION"
+      ],
+      "forbidden_details": [
+        "FRESHNESS",
+        "MOOD"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-8",
+      "channel": "rationale",
+      "text": "I'm ready for it.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "UNCLASSIFIED",
+      "allowed_classes": [],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FR-9",
+      "channel": "rationale",
+      "text": "I can manage the workload.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPABILITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "NR-1",
+      "channel": "rationale",
+      "text": "I have time available, so I would help.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "UNCLASSIFIED",
+      "allowed_classes": [],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LA-1",
+      "channel": "claim",
+      "text": "A free 30-minute slot is available.",
+      "semantic_expectation": "lawful",
+      "lawful": true,
+      "subject_property_vocabulary": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LA-2",
+      "channel": "claim",
+      "text": "The task takes 20 minutes.",
+      "semantic_expectation": "lawful",
+      "lawful": true,
+      "subject_property_vocabulary": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LA-3",
+      "channel": "claim",
+      "text": "There are no conflicting commitments.",
+      "semantic_expectation": "lawful",
+      "lawful": true,
+      "subject_property_vocabulary": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FU-1",
+      "channel": "claim",
+      "text": "The subject has capacity.",
+      "semantic_expectation": "forbidden",
+      "lawful": false,
+      "subject_property_vocabulary": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FU-2",
+      "channel": "claim",
+      "text": "The subject is capable.",
+      "semantic_expectation": "forbidden",
+      "lawful": false,
+      "subject_property_vocabulary": [
+        "CAPABILITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FU-3",
+      "channel": "claim",
+      "text": "The subject has enough energy.",
+      "semantic_expectation": "forbidden",
+      "lawful": false,
+      "subject_property_vocabulary": [
+        "ENERGY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "FU-4",
+      "channel": "claim",
+      "text": "The subject has sufficient workload tolerance.",
+      "semantic_expectation": "forbidden",
+      "lawful": true,
+      "subject_property_vocabulary": [],
+      "classes_satisfied": true,
+      "divergence": "LENIENT",
+      "historical_replay": false
+    },
+    {
+      "id": "LT-1",
+      "channel": "claim",
+      "text": "The supplied facts permit either volunteering or declining.",
+      "semantic_expectation": "lawful",
+      "lawful": true,
+      "subject_property_vocabulary": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LT-2",
+      "channel": "claim",
+      "text": "The subject has capacity for either response.",
+      "semantic_expectation": "forbidden",
+      "lawful": false,
+      "subject_property_vocabulary": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "LT-1R",
+      "channel": "rationale",
+      "text": "The supplied facts permit either volunteering or declining.",
+      "semantic_expectation": "not_a_rationale",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "UNCLASSIFIED",
+      "allowed_classes": [],
+      "forbidden_classes": [],
+      "forbidden_details": [],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    },
+    {
+      "id": "HR-1",
+      "channel": "rationale",
+      "text": "I prefer to utilize my available capacity to assist with the task.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [
+        "PURE_PREFERENCE"
+      ],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": true
+    },
+    {
+      "id": "HR-2",
+      "channel": "rationale",
+      "text": "The subject has capacity.",
+      "semantic_expectation": "forbidden",
+      "expected_classes": [],
+      "lawful": false,
+      "category": "INFERRED_CAPACITY",
+      "allowed_classes": [],
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ],
+      "forbidden_details": [
+        "CAPACITY"
+      ],
+      "classes_satisfied": true,
+      "divergence": null,
+      "historical_replay": false
+    }
+  ],
+  "strict_divergences": [],
+  "lenient_coverage_gaps": [
+    {
+      "id": "FU-4",
+      "text": "The subject has sufficient workload tolerance."
+    }
+  ],
+  "class_expectation_misses": [],
+  "historical_r1_replay": {
+    "rationale": "I prefer to utilize my available capacity to assist with the task.",
+    "still_unlawful_under_frozen_instrument": true,
+    "category": "INFERRED_CAPACITY",
+    "forbidden_classes": [
+      "INFERRED_CAPACITY"
+    ]
+  },
+  "pass": true,
+  "blocks_before_model_calls": false
+}

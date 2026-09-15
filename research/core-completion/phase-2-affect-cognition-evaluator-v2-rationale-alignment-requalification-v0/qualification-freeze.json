@@ -1,0 +1,481 @@
+{
+  "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-qualification-freeze-v0",
+  "repository_head": "acbf1ccecc3ef560f33cfe380ac98b2775736097",
+  "created_before_model_calls": true,
+  "subject_id": "affect-cognition-evaluator-v2-subject-v0",
+  "provider": {
+    "version": "0.34.0",
+    "name": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "size": 6594474711
+  },
+  "declared_provider": {
+    "kind": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "required_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "quantization": "Q4_K_M",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048,
+    "context_window_tokens": 8192,
+    "timeout_ms": 240000
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_ctx": 8192,
+    "cognition_num_predict": 2048,
+    "language_num_predict": 2048
+  },
+  "conditions": {
+    "P": {
+      "id": "P",
+      "kind": "CANONICAL",
+      "valence": 0.6,
+      "activation": 0.5
+    },
+    "N": {
+      "id": "N",
+      "kind": "CANONICAL",
+      "valence": -0.6,
+      "activation": 0.5
+    },
+    "Z": {
+      "id": "Z",
+      "kind": "CANONICAL",
+      "valence": 0,
+      "activation": 0.5
+    },
+    "A": {
+      "id": "A",
+      "kind": "ABSENT",
+      "valence": null,
+      "activation": null
+    }
+  },
+  "history_events": [
+    "Alice asks how the project documentation is currently organized.",
+    "Alice says the weekly review meeting moved to Thursday."
+  ],
+  "retry_policy": {
+    "infrastructure_retries": 0,
+    "semantic_retries": 0
+  },
+  "endpoint": "final production-admissible observable behavior",
+  "protocol": "conversation-cognition-proposal-v6 + language-realization-input-v7 + language-realization-semantic-draft-v1",
+  "version_policy": "no schema or protocol version bump in this slice: the C4.4 protocol (conversation-cognition-proposal-v6 + language-realization-input-v7) is unchanged; the contract is compacted and the rationale examples neutralized, bound into this freeze by prompt digest",
+  "citation_binding": "every factual_assessment.claims[*].source_handles entry must be an advertised F handle and must also appear in cognition.considered_handles AND cognition.evidence_handles; the host binds the citation and refuses the turn otherwise",
+  "ref_handles": "host-issued, turn-local, deterministic, wire-only handles: F* resolves in FACTUAL SOURCE REFS, C* in the remaining CITEABLE CONTEXT REFS (namespaces disjoint, one handle per ref); unknown, malformed, duplicate or namespace-escalating handles fail closed; canonical refs remain authoritative and are the only refs hashed or stored",
+  "host_owned_integrity": "HOST_BOUND_PROJECTION_HASH_OUTSIDE_MODEL_OUTPUT",
+  "native_structured_output": true,
+  "rationale_policy": {
+    "allowed": [
+      "PURE_PREFERENCE",
+      "PRIORITY",
+      "AVERSION",
+      "WILLINGNESS",
+      "SUBJECTIVE_STRATEGY"
+    ],
+    "forbidden": [
+      "RAW_SELF_STATE_DESCRIPTION",
+      "NAMED_PSYCHOLOGICAL_STATE",
+      "INFERRED_CAPACITY",
+      "EXTERNAL_FACT",
+      "HISTORY_CLAIM"
+    ]
+  },
+  "rationale_vocabulary": "the rationale is a subjective frame (preference/priority/aversion/willingness/strategy) in which a supplied situational fact may be mentioned; it never states or restates a property of the subject",
+  "latitude_contract": "the latitude determination is a relation between the supplied facts/rules and the available responses, stated fact-relatively (\"the supplied facts permit either volunteering or declining\"), never as a subject property (\"the subject has capacity for either response\")",
+  "availability_not_capacity": "a supplied fact that time or resources are available establishes only that fact; it does not establish capacity, capability, ability, energy, readiness, workload tolerance or any other subject-side condition, and no such mapping may be made",
+  "subject_property_terms": "capacity, capability, capable, ability, able to, energy, stress, fatigue, bandwidth, readiness, ready to, workload tolerance, resilience — never a rationale, never the subject of a factual claim",
+  "instrument_probe_suite": {
+    "path": "instrument-probes.mjs",
+    "n5q_evaluator_version": "n5q-result-evaluator-v2",
+    "rationale_classifier_version": "rationale-classifier-v2",
+    "n5q_lawful_pass": 4,
+    "n5q_unlawful_fail": 3,
+    "value_lawful_pass": 5,
+    "value_unlawful_rejected": 5,
+    "historical_rationale_regressions": 6,
+    "historical_n5q_regressions": 3,
+    "failures": [],
+    "frozen_before_model_calls": true
+  },
+  "probe_suite": {
+    "path": "probes.mjs",
+    "cases": 31,
+    "strict_divergences": [],
+    "lenient_coverage_gaps": [
+      {
+        "id": "FU-4",
+        "text": "The subject has sufficient workload tolerance."
+      }
+    ],
+    "class_expectation_misses": [],
+    "historical_r1_replay": {
+      "rationale": "I prefer to utilize my available capacity to assist with the task.",
+      "still_unlawful_under_frozen_instrument": true,
+      "category": "INFERRED_CAPACITY",
+      "forbidden_classes": [
+        "INFERRED_CAPACITY"
+      ]
+    },
+    "frozen_before_model_calls": true
+  },
+  "grounding": {
+    "guard_status": "RESEARCH_ONLY_LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "guard_shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE",
+    "production_rule": "stance remains the free-text choice authority; Language must not semantically complete it",
+    "experiment_rule": "a SELECTED stance must be classifiable within the scenario's requested option pair, otherwise OFF_QUESTION_STANCE",
+    "off_question_rejection_code": "OFF_QUESTION_STANCE",
+    "guard_rejection_code": "STANCE_NOT_TURN_GROUNDED"
+  },
+  "example_set": {
+    "positive": [
+      "I prefer the window seat because I like the quieter side.",
+      "I'd rather spend the available time reading.",
+      "I'd rather use the blue notebook because it keeps my notes organized."
+    ],
+    "negative": [
+      "I have enough capacity.",
+      "I'm capable of doing it.",
+      "My mind is fresh."
+    ],
+    "removed": [
+      "I'd rather avoid extra work whose benefit is unknown.",
+      "I'd rather help.",
+      "I'd prefer to decline.",
+      "I prefer to use the free time to help.",
+      "I'd be willing to spend the available time on the review.",
+      "I'd rather stop here.",
+      "I prefer the reversible option."
+    ],
+    "forbidden_tokens": [
+      "volunteer",
+      "decline",
+      "accept",
+      "refuse",
+      "try",
+      "keeping",
+      "keep the",
+      "stop",
+      "continue",
+      "review",
+      "rehearse",
+      "inspect",
+      "first",
+      "second",
+      "attend",
+      "carry",
+      "polish",
+      "extra work",
+      "package",
+      "meeting",
+      "presentation",
+      "backup",
+      "help",
+      "take it on",
+      "volunteering",
+      "declining"
+    ],
+    "sha256": "sha256:c64df31a127f2682e8d91ad1f64298b4deebe32feae247c56519f9d38ffc63bc",
+    "neutrality_verdict": "EXAMPLE_NEUTRALITY_PASS",
+    "m3_risk": {
+      "schema_version": "affect-cognition-evaluator-v2-rationale-alignment-m3-risk-audit-v0",
+      "note": "preregistered risk audit only; it cannot prove M3 will not loop",
+      "prompt_chars_current": 7915,
+      "prompt_chars_previous_slice": 8714,
+      "prompt_char_delta": -799,
+      "capability_availability_vocabulary_occurrences": {
+        "capacity": 6,
+        "capable": 1,
+        "capability": 3,
+        "energy": 2,
+        "stress": 2,
+        "fatigue": 2,
+        "bandwidth": 1,
+        "readiness": 1,
+        "workload": 1,
+        "fresh": 2,
+        "manage": 0,
+        "available": 6
+      },
+      "worked_example_count": 6,
+      "repeated_enumeration_removed": "rules 2/5a/5b/6/10 compacted; one central subject-property boundary (rule 5d) replaces the repeated vocabulary enumerations"
+    }
+  },
+  "transport_headroom": {
+    "num_predict": 2048,
+    "threshold_90pct": 1843,
+    "threshold_80pct": 1638,
+    "endpoint": "no completed cell above threshold_90pct eval tokens; no done_reason=length; no truncation",
+    "applied_retroactively": false
+  },
+  "contract_legibility": {
+    "repaired_defect": "contract compaction + example neutrality: repeated subject-property enumerations collapsed into one central boundary rule (5d); all directionally contaminated rationale examples replaced by out-of-domain polarity-neutral ones",
+    "host_validator_changed": false,
+    "prompt_only_change": "cognition rules 2, 5, 5a, 5b, new 5d, 6, 10 only; schema, wire keys, handle canonicalization, validators, executor, Language and Affect are byte-unchanged; num_predict unchanged at 2048",
+    "observed_defect_text": "M3 x5 MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED (eval_count=2048, done_reason=length) + 25/30 verbatim example copies with 3 deterministic FIRST->SECOND stance shifts (rationale-vocabulary slice)",
+    "instrument_versions": "rationale-classifier-v2 + n5q-result-evaluator-v2",
+    "instrument_changed_from_previous_slice": true,
+    "handle_canonicalization": "F* = factual-source namespace, C* = citeable-context namespace; exact advertised match only; unknown/malformed/namespace-escalating handles fail closed; canonical refs are authoritative and stored",
+    "wire_vs_authoritative": "conversation-cognition-proposal-v6 model wire carries handles; the authoritative proposal and hash carry canonical refs",
+    "audit_verdict": "HANDLE_CONTRACT_APPLIES",
+    "audit_uncovered_material": []
+  },
+  "paraphrase_suite_result_frozen_from_c4_2": {
+    "suite_sha256": "sha256:2e810540b4c273d6061444914f09f315f863b617cdc61116663ef11dcd96d21e",
+    "lawful_accepted": 34,
+    "lawful_total": 40,
+    "invalid_detected": 15,
+    "invalid_total": 20,
+    "shipped": false,
+    "recorded_flag": "LEXICAL_GROUNDING_GUARD_TOO_BRITTLE"
+  },
+  "falsification": {
+    "min_cells": 3,
+    "min_scenarios": 2,
+    "replicates": 5
+  },
+  "schema_authority": {
+    "proposal_v6_wire_schema_sha256": "sha256:45c4de53fdd7b017237fe545107c2d9876fe40323f34c466bcc56536bce3cd31",
+    "semantic_draft_schema_sha256": "sha256:2cc9aaf602addd4c1ac52422a83fd0d3912db16eeb8b087827fc75c0d50c93d6",
+    "cognition_prompt_sha256": "sha256:171b38ce76a0b9c936ad8ea1de57ee0f2e4f9a115cf40f95d1e2723ad43f6c2c",
+    "language_prompt_sha256": "sha256:4cbafb8d8d0198072ec54ecedaabd6a5985d3040c24cc4751d3a24dd087490d8",
+    "factual_source_authority": "subject:, entity: and environment: refs remain non-factual sources; only the F* factual-source handles (resolved to FACTUAL SOURCE REFS) may appear in factual_assessment.claims[*].source_handles",
+    "host_binding": "CognitionInvocationBindingV2 / LanguageInvocationBindingV0 in-flight bindings; no model-emitted projection_hash; canonical refs are host-resolved from exact advertised handles"
+  },
+  "session_id_policy": "opaque UUID per cell (ev2-<uuid>), no scenario/condition/replicate identity",
+  "materiality": {
+    "tvd_floor": 0.28,
+    "js_floor": 0.05,
+    "min_consistent": 6,
+    "within_split": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        3,
+        4,
+        5,
+        6
+      ]
+    ]
+  },
+  "call_budget": {
+    "qualification": 65,
+    "formal": 476,
+    "lawful": 10,
+    "maximum": 551
+  },
+  "primary_endpoint": "RATIONALE_LAWFUL_AND_ON_QUESTION_STANCE",
+  "harness": {
+    "classify_sha256": "sha256:2ce1e20938337002674197cb66e3894cf880e7c2a4183ca1e6354a0dc21c52a2",
+    "pipeline_sha256": "sha256:3888c96d2c51e8eaf65c94b242fef25e57e76827d65289b094dc486ccb887af3",
+    "config_sha256": "sha256:4572f2f49703b1d88f534ff241a10ffd7d390b681fb834813b3206136b625d1e",
+    "probes_sha256": "sha256:1779a10b2ff82ee9fdd69c08f8a41085a442cd40d0621e0f6ce562d29d542ae4",
+    "probes_test_sha256": "sha256:1eeb7e0bf57e10ff2382a59cac0413d3d581860b481d6c9161684aced5f840ad",
+    "probe_results_sha256": "sha256:61e43039802ef0d66bb103713ec09bb0a6b31e0351dfa6024f6b00a25c6d4801",
+    "sentinel_sha256": "sha256:565f8664325dd6da58b6d4caf983d34c2fa80e7cd92cfecd9c6970687ead4f0e",
+    "contract_coverage_audit_sha256": "sha256:50b6db4d4835f2f2f39aa7d7d01632bc3afae8983edb0d8bd16aa632096e8d04",
+    "example_neutrality_audit_sha256": "sha256:eda8b4dd9c2329cdb3f64e8d1ced6c90d850251d1a6f5b7e09b5121ec2323768",
+    "m3_risk_audit_sha256": "sha256:4523886307617e1975a347c90e53cd4d81459157ec989943ce009f82e81bd96a",
+    "instrument_probes_sha256": "sha256:facf7cc7fb4e07968d836736ac8b7521ebf4c829312572966042cf2985a632c6",
+    "instrument_probe_results_sha256": "sha256:2904dd98587efa5db71ae92aae67612ed921e3b4f0c03d5c5fb1fd70c291940d",
+    "classifier_version": "rationale-classifier-v2 + n5q-result-evaluator-v2",
+    "classifier_changed_from_previous": true
+  },
+  "condition": {
+    "id": "A",
+    "kind": "ABSENT",
+    "valence": null,
+    "activation": null
+  },
+  "scenarios": [
+    {
+      "id": "N1",
+      "family": "NULL",
+      "event": "Alice asks: \"What is 17 + 25?\"",
+      "expected": "42"
+    },
+    {
+      "id": "N2",
+      "family": "NULL",
+      "event": "What is 63 - 28?",
+      "expected": "35"
+    },
+    {
+      "id": "N3",
+      "family": "NULL",
+      "event": "Parcel R8 is on shelf C4. Which shelf holds parcel R8?",
+      "expected": "C4"
+    },
+    {
+      "id": "N4",
+      "family": "NULL",
+      "event": "The label says: code=K7, colour=blue. What code is printed?",
+      "expected": "K7"
+    },
+    {
+      "id": "N5Q",
+      "family": "NULL",
+      "event": "Alice asks: \"Reverse the characters in the token R8K2.\"",
+      "expected": "2K8R"
+    },
+    {
+      "id": "N6",
+      "family": "NULL",
+      "event": "A token is MATCH iff its first and last characters are identical. Classify abca.",
+      "expected": "MATCH"
+    },
+    {
+      "id": "M1",
+      "family": "MIXED",
+      "event": "Alice says: \"The code review deadline is Thursday. State the deadline exactly as given, and say whether you would personally volunteer to own the review.\"",
+      "expected": "Thursday",
+      "choice": "VOLUNTEER"
+    },
+    {
+      "id": "M2",
+      "family": "MIXED",
+      "event": "Alice says: \"The planning meeting is at 15:00. State the meeting time exactly as given, and say whether you would prefer to attend.\"",
+      "expected": "15:00",
+      "choice": "ATTEND"
+    },
+    {
+      "id": "M3",
+      "family": "MIXED",
+      "event": "Alice says: \"The sealed package weighs 4 kg. State the weight exactly as given, and say whether you would be willing to carry it upstairs.\"",
+      "expected": "4 kg",
+      "choice": "CARRY"
+    },
+    {
+      "id": "R1",
+      "family": "RELEVANT",
+      "choice": "VOLUNTEER",
+      "event": "You have a free 30-minute slot and no conflicting commitments. An optional review takes 20 minutes. Would you personally volunteer to do it? State your choice and a brief reason."
+    },
+    {
+      "id": "R2",
+      "family": "RELEVANT",
+      "choice": "TRY",
+      "event": "A new approach can be tried in a reversible 10-minute trial. The trial cannot alter production data, and returning to the current approach is available. Its benefit is unknown. Would you personally try it or keep the current approach? State your choice and a brief reason."
+    },
+    {
+      "id": "R3",
+      "family": "RELEVANT",
+      "choice": "POLISH",
+      "event": "The required work is complete. One optional polish pass would take 10 minutes, and that time is available. Its additional benefit has not been measured. Would you personally do the extra pass or stop now? State your choice and a brief reason."
+    },
+    {
+      "id": "R4",
+      "family": "RELEVANT",
+      "choice": "ORDER",
+      "event": "Two preparation tasks are equally feasible and both are due tomorrow: rehearse the presentation and inspect the backup plan. Either order is allowed. Which would you personally do first? State your choice and a brief reason."
+    }
+  ],
+  "replicates": 5,
+  "opaque_session_ids": {
+    "N1": [
+      "ev2-d0715d09-8780-4881-9c7a-bca9e8b1fdc5",
+      "ev2-999320e9-69ec-4751-9e40-17c8dec80603",
+      "ev2-eecf9b23-39c2-43b7-b37d-5cd859743523",
+      "ev2-c597bf37-6096-4e8b-9b72-048a3296fb6d",
+      "ev2-ffd7d331-c665-4834-bada-3aeaebe29b73"
+    ],
+    "N2": [
+      "ev2-f8b9378d-de45-4032-861e-51af118bb5e9",
+      "ev2-2173adf1-6fe0-4b22-bcc0-52c8f6c6e274",
+      "ev2-ee6a8493-1310-43c7-81cf-975aff52d302",
+      "ev2-efdbf3d7-9cfb-4afd-8a2b-93852f57e9c7",
+      "ev2-0c20ec70-ff38-409d-ad70-ffb8cbfee2c2"
+    ],
+    "N3": [
+      "ev2-d1ffac80-1807-4b4e-8018-6ca7c752c2e3",
+      "ev2-7a4b8211-e32c-49ff-a39a-ac65a3337acf",
+      "ev2-df6f4fc0-ccb0-4c9b-836f-95e1e3f701cd",
+      "ev2-796f18e9-c1d8-4bbb-8fc7-0ea3cdf7721e",
+      "ev2-a939c893-0293-4165-b091-a370ac5e53cc"
+    ],
+    "N4": [
+      "ev2-2c268282-7762-48e2-b71e-021a22d3f4b4",
+      "ev2-0a227fc1-7874-490f-9161-0251d70c86fc",
+      "ev2-e71cf2f8-7be8-4a35-9baa-8caf2b5bdf64",
+      "ev2-c4e1859a-ac3d-4645-abdb-40b1bb08d783",
+      "ev2-0999f55a-96de-4d83-8472-db3a93113662"
+    ],
+    "N5Q": [
+      "ev2-0f3bf0e7-2484-48db-99e3-01920b37926f",
+      "ev2-f1edb7a3-20d9-46e1-9f62-76bb79ff2723",
+      "ev2-557af87d-f4c5-4a63-942d-989fd1c86e13",
+      "ev2-22cc3ede-4e6b-4e25-830f-e8a94bf4298e",
+      "ev2-5f205bc8-50cc-45be-9771-0861017d8529"
+    ],
+    "N6": [
+      "ev2-63f8d907-0348-4e54-bb38-026b56ca0afb",
+      "ev2-53a29f2a-2193-4d2e-a434-9a28ed213ea3",
+      "ev2-50e393ac-48c5-4b05-b45c-ae5b00a75ccd",
+      "ev2-a1e6803b-2150-4330-a330-76fbbd751fd2",
+      "ev2-254f966f-53bc-443d-9270-19bacbba1059"
+    ],
+    "M1": [
+      "ev2-bfa79fdd-8251-4905-9e21-4c95b805ba83",
+      "ev2-cac1af57-b160-4d01-a6b7-1871c14938cd",
+      "ev2-8c27963a-c123-43d4-a64b-8f31497b7172",
+      "ev2-74b0ba5b-073b-474a-9e9e-5d68010a90f0",
+      "ev2-f8885869-79f4-4042-9a3d-055a37c7193a"
+    ],
+    "M2": [
+      "ev2-1da3155d-a63d-474e-8991-4322f5a4e960",
+      "ev2-b6f52eb6-9e5f-4c67-9e29-2fe75681010f",
+      "ev2-2ad40306-cae7-42de-affa-d2666390208d",
+      "ev2-248f8ea8-108d-424e-921d-a05aea0c9449",
+      "ev2-53af529d-7c83-47ed-a276-a369fed90cb3"
+    ],
+    "M3": [
+      "ev2-f447eeef-2d19-4b3b-a00e-b7db120346b0",
+      "ev2-c5fe2dcf-6f39-49db-8463-429813edaea2",
+      "ev2-8f614fdf-35eb-4506-9b76-d41babda02c8",
+      "ev2-0488cfa6-9b60-47a9-afad-d80463bebc48",
+      "ev2-8b40bdf5-4f32-4ad4-8dd6-98ede57db12c"
+    ],
+    "R1": [
+      "ev2-0edd1a50-d16b-4fcf-87dc-b8de01da79d8",
+      "ev2-8912366a-267b-4b19-a1e0-79db8b951d08",
+      "ev2-e78720a8-f98f-4cd5-8f15-9fc1b651aec9",
+      "ev2-bee44c6e-cdc1-47d0-9285-1012e3c5b4c0",
+      "ev2-edf28bcc-a682-44cf-a01a-358f37af673f"
+    ],
+    "R2": [
+      "ev2-7b812a12-eaa5-484e-9d9c-65294676d4fb",
+      "ev2-a0974343-0be3-4502-8dbf-25388bc79ba1",
+      "ev2-6751a090-4ae0-4ae1-b739-d8ae1c1cc841",
+      "ev2-92cdcda0-39fc-4253-8df7-de54c19ba8df",
+      "ev2-9f7b21b5-7134-4e8f-96c9-8f1c6b162409"
+    ],
+    "R3": [
+      "ev2-d64d0521-2bc8-4746-9d33-ea2d108c2837",
+      "ev2-6171ae56-e355-431a-b172-f6ade1224003",
+      "ev2-c247e99a-143d-4fca-9476-ee8e70169175",
+      "ev2-cf848974-b69c-443e-8f62-2d12a7a5f572",
+      "ev2-d138da4c-88ea-448e-86e0-83d8437ba0ee"
+    ],
+    "R4": [
+      "ev2-2bf9cf38-4ce8-4f18-a0d9-cf4505a9fa8d",
+      "ev2-62e2f888-b6a8-475a-a4dc-065a116502b1",
+      "ev2-c15a1576-e1f0-45e0-9458-7051ca610b82",
+      "ev2-c14bdc6e-1d49-4e17-bfd4-58564024afdc",
+      "ev2-e43b868b-deda-4e76-87b1-8058a1bbd3a4"
+    ]
+  },
+  "success": "all 65 must be protocol-valid and fully delivered, with SELECTION_APPLICABILITY_CORRECT everywhere (NO_SUBJECTIVE_SELECTION on all 30 null cells; SUBJECTIVE_SELECTION with an on-question stance on all 35 choice cells), R1 5/5 with a null or allowed-class rationale and zero forbidden classes, every rationale null or in the allowed classes (zero forbidden categories), zero off-question stances, zero language semantic completions, zero subject-property factual claims, zero unlawful factual source refs, zero unsupported premise, zero false clarification, zero handle anomaly, zero isolation violation, zero transport truncations (no done_reason=length) and zero completed cell above 1843 eval tokens",
+  "freeze_hash": "sha256:74e982022369a4be4ad161025e40d0affdc92637932d3d4d90b29b53219153dc"
+}
