@@ -1010,6 +1010,11 @@ export {
   type FactualAssessmentClaimKindV0
 } from "./transitions/conversation/conversation-cognition-proposal.js";
 export {
+  SUBJECTIVE_RATIONALE_AUTHORIZATION_POLICY_VERSION_V0,
+  authorizeSubjectiveRationaleV0,
+  subjectiveFramePresentV0
+} from "./transitions/conversation/subjective-rationale-authorization.js";
+export {
   ConversationCognitionProviderV4,
   ConversationCognitionRejectionErrorV4,
   CONVERSATION_COGNITION_SYSTEM_PROMPT_V4,
@@ -1094,6 +1099,7 @@ export {
   canonicalizeConversationCognitionModelOutputV6,
   deriveConversationCognitionProposalHashV6,
   validateHostBoundConversationCognitionProposalV6,
+  lastRationaleAuthorizationV0,
   buildSourceHandleMapV0,
   resolveHandleArrayV0,
   type SubjectiveSelectionV1,

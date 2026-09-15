@@ -12,6 +12,10 @@ import type { CommunicationDirectiveV0 } from "@characteros-next/behavior";
 import { validateCommunicationDirectiveV0 } from "@characteros-next/behavior";
 import type { CognitiveContextProjectionAnyVersion, CognitionProposalV0 } from "../cognition-action/types.js";
 import { allowedEvidenceSet, validateCognitionProposal } from "../cognition-action/types.js";
+import {
+  authorizeSubjectiveRationaleV0,
+  type SubjectiveRationaleAuthorizationV0
+} from "./subjective-rationale-authorization.js";
 import type { CanonicalRefV0, HashV1 } from "@characteros-next/subject-core";
 import { hashEnvelope, isRecord, validateCanonicalText, validateRefArray, validateRefElement } from "@characteros-next/subject-core";
 
@@ -1094,6 +1098,16 @@ const COGNITION_WIRE_KEYS_V6: readonly string[] = [
 const CLAIM_WIRE_KEYS_V6: readonly string[] = ["kind", "text", "source_handles"];
 const HANDLE_PATTERN_V0 = /^([FC])([1-9][0-9]*)$/;
 
+/**
+ * Diagnostic-only telemetry of the most recent rationale authorization. Never
+ * canonical state, never model-visible, never part of the authoritative hash.
+ */
+let lastRationaleAuthorizationValue: SubjectiveRationaleAuthorizationV0 | null = null;
+
+export function lastRationaleAuthorizationV0(): SubjectiveRationaleAuthorizationV0 | null {
+  return lastRationaleAuthorizationValue;
+}
+
 /** The frozen stance rules, carried over unchanged to the C4.4 carrier. */
 function validateStanceTextV6(
   value: unknown,
@@ -1152,12 +1166,20 @@ export function validateSubjectiveSelectionV1(
     if (!stanceCheck.ok) return { ok: false, detail: stanceCheck.detail };
     const rationaleCheck = validateSubjectiveRationaleV6(value["subjective_rationale"], detail);
     if (!rationaleCheck.ok) return { ok: false, detail: rationaleCheck.detail };
+    // FIELD-LOCAL RATIONALE AUTHORIZATION (policy
+    // subjective-rationale-authorization-policy-v0): a structurally valid but
+    // semantically unlawful rationale is dropped to null in the AUTHORITATIVE
+    // selection; the model's raw text never becomes authoritative, is never hashed,
+    // and is never handed to Language. Every other field keeps its whole-proposal
+    // fail-closed semantics unchanged.
+    const authorization = authorizeSubjectiveRationaleV0(rationaleCheck.rationale);
+    lastRationaleAuthorizationValue = authorization;
     return {
       ok: true,
       selection: Object.freeze({
         kind: SUBJECTIVE_SELECTION_KIND_SELECTED_V1,
         stance: stanceCheck.stance,
-        subjective_rationale: rationaleCheck.rationale
+        subjective_rationale: authorization.authoritative_rationale
       })
     };
   }
