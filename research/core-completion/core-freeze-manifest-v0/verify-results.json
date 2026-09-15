@@ -1,0 +1,108 @@
+{
+  "schema_version": "core-freeze-verification-v0",
+  "model_calls": 0,
+  "checks": [
+    {
+      "id": "live.cognition.v8",
+      "ok": true,
+      "detail": "conversation-cognition-proposal-v8"
+    },
+    {
+      "id": "live.binding.v4",
+      "ok": true,
+      "detail": "cognition-invocation-binding-v4"
+    },
+    {
+      "id": "live.proposal_hash_projection.v8",
+      "ok": true,
+      "detail": "characteros-next/runtime/conversation-cognition-proposal/v8"
+    },
+    {
+      "id": "frozen.acts",
+      "ok": true,
+      "detail": "[\"GREET\",\"ACKNOWLEDGE\",\"GENERATIVE\"]"
+    },
+    {
+      "id": "frozen.derivation_operations",
+      "ok": true,
+      "detail": "[\"INTEGER_ARITHMETIC\",\"STRING_REVERSE\",\"RULE_CLASSIFICATION\"]"
+    },
+    {
+      "id": "history.cognition_validators.v1_v7",
+      "ok": true,
+      "detail": "validateConversationCognitionProposalV1..V7 exported"
+    },
+    {
+      "id": "history.cognition_canonicalizers.v6_v7",
+      "ok": true,
+      "detail": "V6/V7 canonicalizers exported"
+    },
+    {
+      "id": "history.language.any_version_validator",
+      "ok": true,
+      "detail": "any-version language validator/hash exported"
+    },
+    {
+      "id": "live.executor.provider_v8",
+      "ok": true,
+      "detail": "executor wires ProviderV8, never V6"
+    },
+    {
+      "id": "live.executor.no_v7_provider",
+      "ok": true,
+      "detail": "executor never falls back to V7"
+    },
+    {
+      "id": "live.executor.semantic_completeness_failure",
+      "ok": true,
+      "detail": "pre-Language completeness failure is mapped as COGNITION_FAILED"
+    },
+    {
+      "id": "live.provider.response_semantics_rejected",
+      "ok": true,
+      "detail": "typed rejection code for missing/invalid atoms"
+    },
+    {
+      "id": "invariant.zero_atom_fail_closed",
+      "ok": true,
+      "detail": "SEMANTIC_COMPLETENESS_FAILED: response_semantics atom is required"
+    },
+    {
+      "id": "contract.pure_quote_primary_admitted",
+      "ok": true,
+      "detail": "authorized"
+    },
+    {
+      "id": "contract.live_rejects_v7_wire",
+      "ok": true,
+      "detail": "conversation proposal.schema_version: expected conversation-cognition-proposal-v8"
+    },
+    {
+      "id": "contract.host_bound_proposal_hash",
+      "ok": true,
+      "detail": "sha256:3456abeff38033741"
+    },
+    {
+      "id": "contract.v10_plan_routes_atom",
+      "ok": true,
+      "detail": "{\"kind\":\"PRIMARY_FACT\",\"claim_index\":0,\"claim_kind\":\"SOURCE_QUOTE\"}"
+    },
+    {
+      "id": "isolation.request_id_not_model_visible",
+      "ok": true,
+      "detail": "identical model-facing payloads for different request ids"
+    },
+    {
+      "id": "memory.delivery_record_quote_only_verbatim",
+      "ok": true,
+      "detail": "verbatim delivery quote admitted; reinterpretation refused"
+    }
+  ],
+  "failed": 0,
+  "frozen_file_hashes": {
+    "packages/runtime/src/transitions/conversation/factual-claim-authorization.ts": "sha256:521bd4629aa412614cd7aa76d5890c3df65ff4c457dcf92fc8a0a1e6bd696cc1",
+    "packages/runtime/src/transitions/conversation/subjective-rationale-authorization.ts": "sha256:0a0b208df516483bd78d9da49e3b8c7b851ce529bca472e0a6821b7794ad7114",
+    "packages/runtime/src/transitions/cognition-action/factual-memory-evidence.ts": "sha256:ecad69d0eb98ae29a4c41df51db3b2cae4aed56413856ab8c8ba7e01ae2f1df2",
+    "packages/runtime/src/transitions/learning/behavior-outcome-feedback-encoder.ts": "sha256:dfecd8d4a1a35cf334832f533a3336da2cff65b3671c978dc498cbf8ccd4191e"
+  }
+}

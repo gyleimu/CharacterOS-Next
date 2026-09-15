@@ -1,0 +1,84 @@
+{
+  "schema_version": "core-freeze-manifest-v0",
+  "slice": "AFFECT_COGNITION_RESPONSE_SEMANTICS_ATOM_V0",
+  "status": "CORE_FREEZE_READY_WITH_DOCUMENTED_LIMITATIONS",
+  "frozen_head": "fe4467182821799e0c4f57d4e81d27578a147d90",
+  "frozen_head_subject": "fix: require an authoritative response semantics atom",
+  "model_calls": 0,
+  "formal_qualification_rerun": "NOT_RUN_BY_DESIGN",
+  "live_protocols": {
+    "cognition_proposal": "conversation-cognition-proposal-v8",
+    "cognition_invocation_binding": "cognition-invocation-binding-v4",
+    "cognition_proposal_hash_projection": "characteros-next/runtime/conversation-cognition-proposal/v8",
+    "language_realization_input": "language-realization-input-v10",
+    "language_realization_plan": "language-realization-plan-v1",
+    "language_semantic_draft": "language-realization-semantic-draft-v1",
+    "factual_policy": "factual-claim-authorization-policy-v0",
+    "rationale_policy": "subjective-rationale-authorization-policy-v0"
+  },
+  "historical_range": {
+    "cognition_proposals": "v1-v7 readable (validators exported; V6/V7 canonicalizers readable)",
+    "language_inputs": "v1-v9 readable (any-version validator/hash; V9 semantics retained as history)",
+    "historical_fixtures": "untouched"
+  },
+  "closed_registries": {
+    "conversational_acts": ["GREET", "ACKNOWLEDGE", "GENERATIVE"],
+    "derivation_operations": ["INTEGER_ARITHMETIC", "STRING_REVERSE", "RULE_CLASSIFICATION"]
+  },
+  "invariants": {
+    "zero_authority_fail_closed": "REALIZE + zero valid response atoms => SEMANTIC_COMPLETENESS_FAILED: no proposal hash, no Language call, no behavior, no persistence",
+    "invalid_factual_claim_invalidates_proposal": true,
+    "atom_creates_no_authority": true,
+    "host_stamps_conversational_target": true,
+    "request_id_model_invisible": true,
+    "no_live_v6_v7_fallback": true
+  },
+  "affect": {
+    "semantics": "IMPLEMENTED",
+    "causal_status": "UNRESOLVED",
+    "phase_2_qualification": "58/65 strict qualification; formal matrix NOT RUN",
+    "changed_by_this_slice": false
+  },
+  "relationship": {
+    "changed_by_this_slice": false,
+    "status": "NOT_STARTED"
+  },
+  "memory_epistemic_boundary": {
+    "delivered_behavior_recorded_as": "BEHAVIOR_OUTCOME evidence (artifact + payload hash + cognition lineage)",
+    "objective_truth_interpretation_representable": false,
+    "generative_output_becomes_factual_authority": false,
+    "residual_limitation": "delivery-record quoting remains a lawful SOURCE_QUOTE source (frozen pre-slice semantics); reinterpretation of generated wording is refused",
+    "contamination_verdict": "GENERATIVE_OUTPUT_CAN_CONTAMINATE_FACTUAL_MEMORY_NOT_TRIGGERED"
+  },
+  "known_model_limitations": [
+    "M1 source-quote compliance failure",
+    "N6 derivation-compliance failure",
+    "conservative false negative retained: determined-content turns without an authorized claim fail closed"
+  ],
+  "gates": {
+    "governance": "PASS",
+    "typecheck": "PASS",
+    "build": "PASS",
+    "typecheck_auxiliary": "PASS",
+    "lint": "PASS",
+    "test": "PASS (203 files, 2518 passed, 3 pre-existing skipped)",
+    "git_diff_check": "PASS",
+    "manifest_verification": "19/19 checks, 0 model calls"
+  },
+  "reopen_conditions": [
+    "fourth conversational act or fourth derivation operation (requires architecture review)",
+    "general task ontology, natural-language entailment or LLM judge (forbidden without review)",
+    "change to factual/rationale authorization, atom kinds, or the zero-authority invariant",
+    "new persistent canonical state; Affect/Regulation/Belief/Relationship change; current_intent promotion",
+    "delivery-record quoting judged insufficiently bounded",
+    "model or model-digest change (hard MODEL_BASELINE_CHANGED stop; re-qualification required)"
+  ],
+  "evidence": {
+    "core_freeze_manifest": "research/core-completion/core-freeze-manifest-v0/CORE_FREEZE_MANIFEST.md",
+    "verification": "research/core-completion/core-freeze-manifest-v0/verify-results.json",
+    "fixture_migration": "research/core-completion/core-freeze-manifest-v0/fixture-migration.json",
+    "production_tests": "packages/runtime/src/transitions/conversation/response-semantics-atom.test.ts",
+    "integration_proofs": "packages/runtime/src/transitions/cognition-action/canonical-affect-cognition-integration-v0.test.ts",
+    "atomic_test_counts": "203 files / 2518 passed"
+  }
+}
