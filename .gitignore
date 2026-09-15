@@ -15,6 +15,24 @@ cerh/
 # product runtime data (local persistent subject state; never committed)
 product/sandbox/.data/
 
+# voice artifacts: generated audio is NEVER committed (it is a build output of a
+# local model, and reference voices are external assets). The JSON experiment
+# records beside them ARE committed as evidence.
+artifacts/**/*.wav
+artifacts/**/*.pcm
+artifacts/**/*.jsonl
+
+# python bytecode from the local voice runtime (the source is committed, the
+# compiled cache never is)
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+
+# local voice registry: machine-specific reference paths, created on first run.
+# The runtime writes its registry under the external runtime directory.
+tools/voice-runtime/voices/
+
 # local secrets / credentials
 .env
 .env.*

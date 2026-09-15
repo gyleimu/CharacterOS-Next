@@ -1,0 +1,70 @@
+# CharacterOS voice runtime — verified dependency set.
+#
+# Versions below are what was ACTUALLY installed and run on Windows 11 with an
+# RTX 4060 Laptop (8 GB), Python 3.10.21. They are not a guess.
+#
+# This is CosyVoice's own requirements.txt with the Linux-only and
+# training-only entries removed, plus the ASR stack. Install with:
+#
+#   python.exe -m pip install "setuptools==75.8.0" wheel
+#   python.exe -m pip install --no-build-isolation "openai-whisper==20231117"
+#   python.exe -m pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121
+#   python.exe -m pip install funasr sounddevice
+#
+# WHY setuptools IS PINNED FIRST: CosyVoice's import chain needs `pkg_resources`,
+# which setuptools removed in v81. Installing the current setuptools breaks
+# `import cosyvoice` and the openai-whisper wheel build.
+#
+# WHY openai-whisper IS BUILT WITHOUT ISOLATION: pip's isolated build
+# environment pulls the current setuptools, so its setup.py fails on
+# `import pkg_resources`. Building it against the pinned setuptools works.
+#
+# Dropped from CosyVoice's requirements.txt, deliberately:
+#   * `deepspeed`, `tensorrt-*`, `onnxruntime-gpu` — marked Linux-only upstream.
+#   * the `--extra-index-url` lines — passed on the command line instead, so the
+#     Azure index (which returns 401) is not consulted on Windows.
+
+# --- core ---------------------------------------------------------------------
+torch==2.3.1
+torchaudio==2.3.1
+numpy==1.26.4
+
+# --- CosyVoice runtime --------------------------------------------------------
+conformer==0.3.2
+diffusers==0.29.0
+hydra-core==1.3.2
+HyperPyYAML==1.2.3
+inflect==7.3.1
+librosa==0.10.2
+networkx==3.1
+omegaconf==2.3.0
+onnx==1.16.0
+onnxruntime==1.18.0
+openai-whisper==20231117
+protobuf==4.25
+pyarrow==18.1.0
+pyworld==0.3.4
+soundfile==0.12.1
+transformers==4.51.3
+x-transformers==2.11.24
+wetext==0.0.4
+wget==3.2
+gdown==5.1.0
+matplotlib==3.7.5
+lightning==2.2.4
+tensorboard==2.14.0
+modelscope==1.20.0
+
+# --- HTTP service -------------------------------------------------------------
+fastapi==0.115.6
+fastapi-cli==0.0.4
+uvicorn==0.30.0
+pydantic==2.7.0
+grpcio==1.57.0
+grpcio-tools==1.57.0
+rich==13.7.1
+
+# --- speech recognition + audio device ----------------------------------------
+# funasr and sounddevice are installed separately by the command above; their
+# resolved versions at the time of writing were funasr==1.4.15 and
+# sounddevice==0.5.6.
