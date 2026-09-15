@@ -15,6 +15,7 @@ const workspacePackages = [
   "@characteros-next/relationship",
   "@characteros-next/long-term-state-domain",
   "@characteros-next/behavior",
+  "@characteros-next/voice",
   "@characteros-next/sandbox",
   "@characteros-next/product-web"
 ];
@@ -48,7 +49,7 @@ const publicEntryOnly = [
   },
   {
     regex:
-      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|memory-influence|influence-evidence|appraisal|affect|regulation|runtime|belief|personality|relationship|long-term-state-domain|behavior)|product/sandbox)(?:/|$)",
+      "^(?:\\.\\./)+(?:(?:packages/)?(?:subject-core|memory|memory-influence|influence-evidence|appraisal|affect|regulation|runtime|belief|personality|relationship|long-term-state-domain|behavior|voice)|product/sandbox)(?:/|$)",
     message: "Cross-package relative imports are forbidden; use a public package root."
   }
 ];
@@ -175,6 +176,17 @@ export default tseslint.config(
     "packages/behavior/src/**/*.ts",
     ["@characteros-next/behavior", "@characteros-next/subject-core"],
     "behavior may consume only subject-core public contracts for pure language-behavior identity/validation rules."
+  ),
+  // CHARACTEROS_VOICE_CONTRACTS_V0 — voice is a presentation/interaction
+  // channel, so the arrow points product → voice and never voice → core. The
+  // package deliberately imports NO CharacterOS domain package: the subject is
+  // reached only through the narrow VoiceSubjectPortV0 port that the product
+  // shell implements, which is what keeps speech from ever becoming an
+  // authority over canonical state.
+  packageBoundaryConfig(
+    "packages/voice/src/**/*.ts",
+    ["@characteros-next/voice", "node:crypto"],
+    "voice is a standalone presentation channel; it may use node built-ins and must not import a CharacterOS domain package."
   ),
   packageBoundaryConfig(
     "packages/long-term-state-domain/src/**/*.ts",

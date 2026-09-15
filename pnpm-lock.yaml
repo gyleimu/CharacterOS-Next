@@ -128,6 +128,8 @@ importers:
 
   packages/subject-core: {}
 
+  packages/voice: {}
+
   product/sandbox:
     dependencies:
       '@characteros-next/personality':

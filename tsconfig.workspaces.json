@@ -20,6 +20,7 @@
       "@characteros-next/relationship": ["packages/relationship/src/index.ts"],
       "@characteros-next/runtime": ["packages/runtime/src/index.ts"],
       "@characteros-next/subject-core": ["packages/subject-core/src/index.ts"],
+      "@characteros-next/voice": ["packages/voice/src/index.ts"],
       "@characteros-next/sandbox": ["product/sandbox/src/index.ts"]
     }
   },
