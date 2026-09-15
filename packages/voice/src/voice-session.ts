@@ -29,7 +29,6 @@ import {
   VoiceFailureV0,
   type SpeechExpressionInputsV0,
   type SpeechExpressionV0,
-  type SpeechInputV0,
   type SpeechOutputRequestV0
 } from "./contracts.js";
 import {
