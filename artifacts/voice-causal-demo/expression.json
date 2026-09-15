@@ -1,0 +1,409 @@
+{
+  "schema_version": "voice-causal-demo-v0",
+  "sentence": "我没事。",
+  "voice_id": "characteros-default",
+  "runs_per_fixture": 5,
+  "runtime": {
+    "base_url": "http://127.0.0.1:8181",
+    "health": {
+      "status": "ok",
+      "state": "READY",
+      "device": "cuda:0",
+      "asr_device": "cpu",
+      "fp16": true,
+      "uptime_ms": 220621.8,
+      "asr": {
+        "loaded": true,
+        "model_id": "iic/SenseVoiceSmall",
+        "device": "cpu",
+        "load_ms": 28716.5,
+        "error": null
+      },
+      "tts": {
+        "loaded": true,
+        "model_id": "FunAudioLLM/Fun-CosyVoice3-0.5B-2512",
+        "device": "cuda:0",
+        "load_ms": 28026.6,
+        "error": null
+      },
+      "vram": {
+        "total_mb": 8187.5,
+        "used_mb": 4643.5,
+        "allocated_mb": 3329.1,
+        "peak_allocated_mb": 4967.4
+      }
+    }
+  },
+  "regulation_held_at_genesis": {
+    "energy": 1,
+    "stress": 0,
+    "arousal": 0.5,
+    "fatigue": 0
+  },
+  "note": "Regulation is held at the subject's real genesis values so the only varying input is canonical affect. No variant selects an emotion word: the delivery directive is built from continuous tempo/loudness parameters. Neural TTS is not deterministic, so each fixture is repeated and every cross-fixture claim is checked against the within-fixture spread.",
+  "distinct_expressions": 4,
+  "fixtures": [
+    {
+      "fixture": "A",
+      "label": "low valence, low activation",
+      "state": {
+        "valence": -0.6,
+        "activation": 0.1,
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0,
+        "familiarity": null
+      },
+      "expression": {
+        "schema_version": "speech-expression-v0",
+        "valence": -0.6,
+        "activation": 0.1,
+        "intensity": 0.47,
+        "warmth": 0.42,
+        "certainty": 0.495,
+        "hesitation": 0.065,
+        "speaking_rate": -0.34,
+        "volume": -0.418,
+        "pause_bias": 0.255,
+        "expressiveness": 0.359,
+        "assertiveness": 0.335,
+        "provenance": {
+          "projection_id": "characteros-next/voice/speech-expression/v0",
+          "config_id": "characteros-next/voice/speech-expression-config/default-v0",
+          "state_revision": null,
+          "inputs": {
+            "valence": -0.6,
+            "activation": 0.1,
+            "energy": 1,
+            "stress": 0,
+            "arousal": 0.5,
+            "fatigue": 0,
+            "familiarity": 0.5
+          }
+        }
+      },
+      "expression_fingerprint": "-0.6|0.1|0.47|0.42|0.495|0.065|-0.34|-0.418|0.255|0.359|0.335",
+      "instruct": "You are a helpful assistant. 请用尽可能慢地语速说一句话。Please say a sentence in a very soft voice.<|endofprompt|>",
+      "runs": [
+        {
+          "audio_ms": 2640,
+          "rms": 0.040465,
+          "peak": 0.297498
+        },
+        {
+          "audio_ms": 1280,
+          "rms": 0.056245,
+          "peak": 0.399944
+        },
+        {
+          "audio_ms": 1680,
+          "rms": 0.082271,
+          "peak": 0.508071
+        },
+        {
+          "audio_ms": 1680,
+          "rms": 0.036031,
+          "peak": 0.291687
+        },
+        {
+          "audio_ms": 1160,
+          "rms": 0.063185,
+          "peak": 0.369019
+        }
+      ],
+      "median": {
+        "audio_ms": 1680,
+        "rms": 0.056245,
+        "peak": 0.369019
+      },
+      "spread": {
+        "audio_ms": 1480,
+        "rms": 0.04624
+      }
+    },
+    {
+      "fixture": "B",
+      "label": "low valence, high activation",
+      "state": {
+        "valence": -0.6,
+        "activation": 0.9,
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0,
+        "familiarity": null
+      },
+      "expression": {
+        "schema_version": "speech-expression-v0",
+        "valence": -0.6,
+        "activation": 0.9,
+        "intensity": 1,
+        "warmth": 0.42,
+        "certainty": 0.615,
+        "hesitation": 0,
+        "speaking_rate": 0.54,
+        "volume": 0.7,
+        "pause_bias": 0,
+        "expressiveness": 0.97,
+        "assertiveness": 0.615,
+        "provenance": {
+          "projection_id": "characteros-next/voice/speech-expression/v0",
+          "config_id": "characteros-next/voice/speech-expression-config/default-v0",
+          "state_revision": null,
+          "inputs": {
+            "valence": -0.6,
+            "activation": 0.9,
+            "energy": 1,
+            "stress": 0,
+            "arousal": 0.5,
+            "fatigue": 0,
+            "familiarity": 0.5
+          }
+        }
+      },
+      "expression_fingerprint": "-0.6|0.9|1|0.42|0.615|0|0.54|0.7|0|0.97|0.615",
+      "instruct": "You are a helpful assistant. 请用尽可能快地语速说一句话。Please say a sentence as loudly as possible.<|endofprompt|>",
+      "runs": [
+        {
+          "audio_ms": 680,
+          "rms": 0.04854,
+          "peak": 0.292496
+        },
+        {
+          "audio_ms": 680,
+          "rms": 0.055537,
+          "peak": 0.460814
+        },
+        {
+          "audio_ms": 560,
+          "rms": 0.08225,
+          "peak": 0.452306
+        },
+        {
+          "audio_ms": 800,
+          "rms": 0.061664,
+          "peak": 0.471545
+        },
+        {
+          "audio_ms": 720,
+          "rms": 0.053669,
+          "peak": 0.399169
+        }
+      ],
+      "median": {
+        "audio_ms": 680,
+        "rms": 0.055537,
+        "peak": 0.452306
+      },
+      "spread": {
+        "audio_ms": 240,
+        "rms": 0.03371
+      }
+    },
+    {
+      "fixture": "C",
+      "label": "high valence, low activation",
+      "state": {
+        "valence": 0.6,
+        "activation": 0.1,
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0,
+        "familiarity": null
+      },
+      "expression": {
+        "schema_version": "speech-expression-v0",
+        "valence": 0.6,
+        "activation": 0.1,
+        "intensity": 0.47,
+        "warmth": 0.78,
+        "certainty": 0.735,
+        "hesitation": 0.065,
+        "speaking_rate": -0.34,
+        "volume": -0.418,
+        "pause_bias": 0.255,
+        "expressiveness": 0.359,
+        "assertiveness": 0.335,
+        "provenance": {
+          "projection_id": "characteros-next/voice/speech-expression/v0",
+          "config_id": "characteros-next/voice/speech-expression-config/default-v0",
+          "state_revision": null,
+          "inputs": {
+            "valence": 0.6,
+            "activation": 0.1,
+            "energy": 1,
+            "stress": 0,
+            "arousal": 0.5,
+            "fatigue": 0,
+            "familiarity": 0.5
+          }
+        }
+      },
+      "expression_fingerprint": "0.6|0.1|0.47|0.78|0.735|0.065|-0.34|-0.418|0.255|0.359|0.335",
+      "instruct": "You are a helpful assistant. 请用尽可能慢地语速说一句话。Please say a sentence in a very soft voice.<|endofprompt|>",
+      "runs": [
+        {
+          "audio_ms": 3200,
+          "rms": 0.061558,
+          "peak": 0.650014
+        },
+        {
+          "audio_ms": 3160,
+          "rms": 0.023132,
+          "peak": 0.224984
+        },
+        {
+          "audio_ms": 3200,
+          "rms": 0.066262,
+          "peak": 0.55934
+        },
+        {
+          "audio_ms": 3200,
+          "rms": 0.035105,
+          "peak": 0.338123
+        },
+        {
+          "audio_ms": 3200,
+          "rms": 0.072801,
+          "peak": 0.808978
+        }
+      ],
+      "median": {
+        "audio_ms": 3200,
+        "rms": 0.061558,
+        "peak": 0.55934
+      },
+      "spread": {
+        "audio_ms": 40,
+        "rms": 0.049669
+      }
+    },
+    {
+      "fixture": "D",
+      "label": "high valence, high activation",
+      "state": {
+        "valence": 0.6,
+        "activation": 0.9,
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0,
+        "familiarity": null
+      },
+      "expression": {
+        "schema_version": "speech-expression-v0",
+        "valence": 0.6,
+        "activation": 0.9,
+        "intensity": 1,
+        "warmth": 0.78,
+        "certainty": 0.855,
+        "hesitation": 0,
+        "speaking_rate": 0.54,
+        "volume": 0.7,
+        "pause_bias": 0,
+        "expressiveness": 0.97,
+        "assertiveness": 0.615,
+        "provenance": {
+          "projection_id": "characteros-next/voice/speech-expression/v0",
+          "config_id": "characteros-next/voice/speech-expression-config/default-v0",
+          "state_revision": null,
+          "inputs": {
+            "valence": 0.6,
+            "activation": 0.9,
+            "energy": 1,
+            "stress": 0,
+            "arousal": 0.5,
+            "fatigue": 0,
+            "familiarity": 0.5
+          }
+        }
+      },
+      "expression_fingerprint": "0.6|0.9|1|0.78|0.855|0|0.54|0.7|0|0.97|0.615",
+      "instruct": "You are a helpful assistant. 请用尽可能快地语速说一句话。Please say a sentence as loudly as possible.<|endofprompt|>",
+      "runs": [
+        {
+          "audio_ms": 680,
+          "rms": 0.061113,
+          "peak": 0.408319
+        },
+        {
+          "audio_ms": 840,
+          "rms": 0.064349,
+          "peak": 0.420755
+        },
+        {
+          "audio_ms": 680,
+          "rms": 0.067272,
+          "peak": 0.498308
+        },
+        {
+          "audio_ms": 640,
+          "rms": 0.052265,
+          "peak": 0.365422
+        },
+        {
+          "audio_ms": 840,
+          "rms": 0.05677,
+          "peak": 0.34293
+        }
+      ],
+      "median": {
+        "audio_ms": 680,
+        "rms": 0.061113,
+        "peak": 0.408319
+      },
+      "spread": {
+        "audio_ms": 200,
+        "rms": 0.015007
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "pair": "A→B",
+      "note": "same valence, activation up",
+      "identical_instruct": false,
+      "delta_audio_ms": -1000,
+      "delta_rms": -0.000708,
+      "noise_floor_audio_ms": 1480,
+      "noise_floor_rms": 0.04624,
+      "distinguished": false,
+      "detail": "audio difference does NOT clear the within-fixture spread (neural TTS run-to-run variation)"
+    },
+    {
+      "pair": "C→D",
+      "note": "same valence, activation up",
+      "identical_instruct": false,
+      "delta_audio_ms": -2520,
+      "delta_rms": -0.000445,
+      "noise_floor_audio_ms": 200,
+      "noise_floor_rms": 0.049669,
+      "distinguished": true,
+      "detail": "audio differs beyond the within-fixture spread"
+    },
+    {
+      "pair": "A→C",
+      "note": "same activation, valence up",
+      "identical_instruct": true,
+      "delta_audio_ms": 1520,
+      "delta_rms": 0.005313,
+      "noise_floor_audio_ms": 1480,
+      "noise_floor_rms": 0.049669,
+      "distinguished": true,
+      "detail": "audio differs beyond the within-fixture spread"
+    },
+    {
+      "pair": "B→D",
+      "note": "same activation, valence up",
+      "identical_instruct": true,
+      "delta_audio_ms": 0,
+      "delta_rms": 0.005576,
+      "noise_floor_audio_ms": 240,
+      "noise_floor_rms": 0.03371,
+      "distinguished": false,
+      "detail": "audio difference does NOT clear the within-fixture spread (neural TTS run-to-run variation)"
+    }
+  ]
+}
