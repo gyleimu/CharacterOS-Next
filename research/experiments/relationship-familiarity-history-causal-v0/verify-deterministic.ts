@@ -250,7 +250,7 @@ export async function runDeterministicPhase(): Promise<{
   }
 
   const promptDiffs: { left: string; right: string; differing_lines: readonly string[] }[] = [];
-  
+
   for (const [left, right] of [
     ["A_LOW", "B_HIGH"],
     ["A_LOW", "C_MEDIATOR_ABLATED"],

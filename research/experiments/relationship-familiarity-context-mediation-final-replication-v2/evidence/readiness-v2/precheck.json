@@ -1,0 +1,242 @@
+{
+  "schema_version": "familiarity-final-replication-precheck-v2",
+  "experiment_id": "RELATIONSHIP_FAMILIARITY_CONTEXT_MEDIATION_FINAL_REPLICATION_V2",
+  "real_model_calls": 0,
+  "subject": "subject-familiarity-final-replication",
+  "counterpart": "entity:alice",
+  "task_context_ref": "episode:alice-03",
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "b_retrieval_selected_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ],
+  "d_working_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ],
+  "cells": [
+    {
+      "condition": "A_LOW_NO_CONTEXT",
+      "history_label": "A_LOW_NO_CONTEXT",
+      "familiarity_value": 0.03125,
+      "governed_authority_records": 1,
+      "credits_expected": 1,
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "corpus_digest": "sha256:a56adc8487d4785aa436f7e1f2977dd936f6a65477f8dabfa051103c72a1cd63",
+      "working_refs": [
+        "episode:generic-01"
+      ],
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+      "retrieval_queries": 0,
+      "factual_source_refs": [
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart_source_refs": [],
+      "source_records": [
+        "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+      ],
+      "generated_nothing": true,
+      "bundles_json_length": 24077
+    },
+    {
+      "condition": "B_HIGH_CONTEXT",
+      "history_label": "B_HIGH_CONTEXT",
+      "familiarity_value": 0.125,
+      "governed_authority_records": 4,
+      "credits_expected": 4,
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "corpus_digest": "sha256:a56adc8487d4785aa436f7e1f2977dd936f6a65477f8dabfa051103c72a1cd63",
+      "working_refs": [
+        "episode:generic-01"
+      ],
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=4/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+      "retrieval_queries": 1,
+      "factual_source_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart_source_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "source_records": [
+        "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+        "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+        "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+        "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+        "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+      ],
+      "generated_nothing": true,
+      "bundles_json_length": 85651
+    },
+    {
+      "condition": "C_HIGH_CONTEXT_ABLATED",
+      "history_label": "B_HIGH_CONTEXT",
+      "familiarity_value": 0.125,
+      "governed_authority_records": 4,
+      "credits_expected": 4,
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "corpus_digest": "sha256:a56adc8487d4785aa436f7e1f2977dd936f6a65477f8dabfa051103c72a1cd63",
+      "working_refs": [
+        "episode:generic-01"
+      ],
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=4/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+      "retrieval_queries": 1,
+      "factual_source_refs": [
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart_source_refs": [],
+      "source_records": [
+        "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+      ],
+      "generated_nothing": true,
+      "bundles_json_length": 85651
+    },
+    {
+      "condition": "D_LOW_CONTEXT_EQUALIZED",
+      "history_label": "D_LOW_CONTEXT_EQUALIZED",
+      "familiarity_value": 0.03125,
+      "governed_authority_records": 1,
+      "credits_expected": 1,
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "corpus_digest": "sha256:a56adc8487d4785aa436f7e1f2977dd936f6a65477f8dabfa051103c72a1cd63",
+      "working_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-01"
+      ],
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+      "retrieval_queries": 0,
+      "factual_source_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart_source_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "source_records": [
+        "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+        "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+        "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+        "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+        "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+      ],
+      "generated_nothing": true,
+      "bundles_json_length": 24306
+    }
+  ],
+  "checks": {
+    "a_familiarity_lt_b": true,
+    "b_familiarity_eq_c": true,
+    "a_familiarity_eq_d": true,
+    "a_counterpart_context_count_zero": true,
+    "c_counterpart_context_count_zero": true,
+    "b_counterpart_context_set_eq_d": true,
+    "b_source_ids_eq_d": true,
+    "b_source_ordering_eq_d": true,
+    "b_source_text_eq_d": true,
+    "b_source_count_gt_zero": true,
+    "task_context_exposed_in_b": true,
+    "task_context_exposed_in_d": true,
+    "all_seed_gates_clean": true,
+    "familiarity_from_real_governed_history": true,
+    "corpus_identical": true,
+    "b_history_eq_c_history": true,
+    "b_history_ne_d_history": true,
+    "restored_familiarity_exact": true,
+    "manipulation_shape_ok": true,
+    "no_generation_in_probe": true
+  },
+  "checks_all_pass": true,
+  "failures": [],
+  "source_equality": {
+    "b_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "d_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "b_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ],
+    "d_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ]
+  },
+  "detail": "deterministic precheck complete: all 20 protocol §4 conditions hold; B and D expose IDENTICAL model-facing sources (same ids, order, text, count)"
+}

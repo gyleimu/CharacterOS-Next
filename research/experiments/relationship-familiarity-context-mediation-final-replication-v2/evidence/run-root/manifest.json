@@ -1,0 +1,231 @@
+{
+  "schema_version": "familiarity-final-replication-manifest-v2",
+  "experiment_id": "RELATIONSHIP_FAMILIARITY_CONTEXT_MEDIATION_FINAL_REPLICATION_V2",
+  "hypotheses": {
+    "H1": "higher lawful familiarity activates counterpart-specific retrieval",
+    "H2": "that retrieval changes model-facing context availability",
+    "H3": "context availability changes structured cognition / behavior",
+    "H4": "when context availability is equalized, high vs low familiarity produces no meaningful independent behavioral difference",
+    "H5": "familiarity does not imply trust/liking/safety/intimacy/dependence/affinity/willingness to take risk"
+  },
+  "subject": "subject-familiarity-final-replication",
+  "counterpart": "entity:alice",
+  "task_context_ref": "episode:alice-03",
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "cells": [
+    "A_LOW_NO_CONTEXT",
+    "B_HIGH_CONTEXT",
+    "C_HIGH_CONTEXT_ABLATED",
+    "D_LOW_CONTEXT_EQUALIZED"
+  ],
+  "history_labels": {
+    "A_LOW_NO_CONTEXT": "A_LOW_NO_CONTEXT",
+    "B_HIGH_CONTEXT": "B_HIGH_CONTEXT",
+    "C_HIGH_CONTEXT_ABLATED": "B_HIGH_CONTEXT",
+    "D_LOW_CONTEXT_EQUALIZED": "D_LOW_CONTEXT_EQUALIZED"
+  },
+  "scenarios": [
+    {
+      "id": "S1",
+      "utterance": "alice says: \"Please file the rollback checklist.\"",
+      "primary": true
+    }
+  ],
+  "replicates": 10,
+  "gates": {
+    "host_valid_rate_min": 0.95,
+    "paired_directional_min": 6,
+    "same_corpus_required": true,
+    "seed_contamination_required": true,
+    "semantic_non_conflation_required": true,
+    "forbidden_behavior_vocabulary": [
+      "i trust",
+      "trust you",
+      "trust me",
+      "i like you",
+      "i love",
+      "affection",
+      "intimacy",
+      "we are friends",
+      "bonded",
+      "safe with you",
+      "depend on you",
+      "rely on you",
+      "loyal",
+      "friendship",
+      "closer to you"
+    ],
+    "statistical_significance_claim": false
+  },
+  "frozen_outcomes": [
+    "host_valid",
+    "schema_valid",
+    "factual_authority_pass",
+    "counterpart_context_cited",
+    "correct_counterpart_context_cited",
+    "generic_only",
+    "clarification_requested",
+    "unsupported_context_claim",
+    "assumes_shared_context",
+    "continuation_success",
+    "forbidden_relationship_inference"
+  ],
+  "call_budget": {
+    "readiness": 0,
+    "per_scene_cognition": 1,
+    "per_scene_language_max": 1,
+    "max_total": 82,
+    "retries": 0
+  },
+  "pilot_call_budget": {
+    "readiness": 0,
+    "max_total": 50
+  },
+  "replication_call_budget": {
+    "readiness": 0,
+    "max_total": 82
+  },
+  "scheduled_scenes": 40,
+  "scheduled_calls_maximum": 80,
+  "seed_contamination_gate": {
+    "required_fields": [
+      "seed_contains_governed_relationship_state",
+      "seeded_bundles_with_writer_authority",
+      "unreadable_seed_shapes"
+    ],
+    "required_values": {
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0
+    },
+    "per_cell": {
+      "A_LOW_NO_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "B_HIGH_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "C_HIGH_CONTEXT_ABLATED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "D_LOW_CONTEXT_EQUALIZED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      }
+    },
+    "all_clean": true
+  },
+  "familiarity_values": {
+    "A_LOW_NO_CONTEXT": 0.03125,
+    "B_HIGH_CONTEXT": 0.125,
+    "C_HIGH_CONTEXT_ABLATED": 0.125,
+    "D_LOW_CONTEXT_EQUALIZED": 0.03125
+  },
+  "governed_authority_records": {
+    "A_LOW_NO_CONTEXT": 1,
+    "B_HIGH_CONTEXT": 4,
+    "C_HIGH_CONTEXT_ABLATED": 4,
+    "D_LOW_CONTEXT_EQUALIZED": 1
+  },
+  "corpus_digest": "sha256:a56adc8487d4785aa436f7e1f2977dd936f6a65477f8dabfa051103c72a1cd63",
+  "corpus_identical": true,
+  "source_equality_b_vs_d": {
+    "b_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "d_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "b_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ],
+    "d_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ]
+  },
+  "b_retrieval_selected_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ],
+  "d_working_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ],
+  "precheck_checks": {
+    "a_familiarity_lt_b": true,
+    "b_familiarity_eq_c": true,
+    "a_familiarity_eq_d": true,
+    "a_counterpart_context_count_zero": true,
+    "c_counterpart_context_count_zero": true,
+    "b_counterpart_context_set_eq_d": true,
+    "b_source_ids_eq_d": true,
+    "b_source_ordering_eq_d": true,
+    "b_source_text_eq_d": true,
+    "b_source_count_gt_zero": true,
+    "task_context_exposed_in_b": true,
+    "task_context_exposed_in_d": true,
+    "all_seed_gates_clean": true,
+    "familiarity_from_real_governed_history": true,
+    "corpus_identical": true,
+    "b_history_eq_c_history": true,
+    "b_history_ne_d_history": true,
+    "restored_familiarity_exact": true,
+    "manipulation_shape_ok": true,
+    "no_generation_in_probe": true
+  },
+  "precheck_all_pass": true,
+  "precheck_failures": [],
+  "provider": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "digest_matches": true,
+    "server_version": "0.34.0",
+    "error": null
+  },
+  "model_run_authorized": true
+}

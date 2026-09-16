@@ -1,0 +1,7 @@
+{
+  "reachable": true,
+  "model": "qwen3.5:9b",
+  "digest_matches": true,
+  "server_version": "0.34.0",
+  "error": null
+}
