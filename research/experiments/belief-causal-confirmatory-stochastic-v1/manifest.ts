@@ -31,6 +31,7 @@ import {
   modelConfigManifest,
   trialSchedule
 } from "./contract.ts";
+import { CALIBRATION_LAW } from "./calibration-law.ts";
 import { hashJson } from "./histories.ts";
 import { auditScanSurface } from "./scan-surface.ts";
 import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
@@ -43,7 +44,12 @@ export const PREREG_CODE_PATHS: readonly string[] = Object.freeze([
   "research/experiments/belief-causal-confirmatory-stochastic-v1/scan-surface.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/verdict.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/manifest.ts",
-  "research/experiments/belief-causal-confirmatory-stochastic-v1/cli.ts"
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/cli.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-request.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-law.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-transport.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-runner.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-evidence.ts"
 ]);
 
 function readJson(path: string): Record<string, unknown> {
@@ -55,6 +61,15 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
   const high = readJson(join(evidenceRoot, "history-high.json"));
   const scan = auditScanSurface(hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA));
   const schedule = { primary: trialSchedule("PRIMARY"), replication: trialSchedule("REPLICATION") };
+  const calibrationRequest = readJson(join(evidenceRoot, "calibration-request.json")) as {
+    readonly hashes: {
+      readonly system_hash: string;
+      readonly user_hash: string;
+      readonly schema_hash: string;
+      readonly model_config_hash: string;
+      readonly model_facing_request_hash: string;
+    };
+  };
   return {
     protocol_id: FROZEN_PROTOCOL_ID,
     experiment_id: EXPERIMENT_ID,
@@ -89,6 +104,14 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
     }),
     model_config_hash: hashJson(modelConfigManifest()),
     calibration_input_hash: hashJson(CALIBRATION_INPUT),
+    calibration_law_hash: hashJson(CALIBRATION_LAW),
+    calibration_request: {
+      system_hash: calibrationRequest.hashes.system_hash,
+      user_hash: calibrationRequest.hashes.user_hash,
+      schema_hash: calibrationRequest.hashes.schema_hash,
+      model_config_hash: calibrationRequest.hashes.model_config_hash,
+      model_facing_request_hash: calibrationRequest.hashes.model_facing_request_hash
+    },
     trial_schedule_hash: hashJson(schedule),
     sample_size: SAMPLE_SIZE,
     cell_definition: CELL_DEFINITION

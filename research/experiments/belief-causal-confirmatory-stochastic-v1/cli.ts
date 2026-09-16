@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports -- Research harness: imports frozen built production roots by relative dist path. */
 /**
  * BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — offline CLI.
  *
@@ -15,6 +16,11 @@ import { fileURLToPath } from "node:url";
 
 import { runPrecheck } from "./precheck.ts";
 import { buildPreregManifest, verifyPreregManifest } from "./manifest.ts";
+import { buildCalibrationRequest } from "./calibration-request.ts";
+import { CALIBRATION_LAW } from "./calibration-law.ts";
+import { modelConfigManifest } from "./contract.ts";
+import { hashJson } from "./histories.ts";
+import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const evidenceRoot = join(here, "evidence");
@@ -26,6 +32,33 @@ async function main(): Promise<void> {
     const result = await runPrecheck(evidenceRoot, repoRoot);
     process.stderr.write(`precheck ok=${String(result.ok)} failed=${JSON.stringify(result.failed)}\n`);
     if (!result.ok) process.exitCode = 1;
+    return;
+  }
+  if (command === "request") {
+    // Builds the ACTUAL model-facing calibration request offline (0 model calls)
+    // and freezes it as evidence for the manifest design binding.
+    const request = await buildCalibrationRequest({
+      schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
+      modelConfigHash: hashJson(modelConfigManifest())
+    });
+    mkdirSync(evidenceRoot, { recursive: true });
+    const bodyBytes = Buffer.byteLength(JSON.stringify(request.body), "utf8");
+    writeFileSync(
+      join(evidenceRoot, "calibration-request.json"),
+      `${JSON.stringify(
+        {
+          ...request,
+          calibration_law: CALIBRATION_LAW,
+          body_bytes: bodyBytes,
+          model_calls: 0
+        },
+        null,
+        2
+      )}
+`
+    );
+    process.stderr.write(`calibration request frozen: ${request.hashes.model_facing_request_hash} (${bodyBytes} bytes)
+`);
     return;
   }
   if (command === "manifest") {

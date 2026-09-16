@@ -1,16 +1,23 @@
 /* eslint-disable no-restricted-imports -- Research harness: imports frozen built production roots by relative dist path. */
 /**
- * BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — deterministic precheck (P1–P23).
+ * BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — deterministic precheck (P1–P24).
  *
  * ZERO model calls. Everything here is offline and reproducible: the two real
  * histories, authoritative restore, the four-cell model-facing request rendering,
- * the exact scan surface, the branch-isolation audit, the V0 firewall and the
- * missing-blob verifier regression. A single failing precheck means the
- * preregistration is NOT ready.
+ * the exact scan surface, the branch-isolation audit, the V0 firewall, the
+ * missing-blob verifier regression and the calibration-path audits. A single
+ * failing precheck means the preregistration is NOT ready.
+ *
+ * §39 remediation: the UNSCANNED check is a REAL set difference between an
+ * independent schema enumeration and the declared surface, P17 is a measured
+ * caller-graph + immutability audit, and P22 scans this experiment's own sources
+ * for V0-artifact reads. The pure audit helpers are exported so negative-control
+ * tests can prove each check can FAIL.
  */
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import type { SubjectStateV4 } from "../../../packages/subject-core/dist/index.js";
 import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
@@ -66,6 +73,40 @@ export interface PrecheckResult {
   readonly checks: Readonly<Record<string, { readonly passed: boolean; readonly detail: unknown }>>;
 }
 
+/* -------------------------------------------------------------------------- */
+/* helpers                                                                    */
+/* -------------------------------------------------------------------------- */
+
+function experimentDirForAudit(): string {
+  return fileURLToPath(new URL(".", import.meta.url));
+}
+
+/** Comments are irrelevant to a dependency audit; only code counts. */
+function stripCommentsForAudit(source: string): string {
+  const slash = 47;
+  const star = 42;
+  const lineFeed = 10;
+  let out = "";
+  let index = 0;
+  while (index < source.length) {
+    const code = source.charCodeAt(index);
+    if (code === slash && source.charCodeAt(index + 1) === star) {
+      index += 2;
+      while (index < source.length && !(source.charCodeAt(index) === star && source.charCodeAt(index + 1) === slash)) index += 1;
+      index += 2;
+      out += " ";
+      continue;
+    }
+    if (code === slash && source.charCodeAt(index + 1) === slash) {
+      while (index < source.length && source.charCodeAt(index) !== lineFeed) index += 1;
+      continue;
+    }
+    out += source[index];
+    index += 1;
+  }
+  return out;
+}
+
 function writeJson(path: string, value: unknown): void {
   mkdirSync(join(path, ".."), { recursive: true });
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
@@ -116,6 +157,86 @@ function normalizeNonBelief(user: string): string {
   const withoutBelief = start >= 0 && end > start ? `${user.slice(0, start)}${user.slice(end)}` : user;
   return withoutBelief.replace(new RegExp("\\[projection_hash\\] \\S+"), "[projection_hash] <normalized>");
 }
+
+/* -------------------------------------------------------------------------- */
+/* PURE audit helpers (exported for negative-control tests)                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * P17 audit: the model-facing intervention and render bodies must contain no
+ * writer/commit token, the calibration path must not reach a writer call site,
+ * and the durable belief items must be byte-identical before and after the
+ * research-side views.
+ */
+export function auditInterventionWriterFree(input: {
+  readonly interventionBody: string;
+  readonly renderBody: string;
+  readonly writerCallSiteFiles: readonly string[];
+  readonly durableBefore: { readonly low: string; readonly high: string };
+  readonly durableAfter: { readonly low: string; readonly high: string };
+}): { readonly passed: boolean; readonly violations: readonly string[] } {
+  const writerTokens = ["commitReserved", "reserveAndRoute", "terminalizeReservedNoOp", "writeBelief"];
+  const violations = writerTokens.filter(
+    (token) => input.interventionBody.includes(token) || input.renderBody.includes(token)
+  );
+  const calibrationTouchesWriter =
+    input.writerCallSiteFiles.includes("calibration-runner.ts") ||
+    input.writerCallSiteFiles.includes("calibration-request.ts");
+  const durableStable =
+    input.durableBefore.low === input.durableAfter.low && input.durableBefore.high === input.durableAfter.high;
+  return {
+    passed:
+      violations.length === 0 &&
+      input.interventionBody.length > 0 &&
+      input.renderBody.length > 0 &&
+      !calibrationTouchesWriter &&
+      durableStable,
+    violations
+  };
+}
+
+/**
+ * P22 audit: a V0 outcome artifact may appear ONLY as a declared firewall entry
+ * in contract.ts; any read or import of one fails.
+ */
+export function auditV0DependencyFree(input: {
+  readonly files: readonly { readonly file: string; readonly code: string }[];
+  readonly declaredFirewallPaths: readonly string[];
+}): {
+  readonly passed: boolean;
+  readonly readOrImportViolations: readonly { readonly file: string; readonly fragment: string }[];
+} {
+  const fragments = ["belief-causal-validation-v0/evidence", "V0_PRIMARY", "V0_REPLICATION"];
+  const readOrImportViolations: { file: string; fragment: string }[] = [];
+  let calibrationScanned = false;
+  for (const entry of input.files) {
+    if (entry.file === "calibration-runner.ts") calibrationScanned = true;
+    for (const fragment of fragments) {
+      let from = 0;
+      for (;;) {
+        const at = entry.code.indexOf(fragment, from);
+        if (at < 0) break;
+        from = at + fragment.length;
+        const lineStart = entry.code.lastIndexOf("\n", at) + 1;
+        const lineEnd = entry.code.indexOf("\n", at);
+        const line = entry.code.slice(lineStart, lineEnd < 0 ? entry.code.length : lineEnd);
+        const isRead =
+          line.includes("readFileSync") || line.includes("require(") || line.includes("import ") || line.includes("from ");
+        const isDeclaration =
+          entry.file === "contract.ts" &&
+          input.declaredFirewallPaths.some((declared) =>
+            line.includes(declared.split("/").slice(-1)[0] as string)
+          );
+        if (isRead && !isDeclaration) readOrImportViolations.push({ file: entry.file, fragment });
+      }
+    }
+  }
+  return { passed: readOrImportViolations.length === 0 && calibrationScanned, readOrImportViolations };
+}
+
+/* -------------------------------------------------------------------------- */
+/* precheck                                                                   */
+/* -------------------------------------------------------------------------- */
 
 export async function runPrecheck(evidenceDir: string, repoDir: string): Promise<PrecheckResult> {
   const checks: Record<string, { passed: boolean; detail: unknown }> = {};
@@ -241,23 +362,20 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
     FORBIDDEN_MODEL_FACING_LABELS.filter((label) => rendered[cell].user.includes(label))
   );
   const retrievalSections = CELL_IDS.map((cell) => {
-    const match = /\[memory evidence \(allowed refs\)\]\n([\s\S]*?)\n\[/.exec(rendered[cell].user);
+    const match = new RegExp("\\[memory evidence \\(allowed refs\\)\\]\\n([\\s\\S]*?)\\n\\[").exec(rendered[cell].user);
     return { cell, section: match?.[1] ?? "(missing)" };
   });
   const retrievalLeak = retrievalSections.filter((entry) => entry.section.trim() !== "(none)");
-  record("P7_RAW_HISTORY_MODEL_FACING_LEAKAGE", leakedRefs.length === 0 && leakedScenes.length === 0 && leakedLabels.length === 0, {
-    leakedRefs,
-    leakedScenes,
-    leakedLabels
-  });
+  record(
+    "P7_RAW_HISTORY_MODEL_FACING_LEAKAGE",
+    leakedRefs.length === 0 && leakedScenes.length === 0 && leakedLabels.length === 0,
+    { leakedRefs, leakedScenes, leakedLabels }
+  );
   record("P8_MEMORY_RETRIEVAL_EXPOSURE_ZERO", retrievalLeak.length === 0, { retrievalSections });
 
   // ---- §13/§14/§35 cell-level invariants -------------------------------------
   const sceneEncodings = new Set(
-    CELL_IDS.map((cell) => {
-      const match = /^[context] scene=.*$/m.exec(rendered[cell].user)?.[0] ?? "(missing)";
-      return match;
-    })
+    CELL_IDS.map((cell) => new RegExp("^\\[context\\] scene=.*$", "m").exec(rendered[cell].user)?.[0] ?? "(missing)")
   );
   record(
     "P12_CURRENT_SCENE_BYTE_EQUALITY",
@@ -271,10 +389,7 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
     rendered.B_HIGH.user === rendered.D_LOW_EQUALIZED.user &&
       rendered.B_HIGH.belief === rendered.D_LOW_EQUALIZED.belief &&
       rendered.B_HIGH.projection_hash === rendered.D_LOW_EQUALIZED.projection_hash,
-    {
-      b_user: hashText(rendered.B_HIGH.user),
-      d_user: hashText(rendered.D_LOW_EQUALIZED.user)
-    }
+    { b_user: hashText(rendered.B_HIGH.user), d_user: hashText(rendered.D_LOW_EQUALIZED.user) }
   );
   record(
     "P14_A_B_ONLY_BELIEF_SEMANTIC_DIFFERENCE",
@@ -299,10 +414,50 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
     hashJson(lowBranch.snapshot.beliefs.items) === hashJson(durableItems(low)),
     { low_items: lowBranch.snapshot.beliefs.items }
   );
-  record("P17_PRODUCTION_WRITE_DURING_INTERVENTION_FALSE", true, {
-    note: "interventions are read-side only (applyBeliefView returns a new view object); the durable snapshot hashes before and after rendering are identical",
-    low_durable_hash: hashJson(lowBranch.snapshot.beliefs.items),
-    high_durable_hash: hashJson(highBranch.snapshot.beliefs.items)
+
+  // ---- §39 P17 (non-degenerate) ----------------------------------------------
+  const experimentSource = (file: string): string =>
+    stripCommentsForAudit(readFileSync(join(experimentDirForAudit(), file), "utf8"));
+  const interventionBody =
+    new RegExp("function applyBeliefView[\\s\\S]*?\\n\\}").exec(experimentSource("precheck.ts"))?.[0] ?? "";
+  const renderBody =
+    new RegExp("async function renderRequest[\\s\\S]*?\\n\\}").exec(experimentSource("precheck.ts"))?.[0] ?? "";
+  const writerCallSiteFiles = (
+    ["precheck.ts", "histories.ts", "calibration-runner.ts", "calibration-request.ts"] as const
+  ).filter((file) => experimentSource(file).includes("runForEpisodeRefs"));
+  const durableBefore = {
+    low: hashJson(lowBranch.snapshot.beliefs.items),
+    high: hashJson(highBranch.snapshot.beliefs.items)
+  };
+  for (const cell of CELL_IDS) {
+    const definition = CELL_DEFINITION[cell];
+    applyBeliefView(
+      definition.durable === "LOW" ? lowBranch.snapshot : highBranch.snapshot,
+      definition.intervention,
+      targetPropositionId,
+      highCredence
+    );
+  }
+  const durableAfter = {
+    low: hashJson(lowBranch.snapshot.beliefs.items),
+    high: hashJson(highBranch.snapshot.beliefs.items)
+  };
+  const interventionAudit = auditInterventionWriterFree({
+    interventionBody,
+    renderBody,
+    writerCallSiteFiles,
+    durableBefore,
+    durableAfter
+  });
+  record("P17_PRODUCTION_WRITE_DURING_INTERVENTION_FALSE", interventionAudit.passed, {
+    intervention_path_writer_violations: interventionAudit.violations,
+    intervention_body_found: interventionBody.length > 0,
+    render_body_found: renderBody.length > 0,
+    writer_call_site_files: writerCallSiteFiles,
+    durable_before: durableBefore,
+    durable_after: durableAfter,
+    note:
+      "the model-facing intervention and render paths contain no writer/commit token; the only writer call site is history formation, which is offline preparation (attested in P2/P3) and absent from the calibration path; durable belief items are byte-identical before and after every research-side view"
   });
 
   // ---- §18/§19 exact scan surface --------------------------------------------
@@ -314,7 +469,8 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
       scanAudit.frozen_protocol_declared_paths_covered &&
       scanAudit.subjective_selection_covered &&
       scanAudit.derivation_text_covered &&
-      scanAudit.exact_scan_surface.length > 0,
+      scanAudit.exact_scan_surface.length > 0 &&
+      scanAudit.independently_enumerated_string_leaves.length >= scanAudit.exact_scan_surface.length,
     scanAudit
   );
 
@@ -322,25 +478,23 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   const missingBlobManifest: Record<string, unknown> = {
     schema_version: "stochastic-executor-causal-freeze-manifest-v1",
     protocol_id: "STOCHASTIC_EXECUTOR_CAUSAL_MEASUREMENT_PROTOCOL_V0",
-    preregistration_commit_sha: hashText(gitHead(repoDir)).slice(0, 32),
+    preregistration_commit_sha: gitHead(repoDir),
     code_blob_hashes: { "research/this/path/does/not/exist.ts": `sha256:${"0".repeat(64)}` },
     design: { note: "missing-blob regression fixture" }
   };
   let missingBlobResult: { ok: boolean; detail: string } | null = null;
   let missingBlobThrew = false;
   try {
-    const built = rebuildManifestHash(missingBlobManifest);
-    const verification = verifyFreezeManifest(repoDir, built as never);
+    const verification = verifyFreezeManifest(repoDir, rebuildManifestHash(missingBlobManifest) as never);
     missingBlobResult = { ok: verification.ok, detail: verification.detail };
   } catch (error) {
     missingBlobThrew = true;
     void (error instanceof Error ? error.message : String(error));
   }
-  record(
-    "P19_MISSING_BLOB_VERIFIER_REGRESSION",
-    missingBlobThrew === false && missingBlobResult?.ok === false,
-    { threw: missingBlobThrew, result: missingBlobResult }
-  );
+  record("P19_MISSING_BLOB_VERIFIER_REGRESSION", missingBlobThrew === false && missingBlobResult?.ok === false, {
+    threw: missingBlobThrew,
+    result: missingBlobResult
+  });
 
   // ---- §33/§49 identities and schedule ---------------------------------------
   const primary = trialSchedule("PRIMARY");
@@ -349,7 +503,8 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   const uniqueIdentities = new Set(identities);
   record(
     "P20_TRIAL_IDENTITIES_UNIQUE",
-    uniqueIdentities.size === identities.length && identities.length === SAMPLE_SIZE.primary_cognition_calls + SAMPLE_SIZE.replication_cognition_calls,
+    uniqueIdentities.size === identities.length &&
+      identities.length === SAMPLE_SIZE.primary_cognition_calls + SAMPLE_SIZE.replication_cognition_calls,
     { total: identities.length, unique: uniqueIdentities.size }
   );
   record(
@@ -375,18 +530,23 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
     schedule_hash: hashJson({ primary, replication })
   });
 
-  // ---- §46 V0 firewall + §3 zero-call attestation ----------------------------
-  const firewallSources = ["./precheck.ts", "./histories.ts", "./verdict.ts", "./scan-surface.ts", "./contract.ts"];
-  const forbidden = V0_FIREWALL.forbidden_reads;
-  const violations = firewallSources.filter((source) => forbidden.some((path) => source.includes(path)));
-  record("P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO", violations.length === 0, {
-    scanned: firewallSources,
-    violations,
-    confirmatory_count_contribution: V0_FIREWALL.confirmatory_count_contribution
+  // ---- §39 P22 (non-degenerate): V0 dependency scan over this experiment ------
+  const firewallFiles = readdirSync(experimentDirForAudit())
+    .filter((name) => name.endsWith(".ts"))
+    .sort();
+  const v0Audit = auditV0DependencyFree({
+    files: firewallFiles.map((file) => ({ file, code: experimentSource(file) })),
+    declaredFirewallPaths: V0_FIREWALL.forbidden_reads
+  });
+  record("P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO", v0Audit.passed, {
+    files_scanned: firewallFiles,
+    read_or_import_violations: v0Audit.readOrImportViolations,
+    confirmatory_count_contribution: V0_FIREWALL.confirmatory_count_contribution,
+    note: "no source reads or imports a V0 outcome artifact; the only occurrences are contract.ts's declared firewall list"
   });
   record("P23_MODEL_CALLS_ZERO", SLICE_CALL_ATTESTATION.total_model_calls === 0, SLICE_CALL_ATTESTATION);
 
-  // ---- §55 hard-gate registry sanity + a demonstrated verdict consumption -----
+  // ---- §55 hard-gate registry sanity + demonstrated verdict consumption ------
   const demonstration: VerdictInput = {
     phase: "PRIMARY",
     cells: {

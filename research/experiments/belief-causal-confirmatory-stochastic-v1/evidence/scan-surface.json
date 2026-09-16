@@ -13,6 +13,26 @@
     "subjective_selection.stance",
     "subjective_selection.subjective_rationale"
   ],
+  "independently_enumerated_string_leaves": [
+    "clarification_basis.current_observation_ref",
+    "clarification_basis.missing_information",
+    "clarification_basis.needed_for",
+    "cognition.considered_handles[*]",
+    "cognition.current_intent",
+    "cognition.evidence_handles[*]",
+    "cognition.reasoning_summary",
+    "cognition.relevant_memory_handles[*]",
+    "factual_assessment.claims[*].derivation.claimed_result",
+    "factual_assessment.claims[*].derivation.input",
+    "factual_assessment.claims[*].derivation.source_expression",
+    "factual_assessment.claims[*].derivation.source_instruction",
+    "factual_assessment.claims[*].derivation.source_query",
+    "factual_assessment.claims[*].derivation.source_rule",
+    "factual_assessment.claims[*].source_handles[*]",
+    "factual_assessment.claims[*].text",
+    "subjective_selection.stance",
+    "subjective_selection.subjective_rationale"
+  ],
   "leaves": [
     {
       "path": "clarification_basis.current_observation_ref",

@@ -14,8 +14,10 @@
     "positive_case_flag": true,
     "negative_case_flag": false
   },
-  "ok": true,
-  "failed": [],
+  "ok": false,
+  "failed": [
+    "P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO"
+  ],
   "checks": {
     "P1_SEED_BELIEF_COUNT_ZERO": {
       "passed": true,
@@ -156,7 +158,7 @@
       "passed": true,
       "detail": {
         "scene_hash": "sha256:7d8f53f2cd42d170679b847756b0459921df8263f73dcc61b87b37872c9611d2",
-        "scene_line_hash": "sha256:12954e60379e2638d0b132ec8f9011e7d874450bfc32398d8c23696118c10ff3"
+        "scene_line_hash": "sha256:6906e40c54c78594fd9bfbf2c24ec2583aa0c5acb58568f46a1874f957b03b3e"
       }
     },
     "P13_B_D_MEDIATOR_BYTE_EQUALITY": {
@@ -200,9 +202,22 @@
     "P17_PRODUCTION_WRITE_DURING_INTERVENTION_FALSE": {
       "passed": true,
       "detail": {
-        "note": "interventions are read-side only (applyBeliefView returns a new view object); the durable snapshot hashes before and after rendering are identical",
-        "low_durable_hash": "sha256:a159d1da8e23d48798e99d86739de5bd5818a3ed3829498cdd1d5907656b7d67",
-        "high_durable_hash": "sha256:a342dbc32a19ace7e86a763c1ce5d5d4d9c9154ee53e6adf1bcae6a9fbe226be"
+        "intervention_path_writer_violations": [],
+        "intervention_body_found": true,
+        "render_body_found": true,
+        "writer_call_site_files": [
+          "precheck.ts",
+          "histories.ts"
+        ],
+        "durable_before": {
+          "low": "sha256:a159d1da8e23d48798e99d86739de5bd5818a3ed3829498cdd1d5907656b7d67",
+          "high": "sha256:a342dbc32a19ace7e86a763c1ce5d5d4d9c9154ee53e6adf1bcae6a9fbe226be"
+        },
+        "durable_after": {
+          "low": "sha256:a159d1da8e23d48798e99d86739de5bd5818a3ed3829498cdd1d5907656b7d67",
+          "high": "sha256:a342dbc32a19ace7e86a763c1ce5d5d4d9c9154ee53e6adf1bcae6a9fbe226be"
+        },
+        "note": "the model-facing intervention and render paths contain no writer/commit token; the only writer call site is history formation, which is offline preparation (attested in P2/P3) and absent from the calibration path; durable belief items are byte-identical before and after every research-side view"
       }
     },
     "P18_FULL_TRUTH_SCAN_SCHEMA_COVERAGE": {
@@ -218,6 +233,26 @@
           "factual_assessment.claims[*].derivation.source_instruction",
           "factual_assessment.claims[*].derivation.source_query",
           "factual_assessment.claims[*].derivation.source_rule",
+          "factual_assessment.claims[*].text",
+          "subjective_selection.stance",
+          "subjective_selection.subjective_rationale"
+        ],
+        "independently_enumerated_string_leaves": [
+          "clarification_basis.current_observation_ref",
+          "clarification_basis.missing_information",
+          "clarification_basis.needed_for",
+          "cognition.considered_handles[*]",
+          "cognition.current_intent",
+          "cognition.evidence_handles[*]",
+          "cognition.reasoning_summary",
+          "cognition.relevant_memory_handles[*]",
+          "factual_assessment.claims[*].derivation.claimed_result",
+          "factual_assessment.claims[*].derivation.input",
+          "factual_assessment.claims[*].derivation.source_expression",
+          "factual_assessment.claims[*].derivation.source_instruction",
+          "factual_assessment.claims[*].derivation.source_query",
+          "factual_assessment.claims[*].derivation.source_rule",
+          "factual_assessment.claims[*].source_handles[*]",
           "factual_assessment.claims[*].text",
           "subjective_selection.stance",
           "subjective_selection.subjective_rationale"
@@ -545,7 +580,7 @@
         "threw": false,
         "result": {
           "ok": false,
-          "detail": "preregistration commit sha256:5475fca2c54691454d73cfd61 not found"
+          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09: Command failed: git cat-file blob 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09:research/this/path/does/not/exist.ts"
         }
       }
     },
@@ -572,17 +607,32 @@
       }
     },
     "P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO": {
-      "passed": true,
+      "passed": false,
       "detail": {
-        "scanned": [
-          "./precheck.ts",
-          "./histories.ts",
-          "./verdict.ts",
-          "./scan-surface.ts",
-          "./contract.ts"
+        "files_scanned": [
+          "calibration-evidence.ts",
+          "calibration-law.ts",
+          "calibration-request.ts",
+          "calibration-runner.ts",
+          "calibration-transport.ts",
+          "calibration.test.ts",
+          "cli.ts",
+          "contract.ts",
+          "histories.ts",
+          "manifest.ts",
+          "precheck.ts",
+          "prereg.test.ts",
+          "scan-surface.ts",
+          "verdict.ts"
         ],
-        "violations": [],
-        "confirmatory_count_contribution": 0
+        "read_or_import_violations": [
+          {
+            "file": "prereg.test.ts",
+            "fragment": "belief-causal-validation-v0/evidence"
+          }
+        ],
+        "confirmatory_count_contribution": 0,
+        "note": "no source reads or imports a V0 outcome artifact; the only occurrences are contract.ts's declared firewall list"
       }
     },
     "P23_MODEL_CALLS_ZERO": {

@@ -189,6 +189,7 @@ export interface ScanSurfaceAudit {
   readonly opaque_ref_leaves: readonly string[];
   readonly enum_leaves: readonly string[];
   readonly structural_leaves: readonly string[];
+  readonly independently_enumerated_string_leaves: readonly string[];
   readonly frozen_protocol_declared_paths_covered: boolean;
   readonly subjective_selection_covered: boolean;
   readonly derivation_text_covered: boolean;
@@ -204,12 +205,62 @@ export const FROZEN_PROTOCOL_DECLARED_PATHS: readonly string[] = Object.freeze([
   "clarification_basis.needed_for"
 ]);
 
+/**
+ * INDEPENDENT enumeration: every path whose schema type includes "string",
+ * collected from the raw schema with no classification, no handle special-casing
+ * and no reference to the declared surface. This is the set the coverage audit is
+ * computed AGAINST, so the audit cannot be a tautology.
+ */
+export function enumerateStringLeafPaths(schema: unknown = CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA): readonly string[] {
+  const found = new Set<string>();
+  const visit = (node: unknown, path: string): void => {
+    if (!isRecord(node)) return;
+    const properties = node["properties"];
+    if (isRecord(properties)) {
+      for (const key of Object.keys(properties).sort()) {
+        const childPath = path.length === 0 ? key : `${path}.${key}`;
+        const child = properties[key];
+        if (isRecord(child) && (isRecord(child["properties"]) || child["items"] !== undefined)) {
+          visit(child, childPath);
+          continue;
+        }
+        if (isRecord(child) && jsonTypesOf(child).includes("string")) found.add(childPath);
+        else if (isRecord(child)) visit(child, childPath);
+      }
+      return;
+    }
+    const items = node["items"];
+    if (items !== undefined) {
+      visit(items, `${path}[*]`);
+      return;
+    }
+    for (const branchKey of ["oneOf", "anyOf"] as const) {
+      const branches = node[branchKey];
+      if (Array.isArray(branches)) for (const branch of branches) visit(branch, path);
+    }
+    if (path.length > 0 && jsonTypesOf(node).includes("string")) found.add(path);
+  };
+  visit(schema, "");
+  return [...found].sort();
+}
+
 export function auditScanSurface(schemaHash: string): ScanSurfaceAudit {
   const leaves = classifyCognitionSchemaLeaves();
   const surface = leaves.filter((leaf) => leaf.leaf_class === "A").map((leaf) => leaf.path);
-  const unscanned = surface.filter((path) => !FROZEN_PROTOCOL_DECLARED_PATHS.includes(path) && !surface.includes(path));
+  const surfaceSet = new Set(surface);
+  const opaqueSet = new Set(leaves.filter((leaf) => leaf.leaf_class === "B").map((leaf) => leaf.path));
+  const hostVerifiedSet = new Set(leaves.filter((leaf) => leaf.leaf_class === "D").map((leaf) => leaf.path));
+  const declaredSet = new Set(FROZEN_PROTOCOL_DECLARED_PATHS);
+  // EVERY independently enumerated string leaf must be either on the scan surface,
+  // an opaque ref, or a host-verified structural value. Anything else is
+  // unscanned semantic text and blocks the preregistration.
+  const unscanned = enumerateStringLeafPaths().filter(
+    (path) => !surfaceSet.has(path) && !opaqueSet.has(path) && !hostVerifiedSet.has(path)
+  );
+  void declaredSet;
   return {
     exact_scan_surface: surface,
+    independently_enumerated_string_leaves: enumerateStringLeafPaths(),
     leaves,
     model_authored_semantic_leaves: surface,
     unscanned_model_authored_semantic_text: unscanned,

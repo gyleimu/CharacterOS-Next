@@ -183,6 +183,101 @@ P18 full truth-scan schema coverage · P19 missing-blob verifier regression · P
 unique · P21 schedule complete · P22 V0 confirmatory contribution 0 · P23 model calls 0 ·
 P24 verdict law consumes the hard-gate registry.
 
+
+## 19. Preregistration history and the calibration execution path (remediation)
+
+\
+The superseded commit was scientifically clean but operationally incomplete: it
+contained no calibration runner and no model transport, and the frozen protocol
+defined calibration purposes without programmatic RUN/STOP criteria. Because no
+scientific call was ever made under it, the lawful path is a NEW preregistration
+commit (append-only history; nothing was deleted or rewritten).
+
+### Calibration execution path (now tracked and frozen)
+
+| artefact | role |
+| --- | --- |
+|  | builds the ACTUAL model-facing calibration request through the frozen production rendering path over a normal EMPTY-genesis calibration subject |
+|  |  — machine-readable operational readiness law |
+|  | minimal experiment-local OpenAI-compatible transport (timeout + frozen retry law + usage); the ONLY network surface, never invoked in this slice |
+|  | executes the 50 logical trials: frozen body, fresh provider per draw, production validation, no illegal retry, deterministic early stop, integrity gates |
+|  | frozen evidence schema; written to an untracked scratch location until a review approves a result commit |
+|  | the FROZEN actual request (hashes + law + body bytes) bound into the manifest design |
+
+### Calibration RUN/STOP law (derived, not invented)
+
+\
+### Actual frozen request (0 model calls to produce)
+
+system hash  · user hash  · schema hash  ·
+model-config hash  · **model-facing request hash ** (16 085 bytes).
+The request carries no trial id, timestamp, counter or prior output; the credential never enters
+the body, the hash or any evidence.
+
+### §39 precheck remediation (no longer degenerate)
+
+ is a real set difference between an independent schema enumeration (18 string
+leaves) and the declared coverage (12 scanned + 5 opaque refs + 1 host-verified result);
+ now audits the intervention/render bodies for writer tokens, enumerates writer call sites
+and MEASURES durable immutability before/after;  scans every source in this experiment for
+reads or imports of V0 outcome artifacts. Negative-control tests prove each can fail.
+
+## 19. Preregistration history and the calibration execution path (remediation)
+
+```text
+SUPERSEDED_PREREGISTRATION_COMMIT
+= 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09
+
+SUPERSEDE_REASON
+= CALIBRATION_EXECUTION_PATH_NOT_FROZEN
+  + CALIBRATION_RUN_STOP_LAW_UNRESOLVED
+
+SCIENTIFIC_CALLS_UNDER_SUPERSEDED_PREREG
+= 0
+```
+
+The superseded commit was scientifically clean but operationally incomplete: it contained no
+calibration runner and no model transport, and the frozen protocol defined calibration purposes
+without programmatic RUN/STOP criteria. Because no scientific call was ever made under it, the
+lawful path is a NEW preregistration commit (append-only history; nothing deleted, nothing rewritten).
+
+### Calibration execution path (now tracked and frozen)
+
+| artefact | role |
+| --- | --- |
+| `calibration-request.ts` | builds the ACTUAL model-facing calibration request through the frozen production rendering path over a normal EMPTY-genesis calibration subject |
+| `calibration-law.ts` | `CALIBRATION_RUN_STOP_LAW_V1` — machine-readable operational readiness law |
+| `calibration-transport.ts` | minimal experiment-local OpenAI-compatible transport (timeout + frozen retry law + usage); the ONLY network surface, never invoked in this slice |
+| `calibration-runner.ts` | executes the 50 logical trials: frozen body, fresh provider per draw, production validation, no illegal retry, deterministic early stop, integrity gates |
+| `calibration-evidence.ts` | frozen evidence schema; written to an untracked scratch location until a review approves a result commit |
+| `evidence/calibration-request.json` | the FROZEN actual request (hashes + law + body bytes + payloads) bound into the manifest design |
+
+### Calibration RUN/STOP law (derived from the frozen floor, not invented)
+
+```text
+scheduled logical trials      = 50
+MINIMUM_HOST_VALID_COUNT      = ceil(50 x 0.95) = 48     # frozen overall host-validity floor
+MAXIMUM_NON_HOST_VALID_COUNT  = 2                        # 47/50 = 0.94 fails, 48/50 = 0.96 passes
+outcome diversity gate        = NONE (50/50 REALIZE and 50/50 CLARIFY are both lawful RUN)
+stochasticity / conflation    = DIAGNOSTIC ONLY
+early stop                    = deterministic on the 3rd non-host-valid (floor unreachable)
+invalid trials                = never replaced; the scheduled denominator stays 50
+```
+
+### The actual frozen request (produced with 0 model calls)
+
+system hash `9241794b…` · user hash `55d27d60…` · schema hash `e9da721b…` · model-config hash
+`0ed9df37…` · **model-facing request hash `db8d8993…`** (16,085 bytes). It carries no trial id,
+timestamp, counter or prior output; the credential never enters the body, the hash or any evidence.
+
+### §39 precheck remediation (no longer degenerate)
+
+`UNSCANNED` is now a REAL set difference between an independent schema enumeration (18 string
+leaves) and the declared coverage (12 scanned + 5 opaque refs + 1 host-verified result); `P17`
+audits the intervention/render bodies for writer tokens, enumerates writer call sites and MEASURES
+durable immutability before/after; `P22` scans every source in this experiment for reads or imports
+of V0 outcome artifacts. Negative-control tests prove each repaired check can fail.
+
 ## 18. What this preregistration does NOT do
 
 It makes no model call, no calibration draw, no pilot draw, no primary or replication draw. It does

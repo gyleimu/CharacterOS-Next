@@ -335,3 +335,121 @@ describe("BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — frozen design bindings", 
     expect(cellInterventionLawManifest()["production_write"]).toBe(false);
   });
 });
+
+// ============================================================================
+// §39 REMEDIATION: negative controls proving the repaired checks can FAIL
+// ============================================================================
+
+import { auditInterventionWriterFree, auditV0DependencyFree } from "./precheck.ts";
+import { enumerateStringLeafPaths } from "./scan-surface.ts";
+import {
+  CALIBRATION_MINIMUM_HOST_VALID_COUNT,
+  CALIBRATION_SCHEDULED_LOGICAL_TRIALS
+} from "./calibration-law.ts";
+import { buildCalibrationRequest } from "./calibration-request.ts";
+import { modelConfigManifest as calibrationModelConfig } from "./contract.ts";
+
+describe("REMEDIATION — the repaired audits are NOT vacuous", () => {
+  it("UNSCANNED is a real set difference: an unlisted string leaf is reported", () => {
+    const synthetic = {
+      type: "object",
+      properties: {
+        cognition: {
+          type: "object",
+          properties: { reasoning_summary: { type: "string" }, brand_new_semantic_field: { type: "string" } }
+        }
+      }
+    };
+    const independent = enumerateStringLeafPaths(synthetic);
+    expect(independent).toContain("cognition.brand_new_semantic_field");
+    // The real schema's independent enumeration covers the frozen surface exactly once each.
+    const realSurface = new Set(
+      auditScanSurface("x").exact_scan_surface
+    );
+    for (const path of realSurface) {
+      expect(enumerateStringLeafPaths()).toContain(path);
+    }
+    // and the count relationship proves nothing is silently dropped
+    const audit = auditScanSurface("x");
+    expect(audit.independently_enumerated_string_leaves.length).toBe(
+      audit.exact_scan_surface.length + audit.opaque_ref_leaves.length + 1 // + host-verified claimed_result
+    );
+  });
+
+  it("P17 fails when the intervention body calls a writer", () => {
+    const clean = auditInterventionWriterFree({
+      interventionBody: "function applyBeliefView() { return snapshot; }",
+      renderBody: "async function renderRequest() { return projection; }",
+      writerCallSiteFiles: ["histories.ts"],
+      durableBefore: { low: "a", high: "b" },
+      durableAfter: { low: "a", high: "b" }
+    });
+    expect(clean.passed).toBe(true);
+    const tainted = auditInterventionWriterFree({
+      interventionBody: "function applyBeliefView() { core.commitReserved(p); }",
+      renderBody: "async function renderRequest() { return projection; }",
+      writerCallSiteFiles: ["histories.ts"],
+      durableBefore: { low: "a", high: "b" },
+      durableAfter: { low: "a", high: "b" }
+    });
+    expect(tainted.passed).toBe(false);
+    expect(tainted.violations).toContain("commitReserved");
+    const calibrationWriter = auditInterventionWriterFree({
+      interventionBody: "function applyBeliefView() { return snapshot; }",
+      renderBody: "async function renderRequest() { return projection; }",
+      writerCallSiteFiles: ["histories.ts", "calibration-runner.ts"],
+      durableBefore: { low: "a", high: "b" },
+      durableAfter: { low: "a", high: "b" }
+    });
+    expect(calibrationWriter.passed).toBe(false);
+    const mutatedDurable = auditInterventionWriterFree({
+      interventionBody: "function applyBeliefView() { return snapshot; }",
+      renderBody: "async function renderRequest() { return projection; }",
+      writerCallSiteFiles: ["histories.ts"],
+      durableBefore: { low: "a", high: "b" },
+      durableAfter: { low: "a", high: "CHANGED" }
+    });
+    expect(mutatedDurable.passed).toBe(false);
+  });
+
+  it("P22 fails on a read of a V0 outcome artifact, and allows only the declared firewall list", () => {
+    const declared = ["research/experiments/belief-causal-validation-v0/evidence/primary"];
+    const clean = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: "const x = 1;" },
+        { file: "contract.ts", code: "const forbidden_reads = [\"belief-causal-validation-v0/evidence/primary\"];" }
+      ],
+      declaredFirewallPaths: declared
+    });
+    expect(clean.passed).toBe(true);
+    const reading = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: "const x = 1;" },
+        { file: "evaluator.ts", code: "const v = readFileSync(\"research/experiments/belief-causal-validation-v0/evidence/primary/verdict.json\");" }
+      ],
+      declaredFirewallPaths: declared
+    });
+    expect(reading.passed).toBe(false);
+    expect(reading.readOrImportViolations.length).toBeGreaterThan(0);
+    const unscanned = auditV0DependencyFree({
+      files: [{ file: "contract.ts", code: "const x = 1;" }],
+      declaredFirewallPaths: declared
+    });
+    expect(unscanned.passed).toBe(false); // the calibration runner must be in the scanned set
+  });
+
+  it("the calibration path is frozen: the runner and request builder exist and bind the frozen constants", async () => {
+    const runnerSource = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-runner.ts"), "utf8");
+    const lawSource = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-law.ts"), "utf8");
+    expect(runnerSource).toContain("CALIBRATION_SCHEDULED_LOGICAL_TRIALS");
+    expect(lawSource).toContain("HOST_VALIDITY.minimum_overall_rate");
+    expect(CALIBRATION_MINIMUM_HOST_VALID_COUNT).toBe(48);
+    expect(CALIBRATION_SCHEDULED_LOGICAL_TRIALS).toBe(50);
+    const request = await buildCalibrationRequest({
+      schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
+      modelConfigHash: hashJson(calibrationModelConfig())
+    });
+    expect(request.hashes.model_facing_request_hash).toMatch(/^sha256:[0-9a-f]{64}$/);
+    expect(request.body.messages).toHaveLength(2);
+  });
+});
