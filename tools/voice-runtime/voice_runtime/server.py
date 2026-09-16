@@ -59,6 +59,9 @@ class TtsRequest(BaseModel):
     stream: bool = False
     save_path: str | None = Field(default=None, max_length=_MAX_SAVE_PATH_CHARS)
     return_audio: bool = False
+    # Interrupt this utterance when the user starts speaking. Only meaningful
+    # together with `play`, because barge-in is about silencing the speaker.
+    barge_in: bool = True
 
 
 class AsrRequest(BaseModel):
@@ -96,6 +99,11 @@ class VoiceRuntimeApp:
         self.cancel_event = threading.Event()
         self.last_metrics: dict | None = None
         self._started_at = time.perf_counter()
+        # VAD state: the noise floor is measured once and reused, so every
+        # capture is compared against THIS room rather than a fixed constant.
+        self.vad_config = audio_io.VadConfig()
+        self.noise_floor: float | None = None
+        self.calibrated_at: float | None = None
 
     # -- helpers ---------------------------------------------------------------
     def begin_generation(self) -> threading.Event:
@@ -105,6 +113,37 @@ class VoiceRuntimeApp:
 
     def uptime_ms(self) -> float:
         return round((time.perf_counter() - self._started_at) * 1000, 1)
+
+    def calibrate_vad(self) -> float:
+        """Measures the room's noise floor and caches it."""
+        self.noise_floor = audio_io.measure_noise_floor(self.vad_config)
+        self.calibrated_at = self.uptime_ms()
+        return self.noise_floor
+
+    def ensure_vad(self) -> float | None:
+        """Calibrates on first use; never raises into a request path."""
+        if self.noise_floor is None:
+            try:
+                return self.calibrate_vad()
+            except audio_io.AudioUnavailableError:
+                return None
+        return self.noise_floor
+
+    def vad_status(self) -> dict:
+        threshold = (
+            None
+            if self.noise_floor is None
+            else round(audio_io.threshold_for(self.noise_floor, self.vad_config), 1)
+        )
+        return {
+            "noise_floor": None if self.noise_floor is None else round(self.noise_floor, 1),
+            "threshold": threshold,
+            "calibrated_at_ms": self.calibrated_at,
+            "margin_factor": self.vad_config.margin_factor,
+            "absolute_floor": self.vad_config.absolute_floor,
+            "min_speech_ms": self.vad_config.min_speech_ms,
+            "silence_ms": self.vad_config.silence_ms,
+        }
 
 
 def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None) -> FastAPI:
@@ -124,11 +163,29 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
                 "asr_device": state.manager.asr_device,
                 "fp16": config.fp16,
                 "uptime_ms": state.uptime_ms(),
+                "warmup": {
+                    "runs": config.warmup_runs,
+                    "latencies_ms": state.manager.warmup_latencies_ms,
+                    "error": state.manager.warmup_error,
+                },
+                "reference_cache": (
+                    None if state.manager.reference_cache is None else state.manager.reference_cache.stats()
+                ),
+                "vad": state.vad_status(),
                 "asr": state.manager.asr_status.as_dict(),
                 "tts": state.manager.tts_status.as_dict(),
                 "vram": state.manager.vram(),
             }
         )
+
+    @app.post("/vad/calibrate")
+    def vad_calibrate() -> JSONResponse:
+        """Measures the room's noise floor so a quiet room stops reading as speech."""
+        try:
+            state.calibrate_vad()
+        except audio_io.AudioUnavailableError as error:
+            raise HTTPException(status_code=503, detail=str(error))
+        return JSONResponse(state.vad_status())
 
     # ------------------------------------------------------------------ voices
     @app.get("/voices")
@@ -239,6 +296,17 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
         sentinel = object()
         worker_metrics: dict = {}
 
+        # BARGE-IN — while the subject is speaking, watch the microphone for the
+        # user starting to talk. Onset stops playback and cancels generation, so
+        # an interruption actually silences the room instead of only detaching
+        # the client. It reuses the SAME calibrated threshold as capture, so a
+        # quiet room cannot trigger it.
+        monitor: audio_io.SpeechOnsetMonitor | None = None
+        if payload.play and payload.barge_in:
+            floor = state.ensure_vad()
+            if floor is not None:
+                monitor = audio_io.SpeechOnsetMonitor(floor, state.vad_config).start()
+
         def worker() -> None:
             started = time.perf_counter()
             try:
@@ -263,14 +331,22 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
 
         player_holder: dict = {}
         first_audio_ms: float | None = None
+        barge_in_at_ms: float | None = None
         samples_sent = 0
         request_started = time.perf_counter()
 
         async def generate():
-            nonlocal first_audio_ms, samples_sent
+            nonlocal first_audio_ms, samples_sent, barge_in_at_ms
             try:
                 while True:
                     if await request.is_disconnected():
+                        token.set()
+                        break
+                    # Poll the barge-in monitor between chunks: an interruption
+                    # must stop BOTH the speaker and the generator, and the
+                    # generator is inside the model manager's lock.
+                    if monitor is not None and monitor.triggered():
+                        barge_in_at_ms = round((time.perf_counter() - request_started) * 1000, 1)
                         token.set()
                         break
                     item = await asyncio.to_thread(out_queue.get)
@@ -289,6 +365,8 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
                     pcm = np.clip(chunk, -1.0, 1.0)
                     yield (pcm * 32767.0).astype("<i2").tobytes()
             finally:
+                if monitor is not None:
+                    monitor.stop()
                 player = player_holder.get("player")
                 if player is not None:
                     player.__exit__(None, None, None)
@@ -301,7 +379,11 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
                     "generation_ms": worker_metrics.get("generation_ms"),
                     "audio_ms": round(samples_sent / SAMPLE_RATE * 1000, 1),
                     "cancelled": token.is_set(),
+                    "barge_in_at_ms": barge_in_at_ms,
+                    "barge_in_threshold": None if monitor is None else round(monitor.threshold, 1),
                     "error": worker_metrics.get("error"),
+                    # Where the time actually went, measured inside the model.
+                    "stages": state.manager.last_stage_breakdown,
                 }
 
         return StreamingResponse(
@@ -367,6 +449,8 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
     @app.post("/asr/listen")
     def asr_listen(payload: ListenRequest) -> JSONResponse:
         token = state.begin_generation()
+        # A forced capture bypasses the gate entirely and needs no calibration.
+        floor = None if payload.fixed_ms is not None else state.ensure_vad()
         try:
             capture = audio_io.record_utterance(
                 max_ms=payload.max_ms,
@@ -374,6 +458,8 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
                 timeout_ms=payload.timeout_ms,
                 fixed_ms=payload.fixed_ms,
                 cancel=token,
+                noise_floor=floor,
+                config=state.vad_config,
             )
         except audio_io.AudioUnavailableError as error:
             raise HTTPException(status_code=503, detail=str(error))
@@ -387,6 +473,12 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
                     "duration_ms": round(capture.duration_ms, 1),
                     "latency_ms": 0.0,
                     "captured": False,
+                    # Reported so a caller can see WHY nothing was captured:
+                    # an uncalibrated gate and a genuinely silent room look the
+                    # same in `captured: false` alone.
+                    "noise_floor": None if capture.noise_floor is None else round(capture.noise_floor, 1),
+                    "threshold": None if capture.threshold is None else round(capture.threshold, 1),
+                    "speech_ms": round(capture.speech_ms, 1),
                 }
             )
         tmp = config.voices_file.parent / ".listen-tmp.wav"
@@ -395,6 +487,9 @@ def create_app(config: VoiceRuntimeConfig, state: VoiceRuntimeApp | None = None)
         result = _transcribe_bytes(tmp.read_bytes(), payload.language)
         result["captured"] = True
         result["duration_ms"] = round(capture.duration_ms, 1)
+        result["speech_ms"] = round(capture.speech_ms, 1)
+        result["noise_floor"] = None if capture.noise_floor is None else round(capture.noise_floor, 1)
+        result["threshold"] = None if capture.threshold is None else round(capture.threshold, 1)
         return JSONResponse(result)
 
     return app
