@@ -1,0 +1,257 @@
+{
+  "schema_version": "familiarity-history-causal-verdict-v0",
+  "experiment_id": "RELATIONSHIP_FAMILIARITY_HISTORY_CAUSAL_EXPERIMENT_V0",
+  "phase": "replication",
+  "verdict": "FAMILIARITY_EFFECT_INCONCLUSIVE",
+  "principal_verdict": "FAMILIARITY_EFFECT_INCONCLUSIVE",
+  "causal_scope": "EXECUTOR_COMPOSITION",
+  "host_complete": false,
+  "seed_clean": true,
+  "corpus_identical": true,
+  "manipulation_ok": true,
+  "language_authority_clean": true,
+  "forbidden_vocabulary": [],
+  "cells": {
+    "A_LOW": {
+      "classes": [
+        "CITES_OTHER_EVIDENCE",
+        "UNCLASSIFIED",
+        "CITES_OTHER_EVIDENCE",
+        "UNCLASSIFIED",
+        "CITES_OTHER_EVIDENCE",
+        "CITES_OTHER_EVIDENCE",
+        "CITES_OTHER_EVIDENCE",
+        "CITES_OTHER_EVIDENCE"
+      ],
+      "majority": "CITES_OTHER_EVIDENCE",
+      "majority_count": 6,
+      "host_valid": 6,
+      "total": 8,
+      "mediator_visible": 0,
+      "queries": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3"
+      ]
+    },
+    "B_HIGH": {
+      "classes": [
+        "UNCLASSIFIED",
+        "UNCLASSIFIED",
+        "UNCLASSIFIED",
+        "UNCLASSIFIED",
+        "CITES_COUNTERPART_MEDIATOR",
+        "CITES_COUNTERPART_MEDIATOR",
+        "UNCLASSIFIED",
+        "CITES_COUNTERPART_MEDIATOR"
+      ],
+      "majority": "UNCLASSIFIED",
+      "majority_count": 5,
+      "host_valid": 3,
+      "total": 8,
+      "mediator_visible": 8,
+      "queries": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32",
+        "- entity:alice: presence=PRESENT level=16/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18",
+        "[current state] logical_time=0 state_revision=18"
+      ]
+    }
+  },
+  "contrasts": [
+    {
+      "left": "A_LOW",
+      "right": "B_HIGH",
+      "scenario_id": "S1_CONVENTION_RECALL",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "overall treatment contrast"
+    },
+    {
+      "left": "B_HIGH",
+      "right": "C_MEDIATOR_ABLATED",
+      "scenario_id": "S1_CONVENTION_RECALL",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "mediator channel at matched familiarity text + revision"
+    },
+    {
+      "left": "C_MEDIATOR_ABLATED",
+      "right": "D_FAMILIARITY_EQUALIZED",
+      "scenario_id": "S1_CONVENTION_RECALL",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "direct familiarity-text channel at matched revision + availability"
+    },
+    {
+      "left": "A_LOW",
+      "right": "D_FAMILIARITY_EQUALIZED",
+      "scenario_id": "S1_CONVENTION_RECALL",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "revision-only effect at equalized effective familiarity"
+    },
+    {
+      "left": "A_LOW",
+      "right": "E_LOW_WITH_MEDIATOR",
+      "scenario_id": "S1_CONVENTION_RECALL",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "mediator availability WITHOUT familiarity (confound probe)"
+    },
+    {
+      "left": "A_LOW",
+      "right": "B_HIGH",
+      "scenario_id": "S2_FORMAT_CHECK",
+      "comparable_pairs": 3,
+      "directional": 3,
+      "left_only_classes": [
+        "CITES_OTHER_EVIDENCE"
+      ],
+      "right_only_classes": [
+        "CITES_COUNTERPART_MEDIATOR"
+      ],
+      "detail": "overall treatment contrast"
+    },
+    {
+      "left": "B_HIGH",
+      "right": "C_MEDIATOR_ABLATED",
+      "scenario_id": "S2_FORMAT_CHECK",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "mediator channel at matched familiarity text + revision"
+    },
+    {
+      "left": "C_MEDIATOR_ABLATED",
+      "right": "D_FAMILIARITY_EQUALIZED",
+      "scenario_id": "S2_FORMAT_CHECK",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "direct familiarity-text channel at matched revision + availability"
+    },
+    {
+      "left": "A_LOW",
+      "right": "D_FAMILIARITY_EQUALIZED",
+      "scenario_id": "S2_FORMAT_CHECK",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "revision-only effect at equalized effective familiarity"
+    },
+    {
+      "left": "A_LOW",
+      "right": "E_LOW_WITH_MEDIATOR",
+      "scenario_id": "S2_FORMAT_CHECK",
+      "comparable_pairs": 0,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": [],
+      "detail": "mediator availability WITHOUT familiarity (confound probe)"
+    }
+  ],
+  "call_accounting": {
+    "planned_scenes": 16,
+    "actual_scenes": 16,
+    "duplicate_scenes": 0,
+    "missing_scenes": 0,
+    "extra_scenes": 0,
+    "cognition_calls": 16,
+    "language_calls": 9,
+    "total_calls": 25,
+    "scheduled_calls_maximum": 32
+  },
+  "mediation": {
+    "treatment_effect": false,
+    "mediator_channel_effect": false,
+    "direct_text_channel_effect": false,
+    "revision_only_effect": false,
+    "availability_only_effect": false,
+    "mediation_supported": false,
+    "detail": "A↔B directional 0/0; B↔C 0/0; C↔D 0/0; A↔D 0/0; A↔E 0/0"
+  },
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "interventions": {
+    "C_MEDIATOR_ABLATED": "RETRIEVAL_MEDIATOR_ABLATION",
+    "D_FAMILIARITY_EQUALIZED": "FAMILIARITY_REPRESENTATION_EQUALIZATION",
+    "E_LOW_WITH_MEDIATOR": "CANONICAL_WORKING_REF_AVAILABILITY"
+  },
+  "detail": "at least one scheduled scene was not host-valid (transport/schema failure); no behavioral claim is authorized",
+  "verdict_hash": "sha256:76a5446a593b7ad0bc6e686ba8c45e6b55e7849071895e2599d8560b6c99f7ba"
+}

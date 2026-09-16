@@ -1,0 +1,152 @@
+{
+  "schema_version": "familiarity-history-causal-manifest-v0",
+  "experiment_id": "RELATIONSHIP_FAMILIARITY_HISTORY_CAUSAL_EXPERIMENT_V0",
+  "question": "different interaction history → real governed familiarity writer → different familiarity state → systematic cognition/behavior difference under the same model, scenario and base prompt — and is the difference mediated by familiarity?",
+  "subject": "subject-familiarity-history-causal",
+  "counterpart": "entity:alice",
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "conditions": [
+    "A_LOW",
+    "B_HIGH",
+    "C_MEDIATOR_ABLATED",
+    "D_FAMILIARITY_EQUALIZED",
+    "E_LOW_WITH_MEDIATOR"
+  ],
+  "scenarios": [
+    {
+      "id": "S1_CONVENTION_RECALL",
+      "utterance": "alice says: \"How do you want these status updates written?\"",
+      "primary": true
+    },
+    {
+      "id": "S2_FORMAT_CHECK",
+      "utterance": "alice says: \"Should I keep formatting these the way we agreed?\"",
+      "primary": false
+    }
+  ],
+  "replicates": 4,
+  "gates": {
+    "host_complete_required": true,
+    "cell_stability_min": 3,
+    "paired_directional_min": 3,
+    "ablation_returns_toward_low_min": 3,
+    "availability_control_must_not_reproduce": true,
+    "manipulation_required": true,
+    "same_corpus_required": true,
+    "seed_contamination_required": true,
+    "forbidden_behavior_vocabulary": [
+      "i trust",
+      "trust you",
+      "trust me",
+      "i like you",
+      "i love",
+      "affection",
+      "intimacy",
+      "we are friends",
+      "bonded",
+      "safe with you",
+      "depend on you"
+    ],
+    "statistical_significance_claim": false
+  },
+  "call_budget": {
+    "readiness": 2,
+    "per_scene_cognition": 1,
+    "per_scene_language_max": 1,
+    "max_total": 82,
+    "retries": 0
+  },
+  "replication_call_budget": {
+    "readiness": 0,
+    "max_total": 34
+  },
+  "scheduled_scenes": 40,
+  "scheduled_calls_maximum": 82,
+  "replication_scenes": 16,
+  "seed_contamination_gate": {
+    "required_fields": [
+      "seed_contains_governed_relationship_state",
+      "seeded_bundles_with_writer_authority",
+      "unreadable_seed_shapes"
+    ],
+    "required_values": {
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0
+    },
+    "per_cell": {
+      "A_LOW": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "B_HIGH": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "C_MEDIATOR_ABLATED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "D_FAMILIARITY_EQUALIZED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "E_LOW_WITH_MEDIATOR": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "F_LOW_FULL_CORPUS": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      }
+    },
+    "all_clean": true
+  },
+  "familiarity_values": {
+    "A_LOW": 0.03125,
+    "B_HIGH": 0.5,
+    "C_MEDIATOR_ABLATED": 0.5,
+    "D_FAMILIARITY_EQUALIZED": 0.5,
+    "E_LOW_WITH_MEDIATOR": 0.03125,
+    "F_LOW_FULL_CORPUS": 0.03125
+  },
+  "governed_authority_records": {
+    "A_LOW": 1,
+    "B_HIGH": 16,
+    "C_MEDIATOR_ABLATED": 16,
+    "D_FAMILIARITY_EQUALIZED": 16,
+    "E_LOW_WITH_MEDIATOR": 1,
+    "F_LOW_FULL_CORPUS": 1
+  },
+  "corpus_digest": "sha256:ea8db0fa05c58a84a748c9de6740c511c5d0d74958c758acc281e8e26fa1f6da",
+  "corpus_identical": true,
+  "deterministic_gate_passed": true,
+  "provider": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "digest_matches": true,
+    "server_version": "0.34.0",
+    "error": null
+  },
+  "model_run_authorized": true,
+  "hypothesis_tested": "HISTORY_PLUS_REAL_GOVERNED_FAMILIARITY_VS_BASELINE_SAME_MODEL_SCENARIO_PROMPT"
+}
