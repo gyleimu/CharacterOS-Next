@@ -1,0 +1,37 @@
+{
+  "schema_version": "bcv1-rendered-requests-v0",
+  "cells": {
+    "A_LOW": {
+      "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+      "user_hash": "sha256:4ecd3e3ce5df2ed1b31775f81b24429f14f769ede9d64cf1cc55a63fc12a7eec",
+      "belief_section_hash": "sha256:2fc06c60ca97022241934bc7372d462f523374840a1858115ad34fd42156a81b",
+      "non_belief_user_hash": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145",
+      "projection_hash": "sha256:567412d59bfdb095a124f6ef944c7a53d0a0a7bb1f63e493e8910aba1154cdc7",
+      "belief_section": "[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba\",\"proposition_label\":\"The service passage is usable.\",\"credence\":0.45}"
+    },
+    "B_HIGH": {
+      "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+      "user_hash": "sha256:d754dd93bdfc716331057f3a8a26ffc36eaa0d4c11c207bd8e3ab4be164001a8",
+      "belief_section_hash": "sha256:f355812cd43b3149190d2e09924bfba8a2add170defdda2cb0f569b5ae23706f",
+      "non_belief_user_hash": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145",
+      "projection_hash": "sha256:548f2ded5375bc03d381bf97365ce6a80b8b349c1c7db064baa9b39e9036ef91",
+      "belief_section": "[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba\",\"proposition_label\":\"The service passage is usable.\",\"credence\":0.6500000000000001}"
+    },
+    "C_HIGH_ABLATED": {
+      "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+      "user_hash": "sha256:a42e6ac2445d65acf92617697269db5ab32dc22696b2311f836ef000acbd85b7",
+      "belief_section_hash": "sha256:7008280f178737078277cc849a3385febdc1ecf33ecdc778d5179db2c16ec1b5",
+      "non_belief_user_hash": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145",
+      "projection_hash": "sha256:d9d5f3243c2d3c9204c925b85550093b06095ca4b711315ceb6a2b1f5cd80b1b",
+      "belief_section": "[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing 0 of 0 canonical belief item(s)\n(none)"
+    },
+    "D_LOW_EQUALIZED": {
+      "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+      "user_hash": "sha256:d754dd93bdfc716331057f3a8a26ffc36eaa0d4c11c207bd8e3ab4be164001a8",
+      "belief_section_hash": "sha256:f355812cd43b3149190d2e09924bfba8a2add170defdda2cb0f569b5ae23706f",
+      "non_belief_user_hash": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145",
+      "projection_hash": "sha256:548f2ded5375bc03d381bf97365ce6a80b8b349c1c7db064baa9b39e9036ef91",
+      "belief_section": "[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba\",\"proposition_label\":\"The service passage is usable.\",\"credence\":0.6500000000000001}"
+    }
+  }
+}

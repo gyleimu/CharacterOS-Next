@@ -1,0 +1,38 @@
+{
+  "low": {
+    "authority": "restoreSubjectStateV4AuthoritativelyV0",
+    "head_revision": 3,
+    "head_commit_ref": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811@commit:10f59c7dcd079da0e50a09ffca2d0dd81e7203d27f6ccf7a2db19410d3be423a",
+    "state_hash": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+    "snapshot_hash": "sha256:2131026f4f17e49672876baa70f9eb1497c8d5db9fd8b2eb639656ef42f0bdef",
+    "subject_id": "subject-belief-causal-confirmatory",
+    "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+    "credence": 0.45,
+    "status": "RESTORED"
+  },
+  "high": {
+    "authority": "restoreSubjectStateV4AuthoritativelyV0",
+    "head_revision": 3,
+    "head_commit_ref": "t-belief-02888af1272bcfe55dcd424e7f7d57d3ed76ae44adaf687f43fde93db9601203@commit:2432f114e8272954081f14292b91297830f0787cc04c7d2dfc7c87fd9926b22e",
+    "state_hash": "sha256:a04388895f298e53c8d08decaf32c28a384117c1f3804de2fe1f1a0693e33d43",
+    "snapshot_hash": "sha256:b90c9852abdb09e05c56aea06ebe5c4856a147031be38e15883bbf63d5aae600",
+    "subject_id": "subject-belief-causal-confirmatory",
+    "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+    "credence": 0.6500000000000001,
+    "status": "RESTORED"
+  },
+  "low_belief_items": [
+    {
+      "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+      "proposition_label": "The service passage is usable.",
+      "credence": 0.45
+    }
+  ],
+  "high_belief_items": [
+    {
+      "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+      "proposition_label": "The service passage is usable.",
+      "credence": 0.6500000000000001
+    }
+  ]
+}

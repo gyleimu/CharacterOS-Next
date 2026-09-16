@@ -10,7 +10,9 @@ export default defineConfig({
       "evals/conformance/**/*.test.ts",
       // Research measurement-protocol harness tests (methodology slice: the
       // integrity laws the next confirmatory experiment depends on).
-      "research/measurement-protocols/**/*.test.ts"
+      "research/measurement-protocols/**/*.test.ts",
+      // Confirmatory preregistration harness tests (offline, no model calls).
+      "research/experiments/belief-causal-confirmatory-stochastic-v1/**/*.test.ts"
     ],
     allowOnly: false,
     // Environment tolerance ONLY (assertions are unchanged): the deterministic

@@ -1,0 +1,626 @@
+{
+  "schema_version": "bcv1-precheck-v0",
+  "experiment_id": "BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1",
+  "model_calls": 0,
+  "frozen_parameters": {
+    "protocol_id": "STOCHASTIC_EXECUTOR_CAUSAL_MEASUREMENT_PROTOCOL_V0",
+    "delta_min": 0.2,
+    "epsilon": 0.15,
+    "n_per_cell_per_phase": 200,
+    "calibration_draws": 50,
+    "conflation_gate": "NO_DETERMINISTIC_CLASSIFIER_FLAG"
+  },
+  "classifier_self_check": {
+    "positive_case_flag": true,
+    "negative_case_flag": false
+  },
+  "ok": true,
+  "failed": [],
+  "checks": {
+    "P1_SEED_BELIEF_COUNT_ZERO": {
+      "passed": true,
+      "detail": {
+        "low": 0,
+        "high": 0
+      }
+    },
+    "P2_LOW_FORMATION_PROGRESSION": {
+      "passed": true,
+      "detail": [
+        0.55,
+        0.5,
+        0.45
+      ]
+    },
+    "P3_HIGH_FORMATION_PROGRESSION": {
+      "passed": true,
+      "detail": [
+        0.55,
+        0.6000000000000001,
+        0.6500000000000001
+      ]
+    },
+    "P4_SAME_PROPOSITION_IDENTITY": {
+      "passed": true,
+      "detail": {
+        "low": {
+          "canonical_label": "The service passage is usable.",
+          "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+          "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba"
+        },
+        "high": {
+          "canonical_label": "The service passage is usable.",
+          "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+          "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba"
+        }
+      }
+    },
+    "P5_BRANCH_ISOLATION": {
+      "passed": true,
+      "detail": {
+        "distinct_repository_digests": true,
+        "distinct_genesis_envelopes": true,
+        "shared_first_formation_identity": true,
+        "shared_transitions_are_only_the_first_formation": true,
+        "subsequent_transitions_disjoint": true,
+        "same_subject_id": true,
+        "same_proposition_key": true,
+        "same_proposition_id": true,
+        "same_state_revision": true,
+        "isolated": true,
+        "detail": {
+          "low_transitions": [
+            "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+            "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811"
+          ],
+          "high_transitions": [
+            "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "t-belief-a4a0fdcf2a3f08770249374f56083611b2d93e5458b7d785bf2dd9361a3d840b",
+            "t-belief-02888af1272bcfe55dcd424e7f7d57d3ed76ae44adaf687f43fde93db9601203"
+          ],
+          "low_later_transitions": [
+            "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+            "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811"
+          ],
+          "high_later_transitions": [
+            "t-belief-a4a0fdcf2a3f08770249374f56083611b2d93e5458b7d785bf2dd9361a3d840b",
+            "t-belief-02888af1272bcfe55dcd424e7f7d57d3ed76ae44adaf687f43fde93db9601203"
+          ],
+          "shared_transition_ids": [
+            "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359"
+          ],
+          "repository_revision_labels": {
+            "low": "R0",
+            "high": "R0"
+          },
+          "repository_digests": {
+            "low": "sha256:732f5499b231aaf31aaa8b6c279076c962fc4d8bee0d2920e3ba9104d4dd3bc1",
+            "high": "sha256:971370ed5a120dfbe99a1cacadfc4508fa93f094f81b93211b0186742a39b1bf"
+          },
+          "note": "revision labels are per-repository counters; identity isolation is decided on content digests, genesis envelopes and transition sets"
+        }
+      }
+    },
+    "P6_NON_BELIEF_CANONICAL_EQUALITY": {
+      "passed": true,
+      "detail": {
+        "nonBeliefLow": "sha256:6c5e9932644b84e28e49de2547440c5b85047f071456385d3bbde88804a19a04",
+        "nonBeliefHigh": "sha256:6c5e9932644b84e28e49de2547440c5b85047f071456385d3bbde88804a19a04"
+      }
+    },
+    "P9_RELATIONSHIP_EQUALITY": {
+      "passed": true,
+      "detail": {}
+    },
+    "P10_AFFECT_EQUALITY": {
+      "passed": true,
+      "detail": {}
+    },
+    "P11_PERSONALITY_EQUALITY": {
+      "passed": true,
+      "detail": {}
+    },
+    "P7_RAW_HISTORY_MODEL_FACING_LEAKAGE": {
+      "passed": true,
+      "detail": {
+        "leakedRefs": [],
+        "leakedScenes": [],
+        "leakedLabels": []
+      }
+    },
+    "P8_MEMORY_RETRIEVAL_EXPOSURE_ZERO": {
+      "passed": true,
+      "detail": {
+        "retrievalSections": [
+          {
+            "cell": "A_LOW",
+            "section": "  (none)"
+          },
+          {
+            "cell": "B_HIGH",
+            "section": "  (none)"
+          },
+          {
+            "cell": "C_HIGH_ABLATED",
+            "section": "  (none)"
+          },
+          {
+            "cell": "D_LOW_EQUALIZED",
+            "section": "  (none)"
+          }
+        ]
+      }
+    },
+    "P12_CURRENT_SCENE_BYTE_EQUALITY": {
+      "passed": true,
+      "detail": {
+        "scene_hash": "sha256:7d8f53f2cd42d170679b847756b0459921df8263f73dcc61b87b37872c9611d2",
+        "scene_line_hash": "sha256:12954e60379e2638d0b132ec8f9011e7d874450bfc32398d8c23696118c10ff3"
+      }
+    },
+    "P13_B_D_MEDIATOR_BYTE_EQUALITY": {
+      "passed": true,
+      "detail": {
+        "b_user": "sha256:d754dd93bdfc716331057f3a8a26ffc36eaa0d4c11c207bd8e3ab4be164001a8",
+        "d_user": "sha256:d754dd93bdfc716331057f3a8a26ffc36eaa0d4c11c207bd8e3ab4be164001a8"
+      }
+    },
+    "P14_A_B_ONLY_BELIEF_SEMANTIC_DIFFERENCE": {
+      "passed": true,
+      "detail": {
+        "a_non_belief": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145",
+        "b_non_belief": "sha256:2a6a2b1f4cce7e9b0facb126048d57a3bd572d38b458967742647ce1a2410145"
+      }
+    },
+    "P15_C_INTERVENTION_HIGH_DURABLE_UNCHANGED": {
+      "passed": true,
+      "detail": {
+        "high_items": [
+          {
+            "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+            "proposition_label": "The service passage is usable.",
+            "credence": 0.6500000000000001
+          }
+        ]
+      }
+    },
+    "P16_D_INTERVENTION_LOW_DURABLE_UNCHANGED": {
+      "passed": true,
+      "detail": {
+        "low_items": [
+          {
+            "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+            "proposition_label": "The service passage is usable.",
+            "credence": 0.45
+          }
+        ]
+      }
+    },
+    "P17_PRODUCTION_WRITE_DURING_INTERVENTION_FALSE": {
+      "passed": true,
+      "detail": {
+        "note": "interventions are read-side only (applyBeliefView returns a new view object); the durable snapshot hashes before and after rendering are identical",
+        "low_durable_hash": "sha256:a159d1da8e23d48798e99d86739de5bd5818a3ed3829498cdd1d5907656b7d67",
+        "high_durable_hash": "sha256:a342dbc32a19ace7e86a763c1ce5d5d4d9c9154ee53e6adf1bcae6a9fbe226be"
+      }
+    },
+    "P18_FULL_TRUTH_SCAN_SCHEMA_COVERAGE": {
+      "passed": true,
+      "detail": {
+        "exact_scan_surface": [
+          "clarification_basis.missing_information",
+          "clarification_basis.needed_for",
+          "cognition.current_intent",
+          "cognition.reasoning_summary",
+          "factual_assessment.claims[*].derivation.input",
+          "factual_assessment.claims[*].derivation.source_expression",
+          "factual_assessment.claims[*].derivation.source_instruction",
+          "factual_assessment.claims[*].derivation.source_query",
+          "factual_assessment.claims[*].derivation.source_rule",
+          "factual_assessment.claims[*].text",
+          "subjective_selection.stance",
+          "subjective_selection.subjective_rationale"
+        ],
+        "leaves": [
+          {
+            "path": "clarification_basis.current_observation_ref",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "B",
+            "reason": "opaque handle/ref array: must never be read as prose"
+          },
+          {
+            "path": "clarification_basis.missing_information",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "clarification_basis.needed_for",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "cognition.action_intent",
+            "json_types": [
+              "null"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (null)"
+          },
+          {
+            "path": "cognition.confidence",
+            "json_types": [
+              "number"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (number)"
+          },
+          {
+            "path": "cognition.considered_handles[*]",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "B",
+            "reason": "opaque handle/ref array: must never be read as prose"
+          },
+          {
+            "path": "cognition.current_intent",
+            "json_types": [
+              "null",
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "cognition.evidence_handles[*]",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "B",
+            "reason": "opaque handle/ref array: must never be read as prose"
+          },
+          {
+            "path": "cognition.reasoning_summary",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "cognition.relevant_memory_handles[*]",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "B",
+            "reason": "opaque handle/ref array: must never be read as prose"
+          },
+          {
+            "path": "cognition.schema_version",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "cognition.uncertainty",
+            "json_types": [
+              "number"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (number)"
+          },
+          {
+            "path": "communication_directive.kind",
+            "json_types": [
+              "enum"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.claimed_result",
+            "json_types": [
+              "integer",
+              "string"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verified structural value"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.input",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.operands.left",
+            "json_types": [
+              "integer"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (integer)"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.operands.operator",
+            "json_types": [
+              "enum"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.operands.right",
+            "json_types": [
+              "integer"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (integer)"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.source_expression",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.source_instruction",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.source_query",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "factual_assessment.claims[*].derivation.source_rule",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "factual_assessment.claims[*].kind",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "factual_assessment.claims[*].operation",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "factual_assessment.claims[*].source_handles[*]",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "B",
+            "reason": "opaque handle/ref array: must never be read as prose"
+          },
+          {
+            "path": "factual_assessment.claims[*].text",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "response_semantics.act",
+            "json_types": [
+              "enum"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "response_semantics.claim_index",
+            "json_types": [
+              "integer"
+            ],
+            "leaf_class": "D",
+            "reason": "host-verifiable structural value (integer)"
+          },
+          {
+            "path": "response_semantics.kind",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "schema_version",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "subjective_selection.kind",
+            "json_types": [
+              "const"
+            ],
+            "leaf_class": "C",
+            "reason": "closed enum/const atom"
+          },
+          {
+            "path": "subjective_selection.stance",
+            "json_types": [
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          },
+          {
+            "path": "subjective_selection.subjective_rationale",
+            "json_types": [
+              "null",
+              "string"
+            ],
+            "leaf_class": "A",
+            "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+          }
+        ],
+        "model_authored_semantic_leaves": [
+          "clarification_basis.missing_information",
+          "clarification_basis.needed_for",
+          "cognition.current_intent",
+          "cognition.reasoning_summary",
+          "factual_assessment.claims[*].derivation.input",
+          "factual_assessment.claims[*].derivation.source_expression",
+          "factual_assessment.claims[*].derivation.source_instruction",
+          "factual_assessment.claims[*].derivation.source_query",
+          "factual_assessment.claims[*].derivation.source_rule",
+          "factual_assessment.claims[*].text",
+          "subjective_selection.stance",
+          "subjective_selection.subjective_rationale"
+        ],
+        "unscanned_model_authored_semantic_text": [],
+        "opaque_ref_leaves": [
+          "clarification_basis.current_observation_ref",
+          "cognition.considered_handles[*]",
+          "cognition.evidence_handles[*]",
+          "cognition.relevant_memory_handles[*]",
+          "factual_assessment.claims[*].source_handles[*]"
+        ],
+        "enum_leaves": [
+          "cognition.schema_version",
+          "communication_directive.kind",
+          "factual_assessment.claims[*].derivation.operands.operator",
+          "factual_assessment.claims[*].kind",
+          "factual_assessment.claims[*].operation",
+          "response_semantics.act",
+          "response_semantics.kind",
+          "schema_version",
+          "subjective_selection.kind"
+        ],
+        "structural_leaves": [
+          "cognition.action_intent",
+          "cognition.confidence",
+          "cognition.uncertainty",
+          "factual_assessment.claims[*].derivation.claimed_result",
+          "factual_assessment.claims[*].derivation.operands.left",
+          "factual_assessment.claims[*].derivation.operands.right",
+          "response_semantics.claim_index"
+        ],
+        "frozen_protocol_declared_paths_covered": true,
+        "subjective_selection_covered": true,
+        "derivation_text_covered": true,
+        "schema_hash": "sha256:e9da721b67903c40e40f32dc1989456924923167e921e47cdd2231a78ee771b9"
+      }
+    },
+    "P19_MISSING_BLOB_VERIFIER_REGRESSION": {
+      "passed": true,
+      "detail": {
+        "threw": false,
+        "result": {
+          "ok": false,
+          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at 1aeb6d9a9c884ec1cc03401d819f20d519d473e9: Command failed: git cat-file blob 1aeb6d9a9c884ec1cc03401d819f20d519d473e9:research/this/path/does/not/exist.ts"
+        }
+      }
+    },
+    "P20_TRIAL_IDENTITIES_UNIQUE": {
+      "passed": true,
+      "detail": {
+        "total": 1600,
+        "unique": 1600
+      }
+    },
+    "P21_SCHEDULE_COMPLETE": {
+      "passed": true,
+      "detail": {
+        "primary": 800,
+        "replication": 800,
+        "primary_range": {
+          "start": 1,
+          "end": 200
+        },
+        "replication_range": {
+          "start": 201,
+          "end": 400
+        }
+      }
+    },
+    "P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO": {
+      "passed": true,
+      "detail": {
+        "scanned": [
+          "./precheck.ts",
+          "./histories.ts",
+          "./verdict.ts",
+          "./scan-surface.ts",
+          "./contract.ts"
+        ],
+        "violations": [],
+        "confirmatory_count_contribution": 0
+      }
+    },
+    "P23_MODEL_CALLS_ZERO": {
+      "passed": true,
+      "detail": {
+        "deepseek_calls": 0,
+        "ollama_calls": 0,
+        "calibration_calls": 0,
+        "pilot_calls": 0,
+        "primary_calls": 0,
+        "replication_calls": 0,
+        "total_model_calls": 0
+      }
+    },
+    "P24_VERDICT_LAW_CONSUMES_HARD_GATES": {
+      "passed": true,
+      "detail": {
+        "gates": [
+          "PREREG_SHA_MATCH",
+          "MANIFEST_VALID",
+          "SEED_BELIEF_EMPTY",
+          "FORMATION_ATTESTATION",
+          "RAW_HISTORY_ZERO",
+          "MEMORY_RETRIEVAL_ZERO",
+          "NON_BELIEF_STATE_EQUAL",
+          "A_B_ONLY_BELIEF_DIFFERENCE",
+          "B_D_FULL_INPUT_IDENTITY",
+          "INTERVENTION_NO_PRODUCTION_WRITE",
+          "TRUTH_CONFLATION_ZERO_FLAGS",
+          "HOST_VALIDITY",
+          "CELL_INVALID_IMBALANCE",
+          "CALL_ACCOUNTING",
+          "SECRET_SAFETY",
+          "PRIMARY_FULL_CONJUNCTION",
+          "REPLICATION_FULL_CONJUNCTION"
+        ],
+        "verdict": "BELIEF_CAUSAL_RESULT_INCONCLUSIVE"
+      }
+    }
+  }
+}

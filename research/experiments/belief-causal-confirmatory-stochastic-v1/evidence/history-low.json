@@ -1,0 +1,1539 @@
+{
+  "condition": "LOW",
+  "subject_id": "subject-belief-causal-confirmatory",
+  "records": [
+    {
+      "ref": "episode:bcv1-low-2",
+      "payload_hash": "sha256:6bab982b9fc9db512026a9b66dac7042f396437046686d96a7df4a2f6a45295e"
+    },
+    {
+      "ref": "episode:bcv1-low-3",
+      "payload_hash": "sha256:bd6bad5af222955d8d21f078b3433c109607f10847f51399bab55a5fcb695603"
+    },
+    {
+      "ref": "episode:bcv1-shared-1",
+      "payload_hash": "sha256:c0cd8bc534709e84be65bf19384e1842c225aad024d40b62d5f745bb31317fcd"
+    }
+  ],
+  "binding": {
+    "repository_revision": "R0",
+    "repository_revision_hash": "sha256:bee67900ae7481cd50ec5bc1597985136225b55583f58df3d95ed72d6ed9b0bd"
+  },
+  "genesis_envelope": {
+    "schema_version": "subject-state-v4-persistence-envelope-v0",
+    "mode": "EXPLICIT_V4_FOUNDATION_V0",
+    "snapshot": {
+      "schema_version": "subject-state-v4",
+      "identity": {
+        "subject_id": "subject-belief-causal-confirmatory",
+        "display_name": "",
+        "origin_metadata": {
+          "creation_source": null,
+          "seed_version": null
+        },
+        "identity_anchors": [],
+        "self_schema_seed_refs": []
+      },
+      "traits_seed": {
+        "dimensions": {}
+      },
+      "personality": {
+        "schema_version": "personality-state-v0",
+        "dimensions": []
+      },
+      "memory_state": {
+        "working_refs": [],
+        "active_episode_refs": [],
+        "autobiographical_index_revision": null,
+        "repository_revision": "R0",
+        "consolidation_cursor": null,
+        "retrieval_config": {
+          "profile_id": "RETRIEVAL_V0",
+          "affect_congruence_enabled": false,
+          "recent_trace_capacity": 64
+        },
+        "recent_retrieval_trace": [],
+        "lifecycle_metadata": {},
+        "pending_encoding_refs": [],
+        "last_retrieval_at": null
+      },
+      "beliefs": {
+        "schema_version": "belief-state-v0",
+        "items": []
+      },
+      "relationships": {
+        "schema_version": "relationship-state-v0",
+        "counterparts": []
+      },
+      "affect": {
+        "schema_version": "canonical-affect-v0",
+        "valence": 0,
+        "activation": 0.2
+      },
+      "regulation": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0,
+        "last_update": null
+      },
+      "context": {
+        "scene": "idle",
+        "task": null,
+        "focus_refs": [],
+        "active_entity_refs": [],
+        "environment_refs": [
+          "environment:room-1"
+        ],
+        "current_observation_ref": null
+      },
+      "mechanism_config": {
+        "affect_profile": {
+          "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+          "timebase": "tick"
+        },
+        "feature_flags": {},
+        "thresholds": {}
+      },
+      "trace_window": {
+        "trace_window_schema_version": "trace-window-v1",
+        "capacity": 64,
+        "cursor": {
+          "last_history_sequence": 0,
+          "offloaded_through_sequence": 0,
+          "offloaded_through_trace_ref": null
+        },
+        "entries": []
+      },
+      "runtime_metadata": {
+        "subject_version": "subject-v0",
+        "schema_lineage": "subject-state-v4",
+        "state_revision": 0,
+        "logical_time": 0,
+        "last_transition_time": null,
+        "last_transition_type": null,
+        "created_at": 0,
+        "updated_at": 0
+      }
+    },
+    "state_hash": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+    "snapshot_hash": "sha256:caf8ec0bc1e8bf95d47535f53a3532a8623a623f3cbebf469e7c6e885c27650b",
+    "full_checksum": "sha256:1b85327a243e07eeb1671c4f83e8797c958a26804e25e9fff74d962ff5de822a",
+    "repository_binding": {
+      "repository_revision": "R0",
+      "repository_revision_hash": "sha256:bee67900ae7481cd50ec5bc1597985136225b55583f58df3d95ed72d6ed9b0bd"
+    }
+  },
+  "bundles": [
+    {
+      "commit_version": "atomic-commit-v2",
+      "serialization_version": "canonical-json-v1",
+      "canonical_proposal": {
+        "schema_version": "canonical-transition-proposal-v1",
+        "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "expected_state_revision": 0,
+        "time_input": {
+          "kind": "OCCURRENCE",
+          "occurrence_logical_time": 0
+        },
+        "cause_refs": [
+          "episode:bcv1-shared-1"
+        ],
+        "domain_deltas": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "expected_repository_revision": null,
+            "operations": [
+              {
+                "path": "/beliefs",
+                "value": {
+                  "schema_version": "belief-state-v0",
+                  "items": [
+                    {
+                      "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+                      "proposition_label": "The service passage is usable.",
+                      "credence": 0.55
+                    }
+                  ]
+                }
+              }
+            ],
+            "provenance_refs": [
+              "episode:bcv1-shared-1"
+            ]
+          }
+        ],
+        "external_refs": []
+      },
+      "writer_authority": null,
+      "commit_ref": "commit:8e2a13de198f281ae79629e00eface476ecc4e7d57e834ce41a6ea5f1d147700",
+      "subject_id": "subject-belief-causal-confirmatory",
+      "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+      "transition_type": "Belief",
+      "payload_fingerprint": "sha256:ba604ba41a833f33a0d71a0b0f141bdce5221da26dde840936eb0cf291852ab1",
+      "prepared_result_ref": "workflow:w-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+      "expected_revision": 0,
+      "next_revision": 1,
+      "identity_record_version_before": 1,
+      "previous_commit_ref": null,
+      "previous_record_checksum": null,
+      "next_snapshot": {
+        "schema_version": "subject-state-v4",
+        "identity": {
+          "subject_id": "subject-belief-causal-confirmatory",
+          "display_name": "",
+          "origin_metadata": {
+            "creation_source": null,
+            "seed_version": null
+          },
+          "identity_anchors": [],
+          "self_schema_seed_refs": []
+        },
+        "traits_seed": {
+          "dimensions": {}
+        },
+        "personality": {
+          "schema_version": "personality-state-v0",
+          "dimensions": []
+        },
+        "memory_state": {
+          "working_refs": [],
+          "active_episode_refs": [],
+          "autobiographical_index_revision": null,
+          "repository_revision": "R0",
+          "consolidation_cursor": null,
+          "retrieval_config": {
+            "profile_id": "RETRIEVAL_V0",
+            "affect_congruence_enabled": false,
+            "recent_trace_capacity": 64
+          },
+          "recent_retrieval_trace": [],
+          "lifecycle_metadata": {},
+          "pending_encoding_refs": [],
+          "last_retrieval_at": null
+        },
+        "beliefs": {
+          "schema_version": "belief-state-v0",
+          "items": [
+            {
+              "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+              "proposition_label": "The service passage is usable.",
+              "credence": 0.55
+            }
+          ]
+        },
+        "relationships": {
+          "schema_version": "relationship-state-v0",
+          "counterparts": []
+        },
+        "affect": {
+          "schema_version": "canonical-affect-v0",
+          "valence": 0,
+          "activation": 0.2
+        },
+        "regulation": {
+          "energy": 1,
+          "stress": 0,
+          "arousal": 0.5,
+          "fatigue": 0,
+          "last_update": null
+        },
+        "context": {
+          "scene": "idle",
+          "task": null,
+          "focus_refs": [],
+          "active_entity_refs": [],
+          "environment_refs": [
+            "environment:room-1"
+          ],
+          "current_observation_ref": null
+        },
+        "mechanism_config": {
+          "affect_profile": {
+            "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+            "timebase": "tick"
+          },
+          "feature_flags": {},
+          "thresholds": {}
+        },
+        "trace_window": {
+          "trace_window_schema_version": "trace-window-v1",
+          "capacity": 64,
+          "cursor": {
+            "last_history_sequence": 1,
+            "offloaded_through_sequence": 0,
+            "offloaded_through_trace_ref": null
+          },
+          "entries": [
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 1,
+              "subject_revision_before": 0,
+              "subject_revision_after": 1,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-shared-1"
+              ],
+              "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+              "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+            }
+          ]
+        },
+        "runtime_metadata": {
+          "subject_version": "subject-v0",
+          "schema_lineage": "subject-state-v4",
+          "state_revision": 1,
+          "logical_time": 0,
+          "last_transition_time": 0,
+          "last_transition_type": "Belief",
+          "created_at": 0,
+          "updated_at": 0
+        }
+      },
+      "logical_time_before": 0,
+      "logical_time_after": 0,
+      "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+      "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+      "snapshot_hash_before": "sha256:caf8ec0bc1e8bf95d47535f53a3532a8623a623f3cbebf469e7c6e885c27650b",
+      "snapshot_hash_after": "sha256:aa8d87339b0003f8331c9be5ea13d0eb560e691fed88b2becfb936d6ff78e093",
+      "trace_entry": {
+        "trace_schema_version": "trace-v1",
+        "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+        "transition_type": "Belief",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "history_sequence": 1,
+        "subject_revision_before": 0,
+        "subject_revision_after": 1,
+        "logical_time": 0,
+        "rule_ids": [
+          "HASH-DET-001",
+          "SS-AUTH-001",
+          "SS-IMMUTABLE-001",
+          "SS-REVISION-001",
+          "TR-ATOMIC-001",
+          "TRACE-ATOMIC-001",
+          "TRACE-CONTENT-001"
+        ],
+        "cause_refs": [
+          "episode:bcv1-shared-1"
+        ],
+        "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+        "domain_mutations": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "layers": [
+              "beliefs"
+            ],
+            "field_changes": [
+              {
+                "path": "/beliefs",
+                "operation": "SET"
+              }
+            ]
+          }
+        ],
+        "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+        "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+        "memory_revision_before": "R0",
+        "memory_revision_after": "R0",
+        "outcome": "COMMITTED",
+        "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+      },
+      "trace_window": {
+        "trace_window_schema_version": "trace-window-v1",
+        "capacity": 64,
+        "cursor": {
+          "last_history_sequence": 1,
+          "offloaded_through_sequence": 0,
+          "offloaded_through_trace_ref": null
+        },
+        "entries": [
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 1,
+            "subject_revision_before": 0,
+            "subject_revision_after": 1,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-shared-1"
+            ],
+            "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+            "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+          }
+        ]
+      },
+      "mutation_history_link": {
+        "history_sequence": 1,
+        "previous_trace_ref": null,
+        "current_trace_ref": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+      },
+      "transition_record": {
+        "schema_version": "transition-record-v1",
+        "record_version": 2,
+        "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+        "payload_fingerprint": "sha256:ba604ba41a833f33a0d71a0b0f141bdce5221da26dde840936eb0cf291852ab1",
+        "fingerprint_version": "proposal-fingerprint-v1",
+        "first_seen_sequence": 1,
+        "attempts": [
+          {
+            "attempt_sequence": 1,
+            "status": "COMMITTED",
+            "revision_before": 0,
+            "revision_after": 1,
+            "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+            "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "result_ref": "result:aa737259e3d124b8d9e35ed5466f3f26a82281bb61eadc4bb2ee19980d7d4c7e",
+            "prepared_result_ref": "workflow:w-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "trace_ref": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0",
+            "audit_ref": null,
+            "error_code": null,
+            "reason": null
+          }
+        ],
+        "reuse_conflicts": [],
+        "terminal_status": "COMMITTED",
+        "terminal_result_ref": "result:aa737259e3d124b8d9e35ed5466f3f26a82281bb61eadc4bb2ee19980d7d4c7e"
+      },
+      "canonical_result": {
+        "schema_version": "canonical-commit-result-v1",
+        "status": "COMMITTED",
+        "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "payload_fingerprint": "sha256:ba604ba41a833f33a0d71a0b0f141bdce5221da26dde840936eb0cf291852ab1",
+        "previous_revision": 0,
+        "next_revision": 1,
+        "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+        "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+        "snapshot_hash_after": "sha256:aa8d87339b0003f8331c9be5ea13d0eb560e691fed88b2becfb936d6ff78e093",
+        "trace_ref": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0",
+        "commit_ref": "commit:8e2a13de198f281ae79629e00eface476ecc4e7d57e834ce41a6ea5f1d147700",
+        "result_ref": "result:aa737259e3d124b8d9e35ed5466f3f26a82281bb61eadc4bb2ee19980d7d4c7e"
+      },
+      "repository_revision_bindings": [
+        {
+          "repository_revision": "R0",
+          "repository_revision_hash": "sha256:bee67900ae7481cd50ec5bc1597985136225b55583f58df3d95ed72d6ed9b0bd"
+        }
+      ],
+      "record_checksum": "sha256:932ae5a7fae4d1d8f5f5e2ee1098510ed3aded833c2fc2d60920ec1aeaeaa1af"
+    },
+    {
+      "commit_version": "atomic-commit-v2",
+      "serialization_version": "canonical-json-v1",
+      "canonical_proposal": {
+        "schema_version": "canonical-transition-proposal-v1",
+        "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "expected_state_revision": 1,
+        "time_input": {
+          "kind": "OCCURRENCE",
+          "occurrence_logical_time": 0
+        },
+        "cause_refs": [
+          "episode:bcv1-low-2"
+        ],
+        "domain_deltas": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "expected_repository_revision": null,
+            "operations": [
+              {
+                "path": "/beliefs",
+                "value": {
+                  "schema_version": "belief-state-v0",
+                  "items": [
+                    {
+                      "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+                      "proposition_label": "The service passage is usable.",
+                      "credence": 0.5
+                    }
+                  ]
+                }
+              }
+            ],
+            "provenance_refs": [
+              "episode:bcv1-low-2"
+            ]
+          }
+        ],
+        "external_refs": []
+      },
+      "writer_authority": null,
+      "commit_ref": "commit:47f5cfcab5dafe4f7a1f1be703b1b88c333c4bc15950835db9afa80413c1b0d1",
+      "subject_id": "subject-belief-causal-confirmatory",
+      "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+      "transition_type": "Belief",
+      "payload_fingerprint": "sha256:ca9ad084dff9e70f4ec61a5ee9df9ad00cf33a0f61ba3bef18c482342d2b22ca",
+      "prepared_result_ref": "workflow:w-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+      "expected_revision": 1,
+      "next_revision": 2,
+      "identity_record_version_before": 1,
+      "previous_commit_ref": "commit:8e2a13de198f281ae79629e00eface476ecc4e7d57e834ce41a6ea5f1d147700",
+      "previous_record_checksum": "sha256:932ae5a7fae4d1d8f5f5e2ee1098510ed3aded833c2fc2d60920ec1aeaeaa1af",
+      "next_snapshot": {
+        "schema_version": "subject-state-v4",
+        "identity": {
+          "subject_id": "subject-belief-causal-confirmatory",
+          "display_name": "",
+          "origin_metadata": {
+            "creation_source": null,
+            "seed_version": null
+          },
+          "identity_anchors": [],
+          "self_schema_seed_refs": []
+        },
+        "traits_seed": {
+          "dimensions": {}
+        },
+        "personality": {
+          "schema_version": "personality-state-v0",
+          "dimensions": []
+        },
+        "memory_state": {
+          "working_refs": [],
+          "active_episode_refs": [],
+          "autobiographical_index_revision": null,
+          "repository_revision": "R0",
+          "consolidation_cursor": null,
+          "retrieval_config": {
+            "profile_id": "RETRIEVAL_V0",
+            "affect_congruence_enabled": false,
+            "recent_trace_capacity": 64
+          },
+          "recent_retrieval_trace": [],
+          "lifecycle_metadata": {},
+          "pending_encoding_refs": [],
+          "last_retrieval_at": null
+        },
+        "beliefs": {
+          "schema_version": "belief-state-v0",
+          "items": [
+            {
+              "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+              "proposition_label": "The service passage is usable.",
+              "credence": 0.5
+            }
+          ]
+        },
+        "relationships": {
+          "schema_version": "relationship-state-v0",
+          "counterparts": []
+        },
+        "affect": {
+          "schema_version": "canonical-affect-v0",
+          "valence": 0,
+          "activation": 0.2
+        },
+        "regulation": {
+          "energy": 1,
+          "stress": 0,
+          "arousal": 0.5,
+          "fatigue": 0,
+          "last_update": null
+        },
+        "context": {
+          "scene": "idle",
+          "task": null,
+          "focus_refs": [],
+          "active_entity_refs": [],
+          "environment_refs": [
+            "environment:room-1"
+          ],
+          "current_observation_ref": null
+        },
+        "mechanism_config": {
+          "affect_profile": {
+            "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+            "timebase": "tick"
+          },
+          "feature_flags": {},
+          "thresholds": {}
+        },
+        "trace_window": {
+          "trace_window_schema_version": "trace-window-v1",
+          "capacity": 64,
+          "cursor": {
+            "last_history_sequence": 2,
+            "offloaded_through_sequence": 0,
+            "offloaded_through_trace_ref": null
+          },
+          "entries": [
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 1,
+              "subject_revision_before": 0,
+              "subject_revision_after": 1,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-shared-1"
+              ],
+              "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+              "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+            },
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 2,
+              "subject_revision_before": 1,
+              "subject_revision_after": 2,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-low-2"
+              ],
+              "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+              "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+            }
+          ]
+        },
+        "runtime_metadata": {
+          "subject_version": "subject-v0",
+          "schema_lineage": "subject-state-v4",
+          "state_revision": 2,
+          "logical_time": 0,
+          "last_transition_time": 0,
+          "last_transition_type": "Belief",
+          "created_at": 0,
+          "updated_at": 0
+        }
+      },
+      "logical_time_before": 0,
+      "logical_time_after": 0,
+      "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+      "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+      "snapshot_hash_before": "sha256:aa8d87339b0003f8331c9be5ea13d0eb560e691fed88b2becfb936d6ff78e093",
+      "snapshot_hash_after": "sha256:eb113f9c3cf595a25f1fd0c322088026a9c85b79f4e14d109fef049c290dbc9c",
+      "trace_entry": {
+        "trace_schema_version": "trace-v1",
+        "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+        "transition_type": "Belief",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "history_sequence": 2,
+        "subject_revision_before": 1,
+        "subject_revision_after": 2,
+        "logical_time": 0,
+        "rule_ids": [
+          "HASH-DET-001",
+          "SS-AUTH-001",
+          "SS-IMMUTABLE-001",
+          "SS-REVISION-001",
+          "TR-ATOMIC-001",
+          "TRACE-ATOMIC-001",
+          "TRACE-CONTENT-001"
+        ],
+        "cause_refs": [
+          "episode:bcv1-low-2"
+        ],
+        "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+        "domain_mutations": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "layers": [
+              "beliefs"
+            ],
+            "field_changes": [
+              {
+                "path": "/beliefs",
+                "operation": "SET"
+              }
+            ]
+          }
+        ],
+        "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+        "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+        "memory_revision_before": "R0",
+        "memory_revision_after": "R0",
+        "outcome": "COMMITTED",
+        "trace_id": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+      },
+      "trace_window": {
+        "trace_window_schema_version": "trace-window-v1",
+        "capacity": 64,
+        "cursor": {
+          "last_history_sequence": 2,
+          "offloaded_through_sequence": 0,
+          "offloaded_through_trace_ref": null
+        },
+        "entries": [
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 1,
+            "subject_revision_before": 0,
+            "subject_revision_after": 1,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-shared-1"
+            ],
+            "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+            "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+          },
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 2,
+            "subject_revision_before": 1,
+            "subject_revision_after": 2,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-low-2"
+            ],
+            "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+          }
+        ]
+      },
+      "mutation_history_link": {
+        "history_sequence": 2,
+        "previous_trace_ref": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0",
+        "current_trace_ref": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+      },
+      "transition_record": {
+        "schema_version": "transition-record-v1",
+        "record_version": 2,
+        "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+        "payload_fingerprint": "sha256:ca9ad084dff9e70f4ec61a5ee9df9ad00cf33a0f61ba3bef18c482342d2b22ca",
+        "fingerprint_version": "proposal-fingerprint-v1",
+        "first_seen_sequence": 2,
+        "attempts": [
+          {
+            "attempt_sequence": 1,
+            "status": "COMMITTED",
+            "revision_before": 1,
+            "revision_after": 2,
+            "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+            "result_ref": "result:10ec0e1e6e4593641092229704450df08cbf52ca944129c97cf414fecdabe58b",
+            "prepared_result_ref": "workflow:w-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+            "trace_ref": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157",
+            "audit_ref": null,
+            "error_code": null,
+            "reason": null
+          }
+        ],
+        "reuse_conflicts": [],
+        "terminal_status": "COMMITTED",
+        "terminal_result_ref": "result:10ec0e1e6e4593641092229704450df08cbf52ca944129c97cf414fecdabe58b"
+      },
+      "canonical_result": {
+        "schema_version": "canonical-commit-result-v1",
+        "status": "COMMITTED",
+        "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "payload_fingerprint": "sha256:ca9ad084dff9e70f4ec61a5ee9df9ad00cf33a0f61ba3bef18c482342d2b22ca",
+        "previous_revision": 1,
+        "next_revision": 2,
+        "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+        "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+        "snapshot_hash_after": "sha256:eb113f9c3cf595a25f1fd0c322088026a9c85b79f4e14d109fef049c290dbc9c",
+        "trace_ref": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157",
+        "commit_ref": "commit:47f5cfcab5dafe4f7a1f1be703b1b88c333c4bc15950835db9afa80413c1b0d1",
+        "result_ref": "result:10ec0e1e6e4593641092229704450df08cbf52ca944129c97cf414fecdabe58b"
+      },
+      "repository_revision_bindings": [
+        {
+          "repository_revision": "R0",
+          "repository_revision_hash": "sha256:bee67900ae7481cd50ec5bc1597985136225b55583f58df3d95ed72d6ed9b0bd"
+        }
+      ],
+      "record_checksum": "sha256:5b9a22d160304feed7f9a693fa9679c3697c899671b5ffd66e5cd9b02420bf7b"
+    },
+    {
+      "commit_version": "atomic-commit-v2",
+      "serialization_version": "canonical-json-v1",
+      "canonical_proposal": {
+        "schema_version": "canonical-transition-proposal-v1",
+        "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "expected_state_revision": 2,
+        "time_input": {
+          "kind": "OCCURRENCE",
+          "occurrence_logical_time": 0
+        },
+        "cause_refs": [
+          "episode:bcv1-low-3"
+        ],
+        "domain_deltas": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "expected_repository_revision": null,
+            "operations": [
+              {
+                "path": "/beliefs",
+                "value": {
+                  "schema_version": "belief-state-v0",
+                  "items": [
+                    {
+                      "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+                      "proposition_label": "The service passage is usable.",
+                      "credence": 0.45
+                    }
+                  ]
+                }
+              }
+            ],
+            "provenance_refs": [
+              "episode:bcv1-low-3"
+            ]
+          }
+        ],
+        "external_refs": []
+      },
+      "writer_authority": null,
+      "commit_ref": "commit:10f59c7dcd079da0e50a09ffca2d0dd81e7203d27f6ccf7a2db19410d3be423a",
+      "subject_id": "subject-belief-causal-confirmatory",
+      "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+      "transition_type": "Belief",
+      "payload_fingerprint": "sha256:9cdd6d467fca98b6ff7ca6ea406c2e1a2a07c0da03c8d601df5048fa4282cde7",
+      "prepared_result_ref": "workflow:w-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+      "expected_revision": 2,
+      "next_revision": 3,
+      "identity_record_version_before": 1,
+      "previous_commit_ref": "commit:47f5cfcab5dafe4f7a1f1be703b1b88c333c4bc15950835db9afa80413c1b0d1",
+      "previous_record_checksum": "sha256:5b9a22d160304feed7f9a693fa9679c3697c899671b5ffd66e5cd9b02420bf7b",
+      "next_snapshot": {
+        "schema_version": "subject-state-v4",
+        "identity": {
+          "subject_id": "subject-belief-causal-confirmatory",
+          "display_name": "",
+          "origin_metadata": {
+            "creation_source": null,
+            "seed_version": null
+          },
+          "identity_anchors": [],
+          "self_schema_seed_refs": []
+        },
+        "traits_seed": {
+          "dimensions": {}
+        },
+        "personality": {
+          "schema_version": "personality-state-v0",
+          "dimensions": []
+        },
+        "memory_state": {
+          "working_refs": [],
+          "active_episode_refs": [],
+          "autobiographical_index_revision": null,
+          "repository_revision": "R0",
+          "consolidation_cursor": null,
+          "retrieval_config": {
+            "profile_id": "RETRIEVAL_V0",
+            "affect_congruence_enabled": false,
+            "recent_trace_capacity": 64
+          },
+          "recent_retrieval_trace": [],
+          "lifecycle_metadata": {},
+          "pending_encoding_refs": [],
+          "last_retrieval_at": null
+        },
+        "beliefs": {
+          "schema_version": "belief-state-v0",
+          "items": [
+            {
+              "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba",
+              "proposition_label": "The service passage is usable.",
+              "credence": 0.45
+            }
+          ]
+        },
+        "relationships": {
+          "schema_version": "relationship-state-v0",
+          "counterparts": []
+        },
+        "affect": {
+          "schema_version": "canonical-affect-v0",
+          "valence": 0,
+          "activation": 0.2
+        },
+        "regulation": {
+          "energy": 1,
+          "stress": 0,
+          "arousal": 0.5,
+          "fatigue": 0,
+          "last_update": null
+        },
+        "context": {
+          "scene": "idle",
+          "task": null,
+          "focus_refs": [],
+          "active_entity_refs": [],
+          "environment_refs": [
+            "environment:room-1"
+          ],
+          "current_observation_ref": null
+        },
+        "mechanism_config": {
+          "affect_profile": {
+            "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+            "timebase": "tick"
+          },
+          "feature_flags": {},
+          "thresholds": {}
+        },
+        "trace_window": {
+          "trace_window_schema_version": "trace-window-v1",
+          "capacity": 64,
+          "cursor": {
+            "last_history_sequence": 3,
+            "offloaded_through_sequence": 0,
+            "offloaded_through_trace_ref": null
+          },
+          "entries": [
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 1,
+              "subject_revision_before": 0,
+              "subject_revision_after": 1,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-shared-1"
+              ],
+              "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+              "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+            },
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 2,
+              "subject_revision_before": 1,
+              "subject_revision_after": 2,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-low-2"
+              ],
+              "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+              "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+            },
+            {
+              "trace_schema_version": "trace-v1",
+              "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+              "transition_type": "Belief",
+              "subject_id": "subject-belief-causal-confirmatory",
+              "history_sequence": 3,
+              "subject_revision_before": 2,
+              "subject_revision_after": 3,
+              "logical_time": 0,
+              "rule_ids": [
+                "HASH-DET-001",
+                "SS-AUTH-001",
+                "SS-IMMUTABLE-001",
+                "SS-REVISION-001",
+                "TR-ATOMIC-001",
+                "TRACE-ATOMIC-001",
+                "TRACE-CONTENT-001"
+              ],
+              "cause_refs": [
+                "episode:bcv1-low-3"
+              ],
+              "proposal_ref": "proposal:8658bcba9a794f1bda831094d9a1ad9065257439e1710caf25b7314e0a2d74ec",
+              "domain_mutations": [
+                {
+                  "producer": "belief",
+                  "domain": "belief",
+                  "layers": [
+                    "beliefs"
+                  ],
+                  "field_changes": [
+                    {
+                      "path": "/beliefs",
+                      "operation": "SET"
+                    }
+                  ]
+                }
+              ],
+              "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+              "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+              "memory_revision_before": "R0",
+              "memory_revision_after": "R0",
+              "outcome": "COMMITTED",
+              "trace_id": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a"
+            }
+          ]
+        },
+        "runtime_metadata": {
+          "subject_version": "subject-v0",
+          "schema_lineage": "subject-state-v4",
+          "state_revision": 3,
+          "logical_time": 0,
+          "last_transition_time": 0,
+          "last_transition_type": "Belief",
+          "created_at": 0,
+          "updated_at": 0
+        }
+      },
+      "logical_time_before": 0,
+      "logical_time_after": 0,
+      "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+      "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+      "snapshot_hash_before": "sha256:eb113f9c3cf595a25f1fd0c322088026a9c85b79f4e14d109fef049c290dbc9c",
+      "snapshot_hash_after": "sha256:2131026f4f17e49672876baa70f9eb1497c8d5db9fd8b2eb639656ef42f0bdef",
+      "trace_entry": {
+        "trace_schema_version": "trace-v1",
+        "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+        "transition_type": "Belief",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "history_sequence": 3,
+        "subject_revision_before": 2,
+        "subject_revision_after": 3,
+        "logical_time": 0,
+        "rule_ids": [
+          "HASH-DET-001",
+          "SS-AUTH-001",
+          "SS-IMMUTABLE-001",
+          "SS-REVISION-001",
+          "TR-ATOMIC-001",
+          "TRACE-ATOMIC-001",
+          "TRACE-CONTENT-001"
+        ],
+        "cause_refs": [
+          "episode:bcv1-low-3"
+        ],
+        "proposal_ref": "proposal:8658bcba9a794f1bda831094d9a1ad9065257439e1710caf25b7314e0a2d74ec",
+        "domain_mutations": [
+          {
+            "producer": "belief",
+            "domain": "belief",
+            "layers": [
+              "beliefs"
+            ],
+            "field_changes": [
+              {
+                "path": "/beliefs",
+                "operation": "SET"
+              }
+            ]
+          }
+        ],
+        "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+        "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+        "memory_revision_before": "R0",
+        "memory_revision_after": "R0",
+        "outcome": "COMMITTED",
+        "trace_id": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a"
+      },
+      "trace_window": {
+        "trace_window_schema_version": "trace-window-v1",
+        "capacity": 64,
+        "cursor": {
+          "last_history_sequence": 3,
+          "offloaded_through_sequence": 0,
+          "offloaded_through_trace_ref": null
+        },
+        "entries": [
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 1,
+            "subject_revision_before": 0,
+            "subject_revision_after": 1,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-shared-1"
+            ],
+            "proposal_ref": "proposal:c59b57cd98385e070fedc3f95a1067bc6387741e85af9a764036cf749f6fd798",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:89d8c76655db31ea2610a4d0c823c8ed2b02aa4d4c2bed3c03204a54b2e83846",
+            "state_hash_after": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:83166f1358e5608fa4670310d676a5199f04cc035d7e753c37965cf0ee914ed0"
+          },
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 2,
+            "subject_revision_before": 1,
+            "subject_revision_after": 2,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-low-2"
+            ],
+            "proposal_ref": "proposal:cabdca0d84cd7b018cb4ba8e55aff5ae91bbd63ef9fd893d21865ca56e5ae664",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:7e1e25ce85fbd1a8e86af16c578a9dc43d7d90df207dc08080bb2b2c9ffdcb12",
+            "state_hash_after": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157"
+          },
+          {
+            "trace_schema_version": "trace-v1",
+            "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+            "transition_type": "Belief",
+            "subject_id": "subject-belief-causal-confirmatory",
+            "history_sequence": 3,
+            "subject_revision_before": 2,
+            "subject_revision_after": 3,
+            "logical_time": 0,
+            "rule_ids": [
+              "HASH-DET-001",
+              "SS-AUTH-001",
+              "SS-IMMUTABLE-001",
+              "SS-REVISION-001",
+              "TR-ATOMIC-001",
+              "TRACE-ATOMIC-001",
+              "TRACE-CONTENT-001"
+            ],
+            "cause_refs": [
+              "episode:bcv1-low-3"
+            ],
+            "proposal_ref": "proposal:8658bcba9a794f1bda831094d9a1ad9065257439e1710caf25b7314e0a2d74ec",
+            "domain_mutations": [
+              {
+                "producer": "belief",
+                "domain": "belief",
+                "layers": [
+                  "beliefs"
+                ],
+                "field_changes": [
+                  {
+                    "path": "/beliefs",
+                    "operation": "SET"
+                  }
+                ]
+              }
+            ],
+            "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+            "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+            "memory_revision_before": "R0",
+            "memory_revision_after": "R0",
+            "outcome": "COMMITTED",
+            "trace_id": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a"
+          }
+        ]
+      },
+      "mutation_history_link": {
+        "history_sequence": 3,
+        "previous_trace_ref": "trace:a2b8f592b11e9299dc14ece1dd506b533f1985517d5cd73301ce3b5bf7dbd157",
+        "current_trace_ref": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a"
+      },
+      "transition_record": {
+        "schema_version": "transition-record-v1",
+        "record_version": 2,
+        "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "transition_type": "Belief",
+        "proposal_ref": "proposal:8658bcba9a794f1bda831094d9a1ad9065257439e1710caf25b7314e0a2d74ec",
+        "payload_fingerprint": "sha256:9cdd6d467fca98b6ff7ca6ea406c2e1a2a07c0da03c8d601df5048fa4282cde7",
+        "fingerprint_version": "proposal-fingerprint-v1",
+        "first_seen_sequence": 3,
+        "attempts": [
+          {
+            "attempt_sequence": 1,
+            "status": "COMMITTED",
+            "revision_before": 2,
+            "revision_after": 3,
+            "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+            "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+            "result_ref": "result:8e6aef5e486dfc180fd8e3004bf9af24427e3a71437151921e449c9b2f9e53d6",
+            "prepared_result_ref": "workflow:w-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+            "trace_ref": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a",
+            "audit_ref": null,
+            "error_code": null,
+            "reason": null
+          }
+        ],
+        "reuse_conflicts": [],
+        "terminal_status": "COMMITTED",
+        "terminal_result_ref": "result:8e6aef5e486dfc180fd8e3004bf9af24427e3a71437151921e449c9b2f9e53d6"
+      },
+      "canonical_result": {
+        "schema_version": "canonical-commit-result-v1",
+        "status": "COMMITTED",
+        "transition_id": "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811",
+        "subject_id": "subject-belief-causal-confirmatory",
+        "payload_fingerprint": "sha256:9cdd6d467fca98b6ff7ca6ea406c2e1a2a07c0da03c8d601df5048fa4282cde7",
+        "previous_revision": 2,
+        "next_revision": 3,
+        "state_hash_before": "sha256:3df01978942669e385d975ce41ab8035a578de738e31a3642d69b1b80f4c1148",
+        "state_hash_after": "sha256:00666076a38dd81245383b933cf4c4d392e5476b584fc61184066f089d5d1cbe",
+        "snapshot_hash_after": "sha256:2131026f4f17e49672876baa70f9eb1497c8d5db9fd8b2eb639656ef42f0bdef",
+        "trace_ref": "trace:a9ced2691e775b32eb7e977ccec9fb5ecfc4487c65b596f135e86fed8a43d68a",
+        "commit_ref": "commit:10f59c7dcd079da0e50a09ffca2d0dd81e7203d27f6ccf7a2db19410d3be423a",
+        "result_ref": "result:8e6aef5e486dfc180fd8e3004bf9af24427e3a71437151921e449c9b2f9e53d6"
+      },
+      "repository_revision_bindings": [
+        {
+          "repository_revision": "R0",
+          "repository_revision_hash": "sha256:bee67900ae7481cd50ec5bc1597985136225b55583f58df3d95ed72d6ed9b0bd"
+        }
+      ],
+      "record_checksum": "sha256:fdf15dccfa4299a21edf6a51aa0e9fb22b5e2c833e37da8dc0c9033dbdbb0985"
+    }
+  ],
+  "state_revision": 3,
+  "repository_revision": "R0",
+  "seed_belief_item_count": 0,
+  "final_credence": 0.45,
+  "progression": [
+    0.55,
+    0.5,
+    0.45
+  ],
+  "expected_progression": [
+    0.55,
+    0.5,
+    0.45
+  ],
+  "proposition": {
+    "canonical_label": "The service passage is usable.",
+    "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+    "proposition_id": "belief-edcbd4275dc3d95199cea7c979aecce9f4f0576bbe5f727a2a9ff1316bdaaeba"
+  },
+  "steps": [
+    {
+      "episode_ref": "episode:bcv1-shared-1",
+      "intended_bearing": "SUPPORTS",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "reported_credence": 0.55,
+      "canonical_credence": 0.55,
+      "state_revision": 1,
+      "commit_ref": "commit:8e2a13de198f281ae79629e00eface476ecc4e7d57e834ce41a6ea5f1d147700",
+      "provider_calls": 1
+    },
+    {
+      "episode_ref": "episode:bcv1-low-2",
+      "intended_bearing": "CONTRADICTS",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "reported_credence": 0.5,
+      "canonical_credence": 0.5,
+      "state_revision": 2,
+      "commit_ref": "commit:47f5cfcab5dafe4f7a1f1be703b1b88c333c4bc15950835db9afa80413c1b0d1",
+      "provider_calls": 1
+    },
+    {
+      "episode_ref": "episode:bcv1-low-3",
+      "intended_bearing": "CONTRADICTS",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "reported_credence": 0.45,
+      "canonical_credence": 0.45,
+      "state_revision": 3,
+      "commit_ref": "commit:10f59c7dcd079da0e50a09ffca2d0dd81e7203d27f6ccf7a2db19410d3be423a",
+      "provider_calls": 1
+    }
+  ],
+  "repository_digest": "sha256:732f5499b231aaf31aaa8b6c279076c962fc4d8bee0d2920e3ba9104d4dd3bc1",
+  "commit_chain": [
+    "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359@commit:8e2a13de198f281ae79629e00eface476ecc4e7d57e834ce41a6ea5f1d147700",
+    "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274@commit:47f5cfcab5dafe4f7a1f1be703b1b88c333c4bc15950835db9afa80413c1b0d1",
+    "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811@commit:10f59c7dcd079da0e50a09ffca2d0dd81e7203d27f6ccf7a2db19410d3be423a"
+  ]
+}

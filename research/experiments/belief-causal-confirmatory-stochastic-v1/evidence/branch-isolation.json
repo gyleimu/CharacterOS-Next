@@ -1,0 +1,44 @@
+{
+  "distinct_repository_digests": true,
+  "distinct_genesis_envelopes": true,
+  "shared_first_formation_identity": true,
+  "shared_transitions_are_only_the_first_formation": true,
+  "subsequent_transitions_disjoint": true,
+  "same_subject_id": true,
+  "same_proposition_key": true,
+  "same_proposition_id": true,
+  "same_state_revision": true,
+  "isolated": true,
+  "detail": {
+    "low_transitions": [
+      "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+      "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+      "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811"
+    ],
+    "high_transitions": [
+      "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359",
+      "t-belief-a4a0fdcf2a3f08770249374f56083611b2d93e5458b7d785bf2dd9361a3d840b",
+      "t-belief-02888af1272bcfe55dcd424e7f7d57d3ed76ae44adaf687f43fde93db9601203"
+    ],
+    "low_later_transitions": [
+      "t-belief-2062b9630ac2e9517979ef4fbcd11eaac0048e7a8c7e013116799419ead6d274",
+      "t-belief-b6f29bdac25ee097e2827304d3ac472fe1760e01c62d4f352af8497dfd5f6811"
+    ],
+    "high_later_transitions": [
+      "t-belief-a4a0fdcf2a3f08770249374f56083611b2d93e5458b7d785bf2dd9361a3d840b",
+      "t-belief-02888af1272bcfe55dcd424e7f7d57d3ed76ae44adaf687f43fde93db9601203"
+    ],
+    "shared_transition_ids": [
+      "t-belief-c1f30539cc07235b5b9e01e47216b8a5ed73f397f3848bbd1491711f7a51d359"
+    ],
+    "repository_revision_labels": {
+      "low": "R0",
+      "high": "R0"
+    },
+    "repository_digests": {
+      "low": "sha256:732f5499b231aaf31aaa8b6c279076c962fc4d8bee0d2920e3ba9104d4dd3bc1",
+      "high": "sha256:971370ed5a120dfbe99a1cacadfc4508fa93f094f81b93211b0186742a39b1bf"
+    },
+    "note": "revision labels are per-repository counters; identity isolation is decided on content digests, genesis envelopes and transition sets"
+  }
+}

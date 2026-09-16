@@ -1,0 +1,331 @@
+{
+  "exact_scan_surface": [
+    "clarification_basis.missing_information",
+    "clarification_basis.needed_for",
+    "cognition.current_intent",
+    "cognition.reasoning_summary",
+    "factual_assessment.claims[*].derivation.input",
+    "factual_assessment.claims[*].derivation.source_expression",
+    "factual_assessment.claims[*].derivation.source_instruction",
+    "factual_assessment.claims[*].derivation.source_query",
+    "factual_assessment.claims[*].derivation.source_rule",
+    "factual_assessment.claims[*].text",
+    "subjective_selection.stance",
+    "subjective_selection.subjective_rationale"
+  ],
+  "leaves": [
+    {
+      "path": "clarification_basis.current_observation_ref",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "B",
+      "reason": "opaque handle/ref array: must never be read as prose"
+    },
+    {
+      "path": "clarification_basis.missing_information",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "clarification_basis.needed_for",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "cognition.action_intent",
+      "json_types": [
+        "null"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (null)"
+    },
+    {
+      "path": "cognition.confidence",
+      "json_types": [
+        "number"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (number)"
+    },
+    {
+      "path": "cognition.considered_handles[*]",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "B",
+      "reason": "opaque handle/ref array: must never be read as prose"
+    },
+    {
+      "path": "cognition.current_intent",
+      "json_types": [
+        "null",
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "cognition.evidence_handles[*]",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "B",
+      "reason": "opaque handle/ref array: must never be read as prose"
+    },
+    {
+      "path": "cognition.reasoning_summary",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "cognition.relevant_memory_handles[*]",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "B",
+      "reason": "opaque handle/ref array: must never be read as prose"
+    },
+    {
+      "path": "cognition.schema_version",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "cognition.uncertainty",
+      "json_types": [
+        "number"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (number)"
+    },
+    {
+      "path": "communication_directive.kind",
+      "json_types": [
+        "enum"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.claimed_result",
+      "json_types": [
+        "integer",
+        "string"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verified structural value"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.input",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.operands.left",
+      "json_types": [
+        "integer"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (integer)"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.operands.operator",
+      "json_types": [
+        "enum"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.operands.right",
+      "json_types": [
+        "integer"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (integer)"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.source_expression",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.source_instruction",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.source_query",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "factual_assessment.claims[*].derivation.source_rule",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "factual_assessment.claims[*].kind",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "factual_assessment.claims[*].operation",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "factual_assessment.claims[*].source_handles[*]",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "B",
+      "reason": "opaque handle/ref array: must never be read as prose"
+    },
+    {
+      "path": "factual_assessment.claims[*].text",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "response_semantics.act",
+      "json_types": [
+        "enum"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "response_semantics.claim_index",
+      "json_types": [
+        "integer"
+      ],
+      "leaf_class": "D",
+      "reason": "host-verifiable structural value (integer)"
+    },
+    {
+      "path": "response_semantics.kind",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "schema_version",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "subjective_selection.kind",
+      "json_types": [
+        "const"
+      ],
+      "leaf_class": "C",
+      "reason": "closed enum/const atom"
+    },
+    {
+      "path": "subjective_selection.stance",
+      "json_types": [
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    },
+    {
+      "path": "subjective_selection.subjective_rationale",
+      "json_types": [
+        "null",
+        "string"
+      ],
+      "leaf_class": "A",
+      "reason": "model-authored string leaf that can carry natural language: MUST be scanned"
+    }
+  ],
+  "model_authored_semantic_leaves": [
+    "clarification_basis.missing_information",
+    "clarification_basis.needed_for",
+    "cognition.current_intent",
+    "cognition.reasoning_summary",
+    "factual_assessment.claims[*].derivation.input",
+    "factual_assessment.claims[*].derivation.source_expression",
+    "factual_assessment.claims[*].derivation.source_instruction",
+    "factual_assessment.claims[*].derivation.source_query",
+    "factual_assessment.claims[*].derivation.source_rule",
+    "factual_assessment.claims[*].text",
+    "subjective_selection.stance",
+    "subjective_selection.subjective_rationale"
+  ],
+  "unscanned_model_authored_semantic_text": [],
+  "opaque_ref_leaves": [
+    "clarification_basis.current_observation_ref",
+    "cognition.considered_handles[*]",
+    "cognition.evidence_handles[*]",
+    "cognition.relevant_memory_handles[*]",
+    "factual_assessment.claims[*].source_handles[*]"
+  ],
+  "enum_leaves": [
+    "cognition.schema_version",
+    "communication_directive.kind",
+    "factual_assessment.claims[*].derivation.operands.operator",
+    "factual_assessment.claims[*].kind",
+    "factual_assessment.claims[*].operation",
+    "response_semantics.act",
+    "response_semantics.kind",
+    "schema_version",
+    "subjective_selection.kind"
+  ],
+  "structural_leaves": [
+    "cognition.action_intent",
+    "cognition.confidence",
+    "cognition.uncertainty",
+    "factual_assessment.claims[*].derivation.claimed_result",
+    "factual_assessment.claims[*].derivation.operands.left",
+    "factual_assessment.claims[*].derivation.operands.right",
+    "response_semantics.claim_index"
+  ],
+  "frozen_protocol_declared_paths_covered": true,
+  "subjective_selection_covered": true,
+  "derivation_text_covered": true,
+  "schema_hash": "sha256:e9da721b67903c40e40f32dc1989456924923167e921e47cdd2231a78ee771b9"
+}
