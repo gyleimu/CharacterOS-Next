@@ -1,6 +1,11 @@
 /**
  * Configuration: every knob has a working default, every default is overridable
  * from the environment. Nothing here reaches outside the local machine.
+ *
+ * V-03: "local inference only" is enforced, not merely documented. The model
+ * endpoint must be loopback unless `VISION_ALLOW_REMOTE_ENDPOINT=true` is set
+ * explicitly; a remote endpoint fails closed at configuration time. A camera and
+ * a desktop screenshot must never be uploaded because someone typo'd a URL.
  */
 
 import { DEFAULT_OBSERVATION_LIMITS_V0, type ObservationLimitsV0 } from "./observation.js";
@@ -41,6 +46,52 @@ export interface VisionInferenceConfigV0 {
   readonly keep_alive: string;
   readonly think: boolean | null;
   readonly api_key: string | null;
+  /** Explicit opt-in required before a non-loopback endpoint is accepted. */
+  readonly allow_remote_endpoint: boolean;
+}
+
+export class VisionConfigurationErrorV0 extends Error {
+  constructor(
+    readonly code: "VISION_REMOTE_ENDPOINT_FORBIDDEN",
+    detail: string
+  ) {
+    super(`${code}: ${detail}`);
+    this.name = "VisionConfigurationErrorV0";
+  }
+}
+
+/**
+ * True only for a loopback host: `127.0.0.0/8`, `localhost`, or `::1`. Anything
+ * that cannot be parsed as a URL is rejected too (fail closed).
+ */
+export function isLoopbackEndpointV0(endpoint: string): boolean {
+  const trimmed = endpoint.trim();
+  if (trimmed.length === 0) return false;
+  // Bare IPv6 literals, with or without brackets, never reach URL parsing.
+  const bare = trimmed.toLowerCase().replace(/^\[/u, "").replace(/\]$/u, "");
+  if (bare === "::1" || bare === "[::1]") return true;
+  const host = readEndpointHostV0(trimmed);
+  if (host === null) return false;
+  const normalized = host.toLowerCase().replace(/^\[/u, "").replace(/\]$/u, "");
+  if (normalized === "localhost" || normalized === "::1") return true;
+  return /^127(?:\.\d{1,3}){3}$/u.test(normalized);
+}
+
+/**
+ * Reads the host of a model endpoint, tolerating a missing scheme such as
+ * `localhost:11434`. A parse that yields no host is retried with `http://`
+ * (without this, `new URL("localhost:11434")` "succeeds" as a bogus scheme).
+ */
+function readEndpointHostV0(value: string): string | null {
+  for (const candidate of [value, `http://${value}`]) {
+    try {
+      const url = new URL(candidate);
+      if (url.hostname.length > 0) return url.hostname;
+    } catch {
+      // Try the next form.
+    }
+  }
+  return null;
 }
 
 export interface VisionConfigV0 {
@@ -234,6 +285,15 @@ export function resolveVisionConfigV0(
     }
   };
   const thinkRaw = readOptionalStringV0(environment, "VISION_THINK");
+  const allowRemoteEndpoint = readBoolV0(environment, "VISION_ALLOW_REMOTE_ENDPOINT", false);
+  const endpoint = readStringV0(environment, "VISION_ENDPOINT", "http://127.0.0.1:11434");
+  if (!allowRemoteEndpoint && !isLoopbackEndpointV0(endpoint)) {
+    throw new VisionConfigurationErrorV0(
+      "VISION_REMOTE_ENDPOINT_FORBIDDEN",
+      `VISION_ENDPOINT must be loopback (127.0.0.1, localhost or ::1); got ${endpoint}. ` +
+        "Camera and desktop stills are local-only input: set VISION_ALLOW_REMOTE_ENDPOINT=true only if you deliberately accept uploading them."
+    );
+  }
   const base: VisionConfigV0 = {
     enabled: readBoolV0(environment, "VISION_ENABLED", VISION_CONFIG_DEFAULTS_V0.enabled),
     attention_level: readAttentionV0(environment, "VISION_ATTENTION", VISION_CONFIG_DEFAULTS_V0.attention_level),
@@ -245,13 +305,14 @@ export function resolveVisionConfigV0(
     thumb_height: readIntV0(environment, "VISION_THUMB_HEIGHT", VISION_CONFIG_DEFAULTS_V0.thumb_height, 8, 256),
     inference: {
       provider: readStringV0(environment, "VISION_PROVIDER", "ollama") === "openai-compatible" ? "openai-compatible" : "ollama",
-      endpoint: readStringV0(environment, "VISION_ENDPOINT", "http://127.0.0.1:11434"),
+      endpoint,
       model: readStringV0(environment, "VISION_MODEL", "minicpm-v4.6"),
       timeout_ms: readIntV0(environment, "VISION_TIMEOUT_MS", 60000, 1000, 600000),
       num_predict: readIntV0(environment, "VISION_NUM_PREDICT", 900, 32, 4096),
       keep_alive: readStringV0(environment, "VISION_KEEP_ALIVE", "5m"),
       think: thinkRaw === null ? false : ["1", "true", "yes", "on"].includes(thinkRaw.toLowerCase()),
-      api_key: readOptionalStringV0(environment, "VISION_API_KEY")
+      api_key: readOptionalStringV0(environment, "VISION_API_KEY"),
+      allow_remote_endpoint: allowRemoteEndpoint
     },
     observation_limits: DEFAULT_OBSERVATION_LIMITS_V0,
     dedupe_history: readIntV0(environment, "VISION_DEDUPE_HISTORY", VISION_CONFIG_DEFAULTS_V0.dedupe_history, 1, 64),

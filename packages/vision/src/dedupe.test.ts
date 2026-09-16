@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   normalizeObservationTextV0,
+  observationDedupeCandidateV0,
   observationDedupeKeyV0,
   observationSimilarityV0,
   observationTokensV0,
-  ObservationDedupeRingV0
+  ObservationDedupeRingV0,
+  type DedupeCandidateV0
 } from "./dedupe.js";
 import type { VisualObservationV0 } from "./types.js";
 
@@ -64,23 +66,26 @@ describe("dedupe key", () => {
 
 describe("dedupe ring", () => {
   const tokens = (text: string): ReadonlySet<string> => observationTokensV0(text);
+  const candidate = (key: string, description: string, application: string | null = null): DedupeCandidateV0 =>
+    observationDedupeCandidateV0({ key, description, application });
 
   it("reports an identical key inside the window and forgets it after eviction", () => {
     const ring = new ObservationDedupeRingV0(2);
-    ring.record("a", tokens("a wall with a clock"));
-    expect(ring.inspect("a", tokens("a totally different scene")).exact).toBe(true);
-    ring.record("b", tokens("a person is sitting"));
-    ring.record("c", tokens("a terminal shows a failure"));
+    ring.record(candidate("a", "a wall with a clock"));
+    expect(ring.inspect(candidate("a", "a totally different scene")).exact).toBe(true);
+    ring.record(candidate("b", "a person is sitting"));
+    ring.record(candidate("c", "a terminal shows a failure"));
     // The two-entry window now holds only "b" and "c", so "a" is forgotten.
-    expect(ring.inspect("a", tokens("a totally different scene")).exact).toBe(false);
+    expect(ring.inspect(candidate("a", "a totally different scene")).exact).toBe(false);
   });
 
   it("catches the same scene restated in different words", () => {
     const ring = new ObservationDedupeRingV0(2);
-    ring.record("k1", tokens("The image shows a wall with three framed pictures, including what appears to be a clock."));
+    ring.record(
+      candidate("k1", "The image shows a wall with three framed pictures, including what appears to be a clock.")
+    );
     const decision = ring.inspect(
-      "k2",
-      tokens("The image shows a wall with several framed items, including what appears to be pictures and a clock.")
+      candidate("k2", "The image shows a wall with several framed items, including what appears to be pictures and a clock.")
     );
     expect(decision.exact).toBe(false);
     expect(decision.duplicate).toBe(true);
@@ -89,16 +94,41 @@ describe("dedupe ring", () => {
 
   it("does not treat a genuinely different scene as a restatement", () => {
     const ring = new ObservationDedupeRingV0(2);
-    ring.record("k1", tokens("A person is sitting at the desk looking at the monitor."));
-    const decision = ring.inspect("k2", tokens("The room is empty and nobody is visible."));
+    ring.record(candidate("k1", "A person is sitting at the desk looking at the monitor."));
+    const decision = ring.inspect(candidate("k2", "The room is empty and nobody is visible."));
     expect(decision.duplicate).toBe(false);
   });
 
   it("never collapses opposite observations that share most of their words", () => {
     const ring = new ObservationDedupeRingV0(2);
-    ring.record("k1", tokens("A person is present and sitting at the desk."));
-    const decision = ring.inspect("k2", tokens("No person is present at the desk."));
+    ring.record(candidate("k1", "A person is present and sitting at the desk."));
+    const decision = ring.inspect(candidate("k2", "No person is present at the desk."));
     expect(decision.duplicate).toBe(false);
+  });
+
+  it("vetoes near-duplicates when a negation appears on only one side", () => {
+    const ring = new ObservationDedupeRingV0(2);
+    ring.record(candidate("k1", "The user is sitting at desk"));
+    const withoutNegation = ring.inspect(candidate("k2", "The user is sitting at the desk"));
+    const withNegation = ring.inspect(candidate("k3", "The user is not sitting at desk"));
+    expect(withoutNegation.similarity).toBeGreaterThanOrEqual(0.7);
+    expect(withoutNegation.duplicate).toBe(true);
+    expect(withNegation.duplicate).toBe(false);
+  });
+
+  it("vetoes near-duplicates when the application changed", () => {
+    const ring = new ObservationDedupeRingV0(2);
+    ring.record(candidate("k1", "A window with text is visible.", "code editor"));
+    const sameApp = ring.inspect(candidate("k2", "A window with some text is visible.", "code editor"));
+    const otherApp = ring.inspect(candidate("k3", "A window with some text is visible.", "web browser"));
+    expect(sameApp.duplicate).toBe(true);
+    expect(otherApp.duplicate).toBe(false);
+  });
+
+  it("still dedupes structurally identical observations exactly", () => {
+    const ring = new ObservationDedupeRingV0(2);
+    ring.record(candidate("same", "The user is not sitting at the desk", "terminal"));
+    expect(ring.inspect(candidate("same", "The user is not sitting at the desk", "terminal")).exact).toBe(true);
   });
 
   it("computes similarity as an intersection over union", () => {
@@ -108,9 +138,9 @@ describe("dedupe ring", () => {
 
   it("forgets everything on reset", () => {
     const ring = new ObservationDedupeRingV0(2);
-    ring.record("a", tokens("a wall"));
+    ring.record(candidate("a", "a wall"));
     ring.reset();
-    expect(ring.inspect("a", tokens("a wall")).duplicate).toBe(false);
+    expect(ring.inspect(candidate("a", "a wall")).duplicate).toBe(false);
   });
 
   it("refuses a nonsensical window size", () => {

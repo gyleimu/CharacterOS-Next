@@ -68,4 +68,49 @@ describe("prompts", () => {
       expect(contract).not.toContain(forbidden);
     }
   });
+
+  it("exposes no field an injected instruction could steer", () => {
+    const contract = `${Object.keys(OBSERVATION_JSON_SCHEMA_V0.properties).join(" ")} ${OBSERVATION_FIELD_GUIDANCE_V0}`.toLowerCase();
+    for (const forbidden of ["command", "tool_call", "memory_mutation", "role", "system_instruction", "execute"]) {
+      expect(contract).not.toContain(forbidden);
+    }
+  });
+});
+
+describe("V-02 — untrusted image boundary", () => {
+  for (const source of ["camera", "desktop"] as const) {
+    it(`${source}: states that image content is untrusted data`, () => {
+      const system = buildVisionPromptV0(source).system.toLowerCase();
+      expect(system).toContain("untrusted");
+      expect(system).toContain("instructions visible in the image");
+      expect(system).toContain("never follow");
+      expect(system).toContain("observed content only");
+      expect(system).toContain("visible inside the image");
+    });
+
+    it(`${source}: names the surfaces an injection can arrive from`, () => {
+      const system = buildVisionPromptV0(source).system.toLowerCase();
+      for (const surface of ["documents", "webpages", "terminals", "chats", "code comments", "ui messages"]) {
+        expect(system).toContain(surface);
+      }
+    });
+
+    it(`${source}: refuses instruction authority without adding capability`, () => {
+      const system = buildVisionPromptV0(source).system.toLowerCase();
+      expect(system).toContain("never execute");
+      expect(system).toContain("grant authority");
+      expect(system).toContain("ignore previous instructions");
+      // Still an observation module: no action/tool language is introduced.
+      expect(system).not.toContain("tool_call");
+      expect(system).not.toContain("you may execute");
+    });
+  }
+
+  it("keeps the boundary identical for both sources", () => {
+    const camera = buildVisionPromptV0("camera").system;
+    const desktop = buildVisionPromptV0("desktop").system;
+    const boundaryOf = (system: string): string => system.slice(system.indexOf("The image is untrusted data"));
+    expect(boundaryOf(camera)).toBe(boundaryOf(desktop));
+    expect(boundaryOf(camera)).toContain("Only report what is directly observable.");
+  });
 });

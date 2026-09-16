@@ -14,6 +14,7 @@ interface MutableSourceMetricsV0 {
   frames_dropped_rate_limit: number;
   frames_dropped_superseded: number;
   frames_analyzed: number;
+  frames_dropped_stale_run: number;
   capture_errors: number;
   restarts: number;
 }
@@ -27,6 +28,7 @@ function emptySourceMetricsV0(): MutableSourceMetricsV0 {
     frames_dropped_rate_limit: 0,
     frames_dropped_superseded: 0,
     frames_analyzed: 0,
+    frames_dropped_stale_run: 0,
     capture_errors: 0,
     restarts: 0
   };
@@ -75,6 +77,10 @@ export class VisionMetricsV0 {
   recordFrameAnalyzed(source: VisionSourceKindV0): void {
     this.sources[source].frames_analyzed += 1;
   }
+  /** The model answered only after stop() had begun: the result is discarded. */
+  recordFrameDroppedStaleRun(source: VisionSourceKindV0): void {
+    this.sources[source].frames_dropped_stale_run += 1;
+  }
   recordCaptureError(source: VisionSourceKindV0): void {
     this.sources[source].capture_errors += 1;
   }
@@ -103,9 +109,6 @@ export class VisionMetricsV0 {
     this.latencySamples += 1;
     this.maxLatencyMs = Math.max(this.maxLatencyMs, latencyMs);
     this.lastLatencyMs = latencyMs;
-  }
-  recordInferenceCall(): void {
-    this.inferenceCalls += 1;
   }
 
   snapshot(params: {
@@ -140,6 +143,8 @@ export class VisionMetricsV0 {
       frames_dropped_superseded:
         this.sources.camera.frames_dropped_superseded + this.sources.desktop.frames_dropped_superseded,
       frames_analyzed: this.sources.camera.frames_analyzed + this.sources.desktop.frames_analyzed,
+      frames_dropped_stale_run:
+        this.sources.camera.frames_dropped_stale_run + this.sources.desktop.frames_dropped_stale_run,
       observations_emitted: this.observationsEmitted,
       observations_deduplicated: this.observationsDeduplicated,
       model_errors: this.modelErrors,

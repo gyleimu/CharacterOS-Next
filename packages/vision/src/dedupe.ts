@@ -59,10 +59,58 @@ export interface DedupeDecisionV0 {
   readonly similarity: number;
 }
 
-interface DedupeEntryV0 {
+/**
+ * V-05: negation words. "A person is present" and "No person is present" are
+ * 0.83 similar as token sets and mean the opposite, so an asymmetric negation
+ * set vetoes near-duplicate matching (exact key equality still applies).
+ */
+export const NEGATION_TOKENS_V0: readonly string[] = ["no", "not", "without", "absent"];
+
+export function negationTokensV0(tokens: ReadonlySet<string>): ReadonlySet<string> {
+  return new Set(NEGATION_TOKENS_V0.filter((token) => tokens.has(token)));
+}
+
+export interface DedupeCandidateV0 {
   readonly key: string;
   readonly tokens: ReadonlySet<string>;
+  /** Normalized `application`, or null. A different application is a new scene. */
+  readonly application: string | null;
+  readonly negations: ReadonlySet<string>;
 }
+
+/** Everything the ring needs to judge one observation, derived in one place. */
+export function observationDedupeCandidateV0(input: {
+  readonly key: string;
+  readonly description: string;
+  readonly application: string | null;
+}): DedupeCandidateV0 {
+  const tokens = observationTokensV0(input.description);
+  return {
+    key: input.key,
+    tokens,
+    application: input.application === null ? null : normalizeObservationTextV0(input.application),
+    negations: negationTokensV0(tokens)
+  };
+}
+
+function sameSetV0(a: ReadonlySet<string>, b: ReadonlySet<string>): boolean {
+  if (a.size !== b.size) return false;
+  for (const entry of a) if (!b.has(entry)) return false;
+  return true;
+}
+
+/**
+ * Near-duplicate matching is only allowed when nothing structural contradicts it.
+ * Both vetoes are deterministic and cheap; anything subtler (semantic negation,
+ * entailment, embeddings) is deliberately NOT attempted.
+ */
+function nearDuplicateAllowedV0(entry: DedupeEntryV0, candidate: DedupeCandidateV0): boolean {
+  if (entry.application !== candidate.application) return false;
+  return sameSetV0(entry.negations, candidate.negations);
+}
+
+/** A remembered observation is exactly a candidate that was delivered. */
+type DedupeEntryV0 = DedupeCandidateV0;
 
 export class ObservationDedupeRingV0 {
   private readonly entries: DedupeEntryV0[] = [];
@@ -81,19 +129,20 @@ export class ObservationDedupeRingV0 {
   }
 
   /** Reports whether this observation was already emitted (no side effect). */
-  inspect(key: string, tokens: ReadonlySet<string>): DedupeDecisionV0 {
+  inspect(candidate: DedupeCandidateV0): DedupeDecisionV0 {
     let best = 0;
     for (const entry of this.entries) {
-      if (entry.key === key) return { duplicate: true, exact: true, similarity: 1 };
-      best = Math.max(best, observationSimilarityV0(tokens, entry.tokens));
+      if (entry.key === candidate.key) return { duplicate: true, exact: true, similarity: 1 };
+      if (!nearDuplicateAllowedV0(entry, candidate)) continue;
+      best = Math.max(best, observationSimilarityV0(candidate.tokens, entry.tokens));
     }
     const near = best >= this.nearDuplicateThreshold;
     return { duplicate: near, exact: false, similarity: Math.round(best * 100) / 100 };
   }
 
   /** Remembers an observation once it has been delivered to the sink. */
-  record(key: string, tokens: ReadonlySet<string>): void {
-    this.entries.push({ key, tokens });
+  record(candidate: DedupeCandidateV0): void {
+    this.entries.push(candidate);
     while (this.entries.length > this.size) this.entries.shift();
   }
 

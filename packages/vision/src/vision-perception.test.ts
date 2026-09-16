@@ -429,3 +429,151 @@ describe("vision perception orchestration", () => {
     await perception.stop();
   });
 });
+
+describe("V-01 — stop() / in-flight inference race", () => {
+  /** A sink that records every delivery attempt, including rejected ones. */
+  function countingHarness(): {
+    perception: VisionPerceptionV0;
+    sources: FakeFrameSource[];
+    provider: FakeProvider;
+    accepted: VisualObservationV0[];
+    attempted: VisualObservationV0[];
+    logs: VisionLogEventV0[];
+    release: () => void;
+    gateOpen: () => void;
+  } {
+    const sources: FakeFrameSource[] = [];
+    const provider = new FakeProvider();
+    const accepted: VisualObservationV0[] = [];
+    const attempted: VisualObservationV0[] = [];
+    const logs: VisionLogEventV0[] = [];
+    let release: () => void = () => undefined;
+    provider.gate = () =>
+      new Promise<void>((resolve) => {
+        release = resolve;
+      });
+    const factory: FrameSourceFactoryV0 = (config, callbacks) => {
+      const source = new FakeFrameSource(config.source, callbacks);
+      sources.push(source);
+      return source;
+    };
+    const perception = new VisionPerceptionV0({
+      config: testConfig({}),
+      provider,
+      now: () => 0,
+      logger: (event) => logs.push(event),
+      source_factory: factory,
+      sink: {
+        sink_id: "counting",
+        accept: async (observation) => {
+          attempted.push(observation);
+          accepted.push(observation);
+          return { kind: "ACCEPTED" };
+        }
+      }
+    });
+    const gateOpen = (): void => {
+      provider.gate = null;
+    };
+    return { perception, sources, provider, accepted, attempted, logs, release: () => release(), gateOpen };
+  }
+
+  it("A: a model answer that arrives after stop() never reaches the sink", async () => {
+    const test = countingHarness();
+    await test.perception.start();
+    sourceAt(test.sources, 0).still(0);
+    sourceAt(test.sources, 0).thumbnail(0, 100);
+    await flush();
+    expect(test.provider.calls).toBe(1);
+
+    // stop() begins while the model call is still unresolved.
+    const stopping = test.perception.stop();
+    await flush();
+    // The model answers only now — after shutdown has begun.
+    test.release();
+    await stopping;
+    await flush();
+
+    expect(test.attempted).toHaveLength(0);
+    expect(test.accepted).toHaveLength(0);
+    const metrics = test.perception.getMetrics();
+    expect(metrics.observations_emitted).toBe(0);
+    expect(metrics.frames_dropped_stale_run).toBe(1);
+    expect(test.logs.some((entry) => entry.code === "ANALYSIS_DROPPED_STALE_RUN")).toBe(true);
+    expect(test.logs.some((entry) => entry.code === "OBSERVATION_EMITTED")).toBe(false);
+  });
+
+  it("A: no OBSERVATION_EMITTED is ever logged after VISION_STOPPED", () => {
+    const test = countingHarness();
+    return (async () => {
+      await test.perception.start();
+      sourceAt(test.sources, 0).still(0);
+      sourceAt(test.sources, 0).thumbnail(0, 100);
+      await flush();
+      const stopping = test.perception.stop();
+      await flush();
+      test.release();
+      await stopping;
+      await flush();
+      const codes = test.logs.map((entry) => entry.code);
+      const stoppedAt = codes.lastIndexOf("VISION_STOPPED");
+      const lastEmitAt = codes.lastIndexOf("OBSERVATION_EMITTED");
+      expect(stoppedAt).toBeGreaterThanOrEqual(0);
+      expect(lastEmitAt).toBeLessThan(stoppedAt);
+      const stopRequestedAt = codes.indexOf("STOP_REQUESTED");
+      expect(stopRequestedAt).toBeGreaterThanOrEqual(0);
+      expect(stopRequestedAt).toBeLessThan(stoppedAt);
+    })();
+  });
+
+  it("B: the camera source obeys the same rule as the desktop source", async () => {
+    const test = countingHarness();
+    await test.perception.start();
+    // sources[1] is the camera: same state machine, different source.
+    sourceAt(test.sources, 1).still(0);
+    sourceAt(test.sources, 1).thumbnail(0, 60);
+    await flush();
+    expect(firstOf(test.provider.requests).source).toBe("camera");
+    const stopping = test.perception.stop();
+    await flush();
+    test.release();
+    await stopping;
+    await flush();
+    expect(test.attempted).toHaveLength(0);
+    expect(test.perception.getMetrics().sources.camera.frames_dropped_stale_run).toBe(1);
+  });
+
+  it("B: a pending frame is dropped when stop() begins, not analysed later", async () => {
+    const test = countingHarness();
+    await test.perception.start();
+    sourceAt(test.sources, 0).still(0);
+    sourceAt(test.sources, 0).thumbnail(0, 100);
+    await flush();
+    // A second decision is queued behind the in-flight model call.
+    sourceAt(test.sources, 0).thumbnail(1000, 200);
+    await flush();
+    const stopping = test.perception.stop();
+    await flush();
+    test.release();
+    await stopping;
+    await flush();
+    // Only the first (in-flight) call happened; the queued frame died with stop.
+    expect(test.provider.calls).toBe(1);
+    expect(test.attempted).toHaveLength(0);
+  });
+
+  it("C: without stop() the same flow still delivers exactly once", async () => {
+    const test = countingHarness();
+    await test.perception.start();
+    sourceAt(test.sources, 0).still(0);
+    sourceAt(test.sources, 0).thumbnail(0, 100);
+    await flush();
+    test.release();
+    await flush();
+    expect(test.accepted).toHaveLength(1);
+    expect(test.attempted).toHaveLength(1);
+    expect(test.perception.getMetrics().observations_emitted).toBe(1);
+    expect(test.perception.getMetrics().frames_dropped_stale_run).toBe(0);
+    await test.perception.stop();
+  });
+});

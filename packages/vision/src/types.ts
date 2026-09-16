@@ -90,6 +90,8 @@ export interface VisionLogEventV0 {
     | "OBSERVATION_EMITTED"
     | "OBSERVATION_DEDUPLICATED"
     | "ANALYSIS_STARTED"
+    | "ANALYSIS_DROPPED_STALE_RUN"
+    | "STOP_REQUESTED"
     | "SOURCE_STARTED"
     | "SOURCE_STOPPED"
     | "VISION_STARTED"
@@ -141,6 +143,11 @@ export interface SourceMetricsV0 {
   readonly frames_dropped_rate_limit: number;
   readonly frames_dropped_superseded: number;
   readonly frames_analyzed: number;
+  /**
+   * Analysis that finished its model call only after `stop()` had begun: the
+   * result is dropped and never crosses the Vision → Product boundary.
+   */
+  readonly frames_dropped_stale_run: number;
   readonly capture_errors: number;
   readonly restarts: number;
 }
@@ -158,12 +165,18 @@ export interface VisionMetricsSnapshotV0 {
   readonly frames_dropped_rate_limit: number;
   readonly frames_dropped_superseded: number;
   readonly frames_analyzed: number;
+  readonly frames_dropped_stale_run: number;
   readonly observations_emitted: number;
   readonly observations_deduplicated: number;
   readonly model_errors: number;
   readonly invalid_model_outputs: number;
   readonly sink_errors: number;
   readonly capture_errors: number;
+  /**
+   * COMPLETED model calls that returned an answer (successful completions only —
+   * a transport error does not increment it). The started-inference count is
+   * `frames_analyzed`, which is exactly one provider call per analysed frame.
+   */
   readonly inference_calls: number;
   readonly average_inference_latency_ms: number;
   readonly max_inference_latency_ms: number;

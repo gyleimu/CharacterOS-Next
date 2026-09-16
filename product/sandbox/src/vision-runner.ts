@@ -19,7 +19,9 @@
 import {
   createStreamVisionLoggerV0,
   resolveVisionConfigV0,
+  VisionConfigurationErrorV0,
   VisionPerceptionV0,
+  type VisionConfigV0,
   type VisionMetricsSnapshotV0
 } from "@characteros-next/vision";
 import { ProductRuntimeStartupErrorV0, createProductRuntimeV0 } from "./product-runtime.js";
@@ -41,6 +43,9 @@ function metricsLineV0(snapshot: VisionMetricsSnapshotV0): string {
     frames_skipped_cadence: snapshot.frames_skipped_cadence,
     frames_dropped_no_change: snapshot.frames_dropped_no_change,
     frames_dropped_no_still: snapshot.frames_dropped_no_still,
+    // Started model calls (one per analysed frame) vs completed answers.
+    inference_started: snapshot.frames_analyzed,
+    frames_dropped_stale_run: snapshot.frames_dropped_stale_run,
     frames_dropped_rate_limit: snapshot.frames_dropped_rate_limit,
     frames_dropped_superseded: snapshot.frames_dropped_superseded,
     frames_analyzed: snapshot.frames_analyzed,
@@ -62,7 +67,21 @@ function metricsLineV0(snapshot: VisionMetricsSnapshotV0): string {
 }
 
 async function main(): Promise<number> {
-  const config = resolveVisionConfigV0(process.env);
+  let config: VisionConfigV0;
+  try {
+    // V-03: a non-loopback endpoint fails closed here, before any still exists.
+    config = resolveVisionConfigV0(process.env);
+  } catch (error) {
+    if (error instanceof VisionConfigurationErrorV0) {
+      process.stderr.write(`${error.message}\n`);
+      process.stderr.write(
+        "  Camera and desktop stills are local-only input. Keep VISION_ENDPOINT on 127.0.0.1 / localhost / ::1,\n" +
+          "  or set VISION_ALLOW_REMOTE_ENDPOINT=true only if you deliberately accept uploading them.\n"
+      );
+      return 1;
+    }
+    throw error;
+  }
   const write = (line: string): void => {
     process.stdout.write(`${line}\n`);
   };

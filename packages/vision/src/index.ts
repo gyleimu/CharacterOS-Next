@@ -33,6 +33,8 @@ export {
 export {
   VISION_CONFIG_DEFAULTS_V0,
   resolveVisionConfigV0,
+  isLoopbackEndpointV0,
+  VisionConfigurationErrorV0,
   type VisionCameraConfigV0,
   type VisionConfigV0,
   type VisionDesktopConfigV0,
@@ -81,10 +83,14 @@ export {
 
 export {
   normalizeObservationTextV0,
+  NEGATION_TOKENS_V0,
+  negationTokensV0,
+  observationDedupeCandidateV0,
   observationDedupeKeyV0,
   observationSimilarityV0,
   observationTokensV0,
   ObservationDedupeRingV0,
+  type DedupeCandidateV0,
   type DedupeDecisionV0
 } from "./dedupe.js";
 

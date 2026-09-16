@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { resolveVisionConfigV0, VISION_CONFIG_DEFAULTS_V0 } from "./config.js";
+import {
+  isLoopbackEndpointV0,
+  resolveVisionConfigV0,
+  VISION_CONFIG_DEFAULTS_V0,
+  VisionConfigurationErrorV0
+} from "./config.js";
 
 describe("vision configuration", () => {
   it("is fully usable with an empty environment", () => {
@@ -76,5 +81,57 @@ describe("vision configuration", () => {
     );
     expect(resolveVisionConfigV0({ VISION_PROVIDER: "ollama" }).inference.provider).toBe("ollama");
     expect(resolveVisionConfigV0({ VISION_PROVIDER: "something-else" }).inference.provider).toBe("ollama");
+  });
+});
+
+describe("V-03 — local-only inference endpoint", () => {
+  it("accepts loopback endpoints", () => {
+    for (const endpoint of [
+      "http://127.0.0.1:11434",
+      "http://localhost:11434",
+      "http://[::1]:11434",
+      "http://127.0.0.5:8080",
+      "localhost:11434",
+      "::1",
+      "127.0.0.1"
+    ]) {
+      expect(isLoopbackEndpointV0(endpoint)).toBe(true);
+      expect(resolveVisionConfigV0({ VISION_ENDPOINT: endpoint }).inference.endpoint).toBe(endpoint);
+    }
+  });
+
+  it("rejects a remote endpoint by default, fail closed", () => {
+    for (const endpoint of [
+      "https://remote.example",
+      "https://api.openai.com/v1",
+      "http://192.168.1.10:11434",
+      "http://10.0.0.5:11434",
+      "http://0.0.0.0:11434",
+      "http://vision.internal:8080",
+      "not a url at all"
+    ]) {
+      expect(isLoopbackEndpointV0(endpoint)).toBe(false);
+      expect(() => resolveVisionConfigV0({ VISION_ENDPOINT: endpoint })).toThrowError(VisionConfigurationErrorV0);
+      try {
+        resolveVisionConfigV0({ VISION_ENDPOINT: endpoint });
+      } catch (error) {
+        expect((error as VisionConfigurationErrorV0).code).toBe("VISION_REMOTE_ENDPOINT_FORBIDDEN");
+      }
+    }
+  });
+
+  it("allows a remote endpoint only through an explicit opt-in", () => {
+    const config = resolveVisionConfigV0({
+      VISION_ENDPOINT: "https://remote.example",
+      VISION_ALLOW_REMOTE_ENDPOINT: "true"
+    });
+    expect(config.inference.endpoint).toBe("https://remote.example");
+    expect(config.inference.allow_remote_endpoint).toBe(true);
+  });
+
+  it("ignores an opt-in that is not set, and defaults to loopback", () => {
+    const config = resolveVisionConfigV0({});
+    expect(config.inference.allow_remote_endpoint).toBe(false);
+    expect(isLoopbackEndpointV0(config.inference.endpoint)).toBe(true);
   });
 });

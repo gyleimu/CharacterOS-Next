@@ -28,7 +28,11 @@ import {
 } from "./capture/ffmpeg-source.js";
 import { listDshowVideoDevicesV0 } from "./capture/dshow-devices.js";
 import { resolveVisionConfigV0, type VisionConfigV0 } from "./config.js";
-import { ObservationDedupeRingV0, observationDedupeKeyV0, observationTokensV0 } from "./dedupe.js";
+import {
+  ObservationDedupeRingV0,
+  observationDedupeCandidateV0,
+  observationDedupeKeyV0
+} from "./dedupe.js";
 import { createOllamaVisionProviderV0 } from "./inference/ollama-provider.js";
 import { createOpenAiCompatibleVisionProviderV0 } from "./inference/openai-compatible-provider.js";
 import type { VisionInferenceProviderV0 } from "./inference/provider.js";
@@ -117,6 +121,15 @@ export class VisionPerceptionV0 {
   private paused = false;
   private busy = false;
   private attention: AttentionLevelV0;
+  /**
+   * V-01: every analysis belongs to one run generation. `stop()` bumps it, so a
+   * model answer that arrives after shutdown began is dropped instead of being
+   * delivered — a real production run showed `VISION_STOPPED` followed by
+   * `OBSERVATION_EMITTED`, which must be impossible.
+   */
+  private generation = 0;
+  /** A sink call that is already in flight; `stop()` waits for it. */
+  private delivery: Promise<boolean> | null = null;
 
   constructor(deps: VisionPerceptionDepsV0 = {}) {
     this.config = deps.config ?? resolveVisionConfigV0(deps.environment ?? {});
@@ -204,10 +217,16 @@ export class VisionPerceptionV0 {
   /** Releases the capture devices AND the model. Nothing keeps running. */
   async stop(): Promise<void> {
     if (!this.running && Object.keys(this.runtimes).length === 0) return;
+    // V-01: from here on, no analysis of this run may reach the sink. The
+    // generation bump invalidates anything still in flight; pending frames are
+    // cleared before the devices are released.
+    this.generation += 1;
     this.running = false;
+    this.emitLog({ level: "info", code: "STOP_REQUESTED" });
     for (const kind of ["camera", "desktop"] as const) {
       const runtime = this.runtimes[kind];
       if (runtime === undefined) continue;
+      runtime.pending = null;
       await runtime.source.stop();
       runtime.active = false;
       runtime.pending = null;
@@ -216,6 +235,11 @@ export class VisionPerceptionV0 {
     }
     delete this.runtimes.camera;
     delete this.runtimes.desktop;
+    // A delivery that had already crossed the last gate is allowed to finish, and
+    // shutdown waits for it, so no `OBSERVATION_EMITTED` can be logged after
+    // `VISION_STOPPED`.
+    const delivery = this.delivery;
+    if (delivery !== null) await delivery.catch(() => undefined);
     await this.provider.release().catch(() => undefined);
     this.emitLog({ level: "info", code: "MODEL_RELEASED" });
     this.emitLog({ level: "info", code: "VISION_STOPPED" });
@@ -378,6 +402,8 @@ export class VisionPerceptionV0 {
     this.busy = true;
     try {
       for (;;) {
+        // V-01: a stop that has begun must not start another analysis.
+        if (!this.running) break;
         const next = this.takeOldestPending();
         if (next === null) break;
         await this.analyze(next);
@@ -385,6 +411,22 @@ export class VisionPerceptionV0 {
     } finally {
       this.busy = false;
     }
+  }
+
+  /** True once the run that produced this analysis is no longer the live one. */
+  private isStaleRun(generation: number): boolean {
+    return !this.running || generation !== this.generation;
+  }
+
+  private dropStaleRun(pending: PendingAnalysisV0, detail: string): void {
+    this.metrics.recordFrameDroppedStaleRun(pending.source);
+    this.emitLog({
+      level: "info",
+      code: "ANALYSIS_DROPPED_STALE_RUN",
+      source: pending.source,
+      detail,
+      change_score: roundChangeScoreV0(pending.change_score)
+    });
   }
 
   private takeOldestPending(): PendingAnalysisV0 | null {
@@ -402,6 +444,7 @@ export class VisionPerceptionV0 {
 
   private async analyze(pending: PendingAnalysisV0): Promise<void> {
     const runtime = this.runtimes[pending.source];
+    const generation = this.generation;
     this.metrics.recordFrameAnalyzed(pending.source);
     this.emitLog({
       level: "info",
@@ -414,6 +457,13 @@ export class VisionPerceptionV0 {
       source: pending.source,
       image_jpeg_base64: pending.still.jpeg.toString("base64")
     });
+    // V-01: the model call is the long async boundary. If `stop()` began while it
+    // was running, this answer belongs to a dead run — drop it before it can move
+    // the change reference, the dedupe window, or the sink.
+    if (this.isStaleRun(generation)) {
+      this.dropStaleRun(pending, "inference completed after stop");
+      return;
+    }
     if (outcome.kind === "ERROR") {
       // The model never actually looked at this frame, so the change reference
       // deliberately does NOT advance: the same change is retried on a later
@@ -454,8 +504,17 @@ export class VisionPerceptionV0 {
       frame_jpeg: pending.still.jpeg,
       clock: (atMs) => new Date(atMs).toISOString()
     });
-    const tokens = observationTokensV0(observation.description);
-    const decision = runtime?.dedupe.inspect(observationDedupeKeyV0(observation), tokens);
+    const candidate = observationDedupeCandidateV0({
+      key: observationDedupeKeyV0(observation),
+      description: observation.description,
+      application: observation.application ?? null
+    });
+    // Re-check after the assembly await, immediately before delivery.
+    if (this.isStaleRun(generation)) {
+      this.dropStaleRun(pending, "stop began while assembling the observation");
+      return;
+    }
+    const decision = runtime?.dedupe.inspect(candidate);
     if (decision?.duplicate === true) {
       this.metrics.recordObservationDeduplicated();
       this.emitLog({
@@ -469,15 +528,30 @@ export class VisionPerceptionV0 {
       });
       return;
     }
-    const delivered = await this.deliver(observation, pending, outcome.latency_ms);
-    if (delivered && runtime !== undefined) runtime.dedupe.record(observationDedupeKeyV0(observation), tokens);
+    const delivery = this.deliver(observation, pending, outcome.latency_ms, generation);
+    this.delivery = delivery;
+    let delivered: boolean;
+    try {
+      delivered = await delivery;
+    } finally {
+      if (this.delivery === delivery) this.delivery = null;
+    }
+    if (delivered && runtime !== undefined) runtime.dedupe.record(candidate);
   }
 
   private async deliver(
     observation: VisualObservationV0,
     pending: PendingAnalysisV0,
-    latencyMs: number
+    latencyMs: number,
+    generation: number
   ): Promise<boolean> {
+    // V-01: the last gate before the Vision → Product boundary. This check is
+    // synchronous with the sink call below, so a stop() that begins after it can
+    // only be waiting for a delivery that was already in flight.
+    if (this.isStaleRun(generation)) {
+      this.dropStaleRun(pending, "stop began before delivery");
+      return false;
+    }
     if (this.sink === null) {
       this.metrics.recordObservationEmitted();
       this.emitLog({
