@@ -98,8 +98,6 @@ export interface SpeechExpressionV0 {
   readonly activation: number;
   /** Overall expressive intensity, [0, 1]. */
   readonly intensity: number;
-  /** Interpersonal warmth, [0, 1]. */
-  readonly warmth: number;
   /** Confidence in what is being said, [0, 1]. */
   readonly certainty: number;
   /** Reluctance / hedging, [0, 1]. */
@@ -108,6 +106,16 @@ export interface SpeechExpressionV0 {
   readonly speaking_rate: number;
   /** Relative volume, [-1, 1]; negative is softer than neutral. */
   readonly volume: number;
+  /**
+   * PROJECTED_NOT_YET_RENDERED. CharacterOS computes this from canonical valence
+   * and the projection is deterministic and unit-tested, but the CosyVoice
+   * adapter does NOT consume it: no directive in the model's verified vocabulary
+   * maps to warmth. Three candidate tone directives were tested empirically and
+   * none moved the audio beyond the model's own run-to-run variation, so none was
+   * adopted. Treat this as a computed value with no acoustic realisation today —
+   * it is NOT evidence that valence changes how the subject sounds.
+   */
+  readonly warmth: number;
   /** Tendency toward longer pauses, [0, 1]. */
   readonly pause_bias: number;
   /** Prosodic animation, [0, 1]. */

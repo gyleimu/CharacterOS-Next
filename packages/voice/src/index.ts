@@ -102,3 +102,19 @@ export {
   type VoiceSubjectPortV0,
   type VoiceTurnResultV0
 } from "./voice-session.js";
+
+export {
+  DEFAULT_SPEECH_SEGMENTATION_CONFIG_V0,
+  isMultiSegmentV0,
+  splitSpeechSegmentsV0,
+  type SpeechSegmentationConfigV0,
+  type SpeechSegmentV0
+} from "./segmentation.js";
+
+export {
+  SpeechQueueV0,
+  type SpeechQueueConfigV0,
+  type SpeechQueueDepsV0,
+  type SpeechQueueResultV0,
+  type SpeechQueueSegmentResultV0
+} from "./speech-queue.js";

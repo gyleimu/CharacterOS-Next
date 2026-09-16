@@ -77,11 +77,15 @@ export const DEFAULT_COSYVOICE_INSTRUCTION_CONFIG_V0: CosyVoiceInstructionConfig
 /**
  * Quantizes a continuous expression into one CosyVoice delivery directive.
  *
- * Deterministic and total: the same expression always yields the same
- * directive, and the neutral case yields an empty directive list. Tempo and
- * loudness are the two perceptual axes CosyVoice documents as directly
- * controllable, and they are exactly the axes on which a withdrawn state and an
- * agitated state diverge most.
+ * WHICH EXPRESSION FIELDS ARE HONOURED. Only `speaking_rate` and `volume`, which
+ * are the two perceptual axes CosyVoice documents as directly controllable and
+ * which were measured to move the audio. `warmth` is deliberately NOT consumed
+ * here: nothing in the model's verified instruction vocabulary maps to it, so
+ * valence currently has no acoustic channel. That is recorded rather than faked —
+ * see SpeechExpressionV0.warmth (PROJECTED_NOT_YET_RENDERED).
+ *
+ * Deterministic and total: the same expression always yields the same directive,
+ * and the neutral case yields an empty directive list.
  */
 export function buildCosyVoiceInstructionV0(
   expression: SpeechExpressionV0,

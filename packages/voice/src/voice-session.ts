@@ -38,6 +38,11 @@ import {
 import type { SpeechRecognitionResultV0, VoiceAsrAdapterV0 } from "./adapters/sensevoice-asr-adapter.js";
 import type { SpeechSynthesisResultV0, VoiceTtsAdapterV0 } from "./adapters/cosyvoice-tts-adapter.js";
 import type { SpeechStreamResultV0 } from "./runtime-client.js";
+import {
+  SpeechQueueV0,
+  type SpeechQueueSegmentResultV0
+} from "./speech-queue.js";
+import type { SpeechSegmentationConfigV0 } from "./segmentation.js";
 
 // ----------------------------------------------------------------------------------
 // §1 The narrow CharacterOS port
@@ -82,6 +87,8 @@ export interface VoiceSessionTurnV0 {
   readonly speech: SpeechSynthesisResultV0 | null;
   /** Measurements when the reply was streamed; `null` for one-pass synthesis. */
   readonly speech_stream: SpeechStreamResultV0 | null;
+  /** Per-sentence record of the whole reply, in the order it was spoken. */
+  readonly speech_segments: readonly SpeechQueueSegmentResultV0[];
   /**
    * Why speech is missing, when it is. Present so callers can report a degraded
    * channel without treating it as a turn failure.
@@ -105,6 +112,8 @@ export interface VoiceSessionConfigV0 {
   /** Ask the runtime for streaming synthesis. */
   readonly streaming: boolean;
   readonly expression_config?: SpeechExpressionConfigV0;
+  /** Sentence-splitting limits for the speech queue. */
+  readonly segmentation?: SpeechSegmentationConfigV0;
 }
 
 export interface VoiceSessionDepsV0 {
@@ -118,6 +127,8 @@ export interface VoiceSessionDepsV0 {
 export class VoiceSessionV0 {
   /** Controller for the utterance currently being spoken, if any. */
   private activeSpeech: AbortController | null = null;
+  /** One queue per session, so an interruption cancels the whole reply. */
+  private speechQueue: SpeechQueueV0 | null = null;
 
   constructor(
     private readonly config: VoiceSessionConfigV0,
@@ -136,11 +147,12 @@ export class VoiceSessionV0 {
 
   /** True while a reply is being spoken. */
   isSpeaking(): boolean {
-    return this.activeSpeech !== null;
+    return this.speechQueue?.isSpeaking() ?? this.activeSpeech !== null;
   }
 
   /**
-   * Interruption: stops the reply currently being spoken.
+   * Interruption: stops the reply currently being spoken and drops the sentences
+   * that have not been generated yet.
    *
    * Aborts the local request AND asks the runtime to stop generating and stop
    * the speaker, so an interruption actually silences the room rather than just
@@ -152,6 +164,13 @@ export class VoiceSessionV0 {
     const controller = this.activeSpeech;
     this.activeSpeech = null;
     controller?.abort();
+    const queue = this.speechQueue;
+    if (queue !== null && queue.isSpeaking()) {
+      // The queue already asks the runtime to stop generating and stop the
+      // speaker; calling the adapter again would double-cancel.
+      await queue.cancel();
+      return;
+    }
     const tts = this.deps.tts;
     if (tts?.cancel !== undefined) {
       await tts.cancel();
@@ -268,6 +287,7 @@ export class VoiceSessionV0 {
         expression: null,
         speech: null,
         speech_stream: null,
+        speech_segments: [],
         speech_failure: null
       };
     }
@@ -280,6 +300,7 @@ export class VoiceSessionV0 {
         expression: null,
         speech: null,
         speech_stream: null,
+        speech_segments: [],
         speech_failure: null
       };
     }
@@ -300,6 +321,7 @@ export class VoiceSessionV0 {
         expression: null,
         speech: null,
         speech_stream: null,
+        speech_segments: [],
         speech_failure:
           error instanceof VoiceFailureV0
             ? error
@@ -307,37 +329,44 @@ export class VoiceSessionV0 {
       };
     }
 
-    const request = this.buildRequest(turn.reply_text, expression);
     const tts = this.deps.tts;
-    // One controller per utterance, so `cancelSpeech()` can silence exactly the
-    // speech that is playing and nothing else.
+    // One queue per session, so `cancelSpeech()` silences exactly the speech that
+    // is playing and drops whatever has not been generated yet.
+    this.speechQueue ??= new SpeechQueueV0(
+      {
+        voice_id: this.config.voice_id,
+        language: this.config.language,
+        streaming: this.config.streaming,
+        ...(this.config.segmentation === undefined ? {} : { segmentation: this.config.segmentation })
+      },
+      { tts }
+    );
+    const queue = this.speechQueue;
     const controller = new AbortController();
     this.activeSpeech = controller;
-    const combined = signal === undefined ? controller.signal : AbortSignal.any([signal, controller.signal]);
 
     try {
-      const useStreaming = this.config.streaming && tts.synthesizeStream !== undefined;
-      if (useStreaming && tts.synthesizeStream !== undefined) {
-        const stream = await tts.synthesizeStream(request, { play: true, signal: combined });
-        return {
-          turn_ref: ref,
-          recognized,
-          turn,
-          expression,
-          speech: null,
-          speech_stream: stream,
-          speech_failure: null
-        };
-      }
-      const speech = await tts.synthesize(request, { play: true, signal: combined });
+      // The reply is delivered as one complete string (CharacterOS's language
+      // realization is a single validated call), so the queue's job is to speak
+      // its SENTENCES in order and stop cleanly on interruption — not to invent
+      // a token stream that does not exist.
+      const outcome = await queue.enqueue(turn.reply_text, expression);
+      const spoken = outcome.segments.filter((segment) => !segment.skipped);
+      const firstSpeech = spoken.find((segment) => segment.speech !== null)?.speech ?? null;
+      const firstStream = spoken.find((segment) => segment.stream !== null)?.stream ?? null;
+      const failure =
+        spoken.length === 0
+          ? new VoiceFailureV0("VOICE_CANCELLED", "speech was cancelled before any segment was spoken")
+          : (spoken.find((segment) => segment.failure !== null)?.failure ?? null);
       return {
         turn_ref: ref,
         recognized,
         turn,
         expression,
-        speech,
-        speech_stream: null,
-        speech_failure: null
+        speech: firstSpeech,
+        speech_stream: firstStream,
+        speech_segments: outcome.segments,
+        speech_failure: failure
       };
     } catch (error) {
       // GRACEFUL DEGRADATION: the text turn stands; only the audio is missing.
@@ -348,6 +377,7 @@ export class VoiceSessionV0 {
         expression,
         speech: null,
         speech_stream: null,
+        speech_segments: [],
         speech_failure:
           error instanceof VoiceFailureV0
             ? error
