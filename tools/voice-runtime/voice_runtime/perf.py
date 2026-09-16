@@ -68,8 +68,18 @@ class ReferenceConditioningCache:
         return self
 
     def _key(self, name: str, prompt_wav: Any) -> tuple:
-        """Keyed on identity AND mtime/size, so replacing the reference resets it."""
-        path = str(prompt_wav)
+        """Keyed on identity AND mtime/size, so replacing the reference resets it.
+
+        The path is resolved to an absolute path first. Without that, warmup
+        (which holds a relative path) and a real request (whose voice registry
+        entry is absolute) produce DIFFERENT keys for the same file, so the first
+        request after warmup missed and paid the full re-encode — measured at
+        1415 ms instead of ~2 ms.
+        """
+        try:
+            path = os.path.realpath(str(prompt_wav))
+        except OSError:
+            path = str(prompt_wav)
         try:
             info = os.stat(path)
             return (name, path, info.st_mtime_ns, info.st_size)

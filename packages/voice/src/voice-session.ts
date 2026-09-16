@@ -344,6 +344,13 @@ export class VoiceSessionV0 {
     const queue = this.speechQueue;
     const controller = new AbortController();
     this.activeSpeech = controller;
+    // An externally supplied signal must also silence the reply — a caller that
+    // aborts is interrupting, and the queue owns the in-flight request, so it is
+    // the queue that has to be told.
+    const onExternalAbort = (): void => {
+      void queue.cancel();
+    };
+    signal?.addEventListener("abort", onExternalAbort, { once: true });
 
     try {
       // The reply is delivered as one complete string (CharacterOS's language
@@ -384,6 +391,7 @@ export class VoiceSessionV0 {
             : new VoiceFailureV0("VOICE_RUNTIME_UNAVAILABLE", "speech synthesis failed", error)
       };
     } finally {
+      signal?.removeEventListener("abort", onExternalAbort);
       if (this.activeSpeech === controller) this.activeSpeech = null;
     }
   }
