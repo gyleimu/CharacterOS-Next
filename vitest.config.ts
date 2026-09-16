@@ -7,7 +7,10 @@ export default defineConfig({
       "packages/**/src/**/*.test.ts",
       "product/sandbox/src/**/*.test.ts",
       "product/web/src/**/*.test.ts",
-      "evals/conformance/**/*.test.ts"
+      "evals/conformance/**/*.test.ts",
+      // Research measurement-protocol harness tests (methodology slice: the
+      // integrity laws the next confirmatory experiment depends on).
+      "research/measurement-protocols/**/*.test.ts"
     ],
     allowOnly: false,
     // Environment tolerance ONLY (assertions are unchanged): the deterministic

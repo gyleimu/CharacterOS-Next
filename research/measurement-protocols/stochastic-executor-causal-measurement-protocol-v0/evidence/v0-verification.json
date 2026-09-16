@@ -1,0 +1,49 @@
+{
+  "v0_evidence_intact": true,
+  "evidence": [
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/report.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:fd010f34460322147c70399ecb8bf09dcf62e4b271c21d3a56f35c6273794e05"
+    },
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/scientific-freeze-manifest.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:5a2d60c1d6fcbf92d20cf53a7426242c09f61b6ad090ccb9456dec50becbd88e"
+    },
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/precheck/precheck.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:7822a0bf98362b263525de1e623f0639d63c5fd0511460c7f76944b8e3142721"
+    },
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/pilot/verdict.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:ba4eb6bcf4240531377403d436126c99ae47c60276b6c5890f17be6d57479e40"
+    },
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/primary/verdict.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:c145b812c4a31b5882c571dd274004fdc00573dd7f638b5d11a9325511ba0477"
+    },
+    {
+      "file": "research/experiments/belief-causal-validation-v0/evidence/replication/verdict.json",
+      "archived_matches_worktree": true,
+      "archived_hash": "sha256:6d086f22a04d8165a7f18c1550b3e5c31eb8d2332de693d1155237b369d4c6b5"
+    }
+  ],
+  "manifest_defect": {
+    "reproducible": false,
+    "fields_inside_hashed_core_that_break_reproduction": [
+      "frozen_at_utc (wall-clock value inside the hashed core)",
+      "repository.head (current HEAD inside the hashed core)",
+      "repository.tracked_tree_dirty_outside_experiment (mutable worktree state inside the hashed core)"
+    ],
+    "detail": "V0's stored manifest_hash cannot be re-derived after the run because the hashed core contains wall-clock and current-HEAD fields; the V0 slice disclosed this and re-sealed once after a type-only repair. The protocol's manifest law removes every such field from the core."
+  },
+  "report_hash_law": {
+    "recomputable_without_a_stated_law": false,
+    "detail": "V0 stored report_hash=sha256:70afb0d75beba17ce6266b75f8a8a1bcf2c3542795854760d613d485fdb26455; recomputing over the whole file minus report_hash gives sha256:4569608a6a8e3a8e554062b88facb063cca1aaa89cc9f79e08db3c4040dd7724 while the experiment's implicit sub-core {verdict, primary, replication} gives sha256:d52665e2a82d28e0feb002b4d61b046158b5e158c3a4799901ab1f5fd2b13a7a. Two plausible laws exist and none was pinned in the artefact, so an independent auditor cannot know which one authored the value. The protocol's report law pins exactly one: report_core = report minus report_hash."
+  },
+  "mutation": "NONE — read only"
+}
