@@ -102,3 +102,21 @@ export {
   type BeliefSemanticOllamaProviderErrorCodeV0,
   type OllamaBeliefSemanticProviderConfigV0
 } from "./belief-semantic-ollama-provider.js";
+export {
+  BELIEF_PROPOSITION_ADMISSION_SCHEMA_VERSION,
+  BELIEF_PROPOSITION_KEY_PROJECTION,
+  BELIEF_PROPOSITION_STANCE_ZERO_CREDENCE,
+  BELIEF_PROPOSITION_FIRST_CREDENCE,
+  BELIEF_PROPOSITION_ADMISSION_STEP_V0,
+  NEAR_DUPLICATE_CANONICALIZATION_V0,
+  deriveCanonicalBeliefPropositionLabelV0,
+  deriveBeliefPropositionKeyV0,
+  validateBeliefAdmissionEvidenceRefsV0,
+  decideBeliefPropositionAdmissionV0,
+  executeBeliefPropositionAdmissionV0,
+  type BeliefPropositionAdmissionCodeV0,
+  type BeliefPropositionAdmissionDecisionV0,
+  type AdmitBeliefPropositionInputV0,
+  type ExecuteBeliefPropositionAdmissionDepsV0,
+  type ExecuteBeliefPropositionAdmissionResultV0
+} from "./belief-proposition-admission.js";
