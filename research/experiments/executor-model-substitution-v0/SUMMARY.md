@@ -7,24 +7,29 @@ The local executor could not be replaced by the available API executor in a way 
 none was run. The LOCAL result `FAMILIARITY_CONTEXT_MEDIATION_NOT_REPLICATED` is untouched and
 remains the valid familiarity result.
 
-Model substitution is blocked by a **verified impossibility**, not by a configuration slip:
+Model substitution is blocked by a **verified contract-visibility gap**, not by a configuration
+slip:
 
-> The frozen cognition proposal requires the top-level `schema_version` field with the **exact
-> literal value** `"cognition-proposal-v0"`. That field name and that literal appear **nowhere** in
-> the model-facing input — neither in the system prompt nor in the user prompt. They reach the
-> executor **only** through the provider's structured-output constraint.
+> `REQUIRED_SCHEMA_SEMANTICS_NOT_FULLY_MODEL_VISIBLE` — the frozen cognition proposal schema
+> requires fields that are named **only** in the provider's structured-output schema and never in
+> the model-facing input. A model could in principle emit them by accident, but an experiment
+> must not depend on accidental behaviour.
+>
+> Consequence: `CROSS_PROVIDER_COMPLIANCE_CANNOT_BE_FAIRLY_COMPARED` — the local executor
+> (grammar-enforced) and an API executor (no grammar) received UNEQUAL requirement sets, so a
+> difference in compliance could not be attributed to executor capability.
 
-Measured on the real frozen prompt (`system` + `user`, 14,788 characters combined):
+Measured by an independent audit of the canonical `CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA`
+against the real model-facing prompt (system + user), **before** the remediation:
 
 ```
-COMBINED prompt contains "schema_version":          false
-COMBINED prompt contains "communication_directive": false
-COMBINED prompt contains "cognition-proposal-v0":   false
+TOTAL requirements: 80 | MODEL_VISIBLE 70 | PROVIDER_ONLY 10
 ```
 
-The system prompt names four of the seven required top-level keys (`response_semantics`,
-`subjective_selection`, `clarification_basis`, `factual_assessment`) but not the other three.
-Consequently:
+The ten were: `schema_version`, `communication_directive`,
+`cognition.schema_version` and its const `"cognition-proposal-v0"`,
+`cognition.reasoning_summary`, `cognition.confidence`, `cognition.uncertainty`,
+and `clarification_basis.{current_observation_ref, missing_information, needed_for}`.
 
 - On the LOCAL executor the constraint is mapped to Ollama's grammar-enforced `format`, so the
   grammar — not the model — supplies the missing field name and literal. That is why `qwen3.5:9b`
@@ -55,7 +60,28 @@ Every failure is the same two missing/misnamed fields (`schema_version` absent;
 content the models DO produce is semantically on-target: one proposal correctly cited the
 counterpart agreement as its first claim (`"alice and the subject agreed to keep the rollback
 checklist in the shared review doc."`, source `F3`) with `current_intent` "…as the shared review
-doc, per the prior agreement…". The executor is capable; the **interface** is not portable.
+doc, per the prior agreement…". The executor is capable; the **interface** was not portable.
+
+### CORRECTION to this experiment's first report
+
+The first version of this record overstated and mis-located the gap. Corrected by the §1 audit:
+
+| first report | verified fact |
+| --- | --- |
+| "the required top-level const is `cognition-proposal-v0`, and it is invisible" | the **top-level** const is `"conversation-cognition-proposal-v8"` and it IS model-visible; `"cognition-proposal-v0"` is the **nested** `cognition.schema_version` const, and only that one was invisible |
+| "information-theoretically impossible" | too strong. The accurate frozen statement is `REQUIRED_SCHEMA_SEMANTICS_NOT_FULLY_MODEL_VISIBLE` together with `CROSS_PROVIDER_COMPLIANCE_CANNOT_BE_FAIRLY_COMPARED`: a model may emit an unstated field by accident, but an experiment must not rely on that |
+| "10 of the required keys ... the system prompt names only 4 of 7" | directionally right; the precise measurement is **10 of 80 requirements** provider-only, of which `schema_version` and `communication_directive` are top-level REQUIRED field names |
+
+The core claim stood — required schema semantics genuinely lived only in the provider channel —
+which is why the remediation was authorized rather than stopped.
+
+### REMEDIATION (see `research/core-completion/provider-portable-cognition-contract-v0/DECISION.md`)
+
+The canonical schema now also drives a model-visible contract section, so every executor receives
+the same requirements regardless of provider enforcement strength. Re-audited after the fix:
+**80 requirements, 80 MODEL_VISIBLE, 0 PROVIDER_ONLY**. Any future executor substitution must use
+that contract to build BOTH baselines afresh; the local runs in this record were made against the
+pre-fix prompt and must not be compared with post-fix runs.
 
 ## Why this cannot be repaired inside the constraints
 

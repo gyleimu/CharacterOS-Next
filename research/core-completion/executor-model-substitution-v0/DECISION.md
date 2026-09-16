@@ -17,35 +17,42 @@ falsification — to test whether the closed negative was an artefact of the loc
 substitution, so the closure is unchanged, decision admission remains **0**, and familiarity
 keeps no decision authority.
 
-## The blocker (verified, and information-theoretic)
+## The blocker (verified; corrected after the §1 audit)
 
-The frozen cognition proposal requires the top-level `schema_version` field with the **exact
-literal value** `"cognition-proposal-v0"`. Measured on the real frozen prompt (system + user,
-14,788 characters combined):
+`REQUIRED_SCHEMA_SEMANTICS_NOT_FULLY_MODEL_VISIBLE`, with the immediate consequence
+`CROSS_PROVIDER_COMPLIANCE_CANNOT_BE_FAIRLY_COMPARED`.
 
-```
-contains "schema_version":          false
-contains "communication_directive": false
-contains "cognition-proposal-v0":   false
-```
+An independent audit of the canonical `CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA` against the
+real model-facing prompt (system + user) measured **80 requirements: 70 model-visible, 10
+provider-only** — `schema_version`, `communication_directive`, `cognition.schema_version` and its
+const `"cognition-proposal-v0"`, `cognition.reasoning_summary`, `cognition.confidence`,
+`cognition.uncertainty`, and `clarification_basis.{current_observation_ref, missing_information,
+needed_for}`.
+
+**Correction of this record's first version.** It claimed the invisible const was the top-level
+`"cognition-proposal-v0"` and called the block "information-theoretically impossible". Both were
+wrong or overstated: the top-level const is `"conversation-cognition-proposal-v8"` and **is**
+model-visible; the invisible const is the **nested** `cognition.schema_version`; and a model can
+in principle emit an unstated field by accident, so the honest statement is that the requirement
+set was not fully model-visible and cross-provider compliance could not be fairly compared.
+
+The core claim survived the audit — required semantics genuinely lived only in the provider channel
+— so the remediation was authorized rather than stopped.
 
 - `conversation-cognition-provider-v8.ts:218` defines `CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA`
-  and `:373` passes it **only** as `structured_output`. The system prompt names four of the seven
-  required keys but not `schema_version` or `communication_directive`.
-- The LOCAL transport maps the constraint to Ollama's grammar-enforced `format`; that grammar —
-  not the model — supplies the missing field name and literal. That is why `qwen3.5:9b` was
-  104/104 schema-compliant in V2.
+  and `:373` passes it **only** as `structured_output`. The system prompt named four of the seven
+  required top-level keys but not `schema_version` or `communication_directive`.
+- The LOCAL transport maps the constraint to Ollama's grammar-enforced `format`, so the grammar
+  supplied the missing names and literals; that is why `qwen3.5:9b` was 104/104 schema-compliant
+  in V2.
 - The API provider has no equivalent: `json_schema` returns
   `400 "This response_format type is unavailable now"`; `json_object` guarantees syntax only.
-- **No model, however strong, can emit an unknown constant**, so schema-valid output is
-  impossible through this provider. Every API model tried fails identically —
-  `deepseek-flash`, `deepseek-v4-flash` (the required model) and, in three calls made before the
-  instruction to avoid it, `deepseek-v4-pro`.
+- Every API model tried therefore failed identically — `deepseek-flash`, `deepseek-v4-flash`
+  (alias) and, in three calls made before the instruction to avoid it, `deepseek-v4-pro`.
 
-Making the substitution isolatable would require either naming the keys in the prompt (changes
-prompt semantics — forbidden), relaxing the parser/closed schema (forbidden), or adding a
-provider-agnostic schema-enforcement layer to the shipped provider (production architecture
-change — §17 instructs STOP and report). None was done.
+The fix is `MAKE CONTRACT VISIBLE`, not `MAKE VALIDATOR WEAKER` — see
+`research/core-completion/provider-portable-cognition-contract-v0/DECISION.md`. Re-audited after
+the fix: **80/80 model-visible, 0 provider-only**.
 
 ## What was achieved instead
 
