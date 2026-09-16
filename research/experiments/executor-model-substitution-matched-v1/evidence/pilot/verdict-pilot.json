@@ -1,0 +1,446 @@
+{
+  "phase": "pilot",
+  "verdicts": {
+    "LOCAL_QWEN": {
+      "executor": "LOCAL_QWEN",
+      "phase": "pilot",
+      "phase_verdict": "LOCAL_HOST_VALIDITY_PILOT_PASS",
+      "scientific_verdict": null,
+      "executor_config": {
+        "model": "qwen3.5:9b",
+        "provider": "OLLAMA_NATIVE",
+        "base_url": "http://127.0.0.1:11434",
+        "temperature": 0,
+        "top_p": null,
+        "max_tokens": 2048,
+        "timeout_ms": 480000,
+        "seed_support": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT",
+        "schema_enforcement_mode": "OLLAMA_NATIVE_FORMAT_GRAMMAR_ENFORCED"
+      },
+      "key_fingerprint": null,
+      "host_valid_scenes": 24,
+      "total_scenes": 24,
+      "host_valid_rate": 1,
+      "host_valid_gate_pass": true,
+      "schema_failures": 0,
+      "schema_failure_rate": 0,
+      "factual_authority_failures": 0,
+      "source_binding_failures": 0,
+      "source_binding_failure_rate": 0,
+      "transport_failures": 0,
+      "retry_count": 0,
+      "seed_clean": true,
+      "corpus_identical": true,
+      "manipulation_ok": true,
+      "semantic_non_conflation_pass": true,
+      "forbidden_vocabulary": [],
+      "failure_classes": {},
+      "cells": {
+        "A_LOW_NO_CONTEXT": {
+          "classes": [
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 0,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "B_HIGH_CONTEXT": {
+          "classes": [
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 6,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "C_HIGH_CONTEXT_ABLATED": {
+          "classes": [
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 0,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "D_LOW_CONTEXT_EQUALIZED": {
+          "classes": [
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT",
+            "GENERATIVE_ACT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 6,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        }
+      },
+      "contrasts": [
+        {
+          "id": "C1",
+          "left": "A_LOW_NO_CONTEXT",
+          "right": "B_HIGH_CONTEXT",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 0,
+          "left_only_classes": [],
+          "right_only_classes": []
+        },
+        {
+          "id": "C2",
+          "left": "B_HIGH_CONTEXT",
+          "right": "C_HIGH_CONTEXT_ABLATED",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 0,
+          "left_only_classes": [],
+          "right_only_classes": []
+        },
+        {
+          "id": "C3",
+          "left": "B_HIGH_CONTEXT",
+          "right": "D_LOW_CONTEXT_EQUALIZED",
+          "expected": "NO_MEANINGFUL_DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 0,
+          "left_only_classes": [],
+          "right_only_classes": []
+        },
+        {
+          "id": "C4",
+          "left": "A_LOW_NO_CONTEXT",
+          "right": "D_LOW_CONTEXT_EQUALIZED",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 0,
+          "left_only_classes": [],
+          "right_only_classes": []
+        }
+      ],
+      "criteria": {
+        "1_A_vs_B_effect": false,
+        "2_B_vs_C_effect": false,
+        "3_B_vs_D_no_effect": true,
+        "4_A_vs_D_effect": false,
+        "5_semantic_non_conflation": true,
+        "6_seed_contamination": true,
+        "7_host_valid_rate": true,
+        "9_accounting_exact": true,
+        "10_language_authority": true
+      },
+      "criteria_all_pass": false,
+      "accounting": {
+        "planned_scenes": 24,
+        "actual_scenes": 24,
+        "unique_scenes": 24,
+        "duplicate_scenes": 0,
+        "missing_scenes": 0,
+        "extra_scenes": 0,
+        "requests": 48,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "cached_tokens": 0,
+        "reasoning_tokens": 0,
+        "api_cost": "NOT_APPLICABLE_LOCAL_EXECUTOR"
+      },
+      "detail": "LOCAL host validity pilot: 24/24 = 1.000 (requires >= 20 valid AND >= 0.95); no scientific metric is scored"
+    },
+    "API_DEEPSEEK": {
+      "executor": "API_DEEPSEEK",
+      "phase": "pilot",
+      "phase_verdict": "API_HOST_VALIDITY_PILOT_PASS",
+      "scientific_verdict": null,
+      "executor_config": {
+        "model": "deepseek-flash",
+        "provider": "DEEPSEEK_OPENAI_COMPATIBLE",
+        "base_url": "https://api.deepseek.com",
+        "temperature": 0,
+        "top_p": null,
+        "max_tokens": 16384,
+        "timeout_ms": 480000,
+        "seed_support": "SEED_UNSUPPORTED_BY_PROVIDER",
+        "schema_enforcement_mode": "OPENAI_COMPATIBLE_JSON_SYNTAX_MODE_ONLY"
+      },
+      "key_fingerprint": "sha256:9111ecf1e57a8fa3",
+      "host_valid_scenes": 24,
+      "total_scenes": 24,
+      "host_valid_rate": 1,
+      "host_valid_gate_pass": true,
+      "schema_failures": 0,
+      "schema_failure_rate": 0,
+      "factual_authority_failures": 0,
+      "source_binding_failures": 0,
+      "source_binding_failure_rate": 0,
+      "transport_failures": 0,
+      "retry_count": 0,
+      "seed_clean": true,
+      "corpus_identical": true,
+      "manipulation_ok": true,
+      "semantic_non_conflation_pass": true,
+      "forbidden_vocabulary": [],
+      "failure_classes": {},
+      "cells": {
+        "A_LOW_NO_CONTEXT": {
+          "classes": [
+            "GENERATIVE_ACT",
+            "CITES_GENERIC_ONLY",
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT",
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 0,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 3,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "B_HIGH_CONTEXT": {
+          "classes": [
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 6,
+          "counterpart_context_cited": 6,
+          "correct_counterpart_context_cited": 6,
+          "continuation_success": 6,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "C_HIGH_CONTEXT_ABLATED": {
+          "classes": [
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT",
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT",
+            "CITES_GENERIC_ONLY",
+            "CITES_GENERIC_ONLY"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 0,
+          "counterpart_context_cited": 0,
+          "correct_counterpart_context_cited": 0,
+          "continuation_success": 0,
+          "generic_only": 4,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        },
+        "D_LOW_CONTEXT_EQUALIZED": {
+          "classes": [
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT",
+            "CITES_COUNTERPART_CONTEXT"
+          ],
+          "valid": 6,
+          "total": 6,
+          "counterpart_context_visible": 6,
+          "counterpart_context_cited": 6,
+          "correct_counterpart_context_cited": 6,
+          "continuation_success": 6,
+          "generic_only": 0,
+          "clarification_requested": 0,
+          "unsupported_context_claim": 0,
+          "forbidden_relationship_inference": 0
+        }
+      },
+      "contrasts": [
+        {
+          "id": "C1",
+          "left": "A_LOW_NO_CONTEXT",
+          "right": "B_HIGH_CONTEXT",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 6,
+          "left_only_classes": [
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT"
+          ],
+          "right_only_classes": [
+            "CITES_COUNTERPART_CONTEXT"
+          ]
+        },
+        {
+          "id": "C2",
+          "left": "B_HIGH_CONTEXT",
+          "right": "C_HIGH_CONTEXT_ABLATED",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 6,
+          "left_only_classes": [
+            "CITES_COUNTERPART_CONTEXT"
+          ],
+          "right_only_classes": [
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT"
+          ]
+        },
+        {
+          "id": "C3",
+          "left": "B_HIGH_CONTEXT",
+          "right": "D_LOW_CONTEXT_EQUALIZED",
+          "expected": "NO_MEANINGFUL_DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 0,
+          "left_only_classes": [],
+          "right_only_classes": []
+        },
+        {
+          "id": "C4",
+          "left": "A_LOW_NO_CONTEXT",
+          "right": "D_LOW_CONTEXT_EQUALIZED",
+          "expected": "DIFFERENCE",
+          "comparable_pairs": 6,
+          "directional": 6,
+          "left_only_classes": [
+            "CITES_GENERIC_ONLY",
+            "GENERATIVE_ACT"
+          ],
+          "right_only_classes": [
+            "CITES_COUNTERPART_CONTEXT"
+          ]
+        }
+      ],
+      "criteria": {
+        "1_A_vs_B_effect": true,
+        "2_B_vs_C_effect": true,
+        "3_B_vs_D_no_effect": true,
+        "4_A_vs_D_effect": true,
+        "5_semantic_non_conflation": true,
+        "6_seed_contamination": true,
+        "7_host_valid_rate": true,
+        "9_accounting_exact": true,
+        "10_language_authority": true
+      },
+      "criteria_all_pass": true,
+      "accounting": {
+        "planned_scenes": 24,
+        "actual_scenes": 24,
+        "unique_scenes": 24,
+        "duplicate_scenes": 0,
+        "missing_scenes": 0,
+        "extra_scenes": 0,
+        "requests": 48,
+        "prompt_tokens": 137270,
+        "completion_tokens": 74863,
+        "total_tokens": 212133,
+        "cached_tokens": 105841,
+        "reasoning_tokens": 64871,
+        "api_cost": "NOT_REPORTED_BY_PROVIDER"
+      },
+      "detail": "API host validity pilot: 24/24 = 1.000 (requires >= 20 valid AND >= 0.95); no scientific metric is scored"
+    }
+  },
+  "cross": null,
+  "schedule_manifest": [
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|1",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|1",
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|2",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|2",
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|3",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|3",
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|4",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|4",
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|5",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|5",
+    "LOCAL_QWEN|pilot|A_LOW_NO_CONTEXT|6",
+    "API_DEEPSEEK|pilot|A_LOW_NO_CONTEXT|6",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|1",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|1",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|2",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|2",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|3",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|3",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|4",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|4",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|5",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|5",
+    "LOCAL_QWEN|pilot|B_HIGH_CONTEXT|6",
+    "API_DEEPSEEK|pilot|B_HIGH_CONTEXT|6",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|1",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|1",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|2",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|2",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|3",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|3",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|4",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|4",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|5",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|5",
+    "LOCAL_QWEN|pilot|C_HIGH_CONTEXT_ABLATED|6",
+    "API_DEEPSEEK|pilot|C_HIGH_CONTEXT_ABLATED|6",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|1",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|1",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|2",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|2",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|3",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|3",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|4",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|4",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|5",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|5",
+    "LOCAL_QWEN|pilot|D_LOW_CONTEXT_EQUALIZED|6",
+    "API_DEEPSEEK|pilot|D_LOW_CONTEXT_EQUALIZED|6"
+  ],
+  "verdict_hash": "sha256:94d6bce94a1c1654e9eff857334d05ffa2276756f9472cd2563ee160ddbbf827"
+}

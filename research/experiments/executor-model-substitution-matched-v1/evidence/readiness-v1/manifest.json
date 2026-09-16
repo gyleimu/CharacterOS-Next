@@ -1,0 +1,165 @@
+{
+  "schema_version": "executor-matched-manifest-v1",
+  "experiment_id": "EXECUTOR_MODEL_SUBSTITUTION_MATCHED_V1",
+  "core_question": "with every CharacterOS scientific input held equal, does changing ONLY the executor model (local qwen3.5:9b vs API deepseek-flash) change the familiarity context-mediation result?",
+  "independent_variable": "COGNITIVE_EXECUTOR_MODEL",
+  "isolation_target": "SEMANTIC_INFORMATION_EQUAL (NOT provider enforcement strength)",
+  "portability_fix": {
+    "commit": "1f4776a6807ea98f49d25246c186e9a3537bbbee",
+    "verdict": "PORTABILITY_FIX_APPROVED",
+    "contract_requirement": "80/80 named requirements model-visible, provider-only = 0"
+  },
+  "pre_portability_local_result": {
+    "experiment": "RELATIONSHIP_FAMILIARITY_CONTEXT_MEDIATION_FINAL_REPLICATION_V2",
+    "commit": "76b510b39c64a7e7c0f0fdc85b38c652b013d8b6",
+    "verdict": "FAMILIARITY_CONTEXT_MEDIATION_NOT_REPLICATED",
+    "comparability": "NOT_DIRECTLY_COMPARABLE_TO_MATCHED_V1 (pre-portability prompt)"
+  },
+  "executors": {
+    "LOCAL_QWEN": {
+      "id": "LOCAL_QWEN",
+      "provider": "OLLAMA_NATIVE",
+      "model": "qwen3.5:9b",
+      "base_url": "http://127.0.0.1:11434",
+      "temperature": 0,
+      "top_p": null,
+      "max_tokens": 2048,
+      "timeout_ms": 480000,
+      "seed_support": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT",
+      "schema_enforcement_mode": "OLLAMA_NATIVE_FORMAT_GRAMMAR_ENFORCED"
+    },
+    "API_DEEPSEEK": {
+      "id": "API_DEEPSEEK",
+      "provider": "DEEPSEEK_OPENAI_COMPATIBLE",
+      "model": "deepseek-flash",
+      "base_url": "https://api.deepseek.com",
+      "temperature": 0,
+      "top_p": null,
+      "max_tokens": 16384,
+      "timeout_ms": 480000,
+      "seed_support": "SEED_UNSUPPORTED_BY_PROVIDER",
+      "schema_enforcement_mode": "OPENAI_COMPATIBLE_JSON_SYNTAX_MODE_ONLY"
+    }
+  },
+  "interleave_order": [
+    "LOCAL_QWEN",
+    "API_DEEPSEEK"
+  ],
+  "execution_order_policy": "PAIRED_INTERLEAVED_LOCAL_THEN_API_PER_CELL_AND_INDEX",
+  "scientific_setup_source": "reused verbatim by import from relationship-familiarity-context-mediation-final-replication-v2",
+  "cells": [
+    "A_LOW_NO_CONTEXT",
+    "B_HIGH_CONTEXT",
+    "C_HIGH_CONTEXT_ABLATED",
+    "D_LOW_CONTEXT_EQUALIZED"
+  ],
+  "familiarity_law_unchanged": true,
+  "governance_fix_source": "github.com/gyleimu/CharacterOS-Next",
+  "schedules": {
+    "pilot_scenes_per_executor": 24,
+    "primary_scenes_per_executor": 40,
+    "replication_scenes_per_executor": 40,
+    "total_scientific_scenes_both_executors": 160,
+    "primary_replicates": 10,
+    "replication_replicates": 10
+  },
+  "gates": {
+    "host_valid_rate_min": 0.95,
+    "paired_directional_min": 6,
+    "same_corpus_required": true,
+    "seed_contamination_required": true,
+    "semantic_non_conflation_required": true,
+    "forbidden_behavior_vocabulary": [
+      "i trust",
+      "trust you",
+      "trust me",
+      "i like you",
+      "i love",
+      "affection",
+      "intimacy",
+      "we are friends",
+      "bonded",
+      "safe with you",
+      "depend on you",
+      "rely on you",
+      "loyal",
+      "friendship",
+      "closer to you"
+    ],
+    "statistical_significance_claim": false
+  },
+  "retry_policy": {
+    "max_attempts": 3,
+    "retry_on_http": [
+      408,
+      409,
+      425,
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "retry_on_transport": [
+      "MODEL_TIMEOUT",
+      "MODEL_CONNECTION_FAILURE"
+    ],
+    "never_retry_on": [
+      "MODEL_EMPTY_RESPONSE",
+      "MODEL_OUTPUT_TRUNCATED",
+      "INVALID_RESPONSE_SHAPE",
+      "SCHEMA_REJECTED",
+      "FACTUAL_AUTHORITY_REJECTED",
+      "SOURCE_BINDING_REJECTED"
+    ],
+    "backoff_ms": [
+      1000,
+      3000
+    ],
+    "identical_input_required": true,
+    "local_fallback": "FORBIDDEN"
+  },
+  "seed_contamination_gate": {
+    "per_cell": {
+      "A_LOW_NO_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "B_HIGH_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "C_HIGH_CONTEXT_ABLATED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "D_LOW_CONTEXT_EQUALIZED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      }
+    },
+    "all_clean": true
+  },
+  "familiarity_values": {
+    "A_LOW_NO_CONTEXT": 0.03125,
+    "B_HIGH_CONTEXT": 0.125,
+    "C_HIGH_CONTEXT_ABLATED": 0.125,
+    "D_LOW_CONTEXT_EQUALIZED": 0.03125
+  },
+  "hashes": {
+    "schema_contract": "sha256:082a216c7baf20d4c7a8fc07b908ada0ccc4d8f1e659f1c31cd6198814070d67",
+    "system_prompt": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+    "scenario": "sha256:b3317c29583ca6ee2f42ce5221cda06e14c72fe26037a98b82f6b8276c49eda6",
+    "corpus": "sha256:992ac55cf598e094cbe70ea890b743b5bd747eb06d46e311916e9963d0bdfabe",
+    "gates_and_thresholds": "sha256:e80123b97264c64f0cf036825c858bb64e9e1a9ba7d10be3fdee889304e0cd78",
+    "retry_policy": "sha256:0be8952ad49677f65471f7421e6f03c5537ddec40aa438caaf641f48e569cc57"
+  },
+  "prompt_equivalence_attested": true,
+  "precheck_all_pass": true,
+  "precheck_failures": [],
+  "run_authorized": true
+}
