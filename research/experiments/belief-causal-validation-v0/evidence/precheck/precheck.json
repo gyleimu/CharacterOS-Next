@@ -1,0 +1,182 @@
+{
+  "ok": true,
+  "failed_gates": [],
+  "detail": {
+    "schema_version": "belief-causal-precheck-v0",
+    "experiment_id": "BELIEF_CAUSAL_VALIDATION_V0",
+    "model": "deepseek-flash",
+    "model_calls": 0,
+    "history": {
+      "low": {
+        "progression": [
+          0.55,
+          0.5,
+          0.45
+        ],
+        "final_credence": 0.45,
+        "state_revision": 3,
+        "proposition": {
+          "canonical_label": "The service passage is usable.",
+          "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+          "proposition_id": "belief-cc0a1ed2af15da1a2393cfdfcb2021f7c44def435e23701c451c9c282184e49b"
+        },
+        "steps": [
+          {
+            "episode_ref": "episode:bcv-shared-1",
+            "intended_bearing": "SUPPORTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.55,
+            "canonical_credence": 0.55,
+            "state_revision": 1,
+            "commit_ref": "commit:a3cb9a4178a5160bca495c5590f6115610f2725e4102e1fc15c6c1d8d275590d"
+          },
+          {
+            "episode_ref": "episode:bcv-low-2",
+            "intended_bearing": "CONTRADICTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.5,
+            "canonical_credence": 0.5,
+            "state_revision": 2,
+            "commit_ref": "commit:770df5ad8d8f1561e89f9c026361245aa4564df3b1e9f2e83e81d33c0daf4f77"
+          },
+          {
+            "episode_ref": "episode:bcv-low-3",
+            "intended_bearing": "CONTRADICTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.45,
+            "canonical_credence": 0.45,
+            "state_revision": 3,
+            "commit_ref": "commit:455dc71039796c3e270798ee366886f451fadbd92fd6aedc0ab271e2e2a7637c"
+          }
+        ]
+      },
+      "high": {
+        "progression": [
+          0.55,
+          0.6000000000000001,
+          0.6500000000000001
+        ],
+        "final_credence": 0.6500000000000001,
+        "state_revision": 3,
+        "proposition": {
+          "canonical_label": "The service passage is usable.",
+          "proposition_key": "belief-prop-v0-48d55e743e72310ac6c0a7381a48f7f9ec9971b73374d7fa0347a3f808076ef3",
+          "proposition_id": "belief-cc0a1ed2af15da1a2393cfdfcb2021f7c44def435e23701c451c9c282184e49b"
+        },
+        "steps": [
+          {
+            "episode_ref": "episode:bcv-shared-1",
+            "intended_bearing": "SUPPORTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.55,
+            "canonical_credence": 0.55,
+            "state_revision": 1,
+            "commit_ref": "commit:a3cb9a4178a5160bca495c5590f6115610f2725e4102e1fc15c6c1d8d275590d"
+          },
+          {
+            "episode_ref": "episode:bcv-high-2",
+            "intended_bearing": "SUPPORTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.6000000000000001,
+            "canonical_credence": 0.6000000000000001,
+            "state_revision": 2,
+            "commit_ref": "commit:d0298d374f7fb81a2c06a7a5da9c34a3ccf5d256edb6510c65f944cb0121a076"
+          },
+          {
+            "episode_ref": "episode:bcv-high-3",
+            "intended_bearing": "SUPPORTS",
+            "provider_decision": "ONE_PROVIDER_CALL",
+            "terminal_kind": "COMPLETE_COMMITTED",
+            "reported_credence": 0.6500000000000001,
+            "canonical_credence": 0.6500000000000001,
+            "state_revision": 3,
+            "commit_ref": "commit:584f8f0db129e87b9494937f04fa6b3edabfcc6d4c1b9758a344c47f82fb8427"
+          }
+        ]
+      }
+    },
+    "restore": {
+      "low": {
+        "authority": "restoreSubjectStateV4AuthoritativelyV0",
+        "head_revision": 3,
+        "head_commit_ref": "commit:455dc71039796c3e270798ee366886f451fadbd92fd6aedc0ab271e2e2a7637c",
+        "state_hash": "sha256:79615d3d5ab634ae1f9d1c51e68bdeea5f00089fca929c10d5bbae25c2c6fc74",
+        "snapshot_hash": "sha256:c1b35231469d266b9dd70d09be69bef5542e10de9a6b0a14f5d42b9d28da79f3",
+        "belief_item": [
+          {
+            "proposition_id": "belief-cc0a1ed2af15da1a2393cfdfcb2021f7c44def435e23701c451c9c282184e49b",
+            "proposition_label": "The service passage is usable.",
+            "credence": 0.45
+          }
+        ]
+      },
+      "high": {
+        "authority": "restoreSubjectStateV4AuthoritativelyV0",
+        "head_revision": 3,
+        "head_commit_ref": "commit:584f8f0db129e87b9494937f04fa6b3edabfcc6d4c1b9758a344c47f82fb8427",
+        "state_hash": "sha256:0b07fe20ca6f409c339b786df682fe27d3d3ebef67fb26b0693d73623c455575",
+        "snapshot_hash": "sha256:931737b67307956caf3e6c146b3e121873d9300a2c8dac259e4448b1f3988d4c",
+        "belief_item": [
+          {
+            "proposition_id": "belief-cc0a1ed2af15da1a2393cfdfcb2021f7c44def435e23701c451c9c282184e49b",
+            "proposition_label": "The service passage is usable.",
+            "credence": 0.6500000000000001
+          }
+        ]
+      }
+    },
+    "non_belief_state_hash": {
+      "low": "sha256:ea31c786ee5bfd38cba1b263ceaf198165a883b2dd86cf7465b3ec0c62aedb37",
+      "high": "sha256:ea31c786ee5bfd38cba1b263ceaf198165a883b2dd86cf7465b3ec0c62aedb37"
+    },
+    "non_belief_state_identical": true,
+    "non_belief_prompt_equivalent": true,
+    "prompts": {
+      "A_LOW_BELIEF": {
+        "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+        "user_hash": "sha256:a41e40fc609392019ee426fb9145dfeb6b02b76df8c510ed21b70fac1a5ca9f1",
+        "belief_section_hash": "sha256:9c98be27d4762a1378abcbad580f2cde626b1cf63977beaf8a4a43f1adcf0273",
+        "non_belief_user_hash": "sha256:9c99e1a9d5c8fc4e6b8d96f8f1a57d0c1dd985283dc5d4c4398f0a3a5491101c",
+        "projection_hash": "sha256:cc4832dcb5343052843a12523dae6c7e9af789806f7f48be95d3afed787469b0"
+      },
+      "B_HIGH_BELIEF": {
+        "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+        "user_hash": "sha256:3a2dab8ce7c26b4677757b40db555f73222466199b321bea881cf650debfa434",
+        "belief_section_hash": "sha256:451e6ac3e04a661fd53c2228b0d0e392762fe44e5526e42e6bdd49699c8fc24e",
+        "non_belief_user_hash": "sha256:9c99e1a9d5c8fc4e6b8d96f8f1a57d0c1dd985283dc5d4c4398f0a3a5491101c",
+        "projection_hash": "sha256:7f1f65051f3a1cfb157d2bcb0508d5a1ecfc3cdd81a6dba52e2488bd2fccde6c"
+      },
+      "C_HIGH_BELIEF_MEDIATOR_ABLATED": {
+        "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+        "user_hash": "sha256:b0c01969105de71c6b9ef203811b57cf725666b9925ce290f4973f126a0277a3",
+        "belief_section_hash": "sha256:7008280f178737078277cc849a3385febdc1ecf33ecdc778d5179db2c16ec1b5",
+        "non_belief_user_hash": "sha256:9c99e1a9d5c8fc4e6b8d96f8f1a57d0c1dd985283dc5d4c4398f0a3a5491101c",
+        "projection_hash": "sha256:7750c531edd19d6fb8919cd180eadb2ddaba378bf0b976796409b61920cdbc6e"
+      },
+      "D_LOW_BELIEF_MEDIATOR_EQUALIZED": {
+        "system_hash": "sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c",
+        "user_hash": "sha256:3a2dab8ce7c26b4677757b40db555f73222466199b321bea881cf650debfa434",
+        "belief_section_hash": "sha256:451e6ac3e04a661fd53c2228b0d0e392762fe44e5526e42e6bdd49699c8fc24e",
+        "non_belief_user_hash": "sha256:9c99e1a9d5c8fc4e6b8d96f8f1a57d0c1dd985283dc5d4c4398f0a3a5491101c",
+        "projection_hash": "sha256:7f1f65051f3a1cfb157d2bcb0508d5a1ecfc3cdd81a6dba52e2488bd2fccde6c"
+      }
+    },
+    "canonical_state_hashes": {
+      "low": "sha256:79615d3d5ab634ae1f9d1c51e68bdeea5f00089fca929c10d5bbae25c2c6fc74",
+      "high": "sha256:0b07fe20ca6f409c339b786df682fe27d3d3ebef67fb26b0693d73623c455575"
+    },
+    "gates": {
+      "host_valid_rate_min": 0.95,
+      "cell_stability_min": 7,
+      "paired_directional_min": 6,
+      "null_difference_max": 1,
+      "truth_conflation_max": 0
+    },
+    "failed_gates": []
+  }
+}

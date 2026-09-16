@@ -1,0 +1,485 @@
+{
+  "schema_version": "belief-causal-verdict-v0",
+  "experiment_id": "BELIEF_CAUSAL_VALIDATION_V0",
+  "phase": "PRIMARY",
+  "model": "deepseek-flash",
+  "model_config": {
+    "provider": "deepseek-openai-compatible",
+    "model": "deepseek-flash",
+    "base_url": "https://api.deepseek.com",
+    "temperature": 0,
+    "top_p": null,
+    "max_tokens": 16384,
+    "timeout_ms": 240000,
+    "stream": false,
+    "response_format": "json_object (provider capability mapping of the frozen JSON_SCHEMA constraint)",
+    "thinking_mode": "provider default (reasoning_content is never read, scored or persisted)",
+    "retry_policy": {
+      "max_attempts": 3,
+      "retry_on_http": [
+        429,
+        500,
+        502,
+        503,
+        504
+      ],
+      "retry_on_transport": [
+        "MODEL_TIMEOUT",
+        "MODEL_CONNECTION_FAILURE",
+        "MODEL_EMPTY_RESPONSE"
+      ],
+      "backoff_ms": [
+        4000,
+        12000
+      ]
+    }
+  },
+  "scheduled": 40,
+  "host_valid": 38,
+  "invalid_scenes": [
+    {
+      "cell": "D_LOW_BELIEF_MEDIATOR_EQUALIZED",
+      "replicate": 1,
+      "phase": "PRIMARY",
+      "failure_stage": "COGNITION_FAILED",
+      "failure_reason": "SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_MODEL_SCHEMA_INVALID: conversation proposal.cognition.considered_handles: observation:o-source-event-bcv-current-scene-1 is not a valid handle)"
+    },
+    {
+      "cell": "B_HIGH_BELIEF",
+      "replicate": 3,
+      "phase": "PRIMARY",
+      "failure_stage": "LANGUAGE_SCHEMA_INVALID",
+      "failure_reason": "LANGUAGE_REALIZATION_MODEL_SCHEMA_INVALID: semantic draft.evidence_refs[1]: refs not lexicographically sorted"
+    }
+  ],
+  "invalid_by_cell": {
+    "A_LOW_BELIEF": 0,
+    "B_HIGH_BELIEF": 1,
+    "C_HIGH_BELIEF_MEDIATOR_ABLATED": 0,
+    "D_LOW_BELIEF_MEDIATOR_EQUALIZED": 1
+  },
+  "cells": {
+    "A_LOW_BELIEF": {
+      "scheduled": 10,
+      "host_valid": 10,
+      "classes": [
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "CLARIFY_MISSING_CONTEXT"
+      ],
+      "majority": "CLARIFY_MISSING_CONTEXT",
+      "majority_count": 8,
+      "stable": true,
+      "proceeds_with_passage": 0,
+      "proposes_alternative_route": 0,
+      "seeks_verification": 10,
+      "asserts_current_truth": 2,
+      "objective_truth_conflation": 0,
+      "cross_domain_inference": 0,
+      "target_visible": 10,
+      "belief_unchanged": 10,
+      "raw_history_leaks": [],
+      "retrieval_queries": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "credences": [
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45,
+        0.45
+      ]
+    },
+    "B_HIGH_BELIEF": {
+      "scheduled": 10,
+      "host_valid": 9,
+      "classes": [
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT"
+      ],
+      "majority": "REALIZE_CURRENT_INTENT",
+      "majority_count": 6,
+      "stable": false,
+      "proceeds_with_passage": 3,
+      "proposes_alternative_route": 0,
+      "seeks_verification": 6,
+      "asserts_current_truth": 3,
+      "objective_truth_conflation": 0,
+      "cross_domain_inference": 0,
+      "target_visible": 9,
+      "belief_unchanged": 9,
+      "raw_history_leaks": [],
+      "retrieval_queries": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "credences": [
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001
+      ]
+    },
+    "C_HIGH_BELIEF_MEDIATOR_ABLATED": {
+      "scheduled": 10,
+      "host_valid": 10,
+      "classes": [
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT",
+        "CLARIFY_MISSING_CONTEXT"
+      ],
+      "majority": "CLARIFY_MISSING_CONTEXT",
+      "majority_count": 10,
+      "stable": true,
+      "proceeds_with_passage": 2,
+      "proposes_alternative_route": 0,
+      "seeks_verification": 8,
+      "asserts_current_truth": 1,
+      "objective_truth_conflation": 0,
+      "cross_domain_inference": 0,
+      "target_visible": 0,
+      "belief_unchanged": 10,
+      "raw_history_leaks": [],
+      "retrieval_queries": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "credences": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    "D_LOW_BELIEF_MEDIATOR_EQUALIZED": {
+      "scheduled": 10,
+      "host_valid": 9,
+      "classes": [
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT",
+        "CLARIFY_MISSING_CONTEXT",
+        "REALIZE_CURRENT_INTENT",
+        "REALIZE_CURRENT_INTENT"
+      ],
+      "majority": "REALIZE_CURRENT_INTENT",
+      "majority_count": 7,
+      "stable": false,
+      "proceeds_with_passage": 3,
+      "proposes_alternative_route": 0,
+      "seeks_verification": 6,
+      "asserts_current_truth": 1,
+      "objective_truth_conflation": 0,
+      "cross_domain_inference": 0,
+      "target_visible": 9,
+      "belief_unchanged": 9,
+      "raw_history_leaks": [],
+      "retrieval_queries": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "credences": [
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001,
+        0.6500000000000001
+      ]
+    }
+  },
+  "contrasts": {
+    "A_LOW_BELIEF_VS_B_HIGH_BELIEF": {
+      "paired": 9,
+      "differing": 6,
+      "pairs": [
+        {
+          "replicate": 1,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 2,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 4,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 5,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 6,
+          "A_LOW_BELIEF": "REALIZE_CURRENT_INTENT",
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 7,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 8,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 9,
+          "A_LOW_BELIEF": "REALIZE_CURRENT_INTENT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 10,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT"
+        }
+      ],
+      "effect": true,
+      "null_result": false
+    },
+    "B_HIGH_BELIEF_VS_C_HIGH_BELIEF_MEDIATOR_ABLATED": {
+      "paired": 9,
+      "differing": 6,
+      "pairs": [
+        {
+          "replicate": 1,
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 2,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 4,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 5,
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 6,
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 7,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 8,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 9,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 10,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "C_HIGH_BELIEF_MEDIATOR_ABLATED": "CLARIFY_MISSING_CONTEXT"
+        }
+      ],
+      "effect": true,
+      "null_result": false
+    },
+    "B_HIGH_BELIEF_VS_D_LOW_BELIEF_MEDIATOR_EQUALIZED": {
+      "paired": 8,
+      "differing": 4,
+      "pairs": [
+        {
+          "replicate": 2,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 4,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 5,
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 6,
+          "B_HIGH_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 7,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 8,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 9,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 10,
+          "B_HIGH_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        }
+      ],
+      "effect": false,
+      "null_result": false
+    },
+    "A_LOW_BELIEF_VS_D_LOW_BELIEF_MEDIATOR_EQUALIZED": {
+      "paired": 9,
+      "differing": 5,
+      "pairs": [
+        {
+          "replicate": 2,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 3,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 4,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 5,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 6,
+          "A_LOW_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 7,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 8,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "CLARIFY_MISSING_CONTEXT"
+        },
+        {
+          "replicate": 9,
+          "A_LOW_BELIEF": "REALIZE_CURRENT_INTENT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        },
+        {
+          "replicate": 10,
+          "A_LOW_BELIEF": "CLARIFY_MISSING_CONTEXT",
+          "D_LOW_BELIEF_MEDIATOR_EQUALIZED": "REALIZE_CURRENT_INTENT"
+        }
+      ],
+      "effect": false,
+      "null_result": false
+    }
+  },
+  "objective_truth_conflation_count": 0,
+  "raw_history_leakage": [],
+  "intervention_belief_stability_failures": 0,
+  "gates": {
+    "host_valid_rate_min": 0.95,
+    "cell_stability_min": 7,
+    "paired_directional_min": 6,
+    "null_difference_max": 1,
+    "truth_conflation_max": 0
+  },
+  "verdict_hash": "sha256:9dfc0dd11987fbd06d4192184720bae0d6c5fe6b4d8999d65908e070851b3522"
+}

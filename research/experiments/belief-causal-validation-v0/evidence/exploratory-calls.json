@@ -1,0 +1,8 @@
+{
+  "schema_version": "belief-causal-exploratory-calls-v0",
+  "note": "protocol/transport validation calls made BEFORE the frozen pilot: 3 manual harness-validation API calls plus the aborted first pilot attempt (invalidated by a measurement-normalization bug, per protocol §26 the pilot restarts from scratch)",
+  "manual_calls": 3,
+  "aborted_pilot_scenes": 24,
+  "aborted_pilot_requests": 34,
+  "aborted_pilot_total_tokens": 181004
+}
