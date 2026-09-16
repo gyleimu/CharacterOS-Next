@@ -26,10 +26,15 @@ from pathlib import Path
 import numpy as np
 
 from .config import VoiceRuntimeConfig
+from .perf import LatencyRecorder, ReferenceConditioningCache, StageProfiler
 from .voices import VoiceProfile
 
 SAMPLE_RATE = 24000  # CosyVoice3 output rate, fixed by the model config.
 ASR_SAMPLE_RATE = 16000  # SenseVoice input rate.
+
+# A realistic warmup sentence: long enough to exercise the same token counts as
+# a real reply, unlike the two-word sentence the previous warmup used.
+WARMUP_TEXT = "你好，我是 CharacterOS，很高兴见到你。"
 
 # Prefix CosyVoice3 expects before the <|endofprompt|> delimiter.
 INSTRUCT_PREFIX = "You are a helpful assistant. "
@@ -106,6 +111,15 @@ class VoiceModelManager:
         # than a premature DEGRADED (one model up, the other still loading).
         self._loading = False
         self._path_ready = False
+        self.reference_cache: ReferenceConditioningCache | None = None
+        self.stage_profiler: StageProfiler | None = None
+        # Breakdown of the most recent synthesis, exposed through /metrics/last.
+        self.last_stage_breakdown: dict = {}
+        # Warmup evidence, surfaced so a slow first request can be explained
+        # rather than guessed at.
+        self.warmup_latencies_ms: list[float] = []
+        self.warmup_error: str | None = None
+        self._prompt_wav: Path | None = None
 
     # ------------------------------------------------------------------ paths
     def _prepare_paths(self) -> None:
@@ -140,6 +154,11 @@ class VoiceModelManager:
             if not model_dir.exists():
                 raise ModelLoadError(f"TTS model directory not found: {model_dir}")
             self._tts = AutoModel(model_dir=str(model_dir), fp16=self.config.fp16)
+            # Remove the per-call (and per-sentence) reference re-encoding.
+            if self.config.reference_cache:
+                self.reference_cache = ReferenceConditioningCache(self._tts.frontend).install()
+            # Make the runtime able to report where the time went.
+            self.stage_profiler = StageProfiler(self._tts).install()
             self.tts_status.loaded = True
         except Exception as error:  # noqa: BLE001 - reported as status, not raised upward
             self.tts_status.error = f"{type(error).__name__}: {error}"
@@ -196,19 +215,41 @@ class VoiceModelManager:
         return self.state()
 
     def _warmup(self) -> None:
-        """Runs one short synthesis so the first real request is not the cold one.
+        """Runs a few REALISTIC syntheses so the first request is not the cold one.
 
-        Warmup failures are non-fatal: they only mean the first request will pay
-        the cold cost.
+        The first calls after a load are dramatically slower than steady state.
+        Measured on the reference machine, four consecutive calls took
+        ~86 s, ~58 s, ~8 s, ~3.5 s: CUDA module loading, cuDNN/cuBLAS algorithm
+        selection and ONNX Runtime CUDA kernel initialisation are all one-time
+        costs, and they dominate everything else until they are paid.
+
+        The previous version never actually warmed anything: it read
+        `self._prompt_wav`, which is only assigned by `synthesize()`, so the
+        first call raised AttributeError and the blanket `except` swallowed it.
+        The reference is now set explicitly, a realistic sentence is used (not a
+        two-word one, which does not exercise the same token counts), and the
+        streaming path is warmed because that is the path the product uses.
+
+        Failures stay non-fatal: they only mean the first request pays the cost.
         """
         if self._tts is None:
             return
-        try:
-            with self._lock:
-                for _ in self._stream_tts("你好。", self._default_prompt(None, "你好。"), stream=False):
-                    break
-        except Exception:  # noqa: BLE001 - warmup is best effort
-            pass
+        reference = self.config.resolve_reference_wav()
+        if not reference.exists():
+            self.warmup_error = f"reference audio not found: {reference}"
+            return
+        self._prompt_wav = reference
+        prompt_text = self.build_prompt_text(None)
+        for _ in range(self.config.warmup_runs):
+            started = time.perf_counter()
+            try:
+                with self._lock:
+                    for _chunk in self._stream_tts(WARMUP_TEXT, prompt_text, stream=True):
+                        break
+            except Exception as error:  # noqa: BLE001 - warmup is best effort
+                self.warmup_error = f"{type(error).__name__}: {error}"
+                return
+            self.warmup_latencies_ms.append(round((time.perf_counter() - started) * 1000, 1))
 
     def state(self) -> RuntimeState:
         if self._loading:
@@ -229,11 +270,8 @@ class VoiceModelManager:
         return {"tts": self.tts_device, "asr": self.asr_device}
 
     # ------------------------------------------------------------ prompt text
-    def _default_prompt(self, instruct: str | None, text: str) -> str:
-        """Kept for symmetry; the real prompt builder is `build_prompt_text`."""
-        return self.build_prompt_text(instruct, self.config.resolve_reference_wav())
-
-    def build_prompt_text(self, instruct: str | None, voice: VoiceProfile | Path) -> str:
+    @staticmethod
+    def build_prompt_text(instruct: str | None) -> str:
         """Builds the CosyVoice3 prompt text for one utterance.
 
         The reference transcript is deliberately NOT appended. Measured on
@@ -288,9 +326,25 @@ class VoiceModelManager:
         self._prompt_wav = Path(voice.reference_wav or "")
         if not self._prompt_wav.exists():
             raise ModelLoadError(f"reference audio missing: {self._prompt_wav}")
-        prompt_text = self.build_prompt_text(instruct, voice)
+        prompt_text = self.build_prompt_text(instruct)
+        started = time.perf_counter()
+        first_chunk_ms: float | None = None
         with self._lock:
+            if self.stage_profiler is not None:
+                self.stage_profiler.begin()
             for chunk in self._stream_tts(text, prompt_text, stream):
+                if first_chunk_ms is None:
+                    first_chunk_ms = round((time.perf_counter() - started) * 1000, 1)
+                    if self.stage_profiler is not None:
+                        # Captured at the FIRST chunk, which is the latency that
+                        # actually matters; later sentences are not reported here.
+                        self.last_stage_breakdown = {
+                            **self.stage_profiler.breakdown(),
+                            "first_chunk_ms": first_chunk_ms,
+                            "reference_cache": (
+                                self.reference_cache.stats() if self.reference_cache is not None else None
+                            ),
+                        }
                 yield chunk, SAMPLE_RATE
 
     # -------------------------------------------------------------------- ASR

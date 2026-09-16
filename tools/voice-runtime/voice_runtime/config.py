@@ -90,6 +90,14 @@ class VoiceRuntimeConfig:
     # the TTS model, which leaves real headroom.
     preload: bool = field(default_factory=lambda: _env_bool("VOICE_PRELOAD", True))
     warmup: bool = field(default_factory=lambda: _env_bool("VOICE_WARMUP", True))
+    # Three realistic syntheses. Measured consecutive calls after a load took
+    # ~86 s, ~58 s, ~8 s then settled at ~3.5 s, so one warmup call is not
+    # enough to reach steady state.
+    warmup_runs: int = field(default_factory=lambda: _env_int("VOICE_WARMUP_RUNS", 3))
+    # Memoize the reference-audio conditioning (see perf.ReferenceConditioningCache).
+    # Exposed as a flag so the optimization can be A/B measured in the SAME
+    # environment rather than compared against a different day's numbers.
+    reference_cache: bool = field(default_factory=lambda: _env_bool("VOICE_REFERENCE_CACHE", True))
 
     # --- limits ------------------------------------------------------------------
     max_text_chars: int = field(default_factory=lambda: _env_int("VOICE_MAX_TEXT_CHARS", 4000))
