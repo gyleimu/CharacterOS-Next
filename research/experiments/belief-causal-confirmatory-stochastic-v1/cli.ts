@@ -31,13 +31,19 @@ async function main(): Promise<void> {
   if (command === "manifest") {
     const commitSha = process.argv[3];
     if (commitSha === undefined) {
-      process.stderr.write("usage: cli.ts manifest <preregistration-commit-sha>\n");
+      process.stderr.write("usage: cli.ts manifest <preregistration-commit-sha> [out-path]\n");
       process.exitCode = 2;
       return;
     }
+    // The manifest is a PRE-RUN artifact: by default it is written OUTSIDE the
+    // tracked tree, so HEAD stays exactly at the PREREGISTRATION_COMMIT with a
+    // clean worktree. It is byte-reproducible from that commit at any time, and
+    // the frozen timeline commits it at the RESULT stage.
+    const outPath = process.argv[4] ?? join(repoRoot, "tmp", "bcv1", "freeze-manifest.json");
     const manifest = buildPreregManifest({ repoDir: repoRoot, preregistrationCommitSha: commitSha, evidenceRoot });
-    mkdirSync(evidenceRoot, { recursive: true });
-    writeFileSync(join(evidenceRoot, "freeze-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+    mkdirSync(dirname(outPath), { recursive: true });
+    writeFileSync(outPath, `${JSON.stringify(manifest, null, 2)}\n`);
+    process.stderr.write(`manifest written: ${outPath}\n`);
     process.stderr.write(`manifest hash: ${String((manifest as { manifest_hash?: string }).manifest_hash)}\n`);
     return;
   }

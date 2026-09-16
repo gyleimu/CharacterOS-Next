@@ -545,7 +545,7 @@
         "threw": false,
         "result": {
           "ok": false,
-          "detail": "preregistration commit sha256:6724c68ef77fd5e0c9b418dfa not found"
+          "detail": "preregistration commit sha256:5475fca2c54691454d73cfd61 not found"
         }
       }
     },
