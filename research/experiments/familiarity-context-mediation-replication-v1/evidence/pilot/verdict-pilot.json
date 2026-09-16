@@ -1,0 +1,233 @@
+{
+  "schema_version": "familiarity-context-mediation-verdict-v1",
+  "experiment_id": "FAMILIARITY_CONTEXT_MEDIATION_REPLICATION_V1",
+  "phase": "pilot",
+  "verdict": "PILOT_NO_SCIENTIFIC_VERDICT",
+  "principal_verdict": "PILOT_NO_SCIENTIFIC_VERDICT",
+  "causal_scope": "EXECUTOR_COMPOSITION",
+  "scientific_verdict_authorized": false,
+  "host_valid_rate": 1,
+  "host_complete": true,
+  "seed_clean": true,
+  "corpus_identical": true,
+  "manipulation_ok": true,
+  "semantic_non_conflation_pass": true,
+  "language_authority_clean": true,
+  "forbidden_vocabulary": [],
+  "failure_classes": {},
+  "cells": {
+    "A_LOW": {
+      "classes": [
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING"
+      ],
+      "majority": "ASKS_FOR_FRAMING",
+      "majority_count": 2,
+      "host_valid": 2,
+      "total": 2,
+      "counterpart_context_visible": 0,
+      "counterpart_context_cited": 0,
+      "correct_counterpart_context_cited": 0,
+      "clarification_requested": 2,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        0,
+        0
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3"
+      ]
+    },
+    "B_HIGH": {
+      "classes": [
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "majority": "CITES_COUNTERPART_CONTEXT",
+      "majority_count": 2,
+      "host_valid": 2,
+      "total": 2,
+      "counterpart_context_visible": 2,
+      "counterpart_context_cited": 2,
+      "correct_counterpart_context_cited": 2,
+      "clarification_requested": 0,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        1,
+        1
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6"
+      ]
+    },
+    "C_HIGH_RETRIEVAL_ABLATED": {
+      "classes": [
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING"
+      ],
+      "majority": "ASKS_FOR_FRAMING",
+      "majority_count": 2,
+      "host_valid": 2,
+      "total": 2,
+      "counterpart_context_visible": 0,
+      "counterpart_context_cited": 0,
+      "correct_counterpart_context_cited": 0,
+      "clarification_requested": 2,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        1,
+        1
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6"
+      ]
+    },
+    "D_LOW_CONTEXT_EQUALIZED": {
+      "classes": [
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "majority": "CITES_COUNTERPART_CONTEXT",
+      "majority_count": 2,
+      "host_valid": 2,
+      "total": 2,
+      "counterpart_context_visible": 2,
+      "counterpart_context_cited": 2,
+      "correct_counterpart_context_cited": 2,
+      "clarification_requested": 0,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        0,
+        0
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3"
+      ]
+    }
+  },
+  "contrasts": [
+    {
+      "id": "C1",
+      "left": "A_LOW",
+      "right": "B_HIGH",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "does real familiarity-triggered retrieval accompany a behavior difference?",
+      "comparable_pairs": 2,
+      "directional": 2,
+      "left_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ],
+      "right_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ]
+    },
+    {
+      "id": "C2",
+      "left": "B_HIGH",
+      "right": "C_HIGH_RETRIEVAL_ABLATED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "with familiarity held equal, does removing the retrieval mediator remove the effect?",
+      "comparable_pairs": 2,
+      "directional": 2,
+      "left_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "right_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ]
+    },
+    {
+      "id": "C3",
+      "left": "B_HIGH",
+      "right": "D_LOW_CONTEXT_EQUALIZED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "with context equalized, does the familiarity scalar still have an effect?",
+      "comparable_pairs": 2,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": []
+    },
+    {
+      "id": "C4",
+      "left": "A_LOW",
+      "right": "D_LOW_CONTEXT_EQUALIZED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "does providing the treatment context to a low-familiarity subject reproduce the treatment behavior?",
+      "comparable_pairs": 2,
+      "directional": 2,
+      "left_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ],
+      "right_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ]
+    }
+  ],
+  "criteria": {
+    "1_A_vs_B_difference": false,
+    "2_B_vs_C_mediator_removal": false,
+    "3_B_vs_D_no_scalar_effect": false,
+    "4_A_vs_D_context_reproduces": false,
+    "5_semantic_non_conflation": true,
+    "6_seed_contamination": true,
+    "7_host_valid_rate": true,
+    "9_accounting_exact": true,
+    "10_language_authority": true
+  },
+  "call_accounting": {
+    "planned_scenes": 8,
+    "actual_scenes": 8,
+    "duplicate_scenes": 0,
+    "missing_scenes": 0,
+    "extra_scenes": 0,
+    "cognition_calls": 8,
+    "language_calls": 4,
+    "total_calls": 12,
+    "scheduled_calls_maximum": 12
+  },
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "interventions": {
+    "C_HIGH_RETRIEVAL_ABLATED": "RETRIEVAL_MEDIATOR_ABLATION",
+    "D_LOW_CONTEXT_EQUALIZED": "CANONICAL_WORKING_REF_CONTEXT_EQUALIZATION"
+  },
+  "detail": "host validity pilot: host-valid rate 1.000 (8/8); model compliance measured only, no preregistered metric scored",
+  "verdict_hash": "sha256:4b1da1bc6ee806cb44e1eacb1860434080070f73e29bab63c66d4d9e0ef8f362"
+}

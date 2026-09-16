@@ -1,0 +1,283 @@
+{
+  "schema_version": "familiarity-context-mediation-verdict-v1",
+  "experiment_id": "FAMILIARITY_CONTEXT_MEDIATION_REPLICATION_V1",
+  "phase": "replication",
+  "verdict": "FAMILIARITY_CONTEXT_MEDIATION_INCONCLUSIVE",
+  "principal_verdict": "FAMILIARITY_CONTEXT_MEDIATION_INCONCLUSIVE",
+  "causal_scope": "EXECUTOR_COMPOSITION",
+  "scientific_verdict_authorized": true,
+  "host_valid_rate": 0.85,
+  "host_complete": false,
+  "seed_clean": true,
+  "corpus_identical": true,
+  "manipulation_ok": true,
+  "semantic_non_conflation_pass": true,
+  "language_authority_clean": true,
+  "forbidden_vocabulary": [],
+  "failure_classes": {
+    "SERVICE_UNAVAILABLE": 3
+  },
+  "cells": {
+    "A_LOW": {
+      "classes": [
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING",
+        "UNCLASSIFIED"
+      ],
+      "majority": "ASKS_FOR_FRAMING",
+      "majority_count": 4,
+      "host_valid": 4,
+      "total": 5,
+      "counterpart_context_visible": 0,
+      "counterpart_context_cited": 0,
+      "correct_counterpart_context_cited": 0,
+      "clarification_requested": 4,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3"
+      ]
+    },
+    "B_HIGH": {
+      "classes": [
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "majority": "CITES_COUNTERPART_CONTEXT",
+      "majority_count": 5,
+      "host_valid": 5,
+      "total": 5,
+      "counterpart_context_visible": 5,
+      "counterpart_context_cited": 5,
+      "correct_counterpart_context_cited": 5,
+      "clarification_requested": 0,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6"
+      ]
+    },
+    "C_HIGH_RETRIEVAL_ABLATED": {
+      "classes": [
+        "ASKS_FOR_FRAMING",
+        "UNCLASSIFIED",
+        "ASKS_FOR_FRAMING",
+        "ASKS_FOR_FRAMING",
+        "UNCLASSIFIED"
+      ],
+      "majority": "ASKS_FOR_FRAMING",
+      "majority_count": 3,
+      "host_valid": 3,
+      "total": 5,
+      "counterpart_context_visible": 0,
+      "counterpart_context_cited": 0,
+      "correct_counterpart_context_cited": 0,
+      "clarification_requested": 3,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32",
+        "- entity:alice: presence=PRESENT level=4/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6",
+        "[current state] logical_time=0 state_revision=6"
+      ]
+    },
+    "D_LOW_CONTEXT_EQUALIZED": {
+      "classes": [
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT",
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "majority": "CITES_COUNTERPART_CONTEXT",
+      "majority_count": 5,
+      "host_valid": 5,
+      "total": 5,
+      "counterpart_context_visible": 5,
+      "counterpart_context_cited": 5,
+      "correct_counterpart_context_cited": 5,
+      "clarification_requested": 0,
+      "redundant_context_query": 0,
+      "unsupported_relationship_inference": 0,
+      "queries": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "familiarity_lines": [
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32",
+        "- entity:alice: presence=PRESENT level=1/32"
+      ],
+      "revision_lines": [
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3",
+        "[current state] logical_time=0 state_revision=3"
+      ]
+    }
+  },
+  "contrasts": [
+    {
+      "id": "C1",
+      "left": "A_LOW",
+      "right": "B_HIGH",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "does real familiarity-triggered retrieval accompany a behavior difference?",
+      "comparable_pairs": 4,
+      "directional": 4,
+      "left_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ],
+      "right_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ]
+    },
+    {
+      "id": "C2",
+      "left": "B_HIGH",
+      "right": "C_HIGH_RETRIEVAL_ABLATED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "with familiarity held equal, does removing the retrieval mediator remove the effect?",
+      "comparable_pairs": 3,
+      "directional": 3,
+      "left_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ],
+      "right_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ]
+    },
+    {
+      "id": "C3",
+      "left": "B_HIGH",
+      "right": "D_LOW_CONTEXT_EQUALIZED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "with context equalized, does the familiarity scalar still have an effect?",
+      "comparable_pairs": 5,
+      "directional": 0,
+      "left_only_classes": [],
+      "right_only_classes": []
+    },
+    {
+      "id": "C4",
+      "left": "A_LOW",
+      "right": "D_LOW_CONTEXT_EQUALIZED",
+      "scenario_id": "S1_SHARED_CONTEXT_CONTENT",
+      "question": "does providing the treatment context to a low-familiarity subject reproduce the treatment behavior?",
+      "comparable_pairs": 4,
+      "directional": 4,
+      "left_only_classes": [
+        "ASKS_FOR_FRAMING"
+      ],
+      "right_only_classes": [
+        "CITES_COUNTERPART_CONTEXT"
+      ]
+    }
+  ],
+  "criteria": {
+    "1_A_vs_B_difference": true,
+    "2_B_vs_C_mediator_removal": true,
+    "3_B_vs_D_no_scalar_effect": true,
+    "4_A_vs_D_context_reproduces": true,
+    "5_semantic_non_conflation": true,
+    "6_seed_contamination": true,
+    "7_host_valid_rate": false,
+    "9_accounting_exact": true,
+    "10_language_authority": true
+  },
+  "call_accounting": {
+    "planned_scenes": 20,
+    "actual_scenes": 20,
+    "duplicate_scenes": 0,
+    "missing_scenes": 0,
+    "extra_scenes": 0,
+    "cognition_calls": 20,
+    "language_calls": 10,
+    "total_calls": 30,
+    "scheduled_calls_maximum": 40
+  },
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "interventions": {
+    "C_HIGH_RETRIEVAL_ABLATED": "RETRIEVAL_MEDIATOR_ABLATION",
+    "D_LOW_CONTEXT_EQUALIZED": "CANONICAL_WORKING_REF_CONTEXT_EQUALIZATION"
+  },
+  "detail": "host-valid rate 0.850 < 0.9 or a behavior was realized outside the authorized V10/atom path; no behavioral claim is authorized",
+  "verdict_hash": "sha256:e9d0e00e13c3e0af30c052d1e0b331052654410f506faf0468f26250832d4e82"
+}

@@ -1,0 +1,171 @@
+{
+  "schema_version": "familiarity-context-mediation-manifest-v1",
+  "experiment_id": "FAMILIARITY_CONTEXT_MEDIATION_REPLICATION_V1",
+  "hypotheses": {
+    "H1": "higher governed interaction familiarity causes counterpart-specific retrieval to activate",
+    "H2": "that retrieval changes model-facing context availability",
+    "H3": "the changed context availability causes reproducible cognition/behavior differences",
+    "H4": "when context availability is equalized, the familiarity scalar itself produces no detectable independent behavioral effect",
+    "H5": "no trust/liking/safety/intimacy semantics emerge from familiarity"
+  },
+  "subject": "subject-familiarity-context-mediation",
+  "counterpart": "entity:alice",
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "cells": [
+    "A_LOW",
+    "B_HIGH",
+    "C_HIGH_RETRIEVAL_ABLATED",
+    "D_LOW_CONTEXT_EQUALIZED"
+  ],
+  "history_labels": {
+    "A_LOW": "A_LOW",
+    "B_HIGH": "B_HIGH",
+    "C_HIGH_RETRIEVAL_ABLATED": "B_HIGH",
+    "D_LOW_CONTEXT_EQUALIZED": "D_LOW_CONTEXT_EQUALIZED"
+  },
+  "scenarios": [
+    {
+      "id": "S1_SHARED_CONTEXT_CONTENT",
+      "utterance": "alice says: \"What did we agree about the rollback checklist?\"",
+      "primary": true
+    }
+  ],
+  "endpoint_classes": [
+    "CITES_COUNTERPART_CONTEXT",
+    "CITES_GENERIC_ONLY",
+    "ASKS_FOR_FRAMING",
+    "GENERATIVE_ACT",
+    "STANCE",
+    "UNCLASSIFIED"
+  ],
+  "replicates": 5,
+  "gates": {
+    "host_complete_required": true,
+    "host_valid_rate_min": 0.9,
+    "paired_directional_min": 3,
+    "manipulation_required": true,
+    "same_corpus_required": true,
+    "seed_contamination_required": true,
+    "semantic_non_conflation_required": true,
+    "forbidden_behavior_vocabulary": [
+      "i trust",
+      "trust you",
+      "trust me",
+      "i like you",
+      "i love",
+      "affection",
+      "intimacy",
+      "we are friends",
+      "bonded",
+      "safe with you",
+      "depend on you",
+      "rely on you",
+      "loyal"
+    ],
+    "statistical_significance_claim": false
+  },
+  "call_budget": {
+    "readiness": 2,
+    "per_scene_cognition": 1,
+    "per_scene_language_max": 1,
+    "max_total": 70,
+    "retries": 0
+  },
+  "pilot_call_budget": {
+    "readiness": 0,
+    "max_total": 18
+  },
+  "replication_call_budget": {
+    "readiness": 0,
+    "max_total": 34
+  },
+  "scheduled_scenes": 20,
+  "scheduled_calls_maximum": 42,
+  "seed_contamination_gate": {
+    "required_fields": [
+      "seed_contains_governed_relationship_state",
+      "seeded_bundles_with_writer_authority",
+      "unreadable_seed_shapes"
+    ],
+    "required_values": {
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0
+    },
+    "per_cell": {
+      "A_LOW": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "B_HIGH": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "C_HIGH_RETRIEVAL_ABLATED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "D_LOW_CONTEXT_EQUALIZED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      }
+    },
+    "all_clean": true
+  },
+  "familiarity_values": {
+    "A_LOW": 0.03125,
+    "B_HIGH": 0.125,
+    "C_HIGH_RETRIEVAL_ABLATED": 0.125,
+    "D_LOW_CONTEXT_EQUALIZED": 0.03125
+  },
+  "governed_authority_records": {
+    "A_LOW": 1,
+    "B_HIGH": 4,
+    "C_HIGH_RETRIEVAL_ABLATED": 4,
+    "D_LOW_CONTEXT_EQUALIZED": 1
+  },
+  "corpus_digest": "sha256:98811792a42b9369b2bf9aa3205bed7a009643c30d75b9189d59f6414dbb972d",
+  "corpus_identical": true,
+  "b_retrieval_selected_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-habit-01"
+  ],
+  "d_working_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-habit-01"
+  ],
+  "precheck_all_pass": true,
+  "precheck_failures": [],
+  "provider": {
+    "reachable": true,
+    "model": "qwen3.5:9b",
+    "digest_matches": true,
+    "server_version": "0.34.0",
+    "error": null
+  },
+  "model_run_authorized": true
+}

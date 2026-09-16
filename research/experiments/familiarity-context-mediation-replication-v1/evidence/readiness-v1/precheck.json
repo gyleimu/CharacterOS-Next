@@ -1,0 +1,161 @@
+{
+  "schema_version": "familiarity-context-mediation-precheck-v1",
+  "experiment_id": "FAMILIARITY_CONTEXT_MEDIATION_REPLICATION_V1",
+  "real_model_calls": 0,
+  "subject": "subject-familiarity-context-mediation",
+  "counterpart": "entity:alice",
+  "model": {
+    "provider": "OLLAMA_NATIVE",
+    "base_url": "http://127.0.0.1:11434",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "server_version": "0.34.0",
+    "temperature": 0,
+    "top_p": null,
+    "think": false,
+    "stream": false,
+    "num_predict": 2048,
+    "timeout_ms": 480000,
+    "seed": null,
+    "seed_policy": "NOT_EXPOSED_BY_FROZEN_NATIVE_TRANSPORT; FIXED_COUNTERBALANCED_ORDER"
+  },
+  "b_retrieval_selected_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-habit-01"
+  ],
+  "d_working_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-habit-01"
+  ],
+  "cells": [
+    {
+      "condition": "A_LOW",
+      "history_label": "A_LOW",
+      "familiarity_value": 0.03125,
+      "state_revision": 2,
+      "working_refs": [
+        "episode:generic-habit-01"
+      ],
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "governed_authority_records": 1,
+      "corpus_digest": "sha256:98811792a42b9369b2bf9aa3205bed7a009643c30d75b9189d59f6414dbb972d",
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+      "retrieval_queries": 0,
+      "counterpart_context_visible": false,
+      "counterpart_refs_in_allowed_refs": [],
+      "generated_nothing": true,
+      "bundles_digest": "2"
+    },
+    {
+      "condition": "B_HIGH",
+      "history_label": "B_HIGH",
+      "familiarity_value": 0.125,
+      "state_revision": 5,
+      "working_refs": [
+        "episode:generic-habit-01"
+      ],
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "governed_authority_records": 4,
+      "corpus_digest": "sha256:98811792a42b9369b2bf9aa3205bed7a009643c30d75b9189d59f6414dbb972d",
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=4/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+      "retrieval_queries": 1,
+      "counterpart_context_visible": true,
+      "counterpart_refs_in_allowed_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "generated_nothing": true,
+      "bundles_digest": "5"
+    },
+    {
+      "condition": "C_HIGH_RETRIEVAL_ABLATED",
+      "history_label": "B_HIGH",
+      "familiarity_value": 0.125,
+      "state_revision": 5,
+      "working_refs": [
+        "episode:generic-habit-01"
+      ],
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "governed_authority_records": 4,
+      "corpus_digest": "sha256:98811792a42b9369b2bf9aa3205bed7a009643c30d75b9189d59f6414dbb972d",
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=4/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=COUNTERPART_CONTEXT_SEARCH_FIRST",
+      "retrieval_queries": 1,
+      "counterpart_context_visible": false,
+      "counterpart_refs_in_allowed_refs": [],
+      "generated_nothing": true,
+      "bundles_digest": "5"
+    },
+    {
+      "condition": "D_LOW_CONTEXT_EQUALIZED",
+      "history_label": "D_LOW_CONTEXT_EQUALIZED",
+      "familiarity_value": 0.03125,
+      "state_revision": 2,
+      "working_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-habit-01"
+      ],
+      "seed_clean": true,
+      "seed_contains_governed_relationship_state": false,
+      "seeded_bundles_with_writer_authority": 0,
+      "unreadable_seed_shapes": 0,
+      "governed_authority_records": 1,
+      "corpus_digest": "sha256:98811792a42b9369b2bf9aa3205bed7a009643c30d75b9189d59f6414dbb972d",
+      "restored_familiarity_equal": true,
+      "familiarity_entry_line": "- entity:alice: presence=PRESENT level=1/32",
+      "influence_entry_line": "- entity:alice: context_resolution_strategy=BASIC_CONTEXT_FIRST",
+      "retrieval_queries": 0,
+      "counterpart_context_visible": true,
+      "counterpart_refs_in_allowed_refs": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "generated_nothing": true,
+      "bundles_digest": "2"
+    }
+  ],
+  "checks": {
+    "a_fam_lt_b_fam": true,
+    "b_fam_eq_c_fam": true,
+    "a_fam_eq_d_fam": true,
+    "b_history_ne_d_history": true,
+    "b_history_eq_c_history": true,
+    "b_context_eq_d_context": true,
+    "a_context_ne_b_context": true,
+    "b_c_same_familiarity_diff_context": true,
+    "b_d_diff_familiarity_same_context": true,
+    "all_seed_clean": true,
+    "corpus_identical": true,
+    "no_generation_in_probe": true
+  },
+  "checks_all_pass": true,
+  "failures": [],
+  "detail": "deterministic precheck complete: every preregistered structural condition holds; D's context equalization is measured against B's own retrieval selection"
+}
