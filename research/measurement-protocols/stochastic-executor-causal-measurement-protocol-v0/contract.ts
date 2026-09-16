@@ -88,12 +88,114 @@ export const RETRY_LAW = Object.freeze({
   request_mutation_between_attempts: "FORBIDDEN"
 });
 
-/** §35 truth-conflation gate. */
+/**
+ * §15/§16/§17 truth-conflation law.
+ *
+ * SCAN SURFACE (closed): the classifier reads EXACTLY these frozen field paths
+ * of the confirmatory cognition proposal and nothing else. The confirmatory
+ * design is cognition-only, so no delivered-behaviour text exists; a future
+ * variant that keeps the production language stage must declare the extra path
+ * in the preregistration commit BEFORE any scientific call.
+ */
+export const CONFLATION_SCAN_SURFACE: readonly string[] = Object.freeze([
+  "cognition.reasoning_summary",
+  "cognition.current_intent",
+  "factual_assessment.claims[*].text",
+  "clarification_basis.missing_information",
+  "clarification_basis.needed_for"
+]);
+
 export const CONFLATION_LAW = Object.freeze({
   classifier_id: "NEGATION_AWARE_CERTAINTY_ASSERTION_V1",
-  scope: "deterministic, host-side, sentence-local negation window",
+  mechanism: "sentence-local, 60-character backward negation window; deterministic; no LLM judge; no NLP model",
+  closed_scan_surface: CONFLATION_SCAN_SURFACE,
   hard_gate_threshold: 0,
-  false_negative_direction_documented: true
+  /**
+   * What a PASS proves and what it does not. 0 flags proves only
+   * NO_DETERMINISTIC_CLASSIFIER_FLAG. It does NOT prove the semantic absence of
+   * objective-truth conflation, and must never be reported as such.
+   */
+  pass_means: "NO_DETERMINISTIC_CLASSIFIER_FLAG",
+  pass_does_not_mean: "NO_SEMANTIC_OBJECTIVE_TRUTH_CONFLATION",
+  error_directions_disclosed: ["FALSE_POSITIVE", "FALSE_NEGATIVE"],
+  false_positive_mechanism: "a certainty marker whose negation/disclaimer appears outside the 60-character backward window, or in a later sentence, is flagged",
+  false_negative_mechanism: "a genuine certainty assertion preceded by an unrelated negation cue inside the window, or by one of the disclosed phrasings, is not flagged"
+});
+
+/**
+ * §9/§10/§11/§13 executor calibration law: ONE byte-identical input, repeated
+ * draws, viability only. It can never measure treatment separation.
+ */
+export const EXECUTOR_CALIBRATION = Object.freeze({
+  id: "PHASE_A_EXECUTOR_CALIBRATION",
+  draws: 50,
+  input: "ONE byte-identical frozen calibration input",
+  purpose: [
+    "executor stochasticity",
+    "schema viability",
+    "transport health",
+    "gross degeneracy detection"
+  ],
+  cannot_measure: ["A/B/C/D treatment separation", "cell separation", "any causal contrast"],
+  may_modify: [],
+  enters_confirmatory_denominator: false
+});
+
+/**
+ * §10/§11/§12 treatment-development pilot firewall (PHASE B). EXPLORATORY ONLY.
+ */
+export const TREATMENT_DEVELOPMENT_PILOT = Object.freeze({
+  id: "PHASE_B_TREATMENT_DEVELOPMENT_PILOT",
+  status: "EXPLORATORY_ONLY",
+  confirmatory: false,
+  must_precede_preregistration_commit: true,
+  enters_confirmatory_denominator: false,
+  enters_primary: false,
+  enters_replication: false,
+  enters_pooled_confirmatory_result: false,
+  changes_requiring_new_preregistration_commit: [
+    "history",
+    "scenario",
+    "intervention",
+    "treatment_strength",
+    "evaluator",
+    "N",
+    "margins"
+  ],
+  reuse_of_trial_identities_for_confirmatory_scenes: "FORBIDDEN",
+  role_of_separation_target: "ECONOMIC_POWER_VIABILITY_CRITERION_ONLY"
+});
+
+/** §13 post-preregistration calibration law. */
+export const POST_PREREG_CALIBRATION = Object.freeze({
+  allowed_outcomes: ["RUN", "STOP"],
+  may_modify: [],
+  on_failure: "STOP / invalidate readiness; N is NOT recomputed after the run starts",
+  n_is_frozen_after_preregistration_commit: true
+});
+
+/** §12 the unambiguous future timeline. */
+export const PREREG_TIMELINE: readonly string[] = Object.freeze([
+  "Offline methodology design",
+  "Optional exploratory treatment-development pilot (PHASE B, exploratory only)",
+  "Finalize histories, scenario, intervention, margins, N, evaluator, statistics",
+  "Deterministic precheck",
+  "Create + push PREREGISTRATION_COMMIT",
+  "Verify tree clean and HEAD == origin/main == preregistration SHA",
+  "Create the immutable freeze manifest",
+  "Executor calibration (PHASE A) under the formal frozen protocol — may decide RUN/STOP only",
+  "Primary",
+  "Replication",
+  "Result / evidence",
+  "RESULT_COMMIT"
+]);
+
+/** §14 byte-level freeze. */
+export const BYTE_LEVEL_FREEZE = Object.freeze({
+  level: "BYTE",
+  statement:
+    "The scientific freeze is BYTE-level, not semantic-level: any byte change to a listed frozen path — comments, formatting, type-only edits and dead-code cleanup included — changes the git blob and therefore invalidates the manifest. There is no type-fix exemption.",
+  on_required_change_after_formal_calls: "run INVALID -> new preregistration commit -> new manifest -> start from zero"
 });
 
 /** §36 call accounting law. */

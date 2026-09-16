@@ -23,6 +23,12 @@ export const N_GRID: readonly number[] = Object.freeze([10, 20, 30, 40, 50, 60, 
 /** Separation values used by the joint design table (pA=pC=b, pB=pD=b+delta). */
 export const SEPARATION_GRID: readonly number[] = Object.freeze([0.3, 0.4, 0.45, 0.5, 0.6]);
 /**
+ * Per-cognition-request token envelope, derived from V0's measured calls
+ * (~4.4k prompt + 2.1-4.2k completion including reasoning tokens).
+ * ESTIMATE_ONLY — no provider price table exists and none is assumed.
+ */
+export const TOKEN_ENVELOPE_PER_REQUEST: readonly [number, number] = Object.freeze([6500, 8600]);
+/**
  * Planning band for the BASELINE rate. Above 0.60 a claim threshold of 0.20 has
  * no headroom left (p + delta_min approaches the ceiling and the interval lower
  * bound can never exceed the threshold), so ceiling-limited cells are reported
@@ -38,7 +44,18 @@ export interface SuperiorityCell {
   readonly n: number;
   readonly power: number;
   readonly expected_ci_width: number;
-  readonly false_positive_rate_at_zero_effect: number;
+  /**
+   * Type-I error of the minimum-effect rule when the TRUE difference is zero:
+   * the probability that the rule fires and claims an effect >= delta_min that
+   * does not exist. This is NOT the nominal alpha itself.
+   */
+  readonly type_i_error_probability_at_zero_effect: number;
+  /**
+   * Pass probability when the TRUE difference equals delta_min exactly. For a
+   * minimum-effect rule this sits near alpha, which is why the design effect
+   * must exceed the claim threshold.
+   */
+  readonly boundary_pass_probability_at_true_delta_min: number;
 }
 
 export interface EquivalenceCell {
@@ -66,13 +83,22 @@ export function superiorityPowerTable(deltaMin: number, grid = { baselines: BASE
       for (const n of grid.ns) {
         const power = exactSuperiorityPower(baseline, pHi, n, n, deltaMin, DESIGN.z_superiority);
         const falsePositive = exactSuperiorityPower(baseline, baseline, n, n, deltaMin, DESIGN.z_superiority);
+        const atBoundary = exactSuperiorityPower(
+          baseline,
+          clampProbability(baseline + deltaMin),
+          n,
+          n,
+          deltaMin,
+          DESIGN.z_superiority
+        );
         cells.push({
           baseline,
           effect,
           n,
           power: power.power,
           expected_ci_width: power.expected_ci_width ?? 0,
-          false_positive_rate_at_zero_effect: falsePositive.power
+          type_i_error_probability_at_zero_effect: falsePositive.power,
+          boundary_pass_probability_at_true_delta_min: atBoundary.power
         });
       }
     }
@@ -188,11 +214,21 @@ export interface ProtocolOption {
   readonly epsilon: number;
   readonly n_per_cell_primary: number;
   readonly n_per_cell_replication: number;
+  /** Always SAMPLING.calibration_draws: ONE calibration N for every protocol. */
   readonly calibration_draws: number;
+  /** Minimum superiority power over the DECLARED planning band, at the design effect. */
   readonly superiority_power_min: number;
+  /** Minimum equivalence power over the DECLARED planning band (true band minimum). */
   readonly equivalence_power_min: number;
+  /** Exact joint success probability per phase at a true separation of 0.40. */
   readonly joint_success_probability_exact: number | null;
+  /** Same joint when every cell keeps only the 90% host-validity floor. */
+  readonly joint_success_probability_at_valid_floor: number | null;
+  /** Independent two-phase (primary AND replication) success probability, J^2 (approximation). */
+  readonly experiment_level_success_probability_approx: number | null;
   readonly total_cognition_requests: number;
+  /** ESTIMATE_ONLY: requests x [6500, 8600] tokens, from the per-call envelope. */
+  readonly token_estimate_range: readonly [number, number];
   readonly claim_strength: string;
 }
 
@@ -335,6 +371,20 @@ export interface PowerArtifact {
   readonly options: readonly ProtocolOption[];
   readonly joint_design_table: readonly JointDesignCell[];
   readonly minimum_separation_for_joint_80: readonly { readonly n_per_cell: number; readonly epsilon: number; readonly separation: number | null; readonly total_cognition_requests: number }[];
+  readonly power_table_assumption: {
+    readonly valid_equals_scheduled: true;
+    readonly detail: string;
+  };
+  readonly experiment_level_note: {
+    readonly detail: string;
+    readonly formula: "experiment_level_success_probability = joint_per_phase ^ 2 (independent phases, approximation)";
+  };
+  readonly token_estimate_law: {
+    readonly per_request_range: readonly [number, number];
+    readonly formula: "total_cognition_requests x per_request_range";
+    readonly label: "ESTIMATE_ONLY";
+    readonly api_cost: "NOT_REPORTED_BY_PROVIDER";
+  };
   readonly ceiling_limited_note: string;
   readonly v0_stress_test: {
     readonly scenario: string;
@@ -417,6 +467,12 @@ export function buildPowerArtifact(): PowerArtifact {
     superiorityTarget,
     equivalenceTarget
   }).find((row) => row.n_per_cell === recommendedN);
+  const bandMin = (n: number, epsilon: number): number =>
+    Math.min(
+      ...PLAUSIBLE_BASELINE_BAND.map(
+        (baseline) => exactEquivalencePower(baseline, baseline, n, n, epsilon, DESIGN.z_equivalence).power
+      )
+    );
   const options: ProtocolOption[] = [
     {
       id: "LOW_COST",
@@ -424,11 +480,19 @@ export function buildPowerArtifact(): PowerArtifact {
       epsilon: 0.2,
       n_per_cell_primary: 120,
       n_per_cell_replication: 120,
-      calibration_draws: 30,
-      superiority_power_min: exactSuperiorityPower(0.3, 0.7, 120, 120, DESIGN.delta_min, DESIGN.z_superiority).power,
-      equivalence_power_min: exactEquivalencePower(0.3, 0.3, 120, 120, 0.2, DESIGN.z_equivalence).power,
+      calibration_draws: SAMPLING.calibration_draws,
+      superiority_power_min: Math.min(
+        ...PLAUSIBLE_BASELINE_BAND.map(
+          (baseline) =>
+            exactSuperiorityPower(baseline, clampProbability(baseline + DESIGN.design_effect), 120, 120, 0.2, DESIGN.z_superiority).power
+        )
+      ),
+      equivalence_power_min: bandMin(120, 0.2),
       joint_success_probability_exact: null,
-      total_cognition_requests: totalCognitionRequests(120, 30),
+      joint_success_probability_at_valid_floor: null,
+      experiment_level_success_probability_approx: null,
+      total_cognition_requests: totalCognitionRequests(120, SAMPLING.calibration_draws),
+      token_estimate_range: [0, 0],
       claim_strength:
         "SCREENING GRADE: with epsilon equal to delta_min the residual may equal the smallest claimable effect, so a pass cannot support a full mediation claim; it decides whether to fund the recommended run"
     },
@@ -442,7 +506,10 @@ export function buildPowerArtifact(): PowerArtifact {
       superiority_power_min: recommendedRow?.min_superiority_power_over_band ?? 0,
       equivalence_power_min: recommendedRow?.min_equivalence_power_over_band ?? 0,
       joint_success_probability_exact: null,
+      joint_success_probability_at_valid_floor: null,
+      experiment_level_success_probability_approx: null,
       total_cognition_requests: totalCognitionRequests(recommendedN, SAMPLING.calibration_draws),
+      token_estimate_range: [0, 0],
       claim_strength:
         "FULL CONJUNCTIVE CLAIM: superiority >= delta_min in all three contrasts AND the B/D residual bounded at three quarters of the smallest claimable effect; requires >= 0.40 true separation (exact joint 0.88 at 0.40 and 0.97 at 0.50)"
     },
@@ -452,69 +519,73 @@ export function buildPowerArtifact(): PowerArtifact {
       epsilon: 0.1,
       n_per_cell_primary: 400,
       n_per_cell_replication: 400,
-      calibration_draws: 50,
-      superiority_power_min: exactSuperiorityPower(0.3, 0.7, 400, 400, DESIGN.delta_min, DESIGN.z_superiority).power,
-      equivalence_power_min: exactEquivalencePower(0.3, 0.3, 400, 400, 0.1, DESIGN.z_equivalence).power,
+      calibration_draws: SAMPLING.calibration_draws,
+      superiority_power_min: Math.min(
+        ...PLAUSIBLE_BASELINE_BAND.map(
+          (baseline) =>
+            exactSuperiorityPower(baseline, clampProbability(baseline + DESIGN.design_effect), 400, 400, 0.2, DESIGN.z_superiority).power
+        )
+      ),
+      equivalence_power_min: bandMin(400, 0.1),
       joint_success_probability_exact: null,
-      total_cognition_requests: totalCognitionRequests(400, 50),
+      joint_success_probability_at_valid_floor: null,
+      experiment_level_success_probability_approx: null,
+      total_cognition_requests: totalCognitionRequests(400, SAMPLING.calibration_draws),
+      token_estimate_range: [0, 0],
       claim_strength:
-        "TIGHT MEDIATION CLAIM: the residual is bounded at half the smallest claimable effect, tolerates a weaker treatment (>= 0.35 separation for an exact joint of 0.80), and costs twice the recommended run"
+        "TIGHT MEDIATION CLAIM with a DISCLOSED trade-off: the residual is bounded at half the smallest claimable effect and the design tolerates a weaker treatment (>= 0.35 separation for an exact per-phase joint of 0.80), but the equivalence component does NOT reach the 0.80 planning target across the whole declared baseline band (band minimum see equivalence_power_min) and the run costs twice the recommended one"
     }
   ];
 
-  // Exact joint success probability at the recommended design, for a plausible
-  // alternative family (pA low, pB/pD high, pC near the pA level).
+  // Exact joint success probability per protocol: at the planning separation of
+  // 0.40 (the weakest separation the design accepts), at the 90 % host-validity
+  // floor, and the two-phase experiment-level approximation J^2.
   const jointScenarios = [
     { pA: 0.3, pC: 0.3, pHigh: 0.7, pD: 0.7 },
     { pA: 0.3, pC: 0.3, pHigh: 0.8, pD: 0.8 }
   ];
-  const recommended = options.find((option) => option.id === "RECOMMENDED");
-  if (recommended !== undefined) {
-    const joint = jointScenarios.map((scenario) =>
-      jointSuccessProbability({
-        pA: scenario.pA,
-        pC: scenario.pC,
-        pHigh: scenario.pHigh,
-        pD: scenario.pD,
-        n: recommended.n_per_cell_primary,
-        epsilon: recommended.epsilon,
-        deltaMin: recommended.delta_min
-      })
-    );
-    (recommended as { joint_success_probability_exact: number | null }).joint_success_probability_exact =
-      Math.min(...joint);
-  }
-  const lowCost = options.find((option) => option.id === "LOW_COST");
-  if (lowCost !== undefined) {
-    (lowCost as { joint_success_probability_exact: number | null }).joint_success_probability_exact = Math.min(
+  for (const option of options) {
+    const n = option.n_per_cell_primary;
+    const joint = Math.min(
       ...jointScenarios.map((scenario) =>
         jointSuccessProbability({
           pA: scenario.pA,
           pC: scenario.pC,
           pHigh: scenario.pHigh,
           pD: scenario.pD,
-          n: lowCost.n_per_cell_primary,
-          epsilon: lowCost.epsilon,
-          deltaMin: lowCost.delta_min
+          n,
+          epsilon: option.epsilon,
+          deltaMin: option.delta_min
         })
       )
     );
-  }
-  const highConfidence = options.find((option) => option.id === "HIGH_CONFIDENCE");
-  if (highConfidence !== undefined) {
-    (highConfidence as { joint_success_probability_exact: number | null }).joint_success_probability_exact = Math.min(
+    const floorN = Math.floor(n * SAMPLING.minimum_valid_fraction_per_cell);
+    const jointAtFloor = Math.min(
       ...jointScenarios.map((scenario) =>
         jointSuccessProbability({
           pA: scenario.pA,
           pC: scenario.pC,
           pHigh: scenario.pHigh,
           pD: scenario.pD,
-          n: highConfidence.n_per_cell_primary,
-          epsilon: highConfidence.epsilon,
-          deltaMin: highConfidence.delta_min
+          n: floorN,
+          epsilon: option.epsilon,
+          deltaMin: option.delta_min
         })
       )
     );
+    const mutable = option as {
+      joint_success_probability_exact: number | null;
+      joint_success_probability_at_valid_floor: number | null;
+      experiment_level_success_probability_approx: number | null;
+      token_estimate_range: readonly [number, number];
+    };
+    mutable.joint_success_probability_exact = joint;
+    mutable.joint_success_probability_at_valid_floor = jointAtFloor;
+    mutable.experiment_level_success_probability_approx = joint * joint;
+    mutable.token_estimate_range = [
+      Math.round(option.total_cognition_requests * TOKEN_ENVELOPE_PER_REQUEST[0]),
+      Math.round(option.total_cognition_requests * TOKEN_ENVELOPE_PER_REQUEST[1])
+    ];
   }
 
   const v0Superiority = exactSuperiorityPower(0.23, 0.68, 10, 10, DESIGN.delta_min, DESIGN.z_superiority).power;
@@ -567,6 +638,22 @@ export function buildPowerArtifact(): PowerArtifact {
     delta_min_analysis: deltaMinAnalysis,
     epsilon_analysis: epsilonAnalysis,
     options,
+    power_table_assumption: {
+      valid_equals_scheduled: true,
+      detail:
+        "Every power figure in this artifact assumes scheduled N = host-valid N (zero invalid scenes). Real runs allow a per-cell floor of 90 % host-valid draws, which lowers every power figure; each protocol option therefore also carries joint_success_probability_at_valid_floor, computed exactly at the floored N."
+    },
+    experiment_level_note: {
+      detail:
+        "A success verdict requires the FULL conjunction independently in primary AND in replication, so the experiment-level success probability is approximately the square of the per-phase joint probability (each option carries experiment_level_success_probability_approx). The per-phase joint must never be quoted as the whole experiment's probability.",
+      formula: "experiment_level_success_probability = joint_per_phase ^ 2 (independent phases, approximation)"
+    },
+    token_estimate_law: {
+      per_request_range: TOKEN_ENVELOPE_PER_REQUEST,
+      formula: "total_cognition_requests x per_request_range",
+      label: "ESTIMATE_ONLY",
+      api_cost: "NOT_REPORTED_BY_PROVIDER"
+    },
     joint_design_table: jointDesignTable({
       ns: [120, 200, 400],
       epsilons: [0.1, 0.15, 0.2],

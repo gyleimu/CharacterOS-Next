@@ -6,7 +6,7 @@ the single-draw paired identity law that V0 used (and that the independent audit
 
 **This document is a design artifact. It performs no model calls and contains no experiment
 results.** All numbers below are computed offline and exactly: see
-`evidence/power-analysis.json` (`sha256:f39e1fc9…`, produced by `cli.ts power`), which is
+`evidence/power-analysis.json` (`sha256:505d2a2d5fb2f8932921286b1708119ab04eca8d71dd8657a460aa56ecc04d8a`, produced by `cli.ts power`), which is
 reproducible byte-for-byte at any commit.
 
 ## 1. Measurement model
@@ -62,12 +62,18 @@ for a true effect comfortably above `Δ_min`; the protocol's design effect is `�
 ## 5. Margins
 
 **`Δ_min = 0.20`** — the smallest Belief-mediated shift in `P(REALIZE)` worth calling a meaningful
-cognition influence. Justification: the outcome is a binary policy class, so a shift is
-"meaningful" when it can flip the subject's default policy; at the low end of the plausible
-baseline band a 0.20 shift carries a subject from "usually withholds" (≤ 0.40) across the majority
-boundary (0.50). Smaller thresholds are inside the executor's own trial-to-trial variation (V0
-measured ≈ 0.30–0.40 disagreement on byte-identical inputs) and could be produced by prompt or
-state artifacts rather than by the mediator.
+cognition influence. This is a **protocol-level scientific/policy convention**, not a natural
+discontinuity of any kind: 0.5 is not a physical or psychological threshold, it is the majority
+boundary of the binary policy class this protocol measures. Under that convention a 0.20 shift is
+the smallest one that can carry a subject from "usually withholds" (≤ 0.40) across the majority
+boundary (0.50) at the low end of the planned baseline band, and smaller thresholds are rejected on
+the estimator's own terms: a threshold below 0.20 is not considered large enough, under this
+protocol's binary policy interpretation, to justify the confirmatory budget.
+
+**The paired flip rate is not the scale of `Δ_min`.** V0's ≈ 0.30–0.40 agreement-on-identical-inputs
+figure is evidence only that the executor is stochastic and that a single-draw identity criterion is
+unusable; it is a property of the instrument, not a difference between response probabilities, and it
+is never compared against `Δ_min`.
 
 **`ε = 0.15`** — the residual `|pB − pD|` tolerated after mediator equalization. Justification: it
 is strictly below `Δ_min`, so a residual at the margin cannot by itself produce a claimable effect;
@@ -75,9 +81,9 @@ is strictly below `Δ_min`, so a residual at the margin cannot by itself produce
 protocol at twice the cost, while `ε = 0.20` (= `Δ_min`) does not protect the mediation claim at all
 and is offered only for screening.
 
-**Executor stochasticity is not the equivalence margin.** A 30–40 % paired flip rate is a property
-of the *instrument*; `ε` bounds a difference between *response probabilities*. They are different
-estimands and must not be conflated.
+**Executor stochasticity is not the equivalence margin.** Paired disagreement and `ε` are different
+estimands and must not be conflated: one is about the instrument, the other about response
+probabilities.
 
 ## 6. Hard gates (all executable, all wired into the verdict)
 
@@ -86,6 +92,54 @@ estimands and must not be conflated.
 `RETRIEVAL_ISOLATION` · `NON_BELIEF_STATE_EQUALITY` · `NON_BELIEF_PROMPT_EQUIVALENCE` ·
 `B_D_INPUT_IDENTITY` · `INTERVENTION_BELIEF_STABILITY` · `FRESH_PROCESS_RESTORE` = all scenes ·
 `TRUTH_CONFLATION` = 0 flags · `CALL_ACCOUNTING` planned = actual = unique, 0 duplicate/missing/extra.
+
+### 6b. Truth-conflation gate: scan surface and interpretation boundary
+
+**Scan surface (closed).** The classifier reads EXACTLY these frozen field paths of the confirmatory
+cognition proposal and nothing else:
+
+```
+cognition.reasoning_summary
+cognition.current_intent
+factual_assessment.claims[*].text
+clarification_basis.missing_information
+clarification_basis.needed_for
+```
+
+The confirmatory design is cognition-only, so no delivered-behaviour text exists. A future variant
+that keeps the production language stage must add its path to this list **in the preregistration
+commit, before any scientific call**; free text outside the list is out of scope by construction.
+
+**Mechanism.** `NEGATION_AWARE_CERTAINTY_ASSERTION_V1`: deterministic, host-side, sentence-local, with
+a 60-character backward negation window. No LLM judge, no trained model, no NLP parser.
+
+**Interpretation boundary.** `0 flags` proves only `NO_DETERMINISTIC_CLASSIFIER_FLAG`. It does **not**
+prove the semantic absence of objective-truth conflation and must never be reported that way.
+
+**Both error directions are disclosed and pinned in tests.**
+
+*False positives* (a human would not call these conflation, the guardrail flags them because the
+disclaimer sits outside the backward window or in a later sentence):
+
+```
+"Someone said it is guaranteed."
+"Is it guaranteed? No. It is uncertain."
+"Guaranteed. Well, not really."
+"It is guaranteed true, which is not something I can verify."
+```
+
+*False negatives* (a genuine certainty assertion the guardrail misses because an unrelated negation
+cue sits inside the window):
+
+```
+"This is not false, it is guaranteed."
+"No doubt it is true for sure."
+"Without doubt it is guaranteed."
+"Never doubt that it is guaranteed."
+"It is not only likely but guaranteed."
+```
+
+The gate is a guardrail against the most explicit conflation, not a semantic truth detector.
 
 `contract.ts` defines them as ONE registry (`HARD_GATE_EVALUATORS`) and `deriveVerdict` consumes that
 registry; an integrity test violates every gate individually and asserts that none of them can be
@@ -113,30 +167,69 @@ and evaluator. **Replication must independently satisfy the full conjunction**; 
 requires both phases. Pooled analysis is descriptive only and can never rescue a failed phase.
 V0 contributes nothing to any future confirmatory count.
 
-## 10. Calibration phase
+## 10. PHASE A — executor calibration (one calibration N: 50)
 
-Before the confirmatory freeze, one byte-identical calibration input is drawn `N_cal = 50` times
-(fresh process each time). Its only jobs: prove the pipeline is viable (non-degenerate proportion,
-acceptable schema/transport failure rate), measure the trial-to-trial flip rate, and confirm the
-noise model. It may NOT modify the treatment, the margins, the evaluator or the confirmatory N
-(those come from the offline power analysis), and it never enters a confirmatory denominator.
-`N_cal = 50` bounds `p̂` to ±0.14 (worst case, 95 % Wilson) — enough to detect degenerate behaviour;
-±0.05 precision would need ≈ 385 draws and is not needed before the freeze.
+`N_cal = SAMPLING.calibration_draws = 50` for EVERY protocol option; there is no per-protocol
+calibration size. One byte-identical calibration input is drawn 50 times (fresh process each time).
+Its only jobs: prove the pipeline is viable (non-degenerate proportion, acceptable schema/transport
+failure rate), measure the executor's trial-to-trial flip rate, and confirm the noise model.
 
-## 11. Preregistration, code state and manifest
+It **cannot** measure A/B/C/D treatment separation, and it may modify **nothing**: not `Δ_min`, not
+`ε`, not the evaluator, not the statistics, not the confirmatory N, not the treatment. Its data never
+enters a confirmatory denominator. `N_cal = 50` bounds `p̂` to ±0.14 (worst case, 95 % Wilson) —
+enough to detect gross degeneracy; ±0.05 precision would need ≈ 385 draws and is not needed.
 
-1. finish contract + metrics + margins + N + scenario + histories + intervention + evaluator + runner;
-2. run every deterministic precheck;
-3. commit and push — this commit is the **PREREGISTRATION_COMMIT** (exact SHA recorded);
-4. verify the worktree is clean and `HEAD == origin/main == PREREGISTRATION_COMMIT`;
-5. only then may the first scientific model call happen. At run start the harness re-checks
-   `HEAD == PREREGISTRATION_COMMIT` and otherwise stops with `SCIENTIFIC_CODE_STATE_MISMATCH`.
-   Every scene records `formal_run_code_sha = PREREGISTRATION_COMMIT`.
+> Calibration draws (`50`) and confirmatory draws are disjoint; a protocol's total request count is
+> `4 · N · 2 + 50`.
 
-**The freeze manifest is immutable once the first scientific call is made.** No re-seal, no hash
-rewrite, no `code_hashes` replacement, no timestamp update. If any runtime code change turns out to
-be necessary after the run started, the run is `INVALIDATED`; the only lawful path is fix → new
-preregistration commit → new manifest → restart from zero.
+## 10b. PHASE B — treatment-development pilot (EXPLORATORY ONLY)
+
+Verifying that the frozen treatment is expected to separate the cells by ≥ 0.40 is **not** something
+executor calibration can do. The only lawful sources for that expectation are (i) the offline design
+assumption and (ii) an independent **treatment-development pilot**.
+
+1. the pilot happens **before** the final `PREREGISTRATION_COMMIT`;
+2. it is **EXPLORATORY ONLY** and is never marked confirmatory;
+3. its data never enters the calibration denominator, primary, replication or any pooled
+   confirmatory result;
+4. if the pilot leads to changing the history, scenario, intervention, treatment strength, evaluator,
+   N or margins, the design must be finalized again → deterministic precheck → **NEW
+   PREREGISTRATION_COMMIT** → **new immutable manifest** → confirmatory calls from zero;
+5. confirmatory scenario/trial identities may never reuse exploratory observations;
+6. formal confirmatory calls may never tune the treatment afterwards.
+
+If the pilot shows `< 0.40`, returning to exploratory design and changing the treatment is allowed —
+and then every earlier pilot observation stays exploratory and discarded for confirmation, and the
+final design must be re-preregistered.
+
+## 11. Preregistration timeline, code state and manifest
+
+The future sequence is fixed:
+
+1. offline methodology design;
+2. optional exploratory treatment-development pilot (PHASE B);
+3. finalize histories, scenario, intervention, margins, N, evaluator, statistics;
+4. deterministic precheck;
+5. create + push the **PREREGISTRATION_COMMIT** (exact SHA recorded);
+6. verify the tree is clean and `HEAD == origin/main == preregistration SHA`;
+7. create the **immutable freeze manifest**;
+8. executor calibration (PHASE A) under the formal frozen protocol;
+9. primary; 10. replication; 11. result/evidence; 12. `RESULT_COMMIT`.
+
+At run start the harness re-checks `HEAD == PREREGISTRATION_COMMIT` and otherwise stops with
+`SCIENTIFIC_CODE_STATE_MISMATCH`; every scene records `formal_run_code_sha = PREREGISTRATION_COMMIT`.
+
+**N is frozen once the PREREGISTRATION_COMMIT exists.** Formal (post-preregistration) calibration may
+decide only `RUN` or `STOP`; it may not modify N, `Δ_min`, `ε`, the evaluator, the treatment or the
+scenario. A calibration failure means STOP / invalidate readiness — never "recompute N now". If the
+calibration genuinely needs to influence N or the design, it must have happened in the exploratory
+stage (step 2), followed by a fresh preregistration.
+
+**The scientific freeze is BYTE-level, not semantic-level.** Any byte change to a listed frozen path —
+comments, formatting, type-only edits and dead-code cleanup included — changes the git blob and
+therefore invalidates the manifest. There is no "it was only a type fix, keep running" exemption. If a
+frozen byte must change after formal calls, the run is invalid: new preregistration commit → new
+manifest → start from zero.
 
 ## 12. Manifest and report hash laws
 
@@ -168,47 +261,64 @@ When every gate, the secret scan and the evidence verification have passed, a se
 Only 429, 5xx, timeout and transport resets are retried, at most 3 attempts, with the byte-identical
 request and a fixed backoff. Schema-invalid output and unwanted behaviour are never retried.
 
-## 15. Cost model (all values ESTIMATE_ONLY except request counts)
+## 15. Cost model (request counts exact; token figures ESTIMATE_ONLY)
 
-| protocol | N/cell | calibration | cognition requests | token envelope |
-| --- | --- | --- | --- | --- |
-| LOW_COST | 120 | 30 | 990 | ≈ 5.5–7.0 M |
-| RECOMMENDED | 200 | 50 | 1650 | ≈ 9.2–11.6 M |
-| HIGH_CONFIDENCE | 400 | 50 | 3250 | ≈ 18.2–22.8 M |
+| protocol | N/cell | calibration | confirmatory requests | cognition requests (total) | token estimate |
+| --- | --- | --- | --- | --- | --- |
+| LOW_COST | 120 | 50 | 4 × 120 × 2 = 960 | **1010** | ≈ 6.6–8.7 M |
+| RECOMMENDED | 200 | 50 | 4 × 200 × 2 = 1600 | **1650** | ≈ 10.7–14.2 M |
+| HIGH_CONFIDENCE | 400 | 50 | 4 × 400 × 2 = 3200 | **3250** | ≈ 21.1–28.0 M |
+
+Calibration is `SAMPLING.calibration_draws = 50` for every protocol (one calibration N, no special
+cases). Token estimates use the frozen law `requests × [6500, 8600]`, from V0's measured per-call
+envelope (≈ 4.4 k prompt + 2.1–4.2 k completion, `reasoning_tokens` included in completion but never
+scored): **ESTIMATE_ONLY**.
 
 Cognition-only scenes: the confirmatory design makes ONE cognition request per scene (the primary
 outcome is the directive), so language requests are **0 by design**. If a future variant keeps the
 production turn's language stage, V0's measured ratio was 46 language calls per 104 cognition calls
-(≈ 0.44); at that ratio add ≈ 435 (LOW_COST), ≈ 725 (RECOMMENDED) or ≈ 1430 (HIGH_CONFIDENCE)
-requests — **ESTIMATE_ONLY**. Per-call token envelope from V0's measured cognition calls
-(≈ 4.4 k prompt + 2.1–4.2 k completion, `reasoning_tokens` excluded from scoring): ESTIMATE_ONLY.
-**API COST: `NOT_REPORTED_BY_PROVIDER`** — no frozen price table exists, and none is assumed.
+(≈ 0.44); at that ratio add ≈ 445 (LOW_COST), ≈ 725 (RECOMMENDED) or ≈ 1430 (HIGH_CONFIDENCE)
+requests — **ESTIMATE_ONLY**. **API COST: `NOT_REPORTED_BY_PROVIDER`** — no frozen price table
+exists, and none is assumed.
 
 ## 16. Decision rule and recommendation
 
 Exact joint success probability of the whole conjunction (offline, no model calls), for a symmetric
-alternative `pA = pC = 0.30`, `pB = pD = 0.30 + Δ`:
+alternative `pA = pC = 0.30`, `pB = pD = 0.30 + Δ`. **All power figures assume scheduled N = valid N,
+i.e. zero invalid scenes**; the real protocol allows a per-cell 90 % host-validity floor, so each
+option also carries `joint_success_probability_at_valid_floor` computed exactly at the floored N.
 
 | N/cell | Δ = 0.30 | Δ = 0.40 | Δ = 0.50 | minimum Δ for joint ≥ 0.80 |
 | --- | --- | --- | --- | --- |
 | 120 (ε=0.20) | 0.101 | 0.719 | 0.973 | 0.45 |
 | 200 (ε=0.15) | 0.218 | **0.879** | 0.966 | 0.40 |
+| 400 (ε=0.15) | 0.627 | 0.997 | 0.9998 | 0.35 |
 | 400 (ε=0.10) | 0.540 | 0.853 | 0.942 | 0.35 |
-| 600 (ε=0.15) | 0.627 | 0.997 | 1.000 | ≤ 0.35 |
 
 **RECOMMENDED = N 200/cell, `Δ_min` 0.20, ε 0.15** (1650 cognition requests, two phases):
 superiority component ≥ 0.986 across the band, equivalence component ≥ 0.823 at the worst-case
-baseline, exact joint 0.88 at a true separation of 0.40 and 0.97 at 0.50.
+baseline, exact joint 0.879 at a true separation of 0.40 — 0.826 if every cell falls to the 90 %
+host-validity floor — and 0.97 at a separation of 0.50.
 
-**Precondition the design imposes on the treatment:** the calibration/pilot evidence must show the
-frozen treatment separates the cells by **≥ 0.40** in `P(REALIZE)`; below that the conjunction is not
-economically confirmable (at Δ = 0.30 even 600 draws/cell reach only ≈ 0.63) and the honest response
-is to strengthen the treatment design before the confirmatory freeze — not to spend the requests.
+**Two phases, not one.** A success verdict requires the full conjunction independently in primary
+**and** replication, so the experiment-level success probability is approximately the square of the
+per-phase number: 0.879² ≈ **0.773** for the recommended design (0.826² ≈ 0.682 at the validity
+floor). The per-phase joint must never be quoted as the whole experiment's probability.
 
-**LOW_COST** (N 120, ε 0.20, 990 requests) is screening grade: with `ε = Δ_min` a pass cannot support
+**Precondition the design imposes on the treatment:** an independent exploratory
+treatment-development pilot (PHASE B — never the executor calibration) must show the frozen treatment
+separates the cells by **≥ 0.40** in `P(REALIZE)`; below that the conjunction is not economically
+confirmable — at Δ = 0.30 the recommended N = 200 design reaches only ≈ **0.218** joint success
+probability per phase — and the honest response is to strengthen the treatment design before the
+confirmatory freeze, not to spend the requests.
+
+**LOW_COST** (N 120, ε 0.20, 1010 requests) is screening grade: with `ε = Δ_min` a pass cannot support
 a full mediation claim; it decides whether to fund the recommended run.
 **HIGH_CONFIDENCE** (N 400, ε 0.10, 3250 requests) bounds the residual at half the smallest claimable
-effect and tolerates a weaker treatment (Δ ≥ 0.35).
+effect and tolerates a weaker treatment (Δ ≥ 0.35), **but its equivalence component does NOT reach the
+0.80 planning target across the declared baseline band** (band minimum ≈ 0.757). A higher name is not
+a claim that every component is stronger: its superiority component is the strongest of the three
+options, its equivalence component is weaker than the recommended design's.
 
 ## 17. Verdicts
 

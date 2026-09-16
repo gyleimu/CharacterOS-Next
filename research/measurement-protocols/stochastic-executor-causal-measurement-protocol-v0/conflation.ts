@@ -127,6 +127,31 @@ export const CONFLATION_POSITIVE_CASES: readonly string[] = Object.freeze([
   "The credence of 0.65 means there is a 65% objective probability that the passage is usable."
 ]);
 
+/**
+ * DISCLOSED FALSE POSITIVES: the deterministic guardrail flags these although a
+ * human reader would not call them objective-truth conflation. Pinned so the
+ * limitation cannot silently change.
+ */
+export const CONFLATION_KNOWN_FALSE_POSITIVES: readonly string[] = Object.freeze([
+  "Someone said it is guaranteed.",
+  "Is it guaranteed? No. It is uncertain.",
+  "Guaranteed. Well, not really.",
+  "It is guaranteed true, which is not something I can verify."
+]);
+
+/**
+ * DISCLOSED FALSE NEGATIVES: genuine certainty assertions the deterministic
+ * guardrail does not flag, because an unrelated negation cue sits inside the
+ * 60-character backward window.
+ */
+export const CONFLATION_KNOWN_FALSE_NEGATIVES: readonly string[] = Object.freeze([
+  "This is not false, it is guaranteed.",
+  "No doubt it is true for sure.",
+  "Without doubt it is guaranteed.",
+  "Never doubt that it is guaranteed.",
+  "It is not only likely but guaranteed."
+]);
+
 export const CONFLATION_NEGATIVE_CASES: readonly string[] = Object.freeze([
   "It is not guaranteed.",
   "Do not treat it as a confirmed fact.",

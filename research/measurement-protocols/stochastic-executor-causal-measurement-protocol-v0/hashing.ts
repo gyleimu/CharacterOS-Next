@@ -107,7 +107,20 @@ export function verifyFreezeManifest(repoDir: string, manifest: FreezeManifestSh
   }
   checked.push("preregistration_commit:OK");
   for (const [path, expected] of Object.entries(manifest.code_blob_hashes)) {
-    const actual = gitBlobHash(repoDir, manifest.preregistration_commit_sha, path);
+    let actual: string;
+    try {
+      actual = gitBlobHash(repoDir, manifest.preregistration_commit_sha, path);
+    } catch (error) {
+      // A missing blob (deleted path, shallow clone, foreign repository) is a
+      // verification FAILURE, never a crash and never a silent pass.
+      checked.push(`blob:${path}:MISSING`);
+      const reason = error instanceof Error ? error.message.split("\n")[0] : "unknown failure";
+      return {
+        ok: false,
+        detail: `frozen blob ${path} is not present at ${manifest.preregistration_commit_sha}: ${reason}`,
+        checked
+      };
+    }
     checked.push(`blob:${path}:${actual === expected ? "OK" : "MISMATCH"}`);
     if (actual !== expected) {
       return {

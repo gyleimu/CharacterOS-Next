@@ -29,7 +29,7 @@ test can never certify equivalence for a stochastic generator. This slice design
 | frozen contract + executable hard-gate registry | `contract.ts` |
 | verdict law (single place a success claim can be produced) | `verdict.ts` |
 | deterministic statistics implementation | `statistics.ts` (Wilson, Newcombe, TOST, exact binomial and factorized exact joint enumeration) |
-| offline power / sensitivity analysis | `power.ts` → `evidence/power-analysis.json` |
+| offline power / sensitivity analysis | `power.ts` → `evidence/power-analysis.json` (`sha256:505d2a2d5fb2f8932921286b1708119ab04eca8d71dd8657a460aa56ecc04d8a`) |
 | negation-aware truth-conflation classifier | `conflation.ts` |
 | manifest + report hash laws and the HEAD-independent verifier | `hashing.ts` |
 | read-only V0 evidence/defect verifier | `v0-verification.ts` → `evidence/v0-verification.json` |
@@ -42,22 +42,31 @@ test can never certify equivalence for a stochastic generator. This slice design
    B/D control becomes a TOST equivalence question about `pB − pD`, not a draw-matching question.
    *Why:* paired disagreement and difference-of-probabilities are different estimands; conflating
    them is what made V0 undecidable.
-2. **`Δ_min = 0.20`.** The smallest shift worth calling a meaningful cognition influence, anchored
-   on the majority-flip boundary of a binary policy class — not on V0's observed difference.
+2. **`Δ_min = 0.20`.** A **protocol-level scientific/policy convention** for "the smallest shift worth
+   calling a meaningful cognition influence" in a binary policy class — not a natural discontinuity
+   (0.5 is the majority boundary of the measured outcome, nothing more) and not a comparison against
+   V0's paired flip rate. Smaller thresholds are rejected on the estimator's own terms: below 0.20 the
+   shift is not considered large enough to justify the confirmatory budget.
    *Cost:* N=140 for ≥ 0.93 superiority power at a true effect of 0.40 (band-restricted).
 3. **`ε = 0.15`.** Strictly below `Δ_min`, so a residual at the margin cannot manufacture a
-   claimable effect. `ε = 0.10` (half of `Δ_min`) needs ≈ 600 draws/cell for ≥ 0.80 equivalence
-   power and is offered as HIGH_CONFIDENCE; `ε = 0.20` does not protect the mediation claim and is
-   labelled screening only.
+   claimable effect. `ε = 0.10` (half of `Δ_min`) is offered as HIGH_CONFIDENCE with a **disclosed
+   trade-off**: its equivalence power over the declared baseline band is ≈ 0.757, below the 0.80
+   planning target, so the name does not mean "every component is stronger". `ε = 0.20` does not
+   protect the mediation claim and is labelled screening only.
 4. **Design effect 0.40, not `Δ_min`.** A minimum-effect test has ≈ α power at exactly `Δ_min`
    (measured 0.022 at N=200), so the design must be powered above the threshold.
-5. **RECOMMENDED = N 200/cell, ε 0.15** (1650 cognition requests over two phases + calibration):
-   superiority ≥ 0.986, equivalence ≥ 0.823, exact joint 0.88 at Δ = 0.40. The binding constraint is
+5. **RECOMMENDED = N 200/cell, ε 0.15** (1650 cognition requests over two phases + 50 calibration
+   draws): superiority ≥ 0.986, equivalence band minimum ≈ 0.823, exact joint 0.879 per phase at
+   Δ = 0.40 (0.826 if every cell falls to the 90 % host-validity floor). The binding constraint is
    the equivalence component, and the joint is the honest quantity: per-contrast power does not add
-   up to experiment-level success (at N=200 with Δ=0.30 the joint is only 0.22).
-6. **Treatment precondition.** The future run must first show a ≥ 0.40 separation; below it the
-   conjunction is not economically confirmable (≈ 0.63 joint even at N=600) and the honest move is
-   to strengthen the treatment, not to buy more draws.
+   up to experiment-level success (at N=200 with Δ=0.30 the joint is only 0.218), and **two phases are
+   required**, so the experiment-level probability is ≈ J² ≈ 0.773.
+6. **Treatment precondition (PHASE B, exploratory).** An independent exploratory
+   treatment-development pilot — never the executor calibration — must show a ≥ 0.40 separation;
+   below it the conjunction is not economically confirmable (at Δ = 0.30 the recommended N = 200
+   design reaches only ≈ 0.218 joint success per phase) and the honest move is to strengthen the
+   treatment, not to buy more draws. Pilot data never enters any confirmatory denominator, and a
+   treatment change forces a new preregistration commit.
 7. **Cell stability removed** from the success law; host validity, minimum usable N and the interval
    tests replace it. Majority class becomes descriptive only.
 8. **One primary analysis law**, no p-value shopping; the conjunction is the multiplicity control.
@@ -85,6 +94,38 @@ later commit; and the stored `report_hash` reproduces under *neither* plausible 
 `report_hash`, nor the implicit `{verdict, primary, replication}` sub-core), so no auditor can
 determine which law authored it. Both defects are structural in V0 and are removed by the protocol's
 laws for future experiments.
+
+## Remediation after the independent methodology audit
+
+The audit returned `FREEZE_BLOCKED_MINIMAL_REMEDIATION_REQUIRED` on `086185a` and named four MAJORs.
+All were fixed without touching the statistical core, `Δ_min`, `ε`, the recommended N, or the hash and
+gate architectures:
+
+* **M1 — mislabelled power row.** The row printed as `600 (ε=0.15)` was in fact `400 (ε=0.15)`; it is
+  relabelled and now carries the artifact's exact values (0.627136 / 0.997261 / 0.999752, minimum
+  separation 0.35). The grid was not extended and no number was recomputed for a different N.
+* **M2 — `equivalence_power_min` semantics.** For every protocol option the field is now the TRUE
+  minimum over the declared planning band `[0.20, 0.60]`: LOW_COST 0.86253, RECOMMENDED 0.82317,
+  HIGH_CONFIDENCE 0.75714. The last one crosses the 0.80 planning target, and that trade-off is now
+  disclosed in the option's `claim_strength`, in `PROTOCOL.md` §16 and here.
+* **M3 — calibration double standard.** Every protocol uses `SAMPLING.calibration_draws = 50`; the
+  LOW_COST special case of 30 is gone and its total is `4·120·2 + 50 = 1010` everywhere.
+* **M4 — phases conflated.** Executor calibration (PHASE A) and the treatment-development pilot
+  (PHASE B) are now separate, with the pilot explicitly `EXPLORATORY_ONLY`, excluded from every
+  confirmatory denominator, forbidden from reusing trial identities, and requiring a new
+  preregistration commit after any treatment change.
+
+Also applied: the `Δ_min` rationale no longer compares anything against the paired flip rate and is
+stated as a protocol-level convention; the false "even 600 draws/cell reach only ≈ 0.63" claim is
+replaced by the artifact's true numbers (recommended N=200 reaches 0.218 per phase at Δ = 0.30); a
+BYTE-level freeze declaration; the conflation classifier's exact closed scan surface plus both error
+directions, disclosed and pinned by tests; the power tables' zero-invalid assumption with exact
+validity-floor joints (recommended 0.826); the two-phase experiment-level note (J² ≈ 0.773); token
+estimates recomputed as `requests × [6500, 8600]`; and a graceful `{ok: false}` for a missing frozen
+blob in the manifest verifier.
+
+The power artifact was regenerated (`sha256:505d2a2d5fb2f8932921286b1708119ab04eca8d71dd8657a460aa56ecc04d8a`) and two consecutive offline generations are
+byte-identical.
 
 ## Offline power analysis (exact enumeration, no simulation seed)
 
