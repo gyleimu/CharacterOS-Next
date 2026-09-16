@@ -202,6 +202,11 @@ It writes `A*.wav` … `D*.wav` plus `expression.json` (the full state → expre
 
 ## 6. Performance (measured on RTX 4060 Laptop 8 GB)
 
+> These are the numbers from the FIRST slice, before the realtime work in §6b.
+> They were measured while other processes held most of the GPU, which is why
+> they are far worse than the steady-state figures below. Both are kept: the
+> difference between them is the single most important fact about this machine.
+
 `python benchmark.py --launch --n 10` reproduces these. Warm and cold are kept
 separate.
 
@@ -216,12 +221,95 @@ separate.
 | ASR median (n=10, CPU) | 781 ms |
 | ASR p95 | 2 609 ms |
 | VRAM idle / loaded / peak | 2 719 / 6 292 / 6 533 MB |
-| Startup → READY (best observed) | 43.0 s |
 
-Variance is large and real (warm TTS ranged 3.4 s – 13.8 s). This is a laptop GPU
-under sustained load, and throttling is the most likely cause. **Generation is
-several times slower than real time**, so this is not yet a real-time
-conversational loop.
+Variance is large and real (warm TTS ranged 3.4 s – 13.8 s).
+
+## 6b. Realtime work: where the time goes, and what was done about it
+
+### The bottleneck, measured rather than guessed
+
+`/metrics/last` reports the stages timed INSIDE the model, so the breakdown below
+is measured, not inferred. Steady state, one short sentence, uncontended:
+
+| Stage | Cost | Notes |
+|---|---|---|
+| `frontend_zero_shot` | **~585 ms** | reference re-encoding — see below |
+| LLM to the first streaming hop | **~2 000 ms** | 28 speech tokens (`token_hop_len` 25 + pre-lookahead 3) |
+| `flow_inference` | ~505 ms | flow matching → mel |
+| `hift_inference` | ~57 ms | vocoder → waveform |
+| **first PCM** | **~3 200 ms** | the sum, which is how the model was confirmed as the source |
+
+`llm_first_token` was **NOT INSTRUMENTABLE** until the LLM was hooked — it runs on
+its own thread and CUDA stream, so it is observed by polling the token buffer.
+
+### What was optimized
+
+**Repeated reference conditioning (the one clean win).** `frontend_zero_shot`
+re-encodes the reference WAV on every call *and for every sentence*: `load_wav`,
+whisper log-mel, the ONNX speech tokenizer on the GPU, kaldi fbank, the ONNX
+speaker embedding on the CPU, and the mel extractor. The reference does not change
+between sentences, so all of it was waste. It is now memoized (~527 ms → 1.6 ms).
+
+CosyVoice's own `add_zero_shot_spk` cache is **not** used: with a
+`zero_shot_spk_id`, `frontend_zero_shot` returns `{**spk2info[id]}` wholesale and
+silently DISCARDS the delivery directive, which would break the expression →
+delivery mapping. Memoizing the three extraction methods leaves the official call
+path untouched.
+
+**Warmup was silently broken.** It read a field only assigned by `synthesize()`,
+so the first call raised `AttributeError` and a blanket `except` swallowed it —
+warmup had never warmed anything. Consecutive calls measured **86 s, 58 s, 8.0 s,
+3.5 s**: three realistic syntheses are now run at startup. This is the difference
+between a 90-second first reply and a 4-second one.
+
+### Before / after, same environment window, n=20 each
+
+| Metric | baseline (cache off) | cached | change |
+|---|---|---|---|
+| TTFA median | 2 713.8 ms | **2 290.1 ms** | −423.7 ms |
+| TTFA p95 | 3 099.0 ms | 3 057.6 ms | −41.4 ms |
+| `frontend_zero_shot` median | 527.3 ms | **1.6 ms** | −525.7 ms |
+| `llm_first_token` median | 80.5 ms | 70.9 ms | — |
+| `token2wav` median | 503.8 ms | 563.7 ms | — |
+| RTF median | 1.259 | **1.065** | −0.194 |
+| RTF p95 | 1.397 | 1.416 | — |
+
+The frontend saving (525.7 ms) accounts for the TTFA saving (423.7 ms) almost
+exactly; the residual is run-to-run noise. That is the causal attribution.
+
+### The same measurement under GPU contention
+
+Run earlier the same day, same configs, while other processes held ~7 GB of the
+8 GB card:
+
+| Metric | baseline | cached |
+|---|---|---|
+| TTFA median | 58 961 ms | 32 507 ms |
+| RTF median | 27.8 | 18.1 |
+
+**A 20–30× swing from the environment alone.** Evidence: VRAM 8187/8187 MB
+saturated, SM clock 930–1590 MHz of a 3105 MHz maximum, 88–89 °C, 44 W of a 79 W
+cap. The "laptop GPU throttling" hypothesis is CONFIRMED, and VRAM
+oversubscription is the larger of the two effects. Any single-run number from this
+machine should be read with that in mind.
+
+### Official acceleration paths, evaluated against this machine
+
+| Path | Verdict |
+|---|---|
+| vLLM (`load_vllm`) | **UNSUPPORTED** — vLLM has no Windows build |
+| TensorRT-LLM (`load_trt`) | **UNSUPPORTED** — needs `import tensorrt`; `tensorrt-cu12` wheels are Linux-only |
+| ONNX Runtime GPU | **ALREADY USED** for the speech tokenizer; the flow-decoder ONNX is consumed only by the TensorRT path |
+| `torch.compile` | **NOT PURSUED** — not supported by CosyVoice, and unverifiable here |
+| fp16 | **ALREADY ENABLED** |
+| Smaller `chunk_size` | **NOT WORTH IT** — must match the flow decoder's training-time `static_chunk_size`; changing it risks speech quality |
+
+### Remaining bottleneck
+
+The first streaming hop needs 25 + 3 speech tokens before any audio exists, and
+the LLM produces them at roughly 70 ms each. That ~2 s is a floor set by the
+model and the backend, not by this runtime, and it is where the remaining TTFA
+lives. TensorRT or vLLM would attack it; neither runs on Windows.
 
 ## 7. Known limitations
 
@@ -238,28 +326,36 @@ conversational loop.
   variance. This is why the demo reports every comparison against the
   within-fixture spread and refuses to count differences that do not clear it.
   Judging the causal claim ultimately requires listening to the WAVs.
-* **Latency.** TTS runs at RTF ≈ 3–5; first audio for a short sentence is ~4 s when
-  the machine is not throttled.
+* **Latency is environment-bound.** Uncontended, the runtime reaches TTFA median
+  2 290 ms and RTF median 1.065. With other processes holding ~7 GB of the 8 GB
+  card it degrades to tens of seconds and RTF ≈ 18–28. The same code, the same
+  configuration, a 20–30× swing. See §6b.
 * **Degradation is coarse.** ASR and TTS are enabled per-model from `/health`, but
   there is no retry-after-failure or model-restart policy.
-* **VAD sensitivity is uncalibrated.** A forced 3 s capture and a VAD capture both
-  ran end to end on real hardware (microphone → SenseVoice → text), but in a quiet
-  room the energy gate still triggered on ambient noise and ran to `max_ms`
-  instead of reporting silence. On a WAV file the recognition path is exact; the
-  gate itself needs a noise-floor calibration pass.
+* **VAD is calibrated but not adaptive.** The gate measures the room once
+  (silence: floor 345.4 → threshold 1381.5) and that measurement is reused. It
+  correctly rejected silence 3/3 in a quiet room, exiting at the timeout rather
+  than `max_ms`. It does NOT re-measure itself if the room changes, and a loud
+  transient during concurrent activity can still trip it — one such transient was
+  observed live. `POST /vad/calibrate` re-measures on demand.
+* **Barge-in is only partly verified.** The monitor, the calibrated threshold and
+  the cancel path are implemented and the cancellation stops generation, but
+  interrupting a reply by ACTUALLY SPEAKING could not be tested without a person
+  at the microphone. Treat the barge-in latency as unmeasured.
 
 ## 7b. What was verified on hardware, and how
 
 | Path | Result | Evidence |
 |---|---|---|
 | Microphone capture | works | forced 3 s capture → `captured: true`, 3057 ms, transcribed |
-| VAD silence detection | **over-sensitive** | VAD run consumed the full 6 s `max_ms` on ambient noise |
+| VAD silence rejection | **works** | calibrated (floor 345.4, threshold 1381.5); 3/3 quiet listens → `captured: false`, exit at the 3 s timeout not the 6 s `max_ms` |
 | Speaker playback | works | `/tts` with `play: true` → `played: true`, 640 ms audio |
 | TTS | works | real WAVs produced; slow+soft directive measurably changes output |
 | Streaming | works | chunks read incrementally; TTFA measured client-side |
 | ASR | works | TTS output round-tripped back to text |
 | Voice identity | works | second reference voice registered; output measurably different |
-| Interruption | mechanism verified | abort + `/tts/cancel` unit-tested; not exercised against live playback |
+| Interruption | mechanism verified | abort + `/tts/cancel` stop generation; a live spoken barge-in was NOT performed |
+| Sentence pipeline | unit-tested | 28 tests over splitting and queue delivery; ordering, cancellation and failure isolation pinned |
 
 * **Regulation is static.** CharacterOS's reference regulation producer has
   identity dynamics, so `energy`/`stress`/`arousal`/`fatigue` stay at their genesis
