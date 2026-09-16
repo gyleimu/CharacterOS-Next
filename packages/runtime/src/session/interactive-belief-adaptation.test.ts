@@ -23,6 +23,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   BELIEF_STATE_SCHEMA_VERSION,
+  deriveBeliefPropositionId,
   validateSubjectState,
   type SubjectStateV0
 } from "@characteros-next/subject-core";
@@ -37,6 +38,7 @@ import type {
   BeliefSemanticTargetResolutionProviderV0
 } from "../transitions/belief/belief-semantic-target-resolution.js";
 import { BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION } from "../transitions/belief/belief-semantic-target-resolution.js";
+import { deriveBeliefPropositionKeyV0 } from "../transitions/belief/belief-proposition-admission.js";
 import {
   InteractiveSubjectRuntimeV0,
   createInteractiveSubjectSeedV0,
@@ -209,6 +211,39 @@ class ScriptedBeliefSemanticProvider implements BeliefSemanticTargetResolutionPr
   }
 }
 
+/**
+ * Deterministic TEST-LOCAL stand-in for a provider that proposes a NEW
+ * proposition when the evidence carries the distinctive lived experience — the
+ * observation episode whose scene quotes the experience, or the completed
+ * outcome (feedback) episode of that same experience — and abstains otherwise.
+ * The provider sees only episode_ref/occurrence/scene, and supplies a LABEL
+ * ONLY: never a key, an identity, a relation or a number.
+ */
+const FORMED_LABEL = "Mira returns what she borrows";
+const FORMED_SCENE = "conversation-feedback-v0";
+
+class ScriptedNewPropositionProvider implements BeliefSemanticTargetResolutionProviderV0 {
+  calls = 0;
+  inputs: BeliefSemanticTargetResolutionProviderInputV0[] = [];
+
+  async propose(input: BeliefSemanticTargetResolutionProviderInputV0): Promise<unknown> {
+    this.calls += 1;
+    this.inputs.push(input);
+    const bindings = {
+      schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+      semantic_context_fingerprint: input.semantic_context_fingerprint,
+      candidate_catalog_fingerprint: input.candidate_catalog_fingerprint
+    };
+    const bears = input.evidence.evidence.some(
+      (entry) => /returned the borrowed ladder/i.test(entry.scene) || entry.scene === FORMED_SCENE
+    );
+    if (!bears) {
+      return { ...bindings, kind: "NO_BEARING" };
+    }
+    return { ...bindings, kind: "NEW_PROPOSITION_CANDIDATE", proposed_label: FORMED_LABEL };
+  }
+}
+
 function options(input: {
   mode?: () => Mode;
   recorder?: TransportRecorder;
@@ -352,16 +387,84 @@ describe("BELIEF_ADAPTATION_SESSION_WIRING_V0 — offline acceptance", () => {
     expect(provider.calls).toBe(1);
   });
 
-  it("§23 production truthfulness: a subject with no canonical proposition skips adaptively with zero provider calls", async () => {
+  it("§33 empty genesis: the evidence IS offered to the semantic authority; abstention writes nothing", async () => {
     const provider = new ScriptedBeliefSemanticProvider();
     const runtime = await InteractiveSubjectRuntimeV0.create(
       options({ beliefProvider: provider, seededBeliefs: false })
     );
     const turn = await runtime.submitUserText("Alice kept her promise, she delivered on time.");
     expect(turn.status).toBe("COMPLETE");
-    expect(turn.belief_adaptation?.status).toBe("SKIPPED_NO_CANDIDATE_PROPOSITIONS");
-    expect(turn.belief_adaptation?.current).toBeNull();
-    expect(provider.calls).toBe(0);
+    // BELIEF_PROPOSITION_ADMISSION_V0: an empty catalog no longer short-circuits
+    // the turn (that short-circuit WAS the first-proposition deadlock). The
+    // evidence is offered with an empty candidate universe and the provider may
+    // lawfully abstain — which never fabricates a belief.
+    expect(turn.belief_adaptation?.status).toBe("COMPLETED");
+    expect(turn.belief_adaptation?.current?.terminal_kind).toBe("COMPLETE_NO_BEARING");
+    expect(turn.belief_adaptation?.current?.proposition_id).toBeNull();
+    expect(turn.belief_adaptation?.current?.provider_calls).toBe(1);
+    expect(provider.calls).toBe(1);
+    // Abstention is a genuine no-write: the canonical catalog is still empty.
+    const view = await runtime.subjectStateView();
+    expect(view.beliefs).toEqual([]);
+  });
+
+  it("§15/§18 empty genesis: lived evidence FORMS the first proposition; the same proposition routes to it; both survive restart", async () => {
+    const provider = new ScriptedNewPropositionProvider();
+    const recorder: TransportRecorder = { requests: [] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ beliefProvider: provider, seededBeliefs: false, recorder })
+    );
+    const turn = await runtime.submitUserText("My neighbour Mira returned the borrowed ladder, she keeps her word.");
+    expect(turn.status).toBe("COMPLETE");
+    const current = turn.belief_adaptation?.current;
+    expect(current?.terminal_kind).toBe("COMPLETE_COMMITTED");
+    expect(current?.prior_credence).toBeNull();
+    expect(current?.next_credence).toBe(0.55);
+    expect(current?.canonical_label).toBe(FORMED_LABEL);
+
+    // Canonical formation: exactly ONE proposition, host-derived identity,
+    // first credence = Belief stance-zero point + one frozen supporting step.
+    const view = await runtime.subjectStateView();
+    const items = view.beliefs;
+    expect(items).toHaveLength(1);
+    const formed = items[0];
+    if (formed === undefined) throw new Error("unreachable: no formed belief");
+    expect(formed.proposition_label).toBe(FORMED_LABEL);
+    expect(formed.credence).toBe(0.55);
+    const expectedKey = await deriveBeliefPropositionKeyV0(FORMED_LABEL);
+    expect(formed.proposition_id).toBe(await deriveBeliefPropositionId(SUBJECT_ID as never, expectedKey));
+
+    // SECOND lived experience of the same proposition (this turn's evidence is
+    // the completed outcome of the first turn): the provider proposes the SAME
+    // label, the host routes it to the EXISTING canonical proposition and the
+    // ordinary frozen ±0.05 plasticity applies — never a second proposition.
+    const second = await runtime.submitUserText("I will ask Mira again next week about the ladder.");
+    expect(second.belief_adaptation?.current?.terminal_kind).toBe("COMPLETE_COMMITTED");
+    expect(second.belief_adaptation?.current?.proposition_id).toBe(formed.proposition_id);
+    expect(second.belief_adaptation?.current?.prior_credence).toBe(0.55);
+    // Exact frozen arithmetic: one raw IEEE-754 double add, never rounded.
+    const secondCredence = 0.55 + 0.05;
+    expect(secondCredence).toBe(0.6000000000000001);
+    expect(second.belief_adaptation?.current?.next_credence).toBe(secondCredence);
+
+    // The formed belief reaches later cognition through the EXISTING
+    // deterministic projection (this turn's own cognition ran before the change:
+    // §31 same-turn isolation).
+    const request = recorder.requests[1];
+    const user = request?.messages.find((m) => m.role === "user")?.content ?? "";
+    expect(user).toContain("showing 1 of 1 canonical belief item(s)");
+    expect(user).toContain(FORMED_LABEL);
+    expect(user).toContain('"credence":0.55');
+
+    // RESTART: a fresh runtime restored from the parsed durable image alone.
+    const parsed = JSON.parse(JSON.stringify(await runtime.snapshot())) as InteractiveSubjectSnapshotV0;
+    const restoredProvider = new ScriptedNewPropositionProvider();
+    const restored = await InteractiveSubjectRuntimeV0.restore(
+      options({ beliefProvider: restoredProvider }),
+      parsed
+    );
+    const restoredView = await restored.subjectStateView();
+    expect(restoredView.beliefs).toEqual([{ ...formed, credence: secondCredence }]);
   });
 
   it("belief adaptation stays DISABLED without a provider: no store, no calls, legacy behavior intact", async () => {

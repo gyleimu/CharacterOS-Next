@@ -122,6 +122,16 @@ executor; (ii) wiring it into the adaptation workflow instead of the discard ter
 with a corrected, provenance-based endpoint. Belief semantics, arbitration and the
 decision chain are NOT touched.
 
+## SUPERSEDED (appended; this record's body is historical and unchanged)
+
+Items (i)–(iii) above describe `main` @ `e6f0786`. `BELIEF_PROPOSITION_ADMISSION_V0`
+(`../belief-proposition-admission-v0/DECISION.md`) delivered them: an empty canonical catalog now
+offers its evidence, an accepted `NEW_PROPOSITION_CANDIDATE` label is canonicalized and host-admitted
+into a canonical proposition (or routed to the existing one), the discard terminal is gone from
+production, and Tests A–R plus the interactive runtime tests pin the law with zero model calls.
+The status-map row `Belief | IMPLEMENTED_BUT_PRODUCTION_INERT` and item (iv) — the real-model
+qualification, and whether a formed proposition changes delivered behavior — remain as recorded.
+
 ## Personality Current State
 
 4-dimension closed registry (`agreeableness`/`conscientiousness`/`extraversion`/`openness`,

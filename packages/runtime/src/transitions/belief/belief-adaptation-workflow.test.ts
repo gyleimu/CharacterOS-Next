@@ -17,6 +17,7 @@ import {
 import {
   BELIEF_STATE_SCHEMA_VERSION,
   createInMemorySubjectCoreFacade,
+  deriveBeliefPropositionId,
   type AtomicCommitBundleAnyVersion,
   type HashV1,
   type InMemoryFacadeAssembly,
@@ -32,6 +33,10 @@ import {
   type BeliefSemanticTargetResolutionProviderV0
 } from "./belief-semantic-target-resolution.js";
 import { isAuthorizedBeliefPlasticityResultV0 } from "./belief-plasticity-producer.js";
+import {
+  BELIEF_PROPOSITION_FIRST_CREDENCE,
+  deriveBeliefPropositionKeyV0
+} from "./belief-proposition-admission.js";
 import {
   BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
   deriveBeliefEvidenceMemberSetFingerprint,
@@ -474,21 +479,53 @@ describe("Belief Adaptation Workflow V0 — no-commit terminals (§57)", () => {
     expect(record?.semantic_candidate?.kind).toBe("NO_BEARING");
   });
 
-  it("NEW candidate terminalizes generically and never persists the label (§69)", async () => {
+  it("NEW candidate is ADMITTED by the host: durable label, derived identity, first credence — never discarded (§32/§69)", async () => {
     const world = await buildWorld({ decision: "NEW" });
     const terminal = await runBeliefAdaptationWorkflowV0(world.deps, canonicalRequest(world));
-    expect(terminal).toMatchObject({
-      kind: "COMPLETE_NEW_PROPOSITION_CANDIDATE_OBSERVED",
-      canonical_commits: 0
-    });
-    expect(world.committedBundles.size).toBe(0);
+    // Before BELIEF_PROPOSITION_ADMISSION_V0 this was a zero-commit terminal
+    // that threw the label away. It is now a lawful governed INSERT.
+    expect(terminal).toMatchObject({ kind: "COMPLETE_COMMITTED", canonical_commits: 1 });
+    expect(world.committedBundles.size).toBe(1);
+
+    // The label survives ONLY as a closed, fingerprint-bound, NON-AUTHORITATIVE
+    // replay candidate: no identity, no credence, no relation.
     const record = world.store.records.get(WORKFLOW_ID);
-    expect(record?.semantic_candidate).toBeNull();
-    expect(JSON.stringify(record)).not.toContain(SECRET_LABEL);
-    const current = await world.deps.subjectCore.readCurrentSnapshot(SUBJECT_ID as never);
-    if (current === null) throw new Error("expected a current snapshot");
-    expect(JSON.stringify(current)).not.toContain(SECRET_LABEL);
-    expect(JSON.stringify(current.beliefs)).toBe(JSON.stringify(world.state.beliefs));
+    expect(record?.semantic_candidate).toEqual({
+      schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+      kind: "NEW_PROPOSITION_CANDIDATE",
+      proposed_label: SECRET_LABEL,
+      semantic_context_fingerprint: expect.any(String),
+      candidate_catalog_fingerprint: expect.any(String)
+    });
+
+    // Canonical formation: host-derived key/label + host initial credence, with
+    // the provider's evidence set bound into the commit.
+    const expectedKey = await deriveBeliefPropositionKeyV0(SECRET_LABEL);
+    const expectedId = await deriveBeliefPropositionId(SUBJECT_ID as never, expectedKey);
+    expect(record?.proposal_checkpoint?.proposal.mutation).toEqual({
+      kind: "INSERT",
+      proposition_key: expectedKey,
+      proposition_label: SECRET_LABEL,
+      initial_credence: BELIEF_PROPOSITION_FIRST_CREDENCE
+    });
+    expect(record?.proposal_checkpoint?.proposal.evidence_binding.member_refs).toEqual(
+      world.records.map((entry) => entry.episode_ref).sort()
+    );
+    expect(record?.plasticity_receipt).toBeNull();
+
+    const after = committedSnapshot(world);
+    expect(after.beliefs.items.map((item) => item.proposition_id)).toEqual(
+      [PROP_A, PROP_B, expectedId as string].sort()
+    );
+    const formed = after.beliefs.items.find((item) => item.proposition_id === expectedId);
+    expect(formed?.proposition_label).toBe(SECRET_LABEL);
+    expect(formed?.credence).toBe(BELIEF_PROPOSITION_FIRST_CREDENCE);
+    // Existing propositions are untouched by a formation.
+    expect(after.beliefs.items.find((item) => item.proposition_id === PROP_A)?.credence).toBe(0.6);
+    expect(after.beliefs.items.find((item) => item.proposition_id === PROP_B)?.credence).toBe(0.4);
+    // No cross-domain cascade.
+    expect(JSON.stringify(after.personality)).toBe(JSON.stringify(world.state.personality));
+    expect(JSON.stringify(after.relationships)).toBe(JSON.stringify(world.state.relationships));
   });
 
   it("SATURATED terminalizes COMPLETE_NO_CHANGE with zero proposal and zero executor commit", async () => {

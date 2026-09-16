@@ -22,10 +22,16 @@
  *    state at all — read-only semantic layer)
  *
  * NEW_PROPOSITION_CANDIDATE policy: MODEL_PROPOSES_LABEL_ONLY. The accepted
- * candidate is NON-CANONICAL, NON-PERSISTENT, and is NOT a
- * BeliefMutationProposalV0 INSERT (no proposition_key, no initial_credence, no
- * identity authority). NO code path exists from a semantic result to
- * BeliefTransitionExecutor.
+ * candidate carries NO proposition_key, NO proposition id, NO initial_credence,
+ * NO relation and NO identity authority, and this read-only semantic layer has
+ * NO path of its own to BeliefTransitionExecutor. Since
+ * BELIEF_PROPOSITION_ADMISSION_V0 an accepted label MAY be persisted by the
+ * governed Belief adaptation workflow as a closed, fingerprint-bound,
+ * NON-AUTHORITATIVE replay candidate and routed to the HOST Belief proposition
+ * admission authority — which alone canonicalizes the label, derives the
+ * proposition identity and the initial credence, and constructs the INSERT. The
+ * authority boundary of this module is unchanged: nothing here reads, accepts or
+ * forwards provider-supplied identity or numeric values.
  *
  * Provider call semantics: AT MOST ONCE per run (EXACTLY ONCE for valid
  * preconditions). No retry, no fallback, no repair. Provider exceptions remain

@@ -30,7 +30,7 @@
  */
 
 import type { IdentifierV0 } from "@characteros-next/subject-core";
-import { sha256HashV1 } from "@characteros-next/subject-core";
+import { deriveBeliefPropositionId, sha256HashV1 } from "@characteros-next/subject-core";
 import type { EpisodicMemoryRecordV0, MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { SubjectCorePort } from "../ports/subject-core-port.js";
 import {
@@ -53,17 +53,15 @@ export interface BeliefAdaptationWorkflowOutcomeV0 {
   readonly provider_calls: number;
   /** Filled only when a canonical Belief commit (or its reconciliation) is proven. */
   readonly proposition_id: string | null;
+  /** Canonical label of the committed proposition (both UPDATE and INSERT routes). */
+  readonly canonical_label: string | null;
   readonly prior_credence: number | null;
   readonly next_credence: number | null;
 }
 
 /** Observable per-turn belief-adaptation report (host/audit surface only). */
 export interface BeliefAdaptationTurnReportV0 {
-  readonly status:
-    | "DISABLED"
-    | "SKIPPED_NO_CANDIDATE_PROPOSITIONS"
-    | "EVIDENCE_UNAVAILABLE"
-    | "COMPLETED";
+  readonly status: "DISABLED" | "EVIDENCE_UNAVAILABLE" | "COMPLETED";
   /** §32 resume results for pre-existing non-terminal workflows (in id order). */
   readonly resumed: readonly BeliefAdaptationWorkflowOutcomeV0[];
   /** This invocation's own evidence workflow outcome (null when skipped). */
@@ -152,12 +150,13 @@ export class BeliefAdaptationWiringV0 {
       const candidateIds = snapshot.beliefs.items
         .map((item) => item.proposition_id as string)
         .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
-      if (candidateIds.length === 0) {
-        // Truthful no-op disposition: with an empty canonical proposition
-        // catalog no lawful EXISTING_PROPOSITION decision is possible, so the
-        // evidence is not offered and NO provider call is spent (§55).
-        return { status: "SKIPPED_NO_CANDIDATE_PROPOSITIONS", resumed, current: null, failure: null };
-      }
+      // BELIEF_PROPOSITION_ADMISSION_V0: an EMPTY canonical proposition catalog
+      // no longer short-circuits the turn. The evidence is still offered, the
+      // candidate universe is simply empty (0..64 is lawful), and the semantic
+      // provider may lawfully abstain (NO_BEARING) or propose a NEW proposition
+      // whose label the HOST canonicalizes, identifies and admits. Nothing here
+      // creates a belief by itself: formation still requires an accepted
+      // semantic proposal plus host evidence admission.
       const episodes = await this.readEpisodes(input.episode_refs);
       if (episodes === null) {
         return { status: "EVIDENCE_UNAVAILABLE", resumed, current: null, failure: "episode payload unreadable for evidence refs" };
@@ -190,6 +189,7 @@ export class BeliefAdaptationWiringV0 {
         evidence_episode_refs: [],
         provider_calls: 0,
         proposition_id: null,
+        canonical_label: null,
         prior_credence: null,
         next_credence: null
       };
@@ -204,6 +204,7 @@ export class BeliefAdaptationWiringV0 {
         evidence_episode_refs: refs,
         provider_calls: 0,
         proposition_id: null,
+        canonical_label: null,
         prior_credence: null,
         next_credence: null
       };
@@ -250,6 +251,7 @@ export class BeliefAdaptationWiringV0 {
         evidence_episode_refs: input.episodeRefs,
         provider_calls: 0,
         proposition_id: null,
+        canonical_label: null,
         prior_credence: null,
         next_credence: null
       };
@@ -300,6 +302,7 @@ export class BeliefAdaptationWiringV0 {
         evidence_episode_refs: input.episodeRefs,
         provider_calls: counting.calls,
         proposition_id: null,
+        canonical_label: null,
         prior_credence: null,
         next_credence: null
       };
@@ -308,12 +311,21 @@ export class BeliefAdaptationWiringV0 {
     const afterSnapshot = await this.deps.subjectCore.readCurrentSnapshot(input.subject_id as never);
     const record: BeliefAdaptationWorkflowRecordV0 | null = await this.deps.workflowStore.load(workflowId as never);
     const proposal = record?.proposal_checkpoint?.proposal ?? null;
+    // INSERT (first formation) carries the host-derived proposition KEY, so the
+    // canonical proposition id is derived exactly as the executor derives it.
     const propositionId =
-      proposal !== null && proposal.mutation.kind === "UPDATE" ? (proposal.mutation.proposition_id as string) : null;
-    const nextCredence =
-      afterSnapshot !== null && propositionId !== null
-        ? (afterSnapshot.beliefs.items.find((item) => item.proposition_id === propositionId)?.credence as number | undefined) ?? null
-        : null;
+      proposal === null
+        ? null
+        : proposal.mutation.kind === "UPDATE"
+          ? (proposal.mutation.proposition_id as string)
+          : ((await deriveBeliefPropositionId(
+              input.subject_id as never,
+              proposal.mutation.proposition_key
+            )) as string);
+    const committedItem =
+      afterSnapshot === null || propositionId === null
+        ? undefined
+        : afterSnapshot.beliefs.items.find((item) => (item.proposition_id as string) === propositionId);
     return {
       workflow_id: workflowId,
       terminal_kind: kind,
@@ -321,6 +333,7 @@ export class BeliefAdaptationWiringV0 {
       evidence_episode_refs: input.episodeRefs,
       provider_calls: counting.calls,
       proposition_id: propositionId,
+      canonical_label: committedItem === undefined ? null : (committedItem.proposition_label as string),
       // prior_credence is only meaningful for a commit performed by THIS
       // invocation; an ALREADY_COMMITTED reconciliation reports the reconciled
       // next_credence only.
@@ -328,7 +341,7 @@ export class BeliefAdaptationWiringV0 {
         terminal.kind === "COMPLETE_COMMITTED" && propositionId !== null
           ? (priorBeliefs.get(propositionId) ?? null)
           : null,
-      next_credence: nextCredence
+      next_credence: committedItem === undefined ? null : (committedItem.credence as number)
     };
   }
 }

@@ -30,6 +30,10 @@
  *                       neutral in any other domain.
  *   exact duplicate   = same canonical label ⇒ same key ⇒ same identity ⇒ NO second INSERT;
  *                       the event routes to the existing proposition's frozen ±0.05 plasticity.
+ *                       For a semantic NEW candidate this route is the host law
+ *                       `BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0` (SUPPORTS) — the
+ *                       provider supplies NO relation for a NEW candidate and the host never
+ *                       invents CONTRADICTS.
  *   near duplicates   = OUT OF SCOPE V0 (`NEAR_DUPLICATE_CANONICALIZATION_V0`); textually
  *                       different labels stay distinct propositions by design.
  *   atomicity         = proposition + 0.55 credence + evidence binding become durable in ONE
@@ -41,6 +45,7 @@
 import type { EpisodeRef } from "@characteros-next/memory";
 import {
   deriveBeliefPropositionId,
+  fail,
   hashEnvelope,
   validateBeliefPropositionLabel,
   validateIdentifier,
@@ -51,7 +56,8 @@ import {
   type ProducerAuthorizationIssuer,
   type StateRevisionV0,
   type SubjectStateAnyVersionV0,
-  type UnitIntervalV0
+  type UnitIntervalV0,
+  type ValidationResult
 } from "@characteros-next/subject-core";
 import type { MemoryPreparationAuthority } from "@characteros-next/memory";
 import type { SubjectCorePort } from "../../ports/subject-core-port.js";
@@ -85,6 +91,40 @@ export const BELIEF_PROPOSITION_FIRST_CREDENCE = 0.55 as const;
 
 /** Documented V0 boundary: textually different labels are never merged. */
 export const NEAR_DUPLICATE_CANONICALIZATION_V0 = "OUT_OF_SCOPE_V0" as const;
+
+/**
+ * Fingerprint namespace of the host admission OUTPUT (the durable numeric
+ * authority for a first formation, symmetric with the frozen plasticity output
+ * fingerprint of an update). Deterministic over already-validated host values.
+ */
+export const BELIEF_PROPOSITION_ADMISSION_OUTPUT_FINGERPRINT_PROJECTION =
+  "characteros-next/belief/proposition-admission-output/v1" as const;
+
+export async function deriveBeliefPropositionAdmissionOutputFingerprintV0(input: {
+  readonly proposition_key: IdentifierV0;
+  readonly canonical_label: string;
+  readonly initial_credence: UnitIntervalV0;
+  readonly member_refs: readonly EpisodeRef[];
+}): Promise<HashV1> {
+  return await hashEnvelope(BELIEF_PROPOSITION_ADMISSION_OUTPUT_FINGERPRINT_PROJECTION, {
+    schema_version: BELIEF_PROPOSITION_ADMISSION_SCHEMA_VERSION,
+    proposition_key: input.proposition_key,
+    canonical_label: input.canonical_label,
+    initial_credence: input.initial_credence,
+    evidence_member_refs: input.member_refs
+  });
+}
+
+/**
+ * HOST ROUTE LAW for a NEW candidate whose canonical identity already exists.
+ * A semantic `NEW_PROPOSITION_CANDIDATE` for a label that canonicalizes onto an
+ * already-registered proposition means the evidence is formation-bearing for
+ * that existing proposition; the host therefore routes it into the ORDINARY
+ * frozen plasticity path as `SUPPORTS` (the provider never supplies a relation
+ * for a NEW candidate, and the host never invents CONTRADICTS). No second
+ * numeric law exists: the step is the frozen `BELIEF_PLASTICITY_STEP`.
+ */
+export const BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0 = "SUPPORTS" as const;
 
 export type BeliefPropositionAdmissionCodeV0 =
   | "ADMITTED_NEW"
@@ -142,8 +182,18 @@ export function deriveCanonicalBeliefPropositionLabelV0(
  * The key depends ONLY on the canonical label, so it survives process restart and replay.
  * Random, clock-based, counter-based and model-supplied identities are impossible by
  * construction. The canonical `proposition_id` adds subject scope (`deriveBeliefPropositionId`).
+ *
+ * The input MUST already be canonical: a raw (un-normalized) label would silently
+ * create a second identity for the same proposition, so non-canonical input FAILS
+ * CLOSED instead.
  */
 export async function deriveBeliefPropositionKeyV0(canonicalLabel: string): Promise<IdentifierV0> {
+  const canonical = deriveCanonicalBeliefPropositionLabelV0(canonicalLabel);
+  if (!canonical.ok || canonical.value !== canonicalLabel) {
+    throw new Error(
+      "BELIEF_PROPOSITION_KEY_INPUT_NOT_CANONICAL: deriveBeliefPropositionKeyV0 requires the exact canonical label"
+    );
+  }
   const digest = await hashEnvelope(BELIEF_PROPOSITION_KEY_PROJECTION, {
     canonical_label: canonicalLabel
   });
@@ -240,6 +290,47 @@ export interface ExecuteBeliefPropositionAdmissionDepsV0 {
   readonly issuer: ProducerAuthorizationIssuer;
 }
 
+/**
+ * The ONE lawful INSERT construction for a host-admitted proposition: canonical
+ * key + canonical label + host-derived initial credence + the exact admitted
+ * evidence set, shaped as the frozen BeliefMutationProposalV0 and revalidated by
+ * the frozen proposal validator. Pure: no store, no executor, no commit. The
+ * governed workflow checkpoints the returned proposal verbatim so its durable
+ * record is byte-identical to what is committed.
+ */
+export async function buildBeliefPropositionInsertProposalV0(input: {
+  readonly subject_id: IdentifierV0;
+  readonly snapshot: SubjectStateAnyVersionV0;
+  readonly proposition_key: IdentifierV0;
+  readonly canonical_label: string;
+  readonly initial_credence: UnitIntervalV0;
+  readonly evidence_member_refs: readonly EpisodeRef[];
+}): Promise<ValidationResult<BeliefMutationProposalV0>> {
+  const evidence = validateBeliefAdmissionEvidenceRefsV0(input.evidence_member_refs);
+  if (!evidence.ok) {
+    return fail("INVALID_SCHEMA", "SS-SCHEMA-001", `evidence: ${evidence.detail}`);
+  }
+  const memberSetFingerprint = await deriveBeliefEvidenceMemberSetFingerprint(evidence.value);
+  const evidence_binding: BeliefEvidenceBindingV0 = {
+    member_refs: evidence.value,
+    member_set_fingerprint: memberSetFingerprint as HashV1
+  };
+  const proposal: BeliefMutationProposalV0 = {
+    schema_version: BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
+    subject_id: input.subject_id,
+    expected_state_revision: (input.snapshot as { runtime_metadata: { state_revision: StateRevisionV0 } })
+      .runtime_metadata.state_revision,
+    mutation: {
+      kind: "INSERT",
+      proposition_key: input.proposition_key,
+      proposition_label: input.canonical_label,
+      initial_credence: input.initial_credence
+    },
+    evidence_binding
+  };
+  return validateBeliefMutationProposal(proposal);
+}
+
 export type ExecuteBeliefPropositionAdmissionResultV0 =
   | {
       readonly kind: "ADMITTED_NEW";
@@ -296,28 +387,18 @@ export async function executeBeliefPropositionAdmissionV0(
   }
 
   const memberRefs = input.evidence_member_refs as readonly EpisodeRef[];
-  const memberSetFingerprint = await deriveBeliefEvidenceMemberSetFingerprint(memberRefs);
-  const evidence_binding: BeliefEvidenceBindingV0 = {
-    member_refs: memberRefs,
-    member_set_fingerprint: memberSetFingerprint as HashV1
-  };
-  const proposal: BeliefMutationProposalV0 = {
-    schema_version: BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
+  const built = await buildBeliefPropositionInsertProposalV0({
     subject_id: ctx.subject_id,
-    expected_state_revision: (input.snapshot as { runtime_metadata: { state_revision: StateRevisionV0 } })
-      .runtime_metadata.state_revision,
-    mutation: {
-      kind: "INSERT",
-      proposition_key: decision.proposition_key as IdentifierV0,
-      proposition_label: decision.canonical_label as string,
-      initial_credence: decision.initial_credence as UnitIntervalV0
-    },
-    evidence_binding
-  };
-  const checked = validateBeliefMutationProposal(proposal);
-  if (!checked.ok) {
-    return { kind: "REJECTED", code: "REJECTED_INVALID_PROPOSAL", detail: checked.error.detail };
+    snapshot: input.snapshot,
+    proposition_key: decision.proposition_key as IdentifierV0,
+    canonical_label: decision.canonical_label as string,
+    initial_credence: decision.initial_credence as UnitIntervalV0,
+    evidence_member_refs: memberRefs
+  });
+  if (!built.ok) {
+    return { kind: "REJECTED", code: "REJECTED_INVALID_PROPOSAL", detail: built.error.detail };
   }
+  const checked = built;
 
   const executor = new BeliefTransitionExecutor({
     subjectCore: deps.subjectCore,

@@ -1,9 +1,18 @@
 /**
  * Belief Adaptation Workflow V0 — durable runtime orchestration of the frozen
- * semantic target resolution, frozen BeliefPlasticityProducer, and frozen
- * BeliefTransitionExecutor into AT MOST ONE canonical Belief commit per
- * workflow identity. EXISTING propositions only: NO INSERT, NO proposition
- * registration, NO cognition surface.
+ * semantic target resolution, the frozen BeliefPlasticityProducer / host Belief
+ * proposition admission, and the frozen BeliefTransitionExecutor into AT MOST
+ * ONE canonical Belief commit per workflow identity.
+ *
+ * PROPOSITION FORMATION (BELIEF_PROPOSITION_ADMISSION_V0): an ACCEPTED
+ * EXISTING_PROPOSITION decision reaches the ordinary frozen ±0.05 plasticity
+ * path. An ACCEPTED NEW_PROPOSITION_CANDIDATE decision is routed by the HOST:
+ * the label is canonicalized, the identity is derived, and the host decides
+ * whether the proposition is registered (lawful first INSERT, credence = Belief
+ * stance-zero point + one frozen supporting step) or already canonical (routed
+ * to the existing proposition's frozen ±0.05 plasticity). The provider supplies
+ * a label ONLY: it has no proposition-key, identity, credence, delta or
+ * relation authority, and this workflow never reads one.
  *
  * IDENTITY (frozen convention): stable host workflow_id + deterministic JCS
  * request fingerprint over the request anchors (schema, subject, expected
@@ -15,13 +24,14 @@
  *
  * NONDETERMINISM BOUNDARY: exactly ONE external semantic provider call per
  * workflow identity (atomically claimed create-once). Only a frozen-runner-
- * ACCEPTED EXISTING/NO_BEARING output is persisted create-once as a
- * NON-AUTHORITATIVE replay candidate (NEW proposed labels are NEVER persisted).
- * The WeakSet semantic/plasticity capabilities are NEVER serialized: every
- * continuation re-mints fresh process-local capabilities by replaying the
- * persisted candidate through the frozen semantic runner and recomputing
- * plasticity against fresh CURRENT SubjectState — zero external provider
- * recall. A claimed-but-uncandidated workflow after restart is
+ * ACCEPTED EXISTING/NO_BEARING/NEW output is persisted create-once as a
+ * NON-AUTHORITATIVE replay candidate; the persisted NEW candidate carries the
+ * proposed label (a closed, fingerprint-bound replay input), never a derived
+ * identity or a number. The WeakSet semantic/plasticity capabilities are NEVER
+ * serialized: every continuation re-mints fresh process-local capabilities by
+ * replaying the persisted candidate through the frozen semantic runner and
+ * recomputing plasticity/admission against fresh CURRENT SubjectState — zero
+ * external provider recall. A claimed-but-uncandidated workflow after restart is
  * RESTART_REQUIRED / PROVIDER_OUTCOME_UNKNOWN.
  *
  * STALENESS: STRICT_FAIL_ON_STALE with MAX_STALE_REBUILDS 0. Any state or
@@ -41,8 +51,10 @@
  * AUTHORITY: canonical mutation happens ONLY through the frozen
  * BeliefTransitionExecutor (which alone commits via SubjectCore). The workflow
  * writes no canonical state, no canonical trace, no Memory, never advances
- * logical time, and never constructs INSERT proposals. Workflow records are
- * INFRASTRUCTURE state only; every durable write carries the exact record
+ * logical time, and never constructs an INSERT proposal from model output —
+ * every INSERT it commits is the exact proposal built by the host proposition
+ * admission authority from a canonicalized host-derived label. Workflow records
+ * are INFRASTRUCTURE state only; every durable write carries the exact record
  * checkpoint fingerprint and is re-validated + recomputed on load.
  */
 
@@ -57,12 +69,14 @@ import type {
 import {
   hashEnvelope,
   isRecord,
+  validateBeliefPropositionLabel,
   validateHash,
   validateIdentifier,
   type CanonicalRefV0,
   type IdentifierV0,
   type LogicalTimeV0,
-  type StateRevisionV0
+  type StateRevisionV0,
+  type UnitIntervalV0
 } from "@characteros-next/subject-core";
 import type { EpisodeRef, MemoryPreparationAuthority } from "@characteros-next/memory";
 import {
@@ -80,12 +94,19 @@ import {
   type BeliefMutationProposalV0
 } from "./belief-mutation-proposal.js";
 import {
+  BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0,
+  buildBeliefPropositionInsertProposalV0,
+  decideBeliefPropositionAdmissionV0,
+  deriveBeliefPropositionAdmissionOutputFingerprintV0
+} from "./belief-proposition-admission.js";
+import {
   BELIEF_SEMANTIC_MAX_CANDIDATE_PROPOSITION_IDS,
   BELIEF_SEMANTIC_MAX_EVIDENCE_EPISODES,
   BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
   runBeliefSemanticTargetResolutionV0,
   type BeliefSemanticRelationV0,
-  type BeliefSemanticTargetResolutionProviderV0
+  type BeliefSemanticTargetResolutionProviderV0,
+  type BeliefSemanticTargetResolutionV0
 } from "./belief-semantic-target-resolution.js";
 import {
   BELIEF_PLASTICITY_RESULT_SCHEMA_VERSION,
@@ -136,8 +157,12 @@ const BELIEF_ADAPTATION_STAGES: readonly BeliefAdaptationStageV0[] = [
 
 /**
  * Closed durable semantic replay candidate: ONLY the approved frozen provider
- * output fields of an ACCEPTED EXISTING/NO_BEARING decision. NEW labels are
- * never persisted; no reasoning, confidence, numeric strength, or model trace.
+ * output fields of an ACCEPTED decision. For EXISTING/NO_BEARING that is the
+ * decision target + relation; for NEW_PROPOSITION_CANDIDATE it is the proposed
+ * label exactly as the frozen runner accepted it (no derived identity, no
+ * numeric value, no reasoning, no confidence, no model trace). The label is a
+ * NON-AUTHORITATIVE replay input: identity and numeric state are recomputed by
+ * the host admission authority on every continuation.
  */
 export type BeliefAdaptationSemanticCandidateV0 =
   | {
@@ -145,6 +170,13 @@ export type BeliefAdaptationSemanticCandidateV0 =
       readonly kind: "EXISTING_PROPOSITION";
       readonly proposition_id: IdentifierV0;
       readonly relation: BeliefSemanticRelationV0;
+      readonly semantic_context_fingerprint: HashV1;
+      readonly candidate_catalog_fingerprint: HashV1;
+    }
+  | {
+      readonly schema_version: typeof BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION;
+      readonly kind: "NEW_PROPOSITION_CANDIDATE";
+      readonly proposed_label: string;
       readonly semantic_context_fingerprint: HashV1;
       readonly candidate_catalog_fingerprint: HashV1;
     }
@@ -183,6 +215,14 @@ export type BeliefAdaptationTerminalV0 =
       readonly canonical_commits: 0;
     }
   | { readonly kind: "COMPLETE_NO_BEARING"; readonly canonical_commits: 0 }
+  /**
+   * LEGACY (pre-BELIEF_PROPOSITION_ADMISSION_V0): the terminal this workflow
+   * used to produce when a NEW candidate's label was discarded. Since the
+   * admission slice a NEW candidate is admitted or routed instead, so this
+   * workflow never produces it; the value stays in the closed union because
+   * durable write-once terminals must remain loadable and replayable
+   * byte-equivalently.
+   */
   | { readonly kind: "COMPLETE_NEW_PROPOSITION_CANDIDATE_OBSERVED"; readonly canonical_commits: 0 }
   | {
       readonly kind: "COMPLETE_NO_CHANGE";
@@ -317,8 +357,9 @@ export interface BeliefAdaptationWorkflowStoreV0 {
     request_fingerprint: HashV1
   ): Promise<"CLAIMED" | "ALREADY_CLAIMED">;
   /**
-   * Create-once semantic replay candidate (EXISTING/NO_BEARING only; NEW
-   * labels are never persisted). A different candidate under the same workflow
+   * Create-once semantic replay candidate (any accepted decision kind; a NEW
+   * candidate persists the proposed label only, never a derived identity or
+   * number). A different candidate under the same workflow
    * identity is rejected (CANDIDATE_CONFLICT) — never overwritten. Stage → B3.
    */
   saveSemanticCandidate(
@@ -726,11 +767,19 @@ function validateWorkflowRecord(raw: unknown): RecordCheck {
             "semantic_context_fingerprint",
             "candidate_catalog_fingerprint"
           ]
-        : kind === "NO_BEARING"
-          ? ["schema_version", "kind", "semantic_context_fingerprint", "candidate_catalog_fingerprint"]
-          : null;
+        : kind === "NEW_PROPOSITION_CANDIDATE"
+          ? [
+              "schema_version",
+              "kind",
+              "proposed_label",
+              "semantic_context_fingerprint",
+              "candidate_catalog_fingerprint"
+            ]
+          : kind === "NO_BEARING"
+            ? ["schema_version", "kind", "semantic_context_fingerprint", "candidate_catalog_fingerprint"]
+            : null;
     if (expectedKeys === null) {
-      return invalid("workflow record.semantic_candidate: NEW labels are never persisted");
+      return invalid("workflow record.semantic_candidate: unknown closed candidate kind");
     }
     const candidateKeys = Object.keys(candidate);
     if (candidateKeys.length !== expectedKeys.length || !candidateKeys.every((key) => expectedKeys.includes(key))) {
@@ -738,6 +787,17 @@ function validateWorkflowRecord(raw: unknown): RecordCheck {
     }
     if (!isHashV1(candidate["semantic_context_fingerprint"]) || !isHashV1(candidate["candidate_catalog_fingerprint"])) {
       return invalid("workflow record.semantic_candidate: malformed fingerprints");
+    }
+    if (kind === "NEW_PROPOSITION_CANDIDATE") {
+      // The persisted label must still be a lawful canonical Belief proposition
+      // label; the identity/credence derived from it are NEVER persisted.
+      const labelChecked = validateBeliefPropositionLabel(
+        candidate["proposed_label"],
+        "workflow record.semantic_candidate.proposed_label"
+      );
+      if (!labelChecked.ok) {
+        return invalid("workflow record.semantic_candidate: proposed_label is not a lawful Belief label");
+      }
     }
   }
   const receipt = raw["plasticity_receipt"];
@@ -755,8 +815,19 @@ function validateWorkflowRecord(raw: unknown): RecordCheck {
   }
   const checkpoint = raw["proposal_checkpoint"];
   if (checkpoint !== null) {
-    if (receipt === null) {
-      return invalid("workflow record: proposal checkpoint without plasticity receipt");
+    if (candidate === null) {
+      return invalid("workflow record: proposal checkpoint without semantic candidate");
+    }
+    // Numeric-authority coupling: an UPDATE proposal is authored by the frozen
+    // plasticity producer and MUST have its NONAUTHORITATIVE receipt. A
+    // formation INSERT is authored by the host proposition admission authority:
+    // its durable record IS the checkpointed proposal itself, which resume
+    // re-derives from the persisted candidate + canonical state and compares
+    // byte-exactly (never a serialized credence).
+    const candidateKind = candidate["kind"];
+    const insertRoute = candidateKind === "NEW_PROPOSITION_CANDIDATE" && receipt === null;
+    if (receipt === null && !insertRoute) {
+      return invalid("workflow record: proposal checkpoint without numeric authority receipt");
     }
     if (!isRecord(checkpoint) || checkpoint["schema_version"] !== BELIEF_ADAPTATION_PROPOSAL_CHECKPOINT_SCHEMA_VERSION) {
       return invalid("workflow record.proposal_checkpoint: unsupported schema");
@@ -808,6 +879,170 @@ function restartTerminal(
     detail,
     canonical_commits: 0
   };
+}
+
+/**
+ * The numeric authority + proposal for one ACCEPTED non-NO_BEARING decision,
+ * recomputed from the CURRENT canonical state:
+ *
+ *  - EXISTING_PROPOSITION → frozen BeliefPlasticityProducer (±0.05 on the
+ *    canonical target) → UPDATE proposal + its NONAUTHORITATIVE receipt;
+ *  - NEW_PROPOSITION_CANDIDATE → host proposition admission: the canonical
+ *    label, the content-addressed proposition key, the initial credence and the
+ *    evidence binding are ALL host-derived. Either the proposition is not yet
+ *    registered (INSERT proposal, NO receipt — the checkpointed proposal IS the
+ *    durable host decision and resume re-derives it byte-exactly) or its
+ *    canonical identity already exists (HOST ROUTE LAW
+ *    `BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0`: the same evidence
+ *    routed to the existing proposition's ORDINARY frozen ±0.05 plasticity, with
+ *    its receipt).
+ *
+ * The routed-existing branch never invents a numeric law: it feeds a
+ * HOST-DERIVED route output (SUPPORTS on the routed canonical id) through the
+ * frozen semantic runner — no external model call — and then through the same
+ * frozen plasticity producer the EXISTING path uses.
+ */
+type BeliefProposalAuthorityResolution =
+  | {
+      readonly kind: "PROPOSAL";
+      readonly proposal: BeliefMutationProposalV0;
+      /** Frozen plasticity receipt, or null for a formation INSERT. */
+      readonly receipt: BeliefPlasticityResultV0 | null;
+    }
+  | {
+      readonly kind: "NO_CHANGE";
+      readonly reason: "SATURATED";
+      /** The frozen saturated receipt (durable, NONAUTHORITATIVE, no proposal). */
+      readonly receipt: BeliefPlasticityResultV0;
+    }
+  | { readonly kind: "REJECTED_SEMANTIC"; readonly code: string; readonly detail: string }
+  | {
+      readonly kind: "RESTART";
+      readonly code: "STALE_STATE_REVISION" | "STALE_REPOSITORY_REVISION" | "TARGET_PROPOSITION_MISSING";
+      readonly detail: string;
+    };
+
+function plasticityToProposalAuthority(
+  result: BeliefPlasticityResultV0
+): BeliefProposalAuthorityResolution {
+  if (result.outcome.kind === "NO_CHANGE") {
+    return { kind: "NO_CHANGE", reason: result.outcome.reason, receipt: result };
+  }
+  const proposal: BeliefMutationProposalV0 = {
+    schema_version: BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
+    subject_id: result.subject_id,
+    expected_state_revision: result.state_revision,
+    mutation: {
+      kind: "UPDATE",
+      proposition_id: result.proposition_id,
+      next_credence: result.outcome.next_credence
+    },
+    evidence_binding: result.evidence_binding
+  };
+  return { kind: "PROPOSAL", proposal, receipt: result };
+}
+
+async function runPlasticityAuthority(input: {
+  readonly current: SubjectStateV0;
+  readonly semanticCapability: unknown;
+}): Promise<BeliefProposalAuthorityResolution> {
+  const plasticity = await produceBeliefPlasticityV0({
+    current_subject_state: input.current,
+    semantic_capability: input.semanticCapability
+  });
+  if (!plasticity.ok) {
+    if (
+      plasticity.code === "STALE_STATE_REVISION" ||
+      plasticity.code === "STALE_REPOSITORY_REVISION" ||
+      plasticity.code === "TARGET_PROPOSITION_MISSING"
+    ) {
+      return { kind: "RESTART", code: plasticity.code, detail: plasticity.detail };
+    }
+    return { kind: "REJECTED_SEMANTIC", code: plasticity.code, detail: plasticity.detail };
+  }
+  return plasticityToProposalAuthority(plasticity.result);
+}
+
+async function resolveBeliefProposalAuthority(input: {
+  readonly deps: BeliefAdaptationWorkflowDepsV0;
+  readonly validated: ValidatedRequest;
+  readonly current: SubjectStateV0;
+  readonly resolution: BeliefSemanticTargetResolutionV0;
+}): Promise<BeliefProposalAuthorityResolution> {
+  const decision = input.resolution.decision;
+  if (decision.kind === "EXISTING_PROPOSITION") {
+    return runPlasticityAuthority({ current: input.current, semanticCapability: input.resolution });
+  }
+  if (decision.kind !== "NEW_PROPOSITION_CANDIDATE") {
+    // NO_BEARING is handled by every caller before this point; anything else is
+    // not an admissible numeric-authority input.
+    return {
+      kind: "REJECTED_SEMANTIC",
+      code: "INELIGIBLE_SEMANTIC_KIND",
+      detail: `semantic decision kind ${decision.kind} has no numeric authority`
+    };
+  }
+
+  // ---- NEW_PROPOSITION_CANDIDATE: the HOST admission authority decides --------
+  const admission = await decideBeliefPropositionAdmissionV0({
+    subjectState: input.current,
+    proposed_label: decision.proposed_label,
+    evidence_member_refs: input.resolution.evidence_binding.member_refs
+  });
+  if (admission.code === "ADMITTED_NEW") {
+    const built = await buildBeliefPropositionInsertProposalV0({
+      subject_id: input.current.identity.subject_id as IdentifierV0,
+      snapshot: input.current,
+      proposition_key: admission.proposition_key as IdentifierV0,
+      canonical_label: admission.canonical_label as string,
+      initial_credence: admission.initial_credence as UnitIntervalV0,
+      evidence_member_refs: input.resolution.evidence_binding.member_refs
+    });
+    if (!built.ok) {
+      return { kind: "REJECTED_SEMANTIC", code: "PROPOSAL_SCHEMA_FAILURE", detail: built.error.detail };
+    }
+    return { kind: "PROPOSAL", proposal: built.value, receipt: null };
+  }
+  if (admission.code !== "ROUTED_EXISTING") {
+    return {
+      kind: "REJECTED_SEMANTIC",
+      code: admission.code,
+      detail: admission.detail ?? "proposition admission rejected the proposed label"
+    };
+  }
+
+  // ---- ROUTED_EXISTING: the exact duplicate route -----------------------------
+  // The candidate's canonical identity already exists, so the evidence is
+  // formation-bearing for that canonical proposition: the host route law maps it
+  // to SUPPORTS and reuses the ORDINARY frozen plasticity path verbatim. The
+  // route output below is HOST-derived and echoed through the frozen runner for
+  // validation against the exact bound context — the external provider is never
+  // called again (the runner's provider argument is a local closure).
+  const routeOutput = {
+    schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+    kind: "EXISTING_PROPOSITION" as const,
+    proposition_id: admission.existing_proposition_id as IdentifierV0,
+    relation: BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0,
+    semantic_context_fingerprint: input.resolution.semantic_context_fingerprint,
+    candidate_catalog_fingerprint: input.resolution.candidate_catalog_fingerprint
+  };
+  const routed = await runBeliefSemanticTargetResolutionV0(
+    { memoryRepository: input.deps.memoryRepository },
+    {
+      subjectState: input.current,
+      proposition_ids: input.validated.proposition_ids,
+      selected_episodes: input.validated.records,
+      provider: { propose: async () => routeOutput }
+    }
+  );
+  if (!routed.ok) {
+    return {
+      kind: "REJECTED_SEMANTIC",
+      code: routed.code,
+      detail: `host route resolution for the existing proposition: ${routed.detail}`
+    };
+  }
+  return runPlasticityAuthority({ current: input.current, semanticCapability: routed.resolution });
 }
 
 /**
@@ -1014,16 +1249,11 @@ async function resumeFrom(
         });
       }
       const decision = run.resolution.decision;
-      if (decision.kind === "NEW_PROPOSITION_CANDIDATE") {
-        // TERMINALIZE_GENERIC_STATUS_AND_DISCARD_LABEL: proposed_label and the
-        // raw NEW output are NEVER persisted and never reach plasticity.
-        return saveTerminal(workflowId, fingerprint, store, {
-          kind: "COMPLETE_NEW_PROPOSITION_CANDIDATE_OBSERVED",
-          canonical_commits: 0
-        });
-      }
-      // EXISTING / NO_BEARING: persist ONLY the approved closed provider-output
-      // fields, reconstructed from the ACCEPTED frozen resolution.
+      // ALL accepted decision kinds are persisted as closed, fingerprint-bound,
+      // NON-AUTHORITATIVE replay candidates: EXISTING/NO_BEARING keep the
+      // decision target, and a NEW candidate keeps the proposed label that the
+      // frozen runner accepted. Identity and numeric state are host-recomputed
+      // on every continuation; nothing here is ever a proposal.
       const candidate: BeliefAdaptationSemanticCandidateV0 =
         decision.kind === "EXISTING_PROPOSITION"
           ? {
@@ -1034,12 +1264,20 @@ async function resumeFrom(
               semantic_context_fingerprint: run.resolution.semantic_context_fingerprint,
               candidate_catalog_fingerprint: run.resolution.candidate_catalog_fingerprint
             }
-          : {
-              schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
-              kind: "NO_BEARING",
-              semantic_context_fingerprint: run.resolution.semantic_context_fingerprint,
-              candidate_catalog_fingerprint: run.resolution.candidate_catalog_fingerprint
-            };
+          : decision.kind === "NEW_PROPOSITION_CANDIDATE"
+            ? {
+                schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+                kind: "NEW_PROPOSITION_CANDIDATE",
+                proposed_label: decision.proposed_label,
+                semantic_context_fingerprint: run.resolution.semantic_context_fingerprint,
+                candidate_catalog_fingerprint: run.resolution.candidate_catalog_fingerprint
+              }
+            : {
+                schema_version: BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
+                kind: "NO_BEARING",
+                semantic_context_fingerprint: run.resolution.semantic_context_fingerprint,
+                candidate_catalog_fingerprint: run.resolution.candidate_catalog_fingerprint
+              };
       const candidateHash = await deriveBeliefAdaptationSemanticCandidateFingerprint(candidate);
       const saved = await store.saveSemanticCandidate(workflowId, fingerprint, candidate, candidateHash);
       if (saved === "CANDIDATE_CONFLICT") {
@@ -1108,94 +1346,75 @@ async function resumeFrom(
     });
   }
   if (replayed.resolution.decision.kind === "NO_BEARING") {
-    // NO_BEARING never reaches plasticity; zero canonical commits.
+    // NO_BEARING never reaches any numeric authority; zero canonical commits.
     return saveTerminal(workflowId, fingerprint, store, {
       kind: "COMPLETE_NO_BEARING",
       canonical_commits: 0
     });
   }
-  if (replayed.resolution.decision.kind !== "EXISTING_PROPOSITION") {
-    return {
-      kind: "FATAL_REUSE_CONFLICT",
-      source: "SEMANTIC_CANDIDATE",
-      detail: "persisted semantic candidate replayed to an impossible NEW decision",
-      canonical_commits: 0
-    };
-  }
   await store.compareAndSetStage(workflowId, fingerprint, record.stage, "B3_SEMANTIC_CHECKPOINTED");
 
-  // ---- plasticity: remint + recompute; NEVER trust the serialized receipt -------
-  const plasticity = await produceBeliefPlasticityV0({
-    current_subject_state: current,
-    semantic_capability: replayed.resolution
+  // ---- numeric authority + proposal: frozen plasticity (EXISTING decision, or a
+  // NEW candidate routed to an existing proposition) or host proposition
+  // admission (NEW formation). Recomputed from the CURRENT canonical state on
+  // every continuation; a serialized receipt is NEVER trusted.
+  const authority = await resolveBeliefProposalAuthority({
+    deps,
+    validated,
+    current,
+    resolution: replayed.resolution
   });
-  if (!plasticity.ok) {
-    if (plasticity.code === "STALE_STATE_REVISION") {
-      return restartTerminal("STALE_STATE_REVISION", plasticity.detail);
-    }
-    if (plasticity.code === "STALE_REPOSITORY_REVISION") {
-      return restartTerminal("STALE_REPOSITORY_REVISION", plasticity.detail);
-    }
-    if (plasticity.code === "TARGET_PROPOSITION_MISSING") {
-      return restartTerminal("TARGET_PROPOSITION_MISSING", plasticity.detail);
-    }
+  if (authority.kind === "RESTART") {
+    return restartTerminal(authority.code, authority.detail);
+  }
+  if (authority.kind === "REJECTED_SEMANTIC") {
     return saveTerminal(workflowId, fingerprint, store, {
       kind: "REJECTED_SEMANTIC",
-      code: plasticity.code,
-      detail: plasticity.detail,
+      code: authority.code,
+      detail: authority.detail,
       canonical_commits: 0
     });
   }
-  const freshResult = plasticity.result;
-  if (record.plasticity_receipt !== null) {
-    // §27: exact public result + output_fingerprint comparison against the
-    // durable NONAUTHORITATIVE receipt; serialized next_credence alone never
-    // authorizes anything.
-    if (
-      JSON.stringify(record.plasticity_receipt) !== JSON.stringify(freshResult) ||
-      record.plasticity_receipt.output_fingerprint !== freshResult.output_fingerprint
-    ) {
-      return {
-        kind: "FATAL_REUSE_CONFLICT",
-        source: "PLASTICITY_RECEIPT",
-        detail: "recomputed plasticity result does not exactly match the durable receipt",
-        canonical_commits: 0
-      };
+  if (authority.receipt !== null) {
+    if (record.plasticity_receipt !== null) {
+      // §27: exact public result + output_fingerprint comparison against the
+      // durable NONAUTHORITATIVE receipt; serialized next_credence alone never
+      // authorizes anything.
+      if (
+        JSON.stringify(record.plasticity_receipt) !== JSON.stringify(authority.receipt) ||
+        record.plasticity_receipt.output_fingerprint !== authority.receipt.output_fingerprint
+      ) {
+        return {
+          kind: "FATAL_REUSE_CONFLICT",
+          source: "PLASTICITY_RECEIPT",
+          detail: "recomputed plasticity result does not exactly match the durable receipt",
+          canonical_commits: 0
+        };
+      }
+    } else {
+      const saved = await store.savePlasticityReceipt(workflowId, fingerprint, authority.receipt);
+      if (saved === "RECEIPT_CONFLICT") {
+        return {
+          kind: "FATAL_REUSE_CONFLICT",
+          source: "PLASTICITY_RECEIPT",
+          detail: "a different plasticity receipt already exists for this workflow identity",
+          canonical_commits: 0
+        };
+      }
     }
-  } else {
-    const saved = await store.savePlasticityReceipt(workflowId, fingerprint, freshResult);
-    if (saved === "RECEIPT_CONFLICT") {
-      return {
-        kind: "FATAL_REUSE_CONFLICT",
-        source: "PLASTICITY_RECEIPT",
-        detail: "a different plasticity receipt already exists for this workflow identity",
-        canonical_commits: 0
-      };
-    }
+    await store.compareAndSetStage(workflowId, fingerprint, "B3_SEMANTIC_CHECKPOINTED", "B4_PLASTICITY_CHECKPOINTED");
   }
-  await store.compareAndSetStage(workflowId, fingerprint, "B3_SEMANTIC_CHECKPOINTED", "B4_PLASTICITY_CHECKPOINTED");
-
-  // ---- saturation: explicit NO_CHANGE terminal, no proposal, no executor --------
-  if (freshResult.outcome.kind === "NO_CHANGE") {
+  if (authority.kind === "NO_CHANGE") {
+    // Explicit saturation terminal: durable receipt, no proposal, no executor.
     return saveTerminal(workflowId, fingerprint, store, {
       kind: "COMPLETE_NO_CHANGE",
-      reason: freshResult.outcome.reason,
+      reason: authority.reason,
       canonical_commits: 0
     });
   }
 
-  // ---- CREDENCE_CHANGE: construct the UPDATE proposal from frozen authority -------
-  const proposal: BeliefMutationProposalV0 = {
-    schema_version: BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
-    subject_id: freshResult.subject_id,
-    expected_state_revision: freshResult.state_revision,
-    mutation: {
-      kind: "UPDATE",
-      proposition_id: freshResult.proposition_id,
-      next_credence: freshResult.outcome.next_credence
-    },
-    evidence_binding: freshResult.evidence_binding
-  };
+  // ---- the proposal: frozen UPDATE (plasticity) or host-admitted INSERT --------
+  const proposal: BeliefMutationProposalV0 = authority.proposal;
   const selfCheck = validateBeliefMutationProposal(proposal);
   if (!selfCheck.ok) {
     return saveTerminal(workflowId, fingerprint, store, {
@@ -1206,17 +1425,29 @@ async function resumeFrom(
     });
   }
   const transitionId = await deriveBeliefTransitionId(selfCheck.value);
+  // Numeric-authority output fingerprint: the frozen plasticity output for an
+  // update, or the host proposition-admission decision output for a first
+  // formation INSERT (there is no plasticity in that route).
+  const numericAuthorityFingerprint =
+    authority.receipt !== null
+      ? authority.receipt.output_fingerprint
+      : await deriveBeliefPropositionAdmissionOutputFingerprintV0({
+          proposition_key: (selfCheck.value.mutation as { proposition_key: IdentifierV0 }).proposition_key,
+          canonical_label: (selfCheck.value.mutation as { proposition_label: string }).proposition_label,
+          initial_credence: (selfCheck.value.mutation as { initial_credence: UnitIntervalV0 }).initial_credence,
+          member_refs: selfCheck.value.evidence_binding.member_refs
+        });
   const proposalCheckpointFingerprint = await deriveBeliefAdaptationProposalCheckpointFingerprint({
     schema_version: BELIEF_ADAPTATION_PROPOSAL_CHECKPOINT_SCHEMA_VERSION,
     proposal: selfCheck.value,
     transition_id: transitionId,
-    plasticity_output_fingerprint: freshResult.output_fingerprint
+    plasticity_output_fingerprint: numericAuthorityFingerprint
   });
   const checkpoint: BeliefAdaptationProposalCheckpointV0 = deepFreeze({
     schema_version: BELIEF_ADAPTATION_PROPOSAL_CHECKPOINT_SCHEMA_VERSION,
     proposal: selfCheck.value,
     transition_id: transitionId,
-    plasticity_output_fingerprint: freshResult.output_fingerprint,
+    plasticity_output_fingerprint: numericAuthorityFingerprint,
     proposal_checkpoint_fingerprint: proposalCheckpointFingerprint
   });
   const saved = await store.saveProposalCheckpoint(workflowId, fingerprint, checkpoint);
@@ -1416,71 +1647,60 @@ async function verifyDurableChain(
       canonical_commits: 0
     });
   }
-  if (replayed.resolution.decision.kind !== "EXISTING_PROPOSITION") {
+  if (replayed.resolution.decision.kind === "NO_BEARING") {
     return {
       kind: "FATAL_REUSE_CONFLICT",
       source: "SEMANTIC_CANDIDATE",
-      detail: "proposal checkpoint cannot reconcile with a non-EXISTING replayed decision",
+      detail: "proposal checkpoint cannot reconcile with a NO_BEARING replayed decision",
       canonical_commits: 0
     };
   }
 
-  const plasticity = await produceBeliefPlasticityV0({
-    current_subject_state: current,
-    semantic_capability: replayed.resolution
+  // The recomputed authority must reproduce the durable numeric record EXACTLY:
+  // the plasticity receipt (or its lawful absence for a formation INSERT) and
+  // the byte-exact proposal, including the transition identity.
+  const authority = await resolveBeliefProposalAuthority({
+    deps,
+    validated,
+    current,
+    resolution: replayed.resolution
   });
-  if (!plasticity.ok) {
-    if (plasticity.code === "STALE_STATE_REVISION") {
-      return restartTerminal("STALE_STATE_REVISION", plasticity.detail);
-    }
-    if (plasticity.code === "STALE_REPOSITORY_REVISION") {
-      return restartTerminal("STALE_REPOSITORY_REVISION", plasticity.detail);
-    }
-    if (plasticity.code === "TARGET_PROPOSITION_MISSING") {
-      return restartTerminal("TARGET_PROPOSITION_MISSING", plasticity.detail);
-    }
+  if (authority.kind === "RESTART") {
+    return restartTerminal(authority.code, authority.detail);
+  }
+  if (authority.kind === "REJECTED_SEMANTIC") {
     return saveTerminal(workflowId, fingerprint, store, {
       kind: "REJECTED_SEMANTIC",
-      code: plasticity.code,
-      detail: plasticity.detail,
+      code: authority.code,
+      detail: authority.detail,
       canonical_commits: 0
     });
   }
-  const freshResult = plasticity.result;
-  if (
-    record.plasticity_receipt === null ||
-    JSON.stringify(record.plasticity_receipt) !== JSON.stringify(freshResult) ||
-    record.plasticity_receipt.output_fingerprint !== freshResult.output_fingerprint
-  ) {
+  if (authority.kind === "NO_CHANGE") {
     return {
       kind: "FATAL_REUSE_CONFLICT",
       source: "PLASTICITY_RECEIPT",
-      detail: "recomputed plasticity result does not exactly match the durable receipt",
+      detail: "proposal checkpoint cannot reconcile with a NO_CHANGE recomputation",
       canonical_commits: 0
     };
   }
-  if (freshResult.outcome.kind !== "CREDENCE_CHANGE") {
+  const receiptMatches =
+    authority.receipt === null
+      ? record.plasticity_receipt === null
+      : record.plasticity_receipt !== null &&
+        JSON.stringify(record.plasticity_receipt) === JSON.stringify(authority.receipt) &&
+        record.plasticity_receipt.output_fingerprint === authority.receipt.output_fingerprint;
+  if (!receiptMatches) {
     return {
       kind: "FATAL_REUSE_CONFLICT",
       source: "PLASTICITY_RECEIPT",
-      detail: "proposal checkpoint cannot reconcile with a non-CREDENCE_CHANGE recomputation",
+      detail: "recomputed numeric authority result does not exactly match the durable record",
       canonical_commits: 0
     };
   }
 
   // The fresh authorized result must re-derive the EXACT checkpointed proposal.
-  const freshProposal: BeliefMutationProposalV0 = {
-    schema_version: BELIEF_MUTATION_PROPOSAL_SCHEMA_VERSION,
-    subject_id: freshResult.subject_id,
-    expected_state_revision: freshResult.state_revision,
-    mutation: {
-      kind: "UPDATE",
-      proposition_id: freshResult.proposition_id,
-      next_credence: freshResult.outcome.next_credence
-    },
-    evidence_binding: freshResult.evidence_binding
-  };
-  const freshCheck = validateBeliefMutationProposal(freshProposal);
+  const freshCheck = validateBeliefMutationProposal(authority.proposal);
   if (!freshCheck.ok) {
     return {
       kind: "FATAL_REUSE_CONFLICT",
@@ -1497,7 +1717,27 @@ async function verifyDurableChain(
     return {
       kind: "FATAL_REUSE_CONFLICT",
       source: "PROPOSAL_CHECKPOINT",
-      detail: "checkpointed proposal does not re-derive from the recomputed plasticity authority",
+      detail: "checkpointed proposal does not re-derive from the recomputed numeric authority",
+      canonical_commits: 0
+    };
+  }
+  // The durable numeric-authority fingerprint must also re-derive: the frozen
+  // plasticity output for an update, the host admission decision output for a
+  // first formation INSERT.
+  const freshAuthorityFingerprint =
+    authority.receipt !== null
+      ? authority.receipt.output_fingerprint
+      : await deriveBeliefPropositionAdmissionOutputFingerprintV0({
+          proposition_key: (freshCheck.value.mutation as { proposition_key: IdentifierV0 }).proposition_key,
+          canonical_label: (freshCheck.value.mutation as { proposition_label: string }).proposition_label,
+          initial_credence: (freshCheck.value.mutation as { initial_credence: UnitIntervalV0 }).initial_credence,
+          member_refs: freshCheck.value.evidence_binding.member_refs
+        });
+  if (freshAuthorityFingerprint !== checkpoint.plasticity_output_fingerprint) {
+    return {
+      kind: "FATAL_REUSE_CONFLICT",
+      source: "PROPOSAL_CHECKPOINT",
+      detail: "checkpointed proposal is not bound to the recomputed numeric-authority output",
       canonical_commits: 0
     };
   }
