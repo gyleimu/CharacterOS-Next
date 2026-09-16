@@ -464,4 +464,3 @@ describe("STOCHASTIC_EXECUTOR_CAUSAL_MEASUREMENT_PROTOCOL_V0 — hash laws", () 
     expect(PROTOCOL_FILES.length).toBeGreaterThan(0);
   });
 });
-
