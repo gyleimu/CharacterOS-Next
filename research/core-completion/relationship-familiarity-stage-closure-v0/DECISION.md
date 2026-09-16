@@ -2,6 +2,16 @@
 
 **Status: RELATIONSHIP FAMILIARITY CURRENT STAGE CLOSED.**
 
+**Executor-substitution falsification attempt (post-closure, recorded):**
+`EXECUTOR_MODEL_SUBSTITUTION_EXPERIMENT_V0` (see
+`research/core-completion/executor-model-substitution-v0/DECISION.md`) tried to test whether this
+closure's negative result was an artefact of the local executor by substituting a strong API
+executor. It returned `MODEL_SUBSTITUTION_NOT_ISOLATED`: the frozen proposal schema reaches the
+executor only through the provider's structured-output constraint, which Ollama grammar-enforces
+and the API provider cannot, so the substituted variable could not be isolated to
+`EXECUTOR_MODEL`. **This closure therefore stands; it was reopened only for that falsification
+attempt, never for architecture iteration.**
+
 This record closes the interaction-familiarity research stage. It is written after the third
 and final familiarity experiment and applies whether or not the final replication was positive:
 **decision admission stays 0 either way.**

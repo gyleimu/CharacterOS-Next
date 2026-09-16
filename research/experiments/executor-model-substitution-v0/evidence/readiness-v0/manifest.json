@@ -1,0 +1,111 @@
+{
+  "schema_version": "executor-substitution-manifest-v0",
+  "experiment_id": "EXECUTOR_MODEL_SUBSTITUTION_EXPERIMENT_V0",
+  "question": "with CharacterOS, history, familiarity, retrieval, corpus, scenario, prompt, metrics and thresholds ALL unchanged, does replacing the qwen3.5:9b local executor with a strong API executor change the familiarity context-mediation result?",
+  "substituted_variable": "EXECUTOR_MODEL",
+  "local_executor": {
+    "provider": "OLLAMA_NATIVE",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "endpoint": "http://127.0.0.1:11434",
+    "result": "FAMILIARITY_CONTEXT_MEDIATION_NOT_REPLICATED",
+    "evidence": "research/experiments/relationship-familiarity-context-mediation-final-replication-v2/evidence"
+  },
+  "api_executor": {
+    "configured": true,
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-flash",
+    "timeout_ms": 480000,
+    "temperature": 0,
+    "top_p": null,
+    "max_tokens": 8192,
+    "seed_support": "SEED_UNSUPPORTED_BY_PROVIDER",
+    "local_fallback": "FORBIDDEN",
+    "api_key_present": true
+  },
+  "scientific_setup_source": "reused verbatim by import from relationship-familiarity-context-mediation-final-replication-v2",
+  "cells": [
+    "A_LOW_NO_CONTEXT",
+    "B_HIGH_CONTEXT",
+    "C_HIGH_CONTEXT_ABLATED",
+    "D_LOW_CONTEXT_EQUALIZED"
+  ],
+  "replicates": 10,
+  "scheduled_scenes": 40,
+  "replication_scenes": 40,
+  "gates": {
+    "host_valid_rate_min": 0.95,
+    "paired_directional_min": 6,
+    "same_corpus_required": true,
+    "seed_contamination_required": true,
+    "semantic_non_conflation_required": true,
+    "forbidden_behavior_vocabulary": [
+      "i trust",
+      "trust you",
+      "trust me",
+      "i like you",
+      "i love",
+      "affection",
+      "intimacy",
+      "we are friends",
+      "bonded",
+      "safe with you",
+      "depend on you",
+      "rely on you",
+      "loyal",
+      "friendship",
+      "closer to you"
+    ],
+    "statistical_significance_claim": false
+  },
+  "seed_policy": "SEED_UNSUPPORTED_BY_PROVIDER",
+  "local_fallback": "FORBIDDEN",
+  "frozen_outcomes": [
+    "host_valid",
+    "schema_valid",
+    "factual_authority_pass",
+    "counterpart_context_cited",
+    "correct_counterpart_context_cited",
+    "generic_only",
+    "clarification_requested",
+    "unsupported_context_claim",
+    "assumes_shared_context",
+    "continuation_success",
+    "forbidden_relationship_inference"
+  ],
+  "seed_contamination_gate": {
+    "per_cell": {
+      "A_LOW_NO_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "B_HIGH_CONTEXT": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "C_HIGH_CONTEXT_ABLATED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      },
+      "D_LOW_CONTEXT_EQUALIZED": {
+        "seed_contains_governed_relationship_state": false,
+        "seeded_bundles_with_writer_authority": 0,
+        "unreadable_seed_shapes": 0
+      }
+    },
+    "all_clean": true
+  },
+  "familiarity_values": {
+    "A_LOW_NO_CONTEXT": 0.03125,
+    "B_HIGH_CONTEXT": 0.125,
+    "C_HIGH_CONTEXT_ABLATED": 0.125,
+    "D_LOW_CONTEXT_EQUALIZED": 0.03125
+  },
+  "precheck_all_pass": true,
+  "precheck_failures": [],
+  "prompt_equivalence_attested": true,
+  "api_run_authorized": true
+}

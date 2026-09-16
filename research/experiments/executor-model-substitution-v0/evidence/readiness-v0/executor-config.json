@@ -1,0 +1,12 @@
+{
+  "configured": true,
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "timeout_ms": 480000,
+  "temperature": 0,
+  "top_p": null,
+  "max_tokens": 8192,
+  "seed_support": "SEED_UNSUPPORTED_BY_PROVIDER",
+  "local_fallback": "FORBIDDEN",
+  "api_key_present": true
+}

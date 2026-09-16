@@ -1,0 +1,90 @@
+{
+  "schema_version": "executor-substitution-precheck-v0",
+  "experiment_id": "EXECUTOR_MODEL_SUBSTITUTION_EXPERIMENT_V0",
+  "api_calls": 0,
+  "checks": {
+    "a_familiarity_lt_b": true,
+    "b_familiarity_eq_c": true,
+    "a_familiarity_eq_d": true,
+    "a_counterpart_context_count_zero": true,
+    "c_counterpart_context_count_zero": true,
+    "b_counterpart_context_set_eq_d": true,
+    "b_source_ids_eq_d": true,
+    "b_source_ordering_eq_d": true,
+    "v2_precheck_all_pass": true,
+    "d_working_refs_derived_from_b": true,
+    "seeds_clean_all_cells": true,
+    "corpus_identical": true,
+    "probes_generated_nothing": true,
+    "prompt_equivalence_measured": true,
+    "executor_not_local": true
+  },
+  "checks_all_pass": true,
+  "failures": [],
+  "cells": {
+    "A_LOW_NO_CONTEXT": {
+      "sources": [
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart": [],
+      "system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4"
+    },
+    "B_HIGH_CONTEXT": {
+      "sources": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4"
+    },
+    "C_HIGH_CONTEXT_ABLATED": {
+      "sources": [
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart": [],
+      "system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4"
+    },
+    "D_LOW_CONTEXT_EQUALIZED": {
+      "sources": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04",
+        "episode:generic-01",
+        "observation:o-S1-probe-r1"
+      ],
+      "counterpart": [
+        "episode:alice-01",
+        "episode:alice-02",
+        "episode:alice-03",
+        "episode:alice-04"
+      ],
+      "system_hash": "sha256:d376c8f2718cdb941a3a34b38106f523bf8ca82d012822e65a2cfc3173fc55c4"
+    }
+  },
+  "b_retrieval_selected_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ],
+  "d_working_refs": [
+    "episode:alice-01",
+    "episode:alice-02",
+    "episode:alice-03",
+    "episode:alice-04",
+    "episode:generic-01"
+  ]
+}

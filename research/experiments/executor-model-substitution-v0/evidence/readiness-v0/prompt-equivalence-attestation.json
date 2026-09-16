@@ -1,0 +1,74 @@
+{
+  "schema_version": "prompt-equivalence-attestation-v0",
+  "claim": "LOCAL_V2_PROMPT_SEMANTICS == API_EXPERIMENT_PROMPT_SEMANTICS",
+  "method": [
+    "the experiment imports research/experiments/relationship-familiarity-context-mediation-final-replication-v2/{contract,world,scene,precheck}.ts UNMODIFIED, so prompt construction, evidence rendering, source handles, scenario and output schema are literally the same code",
+    "the substituted transport is DOWNSTREAM of prompt construction: it receives already-built ModelTransportRequestV0 messages and returns raw text, and cannot alter prompt bytes",
+    "measured: each cell's model-facing user content was compared byte-for-byte with the LOCAL V2 execution's real recorded prompt for the same cell, after normalizing only the run-identity tokens (observation ref, projection hash)"
+  ],
+  "executor_difference_only": "the transport endpoint/model; the wire envelope differs (OpenAI /chat/completions vs Ollama /api/chat), which is transport-level adaptation",
+  "local_baseline": {
+    "provider": "OLLAMA_NATIVE",
+    "model": "qwen3.5:9b",
+    "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "endpoint": "http://127.0.0.1:11434",
+    "result": "FAMILIARITY_CONTEXT_MEDIATION_NOT_REPLICATED",
+    "evidence": "research/experiments/relationship-familiarity-context-mediation-final-replication-v2/evidence"
+  },
+  "prompt_rows": [
+    {
+      "cell": "A_LOW_NO_CONTEXT",
+      "local_prompt_available": true,
+      "byte_identical_after_identity_normalization": true
+    },
+    {
+      "cell": "B_HIGH_CONTEXT",
+      "local_prompt_available": true,
+      "byte_identical_after_identity_normalization": true
+    },
+    {
+      "cell": "C_HIGH_CONTEXT_ABLATED",
+      "local_prompt_available": true,
+      "byte_identical_after_identity_normalization": true
+    },
+    {
+      "cell": "D_LOW_CONTEXT_EQUALIZED",
+      "local_prompt_available": true,
+      "byte_identical_after_identity_normalization": true
+    }
+  ],
+  "public_sources_unmodified": true,
+  "v2_source_equality_reused": {
+    "b_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "d_ids": [
+      "episode:alice-01",
+      "episode:alice-02",
+      "episode:alice-03",
+      "episode:alice-04",
+      "episode:generic-01",
+      "observation:o-S1-probe-r1"
+    ],
+    "b_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ],
+    "d_records": [
+      "- Past episode record (scene: \"Reviewed the deployment checklist with alice.\")",
+      "- Past episode record (scene: \"alice asked for concise, factual status notes with no unnecessary apology.\")",
+      "- Past episode record (scene: \"alice and the subject agreed to keep the rollback checklist in the shared review doc.\")",
+      "- Past episode record (scene: \"Debugged the flaky test with alice.\")",
+      "- Past episode record (scene: \"By default the subject keeps project checklists in the shared team wiki.\")"
+    ]
+  },
+  "all_prompts_identical_after_normalization": true
+}
