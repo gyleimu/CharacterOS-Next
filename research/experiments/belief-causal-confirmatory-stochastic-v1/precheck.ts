@@ -322,7 +322,7 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   const missingBlobManifest: Record<string, unknown> = {
     schema_version: "stochastic-executor-causal-freeze-manifest-v1",
     protocol_id: "STOCHASTIC_EXECUTOR_CAUSAL_MEASUREMENT_PROTOCOL_V0",
-    preregistration_commit_sha: gitHead(repoDir),
+    preregistration_commit_sha: hashText(gitHead(repoDir)).slice(0, 32),
     code_blob_hashes: { "research/this/path/does/not/exist.ts": `sha256:${"0".repeat(64)}` },
     design: { note: "missing-blob regression fixture" }
   };

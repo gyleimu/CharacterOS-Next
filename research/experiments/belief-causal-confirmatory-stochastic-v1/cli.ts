@@ -42,7 +42,9 @@ async function main(): Promise<void> {
     return;
   }
   if (command === "verify") {
-    const stored = JSON.parse(readFileSync(join(evidenceRoot, "freeze-manifest.json"), "utf8")) as unknown;
+    const stored = JSON.parse(
+      readFileSync(process.argv[3] ?? join(repoRoot, "tmp", "bcv1", "freeze-manifest.json"), "utf8")
+    ) as unknown;
     const verification = verifyPreregManifest(repoRoot, stored);
     process.stdout.write(`${JSON.stringify(verification, null, 2)}\n`);
     if (!verification.ok) process.exitCode = 1;

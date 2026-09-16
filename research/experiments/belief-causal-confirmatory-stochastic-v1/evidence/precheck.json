@@ -545,7 +545,7 @@
         "threw": false,
         "result": {
           "ok": false,
-          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at 1aeb6d9a9c884ec1cc03401d819f20d519d473e9: Command failed: git cat-file blob 1aeb6d9a9c884ec1cc03401d819f20d519d473e9:research/this/path/does/not/exist.ts"
+          "detail": "preregistration commit sha256:6724c68ef77fd5e0c9b418dfa not found"
         }
       }
     },
