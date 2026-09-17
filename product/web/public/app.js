@@ -12,10 +12,14 @@
 
 const state = {
   subjectName: "Subject",
+  subjectId: null,
   messages: [],
   stages: new Map(),
   stageOrder: [],
-  sending: false
+  sending: false,
+  subjects: [],
+  evolution: null,
+  devDetails: false
 };
 
 const el = {
@@ -35,7 +39,12 @@ const el = {
   composer: document.getElementById("composer"),
   input: document.getElementById("input"),
   send: document.getElementById("send"),
-  life: document.getElementById("life")
+  life: document.getElementById("life"),
+  lifeEvolution: document.getElementById("life-evolution"),
+  subjectsList: document.getElementById("subjects-list"),
+  newSubjectForm: document.getElementById("new-subject-form"),
+  newSubjectName: document.getElementById("new-subject-name"),
+  devDetails: document.getElementById("dev-details")
 };
 
 async function api(path, options) {
@@ -74,8 +83,12 @@ function showBanner(text) {
 function renderIdentity(bootstrap) {
   const identity = bootstrap.identity;
   state.subjectName = identity.display_name.trim().length > 0 ? identity.display_name : identity.subject_id;
+  state.subjectId = identity.subject_id;
   el.name.textContent = state.subjectName;
-  el.id.textContent = identity.subject_id;
+  state.bootstrapRevision = bootstrap.revisions ? bootstrap.revisions.state_revision : null;
+  el.id.textContent = state.devDetails
+    ? `${identity.subject_id} · revision ${state.bootstrapRevision ?? "?"}`
+    : "";
   el.avatar.textContent = state.subjectName.slice(0, 1).toUpperCase();
   const statusLabel =
     bootstrap.status === "RESTORED"
@@ -218,10 +231,10 @@ function renderMessages() {
   el.messages.textContent = "";
   for (const message of state.messages) {
     const box = document.createElement("div");
-    box.className = `msg ${message.role === "user" ? "msg-user" : "msg-subject"}`;
+    box.className = `msg ${message.role === "user" ? "msg-user" : message.role === "note" ? "msg-note" : "msg-subject"}`;
     const label = document.createElement("span");
     label.className = "msg-label";
-    label.textContent = message.role === "user" ? "You" : state.subjectName;
+    label.textContent = message.role === "user" ? "You" : message.role === "note" ? "Session" : state.subjectName;
     const text = document.createElement("span");
     text.textContent = message.text;
     box.append(label, text);
@@ -335,14 +348,97 @@ function onProgress(event) {
 }
 
 async function refreshViews() {
-  const [bootstrap, stateView, memory] = await Promise.all([
+  const [bootstrap, stateView, life, subjects] = await Promise.all([
     api("/api/bootstrap"),
     api("/api/state"),
-    api("/api/memory?limit=10")
+    api("/api/life"),
+    api("/api/subjects")
   ]);
   renderIdentity(bootstrap.bootstrap);
   renderState(stateView.view);
-  renderLife(memory.memory);
+  state.evolution = life.life.evolution ?? null;
+  renderSubjects(subjects.subjects);
+  renderLife(life.life.recent_memory);
+  renderEvolution(state.evolution);
+}
+
+/** Conversation history: from the subject's durable operational log (a VIEW). */
+async function refreshTranscript() {
+  try {
+    const body = await api("/api/transcript?limit=50");
+    const messages = [];
+    for (const turn of body.turns) {
+      if (typeof turn.user_text === "string" && turn.user_text.length > 0) {
+        messages.push({ role: "user", text: turn.user_text });
+      }
+      if (turn.status === "COMPLETE" && typeof turn.subject_text === "string" && turn.subject_text.length > 0) {
+        messages.push({ role: "subject", text: turn.subject_text });
+      } else if (turn.status !== "COMPLETE") {
+        messages.push({
+          role: "note",
+          text: `This turn ended ${turn.status}; nothing about the subject was changed by it.`
+        });
+      }
+    }
+    state.messages = messages;
+    renderMessages();
+  } catch {
+    // A transcript read failure never blocks the product: state/life still render.
+  }
+}
+
+function renderSubjects(subjects) {
+  state.subjects = subjects;
+  el.subjectsList.textContent = "";
+  for (const subject of subjects) {
+    const row = document.createElement("div");
+    row.className = subject.active ? "subject-row active" : "subject-row";
+    const text = document.createElement("div");
+    const name = document.createElement("div");
+    name.className = "subject-name";
+    name.textContent = subject.display_name || subject.subject_id;
+    const meta = document.createElement("div");
+    meta.className = "subject-meta";
+    meta.textContent = `${subject.active ? "open" : "stored"} · ${subject.durable_state.toLowerCase()}`;
+    text.append(name, meta);
+    row.appendChild(text);
+    if (!subject.active) {
+      const openButton = document.createElement("button");
+      openButton.type = "button";
+      openButton.textContent = "Open";
+      openButton.addEventListener("click", () => void openSubject(subject.subject_id));
+      row.appendChild(openButton);
+    }
+    el.subjectsList.appendChild(row);
+  }
+}
+
+async function openSubject(subjectId) {
+  try {
+    await api("/api/subjects/open", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ subject_id: subjectId })
+    });
+    state.messages = [];
+    await refreshAll();
+  } catch (error) {
+    showBanner(error instanceof Error ? error.message : "The subject could not be opened.");
+  }
+}
+
+async function createSubject(displayName) {
+  try {
+    await api("/api/subjects/create", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ display_name: displayName })
+    });
+    state.messages = [];
+    await refreshAll();
+  } catch (error) {
+    showBanner(error instanceof Error ? error.message : "The subject could not be created.");
+  }
 }
 
 function connectEvents() {
@@ -380,6 +476,13 @@ async function sendMessage(text) {
     const turn = body.turn;
     if (turn.status === "COMPLETE" && typeof turn.reply_text === "string") {
       state.messages.push({ role: "subject", text: turn.reply_text });
+      renderMessages();
+    } else if (turn.status === "DEGRADED") {
+      // The subject could not form a reliable reply: nothing about it changed.
+      state.messages.push({
+        role: "note",
+        text: "I could not form a reliable reply to that just now. Nothing about our conversation was changed - please say it again."
+      });
       renderMessages();
     } else {
       renderFailure(turn);
@@ -719,7 +822,7 @@ async function submitTime() {
 
 async function main() {
   try {
-    await refreshViews();
+    await refreshAll();
     connectEvents();
   } catch (error) {
     showBanner(
@@ -731,3 +834,123 @@ async function main() {
 }
 
 void main();
+
+/* -------------------------------------------------------------------------- */
+/* PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0                            */
+/* Read-only presentation of the evolution projection + subject management.    */
+/* Every value below comes from the backend; nothing here is authoritative.    */
+/* -------------------------------------------------------------------------- */
+
+function renderEvolution(evolution) {
+  el.lifeEvolution.textContent = "";
+  if (evolution === null || typeof evolution !== "object") return;
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Durable changes";
+  el.lifeEvolution.appendChild(heading);
+
+  const affects = evolution.durable_effects.affect;
+  const beliefs = evolution.durable_effects.belief;
+  if (affects.length === 0 && beliefs.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "absent";
+    empty.textContent = "No state-changing transitions recorded yet.";
+    el.lifeEvolution.appendChild(empty);
+  }
+
+  for (const transition of affects.slice(0, 3)) {
+    const box = document.createElement("div");
+    box.className = "transition";
+    const main = document.createElement("div");
+    main.className = "transition-main";
+    const before = transition.valence_before === null ? "start" : transition.valence_before;
+    main.textContent = `Affect valence ${before} → ${transition.valence_after}`;
+    const meta = document.createElement("div");
+    meta.className = "transition-meta";
+    meta.textContent = "from a lived event's appraisal";
+    const refs = document.createElement("div");
+    refs.className = "transition-meta dev-only";
+    refs.textContent = `${transition.observation_ref} · ${transition.event_ref} · ${transition.appraisal_ref}`;
+    box.append(main, meta, refs);
+    el.lifeEvolution.appendChild(box);
+  }
+
+  for (const transition of beliefs.slice(0, 3)) {
+    const box = document.createElement("div");
+    box.className = "transition";
+    const main = document.createElement("div");
+    main.className = "transition-main";
+    const label = transition.proposition_label || transition.proposition_id || "(proposition)";
+    const credences =
+      transition.prior_credence === null
+        ? `formed at ${transition.next_credence === null ? "?" : transition.next_credence}`
+        : `${transition.prior_credence} → ${transition.next_credence === null ? "unchanged" : transition.next_credence}`;
+    main.textContent = `Belief “${label}” ${credences}`;
+    const meta = document.createElement("div");
+    meta.className = "transition-meta";
+    meta.textContent =
+      transition.relation === null
+        ? "from lived evidence"
+        : `from lived evidence (${transition.relation === "SUPPORTS" ? "supporting" : "contradicting"})`;
+    const refs = document.createElement("div");
+    refs.className = "transition-meta dev-only";
+    refs.textContent = `${transition.workflow_id} · ${transition.proposition_id} · ${transition.evidence_episode_refs.join(", ")}`;
+    box.append(main, meta, refs);
+    el.lifeEvolution.appendChild(box);
+  }
+
+  for (const domain of ["relationship", "personality"]) {
+    const attribution = evolution.attribution[domain];
+    if (attribution.status !== "UNAVAILABLE") continue;
+    const line = document.createElement("p");
+    line.className = "absent";
+    line.textContent = `${domain}: current value shown, source attribution unavailable`;
+    el.lifeEvolution.appendChild(line);
+  }
+
+  const visibleHeading = document.createElement("h3");
+  visibleHeading.textContent = "Reaching the subject's current thinking";
+  el.lifeEvolution.appendChild(visibleHeading);
+  const visible = evolution.cognition_visible;
+  const summary = document.createElement("p");
+  summary.className = "note";
+  summary.textContent =
+    `${visible.memory_episode_refs.length} remembered episode(s), ` +
+    `${visible.belief_proposition_ids.length} belief(s), ` +
+    `${visible.relationship_counterpart_refs.length} relationship(s), ` +
+    `${visible.personality_dimension_ids.length} personality dimension(s), ` +
+    `affect valence ${visible.affect.valence}`;
+  el.lifeEvolution.appendChild(summary);
+  const visibleRefs = document.createElement("p");
+  visibleRefs.className = "note dev-only";
+  visibleRefs.textContent = visible.memory_episode_refs.join(", ");
+  el.lifeEvolution.appendChild(visibleRefs);
+}
+
+/** Refreshes the conversation view (durable log) and the read-only projections. */
+async function refreshAll() {
+  await refreshViews();
+  await refreshTranscript();
+}
+
+function applyDevDetails(enabled) {
+  state.devDetails = enabled;
+  document.body.classList.toggle("dev-details", enabled);
+  renderEvolution(state.evolution);
+  el.id.textContent = enabled ? `${state.subjectId ?? ""} · revision ${state.bootstrapRevision ?? "?"}` : "";
+}
+
+el.newSubjectForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = el.newSubjectName.value.trim();
+  if (name.length === 0) {
+    showBanner("Enter a subject name first.");
+    return;
+  }
+  el.newSubjectName.value = "";
+  void createSubject(name);
+});
+
+el.devDetails.addEventListener("change", () => {
+  applyDevDetails(el.devDetails.checked);
+});

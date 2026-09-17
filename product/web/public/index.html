@@ -32,8 +32,17 @@
     <p class="banner banner-hidden" id="connection-banner" role="status"></p>
 
     <main class="layout">
-      <aside class="panel panel-character" aria-label="Character">
-        <h2 class="panel-title">Character</h2>
+      <aside class="panel panel-character" aria-label="Subject">
+        <h2 class="panel-title">Subject</h2>
+        <div class="subjects" id="subjects-block">
+          <div id="subjects-list" class="subjects-list" aria-live="polite"></div>
+          <form class="form form-inline" id="new-subject-form">
+            <label class="sr-only" for="new-subject-name">New subject name</label>
+            <input id="new-subject-name" autocomplete="off" placeholder="New subject name" />
+            <button type="submit" id="create-subject">Create</button>
+          </form>
+        </div>
+
         <div class="identity">
           <div class="avatar" id="avatar" aria-hidden="true">?</div>
           <div class="identity-text">
@@ -67,7 +76,8 @@
       <section class="panel panel-conversation" aria-label="Conversation">
         <h2 class="panel-title">Conversation</h2>
         <p class="note">
-          Session-only view. Continuity is proven by <strong>Life</strong>, not by a rebuilt transcript.
+          Conversation history is read from this subject's durable operational log; identity, state and
+          lived history stay canonical (see <strong>Life</strong>).
         </p>
         <div class="messages" id="messages" aria-live="polite"></div>
         <div class="stages" id="stages" aria-live="polite"></div>
@@ -85,7 +95,8 @@
 
       <aside class="panel panel-life" aria-label="Life">
         <h2 class="panel-title">Life</h2>
-        <p class="note">Lived memory — what the subject actually experienced. Not a chat history.</p>
+        <p class="note">Lived memory and the durable changes it produced — read-only, from canonical state.</p>
+        <div id="life-evolution" class="life-evolution"></div>
         <div id="life" class="life"></div>
       </aside>
     </main>
@@ -130,6 +141,7 @@
         </section>
 
         <section class="drawer-section" aria-labelledby="settings-heading">
+          <label class="check"><input type="checkbox" id="dev-details" /> Developer details (refs, revisions, executor)</label>
           <h3 id="settings-heading">Settings / diagnostics</h3>
           <h4>Configuration (read-only)</h4>
           <div class="kv" id="config-view"></div>

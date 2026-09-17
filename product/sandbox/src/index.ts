@@ -185,6 +185,7 @@ export {
 } from "./product-turn-execution.js";
 export type { InstrumentedTurnResultV0, TurnFailureSummaryV0 } from "./product-turn-execution.js";
 export { ProviderDiagnosticsV0, buildProductTurnPlanV0, formatLatencyV0 } from "./provider-diagnostics.js";
+export type { ProductProviderBundleV0 } from "./product-provider-bundle.js";
 export type {
   ProductTurnPlanInputV0,
   ProductTurnPlanV0,
@@ -213,3 +214,28 @@ export type {
 } from "@characteros-next/runtime";
 export { resolveProductConfigurationV0, formatConfigurationLinesV0 } from "./product-configuration.js";
 export type { ProductConfigSourceV0, ProductConfigurationV0 } from "./product-configuration.js";
+
+// PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0 — product-shell subject
+// management (one data root per subject) and the thin OPERATIONAL transcript the
+// visual client reads for conversation history. Neither is canonical authority.
+export {
+  buildSubjectConfigForCreationV0,
+  deriveSubjectIdV0,
+  listSnapshotSubjectIdsV0,
+  readProductSubjectConfigV0,
+  validateDisplayNameV0,
+  writeProductSubjectConfigV0
+} from "./subject-configuration.js";
+export type { ProductSubjectConfigV0, PersistentSubjectDecisionV0 } from "./subject-configuration.js";
+export {
+  PRODUCT_TURN_TRANSCRIPT_DEFAULT_LIMIT,
+  PRODUCT_TURN_TRANSCRIPT_MAX_LIMIT,
+  PRODUCT_TURN_TRANSCRIPT_SCHEMA_VERSION,
+  appendProductTurnTranscriptV0,
+  productTurnTranscriptPathV0,
+  readProductTurnTranscriptV0
+} from "./product-turn-transcript.js";
+export type {
+  ProductTurnTranscriptInputV0,
+  ProductTurnTranscriptRowV0
+} from "./product-turn-transcript.js";

@@ -1,10 +1,11 @@
 # CharacterOS — local visual product (V0)
 
-The first real visual CharacterOS product: a local browser interface backed by a
-long-lived Node process that owns **ONE persistent subject**. You can see the
-subject, talk to it with live provider progress, inspect recent lived Memory and
-current state, stop the backend process, start it again, and visibly continue the
-**same canonical life**.
+The real visual CharacterOS product: a local browser interface backed by a
+long-lived Node process that owns **persistent subjects**. You can create a subject,
+open any stored subject, talk to it with live provider progress, see its current state,
+the durable changes its lived history produced, and the material currently reaching
+its thinking — then stop the backend process, start it again, reopen the same subject
+and visibly continue the **same canonical life**.
 
 `product/sandbox` remains the reference CLI product, developer tool and debug
 tool (`pnpm interactive`). This workspace is the visual surface; both reuse the
@@ -29,12 +30,46 @@ metadata-only provider preflight; if the provider or model is unavailable the
 product **fails closed** with actionable guidance in the terminal and never
 starts a fake "ready" UI.
 
+Subjects live one per data root under `CHARACTEROS_SUBJECTS_DIR`
+(default `<CHARACTEROS_DATA_DIR>/subjects/<subject_id>/`). The sandbox law stays
+"one persistent subject per data root", so the product shell simply gives each
+subject its own root: creating a subject runs the real genesis there, opening an
+existing one restores it. The conversation you see after a reload or a restart is
+read back from that subject's own append-only operational log
+(`subject-<id>.interactions.jsonl`) — a VIEW only: canonical state, Memory and the
+delivery/ingress ledgers stay the only authorities.
+
 Configuration is the same environment configuration the CLI uses
 (`CHARACTEROS_MODEL`, `OLLAMA_BASE_URL`, `CHARACTEROS_TIMEOUT_MS`,
 `CHARACTEROS_DATA_DIR`, `CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE`, …), plus
 `CHARACTEROS_WEB_HOST` / `CHARACTEROS_WEB_PORT` for the local server. Both
 surfaces default to the **same data root** (`product/sandbox/.data`), so the CLI
 and the visual product are two windows onto one life.
+
+## Subjects
+
+- **List**: every folder under the subjects root that holds a subject.
+- **Create**: a name is enough; the id is derived (), genesis runs in the
+  new root, and the new subject becomes active.
+- **Open**: switch the active subject; the previous runtime is shut down and the
+  selected subject is restored from its own durable files.
+- **Isolation**: one runtime per subject, one transcript per subject; the API never
+  serves another subject's state, memory, life view or conversation.
+
+## What the panels show
+
+- **Conversation**: the turns that really happened, read from the subject's
+  operational log (a view; canonical state and Memory remain authoritative).
+- **Subject**: name, NEW/RESTORED status, affect, canonical time, lived count, and a
+  collapsible current-state block.
+- **Life**: the lived episodes, the durable changes they produced (affect transitions
+  with their recorded cause refs; belief transitions with relation and credences) and
+  the material currently reaching the subject's thinking. Domains the architecture
+  cannot trace are labelled  rather than guessed.
+- **Developer details** (Settings): refs, revisions, subject id and executor identity.
+
+Affect/relationship/personality values are read-only projections; nothing in the UI
+writes subject state.
 
 ## What you see
 

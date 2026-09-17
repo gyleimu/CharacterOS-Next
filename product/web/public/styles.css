@@ -331,3 +331,32 @@ body {
 .life-text { margin-top: 3px; white-space: pre-wrap; }
 .life-quote { color: var(--text); }
 .life-meta { margin-top: 3px; font-size: 11px; color: var(--muted); }
+
+/* PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0 — subject bar, life evolution,
+   developer details. Small additions to the existing sheet; no framework. */
+
+.subjects { margin-bottom: 0.75rem; }
+.subjects-list { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.5rem; }
+.subject-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  padding: 0.35rem 0.5rem; border: 1px solid var(--line, #2a2f3a); border-radius: 6px;
+  background: transparent; color: inherit; font: inherit; text-align: left;
+}
+.subject-row.active { border-color: #4c8bf5; }
+.subject-row .subject-name { font-weight: 600; }
+.subject-row .subject-meta { font-size: 0.75rem; opacity: 0.75; }
+.subject-row button { font: inherit; padding: 0.15rem 0.5rem; }
+
+.life-evolution { margin-bottom: 1rem; }
+.life-evolution h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.8; margin: 0.75rem 0 0.35rem; }
+.transition { border-left: 2px solid var(--line, #2a2f3a); padding: 0.2rem 0 0.2rem 0.6rem; margin-bottom: 0.45rem; font-size: 0.85rem; }
+.transition .transition-main { font-weight: 600; }
+.transition .transition-meta { font-size: 0.75rem; opacity: 0.75; word-break: break-all; }
+.absent { opacity: 0.7; font-size: 0.85rem; }
+
+.dev-only { display: none; }
+body.dev-details .dev-only { display: block; }
+.check { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; margin-bottom: 0.75rem; }
+
+.msg-note { opacity: 0.75; font-style: italic; }
+.msg-note .msg-label { font-style: normal; }

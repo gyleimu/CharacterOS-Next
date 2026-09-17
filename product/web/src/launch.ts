@@ -1,16 +1,27 @@
 #!/usr/bin/env node
 /**
- * CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — local visual product entrypoint.
+ * PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0 — local visual product entrypoint.
  *
- * Opens/creates the ONE persistent subject through the shared product runtime
- * and serves the local browser UI. Startup fails closed with the same actionable
- * guidance as the CLI; the product never starts a fake READY UI.
+ * Each subject gets its OWN data root under `<data root>/subjects/<subject_id>`, so
+ * the sandbox's one-subject-per-data-root law holds unchanged while the product can
+ * create, list and open several subjects. Opening a subject builds the REAL product
+ * runtime for that root: genesis creates it, an existing root restores it. The
+ * browser never holds authoritative state; it reads the backend and re-fetches
+ * after every action.
  *
  * Launch with `pnpm web`, then open the printed localhost URL.
  */
 
-import { ProductRuntimeStartupErrorV0, createProductRuntimeV0 } from "@characteros-next/sandbox";
-import { startProductWebServerV0, WEB_DEFAULT_HOST_V0, WEB_DEFAULT_PORT_V0 } from "./server.js";
+import { join } from "node:path";
+
+import {
+  PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
+  PRODUCT_DEFAULT_DATA_ROOT_V0,
+  ProductRuntimeStartupErrorV0,
+  createProductRuntimeV0
+} from "@characteros-next/sandbox";
+import { ProductWebSessionsV0 } from "./sessions.js";
+import { WEB_DEFAULT_HOST_V0, WEB_DEFAULT_PORT_V0, startProductWebServerV0 } from "./server.js";
 
 function envIntV0(name: string): number | undefined {
   const raw = process.env[name];
@@ -20,37 +31,52 @@ function envIntV0(name: string): number | undefined {
 }
 
 async function main(): Promise<number> {
-  let runtime;
+  const subjectsRoot =
+    process.env["CHARACTEROS_SUBJECTS_DIR"] ?? join(PRODUCT_DEFAULT_DATA_ROOT_V0, "subjects");
+
+  const sessions = new ProductWebSessionsV0({
+    subjects_root: subjectsRoot,
+    open_runtime: async ({ data_root, display_name }) =>
+      createProductRuntimeV0({
+        session_label: "product-web",
+        data_root,
+        ...(display_name === undefined ? {} : { subject: { display_name } }),
+        write: (line) => process.stdout.write(`${line}\n`)
+      })
+  });
+
+  // Open the first existing subject when there is one. With none, the product
+  // starts WITHOUT a fake subject: the UI offers the create flow.
+  let startupFailure: string | null = null;
   try {
-    runtime = await createProductRuntimeV0({
-      session_label: "product-web",
-      write: (line) => process.stdout.write(`${line}\n`)
-    });
+    const existing = sessions.list();
+    if (existing.length > 0) await sessions.open(existing[0]?.subject_id ?? "");
   } catch (error) {
-    if (error instanceof ProductRuntimeStartupErrorV0) {
-      const lines =
-        error.guidance.length > 0
-          ? error.guidance
-          : ["The local product could not start.", `  detail: ${error.message}`];
-      for (const line of lines) console.error(line);
-      return 1;
-    }
-    console.error("The local visual product failed to start.");
-    console.error(`  detail: ${error instanceof Error ? error.message : String(error)}`);
-    return 1;
+    startupFailure = error instanceof Error ? error.message : String(error);
+  }
+
+  if (startupFailure !== null) {
+    console.error("The configured subject could not be opened.");
+    console.error(`  detail: ${startupFailure}`);
+    console.error("  Its durable files are untouched; fix the cause and relaunch.");
   }
 
   const handle = await startProductWebServerV0({
-    runtime,
+    sessions,
     host: process.env["CHARACTEROS_WEB_HOST"] ?? WEB_DEFAULT_HOST_V0,
     port: envIntV0("CHARACTEROS_WEB_PORT") ?? WEB_DEFAULT_PORT_V0
   });
 
-  const bootstrap = await runtime.bootstrap();
   console.log("CharacterOS — local visual product");
-  console.log(`  Subject: ${bootstrap.identity.display_name} (${bootstrap.identity.subject_id})`);
-  console.log(`  Status: ${bootstrap.status}`);
-  console.log(`  Model: ${bootstrap.provider.model}   Provider: READY`);
+  console.log(`  Subjects root: ${subjectsRoot}  [${PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0}]`);
+  const active = sessions.activeSummary();
+  if (active === null) {
+    console.log("  No subject is open yet — create one in the browser UI.");
+  } else {
+    const bootstrap = await sessions.current().bootstrap();
+    console.log(`  Subject: ${active.display_name} (${active.subject_id})  durable: ${active.durable_state}`);
+    console.log(`  Status: ${bootstrap.status}   Model: ${bootstrap.provider.model}`);
+  }
   console.log(`  Open: ${handle.url}`);
   console.log("  Local-only product. Press Ctrl+C to stop.");
 
@@ -59,7 +85,7 @@ async function main(): Promise<number> {
     if (shuttingDown) return;
     shuttingDown = true;
     await handle.close();
-    await runtime.shutdown();
+    await sessions.close();
     process.exitCode = 0;
   };
   process.on("SIGINT", () => {
@@ -79,7 +105,11 @@ main()
     if (code !== 0) process.exitCode = code;
   })
   .catch((error: unknown) => {
-    console.error("The local visual product failed.");
-    console.error(`  detail: ${error instanceof Error ? error.message : String(error)}`);
+    if (error instanceof ProductRuntimeStartupErrorV0 && error.guidance.length > 0) {
+      for (const line of error.guidance) console.error(line);
+    } else {
+      console.error("The local visual product failed.");
+      console.error(`  detail: ${error instanceof Error ? error.message : String(error)}`);
+    }
     process.exitCode = 1;
   });

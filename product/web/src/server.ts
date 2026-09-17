@@ -35,6 +35,7 @@ import type {
   ProductDiagnosticsViewV0,
   ProductStateViewV0,
   ProductTurnResultV0,
+  ProductTurnTranscriptRowV0,
   ProviderProgressEventV0
 } from "@characteros-next/sandbox";
 
@@ -69,11 +70,82 @@ export interface ProductWebRuntimePortV0 {
 }
 
 export interface ProductWebServerOptionsV0 {
-  readonly runtime: ProductWebRuntimePortV0;
+  /** A single fixed subject (legacy single-runtime launch and existing tests). */
+  readonly runtime?: ProductWebRuntimePortV0;
+  /**
+   * PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0 — the multi-subject session port
+   * the visual product uses. Exactly one of `runtime` / `sessions` is required; a
+   * fixed runtime is adapted to the same port, so request handling has ONE path.
+   */
+  readonly sessions?: ProductWebSessionsPortV0;
   /** Static UI directory; defaults to the package's `public/`. */
   readonly static_root?: string;
   readonly host?: string;
   readonly port?: number;
+}
+
+export interface ProductWebSubjectSummaryViewV0 {
+  readonly subject_id: string;
+  readonly display_name: string;
+  readonly durable_state: "NONE" | "PRESENT" | "UNKNOWN";
+  readonly active: boolean;
+  readonly openable: boolean;
+}
+
+/**
+ * The subject-session port the server talks to. `ProductWebSessionsV0` implements it
+ * over real product runtimes; a single fixed runtime is adapted with
+ * `fixedProductWebSessionsV0`.
+ */
+export interface ProductWebSessionsPortV0 {
+  /** True when a runtime is bound to an OPEN subject (never throws). */
+  hasActive(): boolean;
+  list(): readonly ProductWebSubjectSummaryViewV0[];
+  activeSummary(): ProductWebSubjectSummaryViewV0 | null;
+  current(): ProductWebRuntimePortV0;
+  open(subjectId: string): Promise<ProductWebSubjectSummaryViewV0>;
+  create(displayName: string): Promise<ProductWebSubjectSummaryViewV0>;
+  transcript(limit?: number): readonly ProductTurnTranscriptRowV0[];
+  recordTurn(
+    subjectId: string,
+    turn: {
+      readonly turn_index: number;
+      readonly status: "COMPLETE" | "FAILED" | "DEGRADED";
+      readonly user_text: string;
+      readonly subject_text: string;
+      readonly failure_detail: string | null;
+      readonly state_revision_after: number;
+      readonly repository_revision_after: string;
+    }
+  ): void;
+}
+
+/** Adapts ONE runtime to the session port: create/open report the fixed subject. */
+export function fixedProductWebSessionsV0(fixed: ProductWebRuntimePortV0): ProductWebSessionsPortV0 {
+  let summary: ProductWebSubjectSummaryViewV0 | null = null;
+  const ensure = async (): Promise<ProductWebSubjectSummaryViewV0> => {
+    if (summary === null) {
+      const bootstrap = await fixed.bootstrap();
+      summary = {
+        subject_id: bootstrap.identity.subject_id,
+        display_name: bootstrap.identity.display_name,
+        durable_state: bootstrap.status === "RESTORED" ? "PRESENT" : "NONE",
+        active: true,
+        openable: false
+      };
+    }
+    return { ...summary, active: true };
+  };
+  return {
+    hasActive: () => true,
+    list: () => (summary === null ? [] : [summary]),
+    activeSummary: () => summary,
+    current: () => fixed,
+    open: async () => ensure(),
+    create: async () => ensure(),
+    transcript: () => [],
+    recordTurn: () => undefined
+  };
 }
 
 export interface ProductWebServerHandleV0 {
@@ -202,20 +274,42 @@ function parseMemoryLimitV0(raw: string | null): number | null {
  * ephemeral port; `launch.ts` starts it on the bounded default.
  */
 export function createProductWebServerV0(options: ProductWebServerOptionsV0): Server {
-  const runtime = options.runtime;
+  if (options.sessions === undefined && options.runtime === undefined) {
+    throw new Error("createProductWebServerV0 requires either a runtime or a sessions port");
+  }
+  const sessions: ProductWebSessionsPortV0 =
+    options.sessions ?? fixedProductWebSessionsV0(options.runtime as ProductWebRuntimePortV0);
+  const runtime = (): ProductWebRuntimePortV0 => sessions.current();
   const staticRoot = options.static_root ?? fileURLToPath(new URL("../public", import.meta.url));
   const sseClients = new Set<ServerResponse>();
 
-  const unsubscribeProgress = runtime.subscribe((event: ProviderProgressEventV0) => {
-    const frame = `data: ${JSON.stringify(event)}\n\n`;
-    for (const client of [...sseClients]) {
-      try {
-        client.write(frame);
-      } catch {
-        sseClients.delete(client);
+  // The progress stream follows the ACTIVE subject: opening another subject
+  // re-subscribes, so a client never sees another subject's stages.
+  let unsubscribeProgress: () => void = () => undefined;
+  const subscribeActive = (): void => {
+    unsubscribeProgress();
+    if (!sessions.hasActive()) return;
+    unsubscribeProgress = runtime().subscribe((event: ProviderProgressEventV0) => {
+      const frame = `data: ${JSON.stringify(event)}\n\n`;
+      for (const client of [...sseClients]) {
+        try {
+          client.write(frame);
+        } catch {
+          sseClients.delete(client);
+        }
       }
+    });
+  };
+  subscribeActive();
+
+  /** Every subject-scoped route requires an OPEN subject; none yields a bounded 409. */
+  const requireRuntimeV0 = (res: ServerResponse): ProductWebRuntimePortV0 | null => {
+    if (!sessions.hasActive()) {
+      sendErrorV0(res, 409, "NO_SUBJECT_OPEN", "No subject is open yet — create one or open an existing one first.");
+      return null;
     }
-  });
+    return runtime();
+  };
 
   const server = createServer((req, res) => {
     res.on("close", () => {
@@ -315,7 +409,100 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Bootstrap is read-only.");
         return;
       }
-      sendJsonV0(res, 200, { ok: true, bootstrap: await runtime.bootstrap() });
+      const bootstrapRuntime = requireRuntimeV0(res);
+      if (bootstrapRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, bootstrap: await bootstrapRuntime.bootstrap() });
+      return;
+    }
+
+    if (pathname === "/api/subjects") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "The subject list is read-only.");
+        return;
+      }
+      // The LIST works with no subject open (that is the create-first UX). When a
+      // subject IS open, its truth comes from the running runtime, never from the
+      // directory scan alone.
+      if (!sessions.hasActive()) {
+        sendJsonV0(res, 200, { ok: true, subjects: sessions.list(), active_subject_id: null });
+        return;
+      }
+      const activeRuntime = runtime();
+      const activeBootstrap = await activeRuntime.bootstrap();
+      const activeId = activeBootstrap.identity.subject_id;
+      const subjects = sessions.list().map((summary) =>
+        summary.subject_id === activeId ? { ...summary, active: true } : summary
+      );
+      const known = subjects.some((summary) => summary.subject_id === activeId);
+      sendJsonV0(res, 200, {
+        ok: true,
+        subjects: known
+          ? subjects
+          : [...subjects, { subject_id: activeId, display_name: activeBootstrap.identity.display_name, durable_state: activeBootstrap.status === "RESTORED" ? "PRESENT" : "NONE", active: true, openable: false }],
+        active_subject_id: activeId
+      });
+      return;
+    }
+
+    if (pathname === "/api/subjects/create" || pathname === "/api/subjects/open") {
+      if (method !== "POST") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Subject management requires POST.");
+        return;
+      }
+      const body = await readBoundedBodyV0(req, WEB_MAX_BODY_BYTES_V0);
+      if (body.kind === "TOO_LARGE") {
+        sendErrorV0(res, 413, "BODY_TOO_LARGE", `Request body exceeds ${WEB_MAX_BODY_BYTES_V0} bytes.`);
+        return;
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(body.text);
+      } catch {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      const field = pathname === "/api/subjects/create" ? "display_name" : "subject_id";
+      const raw = typeof parsed === "object" && parsed !== null ? (parsed as Record<string, unknown>)[field] : null;
+      if (typeof raw !== "string" || raw.trim().length === 0) {
+        sendErrorV0(res, 400, "INVALID_INPUT", `A non-empty ${field} is required.`);
+        return;
+      }
+      try {
+        const summary = pathname === "/api/subjects/create" ? await sessions.create(raw) : await sessions.open(raw);
+        subscribeActive();
+        const switchedRuntime = requireRuntimeV0(res);
+        if (switchedRuntime === null) return;
+        sendJsonV0(res, 200, { ok: true, subject: summary, bootstrap: await switchedRuntime.bootstrap() });
+      } catch (error) {
+        sendProductErrorV0(res, error, "The subject could not be opened.");
+      }
+      return;
+    }
+
+    if (pathname === "/api/life") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "The life view is read-only.");
+        return;
+      }
+      const lifeRuntime = requireRuntimeV0(res);
+      if (lifeRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, life: await lifeRuntime.lifeView() });
+      return;
+    }
+
+    if (pathname === "/api/transcript") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "The transcript is read-only.");
+        return;
+      }
+      const transcriptLimit = parseMemoryLimitV0(url.searchParams.get("limit"));
+      if (transcriptLimit === null) {
+        sendErrorV0(res, 400, "INVALID_LIMIT", `limit must be an integer between 1 and ${WEB_MAX_MEMORY_LIMIT_V0}.`);
+        return;
+      }
+      const transcriptRuntime = requireRuntimeV0(res);
+      if (transcriptRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, turns: sessions.transcript(transcriptLimit) });
       return;
     }
 
@@ -324,7 +511,9 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Status is read-only.");
         return;
       }
-      sendJsonV0(res, 200, { ok: true, status: await runtime.status() });
+      const statusRuntime = requireRuntimeV0(res);
+      if (statusRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, status: await statusRuntime.status() });
       return;
     }
 
@@ -333,7 +522,9 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "State is read-only.");
         return;
       }
-      sendJsonV0(res, 200, { ok: true, view: await runtime.stateView() });
+      const stateRuntime = requireRuntimeV0(res);
+      if (stateRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, view: await stateRuntime.stateView() });
       return;
     }
 
@@ -352,7 +543,9 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         );
         return;
       }
-      sendJsonV0(res, 200, { ok: true, memory: await runtime.livedMemory(limit) });
+      const memoryRuntime = requireRuntimeV0(res);
+      if (memoryRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, memory: await memoryRuntime.livedMemory(limit) });
       return;
     }
 
@@ -361,7 +554,9 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Configuration is read-only.");
         return;
       }
-      sendJsonV0(res, 200, { ok: true, config: runtime.configView() });
+      const configRuntime = requireRuntimeV0(res);
+      if (configRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, config: configRuntime.configView() });
       return;
     }
 
@@ -370,7 +565,9 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Diagnostics are read-only.");
         return;
       }
-      sendJsonV0(res, 200, { ok: true, diagnostics: runtime.diagnosticsView() });
+      const diagnosticsRuntime = requireRuntimeV0(res);
+      if (diagnosticsRuntime === null) return;
+      sendJsonV0(res, 200, { ok: true, diagnostics: diagnosticsRuntime.diagnosticsView() });
       return;
     }
 
@@ -403,9 +600,11 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
           sendErrorV0(res, 400, "INVALID_INPUT", fields.detail);
           return;
         }
+        const observationRuntime = requireRuntimeV0(res);
+        if (observationRuntime === null) return;
         let outcome: ProductObservationOutcomeV0;
         try {
-          outcome = await runtime.submitExternalObservation(fields.fields);
+          outcome = await observationRuntime.submitExternalObservation(fields.fields);
         } catch (error) {
           sendProductErrorV0(res, error, "The external observation could not be recorded.");
           return;
@@ -429,9 +628,11 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
           sendErrorV0(res, 400, "INVALID_COUNT", `count must be an integer between 1 and ${WEB_MAX_ENVIRONMENT_INTERACTIONS_V0}.`);
           return;
         }
+        const environmentRuntime = requireRuntimeV0(res);
+        if (environmentRuntime === null) return;
         let run: ProductEnvironmentResultV0;
         try {
-          run = await runtime.runEnvironmentInteraction(count);
+          run = await environmentRuntime.runEnvironmentInteraction(count);
         } catch (error) {
           sendProductErrorV0(res, error, "The environment interaction could not run.");
           return;
@@ -455,9 +656,11 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         );
         return;
       }
+      const timeRuntime = requireRuntimeV0(res);
+      if (timeRuntime === null) return;
       let advanced: ProductCanonicalTimeResultV0;
       try {
-        advanced = await runtime.advanceCanonicalTime(ticks);
+        advanced = await timeRuntime.advanceCanonicalTime(ticks);
       } catch (error) {
         sendProductErrorV0(res, error, "Canonical time could not be advanced.");
         return;
@@ -496,8 +699,22 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
         return;
       }
       try {
-        const result = await runtime.submitHumanText(text);
-        sendJsonV0(res, 200, { ok: true, turn: runtime.summarizeTurn(result) });
+        const talkRuntime = requireRuntimeV0(res);
+        if (talkRuntime === null) return;
+        const result = await talkRuntime.submitHumanText(text);
+        const turn = talkRuntime.summarizeTurn(result);
+        // Thin product transcript: the conversation VIEW only, appended for the
+        // subject that produced this turn. Never identity or state authority.
+        sessions.recordTurn(turn.subject_id, {
+          turn_index: turn.turn_index,
+          status: turn.status,
+          user_text: text,
+          subject_text: turn.reply_text ?? "",
+          failure_detail: turn.failure_detail,
+          state_revision_after: turn.state_revision_after,
+          repository_revision_after: turn.repository_revision_after
+        });
+        sendJsonV0(res, 200, { ok: true, turn });
       } catch (error) {
         sendErrorV0(
           res,
