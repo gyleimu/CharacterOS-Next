@@ -8,7 +8,7 @@
  * absent credential marks exactly that candidate NOT_TESTED_NO_CREDENTIAL — it never
  * blocks the remaining candidates.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,6 +30,12 @@ import {
   type CandidateQualificationResult,
   type QualificationArtifact
 } from "./runner.ts";
+import {
+  deriveAccountingCorrection,
+  hashAccountingCorrection,
+  ORIGINAL_ARTIFACT_PATH,
+  SERVER_LOG_PATH
+} from "./accounting-correction.ts";
 import {
   createOllamaGrammarTransport,
   createStrictOpenAiTransport,
@@ -284,10 +290,45 @@ async function main(): Promise<void> {
     process.stderr.write(`qualification-run complete: ${report.total_candidate_calls} candidate calls (ceiling ${MAX_TOTAL_CANDIDATE_CALLS})\n`);
     return;
   }
-  process.stderr.write("usage: cli.ts <qualification-preflight|qualification-run --artifact-out <PATH> --authorize-qualification>\n");
+  if (command === "accounting-correction") {
+    const originalPath = flagValue(args, "--original") ?? ORIGINAL_ARTIFACT_PATH;
+    const logPath = flagValue(args, "--log") ?? SERVER_LOG_PATH;
+    const outPath = flagValue(args, "--out") ?? "tmp/qualification/strict-schema-executor-qualification-accounting-correction.json";
+    const result = accountingCorrection({ originalPath, logPath, outPath });
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    process.stderr.write(`accounting-correction: 0 model calls, true total model calls = ${result.total_actual_model_calls}\n`);
+    return;
+  }
+  process.stderr.write(
+    "usage: cli.ts <qualification-preflight|qualification-run --artifact-out <PATH> --authorize-qualification|accounting-correction [--original <PATH>] [--log <PATH>] [--out <PATH>]>\n"
+  );
   process.exitCode = 2;
 }
 
 const invokedDirectly =
   process.argv[1] !== undefined && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (invokedDirectly) await main();
+
+/* -------------------------------------------------------------------------- */
+/* accounting correction (derived, 0 model calls)                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * `accounting-correction` derives the execution-accounting correction from evidence
+ * that already exists: the preserved qualification artifact and the local inference
+ * server's access log. It makes NO model call, re-runs no gate and does not touch the
+ * original artifact.
+ */
+export function accountingCorrection(input: {
+  readonly originalPath: string;
+  readonly logPath: string;
+  readonly outPath: string;
+}): { readonly correction_hash: string; readonly total_actual_model_calls: number; readonly out_path: string } {
+  const originalText = readFileSync(input.originalPath, "utf8");
+  const logText = readFileSync(input.logPath, "utf8");
+  const correction = deriveAccountingCorrection({ originalArtifactText: originalText, logText });
+  const correctionHash = hashAccountingCorrection(correction);
+  mkdirSync(dirname(input.outPath), { recursive: true });
+  writeFileSync(input.outPath, `${JSON.stringify({ ...correction, artifact_hash: correctionHash }, null, 2)}\n`);
+  return { correction_hash: correctionHash, total_actual_model_calls: correction.execution_ledger.total_actual_model_calls, out_path: input.outPath };
+}
