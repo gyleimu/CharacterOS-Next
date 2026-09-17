@@ -21,7 +21,7 @@ import type {
   SubjectStateV0,
   SubjectStateV4
 } from "@characteros-next/subject-core";
-import {
+import { deriveBeliefPropositionId,
   createInMemorySubjectCoreFacadeForExplicitV4V0,
   hashEnvelope,
   materializeSubjectStateV4V0,
@@ -63,6 +63,9 @@ import {
   BeliefAdaptationWiringV0,
   type BeliefAdaptationTurnReportV0
 } from "./belief-adaptation-wiring-v0.js";
+import { readAffectApplicationBundleV0, readBeliefWorkflowRecordV0, buildSubjectEvolutionViewV0, type AffectApplicationBundleViewV0, type BeliefWorkflowRecordViewV0 } from "./subject-evolution-assembly-v0.js";
+import { BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0 } from "../transitions/belief/belief-proposition-admission.js";
+import type { SubjectEvolutionViewV0 } from "./subject-evolution-projection-v0.js";
 import {
   deriveExternalObservationContentFingerprintV0,
   ExternalObservationReplayConflictErrorV0,
@@ -1444,6 +1447,122 @@ export class ExplicitV4SessionAuthorityV0 {
       ingress_ledger_state: (this.ingressLedger as unknown as { exportState(): unknown }).exportState(),
       belief_workflow_store_state: this.beliefWorkflowStore.exportState(),
       personality_adaptation_state: this.personalityAdaptation?.exportState() ?? null
+    };
+  }
+
+  /**
+   * SUBJECT_EVOLUTION_VIEW_V0 — READ-ONLY product projection over durable state:
+   * current values, the committed transitions that produced them (with the exact
+   * source refs those transitions recorded), and the durable material a cognition
+   * projection receives.
+   *
+   * STRICTLY READ: no provider call, no adaptation step, no pending-work
+   * consumption, no delivery, no revision change. Every input is either the
+   * canonical snapshot, the canonical lived-memory projection, this subject's
+   * committed bundles, or the durable belief workflow store image — never a
+   * process-local cache and never a raw model response.
+   */
+  async readSubjectEvolutionV0(input?: { readonly limit?: number }): Promise<SubjectEvolutionViewV0> {
+    const snapshot = await this.readSnapshot();
+    const memory = await this.readLivedMemoryV0(
+      input?.limit === undefined ? undefined : { limit: input.limit }
+    );
+    const bundles = this.assembly.storeRead
+      .getCommittedBundles()
+      .filter((bundle) => (bundle as { readonly subject_id?: string }).subject_id === this.subjectIdValue)
+      .map((bundle) => readAffectApplicationBundleV0(bundle))
+      .filter((bundle): bundle is AffectApplicationBundleViewV0 => bundle !== null);
+    const beliefStoreImage = this.beliefWorkflowStore.exportState() as { readonly records: readonly unknown[] };
+    const beliefRecords: BeliefWorkflowRecordViewV0[] = [];
+    for (const raw of beliefStoreImage.records) {
+      const parsed = readBeliefWorkflowRecordV0(raw);
+      if (parsed === null || parsed.subject_id !== this.subjectIdValue) continue;
+      const enriched = parsed.proposition_id === null ? await this.admissionRecordValuesV0(raw, parsed) : parsed;
+      beliefRecords.push(enriched);
+    }
+    return buildSubjectEvolutionViewV0({
+      subject_id: this.subjectIdValue,
+      state_revision: snapshot.runtime_metadata.state_revision as number,
+      logical_time: snapshot.runtime_metadata.logical_time as number,
+      repository_revision: snapshot.memory_state.repository_revision as string,
+      memory,
+      affect_bundles: bundles,
+      belief_records: beliefRecords,
+      current: {
+        affect: { valence: snapshot.affect.valence, activation: snapshot.affect.activation },
+        regulation: {
+          energy: snapshot.regulation.energy,
+          stress: snapshot.regulation.stress,
+          arousal: snapshot.regulation.arousal,
+          fatigue: snapshot.regulation.fatigue
+        },
+        beliefs: snapshot.beliefs.items.map((item) => ({
+          proposition_id: item.proposition_id as string,
+          proposition_label: item.proposition_label,
+          credence: item.credence
+        })),
+        relationships: snapshot.relationships.counterparts.map((counterpart) => ({
+          counterpart_ref: counterpart.counterpart_ref as string,
+          dimensions: counterpart.dimensions.map((dimension) => ({
+            dimension_id: dimension.dimension_id as string,
+            value: dimension.value
+          }))
+        })),
+        personality: snapshot.personality.dimensions.map((dimension) => ({
+          dimension_id: dimension.dimension_id as string,
+          value: dimension.value
+        }))
+      },
+      // The canonical working/retrieval set IS the memory material a cognition
+      // projection carries (source identity only — never its interpretation).
+      cognition_memory_episode_refs: [
+        ...new Set<string>([
+          ...(snapshot.memory_state.working_refs as readonly string[]),
+          ...(snapshot.memory_state.recent_retrieval_trace as readonly string[])
+        ])
+      ].filter((ref) => ref.startsWith("episode:"))
+    });
+  }
+
+  /**
+   * FIRST-PROPOSITION ADMISSION enrichment for the evolution projection.
+   *
+   * An admission workflow's durable record carries the proposal checkpoint it
+   * persisted BEFORE execution: the INSERT proposal with the HOST-canonical label,
+   * the HOST-derived proposition key and the HOST initial credence. When the
+   * terminal proves the commit happened, those recorded values are surfaced as the
+   * transition's values with the relation the host route law applied. Nothing is
+   * reconstructed from model prose, and a record without that checkpoint is left
+   * exactly as stored.
+   */
+  private async admissionRecordValuesV0(
+    raw: unknown,
+    parsed: BeliefWorkflowRecordViewV0
+  ): Promise<BeliefWorkflowRecordViewV0> {
+    if (parsed.proposition_id !== null || parsed.terminal_kind !== "COMPLETE_COMMITTED") return parsed;
+    const mutation = (
+      raw as {
+        readonly proposal_checkpoint?: {
+          readonly proposal?: {
+            readonly mutation?: {
+              readonly kind?: unknown;
+              readonly proposition_key?: unknown;
+              readonly proposition_label?: unknown;
+              readonly initial_credence?: unknown;
+            };
+          };
+        } | null;
+      }
+    ).proposal_checkpoint?.proposal?.mutation;
+    if (mutation?.kind !== "INSERT") return parsed;
+    const key = mutation.proposition_key;
+    if (typeof key !== "string") return parsed;
+    return {
+      ...parsed,
+      proposition_id: await deriveBeliefPropositionId(this.subjectIdValue as never, key as never),
+      relation: BELIEF_NEW_CANDIDATE_ROUTED_EXISTING_RELATION_V0,
+      prior_credence: null,
+      next_credence: typeof mutation.initial_credence === "number" ? mutation.initial_credence : null
     };
   }
 

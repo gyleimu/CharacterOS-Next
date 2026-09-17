@@ -1396,6 +1396,21 @@ export {
   type SessionRepositoryRevisionImageV0,
   type RebuiltSessionStoreSourceV0
 } from "./session/session-store-image-v0.js";
+// SUBJECT_EVOLUTION_VIEW_V0 — read-only lived-event / durable-effect projection.
+export {
+  SUBJECT_EVOLUTION_VIEW_SCHEMA_VERSION,
+  EVOLUTION_UNAVAILABLE_REASONS
+} from "./session/subject-evolution-projection-v0.js";
+export type {
+  EffectAttributionV0,
+  EvolutionAffectTransitionV0,
+  EvolutionBeliefTransitionV0,
+  EvolutionCognitionVisibleV0,
+  EvolutionCurrentStateV0,
+  EvolutionLivedEventV0,
+  EvolutionSubjectV0,
+  SubjectEvolutionViewV0
+} from "./session/subject-evolution-projection-v0.js";
 // BELIEF_ADAPTATION_SESSION_WIRING_V0 — observable per-turn belief adaptation
 // report types (the wiring itself is composed inside the session authority).
 export {

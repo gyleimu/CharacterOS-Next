@@ -26,7 +26,8 @@ import type {
   ModelTransportV0,
   PersonalityAdaptationFactoryV0,
   PersonalityGenesisPriorV0,
-  RelationshipInteractionQualifyingAdmissionProviderV0
+  RelationshipInteractionQualifyingAdmissionProviderV0,
+  SubjectEvolutionViewV0
 } from "@characteros-next/runtime";
 import {
   InteractiveSubjectRuntimeV0,
@@ -434,6 +435,14 @@ export class InteractiveSubjectHostV0 {
   /** Read-only durable lived-memory projection; performs no provider call. */
   async livedMemory(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
     return this.runtime.livedMemory(input);
+  }
+
+  /**
+   * SUBJECT_EVOLUTION_VIEW_V0 — read-only projection of lived events and the durable
+   * state changes they produced. No provider call, no adaptation, no revision change.
+   */
+  async evolutionView(input?: { readonly limit?: number }): Promise<SubjectEvolutionViewV0> {
+    return this.runtime.evolutionView(input);
   }
 
   async durableSnapshot(): Promise<InteractiveSubjectSnapshotV0> {

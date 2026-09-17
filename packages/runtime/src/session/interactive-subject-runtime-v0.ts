@@ -53,6 +53,7 @@ import {
   rebuildSessionStoreSourceV0,
   type SessionStoreImageV0
 } from "./session-store-image-v0.js";
+import type { SubjectEvolutionViewV0 } from "./subject-evolution-projection-v0.js";
 
 export interface InteractiveSubjectRuntimeOptionsV0 extends ExplicitV4SessionAuthorityOptionsV0 {
   readonly session_id: string;
@@ -819,6 +820,15 @@ export class InteractiveSubjectRuntimeV0 {
    */
   async livedMemory(input?: { readonly limit?: number }): Promise<LivedMemoryInspectionV0> {
     return this.authority.readLivedMemoryV0(input);
+  }
+
+  /**
+   * SUBJECT_EVOLUTION_VIEW_V0 — read-only projection of what this subject lived
+   * through and what durable state changes it left. Pure read: no provider call,
+   * no adaptation, no revision change.
+   */
+  async evolutionView(input?: { readonly limit?: number }): Promise<SubjectEvolutionViewV0> {
+    return this.authority.readSubjectEvolutionV0(input);
   }
 
   /**

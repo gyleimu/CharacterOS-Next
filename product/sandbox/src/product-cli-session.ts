@@ -328,6 +328,39 @@ export class ProductCliSessionV0 {
       if (entry.kind === "OBSERVATION") out(`    - ${sanitizeDisplayTextV0(entry.scene)}`);
       else out(`    - delivered: "${sanitizeDisplayTextV0(entry.delivered_behavior_text)}" | replied: "${sanitizeDisplayTextV0(entry.outcome_reply_text)}"`);
     }
+    const evolution = view.evolution;
+    out("");
+    out("  Durable changes (source-bound)");
+    if (evolution.durable_effects.affect.length === 0) out("    affect: (no recorded transition)");
+    for (const transition of evolution.durable_effects.affect) {
+      const before =
+        transition.valence_before === null ? "(first recorded)" : String(transition.valence_before);
+      out(`    affect valence ${before} → ${transition.valence_after}  (revision ${transition.next_revision})`);
+      out(`      from observation=${transition.observation_ref}`);
+      out(`      event=${transition.event_ref} appraisal=${transition.appraisal_ref}`);
+    }
+    if (evolution.durable_effects.belief.length === 0) out("    belief: (no recorded transition)");
+    for (const transition of evolution.durable_effects.belief) {
+      const label = transition.proposition_label ?? transition.proposition_id ?? "(proposition unknown)";
+      const credences =
+        transition.prior_credence === null
+          ? `initial → ${transition.next_credence ?? "(unchanged)"}`
+          : `${transition.prior_credence} → ${transition.next_credence ?? "(unchanged)"}`;
+      out(`    belief "${label}" ${credences} [${transition.terminal_kind}${transition.relation === null ? "" : ` ${transition.relation}`}]`);
+      for (const ref of transition.evidence_episode_refs) out(`      evidence=${ref}`);
+    }
+    for (const domain of ["relationship", "personality"] as const) {
+      const attribution = evolution.attribution[domain];
+      out(`    ${domain}: ${attribution.status === "UNAVAILABLE" ? `source attribution: UNAVAILABLE — ${attribution.reason}` : "source-bound"}`);
+    }
+    out("");
+    out("  Currently available to cognition (source identity only)");
+    const visible = evolution.cognition_visible;
+    out(`    affect: valence=${visible.affect.valence} activation=${visible.affect.activation}`);
+    out(`    memory episodes: ${visible.memory_episode_refs.length === 0 ? "(none)" : visible.memory_episode_refs.join(", ")}`);
+    out(`    belief propositions: ${visible.belief_proposition_ids.length === 0 ? "(none)" : visible.belief_proposition_ids.join(", ")}`);
+    out(`    relationship counterparts: ${visible.relationship_counterpart_refs.length === 0 ? "(none)" : visible.relationship_counterpart_refs.join(", ")}`);
+    out(`    personality dimensions: ${visible.personality_dimension_ids.length === 0 ? "(none)" : visible.personality_dimension_ids.join(", ")}`);
   }
 
   private async runObserve(argument: string): Promise<void> {

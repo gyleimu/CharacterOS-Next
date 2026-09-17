@@ -25,6 +25,7 @@ import type {
   RelationshipInteractionQualifyingAdmissionProviderV0,
   SessionInteractionOutcomeV0,
   SubjectEnvironmentV0,
+  SubjectEvolutionViewV0,
   SubjectSessionStatusV0
 } from "@characteros-next/runtime";
 import type { InteractiveSubjectHostV0 } from "./interactive-subject-host.js";
@@ -100,6 +101,12 @@ export interface ProductLifeViewV0 {
   readonly beliefs: InteractiveSubjectStateViewV0["beliefs"];
   readonly relationships: InteractiveSubjectStateViewV0["relationships"];
   readonly recent_memory: LivedMemoryInspectionV0;
+  /**
+   * SUBJECT_EVOLUTION_VIEW_V0 — read-only: current values, the committed transitions
+   * that produced them with their recorded source refs, and the durable material a
+   * cognition projection receives. Adds no state and changes no behaviour.
+   */
+  readonly evolution: SubjectEvolutionViewV0;
 }
 
 export class ProductLifeOperationsV0 {
@@ -211,6 +218,7 @@ export class ProductLifeOperationsV0 {
     const status = await this.deps.host.status();
     const state = await this.deps.host.subjectStateView();
     const recentMemory = await this.deps.host.livedMemory({ limit: 5 });
+    const evolution = await this.deps.host.evolutionView({ limit: 5 });
     return {
       subject_id: status.subject_id,
       display_name: state.identity.display_name,
@@ -224,7 +232,8 @@ export class ProductLifeOperationsV0 {
       personality: state.personality,
       beliefs: state.beliefs,
       relationships: state.relationships,
-      recent_memory: recentMemory
+      recent_memory: recentMemory,
+      evolution
     };
   }
 }

@@ -288,7 +288,40 @@ function fakeRuntime(origin: "NEW_SUBJECT" | "SUBJECT_RESTORED"): FakeRuntimeV0 
       personality: [],
       beliefs: [],
       relationships: [],
-      recent_memory: memoryShape(episodes)
+      recent_memory: memoryShape(episodes),
+      evolution: {
+        schema_version: "subject-evolution-view-v0",
+        subject: {
+          subject_id: "mira-14aa8fc5",
+          state_revision: 4 + turns,
+          logical_time: logicalTime,
+          repository_revision: `R${4 + turns}`
+        },
+        recent_lived_events: [],
+        durable_effects: { affect: [], belief: [] },
+        current: {
+          affect: { valence: 0.12, activation: 0.4 },
+          regulation: stateViewShape().regulation,
+          beliefs: [],
+          relationships: [],
+          personality: [],
+          memory: { total_episode_count: episodes, repository_revision: `R${4 + turns}` }
+        },
+        cognition_visible: {
+          policy: "AVAILABLE_TO_COGNITION",
+          memory_episode_refs: [],
+          belief_proposition_ids: [],
+          relationship_counterpart_refs: [],
+          personality_dimension_ids: [],
+          affect: { valence: 0.12, activation: 0.4 }
+        },
+        attribution: {
+          affect: { status: "UNAVAILABLE", reason: "test fixture" },
+          belief: { status: "UNAVAILABLE", reason: "test fixture" },
+          relationship: { status: "UNAVAILABLE", reason: "test fixture" },
+          personality: { status: "UNAVAILABLE", reason: "test fixture" }
+        }
+      }
     }),
     livedMemory: async (limit?: number): Promise<LivedMemoryInspectionV0> => memoryShape(episodes, limit ?? 10),
     submitHumanText: async (): Promise<InstrumentedTurnResultV0> => {
