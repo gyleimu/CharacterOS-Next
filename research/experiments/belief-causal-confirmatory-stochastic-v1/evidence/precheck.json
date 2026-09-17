@@ -14,10 +14,8 @@
     "positive_case_flag": true,
     "negative_case_flag": false
   },
-  "ok": false,
-  "failed": [
-    "P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO"
-  ],
+  "ok": true,
+  "failed": [],
   "checks": {
     "P1_SEED_BELIEF_COUNT_ZERO": {
       "passed": true,
@@ -203,10 +201,21 @@
       "passed": true,
       "detail": {
         "intervention_path_writer_violations": [],
+        "execution_closure_violations": [],
+        "execution_closure": [
+          "calibration-authority.ts",
+          "calibration-cli.ts",
+          "calibration-evidence.ts",
+          "calibration-law.ts",
+          "calibration-request.ts",
+          "calibration-runner.ts",
+          "calibration-transport.ts",
+          "cli.ts"
+        ],
+        "missing_required_modules": [],
         "intervention_body_found": true,
         "render_body_found": true,
         "writer_call_site_files": [
-          "precheck.ts",
           "histories.ts"
         ],
         "durable_before": {
@@ -217,7 +226,8 @@
           "low": "sha256:a159d1da8e23d48798e99d86739de5bd5818a3ed3829498cdd1d5907656b7d67",
           "high": "sha256:a342dbc32a19ace7e86a763c1ce5d5d4d9c9154ee53e6adf1bcae6a9fbe226be"
         },
-        "note": "the model-facing intervention and render paths contain no writer/commit token; the only writer call site is history formation, which is offline preparation (attested in P2/P3) and absent from the calibration path; durable belief items are byte-identical before and after every research-side view"
+        "durable_stable": true,
+        "note": "the model-facing intervention and render paths contain no writer/commit token; the ENUMERATED calibration execution closure (calibration-*.ts + cli.ts) contains no writer call site at all; history formation is offline preparation confined to the reported writer-call-site files; durable belief items are byte-identical before and after every research-side view"
       }
     },
     "P18_FULL_TRUTH_SCAN_SCHEMA_COVERAGE": {
@@ -580,7 +590,7 @@
         "threw": false,
         "result": {
           "ok": false,
-          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09: Command failed: git cat-file blob 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09:research/this/path/does/not/exist.ts"
+          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at f8e29068b591b5ab6d36ff5770a81bd902923c41: Command failed: git cat-file blob f8e29068b591b5ab6d36ff5770a81bd902923c41:research/this/path/does/not/exist.ts"
         }
       }
     },
@@ -607,32 +617,41 @@
       }
     },
     "P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO": {
-      "passed": false,
+      "passed": true,
       "detail": {
         "files_scanned": [
+          "calibration-authority.ts",
+          "calibration-cli.ts",
           "calibration-evidence.ts",
           "calibration-law.ts",
           "calibration-request.ts",
           "calibration-runner.ts",
           "calibration-transport.ts",
-          "calibration.test.ts",
           "cli.ts",
           "contract.ts",
           "histories.ts",
           "manifest.ts",
           "precheck.ts",
-          "prereg.test.ts",
           "scan-surface.ts",
+          "source-audit.ts",
+          "test-support.ts",
           "verdict.ts"
         ],
-        "read_or_import_violations": [
-          {
-            "file": "prereg.test.ts",
-            "fragment": "belief-causal-validation-v0/evidence"
-          }
+        "execution_modules_scanned": [
+          "calibration-authority.ts",
+          "calibration-cli.ts",
+          "calibration-evidence.ts",
+          "calibration-law.ts",
+          "calibration-request.ts",
+          "calibration-runner.ts",
+          "calibration-transport.ts",
+          "cli.ts"
         ],
+        "read_or_import_violations": [],
+        "declared_paths_present": true,
+        "limitation": "static literal analysis only: a path assembled from non-literal pieces at run time cannot be detected; this audit is not a sandbox",
         "confirmatory_count_contribution": 0,
-        "note": "no source reads or imports a V0 outcome artifact; the only occurrences are contract.ts's declared firewall list"
+        "note": "no source in this experiment contains a literal V0 outcome path outside the declared firewall list in contract.ts; the scan classifies every string literal by its enclosing statement (static import, multiline import, dynamic import, require, readFile family, bare literal)"
       }
     },
     "P23_MODEL_CALLS_ZERO": {

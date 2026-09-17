@@ -64,6 +64,10 @@
     ],
     "modifies": []
   },
-  "body_bytes": 16085,
+  "authoritative_serialization": {
+    "scheme": "canonicalJson",
+    "body_bytes": 16085,
+    "model_facing_request_hash": "sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509"
+  },
   "model_calls": 0
 }

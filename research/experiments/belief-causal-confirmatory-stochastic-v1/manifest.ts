@@ -15,6 +15,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+import { ANALYSIS_LAW, DESIGN as FROZEN_DESIGN } from "../../measurement-protocols/stochastic-executor-causal-measurement-protocol-v0/contract.ts";
 import { gitBlobHash, manifestHashOf, verifyFreezeManifest, type FreezeManifestShape } from "../../measurement-protocols/stochastic-executor-causal-measurement-protocol-v0/hashing.ts";
 
 import {
@@ -27,6 +28,7 @@ import {
   HARD_GATE_IDS,
   MODEL,
   SAMPLE_SIZE,
+  TARGET_PROPOSITION_LABEL,
   cellInterventionLawManifest,
   modelConfigManifest,
   trialSchedule
@@ -38,14 +40,18 @@ import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../package
 
 /** The frozen code paths this experiment's manifest binds. */
 export const PREREG_CODE_PATHS: readonly string[] = Object.freeze([
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/PREREG.md",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/contract.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/histories.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/precheck.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/scan-surface.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/source-audit.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/verdict.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/manifest.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/cli.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-cli.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-request.ts",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-authority.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-law.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-transport.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/calibration-runner.ts",
@@ -69,6 +75,7 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
       readonly model_config_hash: string;
       readonly model_facing_request_hash: string;
     };
+    readonly body_bytes?: number;
   };
   return {
     protocol_id: FROZEN_PROTOCOL_ID,
@@ -96,11 +103,11 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
     }),
     evaluator_hash: hashJson({ gate_ids: HARD_GATE_IDS, cells: CELL_IDS, model: MODEL.id }),
     statistical_law_hash: hashJson({
-      law: "CONJUNCTIVE_NEWCOMBE_CONSTRAINT",
-      delta_min: 0.2,
-      epsilon: 0.15,
-      alpha_superiority: 0.025,
-      alpha_equivalence: 0.05
+      law: ANALYSIS_LAW.primary,
+      delta_min: FROZEN_DESIGN.delta_min,
+      epsilon: FROZEN_DESIGN.epsilon,
+      alpha_superiority: FROZEN_DESIGN.alpha_superiority,
+      alpha_equivalence: FROZEN_DESIGN.alpha_equivalence
     }),
     model_config_hash: hashJson(modelConfigManifest()),
     calibration_input_hash: hashJson(CALIBRATION_INPUT),
@@ -111,6 +118,26 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
       schema_hash: calibrationRequest.hashes.schema_hash,
       model_config_hash: calibrationRequest.hashes.model_config_hash,
       model_facing_request_hash: calibrationRequest.hashes.model_facing_request_hash
+    },
+    /**
+     * The ONE authoritative request byte stream. The manifest does not merely
+     * record a hash: it records the serialization scheme, so the runtime can
+     * re-produce the same bytes and prove that
+     * (frozen hash) == (runtime hash) == (hash of the bytes the transport sends).
+     */
+    authoritative_request_serialization: {
+      scheme: "canonicalJson",
+      definition: "sorted keys at every level, no whitespace, UTF-8",
+      body_bytes: calibrationRequest.body_bytes ?? null,
+      model_facing_request_hash: calibrationRequest.hashes.model_facing_request_hash,
+      transport_body_is_serialized_string: true,
+      second_serialization_permitted: false
+    },
+    proposition_identity: {
+      target_label: TARGET_PROPOSITION_LABEL,
+      proposition_key: (low["proposition"] as { proposition_key?: string } | undefined)?.proposition_key ?? null,
+      proposition_id: (low["proposition"] as { proposition_id?: string } | undefined)?.proposition_id ?? null,
+      low_equals_high: JSON.stringify(low["proposition"]) === JSON.stringify(high["proposition"])
     },
     trial_schedule_hash: hashJson(schedule),
     sample_size: SAMPLE_SIZE,

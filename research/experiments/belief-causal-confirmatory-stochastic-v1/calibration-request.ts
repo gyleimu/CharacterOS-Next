@@ -28,7 +28,7 @@ import { CALIBRATION_INPUT, CURRENT_SCENE, EXPERIMENT_ID, MODEL } from "./contra
 import { hashJson, hashText } from "./histories.ts";
 
 const runtimeDist = new URL("../../../packages/runtime/dist/", import.meta.url).href;
-const { observationInput, s0 } = await import(`${runtimeDist}transitions/observation/observation-fixtures.js`);
+const { s0 } = await import(`${runtimeDist}transitions/observation/observation-fixtures.js`);
 const { buildCognitiveContextProjection } = await import(
   `${runtimeDist}transitions/cognition-action/cognition-action-transition-executor.js`
 );
@@ -145,13 +145,6 @@ export async function buildCalibrationSubject(): Promise<CalibrationSubject> {
 
   // The trial path commits the observable context before cognition; the
   // calibration render applies the identical research-side view.
-  const observation = observationInput({
-    observation_id: `observation:o-${CURRENT_SCENE.source_event_id}`,
-    source_refs: ["source:s-bcv1"],
-    entity_refs: ["entity:caretaker" as never, "subject:s0" as never],
-    occurrence_logical_time: genesis.runtime_metadata.logical_time as never
-  }) as { observation_id: string };
-  void observation;
   const view = {
     ...genesis,
     context: {
@@ -200,14 +193,35 @@ export function buildCalibrationRequestBody(input: {
 }
 
 /**
+ * THE authoritative serialization of the model-facing request: canonical JSON
+ * (sorted keys at every level, no whitespace, UTF-8). Exactly ONE byte stream is
+ * authoritative in this experiment — the one hashed here is the one the
+ * transport puts on the wire, and a retry reuses that same string. A second
+ * serialization (`JSON.stringify(body)`) would be a second request authority and
+ * is therefore forbidden anywhere in the execution path.
+ */
+export function serializeAuthoritativeRequest(body: CalibrationRequestBody): string {
+  return canonicalJson(body);
+}
+
+/** The request hash of an ALREADY serialized authoritative byte stream. */
+export function authoritativeRequestHash(serializedBody: string): string {
+  return hashText(serializedBody);
+}
+
+/**
  * MODEL_FACING_REQUEST_HASH scope (§9): exactly the provider-visible body —
  * model, both messages, temperature, max_tokens, stream and response_format.
  * Excluded by construction: credentials, HTTP headers, date/TLS, host-side trial
  * identity, filesystem paths and wall-clock values.
  */
 export function modelFacingRequestHash(body: CalibrationRequestBody): string {
-  return hashText(canonicalJson(body));
+  return authoritativeRequestHash(serializeAuthoritativeRequest(body));
 }
+
+/** The frozen hash of this experiment's calibration request (bound in the manifest). */
+export const FROZEN_CALIBRATION_REQUEST_HASH =
+  "sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509" as const;
 
 /** Builds the frozen calibration request (deterministic; call it as often as you like). */
 export async function buildCalibrationRequest(input: {

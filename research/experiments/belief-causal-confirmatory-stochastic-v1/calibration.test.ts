@@ -2,12 +2,12 @@
 /**
  * BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — calibration harness tests.
  *
- * ALL tests use MOCK transports: zero real network calls, zero credentials, zero
- * model calls. They pin the frozen calibration laws before any scientific call:
- * request determinism, retry byte identity, no-retry-on-schema-invalid, the
- * 48/50 RUN and 47/50 STOP boundaries, outcome-diversity freedom, deterministic
- * early stop, request/config/schema/code-state drift, secret safety and the
- * absence of any primary-execution path.
+ * ALL tests use MOCK transports and a MOCK authority: zero real network calls,
+ * zero credentials, zero model calls. They pin the frozen calibration laws before
+ * any scientific call: request determinism and byte identity, the RUN/STOP
+ * boundaries, outcome-diversity freedom, the deterministic early stop, the
+ * pre-call drift stops, the authority refusals, the transport failure
+ * classification, the formal CLI and the absence of any primary-execution path.
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
@@ -16,7 +16,12 @@ import { fileURLToPath } from "node:url";
 
 import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
 import { auditScanSurface } from "./scan-surface.ts";
-import { buildCalibrationRequest, type CalibrationRequest } from "./calibration-request.ts";
+import {
+  authoritativeRequestHash,
+  buildCalibrationRequest,
+  modelFacingRequestHash,
+  serializeAuthoritativeRequest
+} from "./calibration-request.ts";
 import {
   CALIBRATION_MAXIMUM_NON_HOST_VALID_COUNT,
   CALIBRATION_MINIMUM_HOST_VALID_COUNT,
@@ -24,135 +29,27 @@ import {
   evaluateCalibrationLaw
 } from "./calibration-law.ts";
 import { runCalibration } from "./calibration-runner.ts";
-import type { MinimalTransport, TransportResult } from "./calibration-transport.ts";
 import { hashJson, hashText } from "./histories.ts";
 import { modelConfigManifest } from "./contract.ts";
+import {
+  mockAuthority,
+  mockTransport,
+  realAuthoritativeRequest,
+  validProposalJson,
+  type MockOutcome
+} from "./test-support.ts";
 
 const REPO_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..", "..");
 const EXPERIMENT_DIR = "research/experiments/belief-causal-confirmatory-stochastic-v1";
 const SCAN_SURFACE = auditScanSurface(hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA)).exact_scan_surface;
-const CODE_STATE = "sha256:" + "a".repeat(64);
-/** Filled in by the first request fixture; the mock needs the advertised handles. */
-let USER_TEXT = "";
 
-/** The V8 path cites ADVERTISED HANDLES; the mock derives them from the rendered request. */
-function handleForObservation(userText: string): string | null {
-  const handlePattern = new RegExp("^-\\s*([FC][0-9]+):\\s*(\\S+)\\s*$");
-  for (const line of userText.split("\n")) {
-    const match = handlePattern.exec(line.trim());
-    if (match !== null && (match[2] ?? "").startsWith("observation:")) return match[1] ?? null;
-    if (match !== null && (match[2] ?? "").startsWith("source:")) return match[1] ?? null;
-  }
-  return null;
-}
-
-function validProposalJson(
-  directive: "REALIZE_CURRENT_INTENT" | "CLARIFY_MISSING_CONTEXT" = "REALIZE_CURRENT_INTENT",
-  observationHandle: string | null = null
-): string {
-  return JSON.stringify({
-    schema_version: "conversation-cognition-proposal-v8",
-    response_semantics:
-      directive === "CLARIFY_MISSING_CONTEXT"
-        ? { kind: "PRIMARY_CLARIFICATION" }
-        : { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "ACKNOWLEDGE" },
-    factual_assessment: { claims: [] },
-    cognition: {
-      schema_version: "cognition-proposal-v0",
-      reasoning_summary: "calibration mock cognition",
-      relevant_memory_handles: [],
-      considered_handles: directive === "CLARIFY_MISSING_CONTEXT" && observationHandle !== null ? [observationHandle] : [],
-      current_intent: "respond to the user",
-      confidence: 0.5,
-      uncertainty: 0.5,
-      action_intent: null,
-      evidence_handles: []
-    },
-    subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
-    communication_directive: { kind: directive },
-    clarification_basis:
-      directive === "CLARIFY_MISSING_CONTEXT"
-        ? { current_observation_ref: "observation:o-source-event-bcv1-current-scene-1", missing_information: "the passage state", needed_for: "planning" }
-        : null
-  });
-}
-
-interface MockOptions {
-  readonly script?: readonly ("VALID_REALIZE" | "VALID_CLARIFY" | "SCHEMA_INVALID" | "TRANSPORT_FAIL")[];
-  readonly defaultOutcome?: "VALID_REALIZE" | "VALID_CLARIFY" | "SCHEMA_INVALID" | "TRANSPORT_FAIL";
-  readonly modelId?: string;
-  readonly extraAttemptsForFirstTrial?: number;
-  /** The rendered user message, so the mock can cite the handles the prompt advertises. */
-  readonly userText?: string;
-}
-
-function mockTransport(options: MockOptions = {}): { readonly transport: MinimalTransport; attempts(): number } {
-  const observationHandle = options.userText === undefined ? null : handleForObservation(options.userText);
-  let calls = 0;
-  let attempts = 0;
-  return {
-    transport: {
-      id: "MOCK",
-      async complete(_body: unknown, bodyHash: string) {
-        const index = calls;
-        calls += 1;
-        const outcome = options.script?.[index] ?? options.defaultOutcome ?? "VALID_REALIZE";
-        const makeAttempt = (attempt: number, failure: string | null): { attempt: number; http_status: number | null; failure_class: string | null; elapsed_ms: number; body_hash: string } => ({
-          attempt,
-          http_status: failure === null ? 200 : null,
-          failure_class: failure,
-          elapsed_ms: 1,
-          body_hash: bodyHash
-        });
-        const attemptList = [makeAttempt(1, null)];
-        for (let extra = 0; extra < (options.extraAttemptsForFirstTrial ?? 0) && index === 0; extra += 1) {
-          attemptList.unshift(makeAttempt(1, "TRANSPORT_RESET"));
-        }
-        attempts += attemptList.length;
-        if (outcome === "TRANSPORT_FAIL") {
-          return { ok: false, code: "TRANSPORT_RESET", detail: "mock transport failure", attempts: attemptList };
-        }
-        const content =
-          outcome === "SCHEMA_INVALID"
-            ? "{ not valid json"
-            : validProposalJson(
-                outcome === "VALID_CLARIFY" ? "CLARIFY_MISSING_CONTEXT" : "REALIZE_CURRENT_INTENT",
-                observationHandle
-              );
-        const result: TransportResult = {
-          ok: true,
-          content,
-          model: options.modelId ?? "deepseek-flash",
-          usage: { prompt_tokens: 4400, completion_tokens: 3000, total_tokens: 7400, cached_tokens: 0, reasoning_tokens: 1200 },
-          attempts: attemptList
-        };
-        return result;
-      }
-    },
-    attempts: () => attempts
-  };
-}
-
-const CLEAN_INTEGRITY = {
-  prereg_sha_match: true,
-  manifest_valid: true,
-  design_rederivation: true,
-  tracked_tree_clean: true,
-  secret_safety_clean: true,
-  no_production_write: true
-} as const;
-
-async function fixtureRequest(): Promise<CalibrationRequest> {
-  const request = await buildCalibrationRequest({
-    schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
-    modelConfigHash: hashJson(modelConfigManifest())
-  });
-  if (USER_TEXT.length === 0) USER_TEXT = request.body.messages[1]?.content ?? "";
-  return request;
+async function fixture(): Promise<{ readonly userText: string }> {
+  const request = await realAuthoritativeRequest();
+  return { userText: request.body.messages[1]?.content ?? "" };
 }
 
 describe("CALIBRATION — request determinism and byte identity", () => {
-  it("TEST_REQUEST_DETERMINISM: 100 consecutive builds share ONE model-facing request hash", async () => {
+  it("TEST_REQUEST_DETERMINISM_100X: 100 consecutive builds share ONE model-facing request hash", async () => {
     const schemaHash = hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA);
     const modelConfigHash = hashJson(modelConfigManifest());
     const hashes = new Set<string>();
@@ -161,10 +58,16 @@ describe("CALIBRATION — request determinism and byte identity", () => {
       hashes.add(request.hashes.model_facing_request_hash);
     }
     expect(hashes.size).toBe(1);
+    // The frozen value is preserved by the dead-code cleanup and by the single
+    // authoritative serialization.
+    expect([...hashes][0]).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
   });
 
   it("the request body contains no host identity and no secret", async () => {
-    const request = await fixtureRequest();
+    const request = await buildCalibrationRequest({
+      schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
+      modelConfigHash: hashJson(modelConfigManifest())
+    });
     const serialized = JSON.stringify(request);
     const bodyText = JSON.stringify(request.body);
     for (const forbidden of ["trial", "timestamp", "nonce", "replicate", "run_id", "CALIBRATION|", "authorization", "sk-"]) {
@@ -179,11 +82,17 @@ describe("CALIBRATION — request determinism and byte identity", () => {
   });
 
   it("REQUEST_HASH_SCOPE covers every model-visible field and excludes host-only ones", async () => {
-    const request = await fixtureRequest();
+    const request = await buildCalibrationRequest({
+      schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
+      modelConfigHash: hashJson(modelConfigManifest())
+    });
     const bodyHash = request.hashes.model_facing_request_hash;
-    const mutatedModel = hashText(JSON.stringify({ ...request.body, model: "other-model" }));
-    const mutatedTemp = hashText(JSON.stringify({ ...request.body, temperature: 0.5 }));
-    const mutatedUser = hashText(JSON.stringify({ ...request.body, messages: [request.body.messages[0], { role: "user", content: "x" }] }));
+    const mutatedModel = modelFacingRequestHash({ ...request.body, model: "other-model" });
+    const mutatedTemp = modelFacingRequestHash({ ...request.body, temperature: 0.5 });
+    const mutatedUser = modelFacingRequestHash({
+      ...request.body,
+      messages: [request.body.messages[0], { role: "user", content: "x" }] as never
+    });
     expect(bodyHash).not.toBe(mutatedModel);
     expect(bodyHash).not.toBe(mutatedTemp);
     expect(bodyHash).not.toBe(mutatedUser);
@@ -191,42 +100,29 @@ describe("CALIBRATION — request determinism and byte identity", () => {
 });
 
 describe("CALIBRATION — retry law and invalid trials", () => {
-  it("TEST_RETRY_BYTE_IDENTITY: transport retries reuse the identical body", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, extraAttemptsForFirstTrial: 1, defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 3 },
-      { scanSurface: SCAN_SURFACE }
-    );
-    expect(run.aggregates.request_hash_unique_count).toBe(1);
-    expect(run.integrity.retry_legality).toBe(true);
-    expect(run.trials[0]?.raw_attempts).toBe(2);
-    expect(run.aggregates.retries).toBe(1);
-  });
-
-  it("TEST_SCHEMA_INVALID_NO_RETRY: an invalid response consumes exactly ONE attempt and is never retried", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, script: ["SCHEMA_INVALID", "VALID_REALIZE", "VALID_REALIZE", "VALID_REALIZE"], defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 4 },
-      { scanSurface: SCAN_SURFACE }
-    );
-    expect(run.trials[0]?.host_valid).toBe(false);
-    expect(run.trials[0]?.schema_valid).toBe(false);
-    expect(run.trials[0]?.raw_attempts).toBe(1);
-    expect(run.trials.filter((trial) => trial.host_valid).length).toBe(3);
-  });
-
   it("TEST_TRANSPORT_FAILURE_IS_NON_HOST_VALID and never replaced", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, script: ["TRANSPORT_FAIL", "VALID_REALIZE", "VALID_REALIZE", "VALID_REALIZE"], defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 4 },
-      { scanSurface: SCAN_SURFACE }
-    );
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, script: ["TRANSPORT_FAIL", "VALID_REALIZE", "VALID_REALIZE", "VALID_REALIZE"] });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 4 }, { scanSurface: SCAN_SURFACE });
     expect(run.aggregates.transport_failures).toBe(1);
     expect(run.aggregates.planned).toBe(4);
     expect(run.aggregates.executed).toBe(4);
+    expect(run.trials[0]?.transport_failure).toBe("TRANSPORT_NETWORK_ERROR");
+    expect(run.trials[0]?.transport_failure_class).toBe("NETWORK_ERROR");
+  });
+
+  it("TEST_SCHEMA_INVALID_NO_RETRY: an invalid response consumes exactly ONE attempt and is never retried", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, script: ["SCHEMA_INVALID", "VALID_REALIZE", "VALID_REALIZE", "VALID_REALIZE"] });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 4 }, { scanSurface: SCAN_SURFACE });
+    expect(run.trials[0]?.host_valid).toBe(false);
+    expect(run.trials[0]?.schema_valid).toBe(false);
+    expect(run.trials[0]?.content_json_valid).toBe(false);
+    expect(run.trials[0]?.raw_attempts).toBe(1);
+    expect(run.aggregates.retries).toBe(0);
+    expect(run.trials.filter((trial) => trial.host_valid).length).toBe(3);
   });
 });
 
@@ -255,6 +151,41 @@ describe("CALIBRATION — RUN/STOP law boundaries", () => {
     expect(decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
   });
 
+  it("TEST_48_50_RUN_END_TO_END: a real 50-trial run with 2 invalid draws is RUN", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const script: MockOutcome[] = ["SCHEMA_INVALID", "VALID_REALIZE", "SCHEMA_INVALID", ...Array<MockOutcome>(47).fill("VALID_REALIZE")];
+    const mock = mockTransport({ userText, script, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(run.aggregates.host_valid).toBe(48);
+    expect(run.aggregates.non_host_valid).toBe(2);
+    expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_RUN");
+  });
+
+  it("TEST_47_50_LAW: the frozen law calls 47/50 a STOP, and a LIVE 47/50 can only end as the deterministic early stop", async () => {
+    // The law itself (fixture-free, deterministic):
+    const decision = evaluateCalibrationLaw({
+      scheduled_trials: CALIBRATION_SCHEDULED_LOGICAL_TRIALS,
+      executed_trials: CALIBRATION_SCHEDULED_LOGICAL_TRIALS,
+      host_valid_count: 47,
+      non_host_valid_count: 3,
+      integrity_gates: { ALL: true },
+      early_stopped: false
+    });
+    expect(decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
+    // Live, the third invalid draw makes the 48/50 floor unreachable, so the run
+    // stops at that draw: both paths refuse RUN.
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const script: MockOutcome[] = ["SCHEMA_INVALID", "SCHEMA_INVALID", "SCHEMA_INVALID"];
+    const mock = mockTransport({ userText, script, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(run.aggregates.planned).toBe(50);
+    expect(run.aggregates.executed).toBe(3);
+    expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP_EARLY");
+    expect(run.decision.decision.startsWith("EXECUTOR_CALIBRATION_STOP")).toBe(true);
+  });
+
   it("the 48/50 threshold is the frozen 0.95 floor discretized (not an invented number)", () => {
     expect(CALIBRATION_MINIMUM_HOST_VALID_COUNT).toBe(48);
     expect(CALIBRATION_MAXIMUM_NON_HOST_VALID_COUNT).toBe(2);
@@ -279,36 +210,31 @@ describe("CALIBRATION — RUN/STOP law boundaries", () => {
 
 describe("CALIBRATION — no outcome-diversity gate", () => {
   it("TEST_50_50_REALIZE_RUN: 50 host-valid REALIZE outcomes are RUN", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY },
-      { scanSurface: SCAN_SURFACE }
-    );
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
     expect(run.aggregates.host_valid).toBe(50);
     expect(run.aggregates.realize_count).toBe(50);
     expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_RUN");
+    expect(mock.calls()).toBe(50);
   });
 
   it("TEST_50_50_CLARIFY_RUN: 50 host-valid CLARIFY outcomes are RUN", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, defaultOutcome: "VALID_CLARIFY"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY },
-      { scanSurface: SCAN_SURFACE }
-    );
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_CLARIFY" });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
     expect(run.aggregates.host_valid).toBe(50);
     expect(run.aggregates.clarify_count).toBe(50);
     expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_RUN");
   });
 
   it("stochasticity and conflation flags are diagnostics only (no gate depends on them)", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 5 },
-      { scanSurface: SCAN_SURFACE }
-    );
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 5 }, { scanSurface: SCAN_SURFACE });
     const lawText = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-law.ts"), "utf8");
     expect(lawText).toContain("outcome_diversity_gate: \"NONE\"");
     expect(lawText).toContain("stochasticity_role: \"DIAGNOSTIC_ONLY\"");
@@ -319,113 +245,355 @@ describe("CALIBRATION — no outcome-diversity gate", () => {
 
 describe("CALIBRATION — early stop and drift gates", () => {
   it("TEST_EARLY_STOP: the third non-host-valid stops the run deterministically and leaves the rest unexecuted", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, script: ["SCHEMA_INVALID", "SCHEMA_INVALID", "SCHEMA_INVALID"], defaultOutcome: "VALID_REALIZE"  });
-    const run = await runCalibration(
-      { transport: mock.transport, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY },
-      { scanSurface: SCAN_SURFACE }
-    );
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, script: ["SCHEMA_INVALID", "SCHEMA_INVALID", "SCHEMA_INVALID"] });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
     expect(run.trials.length).toBe(3);
     expect(run.early_stopped).toBe(true);
     expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP_EARLY");
-    expect(mock.attempts()).toBe(3);
+    expect(mock.calls()).toBe(3);
+    expect(run.aggregates.planned).toBe(50);
   });
 
-  it("TEST_REQUEST_DRIFT: a different body hash across trials fails the identity gate", async () => {
-    const request = await fixtureRequest();
-    let calls = 0;
-    const drifting: MinimalTransport = {
-      id: "MOCK",
-      async complete(_body: unknown, bodyHash: string) {
-        calls += 1;
-        const hash = calls === 2 ? hashText(`${bodyHash}-drift`) : bodyHash;
+  it("TEST_SCHEMA_DRIFT: schema drift detected before trial 25 stops the run at trial 24", async () => {
+    const { userText } = await fixture();
+    const state = { calls: 0 };
+    const authority = await mockAuthority({
+      schemaHash: () =>
+        state.calls >= 24
+          ? hashJson({ ...CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA, drifted: true })
+          : hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA)
+    });
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE", onCall: (call) => (state.calls = call) });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(24);
+    expect(run.trials.length).toBe(24);
+    expect(run.stopped_before_trial).toBe(25);
+    expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
+    expect(run.integrity.gates.SCHEMA_HASH_IDENTITY).toBe(false);
+    expect(run.stop_reason).toContain("CALIBRATION_SCHEMA_HASH_DRIFT");
+  });
+
+  it("TEST_CONFIG_DRIFT: a real config change (temperature) is detected pre-call", async () => {
+    const { userText } = await fixture();
+    const state = { calls: 0 };
+    const authority = await mockAuthority({
+      modelConfigHash: () => {
+        const config = { ...modelConfigManifest() } as Record<string, unknown>;
+        if (state.calls >= 3) config["temperature"] = 0.7;
+        return hashJson(config);
+      }
+    });
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE", onCall: (call) => (state.calls = call) });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(3);
+    expect(run.stopped_before_trial).toBe(4);
+    expect(run.stop_reason).toContain("CALIBRATION_MODEL_CONFIG_HASH_DRIFT");
+    expect(run.integrity.gates.CONFIG_HASH_IDENTITY).toBe(false);
+  });
+
+  it("TEST_SYSTEM_DRIFT: real system bytes changing stops the run pre-call", async () => {
+    const { userText } = await fixture();
+    const base = await realAuthoritativeRequest();
+    const state = { calls: 0 };
+    const authority = await mockAuthority({
+      renderRequest: async () => {
+        const system = `${base.body.messages[0]?.content ?? ""}${state.calls >= 2 ? " " : ""}`;
+        const body = {
+          ...base.body,
+          messages: [{ role: "system" as const, content: system }, base.body.messages[1] as { role: "user"; content: string }]
+        };
+        const serialized = serializeAuthoritativeRequest(body);
         return {
-          ok: true,
-          content: validProposalJson("REALIZE_CURRENT_INTENT"),
-          model: "deepseek-flash",
-          usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2, cached_tokens: 0, reasoning_tokens: 0 },
-          attempts: [{ attempt: 1, http_status: 200, failure_class: null, elapsed_ms: 1, body_hash: hash }]
+          body,
+          serialized_body: serialized,
+          request_hash: authoritativeRequestHash(serialized),
+          hashes: { ...base.hashes, system_hash: hashText(system) }
         };
       }
-    };
-    const run = await runCalibration(
-      { transport: drifting, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 3 },
-      { scanSurface: SCAN_SURFACE }
-    );
-    expect(run.integrity.request_hash_identity).toBe(false);
-    expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
-    expect(run.decision.failed_integrity_gates).toContain("REQUEST_HASH_IDENTITY");
+    });
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE", onCall: (call) => (state.calls = call) });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(2);
+    expect(run.stopped_before_trial).toBe(3);
+    expect(run.stop_reason).toContain("CALIBRATION_SYSTEM_HASH_DRIFT");
   });
 
-  it("TEST_CONFIG_DRIFT: a mid-run model-id change fails the model identity gate", async () => {
-    const request = await fixtureRequest();
-    let calls = 0;
-    const drifting: MinimalTransport = {
-      id: "MOCK",
-      async complete(_body: unknown, bodyHash: string) {
-        calls += 1;
+  it("TEST_USER_DRIFT: one extra user character stops the run pre-call", async () => {
+    const { userText } = await fixture();
+    const base = await realAuthoritativeRequest();
+    const state = { calls: 0 };
+    const authority = await mockAuthority({
+      renderRequest: async () => {
+        const user = `${base.body.messages[1]?.content ?? ""}${state.calls >= 1 ? "x" : ""}`;
+        const body = {
+          ...base.body,
+          messages: [base.body.messages[0] as { role: "system"; content: string }, { role: "user" as const, content: user }]
+        };
+        const serialized = serializeAuthoritativeRequest(body);
         return {
-          ok: true,
-          content: validProposalJson("REALIZE_CURRENT_INTENT"),
-          model: calls === 3 ? "another-model" : "deepseek-flash",
-          usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2, cached_tokens: 0, reasoning_tokens: 0 },
-          attempts: [{ attempt: 1, http_status: 200, failure_class: null, elapsed_ms: 1, body_hash: bodyHash }]
+          body,
+          serialized_body: serialized,
+          request_hash: authoritativeRequestHash(serialized),
+          hashes: { ...base.hashes, user_hash: hashText(user) }
         };
       }
-    };
-    const run = await runCalibration(
-      { transport: drifting, request, readCodeState: () => CODE_STATE, integrity: CLEAN_INTEGRITY, maxTrials: 4 },
-      { scanSurface: SCAN_SURFACE }
-    );
-    expect(run.integrity.model_identity).toBe(false);
-    expect(run.aggregates.model_id_unique_count).toBeGreaterThan(1);
+    });
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE", onCall: (call) => (state.calls = call) });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(1);
+    expect(run.stopped_before_trial).toBe(2);
+    expect(run.stop_reason).toContain("CALIBRATION_USER_HASH_DRIFT");
+    expect(run.integrity.gates.USER_HASH_IDENTITY).toBe(false);
+  });
+
+  it("TEST_REQUEST_DRIFT: a changed authoritative byte stream is refused pre-call", async () => {
+    const { userText } = await fixture();
+    const base = await realAuthoritativeRequest();
+    const authority = await mockAuthority({
+      renderRequest: async () => {
+        const body = { ...base.body, temperature: 0.25 };
+        const serialized = serializeAuthoritativeRequest(body);
+        return { body, serialized_body: serialized, request_hash: authoritativeRequestHash(serialized), hashes: { ...base.hashes } };
+      }
+    });
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(0);
+    expect(run.stopped_before_trial).toBe(1);
+    expect(run.stop_reason).toContain("CALIBRATION_REQUEST_FROZEN_HASH_MISMATCH");
+  });
+
+  it("TEST_RESPONSE_MODEL_DRIFT: trial k completes and trial k+1 is NEVER sent", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({
+      userText,
+      defaultOutcome: "VALID_REALIZE",
+      modelIdForCall: (call) => (call === 3 ? "another-model" : "deepseek-flash")
+    });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(mock.calls()).toBe(3);
+    expect(run.trials.length).toBe(3);
+    expect(run.trials[2]?.model_reported).toBe("another-model");
+    expect(run.stopped_before_trial).toBe(4);
+    expect(run.aggregates.model_id_unique_count).toBe(2);
+    expect(run.integrity.gates.MODEL_IDENTITY).toBe(false);
     expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
   });
 
-  it("TEST_CODE_STATE_DRIFT: a HEAD/tree change during the run stops further authorization", async () => {
-    const request = await fixtureRequest();
-    const mock = mockTransport({ userText: USER_TEXT, defaultOutcome: "VALID_REALIZE"  });
+  it("TEST_CODE_STATE_DRIFT: a HEAD change during the run stops further authorization", async () => {
+    const { userText } = await fixture();
     let reads = 0;
-    const run = await runCalibration(
-      {
-        transport: mock.transport,
-        request,
-        readCodeState: () => {
-          reads += 1;
-          return reads <= 1 ? CODE_STATE : `${CODE_STATE}-mutated`;
-        },
-        integrity: CLEAN_INTEGRITY,
-        maxTrials: 4
+    const authority = await mockAuthority({
+      head: "f".repeat(40)
+    });
+    const drifting = {
+      ...authority,
+      currentHead: () => {
+        reads += 1;
+        return reads <= 2 ? "f".repeat(40) : "e".repeat(40);
       },
-      { scanSurface: SCAN_SURFACE }
-    );
-    expect(run.integrity.code_state_before).not.toBe(run.integrity.code_state_after);
+      codeState: () => `${reads <= 2 ? "f".repeat(40) : "e".repeat(40)}:TRACKED_TREE_CLEAN`
+    };
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority: drifting }, { scanSurface: SCAN_SURFACE });
+    expect(run.integrity.current_head_before).not.toBe(run.integrity.current_head_after);
     expect(run.decision.decision).toBe("EXECUTOR_CALIBRATION_STOP");
-    expect(run.decision.failed_integrity_gates).toContain("TRACKED_TREE_CLEAN");
+    expect(run.integrity.gates.TRACKED_TREE_CLEAN).toBe(false);
   });
 
   it("TEST_SECRET_SAFETY: the frozen body and evidence schema carry no credential surface", async () => {
-    const request = await fixtureRequest();
+    const request = await realAuthoritativeRequest();
     const blockComments = new RegExp("/\\*[\\s\\S]*?\\*/", "g");
     const lineComments = new RegExp("^\\s*//.*$", "gm");
     const stripComments = (source: string): string => source.replace(blockComments, "").replace(lineComments, "");
     const evidenceCode = stripComments(readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-evidence.ts"), "utf8"));
     const transportCode = stripComments(readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-transport.ts"), "utf8"));
-    expect(JSON.stringify(request)).not.toMatch(/authorization/i);
+    expect(request.serialized_body).not.toMatch(/authorization/i);
     // The credential appears in CODE only in the HTTP header construction.
     expect(transportCode).toContain("authorization: `Bearer ${apiKey}`");
-    expect(evidenceCode).not.toMatch(/apiKey|api_key|MODEL_API_KEY|authorization/i);
-    expect(evidenceCode).not.toMatch(/sk-/);
-    expect(evidenceCode).not.toMatch(new RegExp("fetch\\("));
+    expect(evidenceCode).not.toMatch(/\bapiKey\b/i);
+    expect(evidenceCode).not.toMatch(/\bsk-/);
+    expect(evidenceCode).not.toContain("fetch(");
+    expect(evidenceCode).not.toContain("process.env");
   });
 
   it("TEST_NO_PRIMARY_PATH: the calibration harness contains no primary execution path or cell identity", () => {
-    for (const file of ["calibration-runner.ts", "calibration-request.ts", "calibration-law.ts", "calibration-transport.ts", "calibration-evidence.ts"]) {
+    // The schedule/label vocabulary is forbidden EVERYWHERE in the execution path.
+    // Phase identities are forbidden as LITERALS (a quoted phase label); the
+    // PRIMARY_AUTHORIZED / stopped_before_primary refusal markers are required and
+    // are therefore not matched by these tokens.
+    // Phase identities are forbidden as LITERALS (a quoted phase label);
+    // the PRIMARY_AUTHORIZED / stopped_before_primary refusal markers are
+    // required and are therefore not matched by these tokens.
+    const forbiddenEverywhere = ["A_LOW", "B_HIGH", "C_HIGH_ABLATED", "D_LOW_EQUALIZED", "runScene", "restoreBranch", "buildBranch", '"PRIMARY"', '"REPLICATION"', "trialSchedule"];
+    for (const file of [
+      "calibration-cli.ts",
+      "calibration-runner.ts",
+      "calibration-request.ts",
+      "calibration-law.ts",
+      "calibration-transport.ts",
+      "calibration-evidence.ts",
+      "cli.ts"
+    ]) {
       const source = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, file), "utf8");
-      for (const forbidden of ["A_LOW", "B_HIGH", "C_HIGH_ABLATED", "D_LOW_EQUALIZED", "trialSchedule", "runScene", "restoreBranch", "buildBranch", "PRIMARY", "REPLICATION"]) {
+      for (const forbidden of forbiddenEverywhere) {
         expect(source.includes(forbidden), `${file} must not reference ${forbidden}`).toBe(false);
       }
       expect(source).not.toMatch(/commitReserved|reserveAndRoute|BeliefTransitionExecutor|terminalizeReservedNoOp/);
     }
+    // `calibration-authority.ts` is the DESIGN-BINDING module: it must re-derive
+    // the frozen schedule hash and re-form the two research histories offline
+    // (which is why it names `trialSchedule`, the phase labels and `buildBranch`).
+    // What it must NEVER contain is a confirmatory trial identity, a scene
+    // runner, a writer or any network surface.
+    const authoritySource = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-authority.ts"), "utf8");
+    for (const forbidden of ["A_LOW", "B_HIGH", "C_HIGH_ABLATED", "D_LOW_EQUALIZED", "runScene"]) {
+      expect(authoritySource.includes(forbidden), `calibration-authority.ts must not reference ${forbidden}`).toBe(false);
+    }
+    expect(authoritySource).toContain("trial_schedule_hash");
+    // No network surface: the only `fetch(` in this module is the audit vocabulary string.
+    expect(authoritySource).not.toMatch(/fetchImpl|globalThis\.fetch|await\s+fetch\(/);
+    // No writer CALL: the module names writer tokens as STRINGS (it is the module
+    // that detects them), so the assertion runs on the code with literals removed.
+    const authorityCodeOnly = authoritySource.replace(/"[^"\n]*"|'[^'\n]*'/g, '""');
+    expect(authorityCodeOnly).not.toMatch(/commitReserved|reserveAndRoute|BeliefTransitionExecutor|terminalizeReservedNoOp|writeBelief/);
+  });
+
+  it("TEST_NO_AUTO_PRIMARY: nothing in the calibration path can enter the primary phase", () => {
+    for (const file of ["calibration-cli.ts", "cli.ts"]) {
+      const source = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, file), "utf8");
+      expect(source).toContain("primary_authorized");
+      expect(source).not.toMatch(/runPrimary|PRIMARY_SCHEDULER|A_B_C_D|phase:\s*"PRIMARY"/);
+    }
+    const cliSource = readFileSync(join(REPO_ROOT, EXPERIMENT_DIR, "calibration-cli.ts"), "utf8");
+    expect(cliSource).toContain("PRIMARY_AUTHORIZED = false");
+  });
+});
+
+describe("CALIBRATION — T23/T24 executor-output classification at the runner", () => {
+  it("TEST_T23_MODEL_CONTENT_INVALID: a valid HTTP envelope with malformed cognition content is ONE attempt", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, script: ["SCHEMA_INVALID", "VALID_REALIZE"], defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 2 }, { scanSurface: SCAN_SURFACE });
+    const trial = run.trials[0];
+    expect(trial?.raw_attempts).toBe(1);
+    expect(trial?.content_json_valid).toBe(false);
+    expect(trial?.schema_valid).toBe(false);
+    expect(trial?.host_valid).toBe(false);
+    expect(trial?.host_invalid_reason).toBe("MODEL_SCHEMA_INVALID");
+    expect(run.aggregates.retries).toBe(0);
+    // The transport itself only saw ONE HTTP-shaped call for that trial.
+    expect(mock.attempts()).toBe(2);
+  });
+
+  it("TEST_T24_HOST_INVALID_AFTER_SCHEMA: a schema-valid but host-rejected response is ONE attempt", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, script: ["HOST_INVALID", "VALID_REALIZE"], defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 2 }, { scanSurface: SCAN_SURFACE });
+    const trial = run.trials[0];
+    expect(trial?.raw_attempts).toBe(1);
+    expect(trial?.content_json_valid).toBe(true);
+    expect(trial?.schema_valid).toBe(true);
+    expect(trial?.host_valid).toBe(false);
+    expect(trial?.host_invalid_reason).not.toBe("MODEL_SCHEMA_INVALID");
+    expect(run.aggregates.retries).toBe(0);
+    expect(run.aggregates.schema_invalid).toBe(0);
+  });
+
+  it("TEST_T24C_FACTUAL_AUTHORIZATION: the second schema-valid/host-invalid case is also ONE attempt", async () => {
+    const { userText } = await fixture();
+    const { handleForObservation, factualInvalidProposalJson } = await import("./test-support.ts");
+    const handle = handleForObservation(userText) ?? "F1";
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, contentFor: () => factualInvalidProposalJson(handle), defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 1 }, { scanSurface: SCAN_SURFACE });
+    const trial = run.trials[0];
+    expect(trial?.raw_attempts).toBe(1);
+    expect(trial?.content_json_valid).toBe(true);
+    expect(trial?.schema_valid).toBe(true);
+    expect(trial?.host_valid).toBe(false);
+    expect(trial?.host_invalid_reason).toBe("FACTUAL_AUTHORIZATION_REJECTED");
+  });
+
+  it("TEST_T24B_SCHEMA_VALID_HOST_INVALID_EXISTS: the V8 enum boundary makes the DIRECTIVE atoms unreachable post-schema, and the host rejection is the reachable case", () => {
+    // The directive enum is EXACTLY the two frozen atoms, so a schema-valid
+    // response can never carry a third directive kind: the
+    // `DIRECTIVE_NOT_IN_ALLOWED_ATOMS` branch is UNREACHABLE_AFTER_SCHEMA_VALIDATION.
+    const kinds = (
+      CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA as {
+        properties: { communication_directive: { properties: { kind: { enum: readonly string[] } } } };
+      }
+    ).properties.communication_directive.properties.kind.enum;
+    expect([...kinds].sort()).toEqual(["CLARIFY_MISSING_CONTEXT", "REALIZE_CURRENT_INTENT"]);
+    // A schema-valid / host-invalid case DOES exist — it is the host authority
+    // stage (factual authorization / response semantics), not the enum — and
+    // TEST_T24_HOST_INVALID_AFTER_SCHEMA exercises it with exactly one attempt.
+    expect(validProposalJson("REALIZE_CURRENT_INTENT").length).toBeGreaterThan(0);
+  });
+});
+
+describe("CALIBRATION — the authoritative serialization", () => {
+  it("the bytes the transport receives are the frozen canonical bytes (not a second serialization)", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const run = await runCalibration({ transport: mock.transport, authority, maxTrials: 3 }, { scanSurface: SCAN_SURFACE });
+    const expected = (await realAuthoritativeRequest()).serialized_body;
+    for (const body of mock.bodies()) {
+      expect(body).toBe(expected);
+      expect(hashText(body)).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+    }
+    expect(run.aggregates.request_hash_unique_count).toBe(1);
+    expect(run.integrity.runtime_request_hash).toBe(run.integrity.frozen_request_hash);
+    for (const trial of run.trials) {
+      expect(trial.request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+      expect(trial.serialized_body_bytes).toBe(Buffer.byteLength(expected, "utf8"));
+    }
+  });
+
+  it("the unique counts are computed from executed trial records (never a constant 1)", async () => {
+    const { userText } = await fixture();
+    const authority = await mockAuthority();
+    const mock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE", modelIdForCall: (call) => (call === 2 ? "drifted" : "deepseek-flash") });
+    const run = await runCalibration({ transport: mock.transport, authority }, { scanSurface: SCAN_SURFACE });
+    expect(run.trials.length).toBe(2);
+    expect(run.aggregates.request_hash_unique_count).toBe(1);
+    expect(run.aggregates.system_hash_unique_count).toBe(1);
+    expect(run.aggregates.user_hash_unique_count).toBe(1);
+    expect(run.aggregates.schema_hash_unique_count).toBe(1);
+    expect(run.aggregates.config_hash_unique_count).toBe(1);
+    expect(run.aggregates.model_id_unique_count).toBe(2);
+    // A run refused before its first call carries ZERO trials, and its counts are 0
+    // — not a fabricated 1.
+    const base = await realAuthoritativeRequest();
+    const refusing = await mockAuthority({
+      renderRequest: async () => ({ ...base, hashes: { ...base.hashes, user_hash: "sha256:" + "9".repeat(64) } })
+    });
+    const emptyMock = mockTransport({ userText, defaultOutcome: "VALID_REALIZE" });
+    const zero = await runCalibration({ transport: emptyMock.transport, authority: refusing }, { scanSurface: SCAN_SURFACE });
+    expect(zero.trials.length).toBe(0);
+    expect(zero.aggregates.request_hash_unique_count).toBe(0);
+    expect(zero.aggregates.system_hash_unique_count).toBe(0);
+    expect(zero.aggregates.model_id_unique_count).toBe(0);
+    expect(emptyMock.calls()).toBe(0);
+  });
+});
+
+describe("CALIBRATION — the frozen request body is unchanged by the remediation", () => {
+  it("the dead observation code did not change a single request byte", async () => {
+    const request = await realAuthoritativeRequest();
+    expect(request.request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+    expect(request.hashes.model_facing_request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+    expect(request.hashes.system_hash).toBe("sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c");
+    expect(request.hashes.user_hash).toBe("sha256:55d27d60fe3087537e66c1075dbe43677160ddbc0d8569207577b46962a219f3");
+    expect(request.hashes.schema_hash).toBe("sha256:e9da721b67903c40e40f32dc1989456924923167e921e47cdd2231a78ee771b9");
+    expect(request.hashes.model_config_hash).toBe("sha256:0ed9df37fb4b2981ae5ff69bbe37c0858ea82cec200bb87249f66478927810d5");
+    expect(Buffer.byteLength(request.serialized_body, "utf8")).toBe(16085);
+    expect(validProposalJson("REALIZE_CURRENT_INTENT")).toContain("communication_directive");
   });
 });

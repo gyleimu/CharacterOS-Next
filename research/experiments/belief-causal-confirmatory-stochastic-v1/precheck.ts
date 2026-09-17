@@ -57,6 +57,17 @@ import {
   type RestoredBranch
 } from "./histories.ts";
 import { auditScanSurface } from "./scan-surface.ts";
+import {
+  auditInterventionWriterFree,
+  auditV0DependencyFree,
+  EXECUTION_CLOSURE_PATTERN,
+  extractFunctionBody,
+  REQUIRED_EXECUTION_MODULES,
+  stripCommentsForAudit,
+  tokenHitsInCode,
+  WRITER_TOKENS,
+  type SourceFile
+} from "./source-audit.ts";
 import { deriveConfirmatoryVerdict, type VerdictInput } from "./verdict.ts";
 
 const runtimeDist = new URL("../../../packages/runtime/dist/", import.meta.url).href;
@@ -81,30 +92,12 @@ function experimentDirForAudit(): string {
   return fileURLToPath(new URL(".", import.meta.url));
 }
 
-/** Comments are irrelevant to a dependency audit; only code counts. */
-function stripCommentsForAudit(source: string): string {
-  const slash = 47;
-  const star = 42;
-  const lineFeed = 10;
-  let out = "";
-  let index = 0;
-  while (index < source.length) {
-    const code = source.charCodeAt(index);
-    if (code === slash && source.charCodeAt(index + 1) === star) {
-      index += 2;
-      while (index < source.length && !(source.charCodeAt(index) === star && source.charCodeAt(index + 1) === slash)) index += 1;
-      index += 2;
-      out += " ";
-      continue;
-    }
-    if (code === slash && source.charCodeAt(index + 1) === slash) {
-      while (index < source.length && source.charCodeAt(index) !== lineFeed) index += 1;
-      continue;
-    }
-    out += source[index];
-    index += 1;
-  }
-  return out;
+/** Every non-test `.ts` source of this experiment, read from disk (never a hardcoded list). */
+function experimentSources(): readonly SourceFile[] {
+  return readdirSync(experimentDirForAudit())
+    .filter((name) => name.endsWith(".ts") && !name.endsWith(".test.ts"))
+    .sort()
+    .map((name) => ({ file: name, code: readFileSync(join(experimentDirForAudit(), name), "utf8") }));
 }
 
 function writeJson(path: string, value: unknown): void {
@@ -113,7 +106,7 @@ function writeJson(path: string, value: unknown): void {
 }
 
 /** Model-facing belief-view intervention (§12/§35): read-only, never a durable write. */
-function applyBeliefView(
+export function applyBeliefView(
   snapshot: SubjectStateV4,
   intervention: "NONE" | "ABLATE_TARGET" | "EQUALIZE_TARGET_TO_HIGH",
   targetPropositionId: string,
@@ -159,80 +152,10 @@ function normalizeNonBelief(user: string): string {
 }
 
 /* -------------------------------------------------------------------------- */
-/* PURE audit helpers (exported for negative-control tests)                    */
+/* PURE audit helpers (re-exported from `source-audit.ts` for the precheck)     */
 /* -------------------------------------------------------------------------- */
 
-/**
- * P17 audit: the model-facing intervention and render bodies must contain no
- * writer/commit token, the calibration path must not reach a writer call site,
- * and the durable belief items must be byte-identical before and after the
- * research-side views.
- */
-export function auditInterventionWriterFree(input: {
-  readonly interventionBody: string;
-  readonly renderBody: string;
-  readonly writerCallSiteFiles: readonly string[];
-  readonly durableBefore: { readonly low: string; readonly high: string };
-  readonly durableAfter: { readonly low: string; readonly high: string };
-}): { readonly passed: boolean; readonly violations: readonly string[] } {
-  const writerTokens = ["commitReserved", "reserveAndRoute", "terminalizeReservedNoOp", "writeBelief"];
-  const violations = writerTokens.filter(
-    (token) => input.interventionBody.includes(token) || input.renderBody.includes(token)
-  );
-  const calibrationTouchesWriter =
-    input.writerCallSiteFiles.includes("calibration-runner.ts") ||
-    input.writerCallSiteFiles.includes("calibration-request.ts");
-  const durableStable =
-    input.durableBefore.low === input.durableAfter.low && input.durableBefore.high === input.durableAfter.high;
-  return {
-    passed:
-      violations.length === 0 &&
-      input.interventionBody.length > 0 &&
-      input.renderBody.length > 0 &&
-      !calibrationTouchesWriter &&
-      durableStable,
-    violations
-  };
-}
-
-/**
- * P22 audit: a V0 outcome artifact may appear ONLY as a declared firewall entry
- * in contract.ts; any read or import of one fails.
- */
-export function auditV0DependencyFree(input: {
-  readonly files: readonly { readonly file: string; readonly code: string }[];
-  readonly declaredFirewallPaths: readonly string[];
-}): {
-  readonly passed: boolean;
-  readonly readOrImportViolations: readonly { readonly file: string; readonly fragment: string }[];
-} {
-  const fragments = ["belief-causal-validation-v0/evidence", "V0_PRIMARY", "V0_REPLICATION"];
-  const readOrImportViolations: { file: string; fragment: string }[] = [];
-  let calibrationScanned = false;
-  for (const entry of input.files) {
-    if (entry.file === "calibration-runner.ts") calibrationScanned = true;
-    for (const fragment of fragments) {
-      let from = 0;
-      for (;;) {
-        const at = entry.code.indexOf(fragment, from);
-        if (at < 0) break;
-        from = at + fragment.length;
-        const lineStart = entry.code.lastIndexOf("\n", at) + 1;
-        const lineEnd = entry.code.indexOf("\n", at);
-        const line = entry.code.slice(lineStart, lineEnd < 0 ? entry.code.length : lineEnd);
-        const isRead =
-          line.includes("readFileSync") || line.includes("require(") || line.includes("import ") || line.includes("from ");
-        const isDeclaration =
-          entry.file === "contract.ts" &&
-          input.declaredFirewallPaths.some((declared) =>
-            line.includes(declared.split("/").slice(-1)[0] as string)
-          );
-        if (isRead && !isDeclaration) readOrImportViolations.push({ file: entry.file, fragment });
-      }
-    }
-  }
-  return { passed: readOrImportViolations.length === 0 && calibrationScanned, readOrImportViolations };
-}
+export { auditInterventionWriterFree, auditV0DependencyFree };
 
 /* -------------------------------------------------------------------------- */
 /* precheck                                                                   */
@@ -418,13 +341,17 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   // ---- §39 P17 (non-degenerate) ----------------------------------------------
   const experimentSource = (file: string): string =>
     stripCommentsForAudit(readFileSync(join(experimentDirForAudit(), file), "utf8"));
-  const interventionBody =
-    new RegExp("function applyBeliefView[\\s\\S]*?\\n\\}").exec(experimentSource("precheck.ts"))?.[0] ?? "";
-  const renderBody =
-    new RegExp("async function renderRequest[\\s\\S]*?\\n\\}").exec(experimentSource("precheck.ts"))?.[0] ?? "";
-  const writerCallSiteFiles = (
-    ["precheck.ts", "histories.ts", "calibration-runner.ts", "calibration-request.ts"] as const
-  ).filter((file) => experimentSource(file).includes("runForEpisodeRefs"));
+  const interventionBody = extractFunctionBody(experimentSource("precheck.ts"), "function applyBeliefView(");
+  const renderBody = extractFunctionBody(experimentSource("precheck.ts"), "async function renderRequest(");
+  // The runtime execution closure is ENUMERATED from disk (calibration-*.ts +
+  // cli.ts) — never a hardcoded four-name list — and every file that holds a
+  // writer call site is reported, so the audit cannot go blind when a new
+  // calibration module appears.
+  const executionClosure = experimentSources().filter((entry) => EXECUTION_CLOSURE_PATTERN.test(entry.file));
+  const writerCallSiteFiles = experimentSources()
+    .filter((entry) => entry.file !== "source-audit.ts")
+    .filter((entry) => WRITER_TOKENS.some((token) => tokenHitsInCode(stripCommentsForAudit(entry.code), token).length > 0))
+    .map((entry) => entry.file);
   const durableBefore = {
     low: hashJson(lowBranch.snapshot.beliefs.items),
     high: hashJson(highBranch.snapshot.beliefs.items)
@@ -445,19 +372,25 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   const interventionAudit = auditInterventionWriterFree({
     interventionBody,
     renderBody,
-    writerCallSiteFiles,
+    executionClosure,
+    requiredExecutionModules: REQUIRED_EXECUTION_MODULES,
+    offlineFormationFiles: writerCallSiteFiles,
     durableBefore,
     durableAfter
   });
   record("P17_PRODUCTION_WRITE_DURING_INTERVENTION_FALSE", interventionAudit.passed, {
-    intervention_path_writer_violations: interventionAudit.violations,
+    intervention_path_writer_violations: interventionAudit.intervention_body_writer_violations,
+    execution_closure_violations: interventionAudit.violations,
+    execution_closure: interventionAudit.execution_closure,
+    missing_required_modules: interventionAudit.missing_required_modules,
     intervention_body_found: interventionBody.length > 0,
     render_body_found: renderBody.length > 0,
     writer_call_site_files: writerCallSiteFiles,
     durable_before: durableBefore,
     durable_after: durableAfter,
+    durable_stable: interventionAudit.durable_stable,
     note:
-      "the model-facing intervention and render paths contain no writer/commit token; the only writer call site is history formation, which is offline preparation (attested in P2/P3) and absent from the calibration path; durable belief items are byte-identical before and after every research-side view"
+      "the model-facing intervention and render paths contain no writer/commit token; the ENUMERATED calibration execution closure (calibration-*.ts + cli.ts) contains no writer call site at all; history formation is offline preparation confined to the reported writer-call-site files; durable belief items are byte-identical before and after every research-side view"
   });
 
   // ---- §18/§19 exact scan surface --------------------------------------------
@@ -531,18 +464,27 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
   });
 
   // ---- §39 P22 (non-degenerate): V0 dependency scan over this experiment ------
-  const firewallFiles = readdirSync(experimentDirForAudit())
-    .filter((name) => name.endsWith(".ts"))
-    .sort();
+  // The audited surface is EVERY non-test `.ts` source of this experiment, read
+  // from disk (a new module is scanned automatically), and the scanner resolves
+  // string literals inside their enclosing statement, so static imports,
+  // multiline imports, dynamic `import(`, `require(` and the whole readFile
+  // family are all covered. `.test.ts` files are excluded: they hold the
+  // negative-control fixtures and are not part of the confirmatory evaluator.
+  const firewallFiles = experimentSources();
   const v0Audit = auditV0DependencyFree({
-    files: firewallFiles.map((file) => ({ file, code: experimentSource(file) })),
-    declaredFirewallPaths: V0_FIREWALL.forbidden_reads
+    files: firewallFiles,
+    declaredFirewallPaths: V0_FIREWALL.forbidden_reads,
+    executionModulePattern: EXECUTION_CLOSURE_PATTERN,
+    requireDeclaredFirewall: true
   });
   record("P22_V0_CONFIRMATORY_COUNT_CONTRIBUTION_ZERO", v0Audit.passed, {
-    files_scanned: firewallFiles,
-    read_or_import_violations: v0Audit.readOrImportViolations,
+    files_scanned: v0Audit.files_scanned,
+    execution_modules_scanned: v0Audit.execution_modules_scanned,
+    read_or_import_violations: v0Audit.read_or_import_violations,
+    declared_paths_present: v0Audit.declared_paths_present,
+    limitation: v0Audit.limitation,
     confirmatory_count_contribution: V0_FIREWALL.confirmatory_count_contribution,
-    note: "no source reads or imports a V0 outcome artifact; the only occurrences are contract.ts's declared firewall list"
+    note: "no source in this experiment contains a literal V0 outcome path outside the declared firewall list in contract.ts; the scan classifies every string literal by its enclosing statement (static import, multiline import, dynamic import, require, readFile family, bare literal)"
   });
   record("P23_MODEL_CALLS_ZERO", SLICE_CALL_ATTESTATION.total_model_calls === 0, SLICE_CALL_ATTESTATION);
 

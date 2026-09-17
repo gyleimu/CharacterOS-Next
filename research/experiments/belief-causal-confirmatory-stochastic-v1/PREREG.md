@@ -134,6 +134,13 @@ authorized calls are 50 byte-identical draws; calibration may only decide **RUN 
 modify N, `Δ_min`, `ε`, the treatment, the scenario, the evaluator or the statistics. This
 preregistration performs **0** calibration calls.
 
+The only formal execution entry points are the two tracked CLI commands
+`calibration-preflight --approved-prereg-sha <SHA> --manifest <PATH>` (0 network calls) and
+`calibration-run --approved-prereg-sha <SHA> --manifest <PATH> --evidence-out <PATH>`. They take the
+authorization value as an external argument, compute every integrity fact themselves, read the
+credential from `MODEL_API_KEY` in the environment only, and **stop after calibration**:
+`PRIMARY_AUTHORIZED = FALSE` — a RUN verdict never enters the primary, replication or A/B/C/D path.
+
 ## 13. Hard gates (17, all machine-readable and consumed by the verdict)
 
 `PREREG_SHA_MATCH` · `MANIFEST_VALID` · `SEED_BELIEF_EMPTY` · `FORMATION_ATTESTATION` ·
@@ -169,8 +176,14 @@ commit → new manifest → start from zero.
 code_blob_hashes (git blobs at that commit), design}` with `manifest_hash = sha256(canonicalJson(core))`;
 the core contains no manifest hash, no wall clock, no current HEAD and no worktree state. `design`
 binds: history hashes, scenario hash, intervention-law hash, scan-surface hash, evaluator hash,
-statistical-law hash, model-config hash, calibration-input hash and trial-schedule hash.
+statistical-law hash, model-config hash, calibration-input hash, calibration-law hash, the five
+frozen calibration-request hashes, the authoritative serialization scheme, the proposition identity
+and the trial-schedule hash.
 Future report: `report_core = report − {report_hash}`, `report_hash = sha256(canonicalJson(report_core))`.
+
+`code_blob_hashes` binds **all 16 tracked execution artefacts including this document**
+(`PREREG.md`), so the prose that describes the execution path is frozen under the same hash as the
+code that implements it — a change to either invalidates the manifest.
 
 ## 17. Deterministic prechecks (all PASS, 0 model calls)
 
@@ -178,79 +191,126 @@ P1 seed belief count 0 · P2/P3 exact LOW/HIGH progressions · P4 same propositi
 P5 branch isolation · P6 non-belief canonical equality · P7 raw-history leakage 0 ·
 P8 retrieval exposure 0 · P9 relationship equality · P10 affect equality · P11 personality equality ·
 P12 current-scene byte equality · P13 B/D mediator byte equality · P14 A/B only-belief difference ·
-P15/P16 C/D durable states unchanged · P17 no production write during any intervention ·
-P18 full truth-scan schema coverage · P19 missing-blob verifier regression · P20 trial identities
-unique · P21 schedule complete · P22 V0 confirmatory contribution 0 · P23 model calls 0 ·
+P15/P16 C/D durable states unchanged · P17 no production write during any intervention (execution
+closure ENUMERATED from disk, writer tokens scanned in executable code only, durable immutability
+MEASURED) · P18 full truth-scan schema coverage · P19 missing-blob verifier regression ·
+P20 trial identities unique · P21 schedule complete · P22 V0 confirmatory contribution 0 (every
+non-test source scanned with statement-aware literal classification) · P23 model calls 0 ·
 P24 verdict law consumes the hard-gate registry.
 
+## 18. What this preregistration does NOT do
 
-## 19. Preregistration history and the calibration execution path (remediation)
+It makes no model call, no calibration draw, no pilot draw, no primary or replication draw. It does
+**not** run the treatment-development pilot (not authorized in this slice; if a future audit requires
+one, it needs explicit human authorization). It does not modify production code, the frozen
+measurement protocol, the Belief formation or plasticity code, the cognition schema, or any decision
+module. `git diff` for `packages/**` and `product/**`: empty.
 
-\
-The superseded commit was scientifically clean but operationally incomplete: it
-contained no calibration runner and no model transport, and the frozen protocol
-defined calibration purposes without programmatic RUN/STOP criteria. Because no
-scientific call was ever made under it, the lawful path is a NEW preregistration
-commit (append-only history; nothing was deleted or rewritten).
-
-### Calibration execution path (now tracked and frozen)
-
-| artefact | role |
-| --- | --- |
-|  | builds the ACTUAL model-facing calibration request through the frozen production rendering path over a normal EMPTY-genesis calibration subject |
-|  |  — machine-readable operational readiness law |
-|  | minimal experiment-local OpenAI-compatible transport (timeout + frozen retry law + usage); the ONLY network surface, never invoked in this slice |
-|  | executes the 50 logical trials: frozen body, fresh provider per draw, production validation, no illegal retry, deterministic early stop, integrity gates |
-|  | frozen evidence schema; written to an untracked scratch location until a review approves a result commit |
-|  | the FROZEN actual request (hashes + law + body bytes) bound into the manifest design |
-
-### Calibration RUN/STOP law (derived, not invented)
-
-\
-### Actual frozen request (0 model calls to produce)
-
-system hash  · user hash  · schema hash  ·
-model-config hash  · **model-facing request hash ** (16 085 bytes).
-The request carries no trial id, timestamp, counter or prior output; the credential never enters
-the body, the hash or any evidence.
-
-### §39 precheck remediation (no longer degenerate)
-
- is a real set difference between an independent schema enumeration (18 string
-leaves) and the declared coverage (12 scanned + 5 opaque refs + 1 host-verified result);
- now audits the intervention/render bodies for writer tokens, enumerates writer call sites
-and MEASURES durable immutability before/after;  scans every source in this experiment for
-reads or imports of V0 outcome artifacts. Negative-control tests prove each can fail.
-
-## 19. Preregistration history and the calibration execution path (remediation)
+## 19. Preregistration history and the calibration execution path (append-only)
 
 ```text
-SUPERSEDED_PREREGISTRATION_COMMIT
-= 76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09
+76bcbad6e0b175e50faacb0c2d8f0dd3092fcf09
+= SUPERSEDED_PRECALL_NO_SCIENTIFIC_CALLS
 
-SUPERSEDE_REASON
-= CALIBRATION_EXECUTION_PATH_NOT_FROZEN
-  + CALIBRATION_RUN_STOP_LAW_UNRESOLVED
+f8e29068b591b5ab6d36ff5770a81bd902923c41
+= REJECTED_AS_FROZEN_BY_INDEPENDENT_AUDIT
+= ZERO_SCIENTIFIC_CALLS
+= SUPERSEDED
 
-SCIENTIFIC_CALLS_UNDER_SUPERSEDED_PREREG
+NEW_PREREGISTRATION_COMMIT
+= CURRENT CALIBRATION-EXECUTABLE PREREG CANDIDATE
+= RECORDED IN evidence/freeze-manifest.json (preregistration_commit_sha) AND IN THE FINAL REPORT
+
+SCIENTIFIC_CALLS_UNDER_EVERY_PRECEDING_PREREG
 = 0
 ```
 
-The superseded commit was scientifically clean but operationally incomplete: it contained no
-calibration runner and no model transport, and the frozen protocol defined calibration purposes
-without programmatic RUN/STOP criteria. Because no scientific call was ever made under it, the
-lawful path is a NEW preregistration commit (append-only history; nothing deleted, nothing rewritten).
+Neither superseded commit ever produced a scientific call, so the lawful path is a NEW
+preregistration commit (append-only history: nothing was deleted and nothing was rewritten).
 
-### Calibration execution path (now tracked and frozen)
+The second audit found the calibration EXECUTION ENFORCEMENT incomplete: the integrity gates were
+caller-supplied booleans, the transport funnelled an HTTP-200-non-JSON envelope into a generic catch
+and retried it, the manifest-bound request hash was not the byte stream actually sent, no per-trial
+drift gate existed, and the formal execution path lived in an untracked scratch driver. Every one of
+those is repaired in this commit and pinned by tests below.
+
+```text
+M1 TRANSPORT CLASSIFICATION
+= HTTP 200 + non-JSON envelope  -> TRANSPORT_ENVELOPE_JSON_PARSE_ERROR, ONE raw attempt, NOT retried
+= empty completion              -> TRANSPORT_EMPTY_RESPONSE, ONE raw attempt, NOT retried
+= retryable                     -> 429/500/502/503/504/timeout/real network error ONLY (frozen law)
+= every attempt ledger carries an EXPLICIT failure class (never null)
+
+M2 ONE AUTHORITATIVE REQUEST BYTE STREAM
+= serialized_body = canonicalJson(body); request_hash = hashText(serialized_body)
+= the transport sends that EXACT string and a retry reuses it
+= FROZEN HASHED BYTES == RUNTIME VERIFIED BYTES == ACTUAL HTTP BODY BYTES
+= a second serialization is forbidden anywhere in the execution path
+
+M3 EXECUTION AUTHORITY (calibration-authority.ts)
+= the runner reads git HEAD and the TRACKED worktree state itself
+= the approved preregistration SHA is an EXTERNAL CLI value, never hardcoded here
+= THREE-WAY LAW: CURRENT_GIT_HEAD == MANIFEST.preregistration_commit_sha == APPROVED_PREREG_SHA
+= any mismatch: SCIENTIFIC_CODE_STATE_MISMATCH with 0 network calls
+
+M4 REAL DESIGN RE-DERIVATION
+= 12 items recomputed from the real sources and compared item by item against manifest.design:
+  scenario · intervention-law · scan-surface · evaluator · statistical-law · model-config ·
+  calibration-request · trial-schedule · LOW history · HIGH history · proposition identity ·
+  seed belief count
+= histories are RE-FORMED through the production path, not read back from evidence
+
+M5 PER-TRIAL HASH GATES
+= before EVERY logical trial: SYSTEM / USER / SCHEMA / MODEL_CONFIG / REQUEST hashes recomputed
+  from real runtime objects and compared to the manifest-frozen values
+= no hardcoded true and no constant unique_count: every unique count is computed from the
+  executed trial records
+
+M6 IMMEDIATE DRIFT STOP
+= all pre-call drift (code state, manifest, design, request, system, user, schema, config) stops the
+  run BEFORE the drifted call: a schema change seen at trial 25 allows network calls only to trial 24
+= response-model drift at trial k is recorded and trial k+1 is never sent
+
+M7 TRACKED FORMAL CLI
+= cli.ts calibration-preflight --approved-prereg-sha <SHA> --manifest <PATH>   (0 network calls)
+= cli.ts calibration-run       --approved-prereg-sha <SHA> --manifest <PATH> --evidence-out <PATH>
+= the credential is read from the MODEL_API_KEY environment variable ONLY: it is never a CLI
+  parameter and never appears in a body, hash, manifest, evidence, stdout or error dump
+= NO AUTO-PRIMARY: PRIMARY_AUTHORIZED = FALSE; a RUN verdict stops before the primary phase
+
+CALLER BOOLEAN AUTHORITY
+= REMOVED: prereg_sha_match / manifest_valid / design_rederivation / tracked_tree_clean /
+  config_hash_identity / schema_hash_identity / system_hash_identity / user_hash_identity
+= the runner computes every one of those facts itself
+
+P17 WRITE SURFACE
+= the calibration EXECUTION closure is ENUMERATED from disk (calibration-*.ts + cli.ts), never a
+  hardcoded file list; it must contain no writer/commit token in executable code (string literals
+  are data, the ${ } of a template stays in scope)
+= the before/after durable belief-item hashes are MEASURED and must be identical
+
+P22 V0 FIREWALL
+= every non-test source of this experiment is scanned; each string literal is classified by its
+  enclosing statement, so static import, MULTILINE import, dynamic import(, require(, readFile,
+  readFileSync, fs.promises.readFile and bare path literals are all covered
+= the ONLY permitted occurrence is the declared firewall list in contract.ts
+= disclosed limitation: a path assembled from non-literal pieces at run time cannot be caught by a
+  static scan; this audit is not a sandbox
+```
+
+### Calibration execution path (tracked and frozen)
 
 | artefact | role |
 | --- | --- |
-| `calibration-request.ts` | builds the ACTUAL model-facing calibration request through the frozen production rendering path over a normal EMPTY-genesis calibration subject |
+| `calibration-request.ts` | builds the ACTUAL model-facing calibration request through the frozen production rendering path over a normal EMPTY-genesis calibration subject; owns the ONE authoritative serialization |
+| `calibration-authority.ts` | the execution authority: git HEAD / tracked-tree / approved-SHA three-way law, the 12-item design re-derivation, the per-trial request binding and the P17/P22/secret audits |
 | `calibration-law.ts` | `CALIBRATION_RUN_STOP_LAW_V1` — machine-readable operational readiness law |
-| `calibration-transport.ts` | minimal experiment-local OpenAI-compatible transport (timeout + frozen retry law + usage); the ONLY network surface, never invoked in this slice |
-| `calibration-runner.ts` | executes the 50 logical trials: frozen body, fresh provider per draw, production validation, no illegal retry, deterministic early stop, integrity gates |
+| `calibration-transport.ts` | minimal experiment-local OpenAI-compatible transport (timeout + frozen retry law + usage + explicit failure classification); the ONLY network surface, never invoked in this slice |
+| `calibration-runner.ts` | executes the 50 logical trials: frozen body, per-trial authority gate, fresh provider per draw, production validation, no illegal retry, deterministic early stop, real integrity gates |
 | `calibration-evidence.ts` | frozen evidence schema; written to an untracked scratch location until a review approves a result commit |
-| `evidence/calibration-request.json` | the FROZEN actual request (hashes + law + body bytes + payloads) bound into the manifest design |
+| `calibration-cli.ts` + `cli.ts` | the formal tracked CLI: `calibration-preflight` and `calibration-run` |
+| `source-audit.ts` | the P17/P22 scanners (string-aware comment stripping, statement-aware literal classification, executable-code token scan) |
+| `evidence/calibration-request.json` | the FROZEN actual request (hashes + law + authoritative bytes + payloads) bound into the manifest design |
 
 ### Calibration RUN/STOP law (derived from the frozen floor, not invented)
 
@@ -267,8 +327,10 @@ invalid trials                = never replaced; the scheduled denominator stays 
 ### The actual frozen request (produced with 0 model calls)
 
 system hash `9241794b…` · user hash `55d27d60…` · schema hash `e9da721b…` · model-config hash
-`0ed9df37…` · **model-facing request hash `db8d8993…`** (16,085 bytes). It carries no trial id,
-timestamp, counter or prior output; the credential never enters the body, the hash or any evidence.
+`0ed9df37…` · **model-facing request hash `db8d8993…`** (16,085 authoritative `canonicalJson` bytes).
+It carries no trial id, timestamp, counter or prior output; the credential never enters the body,
+the hash or any evidence. The dead `observation` construction removed in this remediation did not
+change one byte: the hash was recomputed and is unchanged.
 
 ### §39 precheck remediation (no longer degenerate)
 
@@ -277,11 +339,3 @@ leaves) and the declared coverage (12 scanned + 5 opaque refs + 1 host-verified 
 audits the intervention/render bodies for writer tokens, enumerates writer call sites and MEASURES
 durable immutability before/after; `P22` scans every source in this experiment for reads or imports
 of V0 outcome artifacts. Negative-control tests prove each repaired check can fail.
-
-## 18. What this preregistration does NOT do
-
-It makes no model call, no calibration draw, no pilot draw, no primary or replication draw. It does
-**not** run the treatment-development pilot (not authorized in this slice; if a future audit requires
-one, it needs explicit human authorization). It does not modify production code, the frozen
-measurement protocol, the Belief formation or plasticity code, the cognition schema, or any decision
-module. `git diff` for `packages/**` and `product/**`: empty.

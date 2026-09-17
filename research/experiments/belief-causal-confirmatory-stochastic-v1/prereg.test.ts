@@ -377,10 +377,17 @@ describe("REMEDIATION — the repaired audits are NOT vacuous", () => {
   });
 
   it("P17 fails when the intervention body calls a writer", () => {
+    const closure = [
+      { file: "calibration-runner.ts", code: "export const runCalibration = 1;" },
+      { file: "calibration-authority.ts", code: "export const authority = 1;" }
+    ];
+    const required = ["calibration-runner.ts", "calibration-authority.ts"];
     const clean = auditInterventionWriterFree({
       interventionBody: "function applyBeliefView() { return snapshot; }",
       renderBody: "async function renderRequest() { return projection; }",
-      writerCallSiteFiles: ["histories.ts"],
+      executionClosure: closure,
+      requiredExecutionModules: required,
+      offlineFormationFiles: ["histories.ts"],
       durableBefore: { low: "a", high: "b" },
       durableAfter: { low: "a", high: "b" }
     });
@@ -388,24 +395,49 @@ describe("REMEDIATION — the repaired audits are NOT vacuous", () => {
     const tainted = auditInterventionWriterFree({
       interventionBody: "function applyBeliefView() { core.commitReserved(p); }",
       renderBody: "async function renderRequest() { return projection; }",
-      writerCallSiteFiles: ["histories.ts"],
+      executionClosure: closure,
+      requiredExecutionModules: required,
+      offlineFormationFiles: ["histories.ts"],
       durableBefore: { low: "a", high: "b" },
       durableAfter: { low: "a", high: "b" }
     });
     expect(tainted.passed).toBe(false);
-    expect(tainted.violations).toContain("commitReserved");
-    const calibrationWriter = auditInterventionWriterFree({
+    expect(tainted.intervention_body_writer_violations).toContain("commitReserved");
+    // A writer call site INSIDE the runtime execution closure fails, and the
+    // failure names the file and the token.
+    const closureWriter = auditInterventionWriterFree({
       interventionBody: "function applyBeliefView() { return snapshot; }",
       renderBody: "async function renderRequest() { return projection; }",
-      writerCallSiteFiles: ["histories.ts", "calibration-runner.ts"],
+      executionClosure: [
+        { file: "calibration-runner.ts", code: "const wiring = 1;\nawait wiring.runForEpisodeRefs(refs);" },
+        { file: "calibration-authority.ts", code: "export const authority = 1;" }
+      ],
+      requiredExecutionModules: required,
+      offlineFormationFiles: ["histories.ts"],
       durableBefore: { low: "a", high: "b" },
       durableAfter: { low: "a", high: "b" }
     });
-    expect(calibrationWriter.passed).toBe(false);
+    expect(closureWriter.passed).toBe(false);
+    expect(closureWriter.violations.map((entry) => entry.token)).toContain("runForEpisodeRefs");
+    expect(closureWriter.violations[0]?.file).toBe("calibration-runner.ts");
+    // A MISSING required module (a silently-shrunk closure) fails too.
+    const missingModule = auditInterventionWriterFree({
+      interventionBody: "function applyBeliefView() { return snapshot; }",
+      renderBody: "async function renderRequest() { return projection; }",
+      executionClosure: [{ file: "calibration-runner.ts", code: "export const x = 1;" }],
+      requiredExecutionModules: required,
+      offlineFormationFiles: [],
+      durableBefore: { low: "a", high: "b" },
+      durableAfter: { low: "a", high: "b" }
+    });
+    expect(missingModule.passed).toBe(false);
+    expect(missingModule.missing_required_modules).toEqual(["calibration-authority.ts"]);
     const mutatedDurable = auditInterventionWriterFree({
       interventionBody: "function applyBeliefView() { return snapshot; }",
       renderBody: "async function renderRequest() { return projection; }",
-      writerCallSiteFiles: ["histories.ts"],
+      executionClosure: closure,
+      requiredExecutionModules: required,
+      offlineFormationFiles: ["histories.ts"],
       durableBefore: { low: "a", high: "b" },
       durableAfter: { low: "a", high: "CHANGED" }
     });
@@ -414,28 +446,110 @@ describe("REMEDIATION — the repaired audits are NOT vacuous", () => {
 
   it("P22 fails on a read of a V0 outcome artifact, and allows only the declared firewall list", () => {
     const declared = ["research/experiments/belief-causal-validation-v0/evidence/primary"];
+    const executionModulePattern = /^calibration-.*\.ts$|^cli\.ts$/;
+    const contractSource = [
+      "export const V0_FIREWALL = Object.freeze({",
+      "  forbidden_reads: [",
+      `    "${declared[0]}"`,
+      "  ]",
+      "});"
+    ].join("\n");
     const clean = auditV0DependencyFree({
       files: [
         { file: "calibration-runner.ts", code: "const x = 1;" },
-        { file: "contract.ts", code: "const forbidden_reads = [\"belief-causal-validation-v0/evidence/primary\"];" }
+        { file: "contract.ts", code: contractSource }
       ],
-      declaredFirewallPaths: declared
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: true
     });
     expect(clean.passed).toBe(true);
+    expect(clean.declared_paths_present).toBe(true);
+
     const reading = auditV0DependencyFree({
       files: [
         { file: "calibration-runner.ts", code: "const x = 1;" },
-        { file: "evaluator.ts", code: "const v = readFileSync(\"research/experiments/belief-causal-validation-v0/evidence/primary/verdict.json\");" }
+        {
+          file: "evaluator.ts",
+          code: `const v = readFileSync("${declared[0]}/verdict.json");`
+        }
       ],
-      declaredFirewallPaths: declared
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: false
     });
     expect(reading.passed).toBe(false);
-    expect(reading.readOrImportViolations.length).toBeGreaterThan(0);
-    const unscanned = auditV0DependencyFree({
-      files: [{ file: "contract.ts", code: "const x = 1;" }],
-      declaredFirewallPaths: declared
+    expect(reading.read_or_import_violations.length).toBeGreaterThan(0);
+    expect(reading.read_or_import_violations[0]?.kind).toBe("READ_FILE");
+
+    // NEGATIVE CONTROL: a dynamic import of a V0 outcome artifact FAILS.
+    const dynamicImport = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: "const x = 1;" },
+        {
+          file: "calibration-authority.ts",
+          code: `const evidence = await import("../../belief-causal-validation-v0/evidence/primary/verdict.json");`
+        }
+      ],
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: false
     });
-    expect(unscanned.passed).toBe(false); // the calibration runner must be in the scanned set
+    expect(dynamicImport.passed).toBe(false);
+    expect(dynamicImport.read_or_import_violations.map((entry) => entry.kind)).toContain("DYNAMIC_IMPORT");
+
+    // NEGATIVE CONTROL: a MULTILINE static import of a V0 outcome artifact FAILS.
+    const multilineImport = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: "const x = 1;" },
+        {
+          file: "calibration-authority.ts",
+          code: ["import {", "  readVerdict", "} from", `  "${declared[0]}/verdict.js";`, "readVerdict();"].join("\n")
+        }
+      ],
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: false
+    });
+    expect(multilineImport.passed).toBe(false);
+    expect(multilineImport.read_or_import_violations.map((entry) => entry.kind)).toContain("MULTILINE_IMPORT");
+
+    // NEGATIVE CONTROL: a require() of a V0 outcome artifact FAILS.
+    const requireRead = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: "const x = 1;" },
+        { file: "cli.ts", code: `const v = require("${declared[0]}/verdict.json");` }
+      ],
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: false
+    });
+    expect(requireRead.passed).toBe(false);
+    expect(requireRead.read_or_import_violations.map((entry) => entry.kind)).toContain("REQUIRE");
+
+    // NEGATIVE CONTROL: a comment mentioning the path is NOT a dependency (the
+    // scanner strips comments before it looks at literals).
+    const commentOnly = auditV0DependencyFree({
+      files: [
+        { file: "calibration-runner.ts", code: `// see ${declared[0]}/verdict.json for the planning-only note` },
+        { file: "cli.ts", code: "export const x = 1;" }
+      ],
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: false
+    });
+    expect(commentOnly.passed).toBe(true);
+
+    // DEGENERACY GUARD: without a runtime execution module in the scanned set the
+    // audit fails, so an accidentally empty scan cannot pass.
+    const unscanned = auditV0DependencyFree({
+      files: [{ file: "contract.ts", code: contractSource }],
+      declaredFirewallPaths: declared,
+      executionModulePattern,
+      requireDeclaredFirewall: true
+    });
+    expect(unscanned.passed).toBe(false);
+    expect(unscanned.execution_modules_scanned).toHaveLength(0);
   });
 
   it("the calibration path is frozen: the runner and request builder exist and bind the frozen constants", async () => {
