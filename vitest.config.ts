@@ -21,7 +21,9 @@ export default defineConfig({
       // Post-parity exploratory schema-failure diagnostic (Phase A gate, mock fetch only).
       "research/experiments/post-parity-schema-failure-diagnostic-v0/**/*.test.ts",
       // Engineered capability probe (Phase A audit + bounded probe; mock fetch only).
-      "research/experiments/structured-output-capability-probe-v0/**/*.test.ts"
+      "research/experiments/structured-output-capability-probe-v0/**/*.test.ts",
+      // Strict-schema executor qualification, Gate S (offline tests; mock transports only).
+      "research/experiments/strict-schema-executor-qualification-v0/**/*.test.ts"
     ],
     allowOnly: false,
     // Environment tolerance ONLY (assertions are unchanged): the deterministic
