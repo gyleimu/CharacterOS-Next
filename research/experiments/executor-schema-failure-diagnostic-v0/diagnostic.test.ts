@@ -28,7 +28,7 @@ import { createDiagnosticTransport, scanAndRedactCredentialPatterns } from "./di
 import { buildValidationTrace, type ValidationTrace } from "./validation-trace.ts";
 import { classifyResponse } from "./taxonomy.ts";
 import { runDiagnostic } from "./diagnostic-runner.ts";
-import { diagnosticPreflight, diagnosticRun } from "./cli.ts";
+import { diagnosticPreflight, diagnosticRun, reclassifyArtifact } from "./cli.ts";
 
 const REPO_ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..", "..", "..");
 const DIAGNOSTIC_DIR = "research/experiments/executor-schema-failure-diagnostic-v0";
@@ -494,6 +494,74 @@ describe("DIAGNOSTIC PHASE A — J: the diagnostic is isolated from the calibrat
     expect(bounded.summary.stopped_by).toBe("BUDGET_EXHAUSTED");
     expect(bounded.summary.taxonomy.categories_observed).toEqual([]);
     expect(bounded.summary.taxonomy.categories_declared_but_unobserved).toEqual([...FAILURE_TAXONOMY_IDS].sort());
+  });
+
+  it("TEST_K_LENGTH_BOUND_RULE_IS_EVIDENCE_MAPPED", async () => {
+    // A model-authored free-text field over an UNPUBLISHED host bound: the
+    // production validator reports the bound, and the taxonomy names it instead
+    // of burying it in OTHER_SCHEMA_FAILURE.
+    const proposal = validProposal();
+    proposal["communication_directive"] = { kind: "CLARIFY_MISSING_CONTEXT" };
+    proposal["response_semantics"] = { kind: "PRIMARY_CLARIFICATION" };
+    // The advertised handles must be cited, exactly as the real failing responses
+    // did, so the fixture reaches the LENGTH rule rather than an earlier one.
+    (proposal["cognition"] as Record<string, unknown>)["considered_handles"] = ["F1", "C1"];
+    proposal["clarification_basis"] = {
+      current_observation_ref: "observation:o-source-event-bcv1-current-scene-1",
+      missing_information: "x".repeat(300),
+      needed_for: "planning"
+    };
+    const trace = await traceFor(JSON.stringify(proposal));
+    expect(trace.STAGE_D_PRODUCTION_SCHEMA).toBe("FAIL");
+    expect(trace.stage_details.production_schema.detail?.raw).toMatch(/exceeds \d+ code points/);
+    expect(trace.stage_details.production_schema.detail?.path_prefix).toBe(
+      "conversation proposal.clarification_basis.missing_information"
+    );
+    const classification = classifyResponse(trace);
+    expect(classification.classification).toBe("SCHEMA_CONTRACT_VIOLATION");
+    expect(classification.taxonomy).toContain("LENGTH_BOUND_EXCEEDED");
+  });
+
+  it("TEST_K2_RECLASSIFY_IS_OFFLINE_AND_NON_DESTRUCTIVE", () => {
+    const stored = {
+      schema_version: "executor-schema-failure-diagnostic-v0",
+      diagnostic_id: "EXPLORATORY_EXECUTOR_SCHEMA_FAILURE_DIAGNOSTIC_V0",
+      namespace: "EXECUTOR_SCHEMA_DIAGNOSTIC",
+      markers: {},
+      calibration_reference: {},
+      stop_rule: {},
+      model: {},
+      request_binding: {},
+      responses: [
+        {
+          validation_trace: {
+            stage_details: {
+              production_schema: { detail: { raw: "conversation proposal.clarification_basis.missing_information: exceeds 256 code points" } },
+              production_host_authority: { detail: null, factual_rejection_codes: [], response_semantics_rejected: false },
+              directive_admissibility: { directive: null, allowed_atoms: [], admissible: false }
+            },
+            STAGE_A_TRANSPORT: "PASS",
+            STAGE_B_ENVELOPE_JSON: "PASS",
+            STAGE_C_CONTENT_JSON: "PASS",
+            STAGE_E_PRODUCTION_HOST_AUTHORITY: "NOT_REACHED",
+            STAGE_F_DIRECTIVE_ADMISSIBILITY: "NOT_REACHED",
+            production_pipeline_verdict: { threw: true, code: "MODEL_SCHEMA_INVALID", message: "x", factual_authorization_trace: [], directive: null }
+          },
+          classification: { classification: "SCHEMA_CONTRACT_VIOLATION", taxonomy: ["OTHER_SCHEMA_FAILURE"], evidence: [] }
+        }
+      ],
+      summary: { taxonomy: { categories_observed: ["OTHER_SCHEMA_FAILURE"], counts: {}, classifications: {}, examples_by_category: {}, categories_declared_but_unobserved: [] } },
+      artifact_hash: "sha256:stored"
+    };
+    const derived = reclassifyArtifact({ artifact: stored as never }) as Record<string, unknown>;
+    const reclassification = derived["reclassification"] as Record<string, unknown>;
+    expect(reclassification["makes_model_calls"]).toBe(false);
+    expect(reclassification["original_artifact_left_unmodified"]).toBe(true);
+    expect(reclassification["vocabulary_added_after_run"]).toEqual(["LENGTH_BOUND_EXCEEDED"]);
+    // The STORED artifact object is not mutated: the original category survives.
+    expect((stored.responses[0] as { classification: { taxonomy: string[] } }).classification.taxonomy).toEqual(["OTHER_SCHEMA_FAILURE"]);
+    const summary = derived["summary"] as { taxonomy: { categories_observed: string[] } };
+    expect(summary.taxonomy.categories_observed).toContain("LENGTH_BOUND_EXCEEDED");
   });
 
   it("TEST_J6_TAXONOMY_VOCABULARY_IS_NOT_A_HYPOTHESIS", () => {

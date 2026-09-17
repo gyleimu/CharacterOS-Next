@@ -83,11 +83,12 @@ export const DIAGNOSTIC_STAGES: readonly string[] = Object.freeze([
 ]);
 
 /**
- * Candidate failure categories. A category appears in a result ONLY when real
- * captured evidence supports it — the list is a vocabulary, never a hypothesis
- * that is asserted before the data arrives.
+ * Candidate failure categories DECLARED BEFORE the first diagnostic call. They are
+ * a vocabulary, never a hypothesis: a category appears in a result ONLY when real
+ * captured evidence supports it, and unobserved ones are reported as
+ * declared-but-unobserved.
  */
-export const FAILURE_TAXONOMY_IDS: readonly string[] = Object.freeze([
+export const FAILURE_TAXONOMY_DECLARED_BEFORE_CALLS: readonly string[] = Object.freeze([
   "JSON_SYNTAX_INVALID",
   "REQUIRED_FIELD_MISSING",
   "ENUM_INVALID",
@@ -103,6 +104,22 @@ export const FAILURE_TAXONOMY_IDS: readonly string[] = Object.freeze([
   "DIRECTIVE_NOT_ADMISSIBLE",
   "TRANSPORT_FAILURE",
   "OTHER_SCHEMA_FAILURE"
+]);
+
+/**
+ * Categories ADDED AFTER the run, derived from captured production output
+ * (the taxonomy is built from real data, and an unlisted rule must not be hidden
+ * inside `OTHER_SCHEMA_FAILURE`). Each addition is mechanical, is listed here
+ * explicitly so a reviewer can see exactly what was added and when, and neither
+ * the stop rule nor the call budget was touched.
+ */
+export const FAILURE_TAXONOMY_ADDED_AFTER_RUN: readonly string[] = Object.freeze([
+  "LENGTH_BOUND_EXCEEDED"
+]);
+
+export const FAILURE_TAXONOMY_IDS: readonly string[] = Object.freeze([
+  ...FAILURE_TAXONOMY_DECLARED_BEFORE_CALLS,
+  ...FAILURE_TAXONOMY_ADDED_AFTER_RUN
 ]);
 
 export const DIAGNOSTIC_ARTIFACT_SCHEMA_VERSION = "executor-schema-failure-diagnostic-v0" as const;

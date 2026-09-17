@@ -39,6 +39,9 @@ function taxonomyFromProductionDetail(detail: string): ClassifiedFailure {
     if (!taxonomy.includes(category)) taxonomy.push(category);
     evidence.push(`${category} <- ${why}`);
   };
+  if (/exceeds \d+ (code points|characters|items|claims)/i.test(detail)) {
+    add("LENGTH_BOUND_EXCEEDED", "production detail reports a numeric bound that was exceeded");
+  }
   if (/unexpected keys/i.test(detail)) add("UNEXPECTED_KEY", "production detail reports unexpected keys");
   if (/expected exactly \[/i.test(detail)) add("CLOSED_KEY_SET_VIOLATION", "production detail enumerates the closed key set");
   if (/schema_version/i.test(detail) && /expected conversation-cognition-proposal/i.test(detail)) {

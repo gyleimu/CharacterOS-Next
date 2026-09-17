@@ -7,7 +7,7 @@
  * The credential is read from `MODEL_API_KEY` in the environment only and is
  * never printed, hashed, recorded or written into an artifact.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -18,12 +18,15 @@ import {
   DIAGNOSTIC_NAMESPACE,
   DIAGNOSTIC_STOP_RULE,
   DIAGNOSTIC_TARGET_SCHEMA_INVALID_EXAMPLES,
+  FAILURE_TAXONOMY_ADDED_AFTER_RUN,
+  FAILURE_TAXONOMY_DECLARED_BEFORE_CALLS,
   FAILURE_TAXONOMY_IDS,
   FROZEN_MODEL_FACING_REQUEST_HASH
 } from "./contract.ts";
 import { assertFrozenRequest, buildDiagnosticRequest } from "./frozen-request.ts";
 import { createDiagnosticTransport, type DiagnosticTransport } from "./diagnostic-transport.ts";
 import { diagnosticArtifactCore, runDiagnostic, type DiagnosticRunResult } from "./diagnostic-runner.ts";
+import { classifyResponse, summarizeTaxonomy } from "./taxonomy.ts";
 import { hashJson } from "./hash.ts";
 
 export const MODEL_API_KEY_ENV = "MODEL_API_KEY" as const;
@@ -248,6 +251,19 @@ async function main(): Promise<void> {
     );
     return;
   }
+  if (command === "diagnostic-reclassify") {
+    const inPath = flagValue(args, "--artifact");
+    const outPath = flagValue(args, "--out");
+    if (inPath === undefined || outPath === undefined) {
+      process.stderr.write("usage: cli.ts diagnostic-reclassify --artifact <PATH> --out <PATH>\n");
+      process.exitCode = 2;
+      return;
+    }
+    const result = reclassifyFile({ inPath, outPath });
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    process.stderr.write(`diagnostic-reclassify: 0 model calls, ${result.responses} stored responses reclassified\n`);
+    return;
+  }
   process.stderr.write("usage: cli.ts <diagnostic-preflight [--report-out <PATH>]|diagnostic-run --artifact-out <PATH> --exploratory-authorized>\n");
   process.exitCode = 2;
 }
@@ -255,3 +271,68 @@ async function main(): Promise<void> {
 const invokedDirectly =
   process.argv[1] !== undefined && resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
 if (invokedDirectly) await main();
+
+/* -------------------------------------------------------------------------- */
+/* offline reclassification (0 model calls)                                    */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Applies the CURRENT (evidence-extended) taxonomy to an ALREADY CAPTURED
+ * artifact. It makes no calls and reads no provider: the stored validation
+ * traces are the input, so the original artifact stays bit-for-bit intact and a
+ * reviewer can diff the two. The derived artifact states exactly which
+ * categories were added after the run and why.
+ */
+export function reclassifyArtifact(input: {
+  readonly artifact: DiagnosticRunResult & { readonly artifact_hash?: string };
+}): Record<string, unknown> {
+  const responses = input.artifact.responses.map((record) => ({
+    ...record,
+    classification: classifyResponse(record.validation_trace)
+  }));
+  const summary = {
+    ...input.artifact.summary,
+    taxonomy: summarizeTaxonomy(
+      responses.map((record, index) => ({ trial: index + 1, classification: record.classification })),
+      FAILURE_TAXONOMY_IDS
+    )
+  };
+  return {
+    schema_version: input.artifact.schema_version,
+    diagnostic_id: input.artifact.diagnostic_id,
+    namespace: input.artifact.namespace,
+    markers: input.artifact.markers,
+    derived_from_artifact_hash: input.artifact.artifact_hash ?? null,
+    reclassification: {
+      makes_model_calls: false,
+      input_is_the_stored_artifact: true,
+      original_artifact_left_unmodified: true,
+      vocabulary_declared_before_calls: FAILURE_TAXONOMY_DECLARED_BEFORE_CALLS,
+      vocabulary_added_after_run: FAILURE_TAXONOMY_ADDED_AFTER_RUN,
+      why:
+        "the taxonomy is built from real captured data (the declared list was explicitly a candidate vocabulary); no stop rule, budget or provider interaction was changed by this step",
+      stop_rule_unchanged: true
+    },
+    calibration_reference: input.artifact.calibration_reference,
+    stop_rule: input.artifact.stop_rule,
+    model: input.artifact.model,
+    request_binding: input.artifact.request_binding,
+    responses,
+    summary
+  };
+}
+
+/** Reads a stored artifact, reclassifies it and writes the derived artifact. */
+export function reclassifyFile(input: { readonly inPath: string; readonly outPath: string }): {
+  readonly derived_hash: string;
+  readonly responses: number;
+  readonly categories_observed: readonly string[];
+} {
+  const stored = JSON.parse(readFileSync(input.inPath, "utf8")) as DiagnosticRunResult & { readonly artifact_hash?: string };
+  const derived = reclassifyArtifact({ artifact: stored });
+  const derivedHash = hashJson(derived);
+  mkdirSync(dirname(input.outPath), { recursive: true });
+  writeFileSync(input.outPath, `${JSON.stringify({ ...derived, derived_artifact_hash: derivedHash }, null, 2)}\n`);
+  const summary = derived["summary"] as { readonly taxonomy: { readonly categories_observed: readonly string[] } };
+  return { derived_hash: derivedHash, responses: stored.responses.length, categories_observed: summary.taxonomy.categories_observed };
+}
