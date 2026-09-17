@@ -150,8 +150,28 @@ export async function qualificationRun(
   for (const candidate of CANDIDATES.slice(0, 3 + 2)) {
     const credentialAvailable = credentialFor(candidate, deps.env);
     const isNegativeControl = candidate.role === "NEGATIVE_STRUCTURAL_CONTROL";
-    const transport = isNegativeControl ? null : factory(candidate);
-    if (!credentialAvailable || (transport === null && !isNegativeControl)) {
+    // The NEGATIVE CONTROL needs neither a credential nor a call: its state comes
+    // from frozen, already-audited capability evidence. Checking its credential
+    // first would mislabel it NOT_TESTED_NO_CREDENTIAL, which is a different state.
+    if (isNegativeControl) {
+      results.push(
+        await runCandidateQualification({
+          candidate,
+          transport: null,
+          credentialAvailable,
+          priorEvidence: {
+            strictFeatureUnavailable: true,
+            note:
+              deps.negativeControlNote ??
+              "frozen capability evidence reused (HTTP 400 \"This response_format type is unavailable now\")"
+          },
+          maxCalls: deps.maxCallsPerCandidate
+        })
+      );
+      continue;
+    }
+    const transport = factory(candidate);
+    if (!credentialAvailable || transport === null) {
       results.push({
         candidate,
         credential_available: credentialAvailable,
