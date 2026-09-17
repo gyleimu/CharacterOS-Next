@@ -65,6 +65,9 @@ const CALL_CAP = (() => {
 const FACT_A = "I keep a red notebook on the desk.";
 const FACT_B = "I keep a blue notebook on the desk.";
 const SAME_SCENE = "Where do I keep my notebook?";
+const CONSEQUENCE_A = "I checked the desk just now - the notebook is not there.";
+const CONSEQUENCE_B = "I checked the desk again and the notebook is still there.";
+const LATER_SCENE = "What do you know about my notebook?";
 const SUBJECT_A = "alice-real-smoke";
 const SUBJECT_B = "bob-real-smoke";
 
@@ -293,6 +296,236 @@ describe.skipIf(!ENABLED)("REAL_LANGUAGE_SMOKE — bounded A/B with the real lan
         delivered_text_different: artifact.delivered_text_different
       };
       console.log("REAL_LANGUAGE_SMOKE", JSON.stringify(summary, null, 2));
+    } finally {
+      rmSync(rootA, { recursive: true, force: true });
+      rmSync(rootB, { recursive: true, force: true });
+    }
+  }, 1_800_000);
+});
+
+/* -------------------------------------------------------------------------- */
+/* CONSEQUENCE SCENARIO (CLOSED_LOOP_LIVED_INTERACTION_V0)                     */
+/*                                                                             */
+/* Same bounded harness, different scene: the subject first acts from memory,  */
+/* then a counterpart CONSEQUENCE to that behavior is admitted through the real */
+/* path (0 real calls), and the ONE real turn asks whether the model uses the   */
+/* consequence it now durably carries. Budget 2 = one subject's cognition +     */
+/* language; the other subject is recorded NOT_RUN_BUDGET.                      */
+/* -------------------------------------------------------------------------- */
+
+/** Deterministic context follower: cites the newest lived outcome the host supplied. */
+function seedOutcomeFollower(): ModelTransportV0 {
+  return {
+    complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
+      const user = request.messages.find((message) => message.role === "user")?.content ?? "";
+      const blockStart = user.indexOf("[BEGIN HISTORICAL FACTUAL CONTENT");
+      const blockEnd = blockStart < 0 ? -1 : user.indexOf("[END HISTORICAL FACTUAL CONTENT]", blockStart);
+      const block = blockStart < 0 ? "" : user.slice(blockStart, blockEnd < 0 ? user.length : blockEnd);
+      const marker = "- A delivered behavior was followed by this actor's exact reply:";
+      const at = block.lastIndexOf(marker);
+      const record = at < 0 ? "" : block.slice(at);
+      const valueOf = (key: string): string | null => {
+        const keyAt = record.indexOf(`${key}: `);
+        if (keyAt < 0) return null;
+        const quoteAt = record.indexOf('"', keyAt + key.length);
+        if (quoteAt < 0) return null;
+        let scan = quoteAt;
+        for (;;) {
+          scan = record.indexOf('"', scan + 1);
+          if (scan < 0) return null;
+          let backslashes = 0;
+          let probe = scan - 1;
+          while (probe >= quoteAt && record[probe] === "\\") {
+            backslashes += 1;
+            probe -= 1;
+          }
+          if (backslashes % 2 === 0) break;
+        }
+        try {
+          return JSON.parse(record.slice(quoteAt, scan + 1)) as string;
+        } catch {
+          return null;
+        }
+      };
+      const outcome = at < 0 ? null : valueOf("outcome_reply_text");
+      const episodeRef = at < 0 ? null : valueOf("episode_ref");
+      if (outcome === null || episodeRef === null) {
+        return seedCognition().complete(request);
+      }
+      // The cited factual source must be BOUND in both the considered and the
+      // evidence refs (host law), and the handle must be the one advertised for the
+      // OUTCOME episode — quoting the outcome text while citing some other episode
+      // would be an unauthorised source binding.
+      const escapedRef = episodeRef.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const handleMatch = new RegExp(`- (F\\d+): ${escapedRef}`).exec(user);
+      if (handleMatch === null) {
+        return seedCognition().complete(request);
+      }
+      const handle = handleMatch[1] as string;
+      return {
+        content: JSON.stringify({
+          response_semantics: { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "GENERATIVE" },
+          schema_version: "conversation-cognition-proposal-v8",
+          subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+          factual_assessment: {
+            claims: [{ kind: "SOURCE_QUOTE", text: outcome, source_handles: [handle] }]
+          },
+          cognition: {
+            schema_version: "cognition-proposal-v0",
+            reasoning_summary: "answer from what happened last time",
+            relevant_memory_handles: [handle],
+            considered_handles: [handle],
+            current_intent: `answer with what happened: ${outcome}`,
+            confidence: 0.8,
+            uncertainty: 0.2,
+            action_intent: null,
+            evidence_handles: [handle]
+          },
+          communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+          clarification_basis: null
+        }),
+        model: "deterministic-history-seed"
+      };
+    }
+  };
+}
+
+describe.skipIf(!ENABLED)("REAL_LANGUAGE_SMOKE — consequence scenario (bounded)", () => {
+  it("a real turn after a lived consequence, one subject within a 2-call budget", async () => {
+    const environment = processEnvironmentV0();
+    const rootA = mkdtempSync(join(tmpdir(), "real-cons-a-"));
+    const rootB = mkdtempSync(join(tmpdir(), "real-cons-b-"));
+    const counter: CallCounter = { count: 0 };
+    try {
+      const configuration = resolveProductConfigurationV0({
+        environment,
+        default_data_root: rootA,
+        default_data_root_origin: "real-consequence-smoke"
+      });
+      const transports = createProductTransportsV0({
+        executor: configuration.executor.effective,
+        ...(configuration.executor.effective === "deepseek"
+          ? { api_key: environment.get("MODEL_API_KEY") ?? null }
+          : {}),
+        base_url: configuration.endpoint.value,
+        model: configuration.model.value,
+        timeout_ms: configuration.timeout_ms.value,
+        num_predict: configuration.num_predict.value,
+        context_window_tokens: configuration.context_window_tokens.value
+      });
+
+      const offlineDeps = (root: string, subjectId: string) => ({
+        conversationCognitionTransport: seedOutcomeFollower(),
+        languageTransport: seedLanguage(),
+        // Deterministic and IDENTICAL for both subjects: affect is held constant.
+        appraisalProvider: createConstantAppraisalProviderV0(),
+        sharedSourceStore: new FileSharedSubjectSourceStoreV0(root, subjectId),
+        provider_identity: { model: "deterministic-history-seed", num_predict: 2048 },
+        clock: () => "2026-01-01T00:00:00.000Z"
+      });
+
+      const seedHistory = async (root: string, subjectId: string, fact: string) => {
+        const host = await InteractiveSubjectHostV0.open(config(root, subjectId), offlineDeps(root, subjectId));
+        return (await host.send(fact)).observational_experience_ref;
+      };
+      const actFromMemory = async (root: string, subjectId: string) => {
+        const host = await InteractiveSubjectHostV0.open(config(root, subjectId), offlineDeps(root, subjectId));
+        const outcome = await host.send(SAME_SCENE);
+        return { status: outcome.status, delivered: outcome.subject_text };
+      };
+      const admitConsequence = async (root: string, subjectId: string, text: string) => {
+        const host = await InteractiveSubjectHostV0.open(config(root, subjectId), offlineDeps(root, subjectId));
+        const outcome = await host.send(text);
+        return {
+          status: outcome.status,
+          affected: outcome.affect_after,
+          closed: outcome.completed_prior_outcome?.episode_ref ?? null
+        };
+      };
+
+      const historyA = await seedHistory(rootA, SUBJECT_A, FACT_A);
+      const historyB = await seedHistory(rootB, SUBJECT_B, FACT_B);
+      const actedA = await actFromMemory(rootA, SUBJECT_A);
+      const actedB = await actFromMemory(rootB, SUBJECT_B);
+      const consequenceA = await admitConsequence(rootA, SUBJECT_A, CONSEQUENCE_A);
+      const consequenceB = await admitConsequence(rootB, SUBJECT_B, CONSEQUENCE_B);
+      if (counter.count !== 0) throw new Error(`offline seeding made ${String(counter.count)} real calls`);
+
+      const realTurn = async (root: string, subjectId: string) => {
+        const host = await InteractiveSubjectHostV0.open(config(root, subjectId), {
+          conversationCognitionTransport: capped(transports.cognition, counter),
+          languageTransport: capped(transports.language, counter),
+          appraisalProvider: createConstantAppraisalProviderV0(),
+          sharedSourceStore: new FileSharedSubjectSourceStoreV0(root, subjectId),
+          provider_identity: { model: configuration.model.value, num_predict: configuration.num_predict.value },
+          clock: () => "2026-01-01T00:00:00.000Z"
+        });
+        const callsBefore = counter.count;
+        const outcome = await host.send(LATER_SCENE);
+        return { resolution: host.resolution(), outcome, real_calls: counter.count - callsBefore };
+      };
+      const a = await realTurn(rootA, SUBJECT_A);
+      const b = counter.count + 2 <= CALL_CAP ? await realTurn(rootB, SUBJECT_B) : null;
+
+      const artifact = {
+        schema_version: "real-consequence-smoke-v0",
+        slice: "CLOSED_LOOP_LIVED_INTERACTION_V0",
+        harness: "product/sandbox/src/real-language-smoke.test.ts",
+        repo_head: readRepoHead(),
+        executor: {
+          family: configuration.executor.effective,
+          model: configuration.model.value,
+          timeout_ms: configuration.timeout_ms.value,
+          language_stage: "REAL (product transport)",
+          appraisal_stage: "deterministic constant provider (0 calls)"
+        },
+        scene: LATER_SCENE,
+        offline_history: {
+          subject_a: { fact: FACT_A, episode_ref: historyA, acted: actedA, consequence: consequenceA },
+          subject_b: { fact: FACT_B, episode_ref: historyB, acted: actedB, consequence: consequenceB }
+        },
+        call_accounting: { real_calls: counter.count, cap: CALL_CAP },
+        subject_a: {
+          resolution: a.resolution,
+          status: a.outcome.status,
+          failure: a.outcome.failure,
+          real_calls: a.real_calls,
+          provider_memory_section_present: a.outcome.provider_memory_section_present,
+          raw_cognition_response: a.outcome.raw_cognition_response,
+          raw_language_response: a.outcome.raw_language_response,
+          delivered_text: a.outcome.subject_text,
+          uses_consequence: a.outcome.subject_text.includes(CONSEQUENCE_A)
+        },
+        subject_b:
+          b === null
+            ? { resolution: "NOT_RUN_BUDGET", status: "NOT_RUN_BUDGET", real_calls: 0 }
+            : {
+                resolution: b.resolution,
+                status: b.outcome.status,
+                failure: b.outcome.failure,
+                real_calls: b.real_calls,
+                provider_memory_section_present: b.outcome.provider_memory_section_present,
+                raw_cognition_response: b.outcome.raw_cognition_response,
+                raw_language_response: b.outcome.raw_language_response,
+                delivered_text: b.outcome.subject_text,
+                uses_consequence: b.outcome.subject_text.includes(CONSEQUENCE_B)
+              }
+      };
+      const serialized = `${JSON.stringify(artifact, null, 2)}\n`;
+      writeFileSync(join(process.cwd(), "tmp", "real-consequence-smoke.json"), serialized, "utf8");
+      console.log(
+        "REAL_CONSEQUENCE_SMOKE",
+        JSON.stringify(
+          {
+            real_calls: counter.count,
+            cap: CALL_CAP,
+            sha256: createHash("sha256").update(serialized, "utf8").digest("hex"),
+            a: { status: a.outcome.status, delivered: a.outcome.subject_text, uses: artifact.subject_a.uses_consequence }
+          },
+          null,
+          2
+        )
+      );
     } finally {
       rmSync(rootA, { recursive: true, force: true });
       rmSync(rootB, { recursive: true, force: true });
