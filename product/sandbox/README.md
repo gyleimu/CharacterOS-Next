@@ -512,12 +512,23 @@ Model output format variance is absorbed; meaning never is.
   instruction to answer the same intended thing in the required structure. There
   is no retry-until-valid loop (`max_attempts = 2` is frozen in the policy).
 - **Graceful degradation.** If the second attempt also fails, the turn ends
-  `DEGRADED` with `EXECUTOR_OUTPUT_DEGRADED`: the CLI prints a short safe reply
-  and says the turn was not recorded, nothing is written to canonical state or
-  Memory (no Experience, no delivery, no pending outcome) and the process stays
-  usable — the next message starts a fresh turn. The turn's bookkeeping does
-  advance, because its user message was already admitted; reusing that source
-  event id would fail closed forever.
+  `DEGRADED` with `EXECUTOR_OUTPUT_DEGRADED`, and **no cognition-derived
+  canonical state is written** from the invalid executor output:
+  - no accepted cognition proposal, so no claim, stance, intent or directive is
+    committed;
+  - no delivery write and no `Experience`/`Memory` derived from the invalid
+    cognition;
+  - no pending behavior outcome created from it;
+  - the model's invalid text is never exposed to the user — only a fixed safe
+    reply plus "this turn was not recorded";
+  - turn bookkeeping advances (its user message was already admitted; reusing
+    that source event id would fail closed forever).
+
+  This is NOT a claim that the turn has zero canonical effect. A DEGRADED turn
+  can still carry the SAME pre-cognition canonical processing that a `FAILED`
+  turn already has under existing session law — in particular the pre-cognition
+  Appraisal commit, which happens before cognition and is unchanged by this
+  policy. What is excluded is specifically cognition-derived state.
 - **Only output-contract violations degrade.** A provider/budget failure
   (timeout, connection failure, empty or provider-truncated output) and any
   semantic-law rejection (an unauthorized factual claim, an unlawful response

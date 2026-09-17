@@ -100,10 +100,27 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 `BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 = PAUSED`（暂停，不是裁定）。
 
-- 暂停理由：`frozen calibration readiness not met under the tested executor contract` —— 冻结协议要求 50 次 calibration 抽样中至少 48 次 host-valid，被测 executor contract 未达到；两次正式 calibration 均在 host-valid 下限被打破前按既有 early-stop 规则停止（第一次 17 trials／3 次 `MODEL_SCHEMA_INVALID`，第二次 49 trials／3 次 `MODEL_SCHEMA_INVALID`，位置 43、44、49）。
-- 已确认的机制事实：被测 cloud executor 端点拒绝 `response_format: json_schema`（HTTP 400 "This response_format type is unavailable now"），production OpenAI-compatible transport 因此不转发 `structured_output`；观察到的无效输出是**格式/类型违规**（例如 `communication_directive` 位置输出裸字符串、`clarification_basis.missing_information` 超过 256 code points），不是语义分歧或科学反例。
-- 该暂停**不表示** Belief 命题无效、DeepSeek 不可用或 CharacterOS 受阻；它只是冻结协议与当前 executor contract 之间的 readiness 判定。冻结实验文件与 evidence 保持不可变，未改写任何历史结果。
-- 前进路径（产品侧已落地，科学侧待未来重新 preregister）：`TOLERANT_EXTERNAL_OUTPUT + STRICT_INTERNAL_STATE` —— 只做语义保持的 format normalization、最多一次带真实 validator error 的 regeneration、两次失败即 graceful degrade 且不写 canonical state。任何未来的 confirmatory 重新执行都需要新的 preregistration 与新的批准点，本文件不授权启动。
+- 暂停理由：`frozen calibration readiness not met under the tested executor contract` —— 冻结协议要求 50 次 calibration 抽样中至少 48 次 host-valid；post-parity formal calibration 未达该下限，按既有 early-stop 规则终止（`STOP_EARLY`），结果已被 CONSUMED，因此 **Primary 仍未获授权**（`PRIMARY_AUTHORIZED = FALSE`）。
+- 记录到的 formal 事实仅限：`FORMAL_INVALID_TRIALS = [43, 44, 49]`；`FAILURE_CLASS = MODEL_SCHEMA_INVALID`。
+- `FORMAL_EXACT_FAILURE_RULE = UNKNOWN / NOT_PERSISTED`：trials 43/44/49 各自被生产 validator 判为 invalid 的**具体规则未被持久化**，因此 `CALIBRATION_FAILURE_ROOT_CAUSE = NOT_IDENTIFIED`。不得为本 formal calibration 指定任何具体 format/type 机制。
+- 该暂停**不表示** Belief 命题无效、DeepSeek 不可用、CharacterOS 受阻，或产品 runtime 应当停止。它只是冻结协议与当前 executor contract 之间的 readiness 判定。冻结实验文件与 evidence 保持不可变，未改写任何历史结果。
+- 产品侧现状（与上述科学记录分离）：产品 runtime 采用 `TOLERANT_EXTERNAL_OUTPUT + STRICT_INTERNAL_STATE`。这是 **PRODUCT ROBUSTNESS POLICY**，不是对本 formal protocol 的追溯性科学修改，也不能用来反推 43/44/49 的根因。任何未来的 confirmatory 重新执行都需要新的 preregistration 与新的批准点，本文件不授权启动。
+
+以下两条是与 formal calibration **分离的** exploratory diagnostic 所捕获的机制。它们各自有自己的 authority、自己的 evidence 边界，**不得**被追溯归属于 formal calibration 的 trials 43/44/49：
+
+1. 旧 authority 下的 exploratory diagnostic 捕获到：`clarification_basis.missing_information` 超过 256 Unicode code points。
+2. post-parity exploratory diagnostic 捕获到：`communication_directive` 的 outer type invalid —— bare string 而非要求的 object。
+
+```text
+THESE ARE EXPLORATORY CAPTURED MECHANISMS.
+THEY MUST NOT BE RETROACTIVELY ATTRIBUTED
+TO FORMAL CALIBRATION TRIALS 43/44/49.
+```
+
+同样必须与前者分离的是一次独立的工程 capability probe，而不是 formal calibration 的组成部分：
+
+- **Formal calibration** 使用 `response_format = {"type":"json_object"}`（即 OpenAI-compatible JSON object 模式），**没有**使用 strict `json_schema`。
+- **Separate engineering capability probe**：在之后的一次独立 probe 中，`response_format.type = json_schema` 在当时被测 endpoint 上返回 HTTP 400 `This response_format type is unavailable now`。该观察的正确结论只能写作 `STRICT_JSON_SCHEMA_RESPONSE_FORMAT_UNAVAILABLE_ON_PROBED_ENDPOINT_AT_PROBE_TIME`；它是 probe 时点的 endpoint 特性，**不是** formal calibration `STOP_EARLY` 的直接原因，也不能作为其解释。
 
 `INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0` 已实现并通过 bounded real-provider smoke：真实用户消息 → 持久 subject session → 自动 retrieval → cognition → 可观察响应 → delivery/feedback → Experience → durable Memory → 关闭进程 → 新进程 authoritative restore → 继续同一 lived subject。该 slice 的 primary acceptance 全部满足。
 

@@ -1,6 +1,12 @@
 /**
  * PERSISTENT_SUBJECT_LONGITUDINAL_HISTORY_AB_RESTART_V0 — product acceptance.
  *
+ * CONCLUSION SCOPE: `PRODUCT_LONGITUDINAL_INTEGRATION_CHAIN_PROVEN` — the
+ * DETERMINISTIC INTEGRATION CAUSAL PLUMBING of the chain below. It is NOT a
+ * claim that a real LLM's cognition causally produces history-dependent
+ * behavior; that requires a real-executor behavior measurement and is recorded
+ * separately (and was NOT proven: see the real smoke's delivered-text result).
+ *
  * THE CHAIN, closed end to end at the PRODUCT level for two subjects:
  *   past experience → governed durable state → current cognition context →
  *   observable behavior → subsequent state update → restart → history-dependent

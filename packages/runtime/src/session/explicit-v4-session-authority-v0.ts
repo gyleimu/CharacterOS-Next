@@ -1016,8 +1016,11 @@ export class ExplicitV4SessionAuthorityV0 {
     );
     if (result.kind === "DEGRADED") {
       // PRODUCT OUTPUT ROBUSTNESS: a bounded-robustness degradation is NOT a canonical
-      // outcome and NOT a host failure: nothing is written, and the host renders a
-      // minimal safe reply built from the real validator detail.
+      // outcome and NOT a host failure. No cognition-derived state is written from the
+      // rejected output — no proposal, no delivery, no Experience/Memory, no pending
+      // outcome — and the host renders a minimal safe reply built from the real
+      // validator detail. Pre-cognition canonical processing that already occurred
+      // stays governed by the existing session law.
       return {
         kind: "DEGRADED",
         behavior: null,

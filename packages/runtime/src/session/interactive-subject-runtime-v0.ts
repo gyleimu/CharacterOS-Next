@@ -532,9 +532,15 @@ export class InteractiveSubjectRuntimeV0 {
       });
       factualAuthorizationTrace = response.factualAuthorizationTrace;
       if (response.kind === "DEGRADED") {
-        // PRODUCT OUTPUT ROBUSTNESS: bounded degradation. No cognition, no delivery,
-        // no Experience, no Memory, no pending behavior outcome — the subject's lived
-        // history and canonical state gain nothing from this turn.
+        // PRODUCT OUTPUT ROBUSTNESS: bounded degradation.
+        //
+        // No cognition-derived canonical state is written from the degraded
+        // executor output: no accepted proposal, no delivery write, no
+        // Experience/Memory derived from it, and no pending behavior outcome
+        // created from it. Pre-cognition canonical processing that already
+        // occurred (the Appraisal commit that precedes cognition, exactly as on
+        // a FAILED turn) remains governed by the existing session law and is not
+        // undone or extended here.
         //
         // TURN BOOKKEEPING STILL ADVANCES, and that is not a canonical write: the
         // turn's user message was already admitted (source event `turn-<index>`) by

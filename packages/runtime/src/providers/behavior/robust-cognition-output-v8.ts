@@ -189,8 +189,9 @@ export const ROBUST_COGNITION_POLICY: RobustCognitionPolicy = Object.freeze({
 
 /**
  * Thrown when every lawful attempt failed. It carries the validator's real output and
- * the diagnostics for observability; the caller degrades gracefully and writes NOTHING
- * to canonical state.
+ * the diagnostics for observability; the caller degrades gracefully, and NO
+ * cognition-derived state is written from the rejected output (pre-cognition
+ * canonical processing that already happened is governed by existing session law).
  */
 export class CognitionOutputDegradedError extends Error {
   readonly code = "EXECUTOR_OUTPUT_DEGRADED" as const;

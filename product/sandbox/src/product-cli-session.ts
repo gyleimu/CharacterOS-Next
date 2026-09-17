@@ -148,7 +148,11 @@ export function parseObservationCommandV0(
   return built;
 }
 
-/** Host-rendered minimal safe reply for a degraded turn (no model call, no canonical write). */
+/**
+ * Host-rendered minimal safe reply for a degraded turn: 0 model calls and no
+ * cognition-derived canonical write (any pre-cognition Appraisal commit follows
+ * the existing session law, exactly as on a failed turn).
+ */
 export const DEGRADED_TURN_REPLY_V0 =
   "I could not form a reliable reply to that just now. Nothing about our conversation was changed — please say it again.";
 
