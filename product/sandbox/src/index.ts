@@ -239,3 +239,20 @@ export type {
   ProductTurnTranscriptInputV0,
   ProductTurnTranscriptRowV0
 } from "./product-turn-transcript.js";
+// VOICE MODALITY BOUNDARY — input/output ports only; no subject knowledge.
+export {
+  PRODUCT_VOICE_MAX_AUDIO_BYTES_V0,
+  PRODUCT_VOICE_MAX_SPEAK_CHARS_V0,
+  PRODUCT_VOICE_SCHEMA_VERSION,
+  createHttpSpeechPortsV0,
+  unavailableVoicePortsV0
+} from "./product-voice.js";
+export type {
+  HttpSpeechAdapterOptionsV0,
+  ProductAudioInputV0,
+  ProductVoicePortsV0,
+  SpeechToTextPortV0,
+  SpeechToTextResultV0,
+  TextToSpeechPortV0,
+  TextToSpeechResultV0
+} from "./product-voice.js";

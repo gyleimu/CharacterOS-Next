@@ -36,7 +36,12 @@ import type {
   ProductStateViewV0,
   ProductTurnResultV0,
   ProductTurnTranscriptRowV0,
+  ProductVoicePortsV0,
   ProviderProgressEventV0
+} from "@characteros-next/sandbox";
+import {
+  PRODUCT_VOICE_MAX_SPEAK_CHARS_V0,
+  unavailableVoicePortsV0
 } from "@characteros-next/sandbox";
 
 export const WEB_DEFAULT_HOST_V0 = "127.0.0.1";
@@ -49,6 +54,14 @@ export const WEB_MAX_ENVIRONMENT_INTERACTIONS_V0 = 100;
 export const WEB_MAX_CANONICAL_TICKS_V0 = 1_000_000;
 export const WEB_MAX_OBSERVATION_FIELD_V0 = 200;
 export const WEB_MAX_OBSERVATION_SCENE_V0 = 2000;
+/**
+ * What a DEGRADED turn may be spoken as: the host's ONE fixed safe line. Never
+ * the model's rejected output, never a retry attempt, never internal detail.
+ */
+export const DEGRADED_SPEAK_TEXT_V0 =
+  "I could not form a reliable reply to that just now. Nothing about our conversation was changed - please say it again.";
+/** Voice requests carry base64 audio inside the JSON body; bound it explicitly. */
+export const WEB_MAX_VOICE_BODY_BYTES_V0 = 12 * 1024 * 1024;
 
 /** The narrow product surface the visual client needs (satisfied by ProductRuntimeV0). */
 export interface ProductWebRuntimePortV0 {
@@ -78,6 +91,11 @@ export interface ProductWebServerOptionsV0 {
    * fixed runtime is adapted to the same port, so request handling has ONE path.
    */
   readonly sessions?: ProductWebSessionsPortV0;
+  /**
+   * VOICE MODALITY: injected speech ports. Omitted ⇒ the shipped default
+   * (unavailable): voice input reports a bounded error and text keeps working.
+   */
+  readonly voice?: ProductVoicePortsV0;
   /** Static UI directory; defaults to the package's `public/`. */
   readonly static_root?: string;
   readonly host?: string;
@@ -114,6 +132,7 @@ export interface ProductWebSessionsPortV0 {
       readonly user_text: string;
       readonly subject_text: string;
       readonly failure_detail: string | null;
+      readonly input_mode?: "typed" | "voice" | undefined;
       readonly state_revision_after: number;
       readonly repository_revision_after: string;
     }
@@ -279,6 +298,8 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
   }
   const sessions: ProductWebSessionsPortV0 =
     options.sessions ?? fixedProductWebSessionsV0(options.runtime as ProductWebRuntimePortV0);
+  // VOICE MODALITY: ports only. Never a startup blocker, never subject state.
+  const voice: ProductVoicePortsV0 = options.voice ?? unavailableVoicePortsV0();
   const runtime = (): ProductWebRuntimePortV0 => sessions.current();
   const staticRoot = options.static_root ?? fileURLToPath(new URL("../public", import.meta.url));
   const sseClients = new Set<ServerResponse>();
@@ -503,6 +524,166 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
       const transcriptRuntime = requireRuntimeV0(res);
       if (transcriptRuntime === null) return;
       sendJsonV0(res, 200, { ok: true, turns: sessions.transcript(transcriptLimit) });
+      return;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* VOICE MODALITY (input/output only; never subject state)             */
+    /* ------------------------------------------------------------------ */
+
+    if (pathname === "/api/voice/status") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Voice status is read-only.");
+        return;
+      }
+      sendJsonV0(res, 200, {
+        ok: true,
+        stt: { available: voice.stt.available },
+        tts: { available: voice.tts.available },
+        persistence: "RAW_AUDIO_NOT_PERSISTED"
+      });
+      return;
+    }
+
+    if (pathname === "/api/voice/turn") {
+      if (method !== "POST") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "A voice turn requires POST.");
+        return;
+      }
+      const voiceRuntime = requireRuntimeV0(res);
+      if (voiceRuntime === null) return;
+      const body = await readBoundedBodyV0(req, WEB_MAX_VOICE_BODY_BYTES_V0);
+      if (body.kind === "TOO_LARGE") {
+        sendErrorV0(res, 413, "BODY_TOO_LARGE", `Request body exceeds ${WEB_MAX_BODY_BYTES_V0} bytes.`);
+        return;
+      }
+      let payload: unknown;
+      try {
+        payload = JSON.parse(body.text);
+      } catch {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      const audioBase64 =
+        typeof payload === "object" && payload !== null && typeof (payload as { audio_base64?: unknown }).audio_base64 === "string"
+          ? ((payload as { audio_base64: string }).audio_base64 as string)
+          : null;
+      const contentType =
+        typeof payload === "object" && payload !== null && typeof (payload as { content_type?: unknown }).content_type === "string"
+          ? ((payload as { content_type: string }).content_type as string)
+          : "audio/webm";
+      if (audioBase64 === null || audioBase64.length === 0) {
+        sendErrorV0(res, 400, "INVALID_INPUT", "A non-empty audio_base64 field is required.");
+        return;
+      }
+      let audio: Uint8Array;
+      try {
+        audio = new Uint8Array(Buffer.from(audioBase64, "base64"));
+      } catch {
+        sendErrorV0(res, 400, "INVALID_INPUT", "audio_base64 could not be decoded.");
+        return;
+      }
+      // STT is a user-input CANDIDATE: a failure here mutates NOTHING.
+      const transcribed = await voice.stt.transcribe({ audio, content_type: contentType });
+      if (transcribed.kind === "FAILED") {
+        sendJsonV0(res, 200, {
+          ok: false,
+          code: transcribed.code,
+          message: "The recording could not be transcribed; the subject was not asked anything.",
+          detail: transcribed.detail,
+          turn: null,
+          transcription: null
+        });
+        return;
+      }
+      const text = transcribed.text.trim();
+      if (text.length === 0 || text.length > WEB_MAX_TEXT_LENGTH_V0) {
+        sendJsonV0(res, 200, {
+          ok: false,
+          code: "STT_EMPTY",
+          message: "The transcription was empty; the subject was not asked anything.",
+          detail: null,
+          turn: null,
+          transcription: null
+        });
+        return;
+      }
+      try {
+        // The SAME typed path: one subject, one life, one transcript.
+        const result = await voiceRuntime.submitHumanText(text);
+        const turn = voiceRuntime.summarizeTurn(result);
+        sessions.recordTurn(turn.subject_id, {
+          turn_index: turn.turn_index,
+          status: turn.status,
+          user_text: text,
+          subject_text: turn.reply_text ?? "",
+          failure_detail: turn.failure_detail,
+          input_mode: "voice",
+          state_revision_after: turn.state_revision_after,
+          repository_revision_after: turn.repository_revision_after
+        });
+        // TTS input is ALWAYS the final delivered text (or the fixed safe line).
+        const speakText =
+          turn.status === "COMPLETE" && typeof turn.reply_text === "string" && turn.reply_text.length > 0
+            ? turn.reply_text
+            : turn.status === "DEGRADED"
+              ? DEGRADED_SPEAK_TEXT_V0
+              : null;
+        sendJsonV0(res, 200, { ok: true, transcription: text, turn, speak_text: speakText });
+      } catch (error) {
+        sendErrorV0(
+          res,
+          503,
+          "RUNTIME_UNAVAILABLE",
+          "The subject runtime cannot accept a new turn.",
+          error instanceof Error ? error.message : undefined
+        );
+      }
+      return;
+    }
+
+    if (pathname === "/api/voice/speak") {
+      if (method !== "POST") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Speech synthesis requires POST.");
+        return;
+      }
+      const speakRuntime = requireRuntimeV0(res);
+      if (speakRuntime === null) return;
+      const body = await readBoundedBodyV0(req, WEB_MAX_VOICE_BODY_BYTES_V0);
+      if (body.kind === "TOO_LARGE") {
+        sendErrorV0(res, 413, "BODY_TOO_LARGE", `Request body exceeds ${WEB_MAX_BODY_BYTES_V0} bytes.`);
+        return;
+      }
+      let payload: unknown;
+      try {
+        payload = JSON.parse(body.text);
+      } catch {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      const text =
+        typeof payload === "object" && payload !== null && typeof (payload as { text?: unknown }).text === "string"
+          ? ((payload as { text: string }).text as string)
+          : null;
+      if (text === null || text.trim().length === 0) {
+        sendErrorV0(res, 400, "INVALID_INPUT", "A non-empty text field is required.");
+        return;
+      }
+      const spoken = await voice.tts.synthesize({ text: text.slice(0, PRODUCT_VOICE_MAX_SPEAK_CHARS_V0) });
+      if (spoken.kind === "FAILED") {
+        sendJsonV0(res, 200, {
+          ok: false,
+          code: spoken.code,
+          message: "This reply could not be spoken; the reply itself is unchanged.",
+          detail: spoken.detail
+        });
+        return;
+      }
+      sendJsonV0(res, 200, {
+        ok: true,
+        audio_base64: Buffer.from(spoken.audio).toString("base64"),
+        content_type: spoken.content_type
+      });
       return;
     }
 

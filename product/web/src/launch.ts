@@ -18,7 +18,9 @@ import {
   PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
   PRODUCT_DEFAULT_DATA_ROOT_V0,
   ProductRuntimeStartupErrorV0,
-  createProductRuntimeV0
+  createHttpSpeechPortsV0,
+  createProductRuntimeV0,
+  unavailableVoicePortsV0
 } from "@characteros-next/sandbox";
 import { ProductWebSessionsV0 } from "./sessions.js";
 import { WEB_DEFAULT_HOST_V0, WEB_DEFAULT_PORT_V0, startProductWebServerV0 } from "./server.js";
@@ -61,8 +63,32 @@ async function main(): Promise<number> {
     console.error("  Its durable files are untouched; fix the cause and relaunch.");
   }
 
+  // VOICE MODALITY: optional, local-first and replaceable. Each direction is
+  // enabled independently; an unset endpoint simply leaves it unavailable and the
+  // text product is never blocked. No vendor SDK, no audio is ever persisted.
+  const unavailable = unavailableVoicePortsV0();
+  const sttUrl = process.env["CHARACTEROS_STT_URL"];
+  const ttsUrl = process.env["CHARACTEROS_TTS_URL"];
+  const voiceToken = process.env["CHARACTEROS_VOICE_TOKEN"];
+  const voice = {
+    stt:
+      sttUrl === undefined || sttUrl.length === 0
+        ? unavailable.stt
+        : createHttpSpeechPortsV0({
+            base_url: sttUrl,
+            ...(voiceToken === undefined ? {} : { token: voiceToken })
+          }).stt,
+    tts:
+      ttsUrl === undefined || ttsUrl.length === 0
+        ? unavailable.tts
+        : createHttpSpeechPortsV0({
+            base_url: ttsUrl,
+            ...(voiceToken === undefined ? {} : { token: voiceToken })
+          }).tts
+  };
   const handle = await startProductWebServerV0({
     sessions,
+    voice,
     host: process.env["CHARACTEROS_WEB_HOST"] ?? WEB_DEFAULT_HOST_V0,
     port: envIntV0("CHARACTEROS_WEB_PORT") ?? WEB_DEFAULT_PORT_V0
   });
@@ -78,6 +104,9 @@ async function main(): Promise<number> {
     console.log(`  Status: ${bootstrap.status}   Model: ${bootstrap.provider.model}`);
   }
   console.log(`  Open: ${handle.url}`);
+  console.log(
+    `  Voice: input ${voice.stt.available ? "READY (local adapter)" : "unavailable"} · output ${voice.tts.available ? "READY (local adapter)" : "browser speech"}`
+  );
   console.log("  Local-only product. Press Ctrl+C to stop.");
 
   let shuttingDown = false;

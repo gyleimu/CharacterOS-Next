@@ -214,6 +214,29 @@ under the data root (`subject-config.json`, `subject-<id>.snapshot.json`,
 `subject-<id>.shared-subject.json`, the environment checkpoint sidecar, and the
 operational JSONL). No database, no browser-side authority.
 
+## Voice (input/output modality only)
+
+Voice never bypasses the subject: a recording becomes a transcript, the transcript
+goes through the SAME turn path a typed message uses (one subject, one life, one
+operational log, rows marked `input_mode: voice`), and the subject's FINAL delivered
+text is what gets spoken. A degraded turn is spoken as the host's fixed safe line —
+never a rejected model output.
+
+- Enable input with `CHARACTEROS_STT_URL` and output with `CHARACTEROS_TTS_URL`
+  (optional `CHARACTEROS_VOICE_TOKEN`), pointing at a local service that answers
+  `POST /transcribe {audio_base64, content_type} -> {text}` and
+  `POST /speak {text} -> {audio_base64, content_type}`. Without them voice is
+  UNAVAILABLE and the text product is unaffected; with no output adapter the browser
+  can still read replies aloud with its own speech synthesis.
+- Failure law: an STT failure asks the subject NOTHING (no turn, no state change); a
+  TTS failure leaves the committed turn untouched and the reply visible as text.
+- Privacy: the microphone is requested only on an explicit click, the stream is
+  released when recording stops or is cancelled, and RAW AUDIO IS NEVER PERSISTED.
+- No voice identity: nothing infers emotion, identity, gender or personality from
+  voice characteristics, and there is no prosody analysis.
+- Browser support: capture uses `MediaRecorder`; playback prefers the server adapter
+  and falls back to the browser's speech synthesis.
+
 ## Honest limitations (V0)
 
 - one subject only, local-only (`127.0.0.1`), no accounts/authentication;

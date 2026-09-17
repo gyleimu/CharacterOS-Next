@@ -44,7 +44,13 @@ const el = {
   subjectsList: document.getElementById("subjects-list"),
   newSubjectForm: document.getElementById("new-subject-form"),
   newSubjectName: document.getElementById("new-subject-name"),
-  devDetails: document.getElementById("dev-details")
+  devDetails: document.getElementById("dev-details"),
+  micToggle: document.getElementById("mic-toggle"),
+  micLabel: document.getElementById("mic-label"),
+  micStop: document.getElementById("mic-stop"),
+  speechStop: document.getElementById("speech-stop"),
+  voiceState: document.getElementById("voice-state"),
+  voiceNote: document.getElementById("voice-note")
 };
 
 async function api(path, options) {
@@ -234,7 +240,14 @@ function renderMessages() {
     box.className = `msg ${message.role === "user" ? "msg-user" : message.role === "note" ? "msg-note" : "msg-subject"}`;
     const label = document.createElement("span");
     label.className = "msg-label";
-    label.textContent = message.role === "user" ? "You" : message.role === "note" ? "Session" : state.subjectName;
+    label.textContent =
+      message.role === "user"
+        ? message.mode === "voice"
+          ? "You (voice)"
+          : "You"
+        : message.role === "note"
+          ? "Session"
+          : state.subjectName;
     const text = document.createElement("span");
     text.textContent = message.text;
     box.append(label, text);
@@ -369,7 +382,7 @@ async function refreshTranscript() {
     const messages = [];
     for (const turn of body.turns) {
       if (typeof turn.user_text === "string" && turn.user_text.length > 0) {
-        messages.push({ role: "user", text: turn.user_text });
+        messages.push({ role: "user", text: turn.user_text, mode: turn.input_mode === "voice" ? "voice" : "typed" });
       }
       if (turn.status === "COMPLETE" && typeof turn.subject_text === "string" && turn.subject_text.length > 0) {
         messages.push({ role: "subject", text: turn.subject_text });
@@ -931,6 +944,7 @@ function renderEvolution(evolution) {
 async function refreshAll() {
   await refreshViews();
   await refreshTranscript();
+  await refreshVoiceStatus();
 }
 
 function applyDevDetails(enabled) {
@@ -954,3 +968,217 @@ el.newSubjectForm.addEventListener("submit", (event) => {
 el.devDetails.addEventListener("change", () => {
   applyDevDetails(el.devDetails.checked);
 });
+
+/* -------------------------------------------------------------------------- */
+/* VOICE MODALITY (PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0)            */
+/*                                                                             */
+/* Audio is an INPUT/OUTPUT MODALITY only: a recording becomes text, the text   */
+/* goes through the SAME /api/voice/turn path a typed message uses (one subject, */
+/* one life, one transcript), and the subject's FINAL delivered text is what is  */
+/* spoken. Nothing here is authoritative, nothing is persisted, and the          */
+/* microphone is armed only by an explicit click.                               */
+/* -------------------------------------------------------------------------- */
+
+const voice = {
+  available: false,
+  ttsAvailable: false,
+  state: "idle",
+  recorder: null,
+  stream: null,
+  chunks: [],
+  stopped: false,
+  utterance: null
+};
+
+function setVoiceState(next, note) {
+  voice.state = next;
+  const classes = {
+    idle: "",
+    recording: "state-recording",
+    processing: "state-processing",
+    speaking: "state-speaking",
+    error: "state-error"
+  };
+  el.voiceState.className = `voice-state ${classes[next] ?? ""}`.trim();
+  el.voiceState.textContent = next === "processing" ? "transcribing / thinking" : next;
+  el.voiceNote.textContent = note ?? "";
+  const recording = next === "recording";
+  el.micToggle.setAttribute("aria-pressed", recording ? "true" : "false");
+  el.micStop.hidden = !recording;
+  el.speechStop.hidden = next !== "speaking";
+}
+
+function releaseMicrophone() {
+  if (voice.stream !== null) {
+    for (const track of voice.stream.getTracks()) {
+      try {
+        track.stop();
+      } catch {
+        // Releasing an already-ended track is not an error.
+      }
+    }
+    voice.stream = null;
+  }
+  voice.recorder = null;
+  voice.chunks = [];
+}
+
+function stopSpeaking() {
+  try {
+    window.speechSynthesis?.cancel();
+  } catch {
+    // A browser without speech synthesis simply has nothing to cancel.
+  }
+  if (voice.utterance !== null) voice.utterance = null;
+  if (voice.state === "speaking") setVoiceState("idle", "");
+}
+
+/** Speaks the FINAL delivered text: server audio when configured, else browser speech. */
+async function speakDeliveredText(text) {
+  if (typeof text !== "string" || text.length === 0) return;
+  setVoiceState("speaking", "");
+  if (voice.ttsAvailable) {
+    try {
+      const body = await api("/api/voice/speak", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ text })
+      });
+      const audio = new Audio(`data:${body.content_type};base64,${body.audio_base64}`);
+      audio.addEventListener("ended", () => setVoiceState("idle", ""), { once: true });
+      await audio.play();
+      return;
+    } catch {
+      // Fall through to the browser voice: the reply itself is already committed.
+    }
+  }
+  const synth = window.speechSynthesis;
+  if (synth === undefined || typeof SpeechSynthesisUtterance !== "function") {
+    setVoiceState("idle", "spoken output unavailable in this browser");
+    return;
+  }
+  const utterance = new SpeechSynthesisUtterance(text);
+  voice.utterance = utterance;
+  utterance.addEventListener("end", () => setVoiceState("idle", ""), { once: true });
+  utterance.addEventListener("error", () => setVoiceState("idle", "spoken output failed; the reply is above"), {
+    once: true
+  });
+  synth.speak(utterance);
+}
+
+async function refreshVoiceStatus() {
+  try {
+    const body = await api("/api/voice/status");
+    voice.available = body.stt.available === true;
+    voice.ttsAvailable = body.tts.available === true;
+    el.micToggle.disabled = !voice.available;
+    el.micLabel.textContent = voice.available ? "Voice" : "Voice unavailable";
+    setVoiceState("idle", voice.available ? "" : "voice input needs a configured speech adapter");
+  } catch {
+    el.micToggle.disabled = true;
+    el.micLabel.textContent = "Voice unavailable";
+  }
+}
+
+async function startRecording() {
+  if (!voice.available || voice.state === "recording") return;
+  if (typeof navigator.mediaDevices?.getUserMedia !== "function" || typeof MediaRecorder !== "function") {
+    setVoiceState("error", "this browser cannot record audio; type instead");
+    return;
+  }
+  try {
+    // The microphone is requested ONLY here, on an explicit click.
+    voice.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (error) {
+    setVoiceState("error", error instanceof Error ? error.message : "microphone unavailable");
+    return;
+  }
+  voice.chunks = [];
+  voice.stopped = false;
+  voice.recorder = new MediaRecorder(voice.stream);
+  voice.recorder.addEventListener("dataavailable", (event) => {
+    if (event.data.size > 0) voice.chunks.push(event.data);
+  });
+  voice.recorder.addEventListener("stop", () => {
+    void submitRecording();
+  });
+  voice.recorder.start();
+  setVoiceState("recording", "speak, then stop");
+}
+
+function cancelRecording() {
+  if (voice.recorder === null) {
+    setVoiceState("idle", "");
+    return;
+  }
+  voice.stopped = true;
+  try {
+    voice.recorder.stop();
+  } catch {
+    releaseMicrophone();
+    setVoiceState("idle", "");
+  }
+}
+
+async function submitRecording() {
+  const chunks = voice.chunks;
+  releaseMicrophone();
+  if (voice.stopped || chunks.length === 0) {
+    setVoiceState("idle", "");
+    return;
+  }
+  setVoiceState("processing", "");
+  const blob = new Blob(chunks, { type: chunks[0].type || "audio/webm" });
+  const audioBase64 = await blobToBase64(blob);
+  let body;
+  try {
+    body = await api("/api/voice/turn", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ audio_base64: audioBase64, content_type: blob.type })
+    });
+  } catch (error) {
+    // Nothing was asked of the subject: no turn, no state change.
+    setVoiceState("error", error instanceof Error ? error.message : "the recording could not be sent");
+    await refreshAll().catch(() => undefined);
+    return;
+  }
+  if (body.ok !== true) {
+    state.messages.push({ role: "note", text: "I could not make out that recording, so nothing was asked." });
+    renderMessages();
+    setVoiceState("idle", "");
+    return;
+  }
+  state.messages.push({ role: "user", text: body.transcription, mode: "voice" });
+  if (body.turn.status === "COMPLETE" && typeof body.turn.reply_text === "string") {
+    state.messages.push({ role: "subject", text: body.turn.reply_text });
+  } else if (body.turn.status === "DEGRADED") {
+    state.messages.push({
+      role: "note",
+      text: "I could not form a reliable reply to that just now. Nothing about our conversation was changed - please say it again."
+    });
+  }
+  renderMessages();
+  await refreshAll();
+  // TTS speaks the FINAL delivered text only (or the fixed safe line on degrade).
+  await speakDeliveredText(body.speak_text);
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === "string" ? reader.result : "";
+      resolve(result.includes(",") ? result.slice(result.indexOf(",") + 1) : result);
+    };
+    reader.onerror = () => reject(new Error("the recording could not be read"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+el.micToggle.addEventListener("click", () => {
+  if (voice.state === "recording") cancelRecording();
+  else void startRecording();
+});
+el.micStop.addEventListener("click", () => cancelRecording());
+el.speechStop.addEventListener("click", () => stopSpeaking());

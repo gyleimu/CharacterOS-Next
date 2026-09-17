@@ -360,3 +360,17 @@ body.dev-details .dev-only { display: block; }
 
 .msg-note { opacity: 0.75; font-style: italic; }
 .msg-note .msg-label { font-style: normal; }
+
+/* VOICE MODALITY (PERSISTENT_LIVING_SUBJECT_PRODUCT_EXPERIENCE_V0) — input/output
+   only. States are always visible; the microphone is never armed automatically. */
+.voice { display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0 0.25rem; flex-wrap: wrap; }
+.voice-state {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid var(--line, #2a2f3a); opacity: 0.85;
+}
+.voice-state.state-recording { border-color: #e5534b; color: #e5534b; }
+.voice-state.state-processing { border-color: #d29922; color: #d29922; }
+.voice-state.state-speaking { border-color: #4c8bf5; color: #4c8bf5; }
+.voice-state.state-error { border-color: #e5534b; color: #e5534b; }
+.voice-note { font-size: 0.75rem; opacity: 0.75; }
+#mic-toggle[aria-pressed="true"] { border-color: #e5534b; color: #e5534b; }

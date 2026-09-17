@@ -266,7 +266,14 @@ export default tseslint.config(
         EventSource: "readonly",
         console: "readonly",
         setTimeout: "readonly",
-        clearTimeout: "readonly"
+        clearTimeout: "readonly",
+        // VOICE MODALITY: the browser input/output primitives the voice bar uses.
+        navigator: "readonly",
+        MediaRecorder: "readonly",
+        Blob: "readonly",
+        FileReader: "readonly",
+        Audio: "readonly",
+        SpeechSynthesisUtterance: "readonly"
       }
     }
   }

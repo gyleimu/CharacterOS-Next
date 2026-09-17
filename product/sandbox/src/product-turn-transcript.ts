@@ -40,6 +40,11 @@ export interface ProductTurnTranscriptInputV0 {
   readonly completed_prior_outcome: unknown;
   readonly observational_experience_ref: string | null;
   readonly failure: string | null;
+  /**
+   * VOICE MODALITY: which input modality produced this user text. ADDITIVE and
+   * optional — rows written before this field (or by the CLI) are read as "typed".
+   */
+  readonly input_mode?: "typed" | "voice" | undefined;
   readonly repository_revision_before: string;
   readonly repository_revision_after: string;
   readonly state_revision_before: number;
@@ -61,6 +66,8 @@ export interface ProductTurnTranscriptRowV0 {
   readonly completed_prior_outcome: unknown;
   readonly observational_experience_ref: string | null;
   readonly failure: string | null;
+  /** "typed" when absent: the field is additive and never rewritten. */
+  readonly input_mode: "typed" | "voice";
   readonly repository_revision_before: string;
   readonly repository_revision_after: string;
   readonly state_revision_before: number;
@@ -86,7 +93,8 @@ export function appendProductTurnTranscriptV0(input: {
   const row: ProductTurnTranscriptRowV0 = {
     schema_version: PRODUCT_TURN_TRANSCRIPT_SCHEMA_VERSION,
     at: input.now,
-    ...input.row
+    ...input.row,
+    input_mode: input.row.input_mode ?? "typed"
   };
   appendFileSync(input.transcript_path, `${JSON.stringify(row)}\n`, "utf8");
 }
@@ -116,7 +124,8 @@ export function readProductTurnTranscriptV0(input: {
       (parsed as { schema_version?: unknown }).schema_version === PRODUCT_TURN_TRANSCRIPT_SCHEMA_VERSION &&
       typeof (parsed as { turn_index?: unknown }).turn_index === "number"
     ) {
-      rows.push(parsed as ProductTurnTranscriptRowV0);
+      const candidate = parsed as ProductTurnTranscriptRowV0 & { input_mode?: unknown };
+      rows.push({ ...candidate, input_mode: candidate.input_mode === "voice" ? "voice" : "typed" });
     }
   }
   rows.sort((left, right) => left.turn_index - right.turn_index);

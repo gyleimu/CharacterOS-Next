@@ -81,6 +81,15 @@
         </p>
         <div class="messages" id="messages" aria-live="polite"></div>
         <div class="stages" id="stages" aria-live="polite"></div>
+        <div class="voice" id="voice-bar">
+          <button type="button" class="ghost" id="mic-toggle" aria-pressed="false">
+            <span id="mic-label">Voice</span>
+          </button>
+          <button type="button" class="ghost" id="mic-stop" hidden>Stop</button>
+          <button type="button" class="ghost" id="speech-stop" hidden>Mute</button>
+          <span class="voice-state" id="voice-state">idle</span>
+          <span class="voice-note" id="voice-note"></span>
+        </div>
         <form class="composer" id="composer">
           <label class="sr-only" for="input">Message</label>
           <textarea

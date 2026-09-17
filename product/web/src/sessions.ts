@@ -202,6 +202,7 @@ export class ProductWebSessionsV0 {
     readonly user_text: string;
     readonly subject_text: string;
     readonly failure_detail: string | null;
+    readonly input_mode?: "typed" | "voice" | undefined;
     readonly state_revision_after: number;
     readonly repository_revision_after: string;
   }): void {
@@ -223,6 +224,7 @@ export class ProductWebSessionsV0 {
         completed_prior_outcome: null,
         observational_experience_ref: null,
         failure: turn.failure_detail,
+        input_mode: turn.input_mode ?? "typed",
         repository_revision_before: "",
         repository_revision_after: turn.repository_revision_after,
         state_revision_before: 0,
