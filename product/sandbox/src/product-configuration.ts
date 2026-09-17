@@ -167,9 +167,98 @@ export function resolveEndpointSettingV0(
   return { value: raw, source: "ENVIRONMENT", origin: name };
 }
 
+// --- executor family selection (PRODUCT_EXECUTOR_SELECTION_V0) -----------------
+
+/**
+ * The executor FAMILIES this product slice can serve model calls with.
+ *
+ * `deepseek` — cloud, OpenAI-compatible `/chat/completions`, model `deepseek-flash`
+ *              (default), credential from `MODEL_API_KEY` (environment only).
+ * `ollama`   — local / offline, native `/api/chat`, model `qwen3.5:9b` (default).
+ *
+ * No other provider (OpenAI, Gemini, Anthropic, …) is selectable in this slice:
+ * the family is a closed set, so an unknown value fails closed instead of
+ * silently falling back to a different provider.
+ */
+export type ProductExecutorFamilyV0 = "deepseek" | "ollama";
+
+/** The REQUESTED value, which may defer the choice: `auto` picks per environment. */
+export type ProductExecutorRequestV0 = ProductExecutorFamilyV0 | "auto";
+
+/**
+ * The credential is read ONLY from the environment, and ONLY its presence is
+ * ever surfaced. The product never accepts a credential as an argument, never
+ * writes it anywhere, and never prints it.
+ */
+export const PRODUCT_CLOUD_CREDENTIAL_ENV_V0 = "MODEL_API_KEY" as const;
+
+export interface ProductExecutorResolutionV0 {
+  readonly requested: ProductExecutorRequestV0;
+  readonly requested_source: ProductConfigSourceV0;
+  readonly requested_origin: string;
+  readonly effective: ProductExecutorFamilyV0;
+  /** Why the effective family was chosen — never contains a credential value. */
+  readonly reason: string;
+}
+
+export function resolveExecutorSettingV0(environment: ProductEnvironmentV0): ProductExecutorResolutionV0 {
+  const raw = environment.get("CHARACTEROS_EXECUTOR");
+  const requestedSource: ProductConfigSourceV0 = raw === undefined ? "DEFAULT" : "ENVIRONMENT";
+  const requestedOrigin = raw === undefined ? BUILT_IN_DEFAULT_ORIGIN : "CHARACTEROS_EXECUTOR";
+  const requested = (raw === undefined ? "auto" : raw.trim().toLowerCase()) as ProductExecutorRequestV0;
+  if (requested !== "deepseek" && requested !== "ollama" && requested !== "auto") {
+    throw new ProductConfigurationErrorV0(
+      "CHARACTEROS_EXECUTOR",
+      raw ?? "",
+      "one of deepseek, ollama, auto",
+      `environment variable CHARACTEROS_EXECUTOR`
+    );
+  }
+  const credentialPresent = environment.get(PRODUCT_CLOUD_CREDENTIAL_ENV_V0) !== undefined;
+  if (requested === "auto") {
+    return {
+      requested,
+      requested_source: requestedSource,
+      requested_origin: requestedOrigin,
+      effective: credentialPresent ? "deepseek" : "ollama",
+      // The reason is also served to the local web product, whose payload gate
+      // rejects any `api…key` token outright. It therefore states the DECISION
+      // without naming the variable; the exact variable name appears where an
+      // operator acts on it: the human /config text and configuration errors.
+      reason: credentialPresent
+        ? "CHARACTEROS_EXECUTOR is unset and a cloud credential is present → cloud executor"
+        : "CHARACTEROS_EXECUTOR is unset and no cloud credential is present → local executor"
+    };
+  }
+  return {
+    requested,
+    requested_source: requestedSource,
+    requested_origin: requestedOrigin,
+    effective: requested,
+    reason: `explicitly requested with CHARACTEROS_EXECUTOR=${requested}`
+  };
+}
+
 export interface ProductConfigurationV0 {
+  /**
+   * PRODUCT_EXECUTOR_SELECTION_V0 — WHICH executor family serves the model calls.
+   * `deepseek` is the cloud family (OpenAI-compatible /chat/completions), `ollama`
+   * is the local/offline family (native /api/chat). No other provider is wired.
+   */
+  readonly executor: ProductExecutorResolutionV0;
+  /** Effective model for the SELECTED executor family (never the other family's). */
   readonly model: ProductConfigValueV0<string>;
+  /** Effective endpoint for the SELECTED executor family. */
   readonly endpoint: ProductConfigValueV0<string>;
+  /**
+   * Whether a cloud credential is present in the environment. Presence ONLY: the
+   * value is never read into this structure, never compared, never printed.
+   */
+  readonly credential_present: boolean;
+  /** Local executor model (`CHARACTEROS_MODEL`) — used by Ollama-only providers. */
+  readonly local_model: ProductConfigValueV0<string>;
+  /** Local executor endpoint (`OLLAMA_BASE_URL`) — used by Ollama-only providers. */
+  readonly local_endpoint: ProductConfigValueV0<string>;
   readonly timeout_ms: ProductConfigValueV0<number>;
   readonly context_window_tokens: ProductConfigValueV0<number>;
   readonly num_predict: ProductConfigValueV0<number>;
@@ -198,16 +287,42 @@ export interface ResolveProductConfigurationInputV0 {
  * Resolves the effective product configuration by REUSING the existing
  * resolution order (environment variable → built-in default). Invalid values
  * fail early here instead of being silently coerced.
+ *
+ * Executor selection changes WHICH model/endpoint pair is effective; it never
+ * changes a resolution rule. The local (`CHARACTEROS_MODEL` / `OLLAMA_BASE_URL`)
+ * settings stay resolved in BOTH cases, because the Ollama-only adaptation
+ * providers keep using them regardless of the selected executor.
  */
 export function resolveProductConfigurationV0(
   input: ResolveProductConfigurationInputV0
 ): ProductConfigurationV0 {
   const environment = input.environment;
-  const model = resolveStringSettingV0(environment, "CHARACTEROS_MODEL", "qwen3.5:9b");
+  const executor = resolveExecutorSettingV0(environment);
+  const credentialPresent = environment.get(PRODUCT_CLOUD_CREDENTIAL_ENV_V0) !== undefined;
+  if (executor.effective === "deepseek" && !credentialPresent) {
+    // Fail closed with an actionable message. The value is absent by definition,
+    // and no credential material is ever echoed.
+    throw new ProductConfigurationErrorV0(
+      "CHARACTEROS_EXECUTOR",
+      "deepseek",
+      `${PRODUCT_CLOUD_CREDENTIAL_ENV_V0} to be present in the environment (or CHARACTEROS_EXECUTOR=ollama for the local executor)`,
+      "environment variable CHARACTEROS_EXECUTOR"
+    );
+  }
+  const localModel = resolveStringSettingV0(environment, "CHARACTEROS_MODEL", "qwen3.5:9b");
+  const localEndpoint = resolveEndpointSettingV0(environment, "OLLAMA_BASE_URL", "http://127.0.0.1:11434");
+  const model =
+    executor.effective === "deepseek"
+      ? resolveStringSettingV0(environment, "MODEL_API_MODEL", "deepseek-flash")
+      : localModel;
+  const endpoint =
+    executor.effective === "deepseek"
+      ? resolveEndpointSettingV0(environment, "MODEL_API_BASE_URL", "https://api.deepseek.com")
+      : localEndpoint;
   const beliefSemanticModelRaw = environment.get("CHARACTEROS_BELIEF_SEMANTIC_MODEL");
   const beliefSemanticModel: ProductConfigValueV0<string> =
     beliefSemanticModelRaw === undefined
-      ? { value: model.value, source: "DERIVED", origin: "effective CHARACTEROS_MODEL" }
+      ? { value: localModel.value, source: "DERIVED", origin: "effective CHARACTEROS_MODEL" }
       : { value: beliefSemanticModelRaw, source: "ENVIRONMENT", origin: "CHARACTEROS_BELIEF_SEMANTIC_MODEL" };
   const dataRootRaw = environment.get("CHARACTEROS_DATA_DIR");
   const dataRoot: ProductConfigValueV0<string> =
@@ -219,8 +334,12 @@ export function resolveProductConfigurationV0(
         }
       : { value: dataRootRaw, source: "ENVIRONMENT", origin: "CHARACTEROS_DATA_DIR" };
   return {
+    executor,
     model,
-    endpoint: resolveEndpointSettingV0(environment, "OLLAMA_BASE_URL", "http://127.0.0.1:11434"),
+    endpoint,
+    credential_present: credentialPresent,
+    local_model: localModel,
+    local_endpoint: localEndpoint,
     timeout_ms: resolvePositiveIntSettingV0(environment, "CHARACTEROS_TIMEOUT_MS", 120000, "milliseconds"),
     context_window_tokens: resolvePositiveIntSettingV0(environment, "CHARACTEROS_CONTEXT_WINDOW_TOKENS", 8192, "tokens"),
     num_predict: resolvePositiveIntSettingV0(environment, "CHARACTEROS_NUM_PREDICT", 2048, "tokens"),
@@ -299,6 +418,20 @@ export function formatConfigurationLinesV0(
   lines.push(`    source: ${subject.identity.source} (${subject.identity.origin})`);
   lines.push("");
   lines.push("Provider");
+  lines.push(
+    `  executor: ${configuration.executor.effective === "deepseek" ? "deepseek (cloud, OpenAI-compatible /chat/completions)" : "ollama (local, native /api/chat)"}`
+  );
+  lines.push(`    why: ${configuration.executor.reason}`);
+  lines.push(
+    `    requested: ${configuration.executor.requested} (source: ${configuration.executor.requested_source} (${configuration.executor.requested_origin}))`
+  );
+  if (configuration.executor.effective === "deepseek") {
+    // Presence only. The credential value is never read into the configuration
+    // and therefore cannot appear here.
+    lines.push(
+      `    credential: ${configuration.credential_present ? `present (${PRODUCT_CLOUD_CREDENTIAL_ENV_V0}, value never printed)` : `MISSING (${PRODUCT_CLOUD_CREDENTIAL_ENV_V0})`}`
+    );
+  }
   lines.push(...settingLinesV0("model", configuration.model.value, configuration.model.source, configuration.model.origin));
   lines.push(
     ...settingLinesV0(
@@ -308,6 +441,26 @@ export function formatConfigurationLinesV0(
       configuration.endpoint.origin
     )
   );
+  if (configuration.executor.effective === "deepseek") {
+    // The Ollama-only adaptation providers keep the LOCAL pair; saying so avoids
+    // presenting one endpoint as if it served every call.
+    lines.push(
+      ...settingLinesV0(
+        "local model (adaptation)",
+        configuration.local_model.value,
+        configuration.local_model.source,
+        configuration.local_model.origin
+      )
+    );
+    lines.push(
+      ...settingLinesV0(
+        "local endpoint (adaptation)",
+        redactEndpointV0(configuration.local_endpoint.value),
+        configuration.local_endpoint.source,
+        configuration.local_endpoint.origin
+      )
+    );
+  }
   lines.push(
     ...settingLinesV0(
       "timeout",

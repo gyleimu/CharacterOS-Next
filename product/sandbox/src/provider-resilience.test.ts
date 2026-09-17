@@ -229,14 +229,23 @@ describe("CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0", () => {
     expect(text).toContain("No canonical subject state is written by provider diagnostics.");
   });
 
-  it("D3: malformed provider output is classified, not repaired", async () => {
+  it("D3: malformed provider output is re-asked once, never semantically repaired, and never delivered", async () => {
+    // PRODUCT OUTPUT ROBUSTNESS: malformed cognition output is an OUTER-FORMAT
+    // problem. The TRANSPORT call itself succeeded (the endpoint answered), so the
+    // stage is not a transport failure; the CONTRACT violation is caught by the
+    // provider, re-asked exactly once with the real validator errors, and then
+    // degraded. Meaning is never invented: no field is filled in, no claim is
+    // guessed, and the model's malformed text never becomes the reply.
     const product = await buildResilientProduct(makeTempDir(), "MALFORMED");
     await product.session.handleLine("Malformed response.");
     const text = output(product.lines);
-    expect(text).toContain("Turn failed during: COGNITION");
-    expect(text).toMatch(/PROVIDER_MALFORMED_RESPONSE|PROVIDER_INTERNAL_ERROR/);
-    // No fabricated reply text.
+    expect(text).toContain("could not form a reliable reply");
+    expect(text).toContain("this turn was not recorded");
+    expect(text).not.toContain("Turn failed during:");
+    // The malformed text never reaches the user, and language never runs.
+    expect(text).not.toContain("{ this is not json");
     expect(text).not.toContain("Res > Noted.");
+    expect(text).not.toContain("[reply 3/3 language]");
   });
 
   it("D6+D4: a failed turn fabricates no Memory and reports partial canonical truthfully", async () => {

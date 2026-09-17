@@ -317,6 +317,20 @@ export class InteractiveSubjectHostV0 {
         this.lastFailureDetailValue = outcome.failure;
         return outcome;
       }
+      if (outcome.status === "DEGRADED") {
+        // PRODUCT OUTPUT ROBUSTNESS: bounded degradation is not a host failure and
+        // records no lived experience. The advanced turn bookkeeping IS persisted,
+        // though: the turn's source event was already admitted, and an unpersisted
+        // index would make the next process reuse that event id and fail closed.
+        this.lastFailureDetailValue = null;
+        try {
+          await this.save();
+        } catch (error) {
+          this.failed = true;
+          this.lastFailureDetailValue = `durable snapshot failed: ${error instanceof Error ? error.message : String(error)}`;
+        }
+        return outcome;
+      }
       // The interaction is complete ONLY once durable state is captured.
       try {
         await this.save();

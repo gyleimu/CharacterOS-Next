@@ -82,7 +82,7 @@ export interface InteractiveTurnOutcomeV0 {
   readonly subject_id: string;
   readonly turn_index: number;
   readonly user_text: string;
-  readonly status: "COMPLETE" | "FAILED";
+  readonly status: "COMPLETE" | "FAILED" | "DEGRADED";
   readonly failure: string | null;
   /** LanguageRealization output — the ONLY user-visible reply. */
   readonly subject_text: string;
@@ -531,6 +531,65 @@ export class InteractiveSubjectRuntimeV0 {
         }
       });
       factualAuthorizationTrace = response.factualAuthorizationTrace;
+      if (response.kind === "DEGRADED") {
+        // PRODUCT OUTPUT ROBUSTNESS: bounded degradation. No cognition, no delivery,
+        // no Experience, no Memory, no pending behavior outcome — the subject's lived
+        // history and canonical state gain nothing from this turn.
+        //
+        // TURN BOOKKEEPING STILL ADVANCES, and that is not a canonical write: the
+        // turn's user message was already admitted (source event `turn-<index>`) by
+        // the time cognition ran, and both conversation ledgers are part of the
+        // durable session state. Leaving the index behind would make the NEXT message
+        // reuse the same source event id and fail closed with an ingress CONFLICT —
+        // i.e. a "graceful" degradation that permanently bricks the subject. The
+        // index advance lives in the session sidecar (operational state), never in
+        // SubjectState or Memory.
+        this.turnIndex = index + 1;
+        this.completedTurns += 1;
+        const snapshotAfterDegraded = await this.authority.readSnapshot();
+        const degradedOutcome: InteractiveTurnOutcomeV0 = {
+          schema_version: "interactive-subject-turn-v0",
+          session_id: this.options.session_id,
+          subject_id: this.options.subject.subject_id,
+          turn_index: index,
+          user_text: text,
+          status: "DEGRADED",
+          failure: `EXECUTOR_OUTPUT_DEGRADED: ${response.validationDetail ?? "no detail"}`,
+          subject_text: "",
+          behavior_id: null,
+          delivery_id: null,
+          directive: null,
+          current_intent: null,
+          language_call_required: false,
+          language_status: "NOT_REACHED",
+          factual_authorization_trace: factualAuthorizationTrace,
+          completed_prior_outcome: completedPriorOutcome,
+          belief_adaptation: beliefAdaptation,
+          personality_adaptation: personalityAdaptation,
+          relationship_familiarity: relationshipFamiliarity,
+          observational_experience_ref: null,
+          retrieved_refs: [],
+          working_episode_refs: [],
+          resolved_evidence_entry_count: 0,
+          provider_memory_section_present: false,
+          provider_request_hash: null,
+          transport_request_hash: null,
+          provider_request_identity_match: false,
+          provider_terminal_trace: this.options.provider_identity?.last_trace?.() ?? null,
+          logical_time_before: snapshotBefore.runtime_metadata.logical_time as number,
+          logical_time_after: snapshotAfterDegraded.runtime_metadata.logical_time as number,
+          state_revision_before: snapshotBefore.runtime_metadata.state_revision as number,
+          state_revision_after: snapshotAfterDegraded.runtime_metadata.state_revision as number,
+          affect_before: snapshotBefore.affect.valence,
+          affect_after: snapshotAfterDegraded.affect.valence,
+          repository_revision_before: snapshotBefore.memory_state.repository_revision as string,
+          repository_revision_after: snapshotAfterDegraded.memory_state.repository_revision as string,
+          raw_cognition_response: this.readCapture("cognition")?.response ?? null,
+          raw_language_response: this.readCapture("language")?.response ?? null
+        };
+        this.outcomes.push(degradedOutcome);
+        return degradedOutcome;
+      }
       if (response.kind !== "OUTPUT_READY" || response.behavior === null) {
         throw new Error(
           `cognition/language path failed (${response.validationStage ?? "UNKNOWN"}): ${response.validationDetail ?? "no detail"}`

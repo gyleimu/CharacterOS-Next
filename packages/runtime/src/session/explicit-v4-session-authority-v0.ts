@@ -153,7 +153,7 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
 
 /** Host-visible facts about one conversation response (no authority tokens). */
 export interface SessionResponseResultV0 {
-  readonly kind: "OUTPUT_READY" | "FAILED";
+  readonly kind: "OUTPUT_READY" | "FAILED" | "DEGRADED";
   readonly behavior: CharacterLanguageBehaviorV0 | null;
   readonly directive: string | null;
   readonly cognitionTrace: ConversationResponseTraceV1 | null;
@@ -1014,6 +1014,20 @@ export class ExplicitV4SessionAuthorityV0 {
       },
       capabilities as never
     );
+    if (result.kind === "DEGRADED") {
+      // PRODUCT OUTPUT ROBUSTNESS: a bounded-robustness degradation is NOT a canonical
+      // outcome and NOT a host failure: nothing is written, and the host renders a
+      // minimal safe reply built from the real validator detail.
+      return {
+        kind: "DEGRADED",
+        behavior: null,
+        directive: null,
+        cognitionTrace: null,
+        validationStage: result.stage,
+        validationDetail: `${result.detail} [attempts=${String(result.attempts)}, normalization=${result.normalization_applied.join("|") || "none"}]`,
+        factualAuthorizationTrace: result.diagnostics?.factual_authorization_trace ?? null
+      };
+    }
     if (result.kind !== "OUTPUT_READY") {
       return {
         kind: "FAILED",

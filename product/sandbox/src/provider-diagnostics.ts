@@ -188,7 +188,7 @@ export function estimateReplyPathMsV0(
 }
 
 export interface ProviderTurnTimingV0 {
-  readonly status: "COMPLETE" | "FAILED";
+  readonly status: "COMPLETE" | "FAILED" | "DEGRADED";
   readonly total_ms: number | null;
   readonly provider_ms: number;
   readonly reply_ms: number;
@@ -631,7 +631,7 @@ export class ProviderDiagnosticsV0 {
    * stage-aware failure summary follows) but still clears progress truthfully so
    * no nonexistent later step remains displayed.
    */
-  endTurn(input: { readonly status: "COMPLETE" | "FAILED"; readonly total_ms: number | null }): void {
+  endTurn(input: { readonly status: "COMPLETE" | "FAILED" | "DEGRADED"; readonly total_ms: number | null }): void {
     const plan = this.activePlan;
     const providerMs = [...this.turnLatencyBySlot.values()].reduce((total, value) => total + value, 0);
     const replyMs =

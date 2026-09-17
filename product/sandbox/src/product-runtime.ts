@@ -208,6 +208,17 @@ export interface ProductConfigValueViewV0 {
 
 /** READ-ONLY effective configuration (endpoint credentials redacted). */
 export interface ProductConfigViewV0 {
+  /**
+   * PRODUCT_EXECUTOR_SELECTION_V0 — the effective executor family and why it was
+   * chosen. Credential PRESENCE only; the credential value is not part of the
+   * configuration and can never appear here.
+   */
+  readonly executor: {
+    readonly effective: "deepseek" | "ollama";
+    readonly requested: "deepseek" | "ollama" | "auto";
+    readonly reason: string;
+    readonly credential_present: boolean;
+  };
   readonly model: ProductConfigValueViewV0;
   readonly endpoint: ProductConfigValueViewV0;
   readonly timeout_ms: ProductConfigValueViewV0;
@@ -417,6 +428,12 @@ export class ProductRuntimeV0 {
     });
     const configuration = this.deps.configuration;
     return {
+      executor: {
+        effective: configuration.executor.effective,
+        requested: configuration.executor.requested,
+        reason: configuration.executor.reason,
+        credential_present: configuration.credential_present
+      },
       model: value(configuration.model, (input) => input),
       endpoint: value(configuration.endpoint, (input) => redactEndpointV0(input)),
       timeout_ms: value(configuration.timeout_ms, (input) => String(input)),
@@ -545,6 +562,7 @@ export async function createProductRuntimeV0(
     options.provider_bundle ??
     createProductProviderBundleV0({
       configuration,
+      environment,
       write: options.write ?? (() => undefined),
       observer: (event) => {
         hub.publish(event);
@@ -554,20 +572,24 @@ export async function createProductRuntimeV0(
       ...(options.now === undefined ? {} : { now: options.now })
     });
   // Metadata-only preflight (never a generation call); fail closed, like the CLI.
-  const probe = await (options.probe ?? probeOllamaV0)(configuration.endpoint.value, configuration.model.value);
-  if (!probe.reachable) {
-    throw startupError(
-      "PROVIDER_UNAVAILABLE",
-      providerUnavailableGuidanceV0(configuration.endpoint.value, probe.failure ?? "unknown"),
-      probe.failure ?? "provider unreachable"
-    );
-  }
-  if (probe.failure !== null) {
-    throw startupError(
-      "MODEL_UNAVAILABLE",
-      modelMissingGuidanceV0(configuration.model.value, configuration.endpoint.value, probe.failure),
-      probe.failure
-    );
+  // Family-specific for the same reason: the cloud family has no safe metadata
+  // probe, and its credential presence is already enforced at resolution time.
+  if (configuration.executor.effective === "ollama") {
+    const probe = await (options.probe ?? probeOllamaV0)(configuration.endpoint.value, configuration.model.value);
+    if (!probe.reachable) {
+      throw startupError(
+        "PROVIDER_UNAVAILABLE",
+        providerUnavailableGuidanceV0(configuration.endpoint.value, probe.failure ?? "unknown"),
+        probe.failure ?? "provider unreachable"
+      );
+    }
+    if (probe.failure !== null) {
+      throw startupError(
+        "MODEL_UNAVAILABLE",
+        modelMissingGuidanceV0(configuration.model.value, configuration.endpoint.value, probe.failure),
+        probe.failure
+      );
+    }
   }
 
   const overrideSubjectId = environment.get("CHARACTEROS_SUBJECT_ID");
@@ -722,7 +744,7 @@ export async function createProductRuntimeV0(
 
 /** The structured turn result returned to a visual client (never a prompt payload). */
 export interface ProductTurnResultV0 {
-  readonly status: "COMPLETE" | "FAILED";
+  readonly status: "COMPLETE" | "FAILED" | "DEGRADED";
   readonly reply_text: string | null;
   readonly turn_index: number;
   readonly subject_id: string;

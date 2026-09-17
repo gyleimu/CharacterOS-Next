@@ -61,6 +61,12 @@ interface FakeRuntimeV0 extends ProductWebRuntimePortV0 {
 
 function configViewShape(): ProductConfigViewV0 {
   return {
+    executor: {
+      effective: "ollama",
+      requested: "auto",
+      reason: "CHARACTEROS_EXECUTOR is unset and no cloud credential is present → local executor",
+      credential_present: false
+    },
     model: { value: "qwen3.5:9b", source: "DEFAULT", origin: "built-in default" },
     endpoint: { value: "http://***@127.0.0.1:11434", source: "ENVIRONMENT", origin: "OLLAMA_BASE_URL" },
     timeout_ms: { value: "120000", source: "DEFAULT", origin: "built-in default" },

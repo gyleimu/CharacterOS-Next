@@ -34,10 +34,16 @@ import {
   type ProductTurnPlanInputV0,
   type ProviderProgressEventV0
 } from "./provider-diagnostics.js";
-import type { ProductConfigurationV0 } from "./product-configuration.js";
+import type { ProductConfigurationV0, ProductEnvironmentV0 } from "./product-configuration.js";
 
 export interface ProductProviderBundleOptionsV0 {
   readonly configuration: ProductConfigurationV0;
+  /**
+   * Environment accessor used for EXACTLY one thing: reading the cloud
+   * credential (`MODEL_API_KEY`) when the cloud executor family is selected.
+   * The value never leaves the transport construction path.
+   */
+  readonly environment?: ProductEnvironmentV0 | undefined;
   /** Terminal/diagnostic line sink (CLI stdout, server log, or a no-op). */
   readonly write: (line: string) => void;
   /** Optional structured progress sink (visual client). Additive to `write`. */
@@ -82,6 +88,13 @@ export function createProductProviderBundleV0(
   const model = configuration.model.value;
   const baseUrl = configuration.endpoint.value;
   const transports = createProductTransportsV0({
+    executor: configuration.executor.effective,
+    // Credential: environment → configuration → transport construction. It stays
+    // in the transport config for the lifetime of this process; it is never
+    // written, logged, traced or placed in canonical state.
+    ...(configuration.executor.effective === "deepseek"
+      ? { api_key: options.environment?.get("MODEL_API_KEY") ?? null }
+      : {}),
     base_url: baseUrl,
     model,
     timeout_ms: configuration.timeout_ms.value,
@@ -146,7 +159,11 @@ export function createProductProviderBundleV0(
     beliefSemanticProvider: adaptationDisabled
       ? null
       : new OllamaBeliefSemanticProviderV0({
-          base_url: baseUrl,
+          // ADAPTATION IS LOCAL-ONLY: this provider is Ollama-native, so it keeps
+          // the LOCAL endpoint and model even when cognition runs on the cloud
+          // executor. Pointing it at the cloud endpoint would be a silent
+          // cross-provider mis-wire, not a feature.
+          base_url: configuration.local_endpoint.value,
           model: configuration.belief_semantic_model.value
         }),
     relationshipFamiliarityAdmissionProvider: adaptationDisabled

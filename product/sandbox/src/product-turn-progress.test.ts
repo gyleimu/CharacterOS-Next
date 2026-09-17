@@ -534,16 +534,21 @@ describe("CHARACTEROS_PRODUCT_TURN_BUDGET_AND_LATENCY_EXPECTATION_V0 — live pr
     expect(output(harness.lines)).not.toContain("Turn: up to 3 reply stages");
   });
 
-  it("T6: provider unavailable and malformed output also stop at cognition", async () => {
+  it("T6: provider unavailable fails closed, malformed output degrades — both stop the reply at cognition", async () => {
+    // PROVIDER_UNAVAILABLE produced nothing to tolerate: unchanged fail-closed path.
     const unavailable = await buildHarness(makeTempDir(), { cognition: "UNAVAILABLE" });
     await unavailable.session.handleLine("Fail.");
     expect(output(unavailable.lines)).toContain("[reply 2/3 cognition] failed (2.0 s): PROVIDER_UNAVAILABLE");
     expect(output(unavailable.lines)).toContain("Turn failed during: COGNITION");
 
+    // MALFORMED is an OUTPUT-CONTRACT violation: one bounded regeneration, then a
+    // graceful degradation. Language never runs and no success is claimed.
     const malformed = await buildHarness(makeTempDir(), { cognition: "MALFORMED" });
     await malformed.session.handleLine("Fail.");
-    expect(output(malformed.lines)).toContain("Turn failed during: COGNITION");
-    expect(output(malformed.lines)).not.toContain("Turn completed in");
+    const malformedText = output(malformed.lines);
+    expect(malformedText).toContain("could not form a reliable reply");
+    expect(malformedText).not.toContain("Turn completed in");
+    expect(malformedText).not.toContain("[reply 3/3 language] running");
   });
 
   it("T3: disabled optional stages are DISABLED, excluded from the plan, and never false pending work", async () => {

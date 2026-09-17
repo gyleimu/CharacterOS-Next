@@ -2,17 +2,31 @@
  * INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 + CONTENT_SENSITIVE_APPRAISAL_PROVIDER_V0
  * — product provider wiring.
  *
- * Uses the EXISTING production Ollama cognition transport for the cognition
- * call, the language-realization call and the Appraisal proposal call. They
- * share compatible configuration but keep distinct prompts, output schemas and
- * semantic roles; each `complete()` is a separate model call. No second
- * transport implementation is introduced here.
+ * PRODUCT_EXECUTOR_SELECTION_V0 — TWO executor families, ONE place that chooses:
+ *   ollama   → the EXISTING production Ollama-native cognition transport
+ *              (native /api/chat, grammar-constrained by `format`);
+ *   deepseek → the EXISTING generic OpenAI-compatible transport
+ *              (/chat/completions, credential from the host's environment only).
+ *
+ * Both families serve every product stage (cognition, language realization,
+ * appraisal, relationship admission). They keep distinct prompts, output schemas
+ * and semantic roles; each `complete()` is a separate model call. No vendor SDK,
+ * no new transport implementation, no per-provider branch inside the stages.
+ *
+ * KNOWN LIMIT of the cloud family, stated rather than hidden: the generic
+ * OpenAI-compatible transport does NOT forward `structured_output` (the endpoint
+ * rejects `response_format` json_schema — measured, see the frozen capability
+ * probe), so on that family the JSON contract travels in the PROMPT text. The
+ * host validators remain the only authority, and the tolerant-output policy
+ * (normalize → validate → one regeneration → graceful degrade) is what absorbs
+ * the resulting format variance.
  */
 
-import type { ModelTransportTraceV0, ModelTransportV0 } from "@characteros-next/runtime";
+import type { ModelTransportTraceEventV0, ModelTransportTraceV0, ModelTransportV0 } from "@characteros-next/runtime";
 import {
   MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0,
-  OllamaNativeCognitionTransportV0
+  OllamaNativeCognitionTransportV0,
+  OpenAiCompatibleTransportV0
 } from "@characteros-next/runtime";
 
 /** Appraisal structured output is small; a bounded output budget is chosen explicitly. */
@@ -34,6 +48,18 @@ export const PRODUCT_APPRAISAL_OUTPUT_BUDGET_NOTE_V0 =
   "appraisal output budget stays 256; context budget is shared with cognition/language" as const;
 
 export interface ProductProviderConfigV0 {
+  /**
+   * Executor family. ABSENT means the local family, so every existing caller
+   * keeps the historical construction path unchanged.
+   */
+  readonly executor?: "deepseek" | "ollama" | undefined;
+  /**
+   * Cloud credential, supplied by the product configuration from the environment
+   * ONLY. It is an explicit construction argument (this module never reads the
+   * ambient environment), it is never traced, logged, hashed or persisted, and
+   * it appears in no error message.
+   */
+  readonly api_key?: string | null | undefined;
   readonly base_url: string;
   readonly model: string;
   readonly timeout_ms: number;
@@ -58,35 +84,57 @@ export interface ProductTransportsV0 {
   readonly lastAppraisalTrace: () => ModelTransportTraceV0 | null;
 }
 
-export function createProductTransportsV0(config: ProductProviderConfigV0): ProductTransportsV0 {
-  let lastTrace: ModelTransportTraceV0 | null = null;
-  const cognition: ModelTransportV0 = new OllamaNativeCognitionTransportV0({
+/**
+ * ONE construction site per executor family. Both families answer the same
+ * `ModelTransportV0` port, so no stage above this line knows which is in use.
+ */
+function createProductTransportV0(
+  config: ProductProviderConfigV0,
+  options: {
+    readonly num_predict: number;
+    readonly trace_observer?: (event: ModelTransportTraceEventV0 | ModelTransportTraceV0) => void;
+  }
+): ModelTransportV0 {
+  if (config.executor === "deepseek") {
+    // Cloud family: generic OpenAI-compatible transport. `structured_output` is
+    // not forwarded by this transport (the endpoint rejects json_schema), so the
+    // prompt carries the contract and the tolerant-output policy absorbs format
+    // variance. The temperature is 0 for the same reason every other product
+    // call uses 0: deterministic-leaning output, never a determinism claim.
+    return new OpenAiCompatibleTransportV0({
+      base_url: config.base_url,
+      model: config.model,
+      api_key: config.api_key ?? null,
+      timeout_ms: config.timeout_ms,
+      temperature: 0,
+      max_output_tokens: options.num_predict
+    });
+  }
+  const transport = new OllamaNativeCognitionTransportV0({
     base_url: config.base_url,
     model: config.model,
     timeout_ms: config.timeout_ms,
-    num_predict: config.num_predict,
+    num_predict: options.num_predict,
     context_window_tokens: config.context_window_tokens,
+    ...(options.trace_observer === undefined ? {} : { trace_observer: options.trace_observer })
+  });
+  return transport;
+}
+
+export function createProductTransportsV0(config: ProductProviderConfigV0): ProductTransportsV0 {
+  let lastTrace: ModelTransportTraceV0 | null = null;
+  const cognition = createProductTransportV0(config, {
+    num_predict: config.num_predict,
     trace_observer: (event) => {
       if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
         lastTrace = structuredClone(event);
       }
     }
   });
-  const language: ModelTransportV0 = new OllamaNativeCognitionTransportV0({
-    base_url: config.base_url,
-    model: config.model,
-    timeout_ms: config.timeout_ms,
-    num_predict: config.num_predict,
-    context_window_tokens: config.context_window_tokens
-  });
+  const language = createProductTransportV0(config, { num_predict: config.num_predict });
   let lastAppraisalTrace: ModelTransportTraceV0 | null = null;
-  const appraisal: ModelTransportV0 = new OllamaNativeCognitionTransportV0({
-    base_url: config.base_url,
-    model: config.model,
-    timeout_ms: config.timeout_ms,
+  const appraisal = createProductTransportV0(config, {
     num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
-    // SAME context allocation as cognition/language ⇒ one resident Ollama runner.
-    context_window_tokens: config.context_window_tokens,
     trace_observer: (event) => {
       if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
         lastAppraisalTrace = structuredClone(event);
@@ -97,13 +145,7 @@ export function createProductTransportsV0(config: ProductProviderConfigV0): Prod
     cognition,
     language,
     appraisal,
-    relationship: new OllamaNativeCognitionTransportV0({
-      base_url: config.base_url,
-      model: config.model,
-      timeout_ms: config.timeout_ms,
-      num_predict: config.num_predict,
-      context_window_tokens: config.context_window_tokens
-    }) as unknown as ModelTransportV0,
+    relationship: createProductTransportV0(config, { num_predict: config.num_predict }),
     lastCognitionTrace: () => lastTrace,
     lastAppraisalTrace: () => lastAppraisalTrace
   };

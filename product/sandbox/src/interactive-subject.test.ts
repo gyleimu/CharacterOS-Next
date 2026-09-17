@@ -177,25 +177,45 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — product host (offline)",
     expect(maxActive).toBe(1);
   });
 
-  it("malformed provider cognition fails closed and blocks further messages", async () => {
+  it("malformed provider cognition degrades gracefully: nothing written, the session stays usable", async () => {
+    // PRODUCT OUTPUT ROBUSTNESS: malformed output is an OUTPUT-CONTRACT violation.
+    // It gets the semantics-preserving normalization pass and exactly ONE
+    // regeneration; when that also fails the turn degrades — it does NOT fail the
+    // host, it commits nothing, and the next message simply tries again.
+    const modes = { current: "MALFORMED" as Mode };
     const host = await InteractiveSubjectHostV0.open(
       config("unused"),
-      hostDeps(() => "MALFORMED", { requests: [] }, new InMemoryInteractiveSnapshotStoreV0())
+      hostDeps(() => modes.current, { requests: [] }, new InMemoryInteractiveSnapshotStoreV0())
     );
     const outcome = await host.send("Hello.");
-    expect(outcome.status).toBe("FAILED");
-    expect(host.isFailed()).toBe(true);
-    await expect(host.send("Again?")).rejects.toThrow(/failed state/);
+    expect(outcome.status).toBe("DEGRADED");
+    expect(outcome.failure).toContain("EXECUTOR_OUTPUT_DEGRADED");
+    expect(outcome.subject_text).toBe("");
+    expect(host.isFailed()).toBe(false);
+    // No lived consequence: no delivery is pending and no Experience was committed.
+    expect(outcome.delivery_id).toBeNull();
+    expect(outcome.observational_experience_ref).toBeNull();
+    expect((await host.status()).pending_behavior_outcome).toBe(false);
+    // The session stays usable; the next (lawful) message is a NEW turn and completes.
+    modes.current = "CLARIFY";
+    const next = await host.send("Again?");
+    expect(next.status, next.failure ?? "").toBe("COMPLETE");
   });
 
-  it("provider truncation fails closed", async () => {
+  it("content-level truncated JSON is an output-contract violation: one regeneration, then degrade", async () => {
+    // The provider DELIVERED this text (no provider truncation signal), so it is
+    // malformed output rather than a provider budget failure: tolerated once.
     const host = await InteractiveSubjectHostV0.open(
       config("unused"),
       hostDeps(() => "TRUNCATED", { requests: [] }, new InMemoryInteractiveSnapshotStoreV0())
     );
     const outcome = await host.send("Hello.");
-    expect(outcome.status).toBe("FAILED");
-    expect(outcome.failure).toContain("TURN_FAILED_CLOSED");
+    expect(outcome.status).toBe("DEGRADED");
+    expect(outcome.failure).toContain("EXECUTOR_OUTPUT_DEGRADED");
+    // The degraded turn consumes its turn slot (the user message was admitted) but
+    // leaves no lived experience behind.
+    expect((await host.status()).turn_index).toBe(1);
+    expect((await host.status()).pending_behavior_outcome).toBe(false);
   });
 
   it("a corrupt durable snapshot fails closed instead of creating a new subject", async () => {
@@ -314,12 +334,21 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — CLI session (offline)", 
     expect(status.turn_index).toBe(1);
   });
 
-  it("a failed provider turn reports a stage-aware failure summary and no fake reply", async () => {
+  it("a malformed provider turn reports the degradation and never a fake reply", async () => {
+    // PRODUCT OUTPUT ROBUSTNESS: malformed cognition output is re-asked once
+    // (with the real validator errors) and then degrades. The user sees ONLY the
+    // fixed safe degradation line — never the model's malformed text, never a
+    // fabricated successful reply, and never a failure summary (the session is
+    // still usable).
     const { session, lines } = await makeSession(() => "MALFORMED");
     await session.handleLine("Hello.");
-    expect(lines.some((line) => line.includes("Turn failed during:"))).toBe(true);
-    expect(lines.some((line) => line.includes("Subject persistence:"))).toBe(true);
-    expect(lines.some((line) => line.startsWith("Subject > "))).toBe(false);
+    expect(lines.some((line) => line.includes("could not form a reliable reply"))).toBe(true);
+    expect(lines.some((line) => line.includes("this turn was not recorded"))).toBe(true);
+    expect(lines.some((line) => line.includes("Turn failed during:"))).toBe(false);
+    const subjectLines = lines.filter((line) => line.startsWith("Subject > "));
+    expect(subjectLines).toHaveLength(1);
+    expect(subjectLines[0]).toContain("could not form a reliable reply");
+    expect(lines.join("\n")).not.toContain("{ not json");
   });
 
   it("unknown commands are rejected without reaching the subject", async () => {

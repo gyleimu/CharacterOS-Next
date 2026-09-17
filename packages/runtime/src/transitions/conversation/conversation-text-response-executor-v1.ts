@@ -27,7 +27,11 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
-import { ConversationCognitionProviderV8 } from "../../providers/behavior/conversation-cognition-provider-v8.js";
+import {
+  createRobustConversationCognitionProviderV8,
+  isCognitionOutputDegraded,
+  type NormalizationKind
+} from "../../providers/behavior/robust-cognition-output-v8.js";
 import {
   deriveConversationCognitionProposalHashV8,
   type ClarificationBasisV0,
@@ -108,6 +112,22 @@ export type ConversationTextResponseResultV1 =
       readonly diagnostics?: {
         readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
       };
+    }
+  | {
+      /**
+       * PRODUCT OUTPUT ROBUSTNESS: the model could not produce a contract-valid
+       * cognition after one bounded regeneration. This is NOT a canonical outcome:
+       * no cognition, delivery, Experience or turn advance is written. The host
+       * renders a minimal safe reply and the session stays usable.
+       */
+      readonly kind: "DEGRADED";
+      readonly stage: "EXECUTOR_OUTPUT_DEGRADED";
+      readonly detail: string;
+      readonly attempts: number;
+      readonly normalization_applied: readonly NormalizationKind[];
+      readonly diagnostics?: {
+        readonly factual_authorization_trace: readonly FactualClaimAuthorizationTraceV0[];
+      };
     };
 
 /**
@@ -137,6 +157,24 @@ function failed(
     kind: "FAILED",
     stage,
     detail,
+    ...(factualTrace !== undefined && factualTrace.length > 0
+      ? { diagnostics: { factual_authorization_trace: factualTrace } }
+      : {})
+  };
+}
+
+function degraded(
+  detail: string,
+  attempts: number,
+  normalizationApplied: readonly NormalizationKind[],
+  factualTrace?: readonly FactualClaimAuthorizationTraceV0[]
+): ConversationTextResponseResultV1 {
+  return {
+    kind: "DEGRADED",
+    stage: "EXECUTOR_OUTPUT_DEGRADED",
+    detail,
+    attempts,
+    normalization_applied: normalizationApplied,
     ...(factualTrace !== undefined && factualTrace.length > 0
       ? { diagnostics: { factual_authorization_trace: factualTrace } }
       : {})
@@ -221,7 +259,13 @@ export class ConversationTextResponseExecutorV1 {
 
     // ---- shared cognition pipeline; current canonical projections use C3 V4 -------
     const legacyConversationProvider = new ConversationCognitionProviderV2(conversationTransport);
-    const c2ConversationProvider = new ConversationCognitionProviderV8(conversationTransport);
+    // PRODUCT OUTPUT ROBUSTNESS: the V8 provider stays the sole acceptance authority,
+    // but it is now driven by a bounded executor that normalizes the model's content
+    // (semantics-preserving only) and permits exactly ONE regeneration before degrading.
+    const c2ConversationProvider = createRobustConversationCognitionProviderV8({
+      transport: conversationTransport,
+      executorId: "product-conversation-cognition"
+    });
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
         const convProposal = projection.schema_version === "cognitive-context-projection-v2"
@@ -282,6 +326,21 @@ export class ConversationTextResponseExecutorV1 {
     } catch (error) {
       const base = error instanceof Error ? error.message : String(error);
       const rejection = providerRejectionDetail(error);
+      if (isCognitionOutputDegraded(error)) {
+        // Bounded robustness exhausted: degrade gracefully instead of failing the host.
+        const degradedAttempts = c2ConversationProvider.diagnostics.filter(
+          (entry) => entry.event === "ATTEMPT_REJECTED" || entry.event === "ATTEMPT_SUCCEEDED"
+        ).length;
+        const normalizationApplied = [
+          ...new Set(c2ConversationProvider.diagnostics.flatMap((entry) => entry.normalization_applied))
+        ];
+        return degraded(
+          rejection === null || base.includes(rejection) ? base : `${base} (${rejection})`,
+          degradedAttempts,
+          normalizationApplied,
+          c2ConversationProvider.lastFactualAuthorizationTrace
+        );
+      }
       return failed(
         "COGNITION_FAILED",
         rejection === null || base.includes(rejection) ? base : `${base} (${rejection})`,

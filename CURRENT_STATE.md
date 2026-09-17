@@ -98,6 +98,13 @@ CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套�
 
 原 blocker（隐式 4096 context 导致 E7 截断）已通过 `COGNITION_PROVIDER_OUTPUT_BUDGET_REPAIR_V0` 修复并被上述 revalidation 正面关闭。当前没有已知的 session-capability blocker。
 
+`BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 = PAUSED`（暂停，不是裁定）。
+
+- 暂停理由：`frozen calibration readiness not met under the tested executor contract` —— 冻结协议要求 50 次 calibration 抽样中至少 48 次 host-valid，被测 executor contract 未达到；两次正式 calibration 均在 host-valid 下限被打破前按既有 early-stop 规则停止（第一次 17 trials／3 次 `MODEL_SCHEMA_INVALID`，第二次 49 trials／3 次 `MODEL_SCHEMA_INVALID`，位置 43、44、49）。
+- 已确认的机制事实：被测 cloud executor 端点拒绝 `response_format: json_schema`（HTTP 400 "This response_format type is unavailable now"），production OpenAI-compatible transport 因此不转发 `structured_output`；观察到的无效输出是**格式/类型违规**（例如 `communication_directive` 位置输出裸字符串、`clarification_basis.missing_information` 超过 256 code points），不是语义分歧或科学反例。
+- 该暂停**不表示** Belief 命题无效、DeepSeek 不可用或 CharacterOS 受阻；它只是冻结协议与当前 executor contract 之间的 readiness 判定。冻结实验文件与 evidence 保持不可变，未改写任何历史结果。
+- 前进路径（产品侧已落地，科学侧待未来重新 preregister）：`TOLERANT_EXTERNAL_OUTPUT + STRICT_INTERNAL_STATE` —— 只做语义保持的 format normalization、最多一次带真实 validator error 的 regeneration、两次失败即 graceful degrade 且不写 canonical state。任何未来的 confirmatory 重新执行都需要新的 preregistration 与新的批准点，本文件不授权启动。
+
 `INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0` 已实现并通过 bounded real-provider smoke：真实用户消息 → 持久 subject session → 自动 retrieval → cognition → 可观察响应 → delivery/feedback → Experience → durable Memory → 关闭进程 → 新进程 authoritative restore → 继续同一 lived subject。该 slice 的 primary acceptance 全部满足。
 
 已记录的 V0 限制（不是 blocker）：冻结 feedback 法只把「作为上一交付行为 counterpart reply 的用户消息」编码进 Experience/Memory，因此全新 subject 的第一条用户消息不会进入 Memory；host appraisal provider 使用固定最小 profile（Affect 不随内容变化）；某轮交付行为的 outcome Experience 在用户下一次发言时提交。

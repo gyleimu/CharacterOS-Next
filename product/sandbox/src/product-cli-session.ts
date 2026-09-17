@@ -148,6 +148,10 @@ export function parseObservationCommandV0(
   return built;
 }
 
+/** Host-rendered minimal safe reply for a degraded turn (no model call, no canonical write). */
+export const DEGRADED_TURN_REPLY_V0 =
+  "I could not form a reliable reply to that just now. Nothing about our conversation was changed — please say it again.";
+
 export class ProductCliSessionV0 {
   private exiting = false;
   private lastTurnOutcome: InteractiveTurnOutcomeV0 | null = null;
@@ -505,6 +509,16 @@ export class ProductCliSessionV0 {
         this.deps.onTurnComplete?.(turnOutcome);
       }
     });
+    if (outcome.status === "DEGRADED") {
+      // PRODUCT OUTPUT ROBUSTNESS: the model could not produce a contract-valid
+      // cognition after one bounded regeneration. The turn commits nothing; the
+      // session stays usable and the next message simply tries again.
+      this.deps.write(`${this.label()} > ${DEGRADED_TURN_REPLY_V0}`);
+      this.deps.write(
+        "(this turn was not recorded: the model output did not satisfy the output contract after one retry)"
+      );
+      return;
+    }
     if (outcome.status !== "COMPLETE") {
       await this.printTurnFailureSummary(outcome);
       return;

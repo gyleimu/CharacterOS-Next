@@ -71,12 +71,20 @@ interface TransportRecorder {
   readonly requests: { readonly messages: readonly { readonly role: string; readonly content: string }[] }[];
 }
 
-function fakeCognitionTransport(mode: () => Mode, recorder: TransportRecorder): ModelTransportV0 {
+function fakeCognitionTransport(
+  mode: () => Mode,
+  recorder: TransportRecorder,
+  contentOverride?: () => string | null
+): ModelTransportV0 {
   return {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
+      const override = contentOverride?.();
+      if (override !== undefined && override !== null) {
+        return { content: override, model: "fake" } as ModelTransportResponseV0;
+      }
       const selected = mode();
       if (selected === "FAIL") {
         return { content: "{ not json", model: "fake" } as ModelTransportResponseV0;
@@ -124,19 +132,62 @@ function fakeLanguageTransport(): ModelTransportV0 {
   } as ModelTransportV0;
 }
 
-function options(input: { mode?: () => Mode; recorder?: TransportRecorder } = {}): InteractiveSubjectRuntimeOptionsV0 {
+function options(
+  input: { mode?: () => Mode; recorder?: TransportRecorder; contentOverride?: () => string | null } = {}
+): InteractiveSubjectRuntimeOptionsV0 {
   const recorder = input.recorder ?? { requests: [] };
   return {
     session_id: "sess-interactive-test",
     subject: { subject_id: SUBJECT_ID, display_name: "", identity_anchors: [] },
     v3_source: createInteractiveSubjectSeedV0(SUBJECT_ID) as SubjectStateV0,
-    conversationCognitionTransport: fakeCognitionTransport(input.mode ?? (() => "CLARIFY"), recorder),
+    conversationCognitionTransport: fakeCognitionTransport(
+      input.mode ?? (() => "CLARIFY"),
+      recorder,
+      input.contentOverride
+    ),
     languageTransport: fakeLanguageTransport(),
     factualEventAppraisalProvider: fakeAppraisalProvider(),
     interval_ticks: 1,
     provider_identity: { model: "fake", num_predict: 2048 },
     clock: () => "2026-01-01T00:00:00.000Z"
   };
+}
+
+/** The fixture's own valid proposal, rebuilt for the tolerance cases. */
+function validProposalText(): string {
+  return JSON.stringify({
+    response_semantics: { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "ACKNOWLEDGE" },
+    schema_version: "conversation-cognition-proposal-v8",
+    subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+    factual_assessment: { claims: [] },
+    cognition: {
+      schema_version: "cognition-proposal-v0",
+      reasoning_summary: "offline tolerance cognition",
+      relevant_memory_handles: [],
+      considered_handles: [],
+      current_intent: "respond to the user",
+      confidence: 0.7,
+      uncertainty: 0.3,
+      action_intent: null,
+      evidence_handles: []
+    },
+    communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+    clarification_basis: null
+  });
+}
+
+/** The same proposal with a KNOWN directive atom as a bare string. */
+function bareDirectiveProposalText(): string {
+  const parsed = JSON.parse(validProposalText()) as Record<string, unknown>;
+  parsed["communication_directive"] = "REALIZE_CURRENT_INTENT";
+  return JSON.stringify(parsed);
+}
+
+/** The same proposal with an UNKNOWN directive atom as a bare string. */
+function unknownEnumProposalText(): string {
+  const parsed = JSON.parse(validProposalText()) as Record<string, unknown>;
+  parsed["communication_directive"] = "DO_SOMETHING_RANDOM";
+  return JSON.stringify(parsed);
 }
 
 describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — offline acceptance", () => {
@@ -189,18 +240,97 @@ describe("INTERACTIVE_PERSISTENT_SUBJECT_RUNTIME_V0 — offline acceptance", () 
     expect(after.pending_lifecycle_work).toBe(0);
   });
 
-  it("malformed provider cognition fails closed: no delivery, no index advance", async () => {
-    const runtime = await InteractiveSubjectRuntimeV0.create(options({ mode: () => "FAIL" }));
+  it("malformed provider cognition degrades gracefully: no delivery, no lived record, nothing canonical written", async () => {
+    // PRODUCT OUTPUT ROBUSTNESS: a contract-invalid model output no longer kills the
+    // session. It is retried exactly ONCE (with the validator's real detail) and then
+    // degrades: the turn adds NO cognition, delivery, Experience, Memory or pending
+    // outcome. Only the turn bookkeeping advances (the user message was already
+    // admitted, and reusing its source event id would fail closed forever).
+    const recorder: TransportRecorder = { requests: [] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ mode: () => "FAIL", recorder })
+    );
+    const before = await runtime.status();
     const turn = await runtime.submitUserText("Hello.");
-    expect(turn.status).toBe("FAILED");
-    expect(turn.failure).toContain("TURN_FAILED_CLOSED");
+    expect(turn.status).toBe("DEGRADED");
+    expect(turn.failure).toContain("EXECUTOR_OUTPUT_DEGRADED");
     expect(turn.subject_text).toBe("");
     expect(turn.delivery_id).toBeNull();
     expect(turn.completed_prior_outcome).toBeNull();
+    expect(turn.observational_experience_ref).toBeNull();
+    // exactly two attempts: the first, plus ONE regeneration — never retry-until-valid
+    expect(recorder.requests.length).toBe(2);
     const status = await runtime.status();
-    expect(status.turn_index).toBe(0);
-    expect(status.completed_turns).toBe(0);
+    expect(status.turn_index).toBe(before.turn_index + 1);
+    expect(status.completed_turns).toBe(before.completed_turns + 1);
+    // The pre-cognition Appraisal commits canonically BEFORE cognition (pre-existing
+    // law, identical for a FAILED turn), so a revision advance from THAT stage is
+    // lawful. What is forbidden is a COGNITION-derived write, and both turn-bookkeeping
+    // fields above show the turn recorded no lived experience of its own.
     expect(runtime.hasPendingBehaviorOutcome()).toBe(false);
+  });
+
+  it("TOLERANT_OUTPUT: a markdown-fenced response is normalized and accepted without a retry", async () => {
+    const recorder: TransportRecorder = { requests: [] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        recorder,
+        contentOverride: () => "\u0060\u0060\u0060json\n" + validProposalText() + "\n\u0060\u0060\u0060"
+      })
+    );
+    const turn = await runtime.submitUserText("Hello.");
+    expect(turn.status).toBe("COMPLETE");
+    expect(turn.directive).toBe("REALIZE_CURRENT_INTENT");
+    // a format-only repair costs no extra attempt
+    expect(recorder.requests.length).toBe(1);
+  });
+
+  it("TOLERANT_OUTPUT: a KNOWN directive atom as a bare string is canonicalized and accepted", async () => {
+    const recorder: TransportRecorder = { requests: [] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ recorder, contentOverride: () => bareDirectiveProposalText() })
+    );
+    const turn = await runtime.submitUserText("Hello.");
+    expect(turn.status).toBe("COMPLETE");
+    expect(turn.directive).toBe("REALIZE_CURRENT_INTENT");
+    expect(recorder.requests.length).toBe(1);
+  });
+
+  it("UNKNOWN_ENUM is never repaired: the turn retries once and then degrades, writing nothing", async () => {
+    const recorder: TransportRecorder = { requests: [] };
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ recorder, contentOverride: () => unknownEnumProposalText() })
+    );
+    const turn = await runtime.submitUserText("Hello.");
+    expect(turn.status).toBe("DEGRADED");
+    expect(recorder.requests.length).toBe(2);
+    const status = await runtime.status();
+    expect(status.completed_turns).toBe(1);
+    expect(runtime.hasPendingBehaviorOutcome()).toBe(false);
+  });
+
+  it("VALID_RETRY: the first invalid attempt is followed by ONE regeneration that is accepted", async () => {
+    const recorder: TransportRecorder = { requests: [] };
+    let seen = 0;
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        recorder,
+        contentOverride: () => {
+          seen += 1;
+          return seen === 1 ? "{ not json" : validProposalText();
+        }
+      })
+    );
+    const turn = await runtime.submitUserText("Hello.");
+    expect(turn.status).toBe("COMPLETE");
+    expect(turn.subject_text.length).toBeGreaterThan(0);
+    // exactly two attempts, the second carrying the validator's real feedback
+    expect(recorder.requests.length).toBe(2);
+    const secondAttempt = recorder.requests[1]?.messages ?? [];
+    expect(secondAttempt).toHaveLength(3);
+    expect(secondAttempt[2]?.content).toContain("did not satisfy the required output contract");
+    // only the FINAL valid response is what canonical state saw
+    expect(turn.directive).toBe("REALIZE_CURRENT_INTENT");
   });
 
   it("status projects no authority token or capability", async () => {

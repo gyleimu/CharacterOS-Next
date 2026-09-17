@@ -97,16 +97,23 @@ async function main(): Promise<number> {
   }
 
   console.log("CharacterOS-Next");
-  const probe = await probeOllamaV0(baseUrl, model);
-  if (!probe.reachable) {
-    for (const line of providerUnavailableGuidanceV0(baseUrl, probe.failure ?? "unknown")) console.error(line);
-    return 1;
-  }
-  // MODEL MISSING: reachable endpoint but the configured model is not installed.
-  // Fail closed with the configured identifier; never auto-download or install.
-  if (probe.failure !== null) {
-    for (const line of modelMissingGuidanceV0(model, baseUrl, probe.failure)) console.error(line);
-    return 1;
+  // Executor preflight is family-specific. The LOCAL family probes endpoint +
+  // model metadata (no generation). The CLOUD family has no safe metadata probe:
+  // the credential's presence was already enforced by configuration resolution,
+  // and inventing a network check here would spend a billable call — so startup
+  // proceeds and the first real turn is where a provider failure can surface.
+  if (configuration.executor.effective === "ollama") {
+    const probe = await probeOllamaV0(baseUrl, model);
+    if (!probe.reachable) {
+      for (const line of providerUnavailableGuidanceV0(baseUrl, probe.failure ?? "unknown")) console.error(line);
+      return 1;
+    }
+    // MODEL MISSING: reachable endpoint but the configured model is not installed.
+    // Fail closed with the configured identifier; never auto-download or install.
+    if (probe.failure !== null) {
+      for (const line of modelMissingGuidanceV0(model, baseUrl, probe.failure)) console.error(line);
+      return 1;
+    }
   }
 
   // CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0 — ONE shared provider bundle keeps
@@ -114,6 +121,7 @@ async function main(): Promise<number> {
   // transports, appraisal/belief/relationship wiring, budgets and turn plan).
   const bundle = createProductProviderBundleV0({
     configuration,
+    environment,
     write: (line) => process.stdout.write(`${line}\n`),
     debug
   });

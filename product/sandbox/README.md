@@ -174,7 +174,11 @@ selector, and no second configuration authority.
 
 | Setting | How configured | Default | Meaning |
 |---|---|---|---|
-| model | `CHARACTEROS_MODEL` | `qwen3.5:9b` | chat model used by appraisal, cognition, language and adaptation |
+| executor | `CHARACTEROS_EXECUTOR` | `auto` | `ollama` (local, native `/api/chat`), `deepseek` (cloud, OpenAI-compatible `/chat/completions`) or `auto` (cloud when a credential is present, otherwise local). Chosen once at startup — a provider failure never switches family |
+| cloud credential | `MODEL_API_KEY` | unset | credential for the cloud executor. Environment only; read at startup for transport construction, never printed, logged or written |
+| cloud model | `MODEL_API_MODEL` | `deepseek-flash` | model used when the cloud executor is effective |
+| cloud endpoint | `MODEL_API_BASE_URL` | `https://api.deepseek.com` | cloud base URL (http(s)) |
+| model | `CHARACTEROS_MODEL` | `qwen3.5:9b` | LOCAL model used by appraisal, cognition, language and adaptation |
 | provider endpoint | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | local Ollama endpoint |
 | provider timeout | `CHARACTEROS_TIMEOUT_MS` | `120000` | per model call timeout, in ms (positive integer) |
 | context window tokens | `CHARACTEROS_CONTEXT_WINDOW_TOKENS` | `8192` | total sequence budget (`num_ctx`) |
@@ -443,7 +447,9 @@ Every model-backed stage prints concise progress with bounded latency, e.g.:
   last turn/failure. It performs no model generation.
 - **Timeout** means the local model did not answer within
   `CHARACTEROS_TIMEOUT_MS`. The product does not silently retry; the turn fails
-  closed and the summary names the stage and the configured timeout.
+  closed and the summary names the stage and the configured timeout. The ONE
+  exception is the bounded output-contract regeneration described below — it is
+  never silent (the retry and its reason are printed and recorded).
 - **Ollama unavailable / model missing**: the CLI preflight fails fast with
   either "Provider unavailable." (endpoint + detail + "Start Ollama locally,
   then relaunch CharacterOS.") or "Model unavailable: `<model>`" (endpoint +
@@ -482,15 +488,49 @@ Every model-backed stage prints concise progress with bounded latency, e.g.:
   source); `/diagnostics` answers runtime questions (stage status, latency, last
   failure). They are deliberately separate commands.
 - `/config` is read-only in V0: there is no `/config set`, no `/model switch`,
-  no multi-subject selector, and no cloud setup. Change settings with the
-  existing environment variables and relaunch.
+  and no multi-subject selector. Change settings with the existing environment
+  variables and relaunch. Selecting the cloud executor is configuration, not a
+  router: the family is chosen once at startup (see the executor row above), and
+  a provider failure never switches to the other family.
 
-Honest limitations: no cloud fallback, no automatic model switching, no retry
-orchestration, no SLA, and no guaranteed model latency. Provider diagnostics are
-product/transport observability only; they are never persisted in canonical
-subject state and are not part of the subject's life. The configuration view is
-product metadata only: it is not persisted, not canonical, and not a second
-configuration authority.
+### Tolerant output, strict state, and the degraded turn
+
+Model output format variance is absorbed; meaning never is.
+
+- **Only semantics-preserving normalization** is applied to a cognition
+  response before validation: a UTF-8 BOM, surrounding whitespace, one whole
+  outer markdown fence, exactly one unambiguous JSON object embedded in
+  surrounding prose, and a KNOWN communication-directive atom written as a bare
+  string instead of `{"kind": …}`. Each normalization is reported as
+  `normalized=[…]`.
+- **Nothing is invented.** An unknown enum value, a missing required field, an
+  absent claim, handle or provenance is NEVER guessed, filled in or repaired
+  after generation; such output is rejected by the REAL validator exactly as
+  before this slice.
+- **At most ONE regeneration.** If validation fails, the turn gets a single
+  second attempt whose prompt carries the validator's own error text and the
+  instruction to answer the same intended thing in the required structure. There
+  is no retry-until-valid loop (`max_attempts = 2` is frozen in the policy).
+- **Graceful degradation.** If the second attempt also fails, the turn ends
+  `DEGRADED` with `EXECUTOR_OUTPUT_DEGRADED`: the CLI prints a short safe reply
+  and says the turn was not recorded, nothing is written to canonical state or
+  Memory (no Experience, no delivery, no pending outcome) and the process stays
+  usable — the next message starts a fresh turn. The turn's bookkeeping does
+  advance, because its user message was already admitted; reusing that source
+  event id would fail closed forever.
+- **Only output-contract violations degrade.** A provider/budget failure
+  (timeout, connection failure, empty or provider-truncated output) and any
+  semantic-law rejection (an unauthorized factual claim, an unlawful response
+  semantics atom, a duplicate invocation) keep the pre-existing fail-closed
+  path: no re-ask, no degradation, no softer outcome.
+
+Honest limitations: no cloud fallback, no automatic model switching, no router
+and no retry orchestration beyond the single bounded output-contract
+regeneration described above; no SLA, and no guaranteed model latency. Provider
+diagnostics are product/transport observability only; they are never persisted
+in canonical subject state and are not part of the subject's life. The
+configuration view is product metadata only: it is not persisted, not canonical,
+and not a second configuration authority.
 
 ## Turn progress and latency expectations
 
