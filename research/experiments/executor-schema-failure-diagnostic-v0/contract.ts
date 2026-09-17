@@ -36,10 +36,22 @@ export const DIAGNOSTIC_MARKERS = Object.freeze({
 export const CALIBRATION_PREREG_SHA = "917d5d107cc29033b036682875b69be9d02d34f2" as const;
 export const CALIBRATION_RESULT_VERDICT = "EXECUTOR_CALIBRATION_STOP_EARLY" as const;
 
-/** The frozen model-facing request this diagnostic must reproduce byte-identically. */
+/**
+ * The model-facing request this diagnostic reproduces byte-identically.
+ *
+ * MODEL-VISIBLE CONTRACT PARITY REMEDIATION: the schema and the system prompt now
+ * advertise the bounds the validator always enforced, so the authoritative request
+ * moved. The diagnostic binds to the REMEDIATED request; the CONSUMED calibration
+ * request is kept below as immutable historical fact and is never re-issued.
+ */
 export const FROZEN_MODEL_FACING_REQUEST_HASH =
+  "sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35" as const;
+export const FROZEN_MODEL_FACING_REQUEST_BYTES = 17381 as const;
+
+/** The CONSUMED calibration request — historical, never the authority again. */
+export const CONSUMED_CALIBRATION_REQUEST_HASH =
   "sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509" as const;
-export const FROZEN_MODEL_FACING_REQUEST_BYTES = 16085 as const;
+export const CONSUMED_CALIBRATION_REQUEST_BYTES = 16085 as const;
 
 /**
  * STOP RULE — written before the first diagnostic call, never widened afterwards:

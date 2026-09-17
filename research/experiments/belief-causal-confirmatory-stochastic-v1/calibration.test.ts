@@ -19,6 +19,7 @@ import { auditScanSurface } from "./scan-surface.ts";
 import {
   authoritativeRequestHash,
   buildCalibrationRequest,
+  FROZEN_CALIBRATION_REQUEST_HASH,
   modelFacingRequestHash,
   serializeAuthoritativeRequest
 } from "./calibration-request.ts";
@@ -58,9 +59,12 @@ describe("CALIBRATION — request determinism and byte identity", () => {
       hashes.add(request.hashes.model_facing_request_hash);
     }
     expect(hashes.size).toBe(1);
-    // The frozen value is preserved by the dead-code cleanup and by the single
-    // authoritative serialization.
-    expect([...hashes][0]).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+    // CONTRACT PARITY REMEDIATION: the model-facing contract (schema + system
+    // prompt) now advertises the bounds the validator always enforced, so the
+    // authoritative request hash moved. The CONSUMED calibration hash is
+    // unchanged historical fact and is asserted separately below.
+    expect([...hashes][0]).toBe("sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35");
+    expect([...hashes][0]).not.toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
   });
 
   it("the request body contains no host identity and no secret", async () => {
@@ -546,12 +550,12 @@ describe("CALIBRATION — the authoritative serialization", () => {
     const expected = (await realAuthoritativeRequest()).serialized_body;
     for (const body of mock.bodies()) {
       expect(body).toBe(expected);
-      expect(hashText(body)).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+      expect(hashText(body)).toBe("sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35");
     }
     expect(run.aggregates.request_hash_unique_count).toBe(1);
     expect(run.integrity.runtime_request_hash).toBe(run.integrity.frozen_request_hash);
     for (const trial of run.trials) {
-      expect(trial.request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
+      expect(trial.request_hash).toBe("sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35");
       expect(trial.serialized_body_bytes).toBe(Buffer.byteLength(expected, "utf8"));
     }
   });
@@ -587,13 +591,15 @@ describe("CALIBRATION — the authoritative serialization", () => {
 describe("CALIBRATION — the frozen request body is unchanged by the remediation", () => {
   it("the dead observation code did not change a single request byte", async () => {
     const request = await realAuthoritativeRequest();
-    expect(request.request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
-    expect(request.hashes.model_facing_request_hash).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
-    expect(request.hashes.system_hash).toBe("sha256:9241794b19b06b7a85a020c0c2a3522fd14504c80689ef8a3180afed8e25dc2c");
+    expect(request.request_hash).toBe("sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35");
+    expect(request.hashes.model_facing_request_hash).toBe("sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35");
+    expect(request.hashes.system_hash).toBe("sha256:044bfe7b7641cb9cadcf9f02005560fd6b9332576bcfb3c8a0cd40ae4a91f121");
     expect(request.hashes.user_hash).toBe("sha256:55d27d60fe3087537e66c1075dbe43677160ddbc0d8569207577b46962a219f3");
-    expect(request.hashes.schema_hash).toBe("sha256:e9da721b67903c40e40f32dc1989456924923167e921e47cdd2231a78ee771b9");
+    expect(request.hashes.schema_hash).toBe("sha256:54ac7977f3b9e7f2e422fd6dc5f218fe34e82ffc368ebec68a58b4e634feec35");
     expect(request.hashes.model_config_hash).toBe("sha256:0ed9df37fb4b2981ae5ff69bbe37c0858ea82cec200bb87249f66478927810d5");
-    expect(Buffer.byteLength(request.serialized_body, "utf8")).toBe(16085);
+    expect(Buffer.byteLength(request.serialized_body, "utf8")).toBe(17381);
+    // The CONSUMED calibration's request remains a recorded historical fact.
+    expect(FROZEN_CALIBRATION_REQUEST_HASH).toBe("sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509");
     expect(validProposalJson("REALIZE_CURRENT_INTENT")).toContain("communication_directive");
   });
 });

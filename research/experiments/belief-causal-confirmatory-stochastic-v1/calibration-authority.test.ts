@@ -232,7 +232,7 @@ describe("AUTHORITY — per-trial pre-call gate", () => {
     expect(preflight.ok).toBe(true);
     expect(preflight.design_rederivation.all_match).toBe(true);
     expect(preflight.request_binding.request.request_hash).toBe(
-      "sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509"
+      "sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35"
     );
     expect(realSchemaHash()).toBe(preflight.request_binding.expected.schema_hash);
   });

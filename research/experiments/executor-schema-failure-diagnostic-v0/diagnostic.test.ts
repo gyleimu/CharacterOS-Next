@@ -16,11 +16,13 @@ import { buildConversationSubjectDataV4 } from "../../../packages/runtime/dist/p
 import { buildCalibrationProjection, buildCalibrationSubject } from "../belief-causal-confirmatory-stochastic-v1/calibration-request.ts";
 
 import {
+  CONSUMED_CALIBRATION_REQUEST_HASH,
   DIAGNOSTIC_ARTIFACT_SCHEMA_VERSION,
   DIAGNOSTIC_MARKERS,
   DIAGNOSTIC_MAX_MODEL_CALLS,
   DIAGNOSTIC_TARGET_SCHEMA_INVALID_EXAMPLES,
   FAILURE_TAXONOMY_IDS,
+  FROZEN_MODEL_FACING_REQUEST_BYTES,
   FROZEN_MODEL_FACING_REQUEST_HASH
 } from "./contract.ts";
 import { assertFrozenRequest, buildDiagnosticRequest, DiagnosticRequestMismatchError } from "./frozen-request.ts";
@@ -359,7 +361,12 @@ describe("DIAGNOSTIC PHASE A — I: the request stays byte-identical to the cali
   it("TEST_I_FIXED_REQUEST_BYTES", async () => {
     const binding = await buildDiagnosticRequest();
     expect(binding.request_hash).toBe(FROZEN_MODEL_FACING_REQUEST_HASH);
-    expect(binding.body_bytes).toBe(16085);
+    expect(binding.body_bytes).toBe(FROZEN_MODEL_FACING_REQUEST_BYTES);
+    // The CONSUMED calibration request stays recorded as historical fact.
+    expect(CONSUMED_CALIBRATION_REQUEST_HASH).toBe(
+      "sha256:db8d8993c63e6de476c4ddb28dff5c55d5716f8f1fb3cc23ccfcd841bc31f509"
+    );
+    expect(binding.request_hash).not.toBe(CONSUMED_CALIBRATION_REQUEST_HASH);
     expect(binding.byte_identical_to_calibration).toBe(true);
     expect(binding.reconstructed_hashes.model_config_hash).toBe("sha256:0ed9df37fb4b2981ae5ff69bbe37c0858ea82cec200bb87249f66478927810d5");
     assertFrozenRequest(binding);
@@ -391,7 +398,7 @@ describe("DIAGNOSTIC PHASE A — I: the request stays byte-identical to the cali
         },
         byte_identical_to_calibration: false,
         expected_hash: FROZEN_MODEL_FACING_REQUEST_HASH,
-        expected_bytes: 16085
+        expected_bytes: FROZEN_MODEL_FACING_REQUEST_BYTES
       })
     ).toThrow(DiagnosticRequestMismatchError);
   });
