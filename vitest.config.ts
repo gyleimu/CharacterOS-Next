@@ -17,7 +17,9 @@ export default defineConfig({
       // instrumentation: Phase A gate, mock fetch only, 0 model calls.
       "research/experiments/executor-schema-failure-diagnostic-v0/**/*.test.ts",
       // Model-visible contract parity audit (offline contract tests).
-      "research/audits/model-visible-contract-parity-v0/**/*.test.ts"
+      "research/audits/model-visible-contract-parity-v0/**/*.test.ts",
+      // Post-parity exploratory schema-failure diagnostic (Phase A gate, mock fetch only).
+      "research/experiments/post-parity-schema-failure-diagnostic-v0/**/*.test.ts"
     ],
     allowOnly: false,
     // Environment tolerance ONLY (assertions are unchanged): the deterministic
