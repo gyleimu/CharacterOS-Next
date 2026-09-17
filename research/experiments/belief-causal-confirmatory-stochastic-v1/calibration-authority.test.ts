@@ -9,8 +9,15 @@
  */
 import { describe, expect, it } from "vitest";
 
+import { fileURLToPath } from "node:url";
+
 import {
   CALIBRATION_REQUEST_FROZEN_HASH_MISMATCH,
+  auditRuntimeV0Firewall,
+  auditRuntimeWriteSurface,
+  auditSecretSafety,
+  readExecutionClosure,
+  readExperimentSources,
   CALIBRATION_SCHEMA_HASH_DRIFT,
   CALIBRATION_TRACKED_TREE_DIRTY,
   SCIENTIFIC_CODE_STATE_MISMATCH,
@@ -181,6 +188,35 @@ describe("AUTHORITY — T11 frozen request hash tamper", () => {
     expect(binding.ok).toBe(false);
     expect(binding.failures).toContain(CALIBRATION_SCHEMA_HASH_DRIFT);
     expect(binding.failures).not.toContain(CALIBRATION_REQUEST_FROZEN_HASH_MISMATCH);
+  });
+});
+
+describe("AUTHORITY — the REAL tree (no mocks): the enumerated closure and the firewalls", () => {
+  it("TEST_REAL_PATH_AUDITS: the real execution closure is enumerated and all three firewalls pass", async () => {
+    // The directory is passed WITHOUT a trailing separator — the shape the CLI
+    // actually uses — so a path-joining regression cannot hide behind a fixture.
+    const experimentDir = fileURLToPath(new URL(".", import.meta.url)).replace(/[/\\]+$/, "");
+    const closure = readExecutionClosure(experimentDir);
+    const files = closure.map((entry) => entry.file);
+    expect(files).toContain("calibration-authority.ts");
+    expect(files).toContain("calibration-transport.ts");
+    expect(files).toContain("cli.ts");
+    expect(closure.every((entry) => !entry.file.endsWith(".test.ts"))).toBe(true);
+    expect(closure.every((entry) => entry.code.length > 0)).toBe(true);
+
+    const sources = readExperimentSources(experimentDir);
+    expect(sources.length).toBeGreaterThan(closure.length);
+    expect(sources.some((entry) => entry.file === "contract.ts")).toBe(true);
+
+    // The three real firewalls, on the real sources of this tree.
+    expect(auditSecretSafety(closure).failures).toEqual([]);
+    expect(auditRuntimeV0Firewall(sources).passed).toBe(true);
+    const writeSurface = await auditRuntimeWriteSurface(experimentDir, closure);
+    expect(writeSurface.passed).toBe(true);
+    expect(writeSurface.violations).toEqual([]);
+    expect(writeSurface.missing_required_modules).toEqual([]);
+    expect(writeSurface.durable_stable).toBe(true);
+    expect(writeSurface.offline_formation_files).toContain("histories.ts");
   });
 });
 

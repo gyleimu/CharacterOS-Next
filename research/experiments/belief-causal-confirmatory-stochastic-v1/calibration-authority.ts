@@ -20,6 +20,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
 import { ANALYSIS_LAW, DESIGN as FROZEN_DESIGN } from "../../measurement-protocols/stochastic-executor-causal-measurement-protocol-v0/contract.ts";
@@ -59,6 +60,7 @@ import {
   auditV0DependencyFree,
   EXECUTION_CLOSURE_PATTERN,
   extractFunctionBody,
+  tokenHitsInCode,
   REQUIRED_EXECUTION_MODULES,
   stripCommentsForAudit,
   type SourceFile,
@@ -431,7 +433,7 @@ export function createGitCalibrationAuthority(input: GitAuthorityInput): Calibra
     auditedSources,
     auditWriteSurface: input.overrides?.auditWriteSurface ?? (() => auditRuntimeWriteSurface(input.experimentDir, executionClosure())),
     auditV0Firewall: input.overrides?.auditV0Firewall ?? (() => auditRuntimeV0Firewall(auditedSources())),
-    auditSecretSafety: input.overrides?.auditSecretSafety ?? (() => auditSecretSafety(input.experimentDir, executionClosure()))
+    auditSecretSafety: input.overrides?.auditSecretSafety ?? (() => auditSecretSafety(executionClosure()))
   };
 }
 
@@ -444,7 +446,7 @@ export function readExperimentSources(experimentDir: string): readonly SourceFil
   return readdirSync(experimentDir)
     .filter((name) => name.endsWith(".ts") && !name.endsWith(".test.ts"))
     .sort()
-    .map((name) => ({ file: name, code: readFileSync(`${experimentDir}${name}`, "utf8") }));
+    .map((name) => ({ file: name, code: readFileSync(join(experimentDir, name), "utf8") }));
 }
 
 /** The runtime execution closure: calibration-*.ts + cli.ts, enumerated from disk. */
@@ -452,7 +454,7 @@ export function readExecutionClosure(experimentDir: string): readonly SourceFile
   return readdirSync(experimentDir)
     .filter((name) => name.endsWith(".ts") && !name.endsWith(".test.ts") && EXECUTION_CLOSURE_PATTERN.test(name))
     .sort()
-    .map((name) => ({ file: name, code: readFileSync(`${experimentDir}${name}`, "utf8") }));
+    .map((name) => ({ file: name, code: readFileSync(join(experimentDir, name), "utf8") }));
 }
 
 /**
@@ -469,7 +471,7 @@ export async function auditRuntimeWriteSurface(
   experimentDir: string,
   closure: readonly SourceFile[]
 ): Promise<WriterFirewallReport> {
-  const precheckSource = stripCommentsForAudit(readFileSync(`${experimentDir}precheck.ts`, "utf8"));
+  const precheckSource = stripCommentsForAudit(readFileSync(join(experimentDir, "precheck.ts"), "utf8"));
   const interventionBody = extractFunctionBody(precheckSource, "function applyBeliefView(");
   const renderBody = extractFunctionBody(precheckSource, "async function renderRequest(");
   const offlineFormationFiles = readExperimentSources(experimentDir)
@@ -531,7 +533,7 @@ export function auditRuntimeV0Firewall(sources: readonly SourceFile[]): V0Firewa
   });
 }
 
-export function auditSecretSafety(experimentDir: string, closure: readonly SourceFile[]): AuthorityCheck {
+export function auditSecretSafety(closure: readonly SourceFile[]): AuthorityCheck {
   const failures: string[] = [];
   const transport = closure.find((entry) => entry.file === "calibration-transport.ts");
   if (transport === undefined) failures.push("CALIBRATION_TRANSPORT_NOT_IN_CLOSURE");
@@ -553,8 +555,10 @@ export function auditSecretSafety(experimentDir: string, closure: readonly Sourc
   // The ENVIRONMENT may be read in exactly one module — the CLI host — and the
   // credential value must be passed onward as an opaque argument: no other
   // module may reach for the environment at all.
+  // Code-only occurrence: this module NAMES the pattern it forbids, and a
+  // vocabulary string is not an environment read.
   const envReaders = closure
-    .filter((entry) => stripCommentsForAudit(entry.code).includes("process.env"))
+    .filter((entry) => tokenHitsInCode(stripCommentsForAudit(entry.code), "process" + ".env").length > 0)
     .map((entry) => entry.file);
   if (envReaders.length !== 1 || envReaders[0] !== "cli.ts") {
     failures.push(`CREDENTIAL_ENV_READER_NOT_UNIQUE:${envReaders.join(",")}`);
@@ -564,7 +568,6 @@ export function auditSecretSafety(experimentDir: string, closure: readonly Sourc
     .map((entry) => entry.file)
     .filter((file) => file !== "cli.ts");
   if (envValueReaders.length > 0) failures.push(`CREDENTIAL_ENV_DEREFERENCE_OUTSIDE_CLI:${envValueReaders.join(",")}`);
-  void experimentDir;
   return {
     ok: failures.length === 0,
     failures,
