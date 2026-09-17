@@ -30,6 +30,7 @@ import {
 } from "../../measurement-protocols/stochastic-executor-causal-measurement-protocol-v0/hashing.ts";
 
 import { CALIBRATION_LAW } from "./calibration-law.ts";
+import { contractParityBinding } from "./prereg-authority.ts";
 import {
   authoritativeRequestHash,
   buildCalibrationRequest,
@@ -263,6 +264,17 @@ export async function deriveCalibrationDesignFromAuthority(evidenceRoot: string)
     seed_belief_item_count: [low.seed_belief_item_count, high.seed_belief_item_count],
     calibration_input_hash: hashJson(CALIBRATION_INPUT),
     calibration_law_hash: hashJson(CALIBRATION_LAW),
+    // POST-PARITY: the authority also re-derives the model-visible contract
+    // binding, so a contract edit that leaves the manifest stale is a mismatch
+    // rather than a silent drift.
+    contract_parity: contractParityBinding({
+      systemHash: request.hashes.system_hash,
+      userHash: request.hashes.user_hash,
+      schemaHash: request.hashes.schema_hash,
+      modelConfigHash: request.hashes.model_config_hash,
+      requestHash: request.hashes.model_facing_request_hash,
+      requestBodyBytes: Buffer.byteLength(serializeAuthoritativeRequest(request.body), "utf8")
+    }),
     protocol_id: FROZEN_PROTOCOL_ID,
     experiment_id: EXPERIMENT_ID,
     sample_size: SAMPLE_SIZE,
@@ -325,6 +337,7 @@ function compareDesign(
         }
   );
   record("seed_belief_item_count", design["seed_belief_item_count"], derived["seed_belief_item_count"]);
+  record("contract_parity_hash", hashJson(design["contract_parity"] ?? null), hashJson(derived["contract_parity"] ?? null));
   return { matches, expected, actual };
 }
 

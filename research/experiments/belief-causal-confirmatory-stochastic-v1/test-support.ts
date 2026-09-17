@@ -80,7 +80,9 @@ export const ALL_MATCH_DESIGN: DesignRederivation = {
       "low_history_hash",
       "high_history_hash",
       "proposition_identity",
-      "seed_belief_item_count"
+      "seed_belief_item_count",
+      // POST-PARITY: the contract binding is re-derived like every other item.
+      "contract_parity_hash"
     ].map((item) => [item, true])
   ),
   expected: {},

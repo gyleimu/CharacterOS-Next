@@ -34,13 +34,20 @@ import {
   trialSchedule
 } from "./contract.ts";
 import { CALIBRATION_LAW } from "./calibration-law.ts";
+import { contractParityBinding, PREREG_AUTHORITY_VERSION } from "./prereg-authority.ts";
 import { hashJson } from "./histories.ts";
 import { auditScanSurface } from "./scan-surface.ts";
 import { CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA } from "../../../packages/runtime/dist/index.js";
 
+/** The POST-PARITY frozen request artifact (the consumed one is history). */
+export const CALIBRATION_REQUEST_EVIDENCE = "calibration-request-post-parity.json" as const;
+
 /** The frozen code paths this experiment's manifest binds. */
 export const PREREG_CODE_PATHS: readonly string[] = Object.freeze([
   "research/experiments/belief-causal-confirmatory-stochastic-v1/PREREG.md",
+  "research/experiments/belief-causal-confirmatory-stochastic-v1/prereg-authority.ts",
+  "research/audits/model-visible-contract-parity-v0/contract-authority.ts",
+  "research/audits/model-visible-contract-parity-v0/inventory.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/contract.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/histories.ts",
   "research/experiments/belief-causal-confirmatory-stochastic-v1/precheck.ts",
@@ -67,7 +74,9 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
   const high = readJson(join(evidenceRoot, "history-high.json"));
   const scan = auditScanSurface(hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA));
   const schedule = { primary: trialSchedule("PRIMARY"), replication: trialSchedule("REPLICATION") };
-  const calibrationRequest = readJson(join(evidenceRoot, "calibration-request.json")) as {
+  // The CONSUMED calibration's request artifact is immutable history; the live
+  // authority freezes its own artifact.
+  const calibrationRequest = readJson(join(evidenceRoot, CALIBRATION_REQUEST_EVIDENCE)) as {
     readonly hashes: {
       readonly system_hash: string;
       readonly user_hash: string;
@@ -75,7 +84,11 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
       readonly model_config_hash: string;
       readonly model_facing_request_hash: string;
     };
-    readonly body_bytes?: number;
+    readonly authoritative_serialization?: {
+      readonly scheme: string;
+      readonly body_bytes: number;
+      readonly model_facing_request_hash: string;
+    };
   };
   return {
     protocol_id: FROZEN_PROTOCOL_ID,
@@ -128,7 +141,7 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
     authoritative_request_serialization: {
       scheme: "canonicalJson",
       definition: "sorted keys at every level, no whitespace, UTF-8",
-      body_bytes: calibrationRequest.body_bytes ?? null,
+      body_bytes: calibrationRequest.authoritative_serialization?.body_bytes ?? null,
       model_facing_request_hash: calibrationRequest.hashes.model_facing_request_hash,
       transport_body_is_serialized_string: true,
       second_serialization_permitted: false
@@ -141,7 +154,21 @@ export function buildPreregDesign(evidenceRoot: string): Record<string, unknown>
     },
     trial_schedule_hash: hashJson(schedule),
     sample_size: SAMPLE_SIZE,
-    cell_definition: CELL_DEFINITION
+    cell_definition: CELL_DEFINITION,
+    /**
+     * POST-PARITY AUTHORITY: the model-visible contract this preregistration
+     * freezes, plus the parity inventory that proves no model-authored
+     * deterministic production constraint is invisible to the executor.
+     */
+    prereg_authority_version: PREREG_AUTHORITY_VERSION,
+    contract_parity: contractParityBinding({
+      systemHash: calibrationRequest.hashes.system_hash,
+      userHash: calibrationRequest.hashes.user_hash,
+      schemaHash: calibrationRequest.hashes.schema_hash,
+      modelConfigHash: calibrationRequest.hashes.model_config_hash,
+      requestHash: calibrationRequest.hashes.model_facing_request_hash,
+      requestBodyBytes: calibrationRequest.authoritative_serialization?.body_bytes ?? 0
+    })
   };
 }
 

@@ -319,10 +319,19 @@ describe("BELIEF_CAUSAL_CONFIRMATORY_STOCHASTIC_V1 — frozen design bindings", 
 
   it("the frozen code paths bound by the manifest are exactly this experiment's sources", () => {
     expect(PREREG_CODE_PATHS.length).toBeGreaterThan(0);
+    // POST-PARITY: the contract-parity authority lives in the audit tree it
+    // remediated from, so exactly those two modules are bound alongside the
+    // experiment's own sources — nothing from the frozen measurement protocol.
+    const paritySources = [
+      "research/audits/model-visible-contract-parity-v0/contract-authority.ts",
+      "research/audits/model-visible-contract-parity-v0/inventory.ts"
+    ];
     for (const path of PREREG_CODE_PATHS) {
-      expect(path.startsWith(`${EXPERIMENT_DIR}/`), path).toBe(true);
+      const inExperiment = path.startsWith(`${EXPERIMENT_DIR}/`);
+      expect(inExperiment || paritySources.includes(path), path).toBe(true);
       expect(path.includes("measurement-protocols"), path).toBe(false);
     }
+    for (const path of paritySources) expect(PREREG_CODE_PATHS).toContain(path);
   });
 
   it("the scenario and calibration input are byte-stable and label-free", () => {

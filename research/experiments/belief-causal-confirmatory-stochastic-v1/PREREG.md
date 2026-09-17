@@ -339,3 +339,66 @@ leaves) and the declared coverage (12 scanned + 5 opaque refs + 1 host-verified 
 audits the intervention/render bodies for writer tokens, enumerates writer call sites and MEASURES
 durable immutability before/after; `P22` scans every source in this experiment for reads or imports
 of V0 outcome artifacts. Negative-control tests prove each repaired check can fail.
+
+## 20. Post-parity authority history (append-only)
+
+```text
+917d5d107cc29033b036682875b69be9d02d34f2
+= VALID HISTORICAL PREREG
+= CALIBRATION AUTHORIZATION CONSUMED
+= TERMINAL RESULT: EXECUTOR_CALIBRATION_RESULT_APPROVED_STOP_EARLY
+= NEVER RE-RUN, NEVER COMPLETED, NEVER RE-ISSUED
+
+452dc6852501c6958c0add78387a4aa6432942c1
+= CONTRACT PARITY REMEDIATION BASELINE
+= MODEL_VISIBLE_CONTRACT_PARITY_REMEDIATION_COMPLETE
+
+NEW_PREREGISTRATION_COMMIT
+= POST-PARITY CALIBRATION AUTHORITY CANDIDATE
+= RECORDED IN evidence/freeze-manifest.json (preregistration_commit_sha) AND IN THE FINAL REPORT
+```
+
+### How this authority came to exist
+
+The consumed calibration stopped early because 3 of 17 draws were rejected as
+`MODEL_SCHEMA_INVALID`, and the frozen evidence schema stored only the rejection
+code. An exploratory, non-confirmatory diagnostic (≤30 calls, its own namespace,
+never part of any denominator) then captured the mechanism: the production
+validator had always enforced `clarification_basis.missing_information` at 256
+Unicode code points while the model-facing schema declared a bare
+`{"type":"string"}` and the system prompt named no bound — the executor was held
+to a law it could not see. Human design adjudication selected option A + B: keep
+the production semantics and the bound, keep the executor, and expose the existing
+contract in both visible layers. That remediation is commit `452dc685`; it changed
+only what the executor can see.
+
+### The post-parity model-visible contract (frozen by this authority)
+
+| layer | hash |
+| --- | --- |
+| system prompt | `sha256:044bfe7b7641cb9cadcf9f02005560fd6b9332576bcfb3c8a0cd40ae4a91f121` |
+| cognitive schema | `sha256:54ac7977f3b9e7f2e422fd6dc5f218fe34e82ffc368ebec68a58b4e634feec35` |
+| user (subject) payload | `sha256:55d27d60fe3087537e66c1075dbe43677160ddbc0d8569207577b46962a219f3` (unchanged) |
+| model configuration | `sha256:0ed9df37fb4b2981ae5ff69bbe37c0858ea82cec200bb87249f66478927810d5` (unchanged) |
+| **model-facing request** | **`sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35`** (17,381 canonical bytes) |
+
+The superseded request hash `sha256:db8d8993…` belongs to the consumed calibration
+and is never the authority for a future run.
+
+### Contract-parity binding (bound into the manifest design)
+
+The authority binds a `contract_parity` record: the remediation commit, the five
+hashes above, the canonical-JSON serialization, the code-point metric, and the
+parity inventory hash with `PRODUCTION_ONLY` model-authored deterministic
+constraints **= 0**. The production validator remains the acceptance authority:
+accept/reject semantics and the 256-code-point bound are unchanged, and no text is
+ever truncated, repaired or coerced.
+
+### What a future RUN would and would not prove
+
+A RUN would attest transport, provider, schema and host readiness for the frozen
+**EMPTY-genesis** calibration request only. It could not establish that
+projection-bearing A/B/C/D scenes are equally schema-stable, and it would say
+nothing about whether the executor now complies with the advertised bounds:
+contract visibility is a property of the instrument, not evidence about the
+executor. Only a real calibration answers that, and none is authorized here.

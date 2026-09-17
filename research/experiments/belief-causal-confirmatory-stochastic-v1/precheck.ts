@@ -68,6 +68,14 @@ import {
   WRITER_TOKENS,
   type SourceFile
 } from "./source-audit.ts";
+import { buildParityInventory, inventorySummary } from "../../audits/model-visible-contract-parity-v0/inventory.ts";
+import {
+  authorityBindingDivergences,
+  contractParityBinding,
+  CONTRACT_PARITY_REMEDIATION,
+  PREREG_AUTHORITY_VERSION,
+  SUPERSEDED_AUTHORITY
+} from "./prereg-authority.ts";
 import { deriveConfirmatoryVerdict, type VerdictInput } from "./verdict.ts";
 
 const runtimeDist = new URL("../../../packages/runtime/dist/", import.meta.url).href;
@@ -485,6 +493,55 @@ export async function runPrecheck(evidenceDir: string, repoDir: string): Promise
     limitation: v0Audit.limitation,
     confirmatory_count_contribution: V0_FIREWALL.confirmatory_count_contribution,
     note: "no source in this experiment contains a literal V0 outcome path outside the declared firewall list in contract.ts; the scan classifies every string literal by its enclosing statement (static import, multiline import, dynamic import, require, readFile family, bare literal)"
+  });
+  // ---- §9/§10 POST-PARITY: the model-visible contract binding -------------
+  const parityItems = buildParityInventory();
+  const paritySummary = inventorySummary(parityItems);
+  const calibrationRequestEvidence = JSON.parse(
+    readFileSync(join(evidenceDir, "calibration-request-post-parity.json"), "utf8")
+  ) as {
+    readonly hashes: {
+      readonly system_hash: string;
+      readonly user_hash: string;
+      readonly schema_hash: string;
+      readonly model_config_hash: string;
+      readonly model_facing_request_hash: string;
+    };
+    readonly authoritative_serialization?: { readonly body_bytes: number };
+  };
+  const binding = contractParityBinding({
+    systemHash: calibrationRequestEvidence.hashes.system_hash,
+    userHash: calibrationRequestEvidence.hashes.user_hash,
+    schemaHash: calibrationRequestEvidence.hashes.schema_hash,
+    modelConfigHash: calibrationRequestEvidence.hashes.model_config_hash,
+    requestHash: calibrationRequestEvidence.hashes.model_facing_request_hash,
+    requestBodyBytes: calibrationRequestEvidence.authoritative_serialization?.body_bytes ?? 0
+  });
+  const bindingDivergences = authorityBindingDivergences(binding);
+  record("P25_CONTRACT_PARITY_BINDING", bindingDivergences.length === 0, {
+    authority_version: PREREG_AUTHORITY_VERSION,
+    remediation_commit: CONTRACT_PARITY_REMEDIATION.commit,
+    production_accept_reject_semantics_changed: CONTRACT_PARITY_REMEDIATION.production_accept_reject_semantics_changed,
+    production_only_model_authored_constraints: paritySummary.unexplained_production_only.length,
+    parity_status_counts: paritySummary.by_status,
+    parity_inventory_hash: binding.parity_inventory_hash,
+    contract: {
+      system_hash: binding.system_hash,
+      user_hash: binding.user_hash,
+      schema_hash: binding.schema_hash,
+      model_config_hash: binding.model_config_hash,
+      request_hash: binding.request_hash,
+      request_body_bytes: binding.request_body_bytes
+    },
+    superseded_authority: {
+      commit: SUPERSEDED_AUTHORITY.commit,
+      terminal_result: SUPERSEDED_AUTHORITY.terminal_result,
+      authorization: SUPERSEDED_AUTHORITY.calibration_authorization,
+      reissued: false
+    },
+    divergences: bindingDivergences,
+    note:
+      "the model-visible schema and system prompt now advertise every deterministic production constraint on model-authored fields (inventory above); production acceptance authority and the 256-code-point bound are unchanged, and no text is ever truncated or repaired"
   });
   record("P23_MODEL_CALLS_ZERO", SLICE_CALL_ATTESTATION.total_model_calls === 0, SLICE_CALL_ATTESTATION);
 

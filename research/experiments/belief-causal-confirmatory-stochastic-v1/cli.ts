@@ -54,15 +54,21 @@ async function main(): Promise<void> {
   if (command === "request") {
     // Builds the ACTUAL model-facing calibration request offline (0 model calls)
     // and freezes it as evidence for the manifest design binding.
+    //
+    // POST-PARITY: the CONSUMED calibration's request artifact
+    // (evidence/calibration-request.json) is immutable history and is NEVER
+    // rewritten, so the live request is frozen to its own versioned artifact and
+    // the output path is explicit rather than assumed.
     const request = await buildCalibrationRequest({
       schemaHash: hashJson(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA),
       modelConfigHash: hashJson(modelConfigManifest())
     });
+    const outPath = flagValue(process.argv.slice(2), "--out") ?? join(evidenceRoot, "calibration-request-post-parity.json");
     mkdirSync(evidenceRoot, { recursive: true });
     const serialized = serializeAuthoritativeRequest(request.body);
     const bodyBytes = Buffer.byteLength(serialized, "utf8");
     writeFileSync(
-      join(evidenceRoot, "calibration-request.json"),
+      outPath,
       `${JSON.stringify(
         {
           ...request,

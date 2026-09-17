@@ -132,7 +132,7 @@ describe("AUTHORITY — T10 design tamper", () => {
     }
   });
 
-  it("TEST_T10B: the real re-derivation covers exactly the 12 required items", () => {
+  it("TEST_T10B: the real re-derivation covers exactly the 12 required items plus the post-parity contract binding", () => {
     expect(Object.keys(ALL_MATCH_DESIGN.matches).sort()).toEqual(
       [
         "calibration_request_hash",
@@ -146,7 +146,8 @@ describe("AUTHORITY — T10 design tamper", () => {
         "scenario_hash",
         "seed_belief_item_count",
         "statistical_law_hash",
-        "trial_schedule_hash"
+        "trial_schedule_hash",
+        "contract_parity_hash"
       ].sort()
     );
   });

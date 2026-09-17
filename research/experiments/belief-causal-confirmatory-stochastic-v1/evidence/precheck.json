@@ -581,7 +581,7 @@
         "frozen_protocol_declared_paths_covered": true,
         "subjective_selection_covered": true,
         "derivation_text_covered": true,
-        "schema_hash": "sha256:e9da721b67903c40e40f32dc1989456924923167e921e47cdd2231a78ee771b9"
+        "schema_hash": "sha256:54ac7977f3b9e7f2e422fd6dc5f218fe34e82ffc368ebec68a58b4e634feec35"
       }
     },
     "P19_MISSING_BLOB_VERIFIER_REGRESSION": {
@@ -590,7 +590,7 @@
         "threw": false,
         "result": {
           "ok": false,
-          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at f8e29068b591b5ab6d36ff5770a81bd902923c41: Command failed: git cat-file blob f8e29068b591b5ab6d36ff5770a81bd902923c41:research/this/path/does/not/exist.ts"
+          "detail": "frozen blob research/this/path/does/not/exist.ts is not present at 452dc6852501c6958c0add78387a4aa6432942c1: Command failed: git cat-file blob 452dc6852501c6958c0add78387a4aa6432942c1:research/this/path/does/not/exist.ts"
         }
       }
     },
@@ -632,6 +632,7 @@
           "histories.ts",
           "manifest.ts",
           "precheck.ts",
+          "prereg-authority.ts",
           "scan-surface.ts",
           "source-audit.ts",
           "test-support.ts",
@@ -652,6 +653,36 @@
         "limitation": "static literal analysis only: a path assembled from non-literal pieces at run time cannot be detected; this audit is not a sandbox",
         "confirmatory_count_contribution": 0,
         "note": "no source in this experiment contains a literal V0 outcome path outside the declared firewall list in contract.ts; the scan classifies every string literal by its enclosing statement (static import, multiline import, dynamic import, require, readFile family, bare literal)"
+      }
+    },
+    "P25_CONTRACT_PARITY_BINDING": {
+      "passed": true,
+      "detail": {
+        "authority_version": "POST_PARITY_V1",
+        "remediation_commit": "452dc6852501c6958c0add78387a4aa6432942c1",
+        "production_accept_reject_semantics_changed": false,
+        "production_only_model_authored_constraints": 0,
+        "parity_status_counts": {
+          "FULL_PARITY": 7,
+          "NOT_MODEL_RELEVANT": 1
+        },
+        "parity_inventory_hash": "sha256:c39cd030100ff2393074a68649673736882f0f5e1011dd6afb34081dd425bd16",
+        "contract": {
+          "system_hash": "sha256:044bfe7b7641cb9cadcf9f02005560fd6b9332576bcfb3c8a0cd40ae4a91f121",
+          "user_hash": "sha256:55d27d60fe3087537e66c1075dbe43677160ddbc0d8569207577b46962a219f3",
+          "schema_hash": "sha256:54ac7977f3b9e7f2e422fd6dc5f218fe34e82ffc368ebec68a58b4e634feec35",
+          "model_config_hash": "sha256:0ed9df37fb4b2981ae5ff69bbe37c0858ea82cec200bb87249f66478927810d5",
+          "request_hash": "sha256:79f1d679c6dcd9622f4f154055462ca540eed56680847499a3b4420971ac9c35",
+          "request_body_bytes": 17381
+        },
+        "superseded_authority": {
+          "commit": "917d5d107cc29033b036682875b69be9d02d34f2",
+          "terminal_result": "EXECUTOR_CALIBRATION_RESULT_APPROVED_STOP_EARLY",
+          "authorization": "CONSUMED",
+          "reissued": false
+        },
+        "divergences": [],
+        "note": "the model-visible schema and system prompt now advertise every deterministic production constraint on model-authored fields (inventory above); production acceptance authority and the 256-code-point bound are unchanged, and no text is ever truncated or repaired"
       }
     },
     "P23_MODEL_CALLS_ZERO": {
