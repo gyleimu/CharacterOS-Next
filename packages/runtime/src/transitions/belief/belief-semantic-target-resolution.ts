@@ -107,6 +107,27 @@ export interface BeliefSemanticEvidenceProjectionV0 {
   readonly evidence: readonly BeliefSemanticEvidenceEntryV0[];
 }
 
+/**
+ * BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0 — optional host-supplied resolver
+ * that renders the FACTUAL content text of one evidence episode.
+ *
+ * WHY: a conversation-feedback episode records a host scene LABEL
+ * ("conversation-feedback-v0") and keeps its facts in the referenced
+ * experience/ingress records, so a provider reading only `context.scene` sees a
+ * constant label and can never classify bearing — later lived experience could
+ * never reach Belief in an ordinary conversation. The host supplies this from the
+ * SAME verified resolver the cognition path already uses (exact delivered
+ * behavior text + exact outcome reply text), so the semantic layer classifies
+ * real lived content rather than a label. It reads; it never writes.
+ *
+ * Omitted/null ⇒ the recorded scene is used unchanged (exact previous behavior),
+ * and a null return for one episode likewise falls back to the recorded scene.
+ */
+export type BeliefSemanticEvidenceContentResolverV0 = (input: {
+  readonly episode_ref: string;
+  readonly repository_revision: string;
+}) => Promise<string | null>;
+
 export interface BeliefSemanticTargetResolutionProviderInputV0 {
   readonly schema_version: typeof BELIEF_SEMANTIC_PROVIDER_INPUT_SCHEMA_VERSION;
   readonly subject_id: IdentifierV0;
@@ -238,6 +259,12 @@ export interface BeliefSemanticTargetResolutionRunnerInputV0 {
 
 export interface BeliefSemanticTargetResolutionRunnerDepsV0 {
   readonly memoryRepository: MemoryPreparationAuthority;
+  /**
+   * Optional factual-content resolver for evidence episodes (see
+   * BeliefSemanticEvidenceContentResolverV0). The host supplies it; the runner
+   * never invents content and never falls back to anything but the recorded scene.
+   */
+  readonly evidence_content_resolver?: BeliefSemanticEvidenceContentResolverV0 | null | undefined;
 }
 
 /**
@@ -365,15 +392,30 @@ export async function runBeliefSemanticTargetResolutionV0(
       return reject("INVALID_EVIDENCE", `evidence ${ref} payload hash does not match repository-owned content`);
     }
   }
+  // BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0: the provider-visible content of
+  // an episode is its FACTUAL content when the host can resolve it (feedback
+  // episodes carry a scene label and keep their facts in referenced records), and
+  // the recorded scene otherwise. Deterministic: the projection feeds the
+  // semantic-context fingerprint, so the same evidence always renders identically.
+  const evidenceEntries: BeliefSemanticEvidenceEntryV0[] = [];
+  for (const record of sortedRecords) {
+    const episodeRef = record.episode_ref as BeliefSemanticEpisodeRef;
+    const resolved =
+      deps.evidence_content_resolver === undefined || deps.evidence_content_resolver === null
+        ? null
+        : await deps.evidence_content_resolver({
+            episode_ref: record.episode_ref,
+            repository_revision: repositoryRevision
+          });
+    evidenceEntries.push({
+      episode_ref: episodeRef,
+      occurrence_logical_time: record.occurrence_logical_time,
+      scene: resolved ?? record.context.scene
+    });
+  }
   const evidenceProjection = deepFreeze({
     schema_version: BELIEF_SEMANTIC_EVIDENCE_PROJECTION_SCHEMA_VERSION,
-    evidence: sortedRecords.map(
-      (record): BeliefSemanticEvidenceEntryV0 => ({
-        episode_ref: record.episode_ref as BeliefSemanticEpisodeRef,
-        occurrence_logical_time: record.occurrence_logical_time,
-        scene: record.context.scene
-      })
-    )
+    evidence: evidenceEntries
   });
 
   // ---- 3. fingerprints over the exact provider-visible structures -------------

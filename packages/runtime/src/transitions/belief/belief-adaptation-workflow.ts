@@ -104,6 +104,7 @@ import {
   BELIEF_SEMANTIC_MAX_EVIDENCE_EPISODES,
   BELIEF_SEMANTIC_PROVIDER_OUTPUT_SCHEMA_VERSION,
   runBeliefSemanticTargetResolutionV0,
+  type BeliefSemanticEvidenceContentResolverV0,
   type BeliefSemanticRelationV0,
   type BeliefSemanticTargetResolutionProviderV0,
   type BeliefSemanticTargetResolutionV0
@@ -401,6 +402,13 @@ export interface BeliefAdaptationWorkflowDepsV0 {
   readonly producerAuthorizationIssuer: ProducerAuthorizationIssuer;
   readonly semanticProvider: BeliefSemanticTargetResolutionProviderV0;
   readonly workflowStore: BeliefAdaptationWorkflowStoreV0;
+  /**
+   * Optional factual-content resolver for evidence episodes
+   * (BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0). Forwarded verbatim to the
+   * semantic resolution runner so the provider classifies lived CONTENT rather than
+   * a host scene label; omitted ⇒ recorded scenes are used unchanged.
+   */
+  readonly evidence_content_resolver?: BeliefSemanticEvidenceContentResolverV0 | null | undefined;
   /**
    * Public committed-transition read authority consulted before every executor
    * invocation (commit-before-terminal reconciliation). Hosts supply any
@@ -1027,7 +1035,7 @@ async function resolveBeliefProposalAuthority(input: {
     candidate_catalog_fingerprint: input.resolution.candidate_catalog_fingerprint
   };
   const routed = await runBeliefSemanticTargetResolutionV0(
-    { memoryRepository: input.deps.memoryRepository },
+    { memoryRepository: input.deps.memoryRepository, evidence_content_resolver: input.deps.evidence_content_resolver ?? null },
     {
       subjectState: input.current,
       proposition_ids: input.validated.proposition_ids,
@@ -1231,7 +1239,7 @@ async function resumeFrom(
         }
       };
       const run = await runBeliefSemanticTargetResolutionV0(
-        { memoryRepository: deps.memoryRepository },
+        { memoryRepository: deps.memoryRepository, evidence_content_resolver: deps.evidence_content_resolver ?? null },
         {
           subjectState: current,
           proposition_ids: validated.proposition_ids,
@@ -1321,7 +1329,7 @@ async function resumeFrom(
     propose: async () => replayCandidate
   };
   const replayed = await runBeliefSemanticTargetResolutionV0(
-    { memoryRepository: deps.memoryRepository },
+    { memoryRepository: deps.memoryRepository, evidence_content_resolver: deps.evidence_content_resolver ?? null },
     {
       subjectState: current,
       proposition_ids: validated.proposition_ids,
@@ -1623,7 +1631,7 @@ async function verifyDurableChain(
     propose: async () => replayCandidate
   };
   const replayed = await runBeliefSemanticTargetResolutionV0(
-    { memoryRepository: deps.memoryRepository },
+    { memoryRepository: deps.memoryRepository, evidence_content_resolver: deps.evidence_content_resolver ?? null },
     {
       subjectState: current,
       proposition_ids: validated.proposition_ids,

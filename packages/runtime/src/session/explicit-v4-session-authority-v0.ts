@@ -1456,9 +1456,36 @@ export class ExplicitV4SessionAuthorityV0 {
   async runLivedEvidenceBeliefAdaptation(
     episodeRefs: readonly string[]
   ): Promise<BeliefAdaptationTurnReportV0> {
+    // BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0: the semantic provider must
+    // classify the FACTUAL CONTENT of this turn's evidence. A conversation-feedback
+    // episode records a host scene label and keeps its facts in referenced records,
+    // so the composition-owned resolver the cognition path already trusts is used
+    // here to render that same content (exact delivered behavior text + exact
+    // outcome reply text). Read-only, deterministic; a resolver failure fails the
+    // belief change closed and never the turn.
+    const resolver = this.container.factualEvidenceResolver;
+    const evidenceContentResolver =
+      resolver === null
+        ? null
+        : async (query: { readonly episode_ref: string; readonly repository_revision: string }) => {
+            const bundle = await resolver.resolve({
+              repository_revision: query.repository_revision,
+              episode_refs: [query.episode_ref]
+            } as never);
+            const entry = bundle.entries.find((candidate) => candidate.episode_ref === query.episode_ref);
+            if (entry === undefined) return null;
+            if (entry.kind === "BEHAVIOR_OUTCOME") {
+              // Facts only: the delivered behavior and the exact reply, in that
+              // order — the same two facts the cognition prompt renders for it.
+              return `${entry.delivered_behavior_text}\n${entry.exact_outcome_text}`;
+            }
+            return entry.scene;
+          };
     return this.beliefWiring.runForEpisodeRefs({
       subject_id: this.subjectIdValue,
-      episode_refs: episodeRefs
+      episode_refs: episodeRefs,
+      evidenceContentResolver,
+      resumeEvidenceContentResolver: evidenceContentResolver
     });
   }
 

@@ -40,7 +40,10 @@ import {
   type BeliefAdaptationWorkflowDepsV0,
   type BeliefAdaptationWorkflowRecordV0
 } from "../transitions/belief/belief-adaptation-workflow.js";
-import type { BeliefSemanticTargetResolutionProviderV0 } from "../transitions/belief/belief-semantic-target-resolution.js";
+import type {
+  BeliefSemanticEvidenceContentResolverV0,
+  BeliefSemanticTargetResolutionProviderV0
+} from "../transitions/belief/belief-semantic-target-resolution.js";
 import { InMemoryBeliefAdaptationWorkflowStoreV0 } from "../transitions/belief/belief-adaptation-workflow-store.js";
 
 /** Exact observable disposition of ONE workflow invocation (resumed or current). */
@@ -130,6 +133,13 @@ export class BeliefAdaptationWiringV0 {
   async runForEpisodeRefs(input: {
     readonly subject_id: string;
     readonly episode_refs: readonly string[];
+    /**
+     * BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0 — host-supplied factual-content
+     * resolver for evidence episodes (see the workflow dep of the same name).
+     */
+    readonly evidenceContentResolver?: BeliefSemanticEvidenceContentResolverV0 | null | undefined;
+    /** §32 resume keeps the SAME resolver as the forward path. */
+    readonly resumeEvidenceContentResolver?: BeliefSemanticEvidenceContentResolverV0 | null | undefined;
   }): Promise<BeliefAdaptationTurnReportV0> {
     if (this.deps.semanticProvider === null) {
       return { status: "DISABLED", resumed: [], current: null, failure: null };
@@ -140,7 +150,7 @@ export class BeliefAdaptationWiringV0 {
       // terminal BEFORE new work, so a checkpointed canonical Belief
       // transition is never silently abandoned by turn progression.
       for (const workflowId of this.deps.workflowStore.listNonTerminalWorkflowIds()) {
-        resumed.push(await this.resumeOne(input.subject_id, workflowId));
+        resumed.push(await this.resumeOne(input.subject_id, workflowId, input.resumeEvidenceContentResolver ?? null));
       }
 
       const snapshot = await this.deps.subjectCore.readCurrentSnapshot(input.subject_id as never);
@@ -165,7 +175,8 @@ export class BeliefAdaptationWiringV0 {
         subject_id: input.subject_id,
         episodeRefs: input.episode_refs,
         episodes,
-        candidateIds
+        candidateIds,
+        evidenceContentResolver: input.evidenceContentResolver ?? null
       });
       return { status: "COMPLETED", resumed, current, failure: null };
     } catch (error) {
@@ -179,7 +190,11 @@ export class BeliefAdaptationWiringV0 {
   }
 
   /** §32 resume: reconstruct the EXACT original request and re-invoke. */
-  private async resumeOne(subjectId: string, workflowId: string): Promise<BeliefAdaptationWorkflowOutcomeV0> {
+  private async resumeOne(
+    subjectId: string,
+    workflowId: string,
+    evidenceContentResolver: BeliefSemanticEvidenceContentResolverV0 | null
+  ): Promise<BeliefAdaptationWorkflowOutcomeV0> {
     const record: BeliefAdaptationWorkflowRecordV0 | null = await this.deps.workflowStore.load(workflowId as never);
     if (record === null || record.subject_id !== subjectId) {
       return {
@@ -214,6 +229,7 @@ export class BeliefAdaptationWiringV0 {
       episodeRefs: refs,
       episodes,
       candidateIds: [...record.proposition_candidate_ids].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+      evidenceContentResolver,
       workflowId,
       // The reconstructed request must be byte-identical to the original:
       // the workflow identity binds the ORIGINAL revisions, never current ones.
@@ -238,6 +254,7 @@ export class BeliefAdaptationWiringV0 {
     readonly episodes: readonly EpisodicMemoryRecordV0[];
     readonly candidateIds: readonly string[];
     readonly workflowId?: string;
+    readonly evidenceContentResolver?: BeliefSemanticEvidenceContentResolverV0 | null | undefined;
     /** Required for resume reconstruction; defaults to the current canonical binding. */
     readonly expected_initial_state_revision?: number;
     readonly expected_repository_revision?: string;
@@ -270,7 +287,12 @@ export class BeliefAdaptationWiringV0 {
         producerAuthorizationIssuer: this.deps.producerAuthorizationIssuer,
         semanticProvider: counting,
         workflowStore: this.deps.workflowStore,
-        readCommittedBundle: this.deps.readCommittedBundle
+        readCommittedBundle: this.deps.readCommittedBundle,
+        // BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0: supplied PER CALL by the
+        // host (the composition-owned factual evidence resolver is built outside
+        // this wiring's construction), so the semantic provider classifies the
+        // factual content of feedback episodes rather than a constant scene label.
+        evidence_content_resolver: input.evidenceContentResolver ?? null
       },
       {
         schema_version: BELIEF_ADAPTATION_REQUEST_SCHEMA_VERSION,

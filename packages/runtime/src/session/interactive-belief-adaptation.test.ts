@@ -218,9 +218,14 @@ class ScriptedBeliefSemanticProvider implements BeliefSemanticTargetResolutionPr
  * outcome (feedback) episode of that same experience — and abstains otherwise.
  * The provider sees only episode_ref/occurrence/scene, and supplies a LABEL
  * ONLY: never a key, an identity, a relation or a number.
+ *
+ * BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0: a feedback episode's
+ * provider-visible content is now its RESOLVED FACTUAL content (exact delivered
+ * behavior text + exact outcome reply text) rather than the constant scene label
+ * it used to carry, so this double matches the lived subject matter, never a label.
  */
 const FORMED_LABEL = "Mira returns what she borrows";
-const FORMED_SCENE = "conversation-feedback-v0";
+const FORMED_SUBJECT_MATTER = /(returned the borrowed ladder|ladder)/i;
 
 class ScriptedNewPropositionProvider implements BeliefSemanticTargetResolutionProviderV0 {
   calls = 0;
@@ -234,9 +239,7 @@ class ScriptedNewPropositionProvider implements BeliefSemanticTargetResolutionPr
       semantic_context_fingerprint: input.semantic_context_fingerprint,
       candidate_catalog_fingerprint: input.candidate_catalog_fingerprint
     };
-    const bears = input.evidence.evidence.some(
-      (entry) => /returned the borrowed ladder/i.test(entry.scene) || entry.scene === FORMED_SCENE
-    );
+    const bears = input.evidence.evidence.some((entry) => FORMED_SUBJECT_MATTER.test(entry.scene));
     if (!bears) {
       return { ...bindings, kind: "NO_BEARING" };
     }
@@ -446,6 +449,13 @@ describe("BELIEF_ADAPTATION_SESSION_WIRING_V0 — offline acceptance", () => {
     const secondCredence = 0.55 + 0.05;
     expect(secondCredence).toBe(0.6000000000000001);
     expect(second.belief_adaptation?.current?.next_credence).toBe(secondCredence);
+    // BELIEF_LIVED_EXPERIENCE_CONTENT_VISIBILITY_V0: this turn's evidence is a
+    // FEEDBACK episode, and the provider must have seen its resolved FACTUAL
+    // CONTENT (the exact outcome reply text) — never the constant scene label that
+    // made content-blind classification the only possibility before this fix.
+    const secondEvidence = provider.inputs.at(1)?.evidence.evidence[0]?.scene ?? "";
+    expect(secondEvidence).toContain("I will ask Mira again next week about the ladder.");
+    expect(secondEvidence).not.toBe("conversation-feedback-v0");
 
     // The formed belief reaches later cognition through the EXISTING
     // deterministic projection (this turn's own cognition ran before the change:
