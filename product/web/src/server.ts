@@ -37,10 +37,14 @@ import type {
   ProductTurnResultV0,
   ProductTurnTranscriptRowV0,
   ProductVoicePortsV0,
-  ProviderProgressEventV0
+  ProviderProgressEventV0,
+  VisualPerceptionPortV0
 } from "@characteros-next/sandbox";
 import {
+  PRODUCT_VISION_NEUTRAL_ENTITY_V0,
   PRODUCT_VOICE_MAX_SPEAK_CHARS_V0,
+  deriveVisionCaptureEventIdV0,
+  unavailableVisualPerceptionPortV0,
   unavailableVoicePortsV0
 } from "@characteros-next/sandbox";
 
@@ -96,6 +100,12 @@ export interface ProductWebServerOptionsV0 {
    * (unavailable): voice input reports a bounded error and text keeps working.
    */
   readonly voice?: ProductVoicePortsV0;
+  /**
+   * VISION MODALITY: an injected visual perception port. Omitted ⇒ the shipped
+   * default (unavailable): camera capture reports a bounded error and nothing else
+   * changes. Raw frames are never persisted.
+   */
+  readonly vision?: VisualPerceptionPortV0;
   /** Static UI directory; defaults to the package's `public/`. */
   readonly static_root?: string;
   readonly host?: string;
@@ -300,6 +310,10 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
     options.sessions ?? fixedProductWebSessionsV0(options.runtime as ProductWebRuntimePortV0);
   // VOICE MODALITY: ports only. Never a startup blocker, never subject state.
   const voice: ProductVoicePortsV0 = options.voice ?? unavailableVoicePortsV0();
+  // VISION MODALITY: ports only. A perception is a candidate that enters the SAME
+  // structured-observation ingress the World panel uses; the provider is never an
+  // authority and raw frames are never persisted.
+  const vision: VisualPerceptionPortV0 = options.vision ?? unavailableVisualPerceptionPortV0();
   const runtime = (): ProductWebRuntimePortV0 => sessions.current();
   const staticRoot = options.static_root ?? fileURLToPath(new URL("../public", import.meta.url));
   const sseClients = new Set<ServerResponse>();
@@ -524,6 +538,118 @@ export function createProductWebServerV0(options: ProductWebServerOptionsV0): Se
       const transcriptRuntime = requireRuntimeV0(res);
       if (transcriptRuntime === null) return;
       sendJsonV0(res, 200, { ok: true, turns: sessions.transcript(transcriptLimit) });
+      return;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* VISION MODALITY (input only; never subject state)                   */
+    /* ------------------------------------------------------------------ */
+
+    if (pathname === "/api/vision/status") {
+      if (method !== "GET") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "Vision status is read-only.");
+        return;
+      }
+      sendJsonV0(res, 200, {
+        ok: true,
+        vision: { available: vision.available, source_types: vision.source_types },
+        capture_mode: "ON_DEMAND",
+        persistence: "RAW_IMAGE_NOT_PERSISTED"
+      });
+      return;
+    }
+
+    if (pathname === "/api/vision/capture") {
+      if (method !== "POST") {
+        sendErrorV0(res, 405, "METHOD_NOT_ALLOWED", "A capture requires POST.");
+        return;
+      }
+      const visionRuntime = requireRuntimeV0(res);
+      if (visionRuntime === null) return;
+      const body = await readBoundedBodyV0(req, WEB_MAX_VOICE_BODY_BYTES_V0);
+      if (body.kind === "TOO_LARGE") {
+        sendErrorV0(res, 413, "BODY_TOO_LARGE", `Request body exceeds ${WEB_MAX_VOICE_BODY_BYTES_V0} bytes.`);
+        return;
+      }
+      let payload: unknown;
+      try {
+        payload = JSON.parse(body.text);
+      } catch {
+        sendErrorV0(res, 400, "INVALID_JSON", "Request body must be a JSON object.");
+        return;
+      }
+      const imageBase64 =
+        typeof payload === "object" && payload !== null && typeof (payload as { image_base64?: unknown }).image_base64 === "string"
+          ? ((payload as { image_base64: string }).image_base64 as string)
+          : null;
+      const rawSource =
+        typeof payload === "object" && payload !== null && typeof (payload as { source_type?: unknown }).source_type === "string"
+          ? ((payload as { source_type: string }).source_type as string).toUpperCase()
+          : "CAMERA";
+      const contentType =
+        typeof payload === "object" && payload !== null && typeof (payload as { content_type?: unknown }).content_type === "string"
+          ? ((payload as { content_type: string }).content_type as string)
+          : "image/jpeg";
+      if (imageBase64 === null || imageBase64.length === 0) {
+        sendErrorV0(res, 400, "INVALID_INPUT", "A non-empty image_base64 field is required.");
+        return;
+      }
+      if (rawSource !== "CAMERA" && rawSource !== "SCREEN") {
+        sendErrorV0(res, 400, "INVALID_INPUT", "source_type must be CAMERA (SCREEN is not implemented).");
+        return;
+      }
+      if (!vision.source_types.includes(rawSource)) {
+        sendJsonV0(res, 200, {
+          ok: false,
+          code: "VISION_UNAVAILABLE",
+          message: `${rawSource} perception is not implemented in this product build.`,
+          detail: null,
+          perception: null,
+          observation: null
+        });
+        return;
+      }
+      let image: Uint8Array;
+      try {
+        image = new Uint8Array(Buffer.from(imageBase64, "base64"));
+      } catch {
+        sendErrorV0(res, 400, "INVALID_INPUT", "image_base64 could not be decoded.");
+        return;
+      }
+      // A perception candidate, not truth: a failure here mutates NOTHING.
+      const perceived = await vision.perceive({ image, content_type: contentType, source_type: rawSource });
+      if (perceived.kind === "FAILED") {
+        sendJsonV0(res, 200, {
+          ok: false,
+          code: perceived.code,
+          message: "This frame was not perceived; the subject was not shown anything.",
+          detail: perceived.detail,
+          perception: null,
+          observation: null
+        });
+        return;
+      }
+      const scene = perceived.perception.scene.slice(0, WEB_MAX_OBSERVATION_SCENE_V0);
+      const focus = perceived.perception.objects.concat(perceived.perception.visible_text).join(", ");
+      // The EXISTING product observation boundary builds and validates the request;
+      // the runtime fails closed on anything unlawful, so nothing is bypassed here.
+      const fields = {
+        source: rawSource === "CAMERA" ? "camera" : "screen",
+        // Content-derived: the SAME frame is the SAME event, so the existing ingress
+        // answers REPLAY instead of duplicating lived history.
+        event: deriveVisionCaptureEventIdV0(image),
+        // NO identity inference: the scene itself is the only entity this slice names.
+        entities: PRODUCT_VISION_NEUTRAL_ENTITY_V0,
+        scene,
+        task: "Observe the current situation.",
+        ...(focus.trim().length === 0 ? {} : { focus: focus.slice(0, WEB_MAX_OBSERVATION_SCENE_V0) })
+      };
+      try {
+        const observation = await visionRuntime.submitExternalObservation(fields);
+        sendJsonV0(res, 200, { ok: true, perception: perceived.perception, observation });
+      } catch (error) {
+        sendProductErrorV0(res, error, "The perception could not be recorded as an observation.");
+      }
       return;
     }
 

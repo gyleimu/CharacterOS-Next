@@ -247,6 +247,23 @@ export {
   createHttpSpeechPortsV0,
   unavailableVoicePortsV0
 } from "./product-voice.js";
+export {
+  PRODUCT_VISION_IMPLEMENTED_SOURCES_V0,
+  PRODUCT_VISION_MAX_IMAGE_BYTES_V0,
+  PRODUCT_VISION_NEUTRAL_ENTITY_V0,
+  PRODUCT_VISION_SCHEMA_VERSION,
+  createHttpVisionPortV0,
+  deriveVisionCaptureEventIdV0,
+  unavailableVisualPerceptionPortV0,
+  validateVisualPerceptionV0
+} from "./product-vision.js";
+export type {
+  HttpVisionAdapterOptionsV0,
+  ProductVisionResultV0,
+  ProductVisionSourceTypeV0,
+  ProductVisualPerceptionV0,
+  VisualPerceptionPortV0
+} from "./product-vision.js";
 export type {
   HttpSpeechAdapterOptionsV0,
   ProductAudioInputV0,

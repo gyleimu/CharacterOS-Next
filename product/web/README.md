@@ -237,6 +237,31 @@ never a rejected model output.
 - Browser support: capture uses `MediaRecorder`; playback prefers the server adapter
   and falls back to the browser's speech synthesis.
 
+## Vision (input modality only)
+
+On-demand camera perception: ONE frame per explicit click of **Look**, sent to the
+product boundary, turned into a bounded structured perception and submitted through
+the SAME structured-observation ingress the World panel uses — so it becomes this
+subject's own lived experience (visible in Life/Memory) with no vision-specific
+state, memory or authority anywhere.
+
+- Enable it with `CHARACTEROS_VISION_URL` pointing at a local service that answers
+  `POST /perceive {image_base64, content_type, source_type}` with
+  `{scene, objects?, visible_text?, confidence?}`. Without it, camera perception is
+  UNAVAILABLE and the rest of the product is unaffected.
+- Capture is manual only: no continuous video loop, no interval mode, no background
+  camera. The camera is opened only by an explicit click, tracks are released when
+  switched off or when the page is left, and RAW FRAMES ARE NEVER PERSISTED.
+- The provider is NOT an authority: its output is a perception candidate. It never
+  writes Belief, Affect, Memory or Relationship, and a visible person is never
+  identified. No face recognition, no biometrics, no sensitive-attribute inference,
+  no visual affect.
+- Deduplication reuses the EXISTING ingress identity: the same frame derives the same
+  event ref, so re-capturing an unchanged scene answers REPLAY instead of duplicating
+  lived history.
+- Screen capture is NOT implemented in this slice (`source_type: SCREEN` is refused
+  with `VISION_UNAVAILABLE`).
+
 ## Honest limitations (V0)
 
 - one subject only, local-only (`127.0.0.1`), no accounts/authentication;

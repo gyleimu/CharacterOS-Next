@@ -945,6 +945,7 @@ async function refreshAll() {
   await refreshViews();
   await refreshTranscript();
   await refreshVoiceStatus();
+  await refreshVisionStatus();
 }
 
 function applyDevDetails(enabled) {
@@ -1182,3 +1183,156 @@ el.micToggle.addEventListener("click", () => {
 });
 el.micStop.addEventListener("click", () => cancelRecording());
 el.speechStop.addEventListener("click", () => stopSpeaking());
+
+/* -------------------------------------------------------------------------- */
+/* VISION MODALITY (PERSISTENT_SUBJECT_VISION_PRODUCT_INTEGRATION_V0)          */
+/*                                                                             */
+/* On-demand camera capture: the camera is opened only by an explicit click,     */
+/* exactly ONE frame is captured per click, the frame is sent to the product     */
+/* boundary (never stored here or there), and the perception it produces enters  */
+/* the subject's normal observation ingress. No continuous video, no identity    */
+/* inference, no Affect written from pixels.                                    */
+/* -------------------------------------------------------------------------- */
+
+const vision = {
+  available: false,
+  stream: null,
+  video: document.getElementById("vision-preview")
+};
+
+function setVisionState(text, tone) {
+  const el_ = document.getElementById("vision-state");
+  el_.className = `voice-state ${tone ?? ""}`.trim();
+  el_.textContent = text;
+}
+
+function releaseCamera() {
+  if (vision.stream !== null) {
+    for (const track of vision.stream.getTracks()) {
+      try {
+        track.stop();
+      } catch {
+        // Releasing an already-ended track is not an error.
+      }
+    }
+    vision.stream = null;
+  }
+  const video = vision.video;
+  if (video !== null && video !== undefined) {
+    video.srcObject = null;
+    video.hidden = true;
+  }
+  const toggle = document.getElementById("camera-toggle");
+  toggle.setAttribute("aria-pressed", "false");
+  toggle.textContent = "Camera off";
+  document.getElementById("vision-look").disabled = true;
+  setVisionState("idle", "");
+}
+
+async function enableCamera() {
+  if (!vision.available) {
+    setVisionState("unavailable", "state-error");
+    return;
+  }
+  if (typeof navigator.mediaDevices?.getUserMedia !== "function") {
+    setVisionState("camera unsupported", "state-error");
+    return;
+  }
+  try {
+    // The camera is opened ONLY here, on an explicit click.
+    vision.stream = await navigator.mediaDevices.getUserMedia({ video: true });
+  } catch (error) {
+    setVisionState("permission denied", "state-error");
+    document.getElementById("vision-result").textContent =
+      error instanceof Error ? error.message : "the camera could not be opened";
+    return;
+  }
+  const video = vision.video;
+  video.srcObject = vision.stream;
+  video.hidden = false;
+  await video.play().catch(() => undefined);
+  const toggle = document.getElementById("camera-toggle");
+  toggle.setAttribute("aria-pressed", "true");
+  toggle.textContent = "Camera ON";
+  document.getElementById("vision-look").disabled = false;
+  setVisionState("camera on", "");
+}
+
+/** Captures exactly ONE frame, sends it, shows the perception. Never stores it. */
+async function lookOnce() {
+  const video = vision.video;
+  if (vision.stream === null || video === null || video === undefined) {
+    setVisionState("camera off", "state-error");
+    return;
+  }
+  const resultEl = document.getElementById("vision-result");
+  setVisionState("capturing", "state-processing");
+  const canvas = document.createElement("canvas");
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const context = canvas.getContext("2d");
+  if (context === null || canvas.width === 0 || canvas.height === 0) {
+    setVisionState("capture failed", "state-error");
+    resultEl.textContent = "The frame could not be captured; nothing was sent.";
+    return;
+  }
+  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+  if (blob === null) {
+    setVisionState("capture failed", "state-error");
+    resultEl.textContent = "The frame could not be captured; nothing was sent.";
+    return;
+  }
+  const imageBase64 = await blobToBase64(blob);
+  setVisionState("perceiving", "state-processing");
+  let body;
+  try {
+    body = await api("/api/vision/capture", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ image_base64: imageBase64, content_type: "image/jpeg", source_type: "CAMERA" })
+    });
+  } catch (error) {
+    setVisionState("failed", "state-error");
+    resultEl.textContent = error instanceof Error ? error.message : "the frame could not be sent";
+    return;
+  }
+  if (body.ok !== true) {
+    setVisionState("not perceived", "state-error");
+    resultEl.textContent = body.message ?? "This frame was not perceived; the subject saw nothing.";
+    return;
+  }
+  const perception = body.perception;
+  const observation = body.observation;
+  setVisionState(
+    observation?.kind === "REPLAY" ? "already seen" : observation?.kind === "CONFLICT" ? "conflict" : "perceived",
+    ""
+  );
+  resultEl.textContent = `Saw: ${perception.scene}`;
+  await refreshAll();
+}
+
+async function refreshVisionStatus() {
+  try {
+    const body = await api("/api/vision/status");
+    vision.available = body.vision.available === true;
+    const toggle = document.getElementById("camera-toggle");
+    toggle.disabled = !vision.available;
+    if (!vision.available) {
+      setVisionState("unavailable", "");
+      document.getElementById("vision-result").textContent =
+        "Camera perception needs a configured local vision adapter.";
+    }
+  } catch {
+    vision.available = false;
+    document.getElementById("camera-toggle").disabled = true;
+    setVisionState("unavailable", "");
+  }
+}
+
+document.getElementById("camera-toggle").addEventListener("click", () => {
+  if (vision.stream === null) void enableCamera();
+  else releaseCamera();
+});
+document.getElementById("vision-look").addEventListener("click", () => void lookOnce());
+window.addEventListener("pagehide", () => releaseCamera());

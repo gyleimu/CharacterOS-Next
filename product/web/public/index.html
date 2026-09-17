@@ -134,6 +134,19 @@
           </form>
           <div class="result" id="observation-result" role="status"></div>
 
+          <h4>Vision (camera)</h4>
+          <p class="note">
+            On-demand capture only: one frame per click, never a continuous loop. Raw frames are
+            never stored; only the structured perception becomes a lived observation.
+          </p>
+          <div class="voice" id="vision-bar">
+            <button type="button" class="ghost" id="camera-toggle" aria-pressed="false">Camera off</button>
+            <button type="button" class="ghost" id="vision-look" disabled>Look</button>
+            <span class="voice-state" id="vision-state">idle</span>
+          </div>
+          <div class="result" id="vision-result" role="status"></div>
+          <video id="vision-preview" class="vision-preview" playsinline muted hidden></video>
+
           <h4>Environment</h4>
           <form class="form form-inline" id="environment-form">
             <label>Count <input id="env-count" type="number" min="1" max="100" value="1" /></label>

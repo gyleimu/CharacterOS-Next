@@ -20,7 +20,9 @@ import {
   ProductRuntimeStartupErrorV0,
   createHttpSpeechPortsV0,
   createProductRuntimeV0,
-  unavailableVoicePortsV0
+  unavailableVoicePortsV0,
+  createHttpVisionPortV0,
+  unavailableVisualPerceptionPortV0
 } from "@characteros-next/sandbox";
 import { ProductWebSessionsV0 } from "./sessions.js";
 import { WEB_DEFAULT_HOST_V0, WEB_DEFAULT_PORT_V0, startProductWebServerV0 } from "./server.js";
@@ -86,9 +88,19 @@ async function main(): Promise<number> {
             ...(voiceToken === undefined ? {} : { token: voiceToken })
           }).tts
   };
+  // VISION MODALITY: same pattern — optional, local, replaceable, camera-only.
+  const visionUrl = process.env["CHARACTEROS_VISION_URL"];
+  const vision =
+    visionUrl === undefined || visionUrl.length === 0
+      ? unavailableVisualPerceptionPortV0()
+      : createHttpVisionPortV0({
+          base_url: visionUrl,
+          ...(voiceToken === undefined ? {} : { token: voiceToken })
+        });
   const handle = await startProductWebServerV0({
     sessions,
     voice,
+    vision,
     host: process.env["CHARACTEROS_WEB_HOST"] ?? WEB_DEFAULT_HOST_V0,
     port: envIntV0("CHARACTEROS_WEB_PORT") ?? WEB_DEFAULT_PORT_V0
   });
@@ -107,6 +119,7 @@ async function main(): Promise<number> {
   console.log(
     `  Voice: input ${voice.stt.available ? "READY (local adapter)" : "unavailable"} · output ${voice.tts.available ? "READY (local adapter)" : "browser speech"}`
   );
+  console.log(`  Vision: camera perception ${vision.available ? "READY (local adapter, on-demand capture)" : "unavailable"}`);
   console.log("  Local-only product. Press Ctrl+C to stop.");
 
   let shuttingDown = false;

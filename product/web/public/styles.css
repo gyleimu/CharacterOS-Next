@@ -374,3 +374,8 @@ body.dev-details .dev-only { display: block; }
 .voice-state.state-error { border-color: #e5534b; color: #e5534b; }
 .voice-note { font-size: 0.75rem; opacity: 0.75; }
 #mic-toggle[aria-pressed="true"] { border-color: #e5534b; color: #e5534b; }
+
+/* VISION MODALITY — on-demand camera capture. The preview exists only while the
+   camera is on and the frame is never stored. */
+.vision-preview { max-width: 100%; border-radius: 6px; border: 1px solid var(--line, #2a2f3a); margin-top: 0.5rem; }
+#camera-toggle[aria-pressed="true"] { border-color: #4c8bf5; color: #4c8bf5; }
