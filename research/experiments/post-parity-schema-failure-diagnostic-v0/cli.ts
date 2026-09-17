@@ -24,7 +24,13 @@ import {
   TARGET_SCHEMA_INVALID_EXAMPLES
 } from "./contract.ts";
 import { hashJson } from "./hash.ts";
-import { assertPostParityRequest, buildPostParityRequest, runPostParityDiagnostic, type DiagnosticRunResult } from "./runner.ts";
+import {
+  assertPostParityRequest,
+  buildPostParityRequest,
+  reclassifyPostParityFile,
+  runPostParityDiagnostic,
+  type DiagnosticRunResult
+} from "./runner.ts";
 
 export const MODEL_API_KEY_ENV = "MODEL_API_KEY" as const;
 
@@ -248,8 +254,21 @@ async function main(): Promise<void> {
     );
     return;
   }
+  if (command === "diagnostic-reclassify") {
+    const inPath = flagValue(args, "--artifact");
+    const outPath = flagValue(args, "--out");
+    if (inPath === undefined || outPath === undefined) {
+      process.stderr.write("usage: cli.ts diagnostic-reclassify --artifact <PATH> --out <PATH>\n");
+      process.exitCode = 2;
+      return;
+    }
+    const result = reclassifyPostParityFile({ inPath, outPath, declaredTaxonomy: FAILURE_TAXONOMY_DECLARED_BEFORE_CALLS });
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    process.stderr.write(`diagnostic-reclassify: 0 model calls, ${result.responses} stored responses reclassified\n`);
+    return;
+  }
   process.stderr.write(
-    "usage: cli.ts <diagnostic-preflight [--report-out <PATH>]|diagnostic-run --artifact-out <PATH> --exploratory-authorized>\n"
+    "usage: cli.ts <diagnostic-preflight [--report-out <PATH>]|diagnostic-run --artifact-out <PATH> --exploratory-authorized|diagnostic-reclassify --artifact <PATH> --out <PATH>>\n"
   );
   process.exitCode = 2;
 }

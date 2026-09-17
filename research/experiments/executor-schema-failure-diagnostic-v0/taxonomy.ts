@@ -50,7 +50,14 @@ function taxonomyFromProductionDetail(detail: string): ClassifiedFailure {
   if (/projection_hash/i.test(detail)) add("PROJECTION_BINDING_INVALID", "production detail reports a projection binding problem");
   if (/required/i.test(detail) && /(missing|expected)/i.test(detail)) add("REQUIRED_FIELD_MISSING", "production detail mentions a required field");
   if (/expected one of|must be one of|invalid enum/i.test(detail)) add("ENUM_INVALID", "production detail reports an enum violation");
-  if (/expected (string|number|integer|boolean|array|object|value)/i.test(detail)) add("TYPE_INVALID", "production detail reports a type expectation");
+  // The production surface names the expected SHAPE in prose ("expected plain
+  // object", "expected array", "expected string"), so the mechanical test allows
+  // adjectives between the verb and the type name. Added after the post-parity
+  // batch captured `communication_directive: directive: expected plain object`,
+  // which the earlier pattern missed; the category itself was already declared.
+  if (/expected\s+(?:plain\s+|non-?empty\s+|canonical\s+)?(object|array|string|number|integer|boolean|value)/i.test(detail)) {
+    add("TYPE_INVALID", "production detail reports a type/shape expectation");
+  }
   if (/source_(handle|ref)|UNKNOWN_SOURCE|SOURCE_QUOTE/i.test(detail)) add("SOURCE_HANDLE_INVALID", "production detail references source binding");
   if (/derivation|claimed_result|operand/i.test(detail)) add("DERIVATION_INVALID", "production detail references derivation verification");
   if (/SEMANTIC_COMPLETENESS_FAILED/i.test(detail)) add("RESPONSE_SEMANTICS_INCOMPLETE", "production semantics marker");

@@ -8,6 +8,9 @@
  * question needs: the post-parity request binding, the new namespace/markers and
  * the pre-written 40-call / 2-example stop rule.
  */
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
+
 import { buildCalibrationProjection, buildCalibrationSubject } from "../belief-causal-confirmatory-stochastic-v1/calibration-request.ts";
 import { MODEL } from "../belief-causal-confirmatory-stochastic-v1/contract.ts";
 import {
@@ -32,7 +35,7 @@ import {
   PRODUCTION_VALIDATOR_SURFACE_NOTE,
   TARGET_SCHEMA_INVALID_EXAMPLES
 } from "./contract.ts";
-import { hashText } from "./hash.ts";
+import { hashJson, hashText } from "./hash.ts";
 
 export interface PostParityRequestBinding {
   readonly serialized_body: string;
@@ -230,6 +233,65 @@ const EMPTY_USAGE = Object.freeze({
   cached_tokens: 0,
   reasoning_tokens: 0
 });
+
+/**
+ * Applies the CURRENT evidence-derived taxonomy to an ALREADY CAPTURED artifact:
+ * zero calls, the stored validation traces are the input, and the original
+ * artifact is left untouched so a reviewer can diff the two. Used only to refine
+ * the mechanical mapping of a rule the vocabulary already declared.
+ */
+export function reclassifyPostParityArtifact(input: {
+  readonly artifact: DiagnosticRunResult & { readonly artifact_hash?: string };
+  readonly declaredTaxonomy: readonly string[];
+}): Record<string, unknown> {
+  const responses = input.artifact.responses.map((record) => ({
+    ...record,
+    classification: classifyResponse(record.validation_trace)
+  }));
+  return {
+    schema_version: input.artifact.schema_version,
+    diagnostic_id: input.artifact.diagnostic_id,
+    namespace: input.artifact.namespace,
+    markers: input.artifact.markers,
+    derived_from_artifact_hash: input.artifact.artifact_hash ?? null,
+    reclassification: {
+      makes_model_calls: false,
+      input_is_the_stored_artifact: true,
+      original_artifact_left_unmodified: true,
+      stop_rule_unchanged: true,
+      why:
+        "the mechanical production-string mapping was refined to recognise an already-declared category (TYPE_INVALID) that the earlier pattern missed; no call, no budget change and no new category",
+      declared_taxonomy: input.declaredTaxonomy
+    },
+    authority_reference: input.artifact.authority_reference,
+    stop_rule: input.artifact.stop_rule,
+    request_binding: input.artifact.request_binding,
+    model: input.artifact.model,
+    responses,
+    summary: {
+      ...input.artifact.summary,
+      taxonomy: summarizeTaxonomy(
+        responses.map((record, index) => ({ trial: index + 1, classification: record.classification })),
+        input.declaredTaxonomy
+      )
+    }
+  };
+}
+
+/** Reads a stored artifact, reclassifies it offline and writes the derived artifact. */
+export function reclassifyPostParityFile(input: {
+  readonly inPath: string;
+  readonly outPath: string;
+  readonly declaredTaxonomy: readonly string[];
+}): { readonly derived_hash: string; readonly responses: number; readonly categories_observed: readonly string[] } {
+  const stored = JSON.parse(readFileSync(input.inPath, "utf8")) as DiagnosticRunResult & { readonly artifact_hash?: string };
+  const derived = reclassifyPostParityArtifact({ artifact: stored, declaredTaxonomy: input.declaredTaxonomy });
+  const derivedHash = hashJson(derived);
+  mkdirSync(dirname(input.outPath), { recursive: true });
+  writeFileSync(input.outPath, `${JSON.stringify({ ...derived, derived_artifact_hash: derivedHash }, null, 2)}\n`);
+  const summary = derived["summary"] as { readonly taxonomy: { readonly categories_observed: readonly string[] } };
+  return { derived_hash: derivedHash, responses: stored.responses.length, categories_observed: summary.taxonomy.categories_observed };
+}
 
 export interface DiagnosticRunOptions {
   readonly transport: DiagnosticTransport;
