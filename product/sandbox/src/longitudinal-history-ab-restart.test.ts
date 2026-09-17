@@ -14,12 +14,15 @@
  *
  * WHAT IS DETERMINISTIC AND WHAT IS NOT (stated, never blurred):
  *   - The transports here are deterministic doubles, NOT model behaviour. The
- *     cognition double is a CONTEXT FOLLOWER: it cites, as an exact SOURCE_QUOTE
- *     with the advertised factual handle, the first remembered episode the host
- *     itself placed in the prompt. The language double RENDERS the authorized
- *     claim text and authors nothing. So the reply differences below prove the
- *     CHANNEL is open and history-dependent — they do NOT prove that any real
- *     model uses its memory. That measurement is separate (real-executor smoke).
+ *     cognition double is a CONTEXT FOLLOWER: on a GENERATIVE turn it cites, as an
+ *     exact SOURCE_QUOTE with the advertised factual handle, the remembered
+ *     sentence the host placed in the prompt. The language double is
+ *     CONTRACT-FAITHFUL under AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0: it renders
+ *     that exact authorized claim (wrapped, never paraphrased) for GENERATIVE and a
+ *     non-factual surface otherwise, authoring nothing itself. So the reply
+ *     differences below prove the CHANNEL is open and history-dependent — they do
+ *     NOT prove that any real model uses its memory. That measurement is separate
+ *     (real-language smoke).
  *   - Everything else is real production machinery: the same product host, the
  *     same session authority, the same V8 cognition contract and factual
  *     authorization, the same promotion of cited claims into delivered behavior,
@@ -49,8 +52,6 @@ const FACT_A = "I keep a red notebook on the desk.";
 const FACT_B = "I keep a blue notebook on the desk.";
 /** The IDENTICAL current event both subjects face after their restarts. */
 const SAME_SCENE = "Where do I keep my notebook?";
-const FACT_A_TEXT = `The user says: "${FACT_A}"`;
-const FACT_B_TEXT = `The user says: "${FACT_B}"`;
 
 const tempDirs: string[] = [];
 function makeTempDir(): string {
@@ -116,8 +117,16 @@ function jsonObjectAt(text: string, from: number): string | null {
 
 interface RememberedEvidence {
   readonly scene: string;
+  /** The factual sentence the scene carries: the substring a quote can be bound to. */
+  readonly fact: string;
   readonly episode_ref: string;
   readonly handle: string;
+}
+
+/** `The user says: "X"` → `X`; any other scene is its own factual sentence. */
+function factWithinScene(scene: string): string {
+  const match = /^The user says: "([\s\S]*)"$/.exec(scene);
+  return match === null ? scene : (match[1] as string);
 }
 
 /**
@@ -142,7 +151,7 @@ function rememberedEvidenceIn(request: string): RememberedEvidence | null {
   const escapedRef = episodeRef.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const handleMatch = new RegExp(`- (F\\d+): ${escapedRef}`).exec(request);
   if (handleMatch === null) return null;
-  return { scene, episode_ref: episodeRef, handle: handleMatch[1] as string };
+  return { scene, fact: factWithinScene(scene), episode_ref: episodeRef, handle: handleMatch[1] as string };
 }
 
 function proposalWithoutMemory(): string {
@@ -167,13 +176,20 @@ function proposalWithoutMemory(): string {
   });
 }
 
+/**
+ * The context follower's proposal, shaped like the real executor's observed
+ * behaviour: a GENERATIVE primary (a conversational response is primary) that
+ * ALSO carries the remembered sentence as a host-authorizable SOURCE_QUOTE.
+ * Under AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0 that combination is precisely
+ * the one the language stage may use.
+ */
 function proposalCitingMemory(remembered: RememberedEvidence): string {
   return JSON.stringify({
-    response_semantics: { kind: "PRIMARY_FACT", claim_index: 0 },
+    response_semantics: { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "GENERATIVE" },
     schema_version: "conversation-cognition-proposal-v8",
     subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
     factual_assessment: {
-      claims: [{ kind: "SOURCE_QUOTE", text: remembered.scene, source_handles: [remembered.handle] }]
+      claims: [{ kind: "SOURCE_QUOTE", text: remembered.fact, source_handles: [remembered.handle] }]
     },
     cognition: {
       schema_version: "cognition-proposal-v0",
@@ -183,7 +199,7 @@ function proposalCitingMemory(remembered: RememberedEvidence): string {
       // remembered handle in all three arrays.
       relevant_memory_handles: [remembered.handle],
       considered_handles: [remembered.handle],
-      current_intent: `answer with the remembered scene: ${remembered.scene}`,
+      current_intent: `answer with the remembered fact: ${remembered.fact}`,
       confidence: 0.8,
       uncertainty: 0.2,
       action_intent: null,
@@ -209,7 +225,15 @@ function contextFollowingCognition(requests: string[]): ModelTransportV0 {
   };
 }
 
-/** Deterministic RENDERER of the authorized claim: authors nothing of its own. */
+/**
+ * Deterministic, CONTRACT-FAITHFUL renderer (AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0).
+ * It authors no factual content of its own:
+ *   PRIMARY_FACT              → the designated authorized claim text, verbatim;
+ *   GENERATIVE + a claim      → a fixed natural wrapper around that exact text;
+ *   any other act / no claim  → a fixed non-factual surface.
+ * So the delivered difference below is attributable to the authorized payload the
+ * host supplied, never to this double's invention.
+ */
 function claimRenderingLanguage(requests: string[]): ModelTransportV0 {
   return {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
@@ -219,8 +243,18 @@ function claimRenderingLanguage(requests: string[]): ModelTransportV0 {
       const parsed =
         object === null
           ? null
-          : (JSON.parse(object) as { factual_assessment?: { claims?: { text?: string }[] } });
-      const text = parsed?.factual_assessment?.claims?.[0]?.text ?? "Understood, noted.";
+          : (JSON.parse(object) as {
+              factual_assessment?: { claims?: { text?: string }[] };
+              realization_plan?: { primary?: { kind?: string; act?: string } };
+            });
+      const claim = parsed?.factual_assessment?.claims?.[0]?.text;
+      const primary = parsed?.realization_plan?.primary;
+      let text = "Understood, noted.";
+      if (primary?.kind === "PRIMARY_FACT" && claim !== undefined) {
+        text = claim;
+      } else if (primary?.kind === "PRIMARY_CONVERSATIONAL_ACT" && primary.act === "GENERATIVE" && claim !== undefined) {
+        text = `You mentioned before that "${claim}"`;
+      }
       return {
         content: JSON.stringify({
           schema_version: "language-realization-semantic-draft-v1",
@@ -311,9 +345,14 @@ describe("PERSISTENT_SUBJECT_LONGITUDINAL_HISTORY_AB_RESTART_V0", () => {
     expect(a2.outcome.provider_memory_section_present).toBe(true);
     expect(b2.outcome.provider_memory_section_present).toBe(true);
 
-    // Observable behavior: the delivered reply is the subject's OWN remembered fact.
-    expect(a2.outcome.subject_text).toBe(FACT_A_TEXT);
-    expect(b2.outcome.subject_text).toBe(FACT_B_TEXT);
+    // Observable behavior: the delivered reply carries the subject's OWN remembered
+    // fact as the EXACT authorized claim text, wrapped by the contract-faithful
+    // renderer under the AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0 law.
+    expect(a2.outcome.subject_text).toBe(`You mentioned before that "${FACT_A}"`);
+    expect(b2.outcome.subject_text).toBe(`You mentioned before that "${FACT_B}"`);
+    expect(a2.outcome.subject_text).toContain(FACT_A);
+    expect(a2.outcome.subject_text).not.toContain(FACT_B);
+    expect(b2.outcome.subject_text).not.toContain(FACT_A);
     expect(a2.outcome.subject_text).not.toBe(b2.outcome.subject_text);
     expect(a2.outcome.current_intent).not.toBe(b2.outcome.current_intent);
     expect(recorderA2.language).toHaveLength(1);

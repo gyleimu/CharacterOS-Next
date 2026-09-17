@@ -39,6 +39,7 @@ import {
   type SubjectiveSelectionV1
 } from "./conversation-cognition-proposal.js";
 import type { FactualClaimAuthorizationTraceV0 } from "./factual-claim-authorization.js";
+import { validateGenerativeClaimBindingV0 } from "./language-claim-binding.js";
 import {
   buildLanguageRealizationInputV1,
   buildLanguageRealizationInputV10,
@@ -96,6 +97,7 @@ export type ConversationResponseFailureStageV1 =
   | "LANGUAGE_TRANSPORT_FAILED"
   | "LANGUAGE_SCHEMA_INVALID"
   | "LANGUAGE_EVIDENCE_INVALID"
+  | "LANGUAGE_CLAIM_BINDING_INVALID"
   | "CLARIFICATION_RENDER_INVALID"
   | "STALE_CONTEXT";
 
@@ -544,6 +546,17 @@ export class ConversationTextResponseExecutorV1 {
     for (const ref of draft.evidence_refs) {
       if (!lawfulEvidence.has(ref)) return failed("LANGUAGE_EVIDENCE_INVALID", `draft cites ${ref} outside lawful evidence`);
     }
+
+    // AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0: the ONE relaxed act surface.
+    // A GENERATIVE realization may use host-authorized claims, so a quoted factual
+    // payload it carries must be traceable to one of them. No-op for every other
+    // atom/act (GREET, ACKNOWLEDGE, PRIMARY_FACT, PRIMARY_STANCE, legacy paths).
+    const claimBinding = validateGenerativeClaimBindingV0({
+      response_semantics: c2Proposal?.response_semantics ?? null,
+      authorized_claims: c2Proposal?.factual_assessment.claims ?? [],
+      text: draft.text
+    });
+    if (!claimBinding.ok) return failed("LANGUAGE_CLAIM_BINDING_INVALID", claimBinding.detail);
 
     const freshSnapshot = await this.deps.subjectCore.readCurrentSnapshot(snapshot.identity.subject_id) as SubjectStateV0 | null;
     if (!freshSnapshot || freshSnapshot.runtime_metadata.state_revision !== sourceRevision) {

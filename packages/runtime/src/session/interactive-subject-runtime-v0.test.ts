@@ -74,14 +74,14 @@ interface TransportRecorder {
 function fakeCognitionTransport(
   mode: () => Mode,
   recorder: TransportRecorder,
-  contentOverride?: () => string | null
+  contentOverride?: (user: string) => string | null
 ): ModelTransportV0 {
   return {
     complete: async (request: ModelTransportRequestV0): Promise<ModelTransportResponseV0> => {
       recorder.requests.push({ messages: request.messages.map((m) => ({ role: m.role, content: m.content })) });
       const user = request.messages.find((message) => message.role === "user")?.content ?? "";
       const observationRef = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
-      const override = contentOverride?.();
+      const override = contentOverride?.(user);
       if (override !== undefined && override !== null) {
         return { content: override, model: "fake" } as ModelTransportResponseV0;
       }
@@ -117,13 +117,13 @@ function fakeCognitionTransport(
   } as ModelTransportV0;
 }
 
-function fakeLanguageTransport(): ModelTransportV0 {
+function fakeLanguageTransport(languageOverride?: () => string | null): ModelTransportV0 {
   return {
     complete: async (): Promise<ModelTransportResponseV0> => {
       return {
         content: JSON.stringify({
           schema_version: "language-realization-semantic-draft-v1",
-          text: "LANGUAGE_REALIZATION_REPLY",
+          text: languageOverride?.() ?? "LANGUAGE_REALIZATION_REPLY",
           evidence_refs: []
         }),
         model: "fake"
@@ -133,7 +133,12 @@ function fakeLanguageTransport(): ModelTransportV0 {
 }
 
 function options(
-  input: { mode?: () => Mode; recorder?: TransportRecorder; contentOverride?: () => string | null } = {}
+  input: {
+    mode?: () => Mode;
+    recorder?: TransportRecorder;
+    contentOverride?: (user: string) => string | null;
+    languageOverride?: () => string | null;
+  } = {}
 ): InteractiveSubjectRuntimeOptionsV0 {
   const recorder = input.recorder ?? { requests: [] };
   return {
@@ -145,7 +150,7 @@ function options(
       recorder,
       input.contentOverride
     ),
-    languageTransport: fakeLanguageTransport(),
+    languageTransport: fakeLanguageTransport(input.languageOverride),
     factualEventAppraisalProvider: fakeAppraisalProvider(),
     interval_ticks: 1,
     provider_identity: { model: "fake", num_predict: 2048 },
@@ -528,5 +533,236 @@ describe("INTERACTIVE_SUBJECT_FIRST_TURN_MEMORY_BOUNDARY_V0 — observation-sour
     expect(turn.observational_experience_ref).not.toBeNull();
     const payloads = payloadsOf(await runtime.snapshot());
     expect(payloads.filter((entry) => entry.payload["schema_version"] === "experience-record-v0")).toHaveLength(0);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0 — GENERATIVE may use authorized    */
+/* claims; every other atom/act keeps its previous surface. Offline.           */
+/* -------------------------------------------------------------------------- */
+
+const QUOTED_FACT = "I keep a red notebook on the desk.";
+
+/** The advertised factual handle for the current observation ref in this request. */
+function observationHandle(user: string): string {
+  const ref = /^\[current observation\] (\S+)$/m.exec(user)?.[1] ?? "";
+  return handleForAdvertisedRef(user, ref);
+}
+
+/** GENERATIVE primary + one host-authorized SOURCE_QUOTE of the user's own words. */
+function generativeWithAuthorizedQuote(user: string): string {
+  const handle = observationHandle(user);
+  return JSON.stringify({
+    response_semantics: { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "GENERATIVE" },
+    schema_version: "conversation-cognition-proposal-v8",
+    subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+    factual_assessment: {
+      claims: [{ kind: "SOURCE_QUOTE", text: QUOTED_FACT, source_handles: [handle] }]
+    },
+    cognition: {
+      schema_version: "cognition-proposal-v0",
+      reasoning_summary: "generative turn carrying one authorized quote",
+      relevant_memory_handles: [handle],
+      considered_handles: [handle],
+      current_intent: "write something that may mention the stated fact",
+      confidence: 0.8,
+      uncertainty: 0.2,
+      action_intent: null,
+      evidence_handles: [handle]
+    },
+    communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+    clarification_basis: null
+  });
+}
+
+/** GENERATIVE primary with NO claims at all. */
+function generativeWithoutClaims(): string {
+  const parsed = JSON.parse(validProposalText()) as Record<string, unknown>;
+  (parsed["response_semantics"] as Record<string, unknown>)["act"] = "GENERATIVE";
+  return JSON.stringify(parsed);
+}
+
+/** PRIMARY_FACT designating the single authorized SOURCE_QUOTE. */
+function primaryFactProposal(user: string): string {
+  const handle = observationHandle(user);
+  return JSON.stringify({
+    response_semantics: { kind: "PRIMARY_FACT", claim_index: 0 },
+    schema_version: "conversation-cognition-proposal-v8",
+    subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+    factual_assessment: {
+      claims: [{ kind: "SOURCE_QUOTE", text: QUOTED_FACT, source_handles: [handle] }]
+    },
+    cognition: {
+      schema_version: "cognition-proposal-v0",
+      reasoning_summary: "the fact is the answer",
+      relevant_memory_handles: [handle],
+      considered_handles: [handle],
+      current_intent: "state the designated fact",
+      confidence: 0.9,
+      uncertainty: 0.1,
+      action_intent: null,
+      evidence_handles: [handle]
+    },
+    communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+    clarification_basis: null
+  });
+}
+
+/** A conversational act (GREET/ACKNOWLEDGE) with the same authorized claim present. */
+function conversationalActProposal(user: string, act: "GREET" | "ACKNOWLEDGE"): string {
+  const parsed = JSON.parse(generativeWithAuthorizedQuote(user)) as Record<string, unknown>;
+  (parsed["response_semantics"] as Record<string, unknown>)["act"] = act;
+  return JSON.stringify(parsed);
+}
+
+/** A host-verifiable INTEGER_ARITHMETIC derivation over the user's own words. */
+function derivationProposal(user: string): string {
+  const handle = observationHandle(user);
+  return JSON.stringify({
+    response_semantics: { kind: "PRIMARY_CONVERSATIONAL_ACT", act: "GENERATIVE" },
+    schema_version: "conversation-cognition-proposal-v8",
+    subjective_selection: { kind: "NO_SUBJECTIVE_SELECTION" },
+    factual_assessment: {
+      claims: [
+        {
+          kind: "HOST_VERIFIABLE_DERIVATION",
+          operation: "INTEGER_ARITHMETIC",
+          source_handles: [handle],
+          derivation: {
+            source_expression: "63 - 28",
+            operands: { left: 63, operator: "SUBTRACT", right: 28 },
+            claimed_result: 35
+          }
+        }
+      ]
+    },
+    cognition: {
+      schema_version: "cognition-proposal-v0",
+      reasoning_summary: "the host recomputes this result",
+      relevant_memory_handles: [handle],
+      considered_handles: [handle],
+      current_intent: "mention the computed result",
+      confidence: 0.9,
+      uncertainty: 0.1,
+      action_intent: null,
+      evidence_handles: [handle]
+    },
+    communication_directive: { kind: "REALIZE_CURRENT_INTENT" },
+    clarification_basis: null
+  });
+}
+
+describe("AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0 — GENERATIVE and authorized claims", () => {
+  it("G2: the realized reply may carry the authorized SOURCE_QUOTE verbatim", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => generativeWithAuthorizedQuote(user),
+        languageOverride: () => `You mentioned before that "${QUOTED_FACT}"`
+      })
+    );
+    const turn = await runtime.submitUserText(QUOTED_FACT);
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+    expect(turn.subject_text).toBe(`You mentioned before that "${QUOTED_FACT}"`);
+  });
+
+  it("G3: the host-rendered text of an authorized derivation may be carried verbatim", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => derivationProposal(user),
+        languageOverride: () => 'Earlier you worked out that "63 - 28 = 35."'
+      })
+    );
+    const turn = await runtime.submitUserText("What is 63 - 28?");
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+    expect(turn.subject_text).toContain("63 - 28 = 35.");
+  });
+
+  it("G4: an unauthorized quoted fact fails closed before any delivery", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => generativeWithAuthorizedQuote(user),
+        languageOverride: () => 'You also said "I keep a blue notebook in the kitchen."'
+      })
+    );
+    const turn = await runtime.submitUserText(QUOTED_FACT);
+    expect(turn.status).toBe("FAILED");
+    expect(turn.failure).toContain("LANGUAGE_CLAIM_BINDING_INVALID");
+    expect(turn.subject_text).toBe("");
+    expect(turn.delivery_id).toBeNull();
+  });
+
+  it("G5: an ALTERED quote fails closed even though the authorized claim is present", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => generativeWithAuthorizedQuote(user),
+        languageOverride: () => `You said "${QUOTED_FACT}" but also "I keep a red notebook in the bedroom."`
+      })
+    );
+    const turn = await runtime.submitUserText(QUOTED_FACT);
+    expect(turn.status).toBe("FAILED");
+    expect(turn.failure).toContain("LANGUAGE_CLAIM_BINDING_INVALID");
+  });
+
+  it("G6: leaving the authorized claim unused stays lawful (CAN_SAY is not MUST_SAY)", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => generativeWithAuthorizedQuote(user),
+        languageOverride: () => "Of course — here is a short poem about well-kept desks."
+      })
+    );
+    const turn = await runtime.submitUserText(QUOTED_FACT);
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+    expect(turn.subject_text).toBe("Of course — here is a short poem about well-kept desks.");
+  });
+
+  it("G1: GENERATIVE with no claims behaves exactly as before", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ contentOverride: () => generativeWithoutClaims() })
+    );
+    const turn = await runtime.submitUserText("Tell me something about desks.");
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+  });
+});
+
+describe("AUTHORIZED_CLAIM_LANGUAGE_REALIZATION_V0 — untouched surfaces", () => {
+  it("PRIMARY_FACT still realizes its designated authorized claim", async () => {
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({
+        contentOverride: (user) => primaryFactProposal(user),
+        languageOverride: () => QUOTED_FACT
+      })
+    );
+    const turn = await runtime.submitUserText(QUOTED_FACT);
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+    expect(turn.subject_text).toBe(QUOTED_FACT);
+    expect(turn.current_intent).toBe("state the designated fact");
+  });
+
+  for (const act of ["GREET", "ACKNOWLEDGE"] as const) {
+    it(`${act} keeps its previous acceptance surface (the claim is not silently granted)`, async () => {
+      // The double authors nothing: it delivers a plain act surface and never the
+      // claim. The guard is a no-op for this act, so the turn completes exactly as
+      // it did before this slice.
+      const runtime = await InteractiveSubjectRuntimeV0.create(
+        options({
+          contentOverride: (user) => conversationalActProposal(user, act),
+          languageOverride: () => (act === "GREET" ? "Hello there." : "Noted.")
+        })
+      );
+      const turn = await runtime.submitUserText(QUOTED_FACT);
+      expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
+      expect(turn.subject_text).not.toContain("notebook");
+    });
+  }
+
+  it("a legacy path without a response-semantics atom is not newly constrained", async () => {
+    // The V2/V1 legacy provider path (no V8 atom) never reaches the guard.
+    const runtime = await InteractiveSubjectRuntimeV0.create(
+      options({ mode: () => "REALIZE", languageOverride: () => 'He said "anything at all".' })
+    );
+    const turn = await runtime.submitUserText("Hello.");
+    expect(turn.status, turn.failure ?? "").toBe("COMPLETE");
   });
 });

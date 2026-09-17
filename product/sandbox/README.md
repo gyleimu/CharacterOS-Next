@@ -493,6 +493,29 @@ Every model-backed stage prints concise progress with bounded latency, e.g.:
   router: the family is chosen once at startup (see the executor row above), and
   a provider failure never switches to the other family.
 
+### How a reply may use what the subject knows
+
+Cognition decides WHICH authorized content a turn may state; language realization
+decides how it is phrased. Authorization is permission, never instruction:
+
+- a factual claim the host authorized for this turn may be used, and **no claim
+  has to be used merely because it is available**;
+- `GENERATIVE` turns may additionally incorporate factual material taken ONLY from
+  the authorized claims of that turn — the exact authorized text is preserved, and
+  inventing, inferring, paraphrasing, expanding or substituting a fact is
+  forbidden;
+- `GREET` and `ACKNOWLEDGE` remain non-factual act surfaces;
+- a designated primary fact (`PRIMARY_FACT`) is unchanged: it states that
+  authorized claim as the primary response.
+
+The host backs this with one thin deterministic check: in a `GENERATIVE`
+realization, every DOUBLE-QUOTED span must be traceable, verbatim, to one of the
+authorized claims, otherwise the turn fails closed (`LANGUAGE_CLAIM_BINDING_INVALID`)
+and nothing is delivered. Known bound of that check, stated rather than implied: it
+decides the quoted channel only — there is no natural-language fact extraction and
+no semantic-equivalence check, so an unquoted paraphrase is not mechanically
+detected. The model-facing contract, not this guard, is what forbids it.
+
 ### Tolerant output, strict state, and the degraded turn
 
 Model output format variance is absorbed; meaning never is.
