@@ -306,8 +306,9 @@ function scanDurablePressureV0(snapshot_path: string): DurablePressureScanV0 | n
   try {
     const text = readFileSync(snapshot_path, "utf8");
     const appraisals: DurablePressureScanV0["appraisals"][number][] = [];
+    // The snapshot is indented JSON, so every token gap is whitespace-tolerant.
     const appraisalPattern =
-      /"ref": "(appraisal:[0-9a-f]+)"[\s\S]{0,4000}?"dimensions": \{ "relevance": (-?[0-9.]+), "goal_congruence": (-?[0-9.]+)[^}]*"intensity": (-?[0-9.]+)/g;
+      /"ref":\s*"(appraisal:[0-9a-f]+)"[\s\S]{0,4000}?"dimensions":\s*\{\s*"relevance":\s*(-?[0-9.]+)\s*,\s*"goal_congruence":\s*(-?[0-9.]+)[^}]*"intensity":\s*(-?[0-9.]+)/g;
     for (const match of text.matchAll(appraisalPattern)) {
       const ref = match[1];
       if (ref === undefined) continue;
@@ -320,7 +321,7 @@ function scanDurablePressureV0(snapshot_path: string): DurablePressureScanV0 | n
     }
     const applications: DurablePressureScanV0["applications"][number][] = [];
     const applicationPattern =
-      /"transition_type": "AffectApplication",\s*"expected_state_revision": (\d+),[\s\S]{0,1200}?"cause_refs": \[([^\]]*)\][\s\S]{0,3000}?"path": "\/affect", "value": \{ "schema_version": "canonical-affect-v0", "valence": (-?[0-9.]+), "activation": (-?[0-9.]+)/g;
+      /"transition_type":\s*"AffectApplication",\s*"expected_state_revision":\s*(\d+),[\s\S]{0,1200}?"cause_refs":\s*\[([^\]]*)\][\s\S]{0,3000}?"path":\s*"\/affect",\s*"value":\s*\{\s*"schema_version":\s*"canonical-affect-v0",\s*"valence":\s*(-?[0-9.]+),\s*"activation":\s*(-?[0-9.]+)/g;
     for (const match of text.matchAll(applicationPattern)) {
       const rawRefs = match[2] ?? "";
       const appraisalRef = /"(appraisal:[0-9a-f]+)"/.exec(rawRefs)?.[1] ?? null;
