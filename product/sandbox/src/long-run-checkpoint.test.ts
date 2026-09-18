@@ -102,15 +102,49 @@ function plan(batch: number): readonly string[] {
     "The chisel feels different on a flat stone - quicker to get an edge.",
     "I wrote the bandsaw setting on a card and taped it to the machine.",
     "The workshop is quieter now that the saw is not fighting me.",
-    "Do you remember the first shelf I built? It feels like a long time ago."
+    "Do you remember the first shelf I built? It feels like a long time ago.",
+    "I hung the new plane on a proper hook so it is out of the way.",
+    "My neighbour says he will bring his own tools next time.",
+    "I swept out a year of sawdust from behind the bench.",
+    "The offcuts he brought are mostly oak - better than what I had.",
+    "I stood in the doorway for a while just looking at the tidy workshop."
   ];
-  if (PLAN_SET === "B") {
-    if (batch <= later.length) return later.slice(0, batch);
+  const third = [
+    // A FURTHER STRETCH (CHARACTEROS_LONG_RUN_PLAN=C): the oak stool project.
+    "I started sketching a small stool from the oak offcuts.",
+    "The first cut was crooked, so I trimmed it and started again.",
+    "I measured twice this time and the legs came out even.",
+    "My neighbour asked what I was building and I showed him the sketch.",
+    "He suggested a lower seat height, and he was right.",
+    "I lowered the seat by two centimetres and it sits better.",
+    "The stool is finished. It wobbles a little on the stone floor.",
+    "I glued a thin shim under one leg and now it is steady.",
+    "I do not agree that pine would have been easier; oak was what I had.",
+    "Nothing much happened today - I just oiled the bench top.",
+    "A letter came from the old workshop about a reunion in spring.",
+    "I have not decided whether to go.",
+    "The bandsaw has been quiet since I slowed the feed. That still pleases me.",
+    "I sharpened the plane iron and the shavings come off in one piece now.",
+    "My hands were sore after the sanding, so I stopped early.",
+    "I keep the sketch in the drawer with the tape labels.",
+    "The neighbour returned my clamp, cleaned, which was kind of him.",
+    "I showed him the stool and he asked me to make one for his hallway.",
+    "I said I would think about it.",
+    "I measured his hallway space on a scrap of paper.",
+    "The oak I have left is enough for one more stool.",
+    "I started the second stool this morning, using the first as a pattern.",
+    "It went together faster than the first one.",
+    "I sanded the seat edges the way I like them now.",
+    "Do you remember the drawers I labelled? The tape is still holding."
+  ];
+  const chosen = PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
+  if (chosen !== null) {
+    if (batch <= chosen.length) return chosen.slice(0, batch);
     const filler: string[] = [];
-    for (let index = later.length; index < batch; index += 1) {
+    for (let index = chosen.length; index < batch; index += 1) {
       filler.push(`Day ${String(index + 1)}: I spent the afternoon tidying the workshop and making notes.`);
     }
-    return [...later, ...filler];
+    return [...chosen, ...filler];
   }
   const fixed = [
     // Session 1 — ordinary life, facts, corrections, feelings, a consequence, recall.
@@ -223,6 +257,209 @@ function durableSnapshotBytesV0(root: string): number | null {
   } catch {
     return null;
   }
+}
+
+/** Path of the newest durable snapshot in the subject root. */
+function durableSnapshotPathV0(root: string): string | null {
+  try {
+    const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
+    return entry === undefined ? null : join(root, entry);
+  } catch {
+    return null;
+  }
+}
+
+/** 1-tick cadence break-even for the frozen activation dynamics (from the adjudication). */
+const ACTIVATION_BREAK_EVEN_Q_V0 = 0.0532;
+/** The frozen impulse coefficient: u_a = 0.1 * relevance * intensity. */
+const ACTIVATION_IMPULSE_COEFFICIENT_V0 = 0.1;
+
+interface DurablePressureScanV0 {
+  readonly appraisals: readonly {
+    readonly appraisal_ref: string;
+    readonly relevance: number;
+    readonly intensity: number;
+    readonly goal_congruence: number | null;
+  }[];
+  readonly applications: readonly {
+    readonly transition_id: string | null;
+    readonly expected_state_revision: number | null;
+    readonly appraisal_ref: string | null;
+    readonly observation_ref: string | null;
+    readonly valence: number | null;
+    readonly activation: number | null;
+  }[];
+}
+
+/**
+ * APPRAISAL PRESSURE WATCH (§5–§8) — a READ-ONLY scan of the subject's own durable
+ * snapshot for the two facts no existing read-only projection exposes: each
+ * appraisal record's pressure dimensions (relevance/intensity) and each committed
+ * AffectApplication's applied value bound to its appraisal ref.
+ *
+ * The scan opens the snapshot file, extracts those two record shapes and nothing
+ * else, and never writes. The post-decay intermediate is NOT persisted anywhere
+ * (`/affect` carries only the applied value), so it is reported NOT_AVAILABLE rather
+ * than reconstructed.
+ */
+function scanDurablePressureV0(snapshot_path: string): DurablePressureScanV0 | null {
+  try {
+    const text = readFileSync(snapshot_path, "utf8");
+    const appraisals: DurablePressureScanV0["appraisals"][number][] = [];
+    const appraisalPattern =
+      /"ref": "(appraisal:[0-9a-f]+)"[\s\S]{0,4000}?"dimensions": \{ "relevance": (-?[0-9.]+), "goal_congruence": (-?[0-9.]+)[^}]*"intensity": (-?[0-9.]+)/g;
+    for (const match of text.matchAll(appraisalPattern)) {
+      const ref = match[1];
+      if (ref === undefined) continue;
+      appraisals.push({
+        appraisal_ref: ref,
+        relevance: Number(match[2]),
+        intensity: Number(match[4]),
+        goal_congruence: Number(match[3])
+      });
+    }
+    const applications: DurablePressureScanV0["applications"][number][] = [];
+    const applicationPattern =
+      /"transition_type": "AffectApplication",\s*"expected_state_revision": (\d+),[\s\S]{0,1200}?"cause_refs": \[([^\]]*)\][\s\S]{0,3000}?"path": "\/affect", "value": \{ "schema_version": "canonical-affect-v0", "valence": (-?[0-9.]+), "activation": (-?[0-9.]+)/g;
+    for (const match of text.matchAll(applicationPattern)) {
+      const rawRefs = match[2] ?? "";
+      const appraisalRef = /"(appraisal:[0-9a-f]+)"/.exec(rawRefs)?.[1] ?? null;
+      const observationRef = /"(observation:[^"]+)"/.exec(rawRefs)?.[1] ?? null;
+      applications.push({
+        transition_id: null,
+        expected_state_revision: Number(match[1]),
+        appraisal_ref: appraisalRef,
+        observation_ref: observationRef,
+        valence: Number(match[3]),
+        activation: Number(match[4])
+      });
+    }
+    return { appraisals, applications };
+  } catch {
+    return null;
+  }
+}
+
+interface AppraisalPressureSummaryV0 {
+  readonly available: boolean;
+  readonly note: string;
+  readonly application_count: number;
+  readonly appraisal_record_count: number;
+  readonly joined_count: number;
+  readonly q_min: number | null;
+  readonly q_median: number | null;
+  readonly q_p90: number | null;
+  readonly q_max: number | null;
+  readonly q_below_break_even_count: number;
+  readonly q_at_or_above_break_even_count: number;
+  readonly turn_totals: readonly {
+    readonly observation_ref: string;
+    readonly applications: number;
+    readonly q_total: number;
+    readonly u_a_total: number;
+  }[];
+  readonly applied_series: readonly {
+    readonly expected_state_revision: number | null;
+    readonly observation_ref: string | null;
+    readonly activation_before: number | null;
+    readonly activation_after: number | null;
+    readonly net_change: number | null;
+    readonly at_bound: boolean;
+    readonly q: number | null;
+  }[];
+  readonly at_bound_count: number;
+  readonly activation_after_time: "NOT_AVAILABLE";
+  readonly activation_after_time_reason: string;
+  readonly clamp: "NOT_AVAILABLE";
+  readonly clamp_reason: string;
+}
+
+function summariseAppraisalPressureV0(scan: DurablePressureScanV0 | null): AppraisalPressureSummaryV0 {
+  const notAvailable: AppraisalPressureSummaryV0 = {
+    available: false,
+    note: "durable snapshot could not be scanned in this iteration",
+    application_count: 0,
+    appraisal_record_count: 0,
+    joined_count: 0,
+    q_min: null,
+    q_median: null,
+    q_p90: null,
+    q_max: null,
+    q_below_break_even_count: 0,
+    q_at_or_above_break_even_count: 0,
+    turn_totals: [],
+    applied_series: [],
+    at_bound_count: 0,
+    activation_after_time: "NOT_AVAILABLE",
+    activation_after_time_reason: "the applied value is the only affect value persisted; no post-decay intermediate exists durably",
+    clamp: "NOT_AVAILABLE",
+    clamp_reason: "no pre-clamp raw value is persisted, so clamping cannot be observed, only bound contact"
+  };
+  if (scan === null) return notAvailable;
+  const byRef = new Map(scan.appraisals.map((entry) => [entry.appraisal_ref, entry]));
+  const qs: number[] = [];
+  const turnMap = new Map<string, { applications: number; q: number }>();
+  const series: AppraisalPressureSummaryV0["applied_series"][number][] = [];
+  let previousActivation: number | null = null;
+  let atBound = 0;
+  const ordered = [...scan.applications].sort(
+    (left, right) => (left.expected_state_revision ?? 0) - (right.expected_state_revision ?? 0)
+  );
+  for (const application of ordered) {
+    const appraisal = application.appraisal_ref === null ? undefined : byRef.get(application.appraisal_ref);
+    const q = appraisal === undefined ? null : appraisal.relevance * appraisal.intensity;
+    if (q !== null) {
+      qs.push(q);
+      const key = application.observation_ref ?? `revision:${String(application.expected_state_revision)}`;
+      const turn = turnMap.get(key) ?? { applications: 0, q: 0 };
+      turn.applications += 1;
+      turn.q += q;
+      turnMap.set(key, turn);
+    }
+    const after = application.activation;
+    const before = previousActivation;
+    const atBoundHere = after !== null && after >= 1;
+    if (atBoundHere) atBound += 1;
+    series.push({
+      expected_state_revision: application.expected_state_revision,
+      observation_ref: application.observation_ref,
+      activation_before: before,
+      activation_after: after,
+      net_change: before === null || after === null ? null : after - before,
+      at_bound: atBoundHere,
+      q
+    });
+    if (after !== null) previousActivation = after;
+  }
+  const sorted = [...qs].sort((a, b) => a - b);
+  const at = (fraction: number): number | null =>
+    sorted.length === 0 ? null : sorted[Math.min(sorted.length - 1, Math.ceil(fraction * sorted.length) - 1)] ?? null;
+  const turnTotals = [...turnMap.entries()].map(([observation_ref, value]) => ({
+    observation_ref,
+    applications: value.applications,
+    q_total: value.q,
+    u_a_total: ACTIVATION_IMPULSE_COEFFICIENT_V0 * value.q
+  }));
+  return {
+    available: true,
+    note: "read-only durable scan: appraisal dimensions joined to their committed AffectApplication by appraisal ref",
+    application_count: scan.applications.length,
+    appraisal_record_count: scan.appraisals.length,
+    joined_count: qs.length,
+    q_min: sorted[0] ?? null,
+    q_median: at(0.5),
+    q_p90: at(0.9),
+    q_max: sorted.at(-1) ?? null,
+    q_below_break_even_count: qs.filter((q) => q < ACTIVATION_BREAK_EVEN_Q_V0).length,
+    q_at_or_above_break_even_count: qs.filter((q) => q >= ACTIVATION_BREAK_EVEN_Q_V0).length,
+    turn_totals: turnTotals,
+    applied_series: series,
+    at_bound_count: atBound,
+    activation_after_time: "NOT_AVAILABLE",
+    activation_after_time_reason: "the applied value is the only affect value persisted; no post-decay intermediate exists durably",
+    clamp: "NOT_AVAILABLE",
+    clamp_reason: "no pre-clamp raw value is persisted, so clamping cannot be observed, only bound contact"
+  };
 }
 
 /** Conservative, deterministic normalization for the mirroring watch (§18). */
@@ -393,6 +630,10 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const mirrorFlags: Record<string, unknown>[] = [];
     let snapshotStartActivation: number | null = null;
     const snapshotBytesStart = durableSnapshotBytesV0(DATA_ROOT);
+    const snapshotPath = durableSnapshotPathV0(DATA_ROOT);
+    /** Latest read-only durable pressure reading (updated at checkpoints only). */
+    let latestPressure: AppraisalPressureSummaryV0 = summariseAppraisalPressureV0(null);
+    let persistenceReviewRequired = false;
     let restarts = 0;
     let degradations = 0;
     let nonCompletions = 0;
@@ -477,6 +718,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           status: wallStatus
         },
         failure_kinds: failureKinds,
+        appraisal_pressure: latestPressure,
+        persistence_review_required: persistenceReviewRequired,
         activation_series: activationSeries,
         near_verbatim_mirror_count: mirrorFlags.filter((flag) => flag["obvious_near_verbatim"] === true).length,
         mirror_flags: mirrorFlags,
@@ -504,6 +747,10 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
 
     const checkpoint = async (label: string, index: number): Promise<void> => {
       const state = await durableState(runtime);
+      // APPRAISAL PRESSURE WATCH (§5–§8): one read-only durable scan per checkpoint.
+      latestPressure = summariseAppraisalPressureV0(
+        snapshotPath === null ? null : scanDurablePressureV0(snapshotPath)
+      );
       const life: ProductLifeViewV0 = await runtime.lifeView();
       const memory = await runtime.livedMemory(100);
       const evolution = life.evolution;
@@ -518,6 +765,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         cognition_visible_episodes: evolution.cognition_visible.memory_episode_refs.length,
         memory_entries: memory.entries.map((entry_) => entry_.episode_ref),
         snapshot_bytes: durableSnapshotBytesV0(DATA_ROOT),
+        appraisal_pressure: latestPressure,
         stage_counts: stageCountsV0(runtime),
         provider_requests: requestObserver.summary(),
         degradations,
@@ -970,7 +1218,18 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           });
         }
       }
-      if ([5, 10, 15, 20].includes(number)) await checkpoint(`TURN_${String(number)}`, number);
+      if (number % 5 === 0) {
+        await checkpoint(`TURN_${String(number)}`, number);
+        // §18 SNAPSHOT STOP CONDITION: past the review threshold, stop at the next
+        // checkpoint instead of running the whole batch blindly.
+        const snapshotNow = durableSnapshotBytesV0(DATA_ROOT);
+        if (snapshotNow !== null && snapshotNow > 300 * 1024 * 1024) {
+          persistenceReviewRequired = true;
+          stoppedReason = "PERSISTENCE_SCALABILITY_REVIEW_REQUIRED";
+          await persistProgress("stopped: snapshot above the review threshold");
+          break;
+        }
+      }
       await persistProgress(`interaction ${String(number)} ${turn.status}`);
       if (number % RESTART_EVERY === 0 || number === interactions.length) {
         if (!(await restart(number, "SCHEDULED"))) {
