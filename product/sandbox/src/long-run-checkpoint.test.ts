@@ -2,7 +2,7 @@
  * CORE_V1_LONG_RUN — LONG-RUNNING OPERATION HARNESS (monitoring infrastructure).
  *
  * The frozen Core V1 is exercised through the NORMAL product path (`createProductRuntimeV0`
- * with the real product provider bundle: the current executor configuration, no
+ * with the real product provider bundle: the current product executor configuration, no
  * substitution, no benchmark) for a batch of REAL lived interactions, with fresh
  * restarts in between. It records read-only checkpoints, verifies durable integrity
  * across every restart, and classifies anything suspicious as an ISSUE CANDIDATE.
@@ -13,25 +13,34 @@
  * are captured, classified and left for adjudication (OBSERVED PROBLEM → FIX, never
  * IMAGINED FUTURE PROBLEM → NEW ARCHITECTURE).
  *
+ * EXECUTOR FAMILY: whatever the product configuration resolves. `auto` picks the
+ * cloud family when a credential is present in the environment, else the local one;
+ * `CHARACTEROS_EXECUTOR=deepseek|ollama` selects explicitly. The product reads the
+ * credential from `MODEL_API_KEY` ONLY (environment only, never a file, never an
+ * argument) and this harness only ever reports its PRESENCE — never its value.
+ *
  * DISABLED BY DEFAULT so the engineering gates stay at 0 model calls. To run a batch:
  *
- *   CHARACTEROS_LONG_RUN=1 CHARACTEROS_LONG_RUN_INTERACTIONS=20 \
+ *   CHARACTEROS_EXECUTOR=deepseek CHARACTEROS_LONG_RUN=1 \
  *     npx vitest run product/sandbox/src/long-run-checkpoint.test.ts
  *
  * Optional: CHARACTEROS_LONG_RUN_ROOT (data root), CHARACTEROS_LONG_RUN_SUBJECT,
  * CHARACTEROS_LONG_RUN_HEAD (provenance line for the artifact), CHARACTEROS_TIMEOUT_MS
  * (per-call timeout; recorded in the artifact).
  *
- * RESTART POLICY (monitoring infrastructure, mirrors an operator restarting the app):
- * a fresh restart every 10 interactions, and — because a failed turn leaves the
- * product runtime closed for further turns — ONE bounded recovery restart after a
- * FAILED/ABORTED interaction so the rest of the batch is still lived. Every restart
- * is recorded with its reason; nothing is repaired.
+ * MONITORING (no product change):
+ * - per-stage provider call counts come from the EXISTING product diagnostics view;
+ * - exact provider HTTP request counts and token usage come from the fetch-level
+ *   `provider-request-observer` (usage absent from a provider is recorded as
+ *   NOT_AVAILABLE, never estimated);
+ * - checkpoints are named BEFORE / TURN_5 / TURN_10 / TURN_15 / TURN_20 / FINAL_RESTORE;
+ * - failures are classified EXECUTOR / PRODUCT / CORE, and two consecutive
+ *   same-context EXECUTOR failures STOP the batch instead of burning the rest.
  *
  * ARTIFACTS (machine-local; summary only — no credentials, no prompts, no hidden
- * reasoning):
- *   tmp/long-run-progress-<N>.json   written after EVERY interaction (crash-safe)
- *   tmp/long-run-checkpoint-<N>.json written once at the end of the batch
+ * reasoning): tmp/deepseek-long-run-checkpoint-<N>.json for the cloud family,
+ * tmp/long-run-checkpoint-<N>.json otherwise, plus a crash-safe progress file
+ * rewritten after every interaction.
  */
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -46,6 +55,10 @@ import {
 } from "./product-runtime.js";
 import { PRODUCT_DEFAULT_DATA_ROOT_V0 } from "./product-paths.js";
 import type { ProductLifeViewV0 } from "./product-life-operations.js";
+import {
+  installProviderRequestObserverV0,
+  type ProviderRequestObserverV0
+} from "./provider-request-observer.js";
 
 const ENABLED = process.env["CHARACTEROS_LONG_RUN"] === "1";
 const BATCH = (() => {
@@ -55,8 +68,6 @@ const BATCH = (() => {
 const SUBJECT_ID = process.env["CHARACTEROS_LONG_RUN_SUBJECT"] ?? "alice-longrun";
 const DATA_ROOT =
   process.env["CHARACTEROS_LONG_RUN_ROOT"] ?? join(PRODUCT_DEFAULT_DATA_ROOT_V0, "subjects", SUBJECT_ID);
-const PROGRESS_PATH = join(process.cwd(), "tmp", `long-run-progress-${String(BATCH)}.json`);
-const ARTIFACT_PATH = join(process.cwd(), "tmp", `long-run-checkpoint-${String(BATCH)}.json`);
 
 /** Natural mixed interactions (session 1 then session 2). No scripted state targets. */
 function plan(batch: number): readonly string[] {
@@ -122,12 +133,45 @@ async function durableState(runtime: ProductRuntimeV0): Promise<DurableState> {
   };
 }
 
+/** Existing product diagnostics: per-stage provider call counts (no prompts). */
+function stageCountsV0(runtime: ProductRuntimeV0): Record<string, number> | null {
+  const view = runtime.diagnosticsView();
+  const provider = view?.provider ?? null;
+  if (provider === null) return null;
+  const counts: Record<string, number> = {};
+  for (const sample of provider.samples) counts[sample.stage] = sample.count;
+  return counts;
+}
+
+type FailureClassV0 = "EXECUTOR" | "PRODUCT" | "CORE";
+
+/** §19: executor failures are never folded into core. */
+function classifyFailureV0(detail: string): { failure_class: FailureClassV0; kind: string; context: boolean } {
+  if (/RATE_LIMIT|HTTP 429|rate limit/i.test(detail)) return { failure_class: "EXECUTOR", kind: "RATE_LIMIT", context: false };
+  if (/MODEL_TIMEOUT|timed out/i.test(detail)) return { failure_class: "EXECUTOR", kind: "TIMEOUT", context: false };
+  if (/MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED|OUTPUT_TRUNCATED|done_reason=length/i.test(detail)) {
+    return { failure_class: "EXECUTOR", kind: "OUTPUT_TRUNCATED", context: true };
+  }
+  if (/MODEL_HTTP_FAILURE|HTTP \d{3}|MODEL_CONNECTION_FAILURE/i.test(detail)) {
+    return { failure_class: "EXECUTOR", kind: "PROVIDER_ERROR", context: false };
+  }
+  if (/INVOCATION_BINDING_INVALID|MODEL_SCHEMA_INVALID/i.test(detail)) {
+    return { failure_class: "PRODUCT", kind: "OUTPUT_CONTRACT", context: false };
+  }
+  if (/restore mismatch|corruption|dangling|authority bypass|cross-subject/i.test(detail)) {
+    return { failure_class: "CORE", kind: "CORE_INTEGRITY", context: false };
+  }
+  return { failure_class: "PRODUCT", kind: "TURN_FAILED_CLOSED", context: false };
+}
+
 interface IssueCandidate {
   issue_id: string;
   subject_id: string;
   turn_index: number;
+  timestamp: string;
   category: "CORE_INTEGRITY" | "BEHAVIORAL" | "PRODUCT";
   severity: "BLOCKER" | "MAJOR" | "MINOR";
+  failure_class?: FailureClassV0;
   current_scene: string;
   relevant_durable_refs: readonly string[];
   state_snapshot_summary: Record<string, unknown>;
@@ -139,21 +183,95 @@ interface IssueCandidate {
   reproducible: "YES" | "NO" | "UNKNOWN";
 }
 
+function latencyStatsV0(samples: readonly number[]): {
+  readonly samples: number;
+  readonly min: number | null;
+  readonly median: number | null;
+  readonly p95: number | null;
+  readonly max: number | null;
+  readonly total: number;
+} {
+  const sorted = [...samples].sort((a, b) => a - b);
+  const at = (fraction: number): number | null =>
+    sorted.length === 0 ? null : sorted[Math.min(sorted.length - 1, Math.ceil(fraction * sorted.length) - 1)] ?? null;
+  return {
+    samples: sorted.length,
+    min: sorted[0] ?? null,
+    median: at(0.5),
+    p95: at(0.95),
+    max: sorted.at(-1) ?? null,
+    total: sorted.reduce((sum, value) => sum + value, 0)
+  };
+}
+
 describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
   it(`runs ${String(BATCH)} real interactions with fresh restarts and checkpoints`, async () => {
     mkdirSync(DATA_ROOT, { recursive: true });
     const issues: IssueCandidate[] = [];
-    const problem = (issue: Omit<IssueCandidate, "issue_id" | "subject_id">): void => {
-      issues.push({ issue_id: `LR-${String(issues.length + 1).padStart(3, "0")}`, subject_id: SUBJECT_ID, ...issue });
+    const problem = (issue: Omit<IssueCandidate, "issue_id" | "subject_id" | "timestamp">): void => {
+      issues.push({
+        issue_id: `LR-${String(issues.length + 1).padStart(3, "0")}`,
+        subject_id: SUBJECT_ID,
+        timestamp: new Date().toISOString(),
+        ...issue
+      });
     };
 
-    let runtime: ProductRuntimeV0 = await createProductRuntimeV0({
-      data_root: DATA_ROOT,
-      subject: { display_name: SUBJECT_ID },
-      session_label: "core-v1-long-run"
-    });
+    let runtime: ProductRuntimeV0;
+    try {
+      runtime = await createProductRuntimeV0({
+        data_root: DATA_ROOT,
+        subject: { display_name: SUBJECT_ID },
+        session_label: "core-v1-long-run"
+      });
+    } catch (error) {
+      // The product fails closed when the requested family has no credential. That is
+      // a prerequisite problem, not a run: record it and stop loudly, nothing faked.
+      const detail = error instanceof Error ? error.message.slice(0, 300) : "unknown";
+      const blocked = {
+        schema_version: "core-v1-long-run-blocked-v0",
+        subject_id: SUBJECT_ID,
+        data_root: DATA_ROOT,
+        credential_present: process.env["MODEL_API_KEY"] !== undefined,
+        requested_executor: process.env["CHARACTEROS_EXECUTOR"] ?? "(unset)",
+        detail,
+        note: "Run did not start: the product configuration failed closed before any interaction."
+      };
+      writeFileSync(
+        join(process.cwd(), "tmp", "deepseek-long-run-blocked.json"),
+        `${JSON.stringify(blocked, null, 2)}\n`,
+        "utf8"
+      );
+      throw new Error(
+        `DEEPSEEK_RUN_BLOCKED_CREDENTIAL_ABSENT: the product executor could not be created (${detail}). ` +
+          `Export the credential in the environment (MODEL_API_KEY) — presence is required — and re-run. ` +
+          `This harness never reads a credential from a file or an argument.`,
+        { cause: error }
+      );
+    }
     const configuration = runtime.configView();
-    const backend = `${configuration.executor.effective} / ${configuration.model.value} @ ${configuration.endpoint.value}`;
+    const family = configuration.executor.effective;
+    const credentialPresent = configuration.executor.credential_present;
+    const backend = `${family} / ${configuration.model.value} @ ${configuration.endpoint.value}`;
+    // Monitor the effective executor endpoint, plus the local executor endpoint the
+    // Ollama-only adaptation providers keep using regardless of the selected family
+    // (same default the product resolves when OLLAMA_BASE_URL is unset). Records
+    // carry the host, so the artifact can split cloud and local traffic.
+    const observedHosts = [
+      configuration.endpoint.value,
+      process.env["OLLAMA_BASE_URL"] ?? "http://127.0.0.1:11434"
+    ];
+    const requestObserver: ProviderRequestObserverV0 = installProviderRequestObserverV0(observedHosts);
+    const artifactPath = join(
+      process.cwd(),
+      "tmp",
+      `${family === "deepseek" ? "deepseek-" : ""}long-run-checkpoint-${String(BATCH)}.json`
+    );
+    const progressPath = join(
+      process.cwd(),
+      "tmp",
+      `${family === "deepseek" ? "deepseek-" : ""}long-run-progress-${String(BATCH)}.json`
+    );
 
     const checkpoints: Record<string, unknown>[] = [];
     const turns: Record<string, unknown>[] = [];
@@ -163,7 +281,11 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     let nonCompletions = 0;
     let attempted = 0;
     let totalProviderMs = 0;
+    let contextWallOccurrences = 0;
+    let consecutiveContextFailures = 0;
+    let stoppedReason: string | null = null;
     const latencies: number[] = [];
+    const replyTexts: string[] = [];
 
     /**
      * The whole record, rebuilt from live in-memory evidence. `partial: true` is the
@@ -178,18 +300,40 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         state = null;
         note = `${note} | state unreadable: ${error instanceof Error ? error.message.slice(0, 120) : "unknown"}`;
       }
-      const sorted = [...latencies].sort((a, b) => a - b);
+      let stageCounts: Record<string, number> | null;
+      try {
+        stageCounts = stageCountsV0(runtime);
+      } catch {
+        stageCounts = null;
+      }
+      const providerView = runtime.diagnosticsView()?.provider ?? null;
+      const wallStatus =
+        contextWallOccurrences === 0
+          ? `${family === "deepseek" ? "DEEPSEEK_LONGRUN_" : ""}CONTEXT_WALL_NOT_OBSERVED_AT_${String(attempted)}_TURNS`
+          : "CONTEXT_WALL_OBSERVED";
       return {
         schema_version: "core-v1-long-run-checkpoint-v0",
         generated_from_head: process.env["CHARACTEROS_LONG_RUN_HEAD"] ?? "(unavailable)",
         subject_id: SUBJECT_ID,
         data_root: DATA_ROOT,
         executor: {
-          family: configuration.executor.effective,
+          requested: configuration.executor.requested,
+          family,
           model: configuration.model.value,
           endpoint: configuration.endpoint.value,
           timeout_ms: configuration.timeout_ms.value,
+          context_window_tokens: configuration.context_window_tokens.value,
+          num_predict: configuration.num_predict.value,
+          credential_present: credentialPresent,
+          reason: configuration.executor.reason,
+          observed_hosts: observedHosts,
           note: "current product executor configuration; no substitution, no benchmark"
+        },
+        deepseek: {
+          provider_path: family === "deepseek" ? "OpenAiCompatibleTransportV0 (/chat/completions)" : null,
+          credential_present: credentialPresent,
+          model: family === "deepseek" ? configuration.model.value : null,
+          endpoint: family === "deepseek" ? configuration.endpoint.value : null
         },
         batch: {
           requested: BATCH,
@@ -199,17 +343,21 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           degraded: degradations,
           non_completions: nonCompletions
         },
+        stop_reason: stoppedReason,
         restarts,
         restarts_detail: restartsDetail,
         interactions: turns,
         checkpoints,
         state,
-        latency_ms: {
-          samples: latencies.length,
-          min: sorted[0] ?? null,
-          p50: sorted[Math.floor(sorted.length / 2)] ?? null,
-          max: sorted.at(-1) ?? null,
-          total: totalProviderMs
+        stage_counts: stageCounts,
+        provider_diagnostics: providerView,
+        provider_requests: requestObserver.summary(),
+        latency_ms: latencyStatsV0(latencies),
+        delivered_reply_texts: replyTexts,
+        wall_watch: {
+          context_wall_occurrences: contextWallOccurrences,
+          stop_rule: "2 consecutive same-context EXECUTOR failures stop the batch",
+          status: wallStatus
         },
         degradations,
         non_completions: nonCompletions,
@@ -222,7 +370,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     };
 
     const persistProgress = async (note: string): Promise<void> => {
-      writeFileSync(PROGRESS_PATH, `${JSON.stringify(await buildRecord(true, note), null, 2)}\n`, "utf8");
+      writeFileSync(progressPath, `${JSON.stringify(await buildRecord(true, note), null, 2)}\n`, "utf8");
     };
 
     const checkpoint = async (label: string, index: number): Promise<void> => {
@@ -240,6 +388,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         evolution_affect_transitions: evolution.durable_effects.affect.length,
         cognition_visible_episodes: evolution.cognition_visible.memory_episode_refs.length,
         memory_entries: memory.entries.map((entry_) => entry_.episode_ref),
+        stage_counts: stageCountsV0(runtime),
+        provider_requests: requestObserver.summary(),
         degradations,
         non_completions: nonCompletions,
         total_provider_ms: totalProviderMs
@@ -410,6 +560,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           turn_index: index,
           category: "PRODUCT",
           severity: "MAJOR",
+          failure_class: "PRODUCT",
           current_scene: `restart ${String(restarts + 1)} (${reason})`,
           relevant_durable_refs: [],
           state_snapshot_summary: {},
@@ -461,18 +612,29 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           mismatches.push("personality");
         }
       }
+      const restore =
+        before === null ? "RESTORED_UNVERIFIED" : mismatches.length === 0 ? "EXACT" : "MISMATCH";
       if (mismatches.length > 0) {
+        // A poisoned (fail-closed) runtime keeps uncommitted bookkeeping in memory; a
+        // fresh host restores the last DURABLE state, so a mismatch after a failure is
+        // expected and is recorded as such — never as a durable-integrity block.
+        const poisoned = reason === "POST_FAILURE_RECOVERY";
         problem({
           turn_index: index,
-          category: "CORE_INTEGRITY",
-          severity: "BLOCKER",
+          category: poisoned ? "PRODUCT" : "CORE_INTEGRITY",
+          severity: poisoned ? "MINOR" : "BLOCKER",
+          failure_class: poisoned ? "PRODUCT" : "CORE",
           current_scene: `restart ${String(restarts)}`,
           relevant_durable_refs: [],
           state_snapshot_summary: { before, after } as unknown as Record<string, unknown>,
           retrieved_memory_refs: [],
           executor: backend,
-          result: "restore mismatch",
-          expected: "exact durable restore",
+          result: poisoned
+            ? "failed runtime's in-memory projection differs from the restored durable state"
+            : "restore mismatch",
+          expected: poisoned
+            ? "the fresh host restores the last durable commit exactly"
+            : "exact durable restore",
           observed: mismatches.join(" | "),
           reproducible: "YES"
         });
@@ -481,16 +643,17 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         restart: restarts,
         reason,
         interactions: index,
-        restore: before === null ? "RESTORED_UNVERIFIED" : mismatches.length === 0 ? "EXACT" : "MISMATCH",
+        restore,
         mismatches,
-        origin: after.origin
+        origin: after.origin,
+        after
       });
       checkpoints.push({
         checkpoint: `restart_${String(restarts)}`,
         interactions: index,
         restarts,
         reason,
-        restore: before === null ? "RESTORED_UNVERIFIED" : mismatches.length === 0 ? "EXACT" : "MISMATCH",
+        restore,
         mismatches
       });
       await persistProgress(`restart ${String(restarts)} (${reason})`);
@@ -498,57 +661,69 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     };
 
     const interactions = plan(BATCH);
-    await checkpoint("checkpoint_0", 0);
+    await checkpoint("BEFORE", 0);
+    let lastDurable: DurableState | null = await durableState(runtime);
     for (const [index, text] of interactions.entries()) {
       const number = index + 1;
       attempted = number;
       let turn: ProductTurnResultV0;
+      let threw: string | null = null;
       try {
         const result = await runtime.submitHumanText(text);
         turn = runtime.summarizeTurn(result);
       } catch (error) {
-        nonCompletions += 1;
-        const detail = error instanceof Error ? error.message.slice(0, 300) : String(error).slice(0, 300);
-        turns.push({
-          interaction: number,
-          text,
-          status: "THREW",
+        threw = error instanceof Error ? error.message.slice(0, 300) : String(error).slice(0, 300);
+        turn = {
+          status: "FAILED",
+          reply_text: null,
+          turn_index: -1,
+          subject_id: SUBJECT_ID,
+          completed_prior_outcome: null,
+          language_call_required: false,
           elapsed_ms: null,
-          state_revision_after: null,
-          subject_turn_index: null,
-          failure: detail
-        });
+          repository_revision_after: "",
+          state_revision_after: -1,
+          failure_detail: threw,
+          failure: null
+        } as unknown as ProductTurnResultV0;
+        nonCompletions += 1;
+        const classified = classifyFailureV0(threw);
         problem({
           turn_index: number,
           category: "PRODUCT",
           severity: "MAJOR",
+          failure_class: classified.failure_class,
           current_scene: text,
           relevant_durable_refs: [],
           state_snapshot_summary: {},
           retrieved_memory_refs: [],
           executor: backend,
-          result: "turn threw instead of returning a result",
+          result: `turn threw (${classified.kind})`,
           expected: "a bounded failure summary",
-          observed: detail,
+          observed: threw,
           reproducible: "UNKNOWN"
         });
-        await persistProgress(`interaction ${String(number)} threw`);
-        if (!(await restart(number, "POST_FAILURE_RECOVERY"))) break;
-        continue;
       }
+      const detail = turn.failure_detail ?? "";
+      const classified = classifyFailureV0(detail);
       turns.push({
         interaction: number,
         text,
         status: turn.status,
         elapsed_ms: turn.elapsed_ms,
-        state_revision_after: turn.state_revision_after,
-        subject_turn_index: turn.turn_index,
+        state_revision_after: turn.state_revision_after < 0 ? null : turn.state_revision_after,
+        subject_turn_index: turn.turn_index < 0 ? null : turn.turn_index,
         language_call_required: turn.language_call_required,
-        failure: turn.failure_detail
+        failure: detail === "" ? threw : detail,
+        failure_class: classified.failure_class,
+        failure_kind: classified.kind
       });
       if (turn.elapsed_ms !== null) {
         latencies.push(turn.elapsed_ms);
         totalProviderMs += turn.elapsed_ms;
+      }
+      if (turn.status === "COMPLETE" && turn.reply_text !== null) {
+        replyTexts.push(turn.reply_text.slice(0, 400));
       }
       if (turn.status === "DEGRADED") {
         degradations += 1;
@@ -556,6 +731,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           turn_index: number,
           category: "PRODUCT",
           severity: "MINOR",
+          failure_class: "PRODUCT",
           current_scene: text,
           relevant_durable_refs: [],
           state_snapshot_summary: {},
@@ -569,65 +745,149 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       if (turn.status === "FAILED") {
         nonCompletions += 1;
-        const detail = turn.failure_detail ?? "no detail";
-        const timeoutish = /MODEL_TIMEOUT|timed out/i.test(detail);
-        problem({
-          turn_index: number,
-          category: "PRODUCT",
-          severity: timeoutish ? "MAJOR" : "MINOR",
-          current_scene: text,
-          relevant_durable_refs: [],
-          state_snapshot_summary: {},
-          retrieved_memory_refs: [],
-          executor: backend,
-          result: timeoutish ? "executor timeout" : "turn failed closed",
-          expected: "a completed turn",
-          observed: detail.slice(0, 300),
-          reproducible: "UNKNOWN"
-        });
+        if (threw === null) {
+          problem({
+            turn_index: number,
+            category: "PRODUCT",
+            severity: classified.kind === "TIMEOUT" ? "MAJOR" : "MINOR",
+            failure_class: classified.failure_class,
+            current_scene: text,
+            relevant_durable_refs: [],
+            state_snapshot_summary: {},
+            retrieved_memory_refs: [],
+            executor: backend,
+            result: `turn failed closed (${classified.kind})`,
+            expected: "a completed turn",
+            observed: detail.slice(0, 300),
+            reproducible: "UNKNOWN"
+          });
+        }
+        // §24 FAILED TURN LAW: a failed turn must not move durable state.
+        let afterFailure: DurableState | null;
+        try {
+          afterFailure = await durableState(runtime);
+        } catch {
+          afterFailure = null;
+        }
+        if (afterFailure !== null && lastDurable !== null) {
+          if (afterFailure.episodes !== lastDurable.episodes) {
+            problem({
+              turn_index: number,
+              category: "CORE_INTEGRITY",
+              severity: "BLOCKER",
+              failure_class: "CORE",
+              current_scene: text,
+              relevant_durable_refs: [],
+              state_snapshot_summary: { before: lastDurable, after: afterFailure } as unknown as Record<string, unknown>,
+              retrieved_memory_refs: [],
+              executor: backend,
+              result: "a failed turn changed the durable episode count",
+              expected: "durable state unchanged by a failed turn",
+              observed: `${String(lastDurable.episodes)} -> ${String(afterFailure.episodes)}`,
+              reproducible: "YES"
+            });
+          }
+          if (afterFailure.state_revision !== lastDurable.state_revision && afterFailure.origin === "RESTORED") {
+            // An in-memory advance without a durable commit is the fail-closed bookkeeping
+            // pattern; it is recorded, and the durable snapshot mtime check below is the
+            // authoritative statement about what was actually written.
+            problem({
+              turn_index: number,
+              category: "PRODUCT",
+              severity: "MINOR",
+              failure_class: "PRODUCT",
+              current_scene: text,
+              relevant_durable_refs: [],
+              state_snapshot_summary: { before: lastDurable, after: afterFailure } as unknown as Record<string, unknown>,
+              retrieved_memory_refs: [],
+              executor: backend,
+              result: "fail-closed turn advanced the in-memory projection without a durable commit",
+              expected: "durable revision unchanged by a failed turn",
+              observed: `${String(lastDurable.state_revision)} -> ${String(afterFailure.state_revision)}`,
+              reproducible: "YES"
+            });
+          }
+        }
+        if (classified.context) {
+          contextWallOccurrences += 1;
+          consecutiveContextFailures += 1;
+        } else {
+          consecutiveContextFailures = 0;
+        }
+      } else {
+        consecutiveContextFailures = 0;
+        lastDurable = await durableState(runtime);
       }
-      if (number % 10 === 0) await checkpoint(`checkpoint_${String(number)}`, number);
+      if ([5, 10, 15, 20].includes(number)) await checkpoint(`TURN_${String(number)}`, number);
       await persistProgress(`interaction ${String(number)} ${turn.status}`);
       if (number === 10 || number === interactions.length) {
-        if (!(await restart(number, "SCHEDULED"))) break;
+        if (!(await restart(number, "SCHEDULED"))) {
+          stoppedReason = "RESTART_FAILED";
+          break;
+        }
+        lastDurable = await durableState(runtime);
       }
       if (turn.status === "FAILED") {
-        // The product runtime stays closed after a failed turn (observed behaviour);
-        // an operator restarts the app. One bounded recovery restart keeps the batch
-        // lived; the failure itself is already recorded above.
-        if (!(await restart(number, "POST_FAILURE_RECOVERY"))) break;
+        if (consecutiveContextFailures >= 2) {
+          // §20: two consecutive same-context failures stop the batch; do not burn the rest.
+          stoppedReason = "STOPPED_AFTER_2_CONSECUTIVE_CONTEXT_FAILURES";
+          await persistProgress("stopped by the context-failure stop rule");
+          break;
+        }
+        // The product runtime stays closed after a failed turn (observed behaviour); an
+        // operator restarts the app. One bounded recovery restart keeps the batch lived.
+        if (!(await restart(number, "POST_FAILURE_RECOVERY"))) {
+          stoppedReason = "RESTART_FAILED";
+          break;
+        }
+        lastDurable = await durableState(runtime);
       }
     }
 
-    const record = await buildRecord(false, "Operational observation only — no scientific verdict, no new core mechanism, no repair performed.");
+    if (stoppedReason === null && attempted === BATCH) {
+      const finalRestoreOk = await restart(attempted, "SCHEDULED");
+      if (finalRestoreOk) await checkpoint("FINAL_RESTORE", attempted);
+    }
+    requestObserver.uninstall();
+
+    const record = await buildRecord(
+      false,
+      "Operational observation only — no scientific verdict, no new core mechanism, no repair performed."
+    );
     const serialized = `${JSON.stringify(record, null, 2)}\n`;
-    writeFileSync(ARTIFACT_PATH, serialized, "utf8");
+    writeFileSync(artifactPath, serialized, "utf8");
     const sha = createHash("sha256").update(serialized, "utf8").digest("hex");
-    const batchInfo = record["batch"] as { completed: number };
+    const batchInfo = record["batch"] as { completed: number; failed: number };
     const stateInfo = record["state"] as DurableState | null;
     const summary = {
+      executor_family: family,
+      model: configuration.model.value,
+      credential_present: credentialPresent,
       interactions: `${String(batchInfo.completed)}/${String(BATCH)} COMPLETE`,
       attempted,
+      failed: batchInfo.failed,
+      stop_reason: stoppedReason,
       restarts,
-      restarts_detail: restartsDetail.map((entry) => `${String(entry["reason"])}@${String(entry["interactions"])}`),
+      restarts_detail: restartsDetail.map((entry) => `${String(entry["reason"])}@${String(entry["interactions"])}:${String(entry["restore"])}`),
       degradations,
       non_completions: nonCompletions,
+      context_wall_occurrences: contextWallOccurrences,
+      provider_requests: record["provider_requests"],
+      latency_ms: record["latency_ms"],
       episodes: stateInfo?.episodes ?? null,
       affect: stateInfo?.affect ?? null,
       beliefs: stateInfo?.beliefs ?? null,
-      latency_ms: record["latency_ms"],
       issues: issues.map((issue) => `${issue.issue_id} ${issue.severity} ${issue.category}: ${issue.result}`),
-      artifact: ARTIFACT_PATH,
+      artifact: artifactPath,
       sha256: sha
     };
     console.log("LONG_RUN_CHECKPOINT", JSON.stringify(summary, null, 2));
-    // Configuration provenance for the record (no credentials are printed: /config
-    // is an allow-list view and redacts endpoint credentials).
     console.log("LONG_RUN_CONFIG", JSON.stringify(configuration));
-    // The harness never asserts a happy outcome: it records what happened. The only
-    // hard expectation is that the batch ran to its end and the artifact exists.
-    expect(attempted).toBe(BATCH);
-    expect(restarts).toBeGreaterThanOrEqual(2);
-    expect(readFileSync(ARTIFACT_PATH, "utf8").length).toBeGreaterThan(0);
+    // The harness never asserts a happy outcome: it records what happened. The only hard
+    // expectations are that the batch ran to its end (or stopped by its own rule) and
+    // that the artifact exists.
+    expect(attempted).toBeGreaterThan(0);
+    expect(attempted === BATCH || stoppedReason !== null).toBe(true);
+    expect(readFileSync(artifactPath, "utf8").length).toBeGreaterThan(0);
   }, 28_800_000);
 });
