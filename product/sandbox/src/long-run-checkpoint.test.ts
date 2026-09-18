@@ -43,7 +43,7 @@
  * rewritten after every interaction.
  */
 
-import { mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -60,6 +60,11 @@ import {
   type ProviderRequestObserverV0
 } from "./provider-request-observer.js";
 import { evaluateBeliefEvidenceMembershipV0 } from "./monitoring-membership.js";
+import {
+  durableSizesV0,
+  heapReadingV0,
+  shouldResetChunkV0
+} from "./long-run-memory-safe-monitoring.js";
 
 const ENABLED = process.env["CHARACTEROS_LONG_RUN"] === "1";
 const BATCH = (() => {
@@ -74,6 +79,30 @@ const RESTART_EVERY = (() => {
 })();
 const DATA_ROOT =
   process.env["CHARACTEROS_LONG_RUN_ROOT"] ?? join(PRODUCT_DEFAULT_DATA_ROOT_V0, "subjects", SUBJECT_ID);
+/**
+ * SHORT-LIVED CHUNK MODE (§9/§10): one process never runs more than this many real
+ * interactions, so the heap is reset by a deliberate process exit instead of growing
+ * until Node's limit. The orchestrator starts the next chunk with a fresh process.
+ */
+const CHUNK_SIZE = (() => {
+  const raw = Number.parseInt(process.env["CHARACTEROS_LONG_RUN_CHUNK_SIZE"] ?? "10", 10);
+  return Number.isSafeInteger(raw) && raw > 0 && raw <= 50 ? raw : 10;
+})();
+/** Optional durable-episode target that ends the chunk early (§10). */
+const TARGET_EPISODES = (() => {
+  const raw = Number.parseInt(process.env["CHARACTEROS_LONG_RUN_TARGET_EPISODES"] ?? "0", 10);
+  return Number.isSafeInteger(raw) && raw > 0 ? raw : null;
+})();
+/** Skip the first N plan lines so a resumed batch never replays lived scenario lines. */
+const PLAN_OFFSET = (() => {
+  const raw = Number.parseInt(process.env["CHARACTEROS_LONG_RUN_PLAN_OFFSET"] ?? "0", 10);
+  return Number.isSafeInteger(raw) && raw >= 0 ? raw : 0;
+})();
+/** §14 observability-only guard: stop and report if the cloud request count runs away. */
+const MAX_DEEPSEEK_REQUESTS = (() => {
+  const raw = Number.parseInt(process.env["CHARACTEROS_LONG_RUN_MAX_REQUESTS"] ?? "400", 10);
+  return Number.isSafeInteger(raw) && raw > 0 ? raw : 400;
+})();
 
 /** Scenario set for a batch: `A` (the original 20 lines) or `B` (a later stretch of
  *  the same life). Both are natural mixed life content — no state targets, no test
@@ -357,256 +386,6 @@ function classifyFailureV0(detail: string): { failure_class: FailureClassV0; kin
   return { failure_class: "PRODUCT", kind: "TURN_FAILED_CLOSED", context: false };
 }
 
-/** Newest durable snapshot size in the subject root (scalability observation). */
-function durableSnapshotBytesV0(root: string): number | null {
-  try {
-    const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
-    if (entry === undefined) return null;
-    return statSync(join(root, entry)).size;
-  } catch {
-    return null;
-  }
-}
-
-/**
- * §14 measured SAVE-PATH cost: the durable write is serialize + atomic write of the
- * snapshot value. Measured directly (dry write to a temp sibling, removed immediately)
- * instead of inferring it from a turn's local time — the earlier inference was a
- * monitoring mis-calibration (LOCAL turn time is dominated by canonical state work,
- * not by persistence).
- */
-function measureSaveCostV0(root: string): { readonly ms: number; readonly bytes: number } | null {
-  const path = durableSnapshotPathV0(root);
-  if (path === null) return null;
-  try {
-    const started = Date.now();
-    const value = JSON.parse(readFileSync(path, "utf8")) as unknown;
-    const text = `${JSON.stringify(value)}\n`;
-    const probe = `${path}.savecost.tmp`;
-    writeFileSync(probe, text, "utf8");
-    const ms = Date.now() - started;
-    rmSync(probe, { force: true });
-    return { ms, bytes: Buffer.byteLength(text, "utf8") };
-  } catch {
-    return null;
-  }
-}
-
-/** Newest shared-subject source size in the subject root (persistence watch). */
-function durableSharedBytesV0(root: string): number | null {
-  try {
-    const entry = readdirSync(root).find((name) => name.endsWith(".shared-subject.json"));
-    if (entry === undefined) return null;
-    return statSync(join(root, entry)).size;
-  } catch {
-    return null;
-  }
-}
-
-/** Path of the newest durable snapshot in the subject root. */
-function durableSnapshotPathV0(root: string): string | null {
-  try {
-    const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
-    return entry === undefined ? null : join(root, entry);
-  } catch {
-    return null;
-  }
-}
-
-/** 1-tick cadence break-even for the frozen activation dynamics (from the adjudication). */
-const ACTIVATION_BREAK_EVEN_Q_V0 = 0.0532;
-/** The frozen impulse coefficient: u_a = 0.1 * relevance * intensity. */
-const ACTIVATION_IMPULSE_COEFFICIENT_V0 = 0.1;
-
-interface DurablePressureScanV0 {
-  readonly appraisals: readonly {
-    readonly appraisal_ref: string;
-    readonly relevance: number;
-    readonly intensity: number;
-    readonly goal_congruence: number | null;
-  }[];
-  readonly applications: readonly {
-    readonly transition_id: string | null;
-    readonly expected_state_revision: number | null;
-    readonly appraisal_ref: string | null;
-    readonly observation_ref: string | null;
-    readonly valence: number | null;
-    readonly activation: number | null;
-  }[];
-}
-
-/**
- * APPRAISAL PRESSURE WATCH (§5–§8) — a READ-ONLY scan of the subject's own durable
- * snapshot for the two facts no existing read-only projection exposes: each
- * appraisal record's pressure dimensions (relevance/intensity) and each committed
- * AffectApplication's applied value bound to its appraisal ref.
- *
- * The scan opens the snapshot file, extracts those two record shapes and nothing
- * else, and never writes. The post-decay intermediate is NOT persisted anywhere
- * (`/affect` carries only the applied value), so it is reported NOT_AVAILABLE rather
- * than reconstructed.
- */
-function scanDurablePressureV0(snapshot_path: string): DurablePressureScanV0 | null {
-  try {
-    const text = readFileSync(snapshot_path, "utf8");
-    const appraisals: DurablePressureScanV0["appraisals"][number][] = [];
-    // The snapshot is indented JSON, so every token gap is whitespace-tolerant.
-    const appraisalPattern =
-      /"ref":\s*"(appraisal:[0-9a-f]+)"[\s\S]{0,4000}?"dimensions":\s*\{\s*"relevance":\s*(-?[0-9.]+)\s*,\s*"goal_congruence":\s*(-?[0-9.]+)[^}]*"intensity":\s*(-?[0-9.]+)/g;
-    for (const match of text.matchAll(appraisalPattern)) {
-      const ref = match[1];
-      if (ref === undefined) continue;
-      appraisals.push({
-        appraisal_ref: ref,
-        relevance: Number(match[2]),
-        intensity: Number(match[4]),
-        goal_congruence: Number(match[3])
-      });
-    }
-    const applications: DurablePressureScanV0["applications"][number][] = [];
-    const applicationPattern =
-      /"transition_type":\s*"AffectApplication",\s*"expected_state_revision":\s*(\d+),[\s\S]{0,1200}?"cause_refs":\s*\[([^\]]*)\][\s\S]{0,3000}?"path":\s*"\/affect",\s*"value":\s*\{\s*"schema_version":\s*"canonical-affect-v0",\s*"valence":\s*(-?[0-9.]+),\s*"activation":\s*(-?[0-9.]+)/g;
-    for (const match of text.matchAll(applicationPattern)) {
-      const rawRefs = match[2] ?? "";
-      const appraisalRef = /"(appraisal:[0-9a-f]+)"/.exec(rawRefs)?.[1] ?? null;
-      const observationRef = /"(observation:[^"]+)"/.exec(rawRefs)?.[1] ?? null;
-      applications.push({
-        transition_id: null,
-        expected_state_revision: Number(match[1]),
-        appraisal_ref: appraisalRef,
-        observation_ref: observationRef,
-        valence: Number(match[3]),
-        activation: Number(match[4])
-      });
-    }
-    return { appraisals, applications };
-  } catch {
-    return null;
-  }
-}
-
-interface AppraisalPressureSummaryV0 {
-  readonly available: boolean;
-  readonly note: string;
-  readonly application_count: number;
-  readonly appraisal_record_count: number;
-  readonly joined_count: number;
-  readonly q_min: number | null;
-  readonly q_median: number | null;
-  readonly q_p90: number | null;
-  readonly q_max: number | null;
-  readonly q_below_break_even_count: number;
-  readonly q_at_or_above_break_even_count: number;
-  readonly turn_totals: readonly {
-    readonly observation_ref: string;
-    readonly applications: number;
-    readonly q_total: number;
-    readonly u_a_total: number;
-  }[];
-  readonly applied_series: readonly {
-    readonly expected_state_revision: number | null;
-    readonly observation_ref: string | null;
-    readonly activation_before: number | null;
-    readonly activation_after: number | null;
-    readonly net_change: number | null;
-    readonly at_bound: boolean;
-    readonly q: number | null;
-  }[];
-  readonly at_bound_count: number;
-  readonly activation_after_time: "NOT_AVAILABLE";
-  readonly activation_after_time_reason: string;
-  readonly clamp: "NOT_AVAILABLE";
-  readonly clamp_reason: string;
-}
-
-function summariseAppraisalPressureV0(scan: DurablePressureScanV0 | null): AppraisalPressureSummaryV0 {
-  const notAvailable: AppraisalPressureSummaryV0 = {
-    available: false,
-    note: "durable snapshot could not be scanned in this iteration",
-    application_count: 0,
-    appraisal_record_count: 0,
-    joined_count: 0,
-    q_min: null,
-    q_median: null,
-    q_p90: null,
-    q_max: null,
-    q_below_break_even_count: 0,
-    q_at_or_above_break_even_count: 0,
-    turn_totals: [],
-    applied_series: [],
-    at_bound_count: 0,
-    activation_after_time: "NOT_AVAILABLE",
-    activation_after_time_reason: "the applied value is the only affect value persisted; no post-decay intermediate exists durably",
-    clamp: "NOT_AVAILABLE",
-    clamp_reason: "no pre-clamp raw value is persisted, so clamping cannot be observed, only bound contact"
-  };
-  if (scan === null) return notAvailable;
-  const byRef = new Map(scan.appraisals.map((entry) => [entry.appraisal_ref, entry]));
-  const qs: number[] = [];
-  const turnMap = new Map<string, { applications: number; q: number }>();
-  const series: AppraisalPressureSummaryV0["applied_series"][number][] = [];
-  let previousActivation: number | null = null;
-  let atBound = 0;
-  const ordered = [...scan.applications].sort(
-    (left, right) => (left.expected_state_revision ?? 0) - (right.expected_state_revision ?? 0)
-  );
-  for (const application of ordered) {
-    const appraisal = application.appraisal_ref === null ? undefined : byRef.get(application.appraisal_ref);
-    const q = appraisal === undefined ? null : appraisal.relevance * appraisal.intensity;
-    if (q !== null) {
-      qs.push(q);
-      const key = application.observation_ref ?? `revision:${String(application.expected_state_revision)}`;
-      const turn = turnMap.get(key) ?? { applications: 0, q: 0 };
-      turn.applications += 1;
-      turn.q += q;
-      turnMap.set(key, turn);
-    }
-    const after = application.activation;
-    const before = previousActivation;
-    const atBoundHere = after !== null && after >= 1;
-    if (atBoundHere) atBound += 1;
-    series.push({
-      expected_state_revision: application.expected_state_revision,
-      observation_ref: application.observation_ref,
-      activation_before: before,
-      activation_after: after,
-      net_change: before === null || after === null ? null : after - before,
-      at_bound: atBoundHere,
-      q
-    });
-    if (after !== null) previousActivation = after;
-  }
-  const sorted = [...qs].sort((a, b) => a - b);
-  const at = (fraction: number): number | null =>
-    sorted.length === 0 ? null : sorted[Math.min(sorted.length - 1, Math.ceil(fraction * sorted.length) - 1)] ?? null;
-  const turnTotals = [...turnMap.entries()].map(([observation_ref, value]) => ({
-    observation_ref,
-    applications: value.applications,
-    q_total: value.q,
-    u_a_total: ACTIVATION_IMPULSE_COEFFICIENT_V0 * value.q
-  }));
-  return {
-    available: true,
-    note: "read-only durable scan: appraisal dimensions joined to their committed AffectApplication by appraisal ref",
-    application_count: scan.applications.length,
-    appraisal_record_count: scan.appraisals.length,
-    joined_count: qs.length,
-    q_min: sorted[0] ?? null,
-    q_median: at(0.5),
-    q_p90: at(0.9),
-    q_max: sorted.at(-1) ?? null,
-    q_below_break_even_count: qs.filter((q) => q < ACTIVATION_BREAK_EVEN_Q_V0).length,
-    q_at_or_above_break_even_count: qs.filter((q) => q >= ACTIVATION_BREAK_EVEN_Q_V0).length,
-    turn_totals: turnTotals,
-    applied_series: series,
-    at_bound_count: atBound,
-    activation_after_time: "NOT_AVAILABLE",
-    activation_after_time_reason: "the applied value is the only affect value persisted; no post-decay intermediate exists durably",
-    clamp: "NOT_AVAILABLE",
-    clamp_reason: "no pre-clamp raw value is persisted, so clamping cannot be observed, only bound contact"
-  };
-}
-
 /** Conservative, deterministic normalization for the mirroring watch (§18). */
 function normalizedTokensV0(text: string): readonly string[] {
   return text
@@ -779,17 +558,13 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const tripwires: string[] = [];
     const restoreLatencies: number[] = [];
     let r1Conversion: Record<string, unknown> | null = null;
-    let lastSnapshotBytes = durableSnapshotBytesV0(DATA_ROOT);
-    /** Measured save-path costs (one per checkpoint) and the slow-save tripwire counter. */
-    const saveCosts: Record<string, unknown>[] = [];
-    let saveSlowCount = 0;
+    let lastSnapshotBytes = durableSizesV0(DATA_ROOT).snapshot_bytes;
+
     const activationSeries: Record<string, unknown>[] = [];
     const mirrorFlags: Record<string, unknown>[] = [];
     let snapshotStartActivation: number | null = null;
-    const snapshotBytesStart = durableSnapshotBytesV0(DATA_ROOT);
-    const snapshotPath = durableSnapshotPathV0(DATA_ROOT);
-    /** Latest read-only durable pressure reading (updated at checkpoints only). */
-    let latestPressure: AppraisalPressureSummaryV0 = summariseAppraisalPressureV0(null);
+    const snapshotBytesStart = durableSizesV0(DATA_ROOT).snapshot_bytes;
+
     let persistenceReviewRequired = false;
     let restarts = 0;
     let degradations = 0;
@@ -799,6 +574,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     let contextWallOccurrences = 0;
     let consecutiveContextFailures = 0;
     let stoppedReason: string | null = null;
+    let chunkStopReason: string | null = null;
+    const heapChunkStart = heapReadingV0();
     const latencies: number[] = [];
     const replyTexts: string[] = [];
 
@@ -875,16 +652,28 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           status: wallStatus
         },
         failure_kinds: failureKinds,
+        chunk: {
+          mode: "SHORT_LIVED",
+          chunk_size: CHUNK_SIZE,
+          target_episodes: TARGET_EPISODES,
+          plan_offset: PLAN_OFFSET,
+          max_deepseek_requests: MAX_DEEPSEEK_REQUESTS,
+          stop_reason: chunkStopReason
+        },
+        heap: { start: heapChunkStart, end: heapReadingV0() },
         turn_metrics: turnMetrics,
         r1_conversion: r1Conversion,
         persistence_tripwires: tripwires,
-        save_costs: saveCosts,
         restore_latency_ms: restoreLatencies,
         persistence_bytes: {
-          snapshot: durableSnapshotBytesV0(DATA_ROOT),
-          shared: durableSharedBytesV0(DATA_ROOT)
+          snapshot: durableSizesV0(DATA_ROOT).snapshot_bytes,
+          shared: durableSizesV0(DATA_ROOT).shared_subject_bytes
         },
-        appraisal_pressure: latestPressure,
+        // The appraisal-pressure watch now runs in the SHORT-LIVED inspector process
+        // between chunks (scripts/long-run-inspect.mjs); the live worker never parses
+        // the durable store. The orchestrator merges the inspector output into the
+        // resume artifact.
+        appraisal_pressure: null,
         persistence_review_required: persistenceReviewRequired,
         activation_series: activationSeries,
         near_verbatim_mirror_count: mirrorFlags.filter((flag) => flag["obvious_near_verbatim"] === true).length,
@@ -895,7 +684,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         ),
         snapshot_bytes: {
           start: snapshotBytesStart,
-          current: durableSnapshotBytesV0(DATA_ROOT)
+          current: durableSizesV0(DATA_ROOT).snapshot_bytes
         },
         degradations,
         non_completions: nonCompletions,
@@ -913,21 +702,6 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
 
     const checkpoint = async (label: string, index: number): Promise<void> => {
       const state = await durableState(runtime);
-      // APPRAISAL PRESSURE WATCH (§5–§8): one read-only durable scan per checkpoint.
-      latestPressure = summariseAppraisalPressureV0(
-        snapshotPath === null ? null : scanDurablePressureV0(snapshotPath)
-      );
-      // §14 MEASURED save-path cost: serialize + atomic write of the current snapshot.
-      const saveCost = measureSaveCostV0(DATA_ROOT);
-      if (saveCost !== null) {
-        saveCosts.push({ checkpoint: label, interactions: index, ms: saveCost.ms, bytes: saveCost.bytes });
-        if (saveCost.ms > 15_000) {
-          saveSlowCount += 1;
-          if (saveSlowCount >= 2) tripwires.push(`SAVE_PATH_ABOVE_15S_TWICE@${String(index)}`);
-        } else {
-          saveSlowCount = 0;
-        }
-      }
       const life: ProductLifeViewV0 = await runtime.lifeView();
       const memory = await runtime.livedMemory(100);
       const evolution = life.evolution;
@@ -941,8 +715,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         evolution_affect_transitions: evolution.durable_effects.affect.length,
         cognition_visible_episodes: evolution.cognition_visible.memory_episode_refs.length,
         memory_entries: memory.entries.map((entry_) => entry_.episode_ref),
-        snapshot_bytes: durableSnapshotBytesV0(DATA_ROOT),
-        appraisal_pressure: latestPressure,
+        snapshot_bytes: durableSizesV0(DATA_ROOT).snapshot_bytes,
+        heap: heapReadingV0(),
         stage_counts: stageCountsV0(runtime),
         provider_requests: requestObserver.summary(),
         degradations,
@@ -1241,8 +1015,16 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       return true;
     };
 
-    const interactions = plan(BATCH);
+    const interactions = plan(BATCH + PLAN_OFFSET).slice(PLAN_OFFSET);
     await checkpoint("START", 0);
+    // §7 FRESH-RESTORE HEAP TRIPWIRE: if a brand-new process is already at the soft
+    // limit right after restore, the runtime's operational memory envelope is reached.
+    const freshHeap = heapReadingV0();
+    if (shouldResetChunkV0(freshHeap)) {
+      throw new Error(
+        `RUNTIME_MEMORY_OPERATIONAL_LIMIT_REACHED: a fresh process is at heap ratio ${String(freshHeap.ratio)} after restore`
+      );
+    }
     let lastDurable: DurableState | null = await durableState(runtime);
     snapshotStartActivation = lastDurable.affect.activation;
     for (const [index, rawText] of interactions.entries()) {
@@ -1322,10 +1104,13 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       const inputTokens = turnRequests.reduce((sum, record) => sum + (record.usage?.prompt_tokens ?? 0), 0);
       const outputTokens = turnRequests.reduce((sum, record) => sum + (record.usage?.completion_tokens ?? 0), 0);
       const localMs = turn.elapsed_ms === null ? null : Math.max(0, turn.elapsed_ms - providerMs);
-      const snapshotNow = durableSnapshotBytesV0(DATA_ROOT);
+      const snapshotNow = durableSizesV0(DATA_ROOT).snapshot_bytes;
+      const heapTurn = heapReadingV0();
       turnMetrics.push({
         interaction: number,
         status: turn.status,
+        heap_used: heapTurn.heap_used,
+        heap_ratio: heapTurn.ratio,
         recall_probe: recallProbe,
         elapsed_ms: turn.elapsed_ms,
         provider_ms: providerMs,
@@ -1355,8 +1140,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       if (snapshotNow !== null) lastSnapshotBytes = snapshotNow;
       // §14 PERSISTENCE TRIPWIRES — a trigger stops the batch; nothing is redesigned live.
-      // The save path itself is measured directly at checkpoints (measureSaveCostV0); the
-      // per-turn LOCAL time is an observation of local work, not a save-path metric.
+      // The save path itself is measured by the SHORT-LIVED inspector process between
+      // chunks; the per-turn LOCAL time is an observation of local work, not a save metric.
       if (snapshotNow !== null && snapshotNow > 350 * 1024 * 1024) {
         tripwires.push(`SNAPSHOT_ABOVE_350MB@${String(number)}`);
       }
@@ -1366,6 +1151,32 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       if (tripwires.length > 0) {
         stoppedReason = "PERSISTENCE_OPERATIONAL_LIMIT_REACHED";
         await persistProgress(`stopped by persistence tripwire: ${tripwires.join(", ")}`);
+        break;
+      }
+      // §6 HEAP SOFT TRIPWIRE: end the CHUNK long before Node's limit; a fresh process
+      // restores and continues. This is a monitoring/process boundary, never a defect.
+      if (shouldResetChunkV0(heapTurn)) {
+        chunkStopReason = "CHUNK_MEMORY_RESET_REQUIRED";
+        await persistProgress("chunk ended: heap soft tripwire");
+        break;
+      }
+      // §10 chunk size / durable target boundaries.
+      if (number >= CHUNK_SIZE) {
+        chunkStopReason = "CHUNK_SIZE_REACHED";
+        await persistProgress("chunk ended: chunk size reached");
+        break;
+      }
+      if (TARGET_EPISODES !== null && lastDurable !== null && lastDurable.episodes >= TARGET_EPISODES) {
+        chunkStopReason = "TARGET_EPISODES_REACHED";
+        await persistProgress("chunk ended: durable episode target reached");
+        break;
+      }
+      // §14 request guard (observability only).
+      const cloudRequests = requestObserver.summary().by_path["/chat/completions"] ?? 0;
+      if (cloudRequests > MAX_DEEPSEEK_REQUESTS) {
+        tripwires.push("DEEPSEEK_REQUEST_GUARD_EXCEEDED");
+        stoppedReason = "PERSISTENCE_OPERATIONAL_LIMIT_REACHED";
+        await persistProgress("stopped: cloud request guard exceeded");
         break;
       }
       if (turn.status === "DEGRADED") {
@@ -1468,7 +1279,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           episodes: lastDurable.episodes,
           valence: lastDurable.affect.valence,
           activation: lastDurable.affect.activation,
-          snapshot_bytes: durableSnapshotBytesV0(DATA_ROOT),
+          snapshot_bytes: durableSizesV0(DATA_ROOT).snapshot_bytes,
           elapsed_ms: turn.elapsed_ms
         });
         // REPLY MIRRORING WATCH (§18) — conservative deterministic count.
@@ -1483,7 +1294,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         await checkpoint(`TURN_${String(number)}`, number);
         // §18 SNAPSHOT STOP CONDITION: past the review threshold, stop at the next
         // checkpoint instead of running the whole batch blindly.
-        const snapshotNow = durableSnapshotBytesV0(DATA_ROOT);
+        const snapshotNow = durableSizesV0(DATA_ROOT).snapshot_bytes;
         if (snapshotNow !== null && snapshotNow > 300 * 1024 * 1024) {
           persistenceReviewRequired = true;
           stoppedReason = "PERSISTENCE_SCALABILITY_REVIEW_REQUIRED";
@@ -1516,10 +1327,10 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
     }
 
-    if (stoppedReason === null && attempted === BATCH) {
-      const finalRestoreOk = await restart(attempted, "SCHEDULED");
-      if (finalRestoreOk) await checkpoint("FINAL_RESTORE", attempted);
-    }
+    // Every chunk (and the batch) ends with a fresh restore verification, then the
+    // process exits — the deliberate heap reset of the short-lived chunk model.
+    const finalRestoreOk = await restart(attempted, "SCHEDULED");
+    if (finalRestoreOk) await checkpoint("FINAL_RESTORE", attempted);
     requestObserver.uninstall();
 
     const record = await buildRecord(
