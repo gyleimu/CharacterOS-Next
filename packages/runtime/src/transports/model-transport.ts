@@ -37,6 +37,19 @@ export interface ModelTransportConfigV0 {
    * provider failure, never as success.
    */
   readonly max_output_tokens: number;
+  /**
+   * PROVIDER_REQUEST_OPTIONS_V0 — provider-specific request fields the HOST wants
+   * sent verbatim in the completion body (for example a provider's thinking-mode
+   * switch). Purely a host-owned passthrough on the EXISTING request path: no
+   * vendor logic lives here, and the transport invents no option of its own.
+   *
+   * The frozen request semantics stay authoritative: these fields are spread into
+   * the body BEFORE `model`, `messages`, `temperature` and `max_tokens`, so an
+   * option can never rewrite them (a colliding key is overridden by the frozen
+   * fields). Absent by default, so every other OpenAI-compatible provider keeps a
+   * byte-identical request.
+   */
+  readonly provider_request_options?: Readonly<Record<string, unknown>>;
 }
 
 /** One chat message for the completion request. */
@@ -129,6 +142,7 @@ export class OpenAiCompatibleTransportV0 implements ModelTransportV0 {
         method: "POST",
         headers,
         body: JSON.stringify({
+          ...(this.config.provider_request_options ?? {}),
           model: this.config.model,
           messages: request.messages.map((m) => ({ role: m.role, content: m.content })),
           temperature: this.config.temperature,

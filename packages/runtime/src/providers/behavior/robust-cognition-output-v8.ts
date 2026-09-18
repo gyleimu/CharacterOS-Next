@@ -32,6 +32,64 @@ export type NormalizationKind =
   | "SINGLE_OBJECT_EXTRACTED"
   | "KNOWN_DIRECTIVE_STRING_CANONICALIZED";
 
+/**
+ * DEEPSEEK_PRODUCT_EXECUTOR_HARDENING_V0 — the ONE structured normalization this
+ * module applies, and the only one: canonicalizing a declared SET-LIKE ref array.
+ *
+ * The repo's ref law is explicit: cause/evidence refs are an unordered membership
+ * set represented canonically as a unique, lexicographically sorted array
+ * (`validateRefArray(..., { sorted: true })`; "validators never deduplicate or
+ * reorder"). A model that returns the SAME refs in a different order has produced
+ * a different REPRESENTATION of the same meaning, so restoring the canonical
+ * order is representation normalization, not semantics.
+ *
+ * It never adds, drops, substitutes or deduplicates a ref — duplicates survive
+ * the sort and are still rejected by the frozen validator, which also still runs
+ * afterwards. Non-string elements, non-arrays and non-object containers are left
+ * exactly as they are, so every other schema violation keeps failing closed.
+ */
+export const SET_LIKE_REFS_CANONICALIZED_V0 = "SET_LIKE_REFS_CANONICALIZED" as const;
+
+export interface SetLikeRefCanonicalizationV0 {
+  /** The (possibly re-ordered) value; the original reference when nothing changed. */
+  readonly value: unknown;
+  /** True when at least one declared field was re-ordered. */
+  readonly applied: boolean;
+  /** The declared fields that were actually re-ordered (never includes no-ops). */
+  readonly reordered_fields: readonly string[];
+}
+
+/**
+ * Canonicalizes the DECLARED set-like ref fields of a parsed object. The default
+ * field list is the language stage's `evidence_refs`; nothing else is touched.
+ */
+export function canonicalizeSetLikeRefArraysV0(
+  parsed: unknown,
+  declared_fields: readonly string[] = ["evidence_refs"]
+): SetLikeRefCanonicalizationV0 {
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+    return { value: parsed, applied: false, reordered_fields: [] };
+  }
+  const record = parsed as Record<string, unknown>;
+  const reordered: string[] = [];
+  let next: Record<string, unknown> | null = null;
+  for (const field of declared_fields) {
+    const current = record[field];
+    if (!Array.isArray(current) || current.length < 2) continue;
+    if (!current.every((entry) => typeof entry === "string")) continue;
+    // Default Array.prototype.sort compares UTF-16 code units — the SAME ordering
+    // relation the frozen validator applies with `<`, so validator and
+    // canonicalizer can never disagree about "sorted".
+    const sorted = [...(current as readonly string[])].sort();
+    if (sorted.every((entry, index) => entry === (current as readonly string[])[index])) continue;
+    next = next ?? { ...record };
+    next[field] = sorted;
+    reordered.push(field);
+  }
+  if (next === null) return { value: parsed, applied: false, reordered_fields: [] };
+  return { value: next, applied: true, reordered_fields: reordered };
+}
+
 export interface NormalizationResult {
   readonly content: string;
   readonly applied: readonly NormalizationKind[];

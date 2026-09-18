@@ -26,6 +26,7 @@ import {
 import {
   PRODUCT_APPRAISAL_NUM_PREDICT_V0,
   createProductTransportsV0,
+  deepSeekProviderRequestOptionsV0,
   type ProductTransportsV0
 } from "./product-providers.js";
 import {
@@ -87,6 +88,14 @@ export function createProductProviderBundleV0(
   const configuration = options.configuration;
   const model = configuration.model.value;
   const baseUrl = configuration.endpoint.value;
+  // DEEPSEEK_PRODUCT_EXECUTOR_HARDENING_V0 — the cloud family sends the product's
+  // thinking-mode setting on the existing request path (default DISABLED, because
+  // the contract consumes final `message.content`). The local family is untouched:
+  // its native transport has always sent `think: false`.
+  const cloudRequestOptions =
+    configuration.executor.effective === "deepseek"
+      ? deepSeekProviderRequestOptionsV0(configuration.deepseek_thinking.value)
+      : undefined;
   const transports = createProductTransportsV0({
     executor: configuration.executor.effective,
     // Credential: environment → configuration → transport construction. It stays
@@ -95,6 +104,7 @@ export function createProductProviderBundleV0(
     ...(configuration.executor.effective === "deepseek"
       ? { api_key: options.environment?.get("MODEL_API_KEY") ?? null }
       : {}),
+    ...(cloudRequestOptions === undefined ? {} : { provider_request_options: cloudRequestOptions }),
     base_url: baseUrl,
     model,
     timeout_ms: configuration.timeout_ms.value,

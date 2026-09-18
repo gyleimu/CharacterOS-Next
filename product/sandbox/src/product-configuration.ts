@@ -273,6 +273,46 @@ export interface ProductConfigurationV0 {
    * with real models). Non-canonical product configuration only.
    */
   readonly appraisal_exact_input_reuse: ProductConfigValueV0<boolean>;
+  /**
+   * DEEPSEEK_PRODUCT_EXECUTOR_HARDENING_V0 — the cloud family's thinking-mode
+   * request setting (`CHARACTEROS_DEEPSEEK_THINKING`). DEFAULT `DISABLED`: the
+   * product's cognition/language contract consumes the provider's FINAL
+   * `message.content`, and a thinking-first model spends its whole output budget
+   * on reasoning and returns empty content, which fails closed. Inert for the
+   * local family (the native transport already sends `think: false`).
+   */
+  readonly deepseek_thinking: ProductConfigValueV0<DeepSeekThinkingSettingV0>;
+}
+
+/** Explicit thinking-mode request setting for the cloud (OpenAI-compatible) family. */
+export type DeepSeekThinkingSettingV0 = "DISABLED" | "PROVIDER_DEFAULT" | "ENABLED";
+
+/** Narrow, documented environment surface for the setting above. */
+export const DEEPSEEK_THINKING_ENV_V0 = "CHARACTEROS_DEEPSEEK_THINKING" as const;
+
+function resolveDeepSeekThinkingV0(
+  environment: ProductEnvironmentV0
+): ProductConfigValueV0<DeepSeekThinkingSettingV0> {
+  const raw = environment.get(DEEPSEEK_THINKING_ENV_V0);
+  if (raw === undefined) {
+    return { value: "DISABLED", source: "DEFAULT", origin: BUILT_IN_DEFAULT_ORIGIN };
+  }
+  const normalized = raw.trim().toLowerCase();
+  if (normalized === "disabled") {
+    return { value: "DISABLED", source: "ENVIRONMENT", origin: DEEPSEEK_THINKING_ENV_V0 };
+  }
+  if (normalized === "enabled") {
+    return { value: "ENABLED", source: "ENVIRONMENT", origin: DEEPSEEK_THINKING_ENV_V0 };
+  }
+  if (normalized === "provider-default" || normalized === "provider_default") {
+    return { value: "PROVIDER_DEFAULT", source: "ENVIRONMENT", origin: DEEPSEEK_THINKING_ENV_V0 };
+  }
+  throw new ProductConfigurationErrorV0(
+    DEEPSEEK_THINKING_ENV_V0,
+    raw,
+    "one of disabled, provider-default, enabled",
+    `environment variable ${DEEPSEEK_THINKING_ENV_V0}`
+  );
 }
 
 export interface ResolveProductConfigurationInputV0 {
@@ -352,7 +392,8 @@ export function resolveProductConfigurationV0(
       environment,
       "CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE",
       false
-    )
+    ),
+    deepseek_thinking: resolveDeepSeekThinkingV0(environment)
   };
 }
 
@@ -430,6 +471,14 @@ export function formatConfigurationLinesV0(
     // and therefore cannot appear here.
     lines.push(
       `    credential: ${configuration.credential_present ? `present (${PRODUCT_CLOUD_CREDENTIAL_ENV_V0}, value never printed)` : `MISSING (${PRODUCT_CLOUD_CREDENTIAL_ENV_V0})`}`
+    );
+    lines.push(
+      ...settingLinesV0(
+        "thinking",
+        configuration.deepseek_thinking.value.toLowerCase().replace("_", "-"),
+        configuration.deepseek_thinking.source,
+        configuration.deepseek_thinking.origin
+      )
     );
   }
   lines.push(...settingLinesV0("model", configuration.model.value, configuration.model.source, configuration.model.origin));

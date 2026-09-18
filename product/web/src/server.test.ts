@@ -82,6 +82,7 @@ function configViewShape(): ProductConfigViewV0 {
     },
     data_root_contains: ["subject-config.json (product subject configuration)"],
     appraisal_exact_input_reuse: { value: "off", source: "DEFAULT", origin: "built-in default" },
+    deepseek_thinking: { value: "disabled", source: "DEFAULT", origin: "built-in default" },
     read_only: true
   };
 }

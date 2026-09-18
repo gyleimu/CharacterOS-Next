@@ -43,7 +43,7 @@
  * rewritten after every interaction.
  */
 
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -66,6 +66,11 @@ const BATCH = (() => {
   return Number.isSafeInteger(raw) && raw > 0 && raw <= 200 ? raw : 20;
 })();
 const SUBJECT_ID = process.env["CHARACTEROS_LONG_RUN_SUBJECT"] ?? "alice-longrun";
+/** Scheduled fresh-restart cadence (every N interactions). Default 10; a slice may narrow it. */
+const RESTART_EVERY = (() => {
+  const raw = Number.parseInt(process.env["CHARACTEROS_LONG_RUN_RESTART_EVERY"] ?? "10", 10);
+  return Number.isSafeInteger(raw) && raw > 1 && raw <= 50 ? raw : 10;
+})();
 const DATA_ROOT =
   process.env["CHARACTEROS_LONG_RUN_ROOT"] ?? join(PRODUCT_DEFAULT_DATA_ROOT_V0, "subjects", SUBJECT_ID);
 
@@ -147,6 +152,9 @@ type FailureClassV0 = "EXECUTOR" | "PRODUCT" | "CORE";
 
 /** §19: executor failures are never folded into core. */
 function classifyFailureV0(detail: string): { failure_class: FailureClassV0; kind: string; context: boolean } {
+  if (/MODEL_TRANSPORT_MODEL_EMPTY_RESPONSE|completion content is empty|content is empty/i.test(detail)) {
+    return { failure_class: "EXECUTOR", kind: "EMPTY_CONTENT", context: false };
+  }
   if (/RATE_LIMIT|HTTP 429|rate limit/i.test(detail)) return { failure_class: "EXECUTOR", kind: "RATE_LIMIT", context: false };
   if (/MODEL_TIMEOUT|timed out/i.test(detail)) return { failure_class: "EXECUTOR", kind: "TIMEOUT", context: false };
   if (/MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED|OUTPUT_TRUNCATED|done_reason=length/i.test(detail)) {
@@ -155,13 +163,30 @@ function classifyFailureV0(detail: string): { failure_class: FailureClassV0; kin
   if (/MODEL_HTTP_FAILURE|HTTP \d{3}|MODEL_CONNECTION_FAILURE/i.test(detail)) {
     return { failure_class: "EXECUTOR", kind: "PROVIDER_ERROR", context: false };
   }
-  if (/INVOCATION_BINDING_INVALID|MODEL_SCHEMA_INVALID/i.test(detail)) {
+  if (/refs not lexicographically sorted|duplicate ref/i.test(detail)) {
+    return { failure_class: "PRODUCT", kind: "REFS_ORDER", context: false };
+  }
+  if (/SOURCE_QUOTE is not an exact substring|REJECTED_SOURCE_BINDING/i.test(detail)) {
+    return { failure_class: "PRODUCT", kind: "SOURCE_QUOTE", context: false };
+  }
+  if (/INVOCATION_BINDING_INVALID|MODEL_SCHEMA_INVALID|LANGUAGE_SCHEMA_INVALID|FACTUAL_AUTHORIZATION_REJECTED|RESPONSE_SEMANTICS_REJECTED/i.test(detail)) {
     return { failure_class: "PRODUCT", kind: "OUTPUT_CONTRACT", context: false };
   }
   if (/restore mismatch|corruption|dangling|authority bypass|cross-subject/i.test(detail)) {
     return { failure_class: "CORE", kind: "CORE_INTEGRITY", context: false };
   }
   return { failure_class: "PRODUCT", kind: "TURN_FAILED_CLOSED", context: false };
+}
+
+/** Newest durable snapshot size in the subject root (scalability observation). */
+function durableSnapshotBytesV0(root: string): number | null {
+  try {
+    const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
+    if (entry === undefined) return null;
+    return statSync(join(root, entry)).size;
+  } catch {
+    return null;
+  }
 }
 
 interface IssueCandidate {
@@ -276,6 +301,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const checkpoints: Record<string, unknown>[] = [];
     const turns: Record<string, unknown>[] = [];
     const restartsDetail: Record<string, unknown>[] = [];
+    const failureKinds: Record<string, number> = {};
+    const snapshotBytesStart = durableSnapshotBytesV0(DATA_ROOT);
     let restarts = 0;
     let degradations = 0;
     let nonCompletions = 0;
@@ -358,6 +385,11 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           context_wall_occurrences: contextWallOccurrences,
           stop_rule: "2 consecutive same-context EXECUTOR failures stop the batch",
           status: wallStatus
+        },
+        failure_kinds: failureKinds,
+        snapshot_bytes: {
+          start: snapshotBytesStart,
+          current: durableSnapshotBytesV0(DATA_ROOT)
         },
         degradations,
         non_completions: nonCompletions,
@@ -706,6 +738,9 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       const detail = turn.failure_detail ?? "";
       const classified = classifyFailureV0(detail);
+      if (turn.status !== "COMPLETE") {
+        failureKinds[classified.kind] = (failureKinds[classified.kind] ?? 0) + 1;
+      }
       turns.push({
         interaction: number,
         text,
@@ -820,7 +855,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       if ([5, 10, 15, 20].includes(number)) await checkpoint(`TURN_${String(number)}`, number);
       await persistProgress(`interaction ${String(number)} ${turn.status}`);
-      if (number === 10 || number === interactions.length) {
+      if (number % RESTART_EVERY === 0 || number === interactions.length) {
         if (!(await restart(number, "SCHEDULED"))) {
           stoppedReason = "RESTART_FAILED";
           break;

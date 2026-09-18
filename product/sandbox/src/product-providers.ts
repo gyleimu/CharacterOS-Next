@@ -65,6 +65,31 @@ export interface ProductProviderConfigV0 {
   readonly timeout_ms: number;
   readonly num_predict: number;
   readonly context_window_tokens: number;
+  /**
+   * PROVIDER_REQUEST_OPTIONS_V0 — provider-specific request fields for the CLOUD
+   * (OpenAI-compatible) family, built from the product configuration by
+   * `deepSeekProviderRequestOptionsV0`. Absent means the request body is
+   * byte-identical to the historical one. The local native family ignores this:
+   * it has its own fixed request policy (`think: false`).
+   */
+  readonly provider_request_options?: Readonly<Record<string, unknown>> | undefined;
+}
+
+/**
+ * DEEPSEEK_PRODUCT_EXECUTOR_HARDENING_V0 — the cloud request setting that makes a
+ * thinking-first model return its FINAL content. The product's cognition/language
+ * contract consumes `message.content` only (never `reasoning_content`), and a
+ * model that spends its whole output budget on reasoning returns empty content,
+ * which the frozen transport fails closed on. `DISABLED` therefore sends the
+ * provider-supported switch; `PROVIDER_DEFAULT` sends nothing (byte-identical
+ * request); `ENABLED` sends it explicitly enabled. This is the cloud counterpart
+ * of the `think: false` the local native transport has always sent.
+ */
+export function deepSeekProviderRequestOptionsV0(
+  setting: "DISABLED" | "PROVIDER_DEFAULT" | "ENABLED"
+): Readonly<Record<string, unknown>> | undefined {
+  if (setting === "PROVIDER_DEFAULT") return undefined;
+  return { thinking: { type: setting === "DISABLED" ? "disabled" : "enabled" } };
 }
 
 export interface ProductTransportsV0 {
@@ -107,7 +132,10 @@ function createProductTransportV0(
       api_key: config.api_key ?? null,
       timeout_ms: config.timeout_ms,
       temperature: 0,
-      max_output_tokens: options.num_predict
+      max_output_tokens: options.num_predict,
+      ...(config.provider_request_options === undefined
+        ? {}
+        : { provider_request_options: config.provider_request_options })
     });
   }
   const transport = new OllamaNativeCognitionTransportV0({

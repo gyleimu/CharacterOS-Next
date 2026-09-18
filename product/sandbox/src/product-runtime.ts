@@ -235,6 +235,13 @@ export interface ProductConfigViewV0 {
   readonly data_root_contains: readonly string[];
   /** APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 rollout switch (non-canonical). */
   readonly appraisal_exact_input_reuse: ProductConfigValueViewV0;
+  /**
+   * DEEPSEEK_PRODUCT_EXECUTOR_HARDENING_V0 — cloud thinking-mode setting
+   * (`CHARACTEROS_DEEPSEEK_THINKING`: disabled | provider-default | enabled;
+   * default disabled). Recorded so an operator can see exactly what the cloud
+   * request carries.
+   */
+  readonly deepseek_thinking: ProductConfigValueViewV0;
   readonly read_only: true;
 }
 
@@ -451,6 +458,9 @@ export class ProductRuntimeV0 {
       appraisal_exact_input_reuse: value(
         configuration.appraisal_exact_input_reuse,
         (input) => (input ? "on" : "off")
+      ),
+      deepseek_thinking: value(configuration.deepseek_thinking, (input) =>
+        input.toLowerCase().replace("_", "-")
       ),
       read_only: true
     };
