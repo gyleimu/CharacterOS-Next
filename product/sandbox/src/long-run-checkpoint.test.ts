@@ -275,7 +275,62 @@ function plan(batch: number): readonly string[] {
     "The neighbour knows a farmer with a stack of seasoned boards.",
     "I will ask him on Sunday when he comes by."
   ];
-  const chosen = PLAN_SET === "E" ? fifth : PLAN_SET === "D" ? fourth : PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
+  const sixth = [
+    // PLAN F — the autumn stretch (checkpoint-200 leg). Ordinary life with SIX natural
+    // paraphrased recall callbacks (marked *): each asks about something Alice really
+    // lived long ago, never in the historical probe wording, never revealing the answer.
+    "The farmer delivered eight seasoned oak boards on Tuesday.",
+    "I stacked them in the corner with spacers between each one.",
+    "*I need to sharpen this — where did I end up putting the whetstone?",
+    "My sister called about the bookcase I promised her for spring.",
+    "I sketched a wider version and she approved it on the spot.",
+    "The rain found a new gap in the roof and I moved the tools again.",
+    "I nailed the flashing down properly this time, not just patched it.",
+    "*The neighbour's cat is back — where does she like to sleep when she visits?",
+    "Nothing much happened today. I cleaned the oilstone and made soup.",
+    "I cut the first side panel for my sister's bookcase.",
+    "The farmer's boards cut clean; well worth the money.",
+    "*The saw is cutting roughly again — what fixed it last time?",
+    "I wrote the fix on the card again and taped it under the window.",
+    "My neighbour came by with apples from his garden.",
+    "We drank tea in the workshop and talked about the reunion.",
+    "*The stool wobbles again on the stone floor — what did I do about it before?",
+    "I pressed the shim back down and it is steady for now.",
+    "I planed the boards for the second side panel.",
+    "The evening light comes earlier now; I stop by six.",
+    "*I ran out of the cider he brought — what was it for again?",
+    "I do not agree that oak is too heavy for bookcases; mine has stood for years.",
+    "I glued up my sister's first frame and cleaned the clamps after.",
+    "Nothing much happened. I swept and oiled the bench and went home.",
+    "The reunion photos came in the post; I put one on the shelf.",
+    "I started cutting the shelves for her bookcase.",
+    "The cat followed me in again and claimed the offcut pile straight away.",
+    "I labelled my sister's bookcase parts in pencil, the way I do now.",
+    "My shoulder ached, so I stopped early and read the catalogue.",
+    "The neighbour asked whether the bookcase wood is the same oak as my stools.",
+    "I told him it is from the farmer's new stack, better seasoned.",
+    "I sanded her shelves until they felt smooth under the hand.",
+    "The reunion group is planning a spring visit to the old workshop.",
+    "I offered to show them round if the owner agrees.",
+    "*The bottom drawer sticks again — what did I say was in it?",
+    "I waxed the drawer runner and it slides fine now.",
+    "The frame for my sister's bookcase came out of the clamps straight.",
+    "I fitted the back panel and stood it against the wall to look.",
+    "Nothing much happened today. Tea, radio, a little sanding.",
+    "The farmer asked me to build him a tool box for the truck.",
+    "I said yes, from the offcuts, before the winter.",
+    "I measured the truck bed with a tape he had, roughly.",
+    "My sister visited and saw her bookcase assembled in the workshop.",
+    "She nearly cried, which embarrassed us both.",
+    "I promised to deliver it at the weekend in the farmer's truck.",
+    "*Do you remember what I said I would never do with the oak?",
+    "The truck run went fine and the bookcase is in her hall now.",
+    "She filled it the same evening and sent me a photo.",
+    "I started sketching the farmer's tool box from the offcuts.",
+    "The workshop feels ready for winter for the first time in years.",
+    "*Do you remember how the drawer labels are holding up?"
+  ];
+  const chosen = PLAN_SET === "F" ? sixth : PLAN_SET === "E" ? fifth : PLAN_SET === "D" ? fourth : PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
   if (chosen !== null) {
     if (batch <= chosen.length) return chosen.slice(0, batch);
     const filler: string[] = [];
