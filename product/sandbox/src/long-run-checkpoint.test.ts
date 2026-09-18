@@ -43,7 +43,7 @@
  * rewritten after every interaction.
  */
 
-import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -363,6 +363,30 @@ function durableSnapshotBytesV0(root: string): number | null {
     const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
     if (entry === undefined) return null;
     return statSync(join(root, entry)).size;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * §14 measured SAVE-PATH cost: the durable write is serialize + atomic write of the
+ * snapshot value. Measured directly (dry write to a temp sibling, removed immediately)
+ * instead of inferring it from a turn's local time — the earlier inference was a
+ * monitoring mis-calibration (LOCAL turn time is dominated by canonical state work,
+ * not by persistence).
+ */
+function measureSaveCostV0(root: string): { readonly ms: number; readonly bytes: number } | null {
+  const path = durableSnapshotPathV0(root);
+  if (path === null) return null;
+  try {
+    const started = Date.now();
+    const value = JSON.parse(readFileSync(path, "utf8")) as unknown;
+    const text = `${JSON.stringify(value)}\n`;
+    const probe = `${path}.savecost.tmp`;
+    writeFileSync(probe, text, "utf8");
+    const ms = Date.now() - started;
+    rmSync(probe, { force: true });
+    return { ms, bytes: Buffer.byteLength(text, "utf8") };
   } catch {
     return null;
   }
@@ -756,7 +780,9 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const restoreLatencies: number[] = [];
     let r1Conversion: Record<string, unknown> | null = null;
     let lastSnapshotBytes = durableSnapshotBytesV0(DATA_ROOT);
-    let saveSlowTurns = 0;
+    /** Measured save-path costs (one per checkpoint) and the slow-save tripwire counter. */
+    const saveCosts: Record<string, unknown>[] = [];
+    let saveSlowCount = 0;
     const activationSeries: Record<string, unknown>[] = [];
     const mirrorFlags: Record<string, unknown>[] = [];
     let snapshotStartActivation: number | null = null;
@@ -852,6 +878,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         turn_metrics: turnMetrics,
         r1_conversion: r1Conversion,
         persistence_tripwires: tripwires,
+        save_costs: saveCosts,
         restore_latency_ms: restoreLatencies,
         persistence_bytes: {
           snapshot: durableSnapshotBytesV0(DATA_ROOT),
@@ -890,6 +917,17 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       latestPressure = summariseAppraisalPressureV0(
         snapshotPath === null ? null : scanDurablePressureV0(snapshotPath)
       );
+      // §14 MEASURED save-path cost: serialize + atomic write of the current snapshot.
+      const saveCost = measureSaveCostV0(DATA_ROOT);
+      if (saveCost !== null) {
+        saveCosts.push({ checkpoint: label, interactions: index, ms: saveCost.ms, bytes: saveCost.bytes });
+        if (saveCost.ms > 15_000) {
+          saveSlowCount += 1;
+          if (saveSlowCount >= 2) tripwires.push(`SAVE_PATH_ABOVE_15S_TWICE@${String(index)}`);
+        } else {
+          saveSlowCount = 0;
+        }
+      }
       const life: ProductLifeViewV0 = await runtime.lifeView();
       const memory = await runtime.livedMemory(100);
       const evolution = life.evolution;
@@ -1317,14 +1355,10 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       if (snapshotNow !== null) lastSnapshotBytes = snapshotNow;
       // §14 PERSISTENCE TRIPWIRES — a trigger stops the batch; nothing is redesigned live.
+      // The save path itself is measured directly at checkpoints (measureSaveCostV0); the
+      // per-turn LOCAL time is an observation of local work, not a save-path metric.
       if (snapshotNow !== null && snapshotNow > 350 * 1024 * 1024) {
         tripwires.push(`SNAPSHOT_ABOVE_350MB@${String(number)}`);
-      }
-      if (localMs !== null && localMs > 15_000) {
-        saveSlowTurns += 1;
-        if (saveSlowTurns >= 2) tripwires.push(`SAVE_PATH_ABOVE_15S_TWICE@${String(number)}`);
-      } else {
-        saveSlowTurns = 0;
       }
       if (restoreLatencies.filter((ms) => ms > 30_000).length >= 2) {
         tripwires.push(`RESTORE_ABOVE_30S_TWICE@${String(number)}`);
