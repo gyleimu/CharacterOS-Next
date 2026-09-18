@@ -575,6 +575,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     let consecutiveContextFailures = 0;
     let stoppedReason: string | null = null;
     let chunkStopReason: string | null = null;
+    let lastExecutorFailureKind: string | null = null;
+    let consecutiveSameExecutorFailures = 0;
     const heapChunkStart = heapReadingV0();
     const latencies: number[] = [];
     const replyTexts: string[] = [];
@@ -1268,8 +1270,28 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         } else {
           consecutiveContextFailures = 0;
         }
+        // §16 EXECUTOR OUTAGE STOP: two consecutive SAME-CLASS executor failures end the
+        // batch (a provider outage must not be hammered through the whole plan).
+        if (classified.failure_class === "EXECUTOR") {
+          if (lastExecutorFailureKind === classified.kind) {
+            consecutiveSameExecutorFailures += 1;
+          } else {
+            lastExecutorFailureKind = classified.kind;
+            consecutiveSameExecutorFailures = 1;
+          }
+          if (consecutiveSameExecutorFailures >= 2) {
+            chunkStopReason = `EXECUTOR_FAILURE_STOP_${classified.kind}`;
+            await persistProgress(`chunk ended: two consecutive ${classified.kind} executor failures`);
+            break;
+          }
+        } else {
+          lastExecutorFailureKind = null;
+          consecutiveSameExecutorFailures = 0;
+        }
       } else {
         consecutiveContextFailures = 0;
+        lastExecutorFailureKind = null;
+        consecutiveSameExecutorFailures = 0;
         lastDurable = await durableState(runtime);
         // AFFECT ACTIVATION WATCH (§8) — one committed observation per completed turn.
         activationSeries.push({
@@ -1370,7 +1392,9 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     // expectations are that the batch ran to its end (or stopped by its own rule) and
     // that the artifact exists.
     expect(attempted).toBeGreaterThan(0);
-    expect(attempted === BATCH || stoppedReason !== null).toBe(true);
+    // A batch ends either by running its full size or by a DELIBERATE boundary: a chunk
+    // stop (short-lived process model) or a recorded stop reason. Both are valid ends.
+    expect(attempted === BATCH || chunkStopReason !== null || stoppedReason !== null).toBe(true);
     expect(readFileSync(artifactPath, "utf8").length).toBeGreaterThan(0);
   }, 28_800_000);
 });
