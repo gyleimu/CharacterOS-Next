@@ -44,13 +44,15 @@ export function durableSizesV0(root: string): DurableSizesV0 {
 }
 
 /**
- * Harness-owned heap budget for the soft tripwire. The engine's own limit is not read
- * (the v8 module is outside this workspace's import allowlist, and §5 makes that
- * telemetry optional): a conservative 1.5 GB working budget ends a chunk long before
- * Node's real limit, and the value is recorded with every reading so nothing is
- * implicit.
+ * Harness-owned heap budget for the soft tripwire — the engine's default max-old-space
+ * limit, MEASURED in this environment with a standalone probe
+ * (`node -e "require('v8').getHeapStatistics().heap_size_limit"` → 4288 MB on Node
+ * v24.19.0), because the `v8` module is outside this workspace's import allowlist.
+ * The soft tripwire ends a chunk at 78% of it (~3.35 GB), well before Node's own limit;
+ * the budget is NOT raised to squeeze more turns into a process — short-lived chunks are
+ * the fix (§8).
  */
-export const HEAP_SOFT_BUDGET_BYTES_V0 = 1_500_000_000;
+export const HEAP_SOFT_BUDGET_BYTES_V0 = 4_288_000_000;
 
 export interface HeapReadingV0 {
   readonly heap_used: number;
