@@ -295,6 +295,16 @@ export class ProductRuntimeV0 {
     return this.deps.life.lifeView();
   }
 
+  /**
+   * MONITORING MEMBERSHIP CORRECTION (LONG_RUN LR-002/LR-003) — read-only: asks the
+   * production membership authority whether refs belong to the subject's durable
+   * memory at the named revision. Monitoring must use this instead of any bounded
+   * read-model window.
+   */
+  async refsBelongToRevision(revision: string, refs: readonly string[]): Promise<boolean> {
+    return this.deps.life.refsBelongToRevision(revision, refs);
+  }
+
   async status(): Promise<InteractiveSubjectStatusV0> {
     return this.deps.host.status();
   }

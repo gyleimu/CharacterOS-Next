@@ -17,7 +17,9 @@
 
 import type {
   AtomicCommitBundleAnyVersion,
+  CanonicalRefV0,
   ProducerAuthorizationIssuer,
+  RepositoryRevisionIdV0,
   SubjectStateV0,
   SubjectStateV4
 } from "@characteros-next/subject-core";
@@ -1522,6 +1524,22 @@ export class ExplicitV4SessionAuthorityV0 {
         ])
       ].filter((ref) => ref.startsWith("episode:"))
     });
+  }
+
+  /**
+   * MONITORING MEMBERSHIP CORRECTION (LONG_RUN LR-002/LR-003) — STRICTLY READ-ONLY.
+   *
+   * Asks the SAME production membership authority every executor already uses
+   * (`validateRefsBelong` on the repository, against the revision the caller names)
+   * whether these refs belong to the subject's durable memory. It adds NO visibility
+   * semantics of its own, consults no window/list/heuristic, and is used by no
+   * transition — monitoring asks the existing authority instead of inventing one.
+   */
+  async refsBelongToRevisionV0(revision: string, refs: readonly string[]): Promise<boolean> {
+    return this.repo.validateRefsBelong(
+      revision as RepositoryRevisionIdV0,
+      refs as readonly CanonicalRefV0[]
+    );
   }
 
   /**

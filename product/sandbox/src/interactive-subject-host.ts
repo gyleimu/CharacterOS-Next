@@ -438,6 +438,15 @@ export class InteractiveSubjectHostV0 {
   }
 
   /**
+   * MONITORING MEMBERSHIP CORRECTION (LR-002/LR-003) — read-only: asks the production
+   * membership authority whether refs belong to the subject's durable memory at the
+   * named revision. No window, no manifest shortcut, no revision change.
+   */
+  async refsBelongToRevision(revision: string, refs: readonly string[]): Promise<boolean> {
+    return this.runtime.refsBelongToRevisionV0(revision, refs);
+  }
+
+  /**
    * SUBJECT_EVOLUTION_VIEW_V0 — read-only projection of lived events and the durable
    * state changes they produced. No provider call, no adaptation, no revision change.
    */

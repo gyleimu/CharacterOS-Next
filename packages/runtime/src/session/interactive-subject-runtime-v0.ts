@@ -832,6 +832,15 @@ export class InteractiveSubjectRuntimeV0 {
   }
 
   /**
+   * MONITORING MEMBERSHIP CORRECTION (LONG_RUN LR-002/LR-003) — read-only passthrough
+   * to the SAME membership authority the executors use. Monitoring asks the existing
+   * authority (no lived-memory window, no manifest shortcut, no second visibility law).
+   */
+  async refsBelongToRevisionV0(revision: string, refs: readonly string[]): Promise<boolean> {
+    return this.authority.refsBelongToRevisionV0(revision, refs);
+  }
+
+  /**
    * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — read-only inspection of
    * the canonical subject state. Pure read: no mutation, no provider call.
    */

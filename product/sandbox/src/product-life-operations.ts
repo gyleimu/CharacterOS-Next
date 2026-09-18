@@ -213,6 +213,16 @@ export class ProductLifeOperationsV0 {
     };
   }
 
+  /**
+   * MONITORING MEMBERSHIP CORRECTION (LR-002/LR-003) — read-only: asks the production
+   * membership authority whether refs belong to the subject's durable memory at the
+   * named revision. Used by monitoring only; no transition consults it, and it adds
+   * no visibility semantics.
+   */
+  async refsBelongToRevision(revision: string, refs: readonly string[]): Promise<boolean> {
+    return this.deps.host.refsBelongToRevision(revision, refs);
+  }
+
   /** READ-ONLY one-life view composing status + canonical state + recent Memory. */
   async lifeView(): Promise<ProductLifeViewV0> {
     const status = await this.deps.host.status();

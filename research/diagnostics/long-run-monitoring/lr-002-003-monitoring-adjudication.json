@@ -1,0 +1,48 @@
+{
+  "schema_version": "long-run-monitoring-adjudication-v0",
+  "adjudication": "LR_002_003_MONITORING_FALSE_POSITIVE_CONFIRMED",
+  "issued_for": "CORE_V1 long-run operation of subject alice-longrun",
+  "subject_id": "alice-longrun",
+  "lr_002": "MONITORING_FALSE_POSITIVE",
+  "lr_003": "MONITORING_FALSE_POSITIVE",
+  "core_integrity_defect": false,
+  "core_reopen_required": false,
+  "belief_provenance_lawful": true,
+  "dangling_refs": false,
+  "alice_corruption": false,
+  "root_cause": "The long-run checkpoint compared a committed belief transition's evidence refs against the bounded livedMemory(100) product read-model window instead of the durable-membership authority. Once the subject passed 100 episodes the oldest lawful episode necessarily left that window, so the checker raised CORE_INTEGRITY / BLOCKER for a perfectly lawful citation.",
+  "why_it_is_a_false_positive": [
+    "the bounded read model is a display window (newest 100 entries), never a membership authority",
+    "the cited episode is a lawful durable member at its transition revision and at the head revision",
+    "no authority, checksum, revision or canonical ref was inconsistent; only the monitoring predicate was wrong"
+  ],
+  "measured_controls": {
+    "measured_by": "read-only restore of alice-longrun and the production predicate through the product runtime (0 model calls)",
+    "head_revision": "R305",
+    "durable_episode_count": 102,
+    "bounded_window_size": 100,
+    "belief_transition_count": 11,
+    "cited_evidence_refs": 11,
+    "cited_refs_outside_bounded_window": 1,
+    "outside_window_ref": "episode:c0b7f4d8b3133eb392b612ea45ec18d7dc02b9196e2e30decc7b4f9c0484ed97",
+    "validateRefsBelong_at_head": true,
+    "validateRefsBelong_at_R2": true,
+    "nonexistent_ref_control": false,
+    "newest_ref_control_at_head": true,
+    "newest_ref_control_at_R2": false
+  },
+  "correction": {
+    "where": "product/sandbox/src/monitoring-membership.ts, used by product/sandbox/src/long-run-checkpoint.test.ts",
+    "old_membership_source": "livedMemory(100) bounded product read-model window",
+    "new_membership_source": "production validateRefsBelong on the bound repository revision, exposed read-only through the product runtime (refsBelongToRevision)",
+    "semantics": [
+      "every committed transition's evidence refs must belong at the HEAD revision (a truly dangling ref still BLOCKs)",
+      "they must also belong at the revision where monitoring first observed the transition (historical lawfulness is never replaced by head visibility)",
+      "no fallback, no second visibility law, no window, no manifest shortcut: without the production predicate the checker refuses to run"
+    ],
+    "no_new_authority": true,
+    "no_production_semantics_changed": true
+  },
+  "historical_artifact_untouched": true,
+  "note": "The checkpoint-100 artifact that recorded LR-002/LR-003 as BLOCKER is historical fact and is not modified; this record is the correction of record."
+}

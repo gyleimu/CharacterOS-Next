@@ -79,6 +79,10 @@ export class FileInteractiveSnapshotStoreV0 implements InteractiveSnapshotStoreV
     return { kind: "SNAPSHOT", snapshot: parsed as InteractiveSubjectSnapshotV0 };
   }
   async save(snapshot: InteractiveSubjectSnapshotV0): Promise<void> {
-    writeJsonAtomicV0(this.path, snapshot);
+    // PERSISTENCE_SCALABILITY_R1: the snapshot is one of the LARGE durable store
+    // files, so it is written minified. Representation only — the restored value
+    // and every checksum/revision are identical, and the pretty files written by
+    // earlier versions keep loading unchanged.
+    writeJsonAtomicV0(this.path, snapshot, "minified");
   }
 }

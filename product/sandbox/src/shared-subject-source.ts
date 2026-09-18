@@ -158,7 +158,10 @@ export class FileSharedSubjectSourceStoreV0 implements SharedSubjectSourceStoreV
       base_revision: (current ?? 0) + 1,
       ...document
     };
-    writeJsonAtomicV0(this.path, next);
+    // PERSISTENCE_SCALABILITY_R1: the shared-subject source is a LARGE durable store
+    // file, so it is written minified. Representation only; existing pretty files
+    // keep loading unchanged.
+    writeJsonAtomicV0(this.path, next, "minified");
     return { kind: "SAVED", document: next };
   }
 }

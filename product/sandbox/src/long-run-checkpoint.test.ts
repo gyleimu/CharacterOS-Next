@@ -59,6 +59,7 @@ import {
   installProviderRequestObserverV0,
   type ProviderRequestObserverV0
 } from "./provider-request-observer.js";
+import { evaluateBeliefEvidenceMembershipV0 } from "./monitoring-membership.js";
 
 const ENABLED = process.env["CHARACTEROS_LONG_RUN"] === "1";
 const BATCH = (() => {
@@ -627,6 +628,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const turns: Record<string, unknown>[] = [];
     const restartsDetail: Record<string, unknown>[] = [];
     const failureKinds: Record<string, number> = {};
+    /** workflow_id → the repository revision where monitoring first observed the transition. */
+    const beliefTransitionRevisions = new Map<string, string>();
     const activationSeries: Record<string, unknown>[] = [];
     const mirrorFlags: Record<string, unknown>[] = [];
     let snapshotStartActivation: number | null = null;
@@ -755,7 +758,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       const life: ProductLifeViewV0 = await runtime.lifeView();
       const memory = await runtime.livedMemory(100);
       const evolution = life.evolution;
-      const entry = {
+      const entry: Record<string, unknown> = {
         checkpoint: label,
         interactions: index,
         restarts,
@@ -826,25 +829,47 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           reproducible: "YES"
         });
       }
-      for (const transition of evolution.durable_effects.belief) {
-        for (const ref of transition.evidence_episode_refs) {
-          if (!episodeRefs.includes(ref)) {
-            problem({
-              turn_index: index,
-              category: "CORE_INTEGRITY",
-              severity: "BLOCKER",
-              current_scene: label,
-              relevant_durable_refs: [ref],
-              state_snapshot_summary: state as unknown as Record<string, unknown>,
-              retrieved_memory_refs: [],
-              executor: backend,
-              result: "belief transition cites an episode outside durable memory",
-              expected: "every evidence ref resolves to a stored episode",
-              observed: ref,
-              reproducible: "YES"
-            });
-          }
+      // LR-002/LR-003 CORRECTION: durable membership is decided by the PRODUCTION
+      // authority — at the head revision AND at the revision where monitoring first
+      // observed each transition — and NEVER by the bounded read-model window above.
+      const membershipTransitions = evolution.durable_effects.belief.map((transition) => ({
+        workflow_id: transition.workflow_id,
+        evidence_episode_refs: transition.evidence_episode_refs
+      }));
+      const membership = await evaluateBeliefEvidenceMembershipV0({
+        transitions: membershipTransitions,
+        head_repository_revision: state.repository_revision,
+        transition_revisions: beliefTransitionRevisions,
+        belongs: (revision, refs) => runtime.refsBelongToRevision(revision, refs)
+      });
+      for (const transition of membershipTransitions) {
+        if (!beliefTransitionRevisions.has(transition.workflow_id)) {
+          beliefTransitionRevisions.set(transition.workflow_id, state.repository_revision);
         }
+      }
+      entry["membership"] = {
+        verdict: membership.verdict,
+        checked_transitions: membership.checked_transitions,
+        checked_refs: membership.checked_refs,
+        findings: membership.findings.length,
+        blocker_reason: membership.blocker_reason
+      };
+      if (membership.verdict === "BLOCKER") {
+        problem({
+          turn_index: index,
+          category: "CORE_INTEGRITY",
+          severity: "BLOCKER",
+          failure_class: "CORE",
+          current_scene: label,
+          relevant_durable_refs: membership.findings.filter((finding) => !finding.belongs).flatMap((finding) => finding.refs),
+          state_snapshot_summary: { membership } as unknown as Record<string, unknown>,
+          retrieved_memory_refs: [],
+          executor: backend,
+          result: "belief transition cites an episode outside production durable membership",
+          expected: "every evidence ref belongs at the head revision and at its transition revision",
+          observed: membership.blocker_reason ?? "membership check failed",
+          reproducible: "YES"
+        });
       }
       for (const dimension of state.personality) {
         if (!Number.isFinite(dimension.value) || dimension.value < 0 || dimension.value > 1) {
