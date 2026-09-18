@@ -62,6 +62,7 @@ const QUERY_KEYS: readonly string[] = [
   "entity_refs",
   "relationship_refs",
   "current_context_refs",
+  "lexical_query_text",
   "salience_constraints"
 ];
 
@@ -89,6 +90,17 @@ export function validateMemoryRetrievalQuery(v: unknown): ValidationResult<Memor
   if (v["semantic_reference"] !== null) {
     const anchor = validateRefElement(v["semantic_reference"], "query.semantic_reference");
     if (!anchor.ok) return anchor;
+  }
+  // LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — optional host-side utterance text
+  // for the read-only lexical ranking signal. Absent/null = no signal (deterministic
+  // fallback); present = a bounded string. It binds no authority and is never persisted.
+  if (v["lexical_query_text"] !== undefined && v["lexical_query_text"] !== null) {
+    if (!isString(v["lexical_query_text"])) {
+      return fail("INVALID_SCHEMA", SCHEMA_REASON, "query.lexical_query_text: expected string or null");
+    }
+    if (v["lexical_query_text"].length === 0 || v["lexical_query_text"].length > 4096) {
+      return fail("INVALID_SCHEMA", SCHEMA_REASON, "query.lexical_query_text: must be 1..4096 characters");
+    }
   }
 
   const temporal = v["temporal"];

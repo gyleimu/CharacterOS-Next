@@ -305,6 +305,15 @@ export class ProductRuntimeV0 {
     return this.deps.life.refsBelongToRevision(revision, refs);
   }
 
+  /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — read-only retrieval probe through
+   * the EXISTING production retrieval service (offline replay/acceptance only; commits
+   * nothing and changes no state).
+   */
+  async retrievalProbe(query: unknown): Promise<unknown> {
+    return this.deps.life.retrievalProbe(query);
+  }
+
   async status(): Promise<InteractiveSubjectStatusV0> {
     return this.deps.host.status();
   }

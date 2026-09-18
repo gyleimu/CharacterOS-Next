@@ -841,6 +841,15 @@ export class InteractiveSubjectRuntimeV0 {
   }
 
   /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — read-only retrieval probe through
+   * the EXISTING production retrieval service (offline replay/acceptance only; commits
+   * nothing and changes no state).
+   */
+  async retrievalProbeV0(query: unknown): Promise<unknown> {
+    return this.authority.retrievalProbeV0(query);
+  }
+
+  /**
    * CHARACTEROS_PERSISTENT_SUBJECT_LOCAL_PRODUCT_V0 — read-only inspection of
    * the canonical subject state. Pure read: no mutation, no provider call.
    */

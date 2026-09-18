@@ -1543,6 +1543,17 @@ export class ExplicitV4SessionAuthorityV0 {
   }
 
   /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — STRICTLY READ-ONLY retrieval probe:
+   * runs the EXISTING production retrieval service (the same instance the observation
+   * commit path uses) against the caller-built query and returns its result without
+   * committing anything. Used only for offline replay/acceptance; no transition
+   * consults it and no state changes.
+   */
+  async retrievalProbeV0(query: unknown): Promise<unknown> {
+    return this.retrieval.retrieve(query);
+  }
+
+  /**
    * FIRST-PROPOSITION ADMISSION enrichment for the evolution projection.
    *
    * An admission workflow's durable record carries the proposal checkpoint it

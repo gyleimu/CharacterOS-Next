@@ -34,6 +34,12 @@ import { computeMemoryRecordPayloadHash } from "../record-payload-hash.js";
 import type { InMemoryMemoryRepository } from "../repository/in-memory-memory-repository.js";
 import { validateMemoryRetrievalQuery, validateMemoryRetrievalResult } from "./validation.js";
 import {
+  distinctiveWeightsV0,
+  hasMeaningfulLexicalSignalV0,
+  lexicalScoreV0,
+  normalizeLexicalTokensV0
+} from "./lexical-relevance.js";
+import {
   MEMORY_RETRIEVAL_CONFIG_V0,
   retrievalQueryFingerprint,
   type MemoryRetrievalResultV0,
@@ -52,6 +58,14 @@ export interface RepositoryEpisodeSearchViewV0 {
   readonly focus_refs: readonly CanonicalRefV0[];
   readonly environment_refs: readonly CanonicalRefV0[];
   readonly declared_salience: UnitIntervalV0;
+  /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — the episode's factual text projection:
+   * the validated scene copy PLUS the hash-verified text of linked experience payloads
+   * (delivered behavior text and exact outcome text — the same facts cognition's
+   * BEHAVIOR_OUTCOME evidence carries). Ephemeral ranking input only; never persisted,
+   * never interpreted (no sentiment/success semantics are derived).
+   */
+  readonly factual_text: string;
 }
 
 /** Deterministic hit counts per matching dimension for one candidate. */
@@ -61,6 +75,14 @@ interface CandidateHits {
   readonly entity: number;
   readonly relationship: number;
   readonly context: number;
+  /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — the candidate's lexical relevance
+   * score for the current utterance (summed IDF-style weight of the DISTINCTIVE query
+   * tokens its factual text contains); null when the query carried no meaningful signal
+   * (deterministic fallback). Positive ⇒ relevance-aware tier, higher first.
+   * Assigned in the scoring pass after the weights are known (never reassigned after).
+   */
+  lexical: number | null;
 }
 
 function overlapCount(queryRefs: readonly CanonicalRefV0[], candidateRefs: readonly CanonicalRefV0[]): number {
@@ -73,7 +95,12 @@ function overlapCount(queryRefs: readonly CanonicalRefV0[], candidateRefs: reado
 }
 
 /**
- * Deterministic ranking comparator (approved precedence):
+ * Deterministic ranking comparator (approved precedence, one remediation tier added):
+ *   0. RELEVANCE TO THE CURRENT UTTERANCE — only when the query carries a meaningful
+ *      lexical signal: candidates whose factual text reaches LEXICAL_SELECTION_COVERAGE
+ *      rank above the rest, higher coverage first. Without a meaningful signal this
+ *      dimension is null for every candidate and the order is EXACTLY the historical
+ *      structural law (deterministic fallback).
  *   1. semantic-reference hit
  *   2. entity overlap
  *   3. relationship overlap
@@ -84,6 +111,14 @@ function overlapCount(queryRefs: readonly CanonicalRefV0[], candidateRefs: reado
  */
 function rankCandidates(candidates: readonly CandidateHits[]): CandidateHits[] {
   return [...candidates].sort((a, b) => {
+    const aLexical = a.lexical;
+    const bLexical = b.lexical;
+    if (aLexical !== null && bLexical !== null) {
+      const aTier = aLexical > 0;
+      const bTier = bLexical > 0;
+      if (aTier !== bTier) return aTier ? -1 : 1;
+      if (aTier && bTier && aLexical !== bLexical) return bLexical - aLexical;
+    }
     if (a.semantic !== b.semantic) return a.semantic ? -1 : 1;
     if (a.entity !== b.entity) return b.entity - a.entity;
     if (a.relationship !== b.relationship) return b.relationship - a.relationship;
@@ -96,6 +131,56 @@ function rankCandidates(candidates: readonly CandidateHits[]): CandidateHits[] {
     }
     return a.view.episode_ref < b.view.episode_ref ? -1 : a.view.episode_ref > b.view.episode_ref ? 1 : 0;
   });
+}
+
+/**
+ * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — one-pass factual text resolution for
+ * one candidate episode. Sources, all already manifest-verified in THIS revision:
+ *   1. the episode's own validated scene copy;
+ *   2. each linked experience payload that is itself visible in the bound revision and
+ *      payload-hash-verified — contributing its delivered behavior text and exact
+ *      outcome text (facts only; no interpretation, no classification).
+ * Any missing/mismatched/tampered piece contributes NOTHING for that candidate
+ * (fail-safe per §25): resolution never crashes retrieval and never fabricates text.
+ */
+async function resolveFactualTextV0(
+  record: EpisodicMemoryRecordV0,
+  visible: readonly { ref: string; payload_hash: string }[],
+  repository: InMemoryMemoryRepository
+): Promise<string> {
+  const parts: string[] = [record.context.scene];
+  const visibleHashes = new Map(visible.map((entry_) => [entry_.ref, entry_.payload_hash]));
+  for (const reference of record.references) {
+    if (!reference.startsWith("experience:")) continue;
+    const declaredHash = visibleHashes.get(reference);
+    if (declaredHash === undefined) continue; // not visible in the bound revision (§12)
+    const payload = repository.readStoredPayload(reference as never);
+    if (payload === undefined || payload === null) continue;
+    // Same tamper law as episode candidates: an unverified payload contributes nothing.
+    const recomputed = await computeMemoryRecordPayloadHash(payload);
+    if (recomputed !== declaredHash) continue;
+    const text = experienceTextV0(payload);
+    if (text !== null) parts.push(text);
+  }
+  return parts.filter((part) => part.length > 0).join(" ");
+}
+
+/** Defensive text extraction from an experience payload (facts only; null = nothing). */
+function experienceTextV0(payload: unknown): string | null {
+  if (payload === null || typeof payload !== "object") return null;
+  const record = payload as Record<string, unknown>;
+  const parts: string[] = [];
+  const behavior = record["behavior_artifact"];
+  if (behavior !== null && typeof behavior === "object") {
+    const text = (behavior as Record<string, unknown>)["text"];
+    if (typeof text === "string" && text.length > 0) parts.push(text);
+  }
+  const outcome = record["outcome"];
+  if (outcome !== null && typeof outcome === "object") {
+    const text = (outcome as Record<string, unknown>)["text"];
+    if (typeof text === "string" && text.length > 0) parts.push(text);
+  }
+  return parts.length === 0 ? null : parts.join(" ");
 }
 
 /**
@@ -148,7 +233,8 @@ export class RepositoryBackedMemoryRetrievalServiceV0 {
         references: [...record.references],
         focus_refs: [...record.context.focus_refs],
         environment_refs: [...record.context.environment_refs],
-        declared_salience: record.salience.declared_score
+        declared_salience: record.salience.declared_score,
+        factual_text: await resolveFactualTextV0(record, visible, this.repository)
       });
     }
 
@@ -167,7 +253,25 @@ export class RepositoryBackedMemoryRetrievalServiceV0 {
       const relationship = overlapCount(q.relationship_refs, view.references);
       const context = overlapCount(q.current_context_refs, [...view.focus_refs, ...view.environment_refs]);
       if (!semantic && entity === 0 && relationship === 0 && context === 0) continue;
-      hits.push({ view, semantic, entity, relationship, context });
+      hits.push({ view, semantic, entity, relationship, context, lexical: null });
+    }
+
+    // LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — lexical relevance of the CURRENT
+    // USER UTTERANCE against each candidate's factual text. The candidate filter above
+    // is UNCHANGED: the lexical signal only REORDERS, it never admits or drops. With no
+    // meaningful query text every score is null and the ranking below is EXACTLY the
+    // historical structural law (deterministic fallback). Weights come from THIS query's
+    // candidate distribution (IDF-style), so ubiquitous tokens ("the", "you") carry no
+    // weight and no stopword list exists anywhere.
+    if (hasMeaningfulLexicalSignalV0(q.lexical_query_text ?? null) && hits.length > 0) {
+      const queryTokens = normalizeLexicalTokensV0(q.lexical_query_text ?? null);
+      const candidateTokenSets = hits.map((hit) => normalizeLexicalTokensV0(hit.view.factual_text));
+      const weights = distinctiveWeightsV0(queryTokens, candidateTokenSets);
+      for (const [index, hit] of hits.entries()) {
+        const tokens = candidateTokenSets[index];
+        if (tokens === undefined) continue;
+        hit.lexical = lexicalScoreV0(tokens, weights);
+      }
     }
 
     // ---- deterministic ranking → top-K → contract-boundary normalization ------------

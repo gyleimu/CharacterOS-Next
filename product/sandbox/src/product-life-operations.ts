@@ -223,6 +223,11 @@ export class ProductLifeOperationsV0 {
     return this.deps.host.refsBelongToRevision(revision, refs);
   }
 
+  /** Read-only retrieval probe through the production service (offline acceptance only). */
+  async retrievalProbe(query: unknown): Promise<unknown> {
+    return this.deps.host.retrievalProbe(query);
+  }
+
   /** READ-ONLY one-life view composing status + canonical state + recent Memory. */
   async lifeView(): Promise<ProductLifeViewV0> {
     const status = await this.deps.host.status();

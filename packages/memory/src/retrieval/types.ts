@@ -111,6 +111,14 @@ export interface MemoryRetrievalQueryV0 {
   readonly relationship_refs: readonly CanonicalRefV0[];
   /** Current working-context refs; set-like: unique and sorted. */
   readonly current_context_refs: readonly CanonicalRefV0[];
+  /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — optional host-side text of the
+   * CURRENT USER UTTERANCE (or an equivalent textual projection of it), consumed ONLY
+   * by the read-only lexical relevance signal during ranking. Never persisted into
+   * canonical state; absent means "no lexical signal" and the ranking is exactly the
+   * pre-remediation structural order (deterministic fallback).
+   */
+  readonly lexical_query_text?: string | null;
   readonly salience_constraints: RetrievalSalienceConstraintsV0;
 }
 
@@ -129,6 +137,7 @@ export function retrievalQueryFingerprint(query: MemoryRetrievalQueryV0): Promis
     entity_refs: query.entity_refs,
     relationship_refs: query.relationship_refs,
     current_context_refs: query.current_context_refs,
+    lexical_query_text: query.lexical_query_text ?? null,
     salience_constraints: query.salience_constraints
   });
 }

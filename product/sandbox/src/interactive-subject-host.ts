@@ -447,6 +447,15 @@ export class InteractiveSubjectHostV0 {
   }
 
   /**
+   * LONG_HORIZON_MEMORY_RETRIEVAL_REMEDIATION_V0 — read-only retrieval probe through
+   * the EXISTING production retrieval service (offline replay/acceptance only; commits
+   * nothing and changes no state).
+   */
+  async retrievalProbe(query: unknown): Promise<unknown> {
+    return this.runtime.retrievalProbeV0(query);
+  }
+
+  /**
    * SUBJECT_EVOLUTION_VIEW_V0 — read-only projection of lived events and the durable
    * state changes they produced. No provider call, no adaptation, no revision change.
    */
