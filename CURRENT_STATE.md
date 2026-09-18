@@ -156,9 +156,17 @@ VOICE MODALITY 已接入同一产品 session（`VOICE_PRODUCT_SESSION_INTEGRATED
 
 `CHARACTEROS_PRODUCT_PROVIDER_RESILIENCE_AND_DIAGNOSTICS_V0` 已实现并通过真实本地 smoke：turn 内每 stage 进度与延迟可见、`/diagnostics` 给出 model/timeout/stage 状态、model 缺失 preflight fail closed、失败后 inspection 与 `/exit` 仍可用；provider diagnostics 不进入 canonical state。
 
+`CORE_V1_LONG_RUN_MONITORING_INFRASTRUCTURE_V0` 已实现并跑完第一批真实运行（`product/sandbox/src/long-run-checkpoint.test.ts`，默认 disabled，工程门禁仍为 0 model calls；`core_changes: []`）：harness 走**正常产品路径**（`createProductRuntimeV0` + 当前真实 executor configuration，无 substitution、无 benchmark），每 10 次交互一个 read-only checkpoint（revision / episode / affect / belief+credence / relationship / personality / retrieval / pending outcome / degradation / retry / restart），每 10 次交互一次 fresh restart 并在 restart 前后逐字段核对 durable state，另外在一次 fail-closed turn 之后做一次**有界**的 recovery restart（等价于 operator 重启 app），每次都记录 reason；每条交互后写 crash-safe progress artifact，批次结束写 `long-run-checkpoint-20`（summary，无 credential、无 hidden reasoning）。所有可疑现象按 `CORE_INTEGRITY / BEHAVIORAL / PRODUCT` × `BLOCKER / MAJOR / MINOR` 记录为 issue candidate，本 slice 不做任何修复。
+
+第一批真实运行（subject `alice-longrun`，20 次真实交互、18 次 fresh restart、21 个 checkpoint、0 degradation、0 timeout）：前 4 次交互正常完成（latency 385–489 s），随后**连续 16 次**在同一个可复现的墙上 fail closed —— `MODEL_TRANSPORT_MODEL_OUTPUT_TRUNCATED`（`done_reason=length`、`prompt_eval_count` 7945–7953、`eval_count` 239–247、`num_ctx=8192`、`num_predict=2048`）。accumulated lived prompt 已经占满 8192 预算，只剩约 240 token 生成空间，proposal 写不完。root cause 是 **host context budget**（产品/executor 配置），不是 core 语义缺陷：frozen fail-closed 合同按规范工作并如实报告原因，没有写入任何 canonical state。可用的既有旋钮是 `CHARACTEROS_CONTEXT_WINDOW_TOKENS`（默认 8192）与 prompt/retrieval 预算，属于 product/config fix；本 slice 只记录，不修。
+
+durable 完整性在本次运行中被正面证明：**健康** runtime 的 fresh restart 逐字段 EXACT（`restart_7`、`restart_18`），批次后独立 read-only restore 得到 `RESTORED` rev 71 / R23 / 8 episodes / affect 0.5329 / 1 belief 0.55 / relationship `entity:alice`，且 durable 文件 mtime 冻结在最后一次成功提交（09:02:43）—— 16 次 fail-closed turn **没有写入任何 durable state**，restore 本身也不写。运行中 16 条 `CORE_INTEGRITY / BLOCKER: restore mismatch` 经证据复核为**误分类**：mismatch 的 "before" 读的是刚 fail-closed 的 poisoned in-memory projection（rev 75 / R24 / 未提交的 affect），"after" 恢复到上一次健康提交（rev 71 / R23），两者相同的部分全部吻合；该 divergence 是失败轮未提交的 in-memory bookkeeping，restart 后被丢弃。分类修正记录在报告里，未改 core。另记录一个 long-run 观察：一次性 snapshot 随成功交互增长约 2 MB/turn（4 次成功交互期间 3.1 MB → 11.6 MB），属可扩展性观察、非缺陷。执行环境如实记录：本机 Ollama 0.34.1 的 CUDA payload 不完整（`cuda_v12/` 只有 2 个 DLL + 一个 `.tmp`）导致 `total_vram="0 B"`、模型 `size_vram=0`，全部真实调用跑在 CPU 上（prefill ~7950 token 约 200 s、decode ~5 tok/s，每轮 229–489 s）；app 自己已下载 0.34.2 更新但未安装（安装系统更新不在本 slice 授权内）。
+
+`CORE_V1_FREEZE_STATUS = MAINTAIN`：本 slice 未修改 core，也未观察到可复现的 core 缺陷；长程运行暴露的是 host context budget 与 prompt 规模的问题，按 freeze law 走 product/executor/config fix。
+
 下一个产品 slice 是 `CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0`：read-only `/config`、首次运行引导与失败后可操作指引，不引入新 canonical state。该 slice 未启动，也不由本文件授权启动。
 
-长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明。
+长程可扩展性（更长 horizon、context/记忆管理）是独立的未来产品问题；`8192` 只是本次验证的显式预算，不是永久充分性声明 —— 该预算不足如今已被真实 long-run 观察**证实**（见上：accumulated lived prompt 约 7950 token 时生成空间耗尽，subject 无法继续），修复方向是 host 显式提高 context 预算或收敛 prompt/retrieval 规模。
 
 本文件不授权启动上述任一 frontier slice；它只记录状态。启动新 slice 需要其自身的问题、边界、调用预算与批准点。
 

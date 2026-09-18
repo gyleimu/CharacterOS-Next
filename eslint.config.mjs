@@ -81,7 +81,9 @@ const packageBoundaryConfig = (files, allowedPackages, message) => ({
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "archive/**"]
+    // `tmp/` is the gitignored machine-local scratch root (.gitignore), so it is
+    // outside the tracked tree the gates lint.
+    ignores: ["**/dist/**", "**/node_modules/**", "archive/**", "tmp/**"]
   },
   js.configs.recommended,
   tseslint.configs.strict,
