@@ -74,8 +74,44 @@ const RESTART_EVERY = (() => {
 const DATA_ROOT =
   process.env["CHARACTEROS_LONG_RUN_ROOT"] ?? join(PRODUCT_DEFAULT_DATA_ROOT_V0, "subjects", SUBJECT_ID);
 
+/** Scenario set for a batch: `A` (the original 20 lines) or `B` (a later stretch of
+ *  the same life). Both are natural mixed life content — no state targets, no test
+ *  questions — and neither is scripted to move any state value. */
+const PLAN_SET = (process.env["CHARACTEROS_LONG_RUN_PLAN"] ?? "A").trim().toUpperCase();
+
 /** Natural mixed interactions (session 1 then session 2). No scripted state targets. */
 function plan(batch: number): readonly string[] {
+  const later = [
+    // A LATER STRETCH OF THE SAME LIFE (used when CHARACTEROS_LONG_RUN_PLAN=B).
+    "The second shelf is finally sanded; I spent the morning on the edges.",
+    "I moved the plane to the shelf under the bench so it stops falling over.",
+    "My neighbour asked whether I could help him fix his gate next week.",
+    "I said yes, but only if the weather holds.",
+    "It rained all afternoon, so I stayed in and sharpened the chisels instead.",
+    "The whetstone is wearing hollow in the middle - I should replace it.",
+    "I keep thinking about that bandsaw. It jammed again on a thin offcut.",
+    "A friend from the old workshop called and we talked for an hour.",
+    "He said the trick with that bandsaw is to slow the feed right down.",
+    "I tried slowing the feed and it cut cleanly for the first time in weeks.",
+    "So the slow feed tip was right; I owe him for that.",
+    "I do not agree that my shelves are overbuilt; they hold what I need them to hold.",
+    "Nothing much happened today. I swept the floor and went to bed early.",
+    "The gate job with my neighbour went well - we finished it before lunch.",
+    "He brought over some offcuts as thanks, so now I have more stock.",
+    "I finally replaced the whetstone; the new one is much flatter.",
+    "The chisel feels different on a flat stone - quicker to get an edge.",
+    "I wrote the bandsaw setting on a card and taped it to the machine.",
+    "The workshop is quieter now that the saw is not fighting me.",
+    "Do you remember the first shelf I built? It feels like a long time ago."
+  ];
+  if (PLAN_SET === "B") {
+    if (batch <= later.length) return later.slice(0, batch);
+    const filler: string[] = [];
+    for (let index = later.length; index < batch; index += 1) {
+      filler.push(`Day ${String(index + 1)}: I spent the afternoon tidying the workshop and making notes.`);
+    }
+    return [...later, ...filler];
+  }
   const fixed = [
     // Session 1 — ordinary life, facts, corrections, feelings, a consequence, recall.
     "Morning. I finally sorted the workshop shelves yesterday.",
@@ -187,6 +223,57 @@ function durableSnapshotBytesV0(root: string): number | null {
   } catch {
     return null;
   }
+}
+
+/** Conservative, deterministic normalization for the mirroring watch (§18). */
+function normalizedTokensV0(text: string): readonly string[] {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((token) => token.length > 0);
+}
+
+/**
+ * OBVIOUS near-verbatim mirroring: the user's own wording reappears almost intact in
+ * the delivered reply — the longest contiguous shared token run covers at least 80%
+ * of the user's tokens. Deliberately conservative; a count, never a judgement.
+ */
+function obviousMirrorV0(userText: string, replyText: string): boolean {
+  const user = normalizedTokensV0(userText);
+  if (user.length < 4) return false;
+  const reply = normalizedTokensV0(replyText);
+  let best = 0;
+  for (let start = 0; start < user.length; start += 1) {
+    for (let offset = 0; offset < reply.length; offset += 1) {
+      let run = 0;
+      while (start + run < user.length && offset + run < reply.length && user[start + run] === reply[offset + run]) {
+        run += 1;
+      }
+      if (run > best) best = run;
+    }
+  }
+  return best / user.length >= 0.8;
+}
+
+/**
+ * §9 saturation classification — deterministic, from the committed series only.
+ * NOT_OBSERVED: no completed turn sits at the bound. TRANSIENT_BOUND_CONTACT: the
+ * bound was touched but the series also came back down. PERSISTENT_BOUND_SATURATION_
+ * CANDIDATE: every completed turn in the batch sits at the bound and the pre-batch
+ * checkpoint was already at the bound (no natural decline observed at all).
+ */
+function classifyActivationV0(
+  series: readonly { readonly activation: number }[],
+  startActivation: number | null
+): "NOT_OBSERVED" | "TRANSIENT_BOUND_CONTACT" | "PERSISTENT_BOUND_SATURATION_CANDIDATE" {
+  if (series.length === 0) return "NOT_OBSERVED";
+  const atBound = series.filter((entry) => entry.activation >= 1).length;
+  if (atBound === 0) return "NOT_OBSERVED";
+  if (atBound < series.length) return "TRANSIENT_BOUND_CONTACT";
+  return startActivation !== null && startActivation >= 1
+    ? "PERSISTENT_BOUND_SATURATION_CANDIDATE"
+    : "TRANSIENT_BOUND_CONTACT";
 }
 
 interface IssueCandidate {
@@ -302,6 +389,9 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const turns: Record<string, unknown>[] = [];
     const restartsDetail: Record<string, unknown>[] = [];
     const failureKinds: Record<string, number> = {};
+    const activationSeries: Record<string, unknown>[] = [];
+    const mirrorFlags: Record<string, unknown>[] = [];
+    let snapshotStartActivation: number | null = null;
     const snapshotBytesStart = durableSnapshotBytesV0(DATA_ROOT);
     let restarts = 0;
     let degradations = 0;
@@ -387,6 +477,13 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           status: wallStatus
         },
         failure_kinds: failureKinds,
+        activation_series: activationSeries,
+        near_verbatim_mirror_count: mirrorFlags.filter((flag) => flag["obvious_near_verbatim"] === true).length,
+        mirror_flags: mirrorFlags,
+        activation_saturation_classification: classifyActivationV0(
+          activationSeries.map((entry) => ({ activation: Number(entry["activation"]) })),
+          snapshotStartActivation
+        ),
         snapshot_bytes: {
           start: snapshotBytesStart,
           current: durableSnapshotBytesV0(DATA_ROOT)
@@ -420,6 +517,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         evolution_affect_transitions: evolution.durable_effects.affect.length,
         cognition_visible_episodes: evolution.cognition_visible.memory_episode_refs.length,
         memory_entries: memory.entries.map((entry_) => entry_.episode_ref),
+        snapshot_bytes: durableSnapshotBytesV0(DATA_ROOT),
         stage_counts: stageCountsV0(runtime),
         provider_requests: requestObserver.summary(),
         degradations,
@@ -693,8 +791,9 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     };
 
     const interactions = plan(BATCH);
-    await checkpoint("BEFORE", 0);
+    await checkpoint("START", 0);
     let lastDurable: DurableState | null = await durableState(runtime);
+    snapshotStartActivation = lastDurable.affect.activation;
     for (const [index, text] of interactions.entries()) {
       const number = index + 1;
       attempted = number;
@@ -852,6 +951,24 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       } else {
         consecutiveContextFailures = 0;
         lastDurable = await durableState(runtime);
+        // AFFECT ACTIVATION WATCH (§8) — one committed observation per completed turn.
+        activationSeries.push({
+          interaction: number,
+          session_turn_index: turn.turn_index,
+          state_revision: lastDurable.state_revision,
+          episodes: lastDurable.episodes,
+          valence: lastDurable.affect.valence,
+          activation: lastDurable.affect.activation,
+          snapshot_bytes: durableSnapshotBytesV0(DATA_ROOT),
+          elapsed_ms: turn.elapsed_ms
+        });
+        // REPLY MIRRORING WATCH (§18) — conservative deterministic count.
+        if (turn.reply_text !== null) {
+          mirrorFlags.push({
+            interaction: number,
+            obvious_near_verbatim: obviousMirrorV0(text, turn.reply_text)
+          });
+        }
       }
       if ([5, 10, 15, 20].includes(number)) await checkpoint(`TURN_${String(number)}`, number);
       await persistProgress(`interaction ${String(number)} ${turn.status}`);
