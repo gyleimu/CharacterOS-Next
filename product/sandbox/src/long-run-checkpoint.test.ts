@@ -138,7 +138,115 @@ function plan(batch: number): readonly string[] {
     "I sanded the seat edges the way I like them now.",
     "Do you remember the drawers I labelled? The tape is still holding."
   ];
-  const chosen = PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
+  const fourth = [
+    // PLAN D — the workshop year continues; includes EARLY-MEMORY RECALL PROBES
+    // (marked with *), which ask about things Alice really lived long ago without
+    // ever stating the answer.
+    "The stool has a place by the door now and I use it every day.",
+    "*Do you remember what I told you about the top drawer and the chisel?",
+    "I finally hung the spare saw blades on the wall, sorted by tooth count.",
+    "My neighbour's gate is still holding after the rain.",
+    "I spent a whole morning sharpening and did not mind it.",
+    "The bench vice squeaks, so I oiled the screw thread.",
+    "A delivery van blocked the lane for an hour and I lost patience.",
+    "I do not agree that the workshop is too small; I know where everything is.",
+    "Nothing much happened today. I made tea and read the paper.",
+    "*Do you remember the drawer I labelled with tape, and what the label says?",
+    "The post brought a catalogue and I looked at planes I cannot afford.",
+    "I fixed the loose handle on the mallet with a wedge.",
+    "The neighbour lent me his long clamps for the weekend.",
+    "I returned them on Monday with a jar of jam from the kitchen.",
+    "It was too cold to work, so I stayed in and drew plans instead.",
+    "I sketched a small bookcase and measured the wall twice.",
+    "*Do you remember what jammed twice and made me lose an hour?",
+    "The second stool is done and the first one looks rough beside it.",
+    "I sanded the first stool again to match, and it looks better now.",
+    "My hands are getting used to the work again.",
+    "The reunion letter is still on the shelf; I have not answered it.",
+    "I bought a new saw file and the teeth cut true again.",
+    "Rain came through a gap in the roof and I moved the oak away from it.",
+    "I patched the gap with a strip of flashing and it held through the night.",
+    "*Do you remember the neighbour's gate job, and whether it went well?",
+    "I swept the floor twice today. There is always more sawdust.",
+    "The cat from next door sleeps on the offcut pile.",
+    "I made a small rack for the screwdrivers and it took under an hour.",
+    "My sister called and we talked about the reunion.",
+    "I think I will go to the reunion after all, but I have not written back.",
+    "Nothing much happened. I sorted screws into jars by length.",
+    "*Do you remember where I keep the whetstone now?",
+    "The new whetstone is wearing evenly, which is a small pleasure.",
+    "I cut a piece of the oak too short and had to start the rail again.",
+    "I used the offcut for a doorstop so it was not wasted.",
+    "The neighbour asked if I could look at his kitchen shelf.",
+    "I said I would come by on Saturday if the weather is dry.",
+    "I sharpened the chisels and put them away in their rolls.",
+    "The workshop smelled of oil and wood shavings all afternoon.",
+    "*Do you remember the shelves I built, and whether they fitted?",
+    "The second rail went together without a mistake this time.",
+    "I stood back and looked at the frame for a long while.",
+    "My shoulders ached, so I stopped after three hours.",
+    "The neighbour brought over two bottles of his cider as thanks.",
+    "I drank one by the bench and listened to the rain on the roof.",
+    "I wrote the measurements for the bookcase in the notebook.",
+    "Tomorrow I want to cut the bookcase sides from the last of the oak.",
+    "*Do you remember what I said about the reunion, and how I felt about going?"
+  ];
+  const fifth = [
+    // PLAN E — the next stretch: the bookcase, the reunion, the neighbours.
+    "I cut the bookcase sides this morning and they came out square.",
+    "The last of the oak is barely enough, so I saved the offcuts.",
+    "I glued up the first frame and left it in the clamps overnight.",
+    "The glue line looks clean; I am pleased with it.",
+    "The neighbour's kitchen shelf went up straight on Saturday.",
+    "He insisted on paying me and I refused twice.",
+    "We settled on him keeping the cider coming.",
+    "Nothing much happened today - I swept and tidied and went to bed early.",
+    "The reunion is in three weeks and I have written back saying yes.",
+    "*Do you remember the very first thing I told you about the workshop?",
+    "I found an old marking gauge in the bottom of a drawer.",
+    "It was my father's, I think, though I cannot be sure.",
+    "I cleaned the rust off it with oil and wire wool.",
+    "It works well enough to mark a line now.",
+    "The bookcase frame came out of the clamps and it is straight.",
+    "I fitted the back panel from a thin sheet I had kept for years.",
+    "*Do you remember what I keep in the bottom drawer beside the chisel?",
+    "My sister says she will drive us both to the reunion.",
+    "I booked nothing yet; she is more organised than me.",
+    "It rained for two days and I did not go out at all.",
+    "I read an old woodworking book and fell asleep in the chair.",
+    "The bookcase is finished and holds the paperbacks already.",
+    "I put it against the wall where the measurements were.",
+    "The cat has already claimed the bottom shelf.",
+    "I cleaned the whole workshop as a reward to myself.",
+    "*Do you remember the bandsaw trouble and what fixed it in the end?",
+    "The reunion is next week and I have picked out a clean shirt.",
+    "I feel a little nervous about seeing everyone again.",
+    "My sister says most of them are nervous too.",
+    "The neighbour will water nothing while I am away; there is nothing to water.",
+    "I packed the small plane to take and show the old crowd.",
+    "The coach leaves at seven and I hate early starts.",
+    "Nothing much happened - I checked the joints on the bookcase twice.",
+    "The reunion was loud and warm and I am glad I went.",
+    "People remembered me and asked about the workshop.",
+    "I told them about the shelves and the stool and the slow feed trick.",
+    "An old friend gave me a block plane he no longer uses.",
+    "*Do you remember what we said about keeping the drawers labelled?",
+    "I came home tired and happy and slept well.",
+    "The block plane needs a new iron, so I ordered one.",
+    "I put the plane from the reunion on the shelf with the others.",
+    "The workshop feels fuller and more like itself than it has in years.",
+    "My sister stayed for lunch and we talked about our parents.",
+    "I showed her the bookcase and she asked for one just like it.",
+    "I said yes, but not before spring.",
+    "I measured the wall she wants it on, roughly, from memory.",
+    "Nothing much happened today. I oiled the block plane and listened to the radio.",
+    "*Do you remember how the first shelf felt when it fitted?",
+    "I am looking forward to cutting the next boards.",
+    "The oak is all used now, so I will need to find more.",
+    "The neighbour knows a farmer with a stack of seasoned boards.",
+    "I will ask him on Sunday when he comes by."
+  ];
+  const chosen = PLAN_SET === "E" ? fifth : PLAN_SET === "D" ? fourth : PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
   if (chosen !== null) {
     if (batch <= chosen.length) return chosen.slice(0, batch);
     const filler: string[] = [];
@@ -253,6 +361,17 @@ function classifyFailureV0(detail: string): { failure_class: FailureClassV0; kin
 function durableSnapshotBytesV0(root: string): number | null {
   try {
     const entry = readdirSync(root).find((name) => name.endsWith(".snapshot.json"));
+    if (entry === undefined) return null;
+    return statSync(join(root, entry)).size;
+  } catch {
+    return null;
+  }
+}
+
+/** Newest shared-subject source size in the subject root (persistence watch). */
+function durableSharedBytesV0(root: string): number | null {
+  try {
+    const entry = readdirSync(root).find((name) => name.endsWith(".shared-subject.json"));
     if (entry === undefined) return null;
     return statSync(join(root, entry)).size;
   } catch {
@@ -630,6 +749,14 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     const failureKinds: Record<string, number> = {};
     /** workflow_id → the repository revision where monitoring first observed the transition. */
     const beliefTransitionRevisions = new Map<string, string>();
+    /** Per-turn accounting: provider vs local time, request count and token usage. */
+    const turnMetrics: Record<string, unknown>[] = [];
+    /** Persistence tripwires (§14) — any of these STOP the batch. */
+    const tripwires: string[] = [];
+    const restoreLatencies: number[] = [];
+    let r1Conversion: Record<string, unknown> | null = null;
+    let lastSnapshotBytes = durableSnapshotBytesV0(DATA_ROOT);
+    let saveSlowTurns = 0;
     const activationSeries: Record<string, unknown>[] = [];
     const mirrorFlags: Record<string, unknown>[] = [];
     let snapshotStartActivation: number | null = null;
@@ -722,6 +849,14 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
           status: wallStatus
         },
         failure_kinds: failureKinds,
+        turn_metrics: turnMetrics,
+        r1_conversion: r1Conversion,
+        persistence_tripwires: tripwires,
+        restore_latency_ms: restoreLatencies,
+        persistence_bytes: {
+          snapshot: durableSnapshotBytesV0(DATA_ROOT),
+          shared: durableSharedBytesV0(DATA_ROOT)
+        },
         appraisal_pressure: latestPressure,
         persistence_review_required: persistenceReviewRequired,
         activation_series: activationSeries,
@@ -946,6 +1081,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       } catch {
         // a poisoned runtime may fail to shut down cleanly; a new host is still attempted
       }
+      const restoreStarted = Date.now();
       try {
         runtime = await createProductRuntimeV0({
           data_root: DATA_ROOT,
@@ -979,6 +1115,8 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         return false;
       }
       restarts += 1;
+      const restoreMs = Date.now() - restoreStarted;
+      restoreLatencies.push(restoreMs);
       const after = await durableState(runtime);
       if (after.origin !== "RESTORED" && reason === "SCHEDULED") {
         problem({
@@ -1050,6 +1188,7 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
         restore,
         mismatches,
         origin: after.origin,
+        restore_ms: restoreMs,
         after
       });
       checkpoints.push({
@@ -1068,9 +1207,14 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
     await checkpoint("START", 0);
     let lastDurable: DurableState | null = await durableState(runtime);
     snapshotStartActivation = lastDurable.affect.activation;
-    for (const [index, text] of interactions.entries()) {
+    for (const [index, rawText] of interactions.entries()) {
       const number = index + 1;
       attempted = number;
+      // A leading "*" marks a designed EARLY-MEMORY RECALL PROBE (§10): the marker is
+      // stripped before submission and the turn is tagged, never answered by the host.
+      const recallProbe = rawText.startsWith("*");
+      const text = recallProbe ? rawText.slice(1).trim() : rawText;
+      const requestsBefore = requestObserver.records().length;
       let turn: ProductTurnResultV0;
       let threw: string | null = null;
       try {
@@ -1132,6 +1276,63 @@ describe.skipIf(!ENABLED)("CORE_V1_LONG_RUN", () => {
       }
       if (turn.status === "COMPLETE" && turn.reply_text !== null) {
         replyTexts.push(turn.reply_text.slice(0, 400));
+      }
+      // §15 LATENCY SPLIT — provider time from the observer's per-request durations;
+      // everything else in the turn is local (canonical state work + persistence).
+      const turnRequests = requestObserver.records().slice(requestsBefore);
+      const providerMs = turnRequests.reduce((sum, record) => sum + record.duration_ms, 0);
+      const inputTokens = turnRequests.reduce((sum, record) => sum + (record.usage?.prompt_tokens ?? 0), 0);
+      const outputTokens = turnRequests.reduce((sum, record) => sum + (record.usage?.completion_tokens ?? 0), 0);
+      const localMs = turn.elapsed_ms === null ? null : Math.max(0, turn.elapsed_ms - providerMs);
+      const snapshotNow = durableSnapshotBytesV0(DATA_ROOT);
+      turnMetrics.push({
+        interaction: number,
+        status: turn.status,
+        recall_probe: recallProbe,
+        elapsed_ms: turn.elapsed_ms,
+        provider_ms: providerMs,
+        local_ms: localMs,
+        requests: turnRequests.length,
+        input_tokens: inputTokens,
+        output_tokens: outputTokens,
+        snapshot_bytes: snapshotNow
+      });
+      // §2 R1_REPRESENTATION_CONVERSION: the first save after R1 deployed rewrites the
+      // historical pretty files minified. One large step down while the durable state
+      // advances lawfully IS the conversion — never data loss, never a blocker.
+      if (
+        r1Conversion === null &&
+        lastSnapshotBytes !== null &&
+        snapshotNow !== null &&
+        lastSnapshotBytes > 5_000_000 &&
+        snapshotNow < lastSnapshotBytes * 0.7
+      ) {
+        r1Conversion = {
+          at_interaction: number,
+          before_bytes: lastSnapshotBytes,
+          after_bytes: snapshotNow,
+          ratio: Number((snapshotNow / lastSnapshotBytes).toFixed(4)),
+          classification: "R1_REPRESENTATION_CONVERSION"
+        };
+      }
+      if (snapshotNow !== null) lastSnapshotBytes = snapshotNow;
+      // §14 PERSISTENCE TRIPWIRES — a trigger stops the batch; nothing is redesigned live.
+      if (snapshotNow !== null && snapshotNow > 350 * 1024 * 1024) {
+        tripwires.push(`SNAPSHOT_ABOVE_350MB@${String(number)}`);
+      }
+      if (localMs !== null && localMs > 15_000) {
+        saveSlowTurns += 1;
+        if (saveSlowTurns >= 2) tripwires.push(`SAVE_PATH_ABOVE_15S_TWICE@${String(number)}`);
+      } else {
+        saveSlowTurns = 0;
+      }
+      if (restoreLatencies.filter((ms) => ms > 30_000).length >= 2) {
+        tripwires.push(`RESTORE_ABOVE_30S_TWICE@${String(number)}`);
+      }
+      if (tripwires.length > 0) {
+        stoppedReason = "PERSISTENCE_OPERATIONAL_LIMIT_REACHED";
+        await persistProgress(`stopped by persistence tripwire: ${tripwires.join(", ")}`);
+        break;
       }
       if (turn.status === "DEGRADED") {
         degradations += 1;
