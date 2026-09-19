@@ -25,9 +25,15 @@ import {
 import type { FactualClaimAuthorizationTraceV0 } from "../../transitions/conversation/factual-claim-authorization.js";
 import { canonicalizeSetLikeRefFields } from "../cognition/wire-format-canonicalization.js";
 import {
+  FACTUAL_MEMORY_SECTION_END_MARKER_V0,
+  renderClaimableMemorySpanLinesV1
+} from "../cognition/cognitive-prompt-projection.js";
+import {
   buildConversationSubjectDataV4,
   CONVERSATION_COGNITION_SYSTEM_PROMPT_V6
 } from "./conversation-cognition-provider-v6.js";
+
+const NEWLINE_V8 = String.fromCharCode(10);
 
 export const COGNITION_INVOCATION_BINDING_SCHEMA_VERSION_V4 =
   "cognition-invocation-binding-v4" as const;
@@ -519,6 +525,28 @@ export function cognitionSystemPromptForV8(projection: unknown): string {
     : CONVERSATION_COGNITION_SYSTEM_PROMPT_V8;
 }
 
+/**
+ * The cognition user content for ONE call. Byte-identical to the frozen builder
+ * unless the generation-affordance option is enabled AND the projection carries a
+ * non-empty evidence bundle: then the verbatim claimable-span lines are inserted
+ * immediately before the evidence section's end marker, so they remain inside the
+ * untrusted historical-data block. Pure function of (projection, options).
+ */
+export function cognitionUserContentForV8(
+  projection: unknown,
+  options: ConversationCognitionProviderV8Options = {}
+): string {
+  const content = buildConversationSubjectDataV4(projection as never);
+  if (options.claimable_memory_spans !== true) return content;
+  const record = projection === null || typeof projection !== "object" ? undefined : (projection as Record<string, unknown>);
+  const evidence = record === undefined ? undefined : (record["factual_memory_evidence"] as { entries?: readonly unknown[] } | undefined);
+  if (evidence === undefined || !Array.isArray(evidence.entries) || evidence.entries.length === 0) return content;
+  const markerIndex = content.lastIndexOf(FACTUAL_MEMORY_SECTION_END_MARKER_V0);
+  if (markerIndex < 0) return content;
+  const spanLines = renderClaimableMemorySpanLinesV1(projection as never, evidence as never).join(NEWLINE_V8);
+  return content.slice(0, markerIndex) + spanLines + NEWLINE_V8 + content.slice(markerIndex);
+}
+
 export type ConversationCognitionRejectionCodeV8 =
   | "INVOCATION_BINDING_INVALID"
   | "MODEL_SCHEMA_INVALID"
@@ -541,6 +569,17 @@ export class ConversationCognitionRejectionErrorV8 extends Error {
   }
 }
 
+/**
+ * GENERATION-AFFORDANCE PROJECTION (product-only, opt-in). When enabled, the
+ * provider appends the verbatim claimable-span block (see
+ * renderClaimableMemorySpanLinesV1) inside the evidence section of the user
+ * content. Default OFF keeps every existing caller — the frozen experiments and
+ * the preregistered calibration requests — byte-identical.
+ */
+export interface ConversationCognitionProviderV8Options {
+  readonly claimable_memory_spans?: boolean;
+}
+
 export class ConversationCognitionProviderV8 {
   private lastProposal: ConversationCognitionProposalV8 | null = null;
   private lastHandleMapValue: ReturnType<typeof buildSourceHandleMapV0> | null = null;
@@ -548,7 +587,10 @@ export class ConversationCognitionProviderV8 {
   private readonly inflightBindings = new Set<string>();
   private readonly completedBindings = new Set<string>();
 
-  constructor(private readonly transport: ModelTransportV0) {}
+  constructor(
+    private readonly transport: ModelTransportV0,
+    private readonly options: ConversationCognitionProviderV8Options = {}
+  ) {}
 
   get lastDirective(): CommunicationDirectiveV0 | null {
     return this.lastProposal?.communication_directive ?? null;
@@ -588,7 +630,7 @@ export class ConversationCognitionProviderV8 {
       const response = await this.transport.complete({
         messages: [
           { role: "system", content: cognitionSystemPromptForV8(projection) },
-          { role: "user", content: buildConversationSubjectDataV4(projection) }
+          { role: "user", content: cognitionUserContentForV8(projection, this.options) }
         ],
         structured_output: { kind: "JSON_SCHEMA", schema: CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA }
       });

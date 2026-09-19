@@ -25,6 +25,7 @@
 import type { CognitiveContextProjectionAnyVersion, CognitiveContextProjectionV0, CognitiveContextProjectionV1, CognitiveContextProjectionV2 } from "../../transitions/cognition-action/types.js";
 import type { FactualMemoryEvidenceBundleV0 } from "../../transitions/cognition-action/factual-memory-evidence.js";
 import { allowedEvidenceSet } from "../../transitions/cognition-action/types.js";
+import { factualAssessmentSourceRefs, MAX_ADVERTISED_HANDLES_V0 } from "../../transitions/conversation/conversation-cognition-proposal.js";
 import { renderInteractionFamiliarityCognitionInfluencesV0 } from "../../transitions/relationship/relationship-interaction-familiarity-cognition-influence.js";
 import type { ModelTransportMessageV0 } from "../../transports/model-transport.js";
 
@@ -89,6 +90,80 @@ export function renderFactualMemoryEvidenceSectionV1(
   }
   lines.push("[END HISTORICAL FACTUAL CONTENT]");
   return lines.join("\n");
+}
+
+/**
+ * The exact marker this module emits at the end of the evidence section. The
+ * generation-affordance projection (product-only, opt-in) injects its verbatim
+ * span lines immediately BEFORE this marker, so the spans always stay inside the
+ * untrusted historical-data block.
+ */
+export const FACTUAL_MEMORY_SECTION_END_MARKER_V0 = "[END HISTORICAL FACTUAL CONTENT]" as const;
+
+/**
+ * LONG_HORIZON_COGNITION_MEMORY_USAGE_REMEDIATION_V0 — GENERATION-AFFORDANCE
+ * PROJECTION (representation only; no authority semantics change).
+ *
+ * The checkpoint-200 adjudication proved the memory-grounded answering path is
+ * contract-expressible yet generators still fail at the one hard step: constructing
+ * a SOURCE_QUOTE whose text is an exact substring of the cited source. This renderer
+ * closes that gap deterministically: it splits each entry's ALREADY-AUTHORIZED
+ * factual text into verbatim sentence spans (pure punctuation-boundary splitting —
+ * no LLM, no paraphrase, no summarization, no semantic selection) and labels each
+ * span with its lawful F handle and recorded role.
+ *
+ * Every rendered span is an exact substring of the source text by construction, so
+ * anything the model quotes verbatim from this section satisfies the frozen
+ * SOURCE_QUOTE law unchanged. The spans are historical evidence only: the header
+ * states they may or may not resolve the question, and recorded questions are
+ * labeled as questions (a prior question is never presented as an answer).
+ */
+export function renderClaimableMemorySpanLinesV1(
+  projection: CognitiveContextProjectionAnyVersion,
+  evidence: FactualMemoryEvidenceBundleV0
+): readonly string[] {
+  // Same ref-computation law the validator and handle map use — zero drift.
+  const factualRefs = [...new Set<string>(factualAssessmentSourceRefs(projection) as readonly string[])].sort();
+  const handleOf = new Map<string, string>();
+  factualRefs.slice(0, MAX_ADVERTISED_HANDLES_V0).forEach((ref, index) => {
+    handleOf.set(ref, `F${index + 1}`);
+  });
+  const lines: string[] = [
+    "[CLAIMABLE VERBATIM SPANS — each span below is a VERBATIM substring of its entry's recorded text and is therefore exactly quotable as a SOURCE_QUOTE with the same source handle; spans are historical evidence and may or may not resolve the current question; a span ending in '?' is a recorded question, not a recorded answer]"
+  ];
+  for (const entry of evidence.entries) {
+    const handle = handleOf.get(entry.episode_ref);
+    if (handle === undefined) continue;
+    const roleTexts: readonly (readonly [string, string])[] =
+      entry.kind === "BEHAVIOR_OUTCOME"
+        ? [["subject's delivered behavior", entry.delivered_behavior_text], ["recorded outcome reply", entry.exact_outcome_text]]
+        : [["recorded scene", entry.scene]];
+    let rendered = false;
+    for (const [role, text] of roleTexts) {
+      for (const span of splitRecordedSentencesV1(text)) {
+        lines.push(`- ${handle} ${role} (${spanKindV1(span)}): ${JSON.stringify(span)}`);
+        rendered = true;
+      }
+    }
+    if (!rendered) {
+      lines.push(`- ${handle}: (no sentence spans recorded)`);
+    }
+  }
+  return lines;
+}
+
+/** Deterministic sentence split: punctuation-boundary only, no semantic filtering. */
+function splitRecordedSentencesV1(text: string): readonly string[] {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length > 0);
+}
+
+function spanKindV1(span: string): string {
+  if (span.endsWith("?")) return "recorded question";
+  if (span.endsWith("!")) return "recorded exclamation";
+  return "recorded statement";
 }
 
 /** Deterministic SUBJECT DATA section rendered from the projection only.

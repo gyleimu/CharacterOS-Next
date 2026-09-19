@@ -184,7 +184,15 @@ function degraded(
 }
 
 export class ConversationTextResponseExecutorV1 {
-  constructor(private readonly deps: RuntimeDependencyContainer) {}
+  constructor(
+    private readonly deps: RuntimeDependencyContainer,
+    /**
+     * GENERATION-AFFORDANCE PROJECTION (product-only, opt-in; default OFF keeps every
+     * existing caller — frozen experiments, preregistered calibration requests —
+     * byte-identical): expose the verbatim claimable memory spans to cognition.
+     */
+    private readonly options: { readonly claimable_memory_spans?: boolean } = {}
+  ) {}
 
   async execute(
     ctx: RuntimeContext,
@@ -266,7 +274,8 @@ export class ConversationTextResponseExecutorV1 {
     // (semantics-preserving only) and permits exactly ONE regeneration before degrading.
     const c2ConversationProvider = createRobustConversationCognitionProviderV8({
       transport: conversationTransport,
-      executorId: "product-conversation-cognition"
+      executorId: "product-conversation-cognition",
+      claimable_memory_spans: this.options.claimable_memory_spans === true
     });
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {

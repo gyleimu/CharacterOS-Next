@@ -1009,7 +1009,13 @@ export class ExplicitV4SessionAuthorityV0 {
         repository_revision_hash: await computeRepositoryRevisionHash(manifest)
       }
     ] as never);
-    const executor = new ConversationTextResponseExecutorV1({ ...this.container, subjectCore: minter.core() } as never);
+    // GENERATION-AFFORDANCE PROJECTION: the product runtime exposes the verbatim
+    // claimable memory spans to cognition (frozen experiments construct the executor
+    // without this option and stay byte-identical).
+    const executor = new ConversationTextResponseExecutorV1(
+      { ...this.container, subjectCore: minter.core() } as never,
+      { claimable_memory_spans: true }
+    );
     const result = await executor.execute(
       ctxOf(snapshot),
       {

@@ -392,6 +392,12 @@ export function createRobustConversationCognitionProviderV8(input: {
   readonly executorId?: string | undefined;
   readonly onDiagnostic?: ((diagnostic: ExecutorOutputDiagnostic) => void) | undefined;
   readonly maxAttempts?: number | undefined;
+  /**
+   * GENERATION-AFFORDANCE PROJECTION (product-only, opt-in; default OFF so every
+   * existing caller — frozen experiments and preregistered requests — is
+   * byte-identical): see ConversationCognitionProviderV8Options.
+   */
+  readonly claimable_memory_spans?: boolean | undefined;
 }): RobustCognitionProviderV8 {
   const executorId = input.executorId ?? ROBUST_COGNITION_POLICY.executor_id;
   const maxAttempts = Math.min(input.maxAttempts ?? ROBUST_COGNITION_POLICY.max_attempts, ROBUST_COGNITION_POLICY.max_attempts);
@@ -454,7 +460,9 @@ export function createRobustConversationCognitionProviderV8(input: {
             });
           }
         });
-        const provider = new ConversationCognitionProviderV8(transport);
+        const provider = new ConversationCognitionProviderV8(transport, {
+          claimable_memory_spans: input.claimable_memory_spans === true
+        });
         lastProvider = provider;
         try {
           const proposal = await provider.propose(projection as never);
