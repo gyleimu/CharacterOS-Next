@@ -282,6 +282,12 @@ export interface ProductConfigurationV0 {
    * local family (the native transport already sends `think: false`).
    */
   readonly deepseek_thinking: ProductConfigValueV0<DeepSeekThinkingSettingV0>;
+  /**
+   * HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 — the product-layer direct-recall channel
+   * (`CHARACTEROS_DIRECT_RECALL=1`). DEFAULT OFF: frozen experiments, calibration
+   * requests and every existing caller keep byte-identical behaviour.
+   */
+  readonly direct_recall_enabled: ProductConfigValueV0<boolean>;
 }
 
 /** Explicit thinking-mode request setting for the cloud (OpenAI-compatible) family. */
@@ -393,7 +399,8 @@ export function resolveProductConfigurationV0(
       "CHARACTEROS_APPRAISAL_EXACT_INPUT_REUSE",
       false
     ),
-    deepseek_thinking: resolveDeepSeekThinkingV0(environment)
+    deepseek_thinking: resolveDeepSeekThinkingV0(environment),
+    direct_recall_enabled: resolveStrictBooleanSettingV0(environment, "CHARACTEROS_DIRECT_RECALL", false)
   };
 }
 

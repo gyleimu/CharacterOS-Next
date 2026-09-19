@@ -27,6 +27,7 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
+import { ConversationCognitionProviderV8 } from "../../providers/behavior/conversation-cognition-provider-v8.js";
 import {
   createRobustConversationCognitionProviderV8,
   isCognitionOutputDegraded,
@@ -191,7 +192,16 @@ export class ConversationTextResponseExecutorV1 {
      * existing caller — frozen experiments, preregistered calibration requests —
      * byte-identical): expose the verbatim claimable memory spans to cognition.
      */
-    private readonly options: { readonly claimable_memory_spans?: boolean } = {}
+    private readonly options: {
+      readonly claimable_memory_spans?: boolean;
+      /**
+       * HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 (product-layer, opt-in). When set,
+       * the callback receives the cognition projection and either returns a
+       * host-constructed V8 proposal (direct recall fires, model skipped) or null
+       * (normal cognition path).
+       */
+      readonly direct_recall_resolver?: ((projection: unknown) => Record<string, unknown> | null) | undefined;
+    } = {}
   ) {}
 
   async execute(
@@ -279,6 +289,20 @@ export class ConversationTextResponseExecutorV1 {
     });
     const wrappedV0Provider = {
       propose: async (projection: CognitiveContextProjectionAnyVersion) => {
+        // HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 — product-layer direct recall
+        // (opt-in): when the authority determines the query is eligible, the host
+        // constructs the SOURCE_QUOTE proposal and the model is skipped for the
+        // cognition step. The proposal still passes the real V8 parse.
+        if (this.options.direct_recall_resolver !== undefined) {
+          const hostProposal = this.options.direct_recall_resolver(projection);
+          if (hostProposal !== null) {
+            const directProvider = new ConversationCognitionProviderV8({
+              complete: async () => ({ content: JSON.stringify(hostProposal), model: "host-direct-recall" })
+            });
+            const directProposal = await directProvider.propose(projection);
+            return directProposal.cognition;
+          }
+        }
         const convProposal = projection.schema_version === "cognitive-context-projection-v2"
           ? await c2ConversationProvider.propose(projection)
           : await legacyConversationProvider.propose(projection);

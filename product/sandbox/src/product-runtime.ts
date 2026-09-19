@@ -54,6 +54,7 @@ import {
   PRODUCT_DEFAULT_DATA_ROOT_ORIGIN_V0,
   PRODUCT_DEFAULT_DATA_ROOT_V0
 } from "./product-paths.js";
+import { resolveDirectRecallV0 } from "./direct-recall-resolution.js";
 import {
   buildTurnFailureSummaryV0,
   runInstrumentedProductTurnV0,
@@ -686,6 +687,11 @@ export async function createProductRuntimeV0(
         ...(bundle.relationshipFamiliarityAdmissionProvider === null
           ? {}
           : { relationshipFamiliarityAdmissionProvider: bundle.relationshipFamiliarityAdmissionProvider }),
+        // HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 (product-layer, opt-in): enabled only
+        // when the product configuration says so; absent keeps frozen paths identical.
+        ...(configuration.direct_recall_enabled.value
+          ? { directRecallResolver: (projection: unknown) => resolveDirectRecallV0(projection as never).proposal }
+          : {}),
         sharedSourceStore: sharedStore,
         provider_identity: {
           model: configuration.model.value,

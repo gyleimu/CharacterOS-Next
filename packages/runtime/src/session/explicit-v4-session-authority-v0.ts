@@ -151,6 +151,14 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
    * calls); the session still runs unchanged.
    */
   readonly relationshipFamiliarityAdmissionProvider?: RelationshipInteractionQualifyingAdmissionProviderV0;
+  /**
+   * HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 (product-layer, opt-in; default OFF).
+   * When present, the session authority enables the direct-recall resolver on the
+   * conversation executor: eligible direct factual recall queries are answered from
+   * host-extracted memory spans without a cognition model call. Frozen experiments
+   * and calibration requests omit this and stay byte-identical.
+   */
+  readonly direct_recall_resolver?: ((projection: unknown) => Record<string, unknown> | null) | undefined;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -301,6 +309,7 @@ export class ExplicitV4SessionAuthorityV0 {
   private readonly beliefWiring: BeliefAdaptationWiringV0;
   private readonly personalityAdaptation: PersonalityAdaptationPortV0 | null;
   private readonly relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
+  private readonly directRecallResolver: ((projection: unknown) => Record<string, unknown> | null) | null;
   private pending: PendingLifecycleWorkV0[] = [];
   private subjectIdValue: string;
 
@@ -318,6 +327,7 @@ export class ExplicitV4SessionAuthorityV0 {
     beliefWiring: BeliefAdaptationWiringV0;
     personalityAdaptation: PersonalityAdaptationPortV0 | null;
     relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
+    directRecallResolver: ((projection: unknown) => Record<string, unknown> | null) | null;
   }) {
     this.repo = input.repo;
     this.assembly = input.assembly;
@@ -332,6 +342,7 @@ export class ExplicitV4SessionAuthorityV0 {
     this.beliefWiring = input.beliefWiring;
     this.personalityAdaptation = input.personalityAdaptation;
     this.relationshipFamiliarityAdmissionProvider = input.relationshipFamiliarityAdmissionProvider;
+    this.directRecallResolver = input.directRecallResolver;
     this.retrieval = new RepositoryBackedMemoryRetrievalServiceV0(this.repo as never);
     this.appraisalExecutor = new FactualEventAppraisalExecutorV0(this.container);
     const trustedHistory = {
@@ -587,7 +598,8 @@ export class ExplicitV4SessionAuthorityV0 {
       beliefWiring,
       personalityAdaptation,
       relationshipFamiliarityAdmissionProvider:
-        input.options.relationshipFamiliarityAdmissionProvider ?? null
+        input.options.relationshipFamiliarityAdmissionProvider ?? null,
+      directRecallResolver: input.options.direct_recall_resolver ?? null
     });
   }
 
@@ -1014,7 +1026,10 @@ export class ExplicitV4SessionAuthorityV0 {
     // without this option and stay byte-identical).
     const executor = new ConversationTextResponseExecutorV1(
       { ...this.container, subjectCore: minter.core() } as never,
-      { claimable_memory_spans: true }
+      {
+        claimable_memory_spans: true,
+        direct_recall_resolver: this.directRecallResolver ?? undefined
+      }
     );
     const result = await executor.execute(
       ctxOf(snapshot),
