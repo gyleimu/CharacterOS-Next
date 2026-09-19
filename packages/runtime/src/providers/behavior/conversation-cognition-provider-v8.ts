@@ -479,6 +479,36 @@ export const CONVERSATION_COGNITION_SYSTEM_PROMPT_V8 = (CONVERSATION_COGNITION_S
   + "\n\n"
   + renderCognitionProposalContractV8(CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA);
 
+/**
+ * LONG_HORIZON_COGNITION_MEMORY_USAGE_REMEDIATION_V0 — appended to the system prompt
+ * ONLY when the projection carries a non-empty PRIOR FACTUAL MEMORY evidence bundle
+ * (see `cognitionSystemPromptForV8`). General rules only: memory is available evidence
+ * the model MAY use, never mandatory truth; the frozen CAN_SAY law, clarification for
+ * genuinely unresolved questions, chronology over blind assertion, and the
+ * prior-question-is-not-an-answer rule are all stated here. No domain vocabulary.
+ */
+export const COGNITION_MEMORY_USAGE_CLAUSE_V8 = [
+  "19. PRIOR FACTUAL MEMORY USAGE (binding): when SUBJECT DATA contains the [PRIOR FACTUAL MEMORY] section, its entries are candidate factual evidence for THIS turn.",
+  "If an entry directly resolves the user's question — including where something is or was put, what happened, or what was said — ground a SOURCE_QUOTE claim in that entry and answer the question instead of asking for clarification.",
+  "You may ignore entries that do not resolve anything; if no entry resolves the question and the current observation does not either, clarification remains correct.",
+  "When entries conflict, do not assert the older one blindly: answer from the entry consistent with the latest chronology. An entry whose content is merely a prior similar question never resolves anything by itself.",
+  "Always cite the entry you actually used."
+].join(" ");
+
+/** The system prompt for ONE cognition call: the frozen V8 prompt, plus the memory-
+ * usage clause exactly when prior factual memory is present. Deterministic in the
+ * projection; EMPTY-genesis requests (no evidence) are byte-identical to the
+ * historical prompt, which keeps every frozen preregistered request intact. */
+export function cognitionSystemPromptForV8(projection: unknown): string {
+  const record = projection === null || typeof projection !== "object" ? undefined : (projection as Record<string, unknown>);
+  const evidence = record === undefined ? undefined : (record["factual_memory_evidence"] as { entries?: unknown } | undefined);
+  const entries = evidence === null || evidence === undefined ? undefined : evidence.entries;
+  const hasEvidence = Array.isArray(entries) && entries.length > 0;
+  return hasEvidence
+    ? `${CONVERSATION_COGNITION_SYSTEM_PROMPT_V8}\n${COGNITION_MEMORY_USAGE_CLAUSE_V8}`
+    : CONVERSATION_COGNITION_SYSTEM_PROMPT_V8;
+}
+
 export type ConversationCognitionRejectionCodeV8 =
   | "INVOCATION_BINDING_INVALID"
   | "MODEL_SCHEMA_INVALID"
@@ -547,7 +577,7 @@ export class ConversationCognitionProviderV8 {
     try {
       const response = await this.transport.complete({
         messages: [
-          { role: "system", content: CONVERSATION_COGNITION_SYSTEM_PROMPT_V8 },
+          { role: "system", content: cognitionSystemPromptForV8(projection) },
           { role: "user", content: buildConversationSubjectDataV4(projection) }
         ],
         structured_output: { kind: "JSON_SCHEMA", schema: CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA }

@@ -330,7 +330,15 @@ function plan(batch: number): readonly string[] {
     "The workshop feels ready for winter for the first time in years.",
     "*Do you remember how the drawer labels are holding up?"
   ];
-  const chosen = PLAN_SET === "F" ? sixth : PLAN_SET === "E" ? fifth : PLAN_SET === "D" ? fourth : PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
+  const seventh = [
+    // PLAN G — the cognition-memory-usage live acceptance: three natural paraphrased
+    // recall callbacks whose retrieval targets and carrier content are already proven
+    // (checkpoint-200 evaluation). Never the historical probe wording, no answers given.
+    "Before I forget — which drawer did I say holds the chisel again?",
+    "The neighbour's cat is at the door again — where does she usually nap when she visits?",
+    "That stool is rocking on the floor once more — what did I use to steady it last time?"
+  ];
+  const chosen = PLAN_SET === "G" ? seventh : PLAN_SET === "F" ? sixth : PLAN_SET === "E" ? fifth : PLAN_SET === "D" ? fourth : PLAN_SET === "C" ? third : PLAN_SET === "B" ? later : null;
   if (chosen !== null) {
     if (batch <= chosen.length) return chosen.slice(0, batch);
     const filler: string[] = [];
