@@ -491,14 +491,24 @@ export const COGNITION_MEMORY_USAGE_CLAUSE_V8 = [
   "19. PRIOR FACTUAL MEMORY USAGE (binding): when SUBJECT DATA contains the [PRIOR FACTUAL MEMORY] section, its entries are candidate factual evidence for THIS turn.",
   "If an entry directly resolves the user's question — including where something is or was put, what happened, or what was said — ground a SOURCE_QUOTE claim in that entry and answer the question instead of asking for clarification.",
   "You may ignore entries that do not resolve anything; if no entry resolves the question and the current observation does not either, clarification remains correct.",
-  "When entries conflict, do not assert the older one blindly: answer from the entry consistent with the latest chronology. An entry whose content is merely a prior similar question never resolves anything by itself.",
+  "When entries conflict, do not assert the older one blindly: answer from the entry consistent with the latest chronology. An entry whose content is merely a prior similar question never resolves anything by itself; prefer the entry whose content states the answer.",
   "Always cite the entry you actually used."
 ].join(" ");
 
-/** The system prompt for ONE cognition call: the frozen V8 prompt, plus the memory-
+/**
+ * The system prompt for ONE cognition call: the frozen V8 prompt, plus the memory-
  * usage clause exactly when prior factual memory is present. Deterministic in the
  * projection; EMPTY-genesis requests (no evidence) are byte-identical to the
- * historical prompt, which keeps every frozen preregistered request intact. */
+ * historical prompt, which keeps every frozen preregistered request intact.
+ *
+ * NOTE (COGNITION_USAGE_REMEDIATION_INCOMPLETE): the V8 law itself (rule 14) already
+ * permits resolving from "the observation plus available evidence" — the law does NOT
+ * forbid memory use, and the clause states the usage explicitly. The live acceptance
+ * (3 real turns with the clause present and answer-bearing entries selected) still
+ * produced clarification replies, so the remaining failure is the model's usage of the
+ * presented evidence, not the instruction's absence. Recorded honestly; no further
+ * prompt tuning in this slice.
+ */
 export function cognitionSystemPromptForV8(projection: unknown): string {
   const record = projection === null || typeof projection !== "object" ? undefined : (projection as Record<string, unknown>);
   const evidence = record === undefined ? undefined : (record["factual_memory_evidence"] as { entries?: unknown } | undefined);
