@@ -56,7 +56,13 @@ function extractSelectedRefs(projection: unknown): readonly string[] {
   return refs ?? [];
 }
 
-function extractQuery(projection: unknown): string {
+/**
+ * The ONE current-utterance extraction law shared by every product recall
+ * authority (this module and RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0).
+ * The product wraps the visitor's turn as `The user says: "..."`; the unwrapped
+ * text is what a recall query must be classified against.
+ */
+export function extractRecallQueryV0(projection: unknown): string {
   const record = projection === null || typeof projection !== "object" ? undefined : (projection as Record<string, unknown>);
   const context = record?.["context"] as Record<string, unknown> | undefined;
   const scene = context === undefined || context === null ? "" : String(context["scene"] ?? "");
@@ -73,7 +79,7 @@ function extractQuery(projection: unknown): string {
 export function resolveDirectRecallV0(
   projection: CognitionProjectionViewV0 | null | undefined
 ): DirectRecallResolutionV0 {
-  const query = extractQuery(projection);
+  const query = extractRecallQueryV0(projection);
   const evidenceEntries = extractEvidenceEntries(projection);
   const selectedRefs = extractSelectedRefs(projection);
   if (evidenceEntries.length === 0 || selectedRefs.length === 0) {

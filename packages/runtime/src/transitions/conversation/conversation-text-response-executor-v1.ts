@@ -19,6 +19,7 @@ import { hashEnvelope, validateIdentifier } from "@characteros-next/subject-core
 import type { RuntimeDependencyContainer } from "../../types/runtime-dependency-container.js";
 import type { TransitionCapabilities } from "../../ports/subject-core-port.js";
 import type { RuntimeContext } from "../../types/runtime-context.js";
+import type { ModelTransportRequestV0, ModelTransportV0 } from "../../transports/model-transport.js";
 import { CognitionActionTransitionExecutor } from "../cognition-action/cognition-action-transition-executor.js";
 import { createMiclStageMinter } from "../../micl/micl-capabilities.js";
 import { InMemoryMiclWorkflowStore } from "../../micl/micl-workflow-store.js";
@@ -27,7 +28,6 @@ import { FactualEventAppraisalExecutorV0 } from "../../factual-event-appraisal/f
 import { allowedEvidenceSet, type CognitiveContextProjectionAnyVersion, type CognitionProposalV0 } from "../cognition-action/types.js";
 import type { ConversationResponseRequestV0 } from "./conversation-text-response-executor.js";
 import { ConversationCognitionProviderV2 } from "../../providers/behavior/conversation-cognition-provider-v2.js";
-import { ConversationCognitionProviderV8 } from "../../providers/behavior/conversation-cognition-provider-v8.js";
 import {
   createRobustConversationCognitionProviderV8,
   isCognitionOutputDegraded,
@@ -201,6 +201,16 @@ export class ConversationTextResponseExecutorV1 {
        * (normal cognition path).
        */
       readonly direct_recall_resolver?: ((projection: unknown) => Record<string, unknown> | null) | undefined;
+      /**
+       * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 (product-layer, opt-in). When
+       * set, the callback receives the cognition projection and either returns a
+       * host-constructed V8 proposal (a closed-set evidence selection was made and
+       * authorized) or null (normal cognition path). ASYNC because the authority
+       * makes exactly one tiny selector model call.
+       */
+      readonly recall_selector_resolver?:
+        | ((projection: unknown) => Promise<Record<string, unknown> | null>)
+        | undefined;
     } = {}
   ) {}
 
@@ -279,11 +289,36 @@ export class ConversationTextResponseExecutorV1 {
 
     // ---- shared cognition pipeline; current canonical projections use C3 V4 -------
     const legacyConversationProvider = new ConversationCognitionProviderV2(conversationTransport);
+    /**
+     * HOST-SUPPLIED PROPOSAL OVERRIDE (product-layer, opt-in).
+     *
+     * The host recall authorities (direct recall and closed-set evidence selection)
+     * do not call a cognition model at all: they construct the proposal themselves
+     * from already-authorized evidence. The proposal must still pass the REAL V8
+     * parse, and the downstream executor reads `lastConversationProposal` /
+     * `lastDirective` from the robust provider — so the host proposal is injected
+     * through the provider's OWN transport for exactly one call instead of being
+     * parsed by a throwaway provider. That keeps ONE acceptance path (the robust
+     * V8 provider) for model output and host output alike.
+     *
+     * When no authority supplies a proposal the holder stays null and this
+     * transport forwards the request verbatim: frozen callers are byte-identical.
+     */
+    let hostProposalOverride: { readonly proposal: Record<string, unknown>; readonly model: string } | null = null;
+    const delegatingCognitionTransport: ModelTransportV0 = {
+      complete: async (request: ModelTransportRequestV0) => {
+        const override = hostProposalOverride;
+        if (override !== null) {
+          return { content: JSON.stringify(override.proposal), model: override.model };
+        }
+        return conversationTransport.complete(request);
+      }
+    };
     // PRODUCT OUTPUT ROBUSTNESS: the V8 provider stays the sole acceptance authority,
     // but it is now driven by a bounded executor that normalizes the model's content
     // (semantics-preserving only) and permits exactly ONE regeneration before degrading.
     const c2ConversationProvider = createRobustConversationCognitionProviderV8({
-      transport: conversationTransport,
+      transport: delegatingCognitionTransport,
       executorId: "product-conversation-cognition",
       claimable_memory_spans: this.options.claimable_memory_spans === true
     });
@@ -295,18 +330,25 @@ export class ConversationTextResponseExecutorV1 {
         // cognition step. The proposal still passes the real V8 parse.
         if (this.options.direct_recall_resolver !== undefined) {
           const hostProposal = this.options.direct_recall_resolver(projection);
-          if (hostProposal !== null) {
-            const directProvider = new ConversationCognitionProviderV8({
-              complete: async () => ({ content: JSON.stringify(hostProposal), model: "host-direct-recall" })
-            });
-            const directProposal = await directProvider.propose(projection);
-            return directProposal.cognition;
-          }
+          if (hostProposal !== null) hostProposalOverride = { proposal: hostProposal, model: "host-direct-recall" };
         }
-        const convProposal = projection.schema_version === "cognitive-context-projection-v2"
-          ? await c2ConversationProvider.propose(projection)
-          : await legacyConversationProvider.propose(projection);
-        return convProposal.cognition;
+        // RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — product-layer closed-set
+        // evidence selection (opt-in): the authority extracts lawful verbatim
+        // candidates from the evidence this projection already carries, makes ONE
+        // tiny isolated selector call, and supplies a host-constructed proposal only
+        // when the selection was authorized by the FROZEN claim authority.
+        if (hostProposalOverride === null && this.options.recall_selector_resolver !== undefined) {
+          const selectedProposal = await this.options.recall_selector_resolver(projection);
+          if (selectedProposal !== null) hostProposalOverride = { proposal: selectedProposal, model: "host-recall-selector" };
+        }
+        try {
+          const convProposal = projection.schema_version === "cognitive-context-projection-v2"
+            ? await c2ConversationProvider.propose(projection)
+            : await legacyConversationProvider.propose(projection);
+          return convProposal.cognition;
+        } finally {
+          hostProposalOverride = null;
+        }
       }
     };
     let cognitionExecutor = new CognitionActionTransitionExecutor({

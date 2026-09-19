@@ -55,6 +55,8 @@ import {
   PRODUCT_DEFAULT_DATA_ROOT_V0
 } from "./product-paths.js";
 import { resolveDirectRecallV0 } from "./direct-recall-resolution.js";
+import { createRecallSelectorAuthorityV0 } from "./recall-evidence-resolution.js";
+import type { RecallSelectorAccountingV0, RecallSelectorAuthorityV0 } from "./recall-evidence-resolution.js";
 import {
   buildTurnFailureSummaryV0,
   runInstrumentedProductTurnV0,
@@ -261,6 +263,12 @@ export interface ProductRuntimeDepsV0 {
   readonly turnPlan: ProductTurnPlanInputV0;
   /** Turn-scoped appraisal inference reuse port (may be disabled by config). */
   readonly appraisalReuse: AppraisalInferenceReuseV0 | null;
+  /**
+   * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — the opt-in selector authority,
+   * exposed for READ-ONLY observability (non-canonical, process-local). Null when
+   * the product configuration leaves the channel disabled.
+   */
+  readonly recallSelectorAuthority: RecallSelectorAuthorityV0 | null;
 }
 
 /**
@@ -515,6 +523,14 @@ export class ProductRuntimeV0 {
     return this.deps.host.isQuiescent();
   }
 
+  /**
+   * READ-ONLY recall-selector observability (non-canonical, process-local).
+   * Never carries candidate text into canonical state; `null` when disabled.
+   */
+  recallSelectorAccounting(): RecallSelectorAccountingV0 | null {
+    return this.deps.recallSelectorAuthority?.accounting() ?? null;
+  }
+
   /** Waits for in-flight turns; the host already persisted each completed turn. */
   async shutdown(): Promise<void> {
     await this.deps.queue.drain();
@@ -601,6 +617,15 @@ export async function createProductRuntimeV0(
       debug,
       ...(options.now === undefined ? {} : { now: options.now })
     });
+  // RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — the authority exists only when
+  // the product configuration enables it; otherwise it is never constructed and no
+  // selector transport is reachable from the session path.
+  const recallSelectorAuthority = configuration.recall_evidence_selector_enabled.value
+    ? createRecallSelectorAuthorityV0({
+        transport: bundle.transports.recall_selector,
+        ...(options.now === undefined ? {} : { now: options.now })
+      })
+    : null;
   // Metadata-only preflight (never a generation call); fail closed, like the CLI.
   // Family-specific for the same reason: the cloud family has no safe metadata
   // probe, and its credential presence is already enforced at resolution time.
@@ -692,6 +717,14 @@ export async function createProductRuntimeV0(
         ...(configuration.direct_recall_enabled.value
           ? { directRecallResolver: (projection: unknown) => resolveDirectRecallV0(projection as never).proposal }
           : {}),
+        // RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 (product-layer, opt-in):
+        // the closed-set evidence selector. DEFAULT OFF, so no selector model call
+        // is made and no existing caller changes.
+        ...(recallSelectorAuthority === null
+          ? {}
+          : {
+              recallSelectorResolver: (projection: unknown) => recallSelectorAuthority.resolve(projection)
+            }),
         sharedSourceStore: sharedStore,
         provider_identity: {
           model: configuration.model.value,
@@ -773,7 +806,8 @@ export async function createProductRuntimeV0(
     hub,
     queue: new SerialTaskQueueV0(),
     turnPlan: bundle.turnPlan,
-    appraisalReuse: bundle.appraisalReuse
+    appraisalReuse: bundle.appraisalReuse,
+    recallSelectorAuthority
   });
 }
 

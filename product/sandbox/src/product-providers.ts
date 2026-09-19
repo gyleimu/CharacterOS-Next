@@ -33,6 +33,13 @@ import {
 export const PRODUCT_APPRAISAL_NUM_PREDICT_V0 = 256 as const;
 
 /**
+ * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — the selector's lawful output is
+ * `{"selection":"<handle>"}`: a handful of tokens. A small explicit budget keeps
+ * the call cheap and bounds any unexpected verbosity at the transport.
+ */
+export const PRODUCT_RECALL_SELECTOR_NUM_PREDICT_V0 = 64 as const;
+
+/**
  * REPLY_CRITICAL_LATENCY_FORENSIC_V0 — EVERY product transport shares the ONE
  * configured context budget (`CHARACTEROS_CONTEXT_WINDOW_TOKENS`).
  *
@@ -98,6 +105,13 @@ export interface ProductTransportsV0 {
   /** Dedicated Appraisal transport (separate semantic role and call accounting). */
   readonly appraisal: ModelTransportV0;
   /**
+   * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — dedicated transport for the
+   * tiny closed-set evidence-selection call. Same model/endpoint/request policy as
+   * the other stages; a separate instance so its cost and latency are attributable
+   * and it can never be confused with a cognition call.
+   */
+  readonly recall_selector: ModelTransportV0;
+  /**
    * Dedicated relationship-familiarity admission transport so product
    * diagnostics can label that model-backed stage distinctly from cognition.
    * Same model/configuration; separate instance only.
@@ -107,6 +121,8 @@ export interface ProductTransportsV0 {
   readonly lastCognitionTrace: () => ModelTransportTraceV0 | null;
   /** Terminal trace of the most recent appraisal call (operational evidence). */
   readonly lastAppraisalTrace: () => ModelTransportTraceV0 | null;
+  /** Terminal trace of the most recent recall-selector call (operational evidence). */
+  readonly lastRecallSelectorTrace: () => ModelTransportTraceV0 | null;
 }
 
 /**
@@ -169,13 +185,26 @@ export function createProductTransportsV0(config: ProductProviderConfigV0): Prod
       }
     }
   });
+  // The selector's answer is a single token-ish handle; a small output budget is
+  // chosen explicitly (it can never be a long generation).
+  let lastRecallSelectorTrace: ModelTransportTraceV0 | null = null;
+  const recallSelector = createProductTransportV0(config, {
+    num_predict: PRODUCT_RECALL_SELECTOR_NUM_PREDICT_V0,
+    trace_observer: (event) => {
+      if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
+        lastRecallSelectorTrace = structuredClone(event);
+      }
+    }
+  });
   return {
     cognition,
     language,
     appraisal,
+    recall_selector: recallSelector,
     relationship: createProductTransportV0(config, { num_predict: config.num_predict }),
     lastCognitionTrace: () => lastTrace,
-    lastAppraisalTrace: () => lastAppraisalTrace
+    lastAppraisalTrace: () => lastAppraisalTrace,
+    lastRecallSelectorTrace: () => lastRecallSelectorTrace
   };
 }
 

@@ -138,9 +138,11 @@ function fakeBundle(mode: CognitionMode = "OK"): BundleHarness {
         cognition: cognitionStage,
         language: languageStage,
         appraisal: appraisalStage,
+        recall_selector: appraisalStage,
         relationship: appraisalStage,
         lastCognitionTrace: () => null,
-        lastAppraisalTrace: () => null
+        lastAppraisalTrace: () => null,
+        lastRecallSelectorTrace: () => null
       },
       appraisalProvider: appraisal.provider,
       appraisalCallCount: () => appraisal.stats.callCount(),

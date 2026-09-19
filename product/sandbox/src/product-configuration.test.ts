@@ -205,6 +205,37 @@ describe("CHARACTEROS_PRODUCT_CONFIGURATION_AND_ONBOARDING_UX_V0 — resolution"
     expect(config.belief_semantic_model.source).toBe("DERIVED");
   });
 
+  it("C2b: the recall authorities are OFF by default and opt-in via their own variables", () => {
+    // DEFAULT OFF is the safety property: no selector call, no direct recall, and
+    // unchanged behaviour for frozen experiments and calibration requests.
+    const defaults = resolveConfig("D:\\data");
+    expect(defaults.direct_recall_enabled.value).toBe(false);
+    expect(defaults.direct_recall_enabled.source).toBe("DEFAULT");
+    expect(defaults.recall_evidence_selector_enabled.value).toBe(false);
+    expect(defaults.recall_evidence_selector_enabled.source).toBe("DEFAULT");
+
+    const optedIn = resolveConfig("D:\\data", {
+      CHARACTEROS_DIRECT_RECALL: "1",
+      CHARACTEROS_RECALL_EVIDENCE_SELECTOR: "1"
+    });
+    expect(optedIn.direct_recall_enabled).toEqual({
+      value: true,
+      source: "ENVIRONMENT",
+      origin: "CHARACTEROS_DIRECT_RECALL"
+    });
+    expect(optedIn.recall_evidence_selector_enabled).toEqual({
+      value: true,
+      source: "ENVIRONMENT",
+      origin: "CHARACTEROS_RECALL_EVIDENCE_SELECTOR"
+    });
+
+    // Strict 0/1: a non-boolean value fails closed rather than being coerced.
+    expect(() => resolveConfig("D:\\data", { CHARACTEROS_RECALL_EVIDENCE_SELECTOR: "yes" })).toThrow();
+    expect(
+      resolveConfig("D:\\data", { CHARACTEROS_RECALL_EVIDENCE_SELECTOR: "0" }).recall_evidence_selector_enabled.value
+    ).toBe(false);
+  });
+
   it("C2: environment variables override and are labeled with the variable name", () => {
     const config = resolveConfig("D:\\data", {
       CHARACTEROS_MODEL: "llama3:8b",

@@ -288,6 +288,13 @@ export interface ProductConfigurationV0 {
    * requests and every existing caller keep byte-identical behaviour.
    */
   readonly direct_recall_enabled: ProductConfigValueV0<boolean>;
+  /**
+   * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — the closed-set recall evidence
+   * selector (`CHARACTEROS_RECALL_EVIDENCE_SELECTOR=1`). DEFAULT OFF: frozen
+   * experiments, calibration requests and every existing caller stay identical,
+   * and no selector model call is ever made unless an operator opts in.
+   */
+  readonly recall_evidence_selector_enabled: ProductConfigValueV0<boolean>;
 }
 
 /** Explicit thinking-mode request setting for the cloud (OpenAI-compatible) family. */
@@ -400,7 +407,12 @@ export function resolveProductConfigurationV0(
       false
     ),
     deepseek_thinking: resolveDeepSeekThinkingV0(environment),
-    direct_recall_enabled: resolveStrictBooleanSettingV0(environment, "CHARACTEROS_DIRECT_RECALL", false)
+    direct_recall_enabled: resolveStrictBooleanSettingV0(environment, "CHARACTEROS_DIRECT_RECALL", false),
+    recall_evidence_selector_enabled: resolveStrictBooleanSettingV0(
+      environment,
+      "CHARACTEROS_RECALL_EVIDENCE_SELECTOR",
+      false
+    )
   };
 }
 

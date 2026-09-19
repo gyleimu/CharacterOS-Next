@@ -89,6 +89,17 @@ export interface InteractiveSubjectHostDepsV0 {
    * cognition transport). Omitted ⇒ relationship familiarity stays DISABLED.
    */
   readonly relationshipFamiliarityAdmissionProvider?: RelationshipInteractionQualifyingAdmissionProviderV0;
+  /**
+   * HOST_DIRECT_RECALL_PRODUCT_AUTHORITY_V0 (product-layer, opt-in; default OFF).
+   * Omitted ⇒ the deterministic direct-recall channel stays disabled.
+   */
+  readonly directRecallResolver?: (projection: unknown) => Record<string, unknown> | null;
+  /**
+   * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 (product-layer, opt-in; default
+   * OFF). Omitted ⇒ the closed-set recall evidence selector stays disabled and no
+   * selector call is ever made.
+   */
+  readonly recallSelectorResolver?: (projection: unknown) => Promise<Record<string, unknown> | null>;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -217,6 +228,10 @@ export class InteractiveSubjectHostV0 {
       ...(deps.relationshipFamiliarityAdmissionProvider === undefined
         ? {}
         : { relationshipFamiliarityAdmissionProvider: deps.relationshipFamiliarityAdmissionProvider }),
+      ...(deps.directRecallResolver === undefined ? {} : { direct_recall_resolver: deps.directRecallResolver }),
+      ...(deps.recallSelectorResolver === undefined
+        ? {}
+        : { recall_selector_resolver: deps.recallSelectorResolver }),
       ...(config.interval_ticks === undefined ? {} : { interval_ticks: config.interval_ticks }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })

@@ -159,6 +159,18 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
    * and calibration requests omit this and stay byte-identical.
    */
   readonly direct_recall_resolver?: ((projection: unknown) => Record<string, unknown> | null) | undefined;
+  /**
+   * RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 (product-layer, opt-in; default
+   * OFF). When present, the session authority enables the closed-set recall
+   * evidence selector on the conversation executor: the host extracts lawful
+   * verbatim candidates from the already-retrieved evidence, makes ONE tiny
+   * isolated selector call, and builds the claim from the SELECTED candidate
+   * through the existing frozen SOURCE_QUOTE → authorization → PRIMARY_FACT path.
+   * Frozen experiments and calibration requests omit this and stay byte-identical.
+   */
+  readonly recall_selector_resolver?:
+    | ((projection: unknown) => Promise<Record<string, unknown> | null>)
+    | undefined;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -310,6 +322,7 @@ export class ExplicitV4SessionAuthorityV0 {
   private readonly personalityAdaptation: PersonalityAdaptationPortV0 | null;
   private readonly relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
   private readonly directRecallResolver: ((projection: unknown) => Record<string, unknown> | null) | null;
+  private readonly recallSelectorResolver: ((projection: unknown) => Promise<Record<string, unknown> | null>) | null;
   private pending: PendingLifecycleWorkV0[] = [];
   private subjectIdValue: string;
 
@@ -328,6 +341,7 @@ export class ExplicitV4SessionAuthorityV0 {
     personalityAdaptation: PersonalityAdaptationPortV0 | null;
     relationshipFamiliarityAdmissionProvider: RelationshipInteractionQualifyingAdmissionProviderV0 | null;
     directRecallResolver: ((projection: unknown) => Record<string, unknown> | null) | null;
+    recallSelectorResolver: ((projection: unknown) => Promise<Record<string, unknown> | null>) | null;
   }) {
     this.repo = input.repo;
     this.assembly = input.assembly;
@@ -343,6 +357,7 @@ export class ExplicitV4SessionAuthorityV0 {
     this.personalityAdaptation = input.personalityAdaptation;
     this.relationshipFamiliarityAdmissionProvider = input.relationshipFamiliarityAdmissionProvider;
     this.directRecallResolver = input.directRecallResolver;
+    this.recallSelectorResolver = input.recallSelectorResolver;
     this.retrieval = new RepositoryBackedMemoryRetrievalServiceV0(this.repo as never);
     this.appraisalExecutor = new FactualEventAppraisalExecutorV0(this.container);
     const trustedHistory = {
@@ -599,7 +614,8 @@ export class ExplicitV4SessionAuthorityV0 {
       personalityAdaptation,
       relationshipFamiliarityAdmissionProvider:
         input.options.relationshipFamiliarityAdmissionProvider ?? null,
-      directRecallResolver: input.options.direct_recall_resolver ?? null
+      directRecallResolver: input.options.direct_recall_resolver ?? null,
+      recallSelectorResolver: input.options.recall_selector_resolver ?? null
     });
   }
 
@@ -1028,7 +1044,8 @@ export class ExplicitV4SessionAuthorityV0 {
       { ...this.container, subjectCore: minter.core() } as never,
       {
         claimable_memory_spans: true,
-        direct_recall_resolver: this.directRecallResolver ?? undefined
+        direct_recall_resolver: this.directRecallResolver ?? undefined,
+        recall_selector_resolver: this.recallSelectorResolver ?? undefined
       }
     );
     const result = await executor.execute(
