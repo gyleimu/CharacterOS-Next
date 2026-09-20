@@ -5,11 +5,17 @@
  * whose `num_ctx` differs forces a runner rebuild (measured ~9–11 s of
  * load_duration). These tests pin the fixed property at the WIRE level: every
  * product transport sends the ONE configured context allocation, while each
- * stage keeps its own output budget (Appraisal stays 256).
+ * stage keeps its own output budget (Appraisal stays 256; cognition has its own
+ * dedicated LOCAL_COGNITION_GENERATION_BUDGET_REMEDIATION budget, and language
+ * and relationship keep the shared configured value).
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { createProductTransportsV0, PRODUCT_APPRAISAL_NUM_PREDICT_V0 } from "./product-providers.js";
+import {
+  createProductTransportsV0,
+  PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+  PRODUCT_COGNITION_NUM_PREDICT_V0
+} from "./product-providers.js";
 import { resolveProductConfigurationV0, environmentFromRecordV0 } from "./product-configuration.js";
 import { createProductProviderBundleV0 } from "./product-provider-bundle.js";
 
@@ -49,7 +55,7 @@ function installFetchCapture(calls: CapturedCall[]): void {
 }
 
 describe("REPLY_CRITICAL_LATENCY_FORENSIC_V0 — one shared provider allocation", () => {
-  it("all product transports send the same num_ctx; appraisal keeps its 256 output budget", async () => {
+  it("all product transports send the same num_ctx; appraisal and cognition keep their own output budgets", async () => {
     const calls: CapturedCall[] = [];
     installFetchCapture(calls);
     const transports = createProductTransportsV0({
@@ -66,9 +72,13 @@ describe("REPLY_CRITICAL_LATENCY_FORENSIC_V0 — one shared provider allocation"
     expect(calls.length).toBe(4);
     const options = calls.map((call) => call.body["options"] as Record<string, number>);
     expect(options.map((entry) => entry["num_ctx"])).toEqual([8192, 8192, 8192, 8192]);
-    // Appraisal output budget unchanged; other stages keep the configured budget.
+    // Appraisal output budget unchanged; cognition has its own dedicated budget
+    // (the raise is cognition-only); language and relationship keep the shared
+    // configured value, so no other stage was silently widened.
     expect(options[0]?.["num_predict"]).toBe(PRODUCT_APPRAISAL_NUM_PREDICT_V0);
-    expect(options[1]?.["num_predict"]).toBe(2048);
+    expect(options[1]?.["num_predict"]).toBe(PRODUCT_COGNITION_NUM_PREDICT_V0);
+    expect(options[2]?.["num_predict"]).toBe(2048);
+    expect(options[3]?.["num_predict"]).toBe(2048);
     // Sampling options are unchanged across all stages.
     expect(options.map((entry) => entry["temperature"])).toEqual([0, 0, 0, 0]);
   });

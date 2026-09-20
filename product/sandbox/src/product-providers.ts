@@ -40,6 +40,25 @@ export const PRODUCT_APPRAISAL_NUM_PREDICT_V0 = 256 as const;
 export const PRODUCT_RECALL_SELECTOR_NUM_PREDICT_V0 = 64 as const;
 
 /**
+ * LOCAL_COGNITION_GENERATION_BUDGET_REMEDIATION (human-approved): the local
+ * cognition generation budget.
+ *
+ * WHY A DEDICATED CONSTANT: cognition, language and relationship all read the one
+ * shared `CHARACTEROS_NUM_PREDICT`. Raising that value to fix cognition truncation
+ * would silently widen three stages at once, so cognition gets its OWN budget —
+ * exactly the shape appraisal (256) and the recall selector (64) already use.
+ * Language and relationship therefore keep the shared value unchanged.
+ *
+ * WHY 3072: the read-only executor adjudication measured the truncation cases as
+ * `prompt=4098 + generated=2048/2048, num_ctx=8192, done_reason=length` — i.e. the
+ * GENERATION budget was exhausted while ~4094 tokens of context headroom remained.
+ * 3072 restores ~1022 tokens of headroom against that observed maximum prompt and
+ * addresses ONLY `MODEL_OUTPUT_TRUNCATED`; it is a ceiling, never a target, and it
+ * changes no prompt, schema, authority or retry behaviour.
+ */
+export const PRODUCT_COGNITION_NUM_PREDICT_V0 = 3072 as const;
+
+/**
  * REPLY_CRITICAL_LATENCY_FORENSIC_V0 — EVERY product transport shares the ONE
  * configured context budget (`CHARACTEROS_CONTEXT_WINDOW_TOKENS`).
  *
@@ -168,7 +187,12 @@ function createProductTransportV0(
 export function createProductTransportsV0(config: ProductProviderConfigV0): ProductTransportsV0 {
   let lastTrace: ModelTransportTraceV0 | null = null;
   const cognition = createProductTransportV0(config, {
-    num_predict: config.num_predict,
+    // Cognition-only budget, and LOCAL-only: the approved decision is
+    // LOCAL_COGNITION_NUM_PREDICT = 3072, the truncation it addresses was measured
+    // on the local family, and the cloud family's request policy is unchanged.
+    // Language and relationship keep the shared `CHARACTEROS_NUM_PREDICT` value,
+    // so this raise cannot widen any other stage.
+    num_predict: config.executor === "deepseek" ? config.num_predict : PRODUCT_COGNITION_NUM_PREDICT_V0,
     trace_observer: (event) => {
       if (event.schema_version === MODEL_TRANSPORT_TRACE_SCHEMA_VERSION_V0) {
         lastTrace = structuredClone(event);

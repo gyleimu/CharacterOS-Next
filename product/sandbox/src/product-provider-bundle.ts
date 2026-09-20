@@ -25,6 +25,7 @@ import {
 } from "./product-appraisal-reuse.js";
 import {
   PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+  PRODUCT_COGNITION_NUM_PREDICT_V0,
   createProductTransportsV0,
   deepSeekProviderRequestOptionsV0,
   type ProductTransportsV0
@@ -73,6 +74,13 @@ export interface ProductProviderBundleV0 {
   readonly context_window_tokens: number;
   /** Appraisal output budget (unchanged by the latency fix). */
   readonly appraisal_num_predict: number;
+  /**
+   * LOCAL_COGNITION_GENERATION_BUDGET_REMEDIATION — the COGNITION-ONLY output
+   * budget. Language and relationship keep the shared `CHARACTEROS_NUM_PREDICT`
+   * value; this field exists so the raised budget is visible and testable rather
+   * than implicit in the transport construction.
+   */
+  readonly cognition_num_predict: number;
   /**
    * APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0 — turn-scoped reuse port shared by
    * the appraisal provider and the product turn lifecycle. `enabled` reflects
@@ -189,6 +197,7 @@ export function createProductProviderBundleV0(
     model,
     context_window_tokens: configuration.context_window_tokens.value,
     appraisal_num_predict: PRODUCT_APPRAISAL_NUM_PREDICT_V0,
+    cognition_num_predict: PRODUCT_COGNITION_NUM_PREDICT_V0,
     appraisalReuse
   };
 }
