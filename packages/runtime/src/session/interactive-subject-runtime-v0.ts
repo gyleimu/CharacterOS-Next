@@ -133,6 +133,8 @@ export interface InteractiveTurnOutcomeV0 {
   readonly observational_experience_ref: string | null;
   readonly retrieved_refs: readonly string[];
   readonly working_episode_refs: readonly string[];
+  /** CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 — non-canonical, process-local. */
+  readonly retrieval_lexical_query_applied: boolean;
   readonly resolved_evidence_entry_count: number;
   readonly provider_memory_section_present: boolean;
   readonly provider_request_hash: string | null;
@@ -518,7 +520,18 @@ export class InteractiveSubjectRuntimeV0 {
         source_event_id: sourceEventId,
         kind: "PRIMARY"
       });
-      const context = await this.authority.commitObservableContext({ scene: conversationalSceneV0(text), task: CONVERSATIONAL_TASK_V0, tag });
+      // CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 (opt-in): the EXACT user utterance
+      // rides the ONE existing per-turn retrieval call as `lexical_query_text`, so
+      // the already-implemented lexical relevance law can rank this turn's
+      // candidates by what was actually asked. Default OFF keeps the historical
+      // query (and therefore every frozen path) unchanged. The scene wrapper is
+      // never parsed back — `text` IS the user's original characters.
+      const context = await this.authority.commitObservableContext({
+        scene: conversationalSceneV0(text),
+        task: CONVERSATIONAL_TASK_V0,
+        tag,
+        ...(this.options.query_aware_retrieval === true ? { lexical_query_text: text } : {})
+      });
       const evidence = await this.authority.resolveWorkingEvidence();
 
       this.captureHolder.cognition = null;
@@ -577,6 +590,7 @@ export class InteractiveSubjectRuntimeV0 {
           observational_experience_ref: null,
           retrieved_refs: [],
           working_episode_refs: [],
+          retrieval_lexical_query_applied: false,
           resolved_evidence_entry_count: 0,
           provider_memory_section_present: false,
           provider_request_hash: null,
@@ -722,6 +736,14 @@ export class InteractiveSubjectRuntimeV0 {
         observational_experience_ref: observationalExperienceRef,
         retrieved_refs: context.selected_refs,
         working_episode_refs: context.working_episode_refs,
+        /**
+         * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 — non-canonical observability:
+         * whether the current user utterance was actually forwarded to this
+         * turn's ONE retrieval call as `lexical_query_text`. False whenever the
+         * feature is off, the turn is not interactive, or the utterance fell
+         * outside the retrieval contract's own 1..4096-character bound.
+         */
+        retrieval_lexical_query_applied: context.lexical_query_applied,
         resolved_evidence_entry_count: evidence.entry_count,
         provider_memory_section_present:
           cognitionExchange !== null && cognitionExchange.request.user_content.includes("[PRIOR FACTUAL MEMORY"),
@@ -770,6 +792,7 @@ export class InteractiveSubjectRuntimeV0 {
         observational_experience_ref: null,
         retrieved_refs: [],
         working_episode_refs: [],
+        retrieval_lexical_query_applied: false,
         resolved_evidence_entry_count: 0,
         provider_memory_section_present: false,
         provider_request_hash: null,

@@ -295,6 +295,14 @@ export interface ProductConfigurationV0 {
    * and no selector model call is ever made unless an operator opts in.
    */
   readonly recall_evidence_selector_enabled: ProductConfigValueV0<boolean>;
+  /**
+   * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 — forward the EXACT current user
+   * utterance to the ONE existing per-turn retrieval call as `lexical_query_text`
+   * (`CHARACTEROS_QUERY_AWARE_RETRIEVAL=1`). DEFAULT OFF: no retrieval call is
+   * added, no ranking law changes, and every existing caller keeps the historical
+   * query byte-identical until an operator opts in for real acceptance.
+   */
+  readonly query_aware_retrieval_enabled: ProductConfigValueV0<boolean>;
 }
 
 /** Explicit thinking-mode request setting for the cloud (OpenAI-compatible) family. */
@@ -411,6 +419,11 @@ export function resolveProductConfigurationV0(
     recall_evidence_selector_enabled: resolveStrictBooleanSettingV0(
       environment,
       "CHARACTEROS_RECALL_EVIDENCE_SELECTOR",
+      false
+    ),
+    query_aware_retrieval_enabled: resolveStrictBooleanSettingV0(
+      environment,
+      "CHARACTEROS_QUERY_AWARE_RETRIEVAL",
       false
     )
   };

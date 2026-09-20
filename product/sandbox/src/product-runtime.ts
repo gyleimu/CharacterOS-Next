@@ -725,6 +725,10 @@ export async function createProductRuntimeV0(
           : {
               recallSelectorResolver: (projection: unknown) => recallSelectorAuthority.resolve(projection)
             }),
+        // CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 (product-layer, opt-in): the EXACT
+        // user utterance rides the ONE existing per-turn retrieval call. DEFAULT
+        // OFF, so the historical query and every frozen path stay unchanged.
+        ...(configuration.query_aware_retrieval_enabled.value ? { queryAwareRetrieval: true } : {}),
         sharedSourceStore: sharedStore,
         provider_identity: {
           model: configuration.model.value,

@@ -1340,6 +1340,8 @@ export {
 export {
   ExplicitV4SessionAuthorityV0,
   SESSION_COUNTERPART_REF_V0,
+  ADMISSIBLE_LEXICAL_QUERY_CHARS_MAX_V0,
+  admissibleLexicalQueryTextV0,
   type ExplicitV4SessionAuthorityOptionsV0,
   type RelationshipFamiliarityEpisodeReportV0,
   type RelationshipFamiliarityTurnReportV0,

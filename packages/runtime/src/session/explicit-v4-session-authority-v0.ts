@@ -106,6 +106,29 @@ function sessionObservationEntityRefs(subjectId: string): string[] {
   return [SESSION_COUNTERPART_REF_V0, `subject:${subjectId}`].sort();
 }
 
+/**
+ * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 — admissibility of the caller's utterance
+ * as `lexical_query_text` for THIS turn's retrieval.
+ *
+ * The retrieval contract owns the bound (1..4096 characters, enforced by its own
+ * `validateMemoryRetrievalQuery`). Text outside it is OMITTED, not forwarded: the
+ * turn keeps its historical structural ranking rather than failing on a schema
+ * violation, and the retrieval package's own `hasMeaningfulLexicalSignalV0`
+ * already treats such text as carrying no lexical signal. No trimming, no
+ * normalization, no reconstruction — the caller's exact characters are what the
+ * lexical law is meant to read.
+ *
+ * The bound is mirrored here (the retrieval package exports no subpath) and is
+ * pinned behaviorally by the query-aware retrieval tests.
+ */
+export const ADMISSIBLE_LEXICAL_QUERY_CHARS_MAX_V0 = 4096 as const;
+
+export function admissibleLexicalQueryTextV0(value: string | null | undefined): string | null {
+  if (typeof value !== "string") return null;
+  if (value.length === 0 || value.length > ADMISSIBLE_LEXICAL_QUERY_CHARS_MAX_V0) return null;
+  return value;
+}
+
 /** Observation facts of one episode's familiarity offering (never authority). */
 export interface RelationshipFamiliarityEpisodeReportV0 {
   readonly episode_ref: string;
@@ -171,6 +194,18 @@ export interface ExplicitV4SessionAuthorityOptionsV0 {
   readonly recall_selector_resolver?:
     | ((projection: unknown) => Promise<Record<string, unknown> | null>)
     | undefined;
+  /**
+   * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 (product/session-layer, opt-in; DEFAULT
+   * OFF). When true, the interactive session forwards the EXACT current user
+   * utterance to the ONE existing per-turn retrieval call as `lexical_query_text`,
+   * so the already-implemented lexical relevance law can reorder this turn's
+   * candidates by what the user actually asked. It adds NO retrieval call, changes
+   * NO ranking law, no schema, no persistence and no authority: retrieval remains
+   * candidate evidence only. Absent/false keeps the historical query byte-identical
+   * (frozen experiments, preregistered requests and the frozen long-horizon session
+   * are unaffected).
+   */
+  readonly query_aware_retrieval?: boolean | undefined;
   /** Durable ledgers to adopt (checkpoint restore); omit for a fresh session. */
   readonly deliveryLedger?: ConversationDeliveryLedgerAuthority;
   readonly ingressLedger?: ConversationIngressLedgerAuthority;
@@ -821,7 +856,32 @@ export class ExplicitV4SessionAuthorityV0 {
     readonly scene: string;
     readonly task: string | null;
     readonly tag: string;
-  }): Promise<{ readonly selected_refs: readonly string[]; readonly working_episode_refs: readonly string[]; readonly context_hash: string; readonly observation_ref: string }> {
+    /**
+     * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 (opt-in) — the EXACT current user
+     * utterance, passed to the ONE existing retrieval call as `lexical_query_text`
+     * so the already-implemented lexical relevance law can reorder this turn's
+     * candidates by what the user actually asked. It is runtime query input only:
+     * never persisted, never canonical, no new retrieval call, no schema change.
+     *
+     * Absent/null (the default) keeps the historical query byte-identical, so the
+     * frozen `LongHorizonSubjectSessionV0` path and every preregistered experiment
+     * are unchanged.
+     *
+     * BOUND: the retrieval contract accepts 1..4096 characters for this field.
+     * Out-of-bounds text is OMITTED rather than forwarded — a longer-than-contract
+     * message is, by the retrieval package's own `hasMeaningfulLexicalSignalV0`
+     * law, "no meaningful lexical signal", so the existing deterministic structural
+     * fallback applies instead of failing the turn on a schema violation.
+     */
+    readonly lexical_query_text?: string | null | undefined;
+  }): Promise<{
+    readonly selected_refs: readonly string[];
+    readonly working_episode_refs: readonly string[];
+    readonly context_hash: string;
+    readonly observation_ref: string;
+    /** True when the utterance was actually forwarded to this turn's retrieval. */
+    readonly lexical_query_applied: boolean;
+  }> {
     const snapshot = await this.readSnapshot();
     const observation = observationInput({
       observation_id: `observation:o-session-${input.tag}`,
@@ -835,6 +895,7 @@ export class ExplicitV4SessionAuthorityV0 {
       ...baseContextDelta,
       operations: [{ ...baseOp, value: { ...baseOp.value, scene: input.scene, task: input.task } }]
     } as typeof baseContextDelta;
+    const lexicalQueryText = admissibleLexicalQueryTextV0(input.lexical_query_text);
     const retrievalResult = await this.retrieval.retrieve({
       schema_version: "memory-retrieval-query-v0" as never,
       subject_id: this.subjectIdValue as never,
@@ -844,7 +905,10 @@ export class ExplicitV4SessionAuthorityV0 {
       entity_refs: [...snapshot.context.active_entity_refs].sort() as never,
       relationship_refs: [] as never,
       current_context_refs: [...snapshot.context.focus_refs].sort() as never,
-      salience_constraints: { min_declared_score: null, max_candidates: 8 }
+      salience_constraints: { min_declared_score: null, max_candidates: 8 },
+      // Omitted entirely when there is no admissible utterance, so the request
+      // body is byte-identical to the historical one.
+      ...(lexicalQueryText === null ? {} : { lexical_query_text: lexicalQueryText })
     } as never);
     const selected = [...((retrievalResult as { selected_memory_refs: readonly string[] }).selected_memory_refs)];
     const traceRef = (retrievalResult as { retrieval_trace_ref: string | null }).retrieval_trace_ref;
@@ -889,7 +953,8 @@ export class ExplicitV4SessionAuthorityV0 {
       selected_refs: selected,
       working_episode_refs: selected.filter((ref) => ref.startsWith("episode:")),
       context_hash: JSON.stringify([after.context.scene, after.context.task]),
-      observation_ref: observation.observation_id
+      observation_ref: observation.observation_id,
+      lexical_query_applied: lexicalQueryText !== null
     };
   }
 

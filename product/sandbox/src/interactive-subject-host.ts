@@ -100,6 +100,12 @@ export interface InteractiveSubjectHostDepsV0 {
    * selector call is ever made.
    */
   readonly recallSelectorResolver?: (projection: unknown) => Promise<Record<string, unknown> | null>;
+  /**
+   * CURRENT_TURN_QUERY_AWARE_RETRIEVAL_V0 (product-layer, opt-in; default OFF).
+   * Omitted/false ⇒ the per-turn retrieval query is byte-identical to the
+   * historical one (no `lexical_query_text`).
+   */
+  readonly queryAwareRetrieval?: boolean;
   readonly provider_identity?: {
     readonly model: string;
     readonly num_predict: number;
@@ -232,6 +238,7 @@ export class InteractiveSubjectHostV0 {
       ...(deps.recallSelectorResolver === undefined
         ? {}
         : { recall_selector_resolver: deps.recallSelectorResolver }),
+      ...(deps.queryAwareRetrieval === undefined ? {} : { query_aware_retrieval: deps.queryAwareRetrieval }),
       ...(config.interval_ticks === undefined ? {} : { interval_ticks: config.interval_ticks }),
       ...(deps.provider_identity === undefined ? {} : { provider_identity: deps.provider_identity }),
       ...(deps.clock === undefined ? {} : { clock: deps.clock })

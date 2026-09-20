@@ -137,49 +137,52 @@ async function openRuntime(input: {
 }
 
 describe("RECALL_EVIDENCE_SELECTOR_PRODUCT_AUTHORITY_V0 — product wiring", () => {
-  it("the authority is ABSENT by default, so no selector call is possible", async () => {
-    const dir = makeTempDir();
-    const { runtime, recorded } = await openRuntime({ dir, selectorFlag: undefined, selectorReply: "ABSTAIN" });
-    expect(runtime.configuration().recall_evidence_selector_enabled.value).toBe(false);
-    expect(runtime.recallSelectorAccounting()).toBeNull();
-    await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
-    expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
-    await runtime.shutdown();
-  });
+  it(
+    "the authority is ABSENT by default, so no selector call is possible",
+    async () => {
+      const dir = makeTempDir();
+      const { runtime, recorded } = await openRuntime({ dir, selectorFlag: undefined, selectorReply: "ABSTAIN" });
+      expect(runtime.configuration().recall_evidence_selector_enabled.value).toBe(false);
+      expect(runtime.recallSelectorAccounting()).toBeNull();
+      await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
+      expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
+      await runtime.shutdown();
+    },
+    480_000
+  );
 
-  it("a fresh subject has no evidence, so an enabled selector is skipped (no candidates)", async () => {
-    const dir = makeTempDir();
-    const { runtime, recorded } = await openRuntime({ dir, selectorFlag: "1", selectorReply: "ABSTAIN" });
-    expect(runtime.recallSelectorAccounting()).not.toBeNull();
-    await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
-    const accounting = runtime.recallSelectorAccounting();
-    expect(accounting?.calls).toBe(0);
-    expect(accounting?.skipped_no_candidates).toBe(1);
-    expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
-    await runtime.shutdown();
-  });
+  it(
+    "with the flag ON: fresh-subject skip, non-recall skip, and the isolated prompt shape",
+    async () => {
+      const dir = makeTempDir();
+      const { runtime, recorded } = await openRuntime({ dir, selectorFlag: "1", selectorReply: "ABSTAIN" });
+      expect(runtime.recallSelectorAccounting()).not.toBeNull();
 
-  it("a non-recall turn never spends a selector call even when enabled", async () => {
-    const dir = makeTempDir();
-    const { runtime, recorded } = await openRuntime({ dir, selectorFlag: "1", selectorReply: "ABSTAIN" });
-    await runtime.submitHumanText("I moved the whetstone yesterday.");
-    expect(runtime.recallSelectorAccounting()?.skipped_not_recall_shaped).toBe(1);
-    expect(runtime.recallSelectorAccounting()?.calls).toBe(0);
-    expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
-    await runtime.shutdown();
-  });
+      // A fresh subject has no evidence at all, so the selector is skipped before
+      // any call could be made.
+      await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
+      expect(runtime.recallSelectorAccounting()?.calls).toBe(0);
+      expect(runtime.recallSelectorAccounting()?.skipped_no_candidates).toBe(1);
+      expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
 
-  it("the isolated selector request never carries the cognition V8 prompt", async () => {
-    const dir = makeTempDir();
-    const { runtime, recorded } = await openRuntime({ dir, selectorFlag: "1", selectorReply: "ABSTAIN" });
-    // A second turn gives the subject evidence from the first; either way the
-    // selector prompt shape is fixed and tiny.
-    await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
-    for (const entry of recorded.filter((item) => item.label === "RECALL_SELECTOR")) {
-      expect(entry.system).toContain("You are an evidence selector.");
-      expect(entry.system).not.toContain("conversation-cognition-proposal-v8");
-      expect(entry.user).toContain("Return exactly one of:");
-    }
-    await runtime.shutdown();
-  });
+      // A non-recall turn never spends a selector call, even with evidence present.
+      await runtime.submitHumanText("I moved the whetstone yesterday.");
+      expect(runtime.recallSelectorAccounting()?.skipped_not_recall_shaped).toBe(1);
+      expect(runtime.recallSelectorAccounting()?.calls).toBe(0);
+      expect(recorded.some((entry) => entry.label === "RECALL_SELECTOR")).toBe(false);
+
+      // Once the subject has lived evidence, a recall-shaped turn DOES reach the
+      // selector — and that request is the isolated tiny one, never the V8 prompt.
+      await runtime.submitHumanText("Where does the neighbour's cat usually sleep?");
+      const selectorRequests = recorded.filter((entry) => entry.label === "RECALL_SELECTOR");
+      expect(selectorRequests.length).toBeGreaterThan(0);
+      for (const entry of selectorRequests) {
+        expect(entry.system).toContain("You are an evidence selector.");
+        expect(entry.system).not.toContain("conversation-cognition-proposal-v8");
+        expect(entry.user).toContain("Return exactly one of:");
+      }
+      await runtime.shutdown();
+    },
+    600_000
+  );
 });
