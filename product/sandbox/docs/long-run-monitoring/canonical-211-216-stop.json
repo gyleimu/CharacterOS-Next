@@ -1,0 +1,87 @@
+{
+  "slice": "BOUNDED_CANONICAL_ALICE_211_TO_250_CONTINUATION",
+  "verdict": "CANONICAL_ALICE_250_CHECKPOINT_NOT_REACHED — run stopped by the TRUNCATION MONITOR at 216 episodes",
+  "authorization": "human-authorized bounded continuation; CHARACTEROS_QUERY_AWARE_RETRIEVAL=1 + CHARACTEROS_RECALL_EVIDENCE_SELECTOR=1 for this run only (global defaults unchanged, DIRECT_RECALL off, executor config unchanged)",
+  "core_v1_freeze_status": "MAINTAIN",
+  "core_reopen_decision": "NOT_REQUIRED",
+  "repository": { "baseline_head": "fef2e77", "worktree": "clean", "production_code_changes": 0 },
+  "subject": "alice-longrun-869f387d",
+  "start": { "episodes": 211, "state_revision": 1909, "repository_revision": "R632", "snapshot_bytes": 308081968, "shared_bytes": 308081653, "store_schema": "subject-session-store-image-v0" },
+  "stop": { "episodes": 216, "state_revision": 1954, "repository_revision": "R647", "snapshot_bytes": 18397757, "shared_bytes": 18397431, "store_schema": "subject-session-store-image-r2-v0", "shared_base_revision": 216 },
+  "attempts": { "total": 8, "complete": 5, "failed": 3, "oom": 0 },
+  "failure_class_distribution": {
+    "FACTUAL_AUTHORIZATION_REJECTED/UNBOUND_SOURCE_HANDLE": 1,
+    "FACTUAL_AUTHORIZATION_REJECTED/DERIVATION_INPUT_MISMATCH": 1,
+    "MODEL_OUTPUT_TRUNCATED": 1,
+    "SEMANTIC_COMPLETENESS_FAILED": 0,
+    "APPRAISAL_FAILED": 0,
+    "MODEL_SCHEMA_INVALID": 0,
+    "LANGUAGE_FAILED": 0,
+    "PROVIDER_FAILURE": 0,
+    "PERSISTENCE_FAILURE": 0,
+    "OTHER": 0
+  },
+  "stop_trigger": {
+    "turn_index": 7,
+    "utterance": "The tray came out of the clamps clean, no squeeze-out to scrape.",
+    "class": "MODEL_OUTPUT_TRUNCATED",
+    "prompt_eval_count": 4098,
+    "eval_count": 3072,
+    "max_output_tokens": 3072,
+    "done_reason": "length",
+    "elapsed_ms": 93312,
+    "note": "an ordinary one-line life update produced a runaway generation that consumed the full 3072 budget; the remediation removed the budget shortage, not the runaway"
+  },
+  "failed_turns_durable_no_op": { "verified": 3, "turn_1": true, "turn_5": true, "turn_7": true, "evidence": "per-turn sizes/mtimes identical before/after plus head counters (episodes/state_revision/repository_revision) unchanged" },
+  "r2_persistence": {
+    "first_lawful_save_conversion": { "occurred": true, "turn": 0, "snapshot_before": 308081968, "snapshot_after": 18057059, "shared_before": 308081653, "shared_after": 18056733, "store_schema_after": "subject-session-store-image-r2-v0", "base_revision_after": 212, "manual_migration": false },
+    "growth_per_completed_episode_bytes": 85175,
+    "predicted_growth_per_episode_bytes": 76566,
+    "largest_file_at_stop_bytes": 18397757,
+    "size_tripwire_bytes": 52428800,
+    "save_probe_ms": [3408, 3311],
+    "save_tripwire_ms": 15000,
+    "restore_ms": { "min": 10503, "max": 12856, "final_fresh_restore": 10287 },
+    "restore_tripwire_ms": 30000,
+    "final_restore_memory": { "heap_bytes": 186603592, "rss_bytes": 363483136 },
+    "pre_run_r1_restore_memory": { "heap_bytes": 2263850152, "rss_bytes": 2415992832 },
+    "per_turn_rss_mb_range": [105, 418],
+    "turn_0_rss_mb_on_r1_input": 1829
+  },
+  "recall": {
+    "planned_opportunities": 8,
+    "asked": 2,
+    "success": 2,
+    "verdict": "LONG_HORIZON_RECALL_PRODUCT_LONGITUDINALLY_SUPPORTED not claimed (sample too small)",
+    "rows": [
+      { "band": "10-30", "target_age_at_ask": 10, "delivered": "She nearly cried, which embarrassed us both.", "selector_selections": 1, "selector_abstains": 0, "candidate_count": 17, "class": "RECALL_SUCCESS" },
+      { "band": "10-30", "target_age_at_ask": 21, "delivered": "The reunion group is planning a spring visit to the old workshop.", "selector_selections": 1, "selector_abstains": 0, "candidate_count": 23, "class": "RECALL_SUCCESS" }
+    ]
+  },
+  "integrity": {
+    "episodes_from_payloads": 216,
+    "committed_bundles": 1954,
+    "revisions": 648,
+    "payloads": 1077,
+    "dangling_refs": 0,
+    "cross_subject_leak": 0,
+    "belief_workflow_records": 216,
+    "belief_evidence_refs_resolvable": "216/216",
+    "working_refs_in_index": true,
+    "beliefs": [{ "label": "The user sorted the workshop shelves yesterday.", "credence": 1 }],
+    "affect": { "valence": 0.9933555062550344, "activation": 1 },
+    "relationships": [{ "counterpart_ref": "entity:alice", "dimensions": [] }],
+    "personality_dimensions": 0
+  },
+  "model_usage": { "cognition_generations": 6, "cognition_input_tokens": 21531, "cognition_output_tokens": 5615, "other_stages_not_instrumented": "appraisal/language/selector/adaptation calls are not token-instrumented in this harness" },
+  "query_aware_retrieval_law": { "primary_retrieval_calls_per_turn": 1, "violations_observed": 0, "note": "the runtime performs exactly one primary retrieval per interactive turn; no second/selector/merged/retry retrieval was observed" },
+  "harness_disclosure": {
+    "first_stop_was_a_false_positive": true,
+    "detail": "the first invocation stopped at turn 1 because the durable-no-op checker compared a Math.round'ed mtimeMs against the child process's raw float mtime; the failed turn's own before/after sizes and mtimes were identical and the head counters were unchanged, so the turn was a durable no-op. The checker was corrected (child-side before/after equality plus head counters) and the run resumed from the next plan index without replaying the failed turn."
+  },
+  "reflection_not_claimed": {
+    "250_target": "not reached",
+    "remaining_216_to_250": "not authorized to resume",
+    "executor_reliability": "the 3072 budget did not eliminate truncation: one ordinary turn produced a runaway generation that hit the ceiling, so the residual structured-output reliability issue now includes runaway generation, not only undersized budget"
+  }
+}

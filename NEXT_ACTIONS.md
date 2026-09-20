@@ -123,7 +123,7 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 持久化容量 blocker 已解除：按 R2 实测斜率，episode 250 不再接近 350 MB 单文件 tripwire。
 
-当前仍有一个已确认、但与 R2/Memory/retrieval 无关的 product issue：`RESIDUAL_STRUCTURED_OUTPUT_RELIABILITY_DEFICIENCY = CONFIRMED`。3072 cognition generation budget 已消除旧的 truncation signature；残余是 executor 输出与冻结 authorization/semantic contract 的结构可靠性。按当前顺序，它在 bounded 211→250 continuation 之后进入独立 executor slice；不得借此重开 Core 或修改 cognition contract。
+当前仍有一个已确认、但与 R2/Memory/retrieval 无关的 product issue：`RESIDUAL_STRUCTURED_OUTPUT_RELIABILITY_DEFICIENCY = CONFIRMED`。3072 cognition generation budget 消除的是「预算不足」；**bounded 211→250 运行已经证明它并未消除截断本身** —— 该运行在 episode 216 被截断监控按规则停止：一条普通日常短句的 cognition 生成达到了 `eval_count = 3072/3072, done_reason = length`，即模型失控生成到上限而非回答需要的长度（普通回答为 243–295 token）。因此残余问题包含**失控生成**，继续加大预算（3584 等）按该证据不是正确方向。按当前顺序，它现在是最优先的独立 executor slice；不得借此重开 Core 或修改 cognition contract。
 
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
@@ -138,13 +138,13 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`BOUNDED_CANONICAL_ALICE_211_TO_250_CONTINUATION`
+`BOUNDED_CANONICAL_ALICE_211_TO_250_CONTINUATION` 已授权并已运行，**结果 = 未达成 250**：211 → 216（5 episodes），8 次尝试 / 5 COMPLETE / 3 FAILED，由截断监控在 turn 7 按规则停止（3072/3072, done_reason=length）；三个失败轮全部验证为 durable no-op；R2 在 canonical 上被真实验证（首个合法 save 自然完成 R1→R2，18.4 MB，增长 ≈85,175 B/episode，最终 restore 10.29 s / heap 178 MiB）。完整记录见 `CURRENT_STATE.md` 与 `product/sandbox/docs/long-run-monitoring/canonical-211-216-stop.json`。
 
-问题边界：从 canonical `alice-longrun` 的 211 episodes / state rev 1909 / R632 继续到约 250，使用已验收的 R2 persistence 与既有 long-run 熔断/短生命期进程纪律；不得重放已生活过的 turns，不得在该 slice 内修 executor、retrieval、selector、cognition contract 或 Core。开始前仍需自己的明确授权、预算、provider 状态与 stop conditions。
+剩余 **216→250 未获授权恢复**，也不得在本文件下自动续跑：按上面的 CURRENT BLOCKER，先处理 executor structured-output reliability 才是正确顺序。该 executor slice 需要自己的问题边界、预算、provider 状态与批准点；不得在该 slice 内重开 Core、修改 cognition contract、retrieval 或 selector。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
 
-完成 bounded 211→250 后的顺序是：executor structured-output reliability / executor comparison → remaining product polish；不得自动串行启动。
+完成 executor reliability 后的顺序是：剩余的 216→250 continuation → executor comparison（如仍需要）→ remaining product polish；不得自动串行启动。
 
 ## DO NOT START
 
