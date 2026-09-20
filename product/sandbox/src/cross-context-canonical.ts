@@ -23,6 +23,7 @@ import {
   validateSharedSubjectDocumentV0,
   type SharedSubjectSourceStoreV0
 } from "./shared-subject-source.js";
+import { decodeSessionStoreImageAnyV0 } from "./persistence-r2-store-image.js";
 
 export interface CanonicalSubjectSnapshotV0 {
   readonly durable: SessionDurableStateV0;
@@ -60,8 +61,8 @@ function readLegacyHuman(rootDir: string, subjectId: string): LegacyArtifact | n
   if (!existsSync(path)) return null;
   const parsed = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
   const durable = parsed["durable"] as SessionDurableStateV0 | undefined;
-  const store = parsed["store"] as SessionStoreImageV0 | undefined;
-  if (durable === undefined || store === undefined) {
+  const store = decodeSessionStoreImageAnyV0(parsed["store"]);
+  if (durable === undefined) {
     throw new SharedSubjectSourceCorruptErrorV0(path, "legacy human snapshot missing durable/store");
   }
   return {
@@ -84,9 +85,9 @@ export function findLegacyEnvironment(rootDir: string, subjectId: string): Legac
     const path = join(rootDir, entry);
     const parsed = JSON.parse(readFileSync(path, "utf8")) as Record<string, unknown>;
     const checkpoint = parsed["checkpoint"] as Record<string, unknown> | undefined;
-    const store = parsed["store"] as SessionStoreImageV0 | undefined;
+    const store = decodeSessionStoreImageAnyV0(parsed["store"]);
     const durable = checkpoint?.["durable"] as SessionDurableStateV0 | undefined;
-    if (durable === undefined || store === undefined) {
+    if (durable === undefined) {
       throw new SharedSubjectSourceCorruptErrorV0(path, "legacy environment checkpoint missing durable/store");
     }
     artifacts.push({

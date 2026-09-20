@@ -19,6 +19,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { SessionDurableStateV0, SessionStoreImageV0 } from "@characteros-next/runtime";
 import { writeJsonAtomicV0 } from "./atomic-json-file.js";
+import {
+  decodeSessionStoreImageAnyV0,
+  encodeSessionStoreImageR2V0
+} from "./persistence-r2-store-image.js";
 
 export const SHARED_SUBJECT_SOURCE_SCHEMA_VERSION = "shared-canonical-subject-document-v0" as const;
 
@@ -91,6 +95,15 @@ export function validateSharedSubjectDocumentV0(value: unknown): SharedSubjectSo
   return value as SharedSubjectSourceDocumentV0;
 }
 
+function decodeSharedSubjectDocumentV0(value: unknown): SharedSubjectSourceDocumentV0 {
+  if (typeof value !== "object" || value === null) throw new Error("expected object");
+  const record = value as Record<string, unknown>;
+  return validateSharedSubjectDocumentV0({
+    ...record,
+    store: decodeSessionStoreImageAnyV0(record["store"])
+  });
+}
+
 /** In-memory store for deterministic tests (single-writer CAS). */
 export class InMemorySharedSubjectSourceStoreV0 implements SharedSubjectSourceStoreV0 {
   private document: SharedSubjectSourceDocumentV0 | null = null;
@@ -139,7 +152,7 @@ export class FileSharedSubjectSourceStoreV0 implements SharedSubjectSourceStoreV
       throw new SharedSubjectSourceCorruptErrorV0(this.path, error instanceof Error ? error.message : String(error));
     }
     try {
-      return { kind: "DOCUMENT", document: validateSharedSubjectDocumentV0(parsed) };
+      return { kind: "DOCUMENT", document: decodeSharedSubjectDocumentV0(parsed) };
     } catch (error) {
       throw new SharedSubjectSourceCorruptErrorV0(this.path, error instanceof Error ? error.message : String(error));
     }
@@ -161,7 +174,11 @@ export class FileSharedSubjectSourceStoreV0 implements SharedSubjectSourceStoreV
     // PERSISTENCE_SCALABILITY_R1: the shared-subject source is a LARGE durable store
     // file, so it is written minified. Representation only; existing pretty files
     // keep loading unchanged.
-    writeJsonAtomicV0(this.path, next, "minified");
+    writeJsonAtomicV0(
+      this.path,
+      { ...next, store: encodeSessionStoreImageR2V0(next.store) },
+      "minified"
+    );
     return { kind: "SAVED", document: next };
   }
 }

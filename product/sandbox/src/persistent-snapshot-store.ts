@@ -11,6 +11,10 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import type { InteractiveSubjectSnapshotV0 } from "@characteros-next/runtime";
 import { writeJsonAtomicV0 } from "./atomic-json-file.js";
+import {
+  decodeSessionStoreImageAnyV0,
+  encodeSessionStoreImageR2V0
+} from "./persistence-r2-store-image.js";
 
 export type SnapshotLoadResultV0 =
   | { readonly kind: "NONE" }
@@ -76,13 +80,30 @@ export class FileInteractiveSnapshotStoreV0 implements InteractiveSnapshotStoreV
     if (record["schema_version"] !== "interactive-subject-snapshot-v0") {
       throw new InteractiveSnapshotCorruptErrorV0(this.path, `unsupported schema_version ${String(record["schema_version"])}`);
     }
-    return { kind: "SNAPSHOT", snapshot: parsed as InteractiveSubjectSnapshotV0 };
+    try {
+      return {
+        kind: "SNAPSHOT",
+        snapshot: {
+          ...(parsed as InteractiveSubjectSnapshotV0),
+          store: decodeSessionStoreImageAnyV0(record["store"])
+        }
+      };
+    } catch (error) {
+      throw new InteractiveSnapshotCorruptErrorV0(
+        this.path,
+        error instanceof Error ? error.message : String(error)
+      );
+    }
   }
   async save(snapshot: InteractiveSubjectSnapshotV0): Promise<void> {
     // PERSISTENCE_SCALABILITY_R1: the snapshot is one of the LARGE durable store
     // files, so it is written minified. Representation only — the restored value
     // and every checksum/revision are identical, and the pretty files written by
     // earlier versions keep loading unchanged.
-    writeJsonAtomicV0(this.path, snapshot, "minified");
+    writeJsonAtomicV0(
+      this.path,
+      { ...snapshot, store: encodeSessionStoreImageR2V0(snapshot.store) },
+      "minified"
+    );
   }
 }

@@ -19,6 +19,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { SessionCheckpointV0, SessionStoreImageV0 } from "@characteros-next/runtime";
 import { writeJsonAtomicV0 } from "./atomic-json-file.js";
+import {
+  decodeSessionStoreImageAnyV0,
+  encodeSessionStoreImageR2V0
+} from "./persistence-r2-store-image.js";
 
 export const ENVIRONMENT_CHECKPOINT_DOCUMENT_SCHEMA_VERSION =
   "subject-environment-checkpoint-document-v0" as const;
@@ -144,7 +148,14 @@ export class FileEnvironmentCheckpointStoreV0 implements EnvironmentCheckpointSt
       );
     }
     try {
-      return { kind: "DOCUMENT", document: validateEnvironmentCheckpointDocumentV0(parsed) };
+      const record = parsed as Record<string, unknown>;
+      return {
+        kind: "DOCUMENT",
+        document: validateEnvironmentCheckpointDocumentV0({
+          ...record,
+          store: decodeSessionStoreImageAnyV0(record["store"])
+        })
+      };
     } catch (error) {
       throw new EnvironmentCheckpointCorruptErrorV0(
         this.path,
@@ -153,6 +164,10 @@ export class FileEnvironmentCheckpointStoreV0 implements EnvironmentCheckpointSt
     }
   }
   async save(document: EnvironmentCheckpointDocumentV0): Promise<void> {
-    writeJsonAtomicV0(this.path, document);
+    writeJsonAtomicV0(
+      this.path,
+      { ...document, store: encodeSessionStoreImageR2V0(document.store) },
+      "minified"
+    );
   }
 }

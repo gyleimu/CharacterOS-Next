@@ -366,6 +366,27 @@ describe("SUBJECT_CROSS_CONTEXT_PRODUCT_BRIDGE_V0 — one canonical subject acro
     ).rejects.toThrow(/unreadable|Refusing to start/i);
   }, 60000);
 
+  it("P12: an R2-decoded canonical bundle checksum mismatch fails closed", async () => {
+    const dir = makeTempDir();
+    const recorder = { requests: [] as string[] };
+    const host = await InteractiveSubjectHostV0.open(humanConfig(dir), humanDeps(dir, recorder));
+    const turn = await host.send("Alice asks about the review.");
+    expect(turn.status).toBe("COMPLETE");
+
+    const sharedPath = join(dir, `subject-${SUBJECT_ID}.shared-subject.json`);
+    const raw = JSON.parse(readFileSync(sharedPath, "utf8")) as {
+      store: { committed_bundles: { fields: Record<string, unknown> }[] };
+    };
+    const terminal = raw.store.committed_bundles.at(-1);
+    expect(terminal).toBeDefined();
+    if (terminal !== undefined) terminal.fields["record_checksum"] = "sha256:corrupt";
+    writeFileSync(sharedPath, JSON.stringify(raw), "utf8");
+
+    await expect(
+      InteractiveSubjectHostV0.open(humanConfig(dir), humanDeps(dir, { requests: [] }))
+    ).rejects.toThrow(/checksum|chain|restore/i);
+  }, 60000);
+
   it("binds the environment sidecar to its declared environment identity", async () => {
     const dir = makeTempDir();
     const recorder = { requests: [] as string[] };
