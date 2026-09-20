@@ -19,6 +19,12 @@ import {
   InteractiveSnapshotCorruptErrorV0
 } from "./persistent-snapshot-store.js";
 import {
+  ENVIRONMENT_CHECKPOINT_DOCUMENT_SCHEMA_VERSION,
+  EnvironmentCheckpointCorruptErrorV0,
+  FileEnvironmentCheckpointStoreV0,
+  type EnvironmentCheckpointDocumentV0
+} from "./environment-checkpoint-store.js";
+import {
   FileSharedSubjectSourceStoreV0,
   SharedSubjectSourceCorruptErrorV0
 } from "./shared-subject-source.js";
@@ -234,5 +240,55 @@ describe("PERSISTENCE_R2 file compatibility", () => {
     raw.store["committed_bundles"] = "missing";
     writeFileSync(store.location(), JSON.stringify(raw), "utf8");
     await expect(store.load()).rejects.toBeInstanceOf(SharedSubjectSourceCorruptErrorV0);
+  });
+
+  function checkpointDocument(): EnvironmentCheckpointDocumentV0 {
+    return {
+      schema_version: ENVIRONMENT_CHECKPOINT_DOCUMENT_SCHEMA_VERSION,
+      environment_id: "env-a",
+      base_revision: 7,
+      checkpoint: { schema_version: "subject-session-checkpoint-v0" },
+      store: storeImage()
+    } as unknown as EnvironmentCheckpointDocumentV0;
+  }
+
+  it("writes/reads the environment checkpoint as R2 while exposing the legacy complete type", async () => {
+    const root = tempRoot();
+    const store = new FileEnvironmentCheckpointStoreV0(root, "subject-a", "env-a");
+    const expected = checkpointDocument();
+    await store.save(expected);
+    const raw = JSON.parse(readFileSync(store.location(), "utf8")) as Record<string, unknown>;
+    expect((raw["store"] as Record<string, unknown>)["schema_version"]).toBe(
+      SESSION_STORE_IMAGE_R2_SCHEMA_VERSION
+    );
+    await expect(store.load()).resolves.toEqual({ kind: "DOCUMENT", document: expected });
+  });
+
+  it("a missing environment checkpoint is a first launch, not corruption", async () => {
+    const store = new FileEnvironmentCheckpointStoreV0(tempRoot(), "subject-a", "env-a");
+    await expect(store.load()).resolves.toEqual({ kind: "NONE" });
+  });
+
+  it("loads an old R1 environment checkpoint file unchanged", async () => {
+    const root = tempRoot();
+    const store = new FileEnvironmentCheckpointStoreV0(root, "subject-a", "env-a");
+    const expected = checkpointDocument();
+    writeFileSync(store.location(), JSON.stringify(expected), "utf8");
+    await expect(store.load()).resolves.toEqual({ kind: "DOCUMENT", document: expected });
+  });
+
+  it("corrupt environment checkpoint fails closed", async () => {
+    const root = tempRoot();
+    const store = new FileEnvironmentCheckpointStoreV0(root, "subject-a", "env-a");
+    await store.save(checkpointDocument());
+    const raw = JSON.parse(readFileSync(store.location(), "utf8")) as {
+      store: { committed_bundles: { next_snapshot: Record<string, unknown> }[] };
+    };
+    const corruptBundle = raw.store.committed_bundles[1];
+    expect(corruptBundle).toBeDefined();
+    if (corruptBundle === undefined) throw new Error("fixture bundle missing");
+    corruptBundle.next_snapshot = { kind: "DELTA", delta: { op: "unknown-op" } };
+    writeFileSync(store.location(), JSON.stringify(raw), "utf8");
+    await expect(store.load()).rejects.toBeInstanceOf(EnvironmentCheckpointCorruptErrorV0);
   });
 });
