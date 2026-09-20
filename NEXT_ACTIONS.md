@@ -2,14 +2,24 @@
 
 Status: ACTIVE
 Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_STATE.md`](CURRENT_STATE.md) 为准。
-Last verified against commit: `ca097c5`（research commit；`REPLY_CRITICAL_LATENCY_FORENSIC_V0` 的 production 提交是其直接子提交）
+Last verified against product commit: `b367b49`（`PERSISTENCE_R2_SCALABILITY_V0`）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
 ## CURRENT BASELINE
 
-CharacterOS-Next 有 14 个 workspace、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
+CharacterOS-Next 当前有 15 个 pnpm workspace（13 个 `packages/*` + `product/sandbox` + `product/web`）、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。
 
 已完成并冻结的当前 slice：
+
+`PERSISTENCE_R2_SCALABILITY_V0` — product 文件边界的无损 thin/referential persistence 编码（无 canonical/Core/Memory/retrieval/selector/cognition/executor 变化）。
+
+- episode 211 的 snapshot/shared-subject 各自约 308.08 MB；主因是 1909 个 committed bundle 反复嵌入完整 `next_snapshot`，并再次嵌入与 snapshot 内相同的 `trace_window`，不是 633 个独有 Memory revision payload；
+- writer 写 `subject-session-store-image-r2-v0`：首 snapshot 完整、后续 snapshot 为确定性可逆 delta，外层 trace window 引用已还原 snapshot 值；reader 保持旧 R1 + 新 R2 双读，完整解码后仍走原 chain/checksum/hash validator；
+- 真实 Alice 副本单文件 308,081,968 → 17,971,887 B，两大文件合计 −94.17%；201→211 实测斜率 1,378,637 → 76,566 B/episode，250 投影 20,957,961 B，350,000,000 B crossing 约 episode 4548；
+- old/new fresh restore 各 3/3，通过且 logical store hash、211 episode refs、所有 domain state、working/retrieval/config 与 terminal hashes 全同；restore median 19.306 → 15.728 s，R2 save median 4.622 s，无 >15 s；canonical Alice 零写入；
+- 判定 `PERSISTENCE_R2_SCALABILITY_REMEDIATED`；`CORE_V1_FREEZE_STATUS = MAINTAIN`。
+
+此前已完成并冻结的 slice：
 
 `REPLY_CRITICAL_LATENCY_FORENSIC_V0` — reply-critical 延迟取证 + 一个语义中性修复（纯 product 层，无 canonical 变更）。
 
@@ -105,12 +115,15 @@ CHARACTEROS_VISUAL_PRODUCT_LOCAL_WEB_V0                       FROZEN / GREEN
 CHARACTEROS_VISUAL_PRODUCT_WORLD_AND_DIAGNOSTICS_DRAWER_V0    FROZEN / GREEN
 APPRAISAL_EXACT_INPUT_REUSE_PRODUCTION_V0                     FROZEN / GREEN (DEFAULT_OFF)
 REPLY_CRITICAL_LATENCY_FORENSIC_V0                            FROZEN / GREEN
+PERSISTENCE_R2_SCALABILITY_V0                                 FROZEN / GREEN
 CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product milestone)
 ```
 
 ## CURRENT BLOCKER
 
-当前没有已知的 product blocker：P1–P8 与 D1–D8 全部满足。
+持久化容量 blocker 已解除：按 R2 实测斜率，episode 250 不再接近 350 MB 单文件 tripwire。
+
+当前仍有一个已确认、但与 R2/Memory/retrieval 无关的 product issue：`RESIDUAL_STRUCTURED_OUTPUT_RELIABILITY_DEFICIENCY = CONFIRMED`。3072 cognition generation budget 已消除旧的 truncation signature；残余是 executor 输出与冻结 authorization/semantic contract 的结构可靠性。按当前顺序，它在 bounded 211→250 continuation 之后进入独立 executor slice；不得借此重开 Core 或修改 cognition contract。
 
 已记录的 V0 限制（不是 blocker，不得在未授权时顺手修复）：
 
@@ -125,13 +138,13 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 
 只启动：
 
-`CHARACTEROS_LANGUAGE_STREAMING_AND_EARLY_DELIVERY_V0`
+`BOUNDED_CANONICAL_ALICE_211_TO_250_CONTINUATION`
 
-问题边界：`REPLY_CRITICAL_LATENCY_FORENSIC_V0` 已证明剩余 reply-critical 时间几乎全部是本地模型 serving 的 decode（cognition ~9.2 s / language ~6.3 s，24 tok/s 量级，host 开销 ~100 ms），在不更换模型、不裁剪 Memory/context、不并行/合并 stage 的前提下无法压缩模型时间；下一步只改善**感知**延迟：研究并（若语义可证明等价）实现语言阶段的流式输出与更早的回复交付，必须保持 Canonical 语义、CommunicationDirective 语义、Language 语义与持久化不变，并给出语义等价的受控证据。
-
-该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
+问题边界：从 canonical `alice-longrun` 的 211 episodes / state rev 1909 / R632 继续到约 250，使用已验收的 R2 persistence 与既有 long-run 熔断/短生命期进程纪律；不得重放已生活过的 turns，不得在该 slice 内修 executor、retrieval、selector、cognition contract 或 Core。开始前仍需自己的明确授权、预算、provider 状态与 stop conditions。
 
 该 slice 需自带有界预算与批准点。本文件不授权提前运行它。
+
+完成 bounded 211→250 后的顺序是：executor structured-output reliability / executor comparison → remaining product polish；不得自动串行启动。
 
 ## DO NOT START
 
@@ -141,6 +154,7 @@ CHARACTEROS_CORE_V1_PRODUCT_BASELINE                          FROZEN (product mi
 - `/set-*` god-mode setter、memory editor、memory search、Memory 汇总模型、personality/belief/relationship 编辑器；
 - sentiment/positive-negative/toxicity classifier、named emotion、mood、reward/importance/salience 标量、cross-domain generic score；
 - 新 Experience kind / Memory schema、retrieval semantics 或 persistence/restore authority；不得修改 appraisal dimensions/validation/equations 或 canonical Affect law；
+- 未经新 slice 授权自动堆叠 Persistence R3/R4/R5、数据库迁移或外部 blob/object store；
 - 对 frozen experiment source、raw output、result、report 或 evidence 的改写。
 
 ## ESCALATION CONDITIONS
