@@ -39,6 +39,18 @@ import {
 } from "./cloud-belief-semantic-provider.ts";
 import { CS_FAMILY_BUDGETS, buildCloudPhase0BundleV0, createRecordingFamilyTransportV0 } from "./cloud-bundle.ts";
 import {
+  RUN5_SOURCE_QUOTE_AUGMENTATION_V0,
+  assertAugmentationIsTreatmentOrthogonalV0,
+  createAugmentedCognitionTransportV0
+} from "./run5-augmentation.ts";
+import {
+  P0_RUN5_CHANGED_CONDITIONS,
+  P0_RUN5_CONDITION,
+  P0_RUN5_FORBIDDEN_INHERITED_IDS,
+  P0_RUN5_SUBJECT_IDS,
+  P0_RUN5_UNCHANGED_CONDITIONS
+} from "./contract-run5.ts";
+import {
   CS_CHANGED_CONDITIONS,
   CS_FAMILY_TIMEOUTS_MS,
   CS_OLLAMA_PARAMETERS_NOT_TRANSFERRED,
@@ -431,6 +443,83 @@ describe("swapped condition — the raw-response recorder", () => {
     expect(providerCalls[0]?.family).toBe("language");
     expect(tally.language).toBe(1);
     expect(tally.cognition).toBe(0);
+  });
+});
+
+// =============================================================================================
+// 5b. RUN-5 SOURCE_QUOTE AUGMENTATION
+// =============================================================================================
+
+describe("run-5 augmentation — treatment-orthogonal and correctly applied", () => {
+  it("carries no forbidden model-visible substring (it cannot leak the treatment)", () => {
+    const audit = assertAugmentationIsTreatmentOrthogonalV0();
+    expect(audit.violations).toEqual([]);
+    expect(audit.ok).toBe(true);
+  });
+
+  it("addresses BOTH failure modes of the authoritative rule", () => {
+    // The authoritative check is `presentInEverySource`: the quote must occur in EVERY cited source.
+    expect(RUN5_SOURCE_QUOTE_AUGMENTATION_V0).toContain("EVERY source_ref it cites");
+    // …and the paraphrase mode.
+    expect(RUN5_SOURCE_QUOTE_AUGMENTATION_V0).toContain("Never paraphrase");
+    // …with the constructive way out that satisfies the rule by construction.
+    expect(RUN5_SOURCE_QUOTE_AUGMENTATION_V0).toContain("cite ONLY that source");
+  });
+
+  it("appends to the system message without changing the message count or roles", async () => {
+    const seen: { messages: readonly { role: string; content: string }[] }[] = [];
+    const inner = {
+      complete: async (request: never) => {
+        seen.push(request as { messages: readonly { role: string; content: string }[] });
+        return { content: "ok", model: "stub" };
+      }
+    } as unknown as ModelTransportV0;
+    const transport = createAugmentedCognitionTransportV0(inner);
+    const original = {
+      messages: [
+        { role: "system", content: "PRODUCTION SYSTEM TEXT" },
+        { role: "user", content: "user text" }
+      ]
+    };
+    await transport.complete(original as never);
+    const sent = seen[0]?.messages ?? [];
+    expect(sent).toHaveLength(2);
+    expect(sent[0]?.role).toBe("system");
+    expect(sent[1]?.role).toBe("user");
+    expect(sent[0]?.content.startsWith("PRODUCTION SYSTEM TEXT")).toBe(true);
+    expect(sent[0]?.content.endsWith(RUN5_SOURCE_QUOTE_AUGMENTATION_V0)).toBe(true);
+    // …and the caller's request object is NOT mutated.
+    expect(original.messages[0]?.content).toBe("PRODUCTION SYSTEM TEXT");
+    expect(sent[1]?.content).toBe("user text");
+  });
+
+  it("FAILS CLOSED when the augmentation cannot be applied, rather than running unaugmented", async () => {
+    const inner = { complete: async () => ({ content: "ok", model: "stub" }) } as unknown as ModelTransportV0;
+    const transport = createAugmentedCognitionTransportV0(inner);
+    await expect(transport.complete({ messages: [] } as never)).rejects.toMatchObject({
+      code: "RUN5_AUGMENTATION_NOT_APPLICABLE"
+    });
+    await expect(
+      transport.complete({ messages: [{ role: "user", content: "no system message" }] } as never)
+    ).rejects.toMatchObject({ code: "RUN5_AUGMENTATION_NOT_APPLICABLE" });
+  });
+
+  it("declares the augmentation as CHANGED and the invalid policy as UNCHANGED", () => {
+    expect(P0_RUN5_CHANGED_CONDITIONS["cognition_request_text"]).toContain("appended to the cognition request");
+    expect(P0_RUN5_UNCHANGED_CONDITIONS["invalid_policy"]).toContain("UNCHANGED");
+    expect(P0_RUN5_UNCHANGED_CONDITIONS["invalid_policy"]).toContain("no engineering-failure tolerance");
+    expect(P0_RUN5_CONDITION).toContain("SOURCE_QUOTE_AUGMENTATION");
+  });
+
+  it("uses fresh run-5 identities that collide with no earlier condition", () => {
+    const fresh = [P0_RUN5_SUBJECT_IDS.qualification, P0_RUN5_SUBJECT_IDS.armA, P0_RUN5_SUBJECT_IDS.armB];
+    expect(new Set(fresh).size).toBe(3);
+    for (const id of fresh) {
+      expect(P0_RUN5_FORBIDDEN_INHERITED_IDS).not.toContain(id);
+      expect(id).not.toMatch(/^subject-(r4h6|r4q7|k7q2|q0v8|qcf)/);
+    }
+    expect(P0_RUN5_SUBJECT_IDS.armA.slice(0, -4)).toBe(P0_RUN5_SUBJECT_IDS.armB.slice(0, -4));
+    expect(P0_RUN5_SUBJECT_IDS.armA.length).toBe(P0_RUN5_SUBJECT_IDS.armB.length);
   });
 });
 

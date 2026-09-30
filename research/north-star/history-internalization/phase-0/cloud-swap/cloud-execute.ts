@@ -9,7 +9,9 @@
  *   `scored: false` and hashed after the last turn. Scoring is a SEPARATE program that may only run
  *   once those freezes exist on disk.
  *
- * Frozen before the first call by `RUN4_PREREGISTRATION.md` + `contract-run4.ts`. The trajectories,
+ * Two conditions: `run4` (the frozen default, RUN4_PREREGISTRATION.md + contract-run4.ts) and `run5`
+ * (RUN5_PREREGISTRATION.md + contract-run5.ts, which adds ONLY the SOURCE_QUOTE citation-discipline
+ * augmentation and fresh identities; the invalid policy is unchanged). The trajectories,
  * valence table, target proposition, baseline credence, predicted directions, scorer, predicate,
  * invalid policy and hierarchy ceiling are all imported by reference from `../contract.ts` — none is
  * restated here.
@@ -48,16 +50,47 @@ import {
   P0_RUN4_STOP_RULES,
   P0_RUN4_SUBJECT_IDS
 } from "./contract-run4.ts";
+import {
+  P0_RUN5_AUGMENTATION,
+  P0_RUN5_CHANGED_CONDITIONS,
+  P0_RUN5_CONDITION,
+  P0_RUN5_FORBIDDEN_INHERITED_IDS,
+  P0_RUN5_STOP_RULES,
+  P0_RUN5_SUBJECT_IDS
+} from "./contract-run5.ts";
+
+/**
+ * The two conditions this program can run. `run4` is the FROZEN default so the run-4 path stays exactly
+ * what the run-4 preregistration froze; an unrecognised condition FAILS CLOSED rather than silently
+ * running the wrong one.
+ */
+type CloudConditionV0 = "run4" | "run5";
+
+function resolveConditionV0(raw: string | undefined): CloudConditionV0 {
+  if (raw === undefined || raw === "run4") return "run4";
+  if (raw === "run5") return "run5";
+  throw new Error(`P0_CONDITION_UNKNOWN: ${raw} — allowed: run4 (default), run5`);
+}
 
 async function main(): Promise<void> {
   const outdir = process.argv[2];
-  if (outdir === undefined) throw new Error("P0_RUN4_USAGE: usage: cloud-execute.ts <outdir>");
+  const condition = resolveConditionV0(process.argv[3]);
+  if (outdir === undefined) {
+    throw new Error("P0_USAGE: usage: cloud-execute.ts <outdir> [run4|run5]");
+  }
   mkdirSync(outdir, { recursive: true });
   const write = async (name: string, value: unknown): Promise<string> => {
     const content = `${JSON.stringify(value, null, 2)}\n`;
     writeFileSync(join(outdir, name), content, "utf8");
     return hashPhase0(content, name);
   };
+
+  const subjectIds = condition === "run5" ? P0_RUN5_SUBJECT_IDS : P0_RUN4_SUBJECT_IDS;
+  const forbiddenIds = condition === "run5" ? P0_RUN5_FORBIDDEN_INHERITED_IDS : P0_RUN4_FORBIDDEN_INHERITED_IDS;
+  const stopRules = condition === "run5" ? P0_RUN5_STOP_RULES : P0_RUN4_STOP_RULES;
+  const conditionName = condition === "run5" ? P0_RUN5_CONDITION : "SWAPPED_EXECUTOR_CLOUD";
+  const bootstrapName = condition === "run5" ? "RUN5_BOOTSTRAP.json" : "RUN4_BOOTSTRAP.json";
+  const abortName = condition === "run5" ? "RUN5_ABORT.json" : "RUN4_ABORT.json";
 
   const apiKey = process.env[CS_CREDENTIAL_ENV] ?? null;
   let config: CsExecutorConfigV0;
@@ -70,8 +103,8 @@ async function main(): Promise<void> {
   } catch (thrown) {
     // Fail closed: an absent credential is a STOP, never a downgrade to the local executor, and never a
     // half-run condition.
-    await write("RUN4_ABORT.json", {
-      artifact: "RUN4_ABORT",
+    await write(abortName, {
+      artifact: abortName.replace(".json", ""),
       reason: redactCsV0(thrown instanceof Error ? thrown.message : String(thrown)),
       provider_attempts: 0,
       credential_present: apiKey !== null,
@@ -84,37 +117,69 @@ async function main(): Promise<void> {
 
   const declaration = declareCloudExecutorV0(config);
   const credentialFingerprint = await credentialFingerprintV0(config.api_key as string);
-  await write("RUN4_BOOTSTRAP.json", {
-    artifact: "RUN4_BOOTSTRAP",
-    phase: "HISTORY_INTERNALIZATION_TEST_V1_PHASE_0_RUN4",
-    condition: "SWAPPED_EXECUTOR_CLOUD",
-    preregistration: "RUN4_PREREGISTRATION.md",
+  await write(bootstrapName, {
+    artifact: bootstrapName.replace(".json", ""),
+    phase: `HISTORY_INTERNALIZATION_TEST_V1_PHASE_0_${condition.toUpperCase()}`,
+    condition: conditionName,
+    preregistration: condition === "run5" ? "RUN5_PREREGISTRATION.md" : "RUN4_PREREGISTRATION.md",
     executor: declaration,
     credential_fingerprint: credentialFingerprint,
     credential_value_recorded: false,
-    subject_ids: P0_RUN4_SUBJECT_IDS,
-    forbidden_inherited_ids: P0_RUN4_FORBIDDEN_INHERITED_IDS,
+    subject_ids: subjectIds,
+    forbidden_inherited_ids: forbiddenIds,
+    ...(condition === "run5" ? { changed_conditions: P0_RUN5_CHANGED_CONDITIONS, cognition_augmentation_applied: true, augmentation_text: P0_RUN5_AUGMENTATION, invalid_policy_unchanged: true } : {}),
     baseline_credence: P0_BASELINE_CREDENCE,
     turns_per_arm: P0_TURNS_PER_ARM,
     max_total_model_calls: P0_RUN4_MAX_TOTAL_MODEL_CALLS,
-    stop_rules: P0_RUN4_STOP_RULES,
+    stop_rules: stopRules,
     packages_modified: false,
     scored: false
   });
 
-  console.log(`run-4 executor: ${declaration.provider} / ${declaration.model} @ ${declaration.base_url}`);
-  console.log(`  subject A=${P0_RUN4_SUBJECT_IDS.armA}  B=${P0_RUN4_SUBJECT_IDS.armB}`);
+  console.log(`${condition} executor: ${declaration.provider} / ${declaration.model} @ ${declaration.base_url}`);
+  console.log(`  condition: ${conditionName}`);
+  console.log(`  subject A=${subjectIds.armA}  B=${subjectIds.armB}`);
+  if (condition === "run5") console.log("  cognition augmentation: APPLIED (system message, cognition family only)");
 
-  const bundle = instrumentPhase0BundleV0(buildCloudPhase0BundleV0(config));
+  const bundle = instrumentPhase0BundleV0(
+    buildCloudPhase0BundleV0(config, condition === "run5" ? { cognition_augmentation: P0_RUN5_AUGMENTATION } : {})
+  );
   const result = await runPhase0ScheduleV0({
     bundle,
-    sourceA: buildPhase0SourceV0(P0_RUN4_SUBJECT_IDS.armA),
-    sourceB: buildPhase0SourceV0(P0_RUN4_SUBJECT_IDS.armB),
-    subjectIds: P0_RUN4_SUBJECT_IDS,
+    sourceA: buildPhase0SourceV0(subjectIds.armA),
+    sourceB: buildPhase0SourceV0(subjectIds.armB),
+    subjectIds,
     log: (line) => console.log(line)
   });
 
   const hashes: Record<string, string> = {};
+  // RUN-5 self-verification: the declared intervention must actually be present in EVERY recorded
+  // cognition request. Without this, "the augmentation was applied" would be an unchecked claim, and a
+  // silently unaugmented run could be scored as if it were the declared condition.
+  if (condition === "run5") {
+    const offenders = bundle.cognitionRequests
+      .filter((request) => {
+        const system = request.messages.find((message) => message.role === "system");
+        return system === undefined || !system.content.endsWith(P0_RUN5_AUGMENTATION);
+      })
+      .map((request) => request.turn);
+    await write("RUN5_AUGMENTATION_SELFCHECK.json", {
+      artifact: "RUN5_AUGMENTATION_SELFCHECK",
+      cognition_requests: bundle.cognitionRequests.length,
+      every_request_carries_the_augmentation: offenders.length === 0,
+      offenders,
+      augmentation_is_appended_to_the_system_message: true,
+      fails_closed_on_absence: true
+    });
+    if (bundle.cognitionRequests.length === 0 || offenders.length > 0) {
+      console.log("");
+      console.log("STOP — the declared cognition augmentation is NOT present in every cognition request.");
+      console.log(`  offenders: ${offenders.join(", ") || "(no cognition request recorded at all)"}`);
+      console.log("  an unaugmented run must never be scored as the declared condition; nothing further runs.");
+      process.exitCode = 1;
+      return;
+    }
+  }
   hashes["qualification.json"] = await write("qualification.json", result.qualification);
   hashes["pre-state-A.json"] = await write("pre-state-A.json", {
     scored: false,
@@ -199,7 +264,8 @@ async function main(): Promise<void> {
     transport_substituted: true,
     transport_substitution_note:
       "ALL FOUR families use the OpenAI-compatible transport on the swapped endpoint. NONE uses the local executor. See EXECUTOR_SWAP_AMENDMENT.md for the changed-condition declaration.",
-    subject_ids: P0_RUN4_SUBJECT_IDS,
+    subject_ids: subjectIds,
+    condition_name: conditionName,
     attempted_provider_calls: bundle.attempts.length,
     arms_share_a_byte_identical_opening_turn:
       result.turns.find((turn) => turn.arm === "A" && turn.turn_index === 0)?.user_text ===
@@ -209,15 +275,15 @@ async function main(): Promise<void> {
   };
   hashes["collection-integrity.json"] = await write("collection-integrity.json", { integrity, artifact_hashes: hashes });
   await write("execution-manifest.json", {
-    phase: "HISTORY_INTERNALIZATION_TEST_V1_PHASE_0_RUN4",
-    condition: "SWAPPED_EXECUTOR_CLOUD",
+    phase: `HISTORY_INTERNALIZATION_TEST_V1_PHASE_0_${condition.toUpperCase()}`,
+    condition: conditionName,
     scored: false,
     next_step: "run the frozen scorer against the frozen post-state artifacts",
     artifact_hashes: hashes
   });
 
   console.log("");
-  console.log(`RUN-4 EXECUTION COMPLETE — ${String(result.turns.length)} turns`);
+  console.log(`${condition.toUpperCase()} EXECUTION COMPLETE — ${String(result.turns.length)} turns`);
   console.log(
     `  calls: cognition=${String(bundle.tally.cognition)} language=${String(bundle.tally.language)} ` +
       `appraisal=${String(bundle.tally.appraisal)} belief_semantic=${String(bundle.tally.belief_semantic)} total=${String(totalCalls)}`

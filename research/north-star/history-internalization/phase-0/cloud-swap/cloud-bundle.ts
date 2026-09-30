@@ -21,6 +21,7 @@ import {
   type ModelTransportV0
 } from "../../../../../packages/runtime/dist/index.js";
 import { createProductAppraisalProviderV0 } from "../../../../../product/sandbox/dist/product-appraisal-provider.js";
+import { createAugmentedCognitionTransportV0 } from "./run5-augmentation.ts";
 
 import { P0_APPRAISAL_NUM_PREDICT, P0_COGNITION_NUM_PREDICT } from "../contract.ts";
 import type { Phase0BundleV0 } from "../harness.ts";
@@ -169,7 +170,20 @@ export function createRecordingFamilyTransportV0(input: {
  * `execute.ts`'s `realBundle()`; the transports and the belief-semantic provider are the only
  * differences, and both are named in the declaration above.
  */
-export function buildCloudPhase0BundleV0(config: CsExecutorConfigV0): Phase0BundleV0 {
+export interface CloudPhase0BundleOptionsV0 {
+  /**
+   * RUN-5 — the declared SOURCE_QUOTE compliance augmentation, applied to the COGNITION family only.
+   *
+   * Absent by default, so the run-4 condition is reproduced exactly. Applied INSIDE the recorder, so the
+   * recorded request (and therefore the leakage audit and every artifact) shows what was actually sent.
+   */
+  readonly cognition_augmentation?: string | undefined;
+}
+
+export function buildCloudPhase0BundleV0(
+  config: CsExecutorConfigV0,
+  options: CloudPhase0BundleOptionsV0 = {}
+): Phase0BundleV0 {
   const tally: Phase0BundleV0["tally"] = { cognition: 0, language: 0, appraisal: 0, belief_semantic: 0 };
   const cognitionRequests: Phase0BundleV0["cognitionRequests"] = [];
   const providerCalls: Phase0BundleV0["providerCalls"] = [];
@@ -192,8 +206,16 @@ export function buildCloudPhase0BundleV0(config: CsExecutorConfigV0): Phase0Bund
     transport: createCloudTransportForFamilyV0(config, "belief_semantic")
   });
 
+  const cognitionInner =
+    options.cognition_augmentation === undefined
+      ? createCloudTransportForFamilyV0(config, "cognition")
+      : createAugmentedCognitionTransportV0(
+          createCloudTransportForFamilyV0(config, "cognition"),
+          options.cognition_augmentation
+        );
+
   return {
-    cognitionTransport: countedTransport(createCloudTransportForFamilyV0(config, "cognition"), "cognition"),
+    cognitionTransport: countedTransport(cognitionInner, "cognition"),
     languageTransport: countedTransport(createCloudTransportForFamilyV0(config, "language"), "language"),
     appraisalProvider: createProductAppraisalProviderV0({
       transport: countedTransport(createCloudTransportForFamilyV0(config, "appraisal"), "appraisal")
