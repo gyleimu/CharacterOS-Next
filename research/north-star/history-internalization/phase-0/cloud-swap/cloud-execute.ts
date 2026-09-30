@@ -58,6 +58,7 @@ import {
   P0_RUN5_STOP_RULES,
   P0_RUN5_SUBJECT_IDS
 } from "./contract-run5.ts";
+import { auditAugmentationAppliedV0 } from "./run5-augmentation.ts";
 
 /**
  * The two conditions this program can run. `run4` is the FROZEN default so the run-4 path stays exactly
@@ -220,29 +221,26 @@ async function main(): Promise<void> {
   // cognition request. Without this, "the augmentation was applied" would be an unchecked claim, and a
   // silently unaugmented run could be scored as if it were the declared condition.
   if (condition === "run5") {
-    const offenders = bundle.cognitionRequests
-      .filter((request) => {
-        const system = request.messages.find((message) => message.role === "system");
-        return system === undefined || !system.content.endsWith(P0_RUN5_AUGMENTATION);
-      })
-      .map((request) => request.turn);
-    await write("RUN5_PROCESS_STOP.json", {
-      artifact: "RUN5_PROCESS_STOP",
-      classification: "PROCESS_STOP_CONDITION_NOT_ESTABLISHED",
-      is_a_scientific_verdict: false,
-      borrowed_verdict_forbidden:
-        "this is neither INCONCLUSIVE nor FAILURE_A: a condition that could not be established is a process record, never a scientific one",
-      raw_material_persisted_before_this_stop: true
-    });
+    // ONE implementation: the STOP decision and the RECORD of it come from the same predicate.
+    const audit = auditAugmentationAppliedV0(bundle.cognitionRequests, P0_RUN5_AUGMENTATION);
+    const offenders = audit.offenders;
     await write("RUN5_AUGMENTATION_SELFCHECK.json", {
       artifact: "RUN5_AUGMENTATION_SELFCHECK",
       cognition_requests: bundle.cognitionRequests.length,
-      every_request_carries_the_augmentation: offenders.length === 0,
+      every_request_carries_the_augmentation: audit.applied,
       offenders,
       augmentation_is_appended_to_the_system_message: true,
       fails_closed_on_absence: true
     });
-    if (bundle.cognitionRequests.length === 0 || offenders.length > 0) {
+    if (!audit.applied) {
+      await write("RUN5_PROCESS_STOP.json", {
+        artifact: "RUN5_PROCESS_STOP",
+        classification: "PROCESS_STOP_CONDITION_NOT_ESTABLISHED",
+        is_a_scientific_verdict: false,
+        borrowed_verdict_forbidden:
+          "this is neither INCONCLUSIVE nor FAILURE_A: a condition that could not be established is a process record, never a scientific one",
+        raw_material_persisted_before_this_stop: true
+      });
       console.log("");
       console.log("STOP — the declared cognition augmentation is NOT present in every cognition request.");
       console.log(`  offenders: ${offenders.join(", ") || "(no cognition request recorded at all)"}`);

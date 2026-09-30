@@ -1,0 +1,56 @@
+{
+  "scored": true,
+  "input": {
+    "credence_pre_A": 0.55,
+    "credence_post_A": 0.8000000000000003,
+    "credence_pre_B": 0.55,
+    "credence_post_B": 0.4,
+    "turns_executed_A": 5,
+    "turns_executed_B": 5,
+    "integrity_failures": []
+  },
+  "score": {
+    "delta_A": 0.25,
+    "delta_B": -0.15,
+    "between_subject_divergence": 0.4,
+    "directional_match_A": true,
+    "directional_match_B": true,
+    "values_differ": true,
+    "primary_predicate": "delta_A > 0 AND delta_B < 0 AND credence_A_post != credence_B_post",
+    "primary_predicate_satisfied": true,
+    "verdict": {
+      "outcome": "POSITIVE",
+      "verdict": "LIVED_EXPERIENCE_TO_PERSISTENT_BELIEF_CHANGE_ESTABLISHED"
+    }
+  },
+  "descriptive_secondary": {
+    "role": "DESCRIPTIVE_SECONDARY_STATE — recorded for completeness and explicitly NOT an endpoint",
+    "relationship_A": [],
+    "relationship_B": [],
+    "personality_A": [],
+    "personality_B": [],
+    "affect_A": {
+      "valence": 0.14528893889507324,
+      "activation": 0.4905778777901465
+    },
+    "affect_B": {
+      "valence": -0.1767846399309277,
+      "activation": 0.5044848548777169
+    },
+    "belief_items_A": [
+      {
+        "proposition_id": "prop.nadia-keeps-commitments",
+        "proposition_label": "Nadia keeps the commitments she makes to me.",
+        "credence": 0.8000000000000003
+      }
+    ],
+    "belief_items_B": [
+      {
+        "proposition_id": "prop.nadia-keeps-commitments",
+        "proposition_label": "Nadia keeps the commitments she makes to me.",
+        "credence": 0.4
+      }
+    ],
+    "warning": "relationship familiarity is ALSO driven every turn by the production runtime. Any difference in it is a co-effect of the same trajectory and can never be read as evidence for the belief endpoint, nor used to rescue a belief null."
+  }
+}

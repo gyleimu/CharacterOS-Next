@@ -1,0 +1,47 @@
+{
+  "integrity": {
+    "condition": "SWAPPED_EXECUTOR_CLOUD",
+    "turns_executed_qualification": 1,
+    "turns_executed_A": 5,
+    "turns_executed_B": 5,
+    "turns_expected_per_arm": 5,
+    "schedule_followed": true,
+    "qualification_passed": true,
+    "integrity_failures": [],
+    "call_tally": {
+      "cognition": 11,
+      "language": 11,
+      "appraisal": 19,
+      "belief_semantic": 11
+    },
+    "total_model_calls": 52,
+    "exact_belief_semantic_calls": 11,
+    "executor_model": "deepseek-flash",
+    "executor_base_url": "https://api.deepseek.com",
+    "transport_substituted": true,
+    "transport_substitution_note": "ALL FOUR families use the OpenAI-compatible transport on the swapped endpoint. NONE uses the local executor. See EXECUTOR_SWAP_AMENDMENT.md for the changed-condition declaration.",
+    "subject_ids": {
+      "qualification": "subject-r5u9-3952",
+      "armA": "subject-r5b3-4187",
+      "armB": "subject-r5b3-7260",
+      "sessionQualification": "session-qualification-r5-0001",
+      "sessionA": "session-r5b3-4187-0001",
+      "sessionB": "session-r5b3-7260-0001"
+    },
+    "condition_name": "SWAPPED_EXECUTOR_CLOUD_WITH_SOURCE_QUOTE_AUGMENTATION",
+    "attempted_provider_calls": 52,
+    "arms_share_a_byte_identical_opening_turn": true,
+    "trajectory_evidence_carries_model_generated_content": "yes, and this is inherent to the production ordering law: from turn 1 the evidence offered to belief adaptation is the behaviour-outcome feedback of the PREVIOUS turn, which contains the subject's own delivered reply as well as the user text. Phase 0 therefore does NOT claim a single-byte intervention; it claims matched authored events whose only authored difference is the frozen valence span."
+  },
+  "artifact_hashes": {
+    "qualification.json": "sha256:fb2d90a278168c57e49c730e7104cf745e58703a5b02d01f2664780960f7f0e0",
+    "pre-state-A.json": "sha256:b9be5760cf4100996e330ec41e0da8ec5af62234d107d8b5030363ee8b1dce0d",
+    "pre-state-B.json": "sha256:7927f0be66601522bf53e7680c616affd87bb2a59a285fe918f296681287ce2a",
+    "post-state-A.json": "sha256:86a1f8b0e6e3269096cb697c1ef0c3d24d19fe733faa392308d3f41715b3b22b",
+    "post-state-B.json": "sha256:c2b1b562ca6e84c45363add1266f9f882999e35ebb8955f95c1605565b7c09a7",
+    "target-belief-identity.json": "sha256:f46ef8b60c545f3c171b32f552fa638ca78649f8faa75b11cf99f5db8465773c",
+    "raw-trials.json": "sha256:d24e18c0300375436d1878ee1b8bcdbe52ef5999cc760b70a5f0250a2bc14b14",
+    "executed-leakage-audit.json": "sha256:aaa0803ae56295351a95d4d20290a98a74cd4627f4d0021eecec0cb98c97d281",
+    "persistence-scope.json": "sha256:9bac60b2654e2f45710ea3acdcd08dc51aa799433685606b3122d776ebcf351d"
+  }
+}

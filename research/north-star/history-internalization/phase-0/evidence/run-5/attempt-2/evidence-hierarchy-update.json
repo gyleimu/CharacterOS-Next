@@ -1,0 +1,14 @@
+{
+  "before": "L1",
+  "after": "L2",
+  "no_level_skipped": true,
+  "l2_meaning_if_positive": "LIVED experience changes canonical state. It does NOT mean history internalization works: L3 (the change alters cognition in a NEW scenario with the raw history absent) has not been tested.",
+  "what_a_positive_does_not_establish": [
+    "that persistent belief alters cognition in a new scenario with the history removed (L3, untested)",
+    "that it alters decision or behaviour (L4+, untested, and D1 measured a null on an authored difference)",
+    "that the subject 'has been shaped by its life'",
+    "that history internalization works",
+    "anything about personality or affect, both out of scope and un-driven for this experiment",
+    "anything about the model's own dispositions: the LLM is an executor and the subject is the canonical state"
+  ]
+}

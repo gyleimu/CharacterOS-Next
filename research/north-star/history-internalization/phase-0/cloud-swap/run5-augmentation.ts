@@ -120,3 +120,27 @@ export function createAugmentedCognitionTransportV0(
     }
   } as ModelTransportV0;
 }
+
+/**
+ * Did the declared intervention actually reach EVERY cognition request?
+ *
+ * A pure function, so the answer is testable at 0 model calls AND so the run's STOP decision and the
+ * run's RECORD of that decision come from the same code. The first version wrote the process-stop
+ * record unconditionally, so a CLEAN run carried a "condition not established" artifact; the record is
+ * now emitted only when this says the condition was not established.
+ */
+export function auditAugmentationAppliedV0(
+  cognitionRequests: readonly {
+    readonly turn: string;
+    readonly messages: readonly { readonly role: string; readonly content: string }[];
+  }[],
+  augmentation: string = RUN5_SOURCE_QUOTE_AUGMENTATION_V0
+): { readonly applied: boolean; readonly offenders: readonly string[] } {
+  const offenders = cognitionRequests
+    .filter((request) => {
+      const system = request.messages.find((message) => message.role === "system");
+      return system === undefined || !system.content.endsWith(augmentation);
+    })
+    .map((request) => request.turn);
+  return { applied: cognitionRequests.length > 0 && offenders.length === 0, offenders };
+}

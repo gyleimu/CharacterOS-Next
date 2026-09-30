@@ -41,6 +41,7 @@ import { CS_FAMILY_BUDGETS, buildCloudPhase0BundleV0, createRecordingFamilyTrans
 import {
   RUN5_SOURCE_QUOTE_AUGMENTATION_V0,
   assertAugmentationIsTreatmentOrthogonalV0,
+  auditAugmentationAppliedV0,
   createAugmentedCognitionTransportV0
 } from "./run5-augmentation.ts";
 import {
@@ -739,5 +740,39 @@ describe("run-5 wiring — the recorder sits INSIDE the augmenter", () => {
     expect(recorded).toBe("PROD");
     // …while the wire bytes WERE augmented, which is why the defect was invisible without this test.
     expect(h.wire[0]?.messages[0]?.content.endsWith(RUN5_SOURCE_QUOTE_AUGMENTATION_V0)).toBe(true);
+  });
+});
+
+describe("run-5 self-check — the STOP decision is a pure predicate", () => {
+  const req = (turn: string, system: string) => ({ turn, messages: [{ role: "system", content: system }] });
+
+  it("says APPLIED when every request carries the augmentation", () => {
+    const audit = auditAugmentationAppliedV0([
+      req("A:turn_0", `PROD${RUN5_SOURCE_QUOTE_AUGMENTATION_V0}`),
+      req("B:turn_0", `PROD${RUN5_SOURCE_QUOTE_AUGMENTATION_V0}`)
+    ]);
+    expect(audit.applied).toBe(true);
+    expect(audit.offenders).toEqual([]);
+  });
+
+  it("says NOT APPLIED and names the offenders when even ONE request lacks it", () => {
+    const audit = auditAugmentationAppliedV0([
+      req("A:turn_0", `PROD${RUN5_SOURCE_QUOTE_AUGMENTATION_V0}`),
+      req("B:turn_0", "PROD")
+    ]);
+    expect(audit.applied).toBe(false);
+    expect(audit.offenders).toEqual(["B:turn_0"]);
+  });
+
+  it("an EMPTY request list is NOT applied (a gate that inspected nothing is not a PASS)", () => {
+    expect(auditAugmentationAppliedV0([]).applied).toBe(false);
+  });
+
+  it("a request with no system message is an offender (fail closed, never silently exempt)", () => {
+    const audit = auditAugmentationAppliedV0([
+      { turn: "A:turn_0", messages: [{ role: "user", content: `x${RUN5_SOURCE_QUOTE_AUGMENTATION_V0}` }] }
+    ]);
+    expect(audit.applied).toBe(false);
+    expect(audit.offenders).toEqual(["A:turn_0"]);
   });
 });

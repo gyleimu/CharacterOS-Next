@@ -1,0 +1,7 @@
+{
+  "artifact": "RUN5_PROCESS_STOP",
+  "classification": "PROCESS_STOP_CONDITION_NOT_ESTABLISHED",
+  "is_a_scientific_verdict": false,
+  "borrowed_verdict_forbidden": "this is neither INCONCLUSIVE nor FAILURE_A: a condition that could not be established is a process record, never a scientific one",
+  "raw_material_persisted_before_this_stop": true
+}
