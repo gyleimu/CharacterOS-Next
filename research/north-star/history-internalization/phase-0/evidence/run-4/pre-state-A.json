@@ -1,0 +1,41 @@
+{
+  "scored": false,
+  "role": "PRE_TRAJECTORY_STATE_A",
+  "state": {
+    "subject_id": "subject-r4h6-2903",
+    "canonical_state_view": {
+      "schema_version": "interactive-subject-state-view-v0",
+      "identity": {
+        "subject_id": "subject-r4h6-2903",
+        "display_name": "Wren",
+        "identity_anchors": []
+      },
+      "logical_time": 0,
+      "state_revision": 0,
+      "repository_revision": "R0",
+      "affect": {
+        "valence": 0,
+        "activation": 0.2
+      },
+      "regulation": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality": [],
+      "traits_seed": {},
+      "beliefs": [
+        {
+          "proposition_id": "prop.nadia-keeps-commitments",
+          "proposition_label": "Nadia keeps the commitments she makes to me.",
+          "credence": 0.55
+        }
+      ],
+      "relationships": []
+    },
+    "durable_identity": null,
+    "durable_belief_workflow_store_state": null,
+    "durable_identity_unavailable_reason": "session checkpoint: no committed head bundle"
+  }
+}

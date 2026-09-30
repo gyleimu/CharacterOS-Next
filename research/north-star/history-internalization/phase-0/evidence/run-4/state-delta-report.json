@@ -1,0 +1,26 @@
+{
+  "proposition_id": "prop.nadia-keeps-commitments",
+  "credence_pre_A": 0.55,
+  "credence_post_A": 0.7500000000000002,
+  "credence_pre_B": 0.55,
+  "credence_post_B": 0.4,
+  "delta_A": 0.2,
+  "delta_B": -0.15,
+  "between_subject_divergence": 0.35,
+  "predicted_direction_A": "INCREASE",
+  "predicted_direction_B": "DECREASE",
+  "directional_match_A": true,
+  "directional_match_B": true,
+  "post_values_differ": true,
+  "turns_per_arm_frozen": 5,
+  "turns_executed_A": 5,
+  "turns_executed_B": 5,
+  "executor_model": "deepseek-flash",
+  "total_model_calls": 49,
+  "call_tally": {
+    "cognition": 11,
+    "language": 10,
+    "appraisal": 18,
+    "belief_semantic": 10
+  }
+}

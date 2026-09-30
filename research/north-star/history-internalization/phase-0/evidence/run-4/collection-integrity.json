@@ -1,0 +1,47 @@
+{
+  "integrity": {
+    "condition": "SWAPPED_EXECUTOR_CLOUD",
+    "turns_executed_qualification": 1,
+    "turns_executed_A": 5,
+    "turns_executed_B": 5,
+    "turns_expected_per_arm": 5,
+    "schedule_followed": true,
+    "qualification_passed": true,
+    "integrity_failures": [
+      "turn A:turn_4 status=FAILED failure=TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_FACTUAL_AUTHORIZATION_REJECTED: conversation proposal.factual_assessment.claims[0]: REJECTED_SOURCE_BINDING SOURCE_QUOTE is not an exact substring of every cited source)"
+    ],
+    "call_tally": {
+      "cognition": 11,
+      "language": 10,
+      "appraisal": 18,
+      "belief_semantic": 10
+    },
+    "total_model_calls": 49,
+    "exact_belief_semantic_calls": 10,
+    "executor_model": "deepseek-flash",
+    "executor_base_url": "https://api.deepseek.com",
+    "transport_substituted": true,
+    "transport_substitution_note": "ALL FOUR families use the OpenAI-compatible transport on the swapped endpoint. NONE uses the local executor. See EXECUTOR_SWAP_AMENDMENT.md for the changed-condition declaration.",
+    "subject_ids": {
+      "qualification": "subject-r4q7-6128",
+      "armA": "subject-r4h6-2903",
+      "armB": "subject-r4h6-7514",
+      "sessionQualification": "session-qualification-r4-0001",
+      "sessionA": "session-r4h6-2903-0001",
+      "sessionB": "session-r4h6-7514-0001"
+    },
+    "attempted_provider_calls": 49,
+    "arms_share_a_byte_identical_opening_turn": true,
+    "trajectory_evidence_carries_model_generated_content": "yes, and this is inherent to the production ordering law: from turn 1 the evidence offered to belief adaptation is the behaviour-outcome feedback of the PREVIOUS turn, which contains the subject's own delivered reply as well as the user text. Phase 0 therefore does NOT claim a single-byte intervention; it claims matched authored events whose only authored difference is the frozen valence span."
+  },
+  "artifact_hashes": {
+    "qualification.json": "sha256:76c13ee474ded8e0eb662f399e300504f09ade75e3bb1dc302ec341dcf7f0e32",
+    "pre-state-A.json": "sha256:1d0f90146f0d2b4285a26a8bfb52f1cd41f65d77d26ca65588d72c5104c25e59",
+    "pre-state-B.json": "sha256:e0ab32fd28d566a72b770fea1580ea774ae407e3acc89875bf577973b784a105",
+    "post-state-A.json": "sha256:793d9feec80f1d8f4f53a2fcfc6ce5665af62f9336b31dc06f39c30f1789bbee",
+    "post-state-B.json": "sha256:a611ab55ca68d201e17451676c23d1b207e5aa34a3b756775952fb5547c2b323",
+    "raw-trials.json": "sha256:3c28f3dcaee4c40d87f765e3b3479ec8d28fe43f872995759e912d963e402660",
+    "executed-leakage-audit.json": "sha256:7a3fc36929d7039c4babf7a8d4eb2f783b187014fd1c074e739ff1bd9d32a551",
+    "persistence-scope.json": "sha256:9bac60b2654e2f45710ea3acdcd08dc51aa799433685606b3122d776ebcf351d"
+  }
+}

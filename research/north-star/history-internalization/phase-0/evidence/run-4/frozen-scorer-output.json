@@ -1,0 +1,19 @@
+{
+  "scorer": "scorePhase0V0",
+  "frozen_before_any_call": true,
+  "result": {
+    "delta_A": 0.2,
+    "delta_B": -0.15,
+    "between_subject_divergence": 0.35,
+    "directional_match_A": true,
+    "directional_match_B": true,
+    "values_differ": true,
+    "primary_predicate": "delta_A > 0 AND delta_B < 0 AND credence_A_post != credence_B_post",
+    "primary_predicate_satisfied": false,
+    "verdict": {
+      "outcome": "INCONCLUSIVE",
+      "verdict": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+      "reason": "turn A:turn_4 status=FAILED failure=TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_FACTUAL_AUTHORIZATION_REJECTED: conversation proposal.factual_assessment.claims[0]: REJECTED_SOURCE_BINDING SOURCE_QUOTE is not an exact substring of every cited source)"
+    }
+  }
+}

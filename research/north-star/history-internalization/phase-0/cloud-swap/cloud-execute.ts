@@ -21,7 +21,15 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { P0_TURNS_PER_ARM, P0_BASELINE_CREDENCE, hashPhase0 } from "../contract.ts";
+import {
+  P0_BASELINE_CREDENCE,
+  P0_PREDICTED_A_DIRECTION,
+  P0_PREDICTED_B_DIRECTION,
+  P0_TARGET_PROPOSITION_ID,
+  P0_TARGET_PROPOSITION_LABEL,
+  P0_TURNS_PER_ARM,
+  hashPhase0
+} from "../contract.ts";
 import { buildPhase0SourceV0 } from "../fixtures.ts";
 import { instrumentPhase0BundleV0, runPhase0ScheduleV0 } from "../harness.ts";
 import { buildCloudPhase0BundleV0, declareCloudExecutorV0 } from "./cloud-bundle.ts";
@@ -127,6 +135,20 @@ async function main(): Promise<void> {
     scored: false,
     role: "POST_TRAJECTORY_STATE_B",
     state: result.postStateB
+  });
+  hashes["target-belief-identity.json"] = await write("target-belief-identity.json", {
+    proposition_id: P0_TARGET_PROPOSITION_ID,
+    proposition_label: P0_TARGET_PROPOSITION_LABEL,
+    baseline_credence: P0_BASELINE_CREDENCE,
+    baseline_credence_origin: "frozen production BELIEF_PROPOSITION_FIRST_CREDENCE (stance-zero 0.5 + one plasticity step)",
+    predicted_direction_A: P0_PREDICTED_A_DIRECTION,
+    predicted_direction_B: P0_PREDICTED_B_DIRECTION,
+    identical_for_both_subjects: true,
+    subject_never_told_the_conclusion: true,
+    proposition_count:
+      (result.preStateA as { canonical_state_view?: { beliefs?: readonly unknown[] } }).canonical_state_view?.beliefs
+        ?.length ?? null,
+    authored_final_credence_nowhere: true
   });
   hashes["raw-trials.json"] = await write("raw-trials.json", {
     turns: result.turns,

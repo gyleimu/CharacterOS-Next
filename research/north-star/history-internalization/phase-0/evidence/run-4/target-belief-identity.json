@@ -1,0 +1,20 @@
+{
+  "proposition_id": "prop.nadia-keeps-commitments",
+  "proposition_label": "Nadia keeps the commitments she makes to me.",
+  "baseline_credence": 0.55,
+  "baseline_credence_origin": "frozen production BELIEF_PROPOSITION_FIRST_CREDENCE (stance-zero 0.5 + one plasticity step)",
+  "predicted_direction_A": "INCREASE",
+  "predicted_direction_B": "DECREASE",
+  "identical_for_both_subjects": true,
+  "subject_never_told_the_conclusion": true,
+  "proposition_count": 1,
+  "authored_final_credence_nowhere": true,
+  "produced_by": "run4-derive-identity.ts",
+  "produced_after_the_run": true,
+  "contains_no_measurement": true,
+  "every_field_is_either_a_frozen_constant_or_a_cross_checked_derivation": true,
+  "cross_checked_against": [
+    "pre-state-A.json",
+    "pre-state-B.json"
+  ]
+}

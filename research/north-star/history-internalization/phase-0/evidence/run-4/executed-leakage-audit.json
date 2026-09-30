@@ -1,0 +1,25 @@
+{
+  "method": "every recorded cognition request for every executed turn is scanned; the OTHER arm's subject id and the experimenter's vocabulary must never appear",
+  "requests_scanned": 11,
+  "strict_needles": [
+    "positive arm",
+    "negative arm",
+    "expected direction",
+    "history internalization",
+    "phase 0",
+    "phase-0",
+    "subject-k7q2-4103",
+    "subject-k7q2-8267",
+    "subject-q0v8-3319",
+    "subject-r4h6-2903",
+    "subject-r4h6-7514",
+    "subject-r4q7-6128"
+  ],
+  "hits": [],
+  "clean": true,
+  "own_subject_id_is_expected_and_is_not_a_leak": true,
+  "scope_note": "this scan covers the experimenter's own vocabulary and identifiers. Model-generated reply text is NOT scanned for ordinary words such as 'trust': a subject saying it trusts someone is the treatment's own downstream expression, not experimenter leakage, and flagging it would be a false positive.",
+  "check_can_fire": true,
+  "is_a_scoring_input": false,
+  "if_a_hit_were_found": "the run's scientific readout would have to be adjudicated separately; the frozen invalid policy is unchanged"
+}
