@@ -206,16 +206,21 @@ export function buildCloudPhase0BundleV0(
     transport: createCloudTransportForFamilyV0(config, "belief_semantic")
   });
 
-  const cognitionInner =
+  // ORDER MATTERS AND IS LOAD-BEARING: the recorder sits INSIDE the augmenter, so the recorded request
+  // is byte-for-byte the request the real transport receives.
+  //
+  // The first version had it the other way round (`countedTransport(augmented(...))`), which recorded the
+  // PRE-augmentation request: the augmentation did reach the wire, but no recorded artifact could show
+  // it, so "the augmentation was applied" became an unverifiable claim and the run's own self-check
+  // correctly refused to accept it. The order is now pinned by a regression test.
+  const cognitionRecorded = countedTransport(createCloudTransportForFamilyV0(config, "cognition"), "cognition");
+  const cognitionTransport =
     options.cognition_augmentation === undefined
-      ? createCloudTransportForFamilyV0(config, "cognition")
-      : createAugmentedCognitionTransportV0(
-          createCloudTransportForFamilyV0(config, "cognition"),
-          options.cognition_augmentation
-        );
+      ? cognitionRecorded
+      : createAugmentedCognitionTransportV0(cognitionRecorded, options.cognition_augmentation);
 
   return {
-    cognitionTransport: countedTransport(cognitionInner, "cognition"),
+    cognitionTransport,
     languageTransport: countedTransport(createCloudTransportForFamilyV0(config, "language"), "language"),
     appraisalProvider: createProductAppraisalProviderV0({
       transport: countedTransport(createCloudTransportForFamilyV0(config, "appraisal"), "appraisal")

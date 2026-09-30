@@ -153,33 +153,6 @@ async function main(): Promise<void> {
   });
 
   const hashes: Record<string, string> = {};
-  // RUN-5 self-verification: the declared intervention must actually be present in EVERY recorded
-  // cognition request. Without this, "the augmentation was applied" would be an unchecked claim, and a
-  // silently unaugmented run could be scored as if it were the declared condition.
-  if (condition === "run5") {
-    const offenders = bundle.cognitionRequests
-      .filter((request) => {
-        const system = request.messages.find((message) => message.role === "system");
-        return system === undefined || !system.content.endsWith(P0_RUN5_AUGMENTATION);
-      })
-      .map((request) => request.turn);
-    await write("RUN5_AUGMENTATION_SELFCHECK.json", {
-      artifact: "RUN5_AUGMENTATION_SELFCHECK",
-      cognition_requests: bundle.cognitionRequests.length,
-      every_request_carries_the_augmentation: offenders.length === 0,
-      offenders,
-      augmentation_is_appended_to_the_system_message: true,
-      fails_closed_on_absence: true
-    });
-    if (bundle.cognitionRequests.length === 0 || offenders.length > 0) {
-      console.log("");
-      console.log("STOP — the declared cognition augmentation is NOT present in every cognition request.");
-      console.log(`  offenders: ${offenders.join(", ") || "(no cognition request recorded at all)"}`);
-      console.log("  an unaugmented run must never be scored as the declared condition; nothing further runs.");
-      process.exitCode = 1;
-      return;
-    }
-  }
   hashes["qualification.json"] = await write("qualification.json", result.qualification);
   hashes["pre-state-A.json"] = await write("pre-state-A.json", {
     scored: false,
@@ -243,6 +216,42 @@ async function main(): Promise<void> {
     prompt_text_used_as_evidence: false
   });
 
+  // RUN-5 self-verification: the declared intervention must actually be present in EVERY recorded
+  // cognition request. Without this, "the augmentation was applied" would be an unchecked claim, and a
+  // silently unaugmented run could be scored as if it were the declared condition.
+  if (condition === "run5") {
+    const offenders = bundle.cognitionRequests
+      .filter((request) => {
+        const system = request.messages.find((message) => message.role === "system");
+        return system === undefined || !system.content.endsWith(P0_RUN5_AUGMENTATION);
+      })
+      .map((request) => request.turn);
+    await write("RUN5_PROCESS_STOP.json", {
+      artifact: "RUN5_PROCESS_STOP",
+      classification: "PROCESS_STOP_CONDITION_NOT_ESTABLISHED",
+      is_a_scientific_verdict: false,
+      borrowed_verdict_forbidden:
+        "this is neither INCONCLUSIVE nor FAILURE_A: a condition that could not be established is a process record, never a scientific one",
+      raw_material_persisted_before_this_stop: true
+    });
+    await write("RUN5_AUGMENTATION_SELFCHECK.json", {
+      artifact: "RUN5_AUGMENTATION_SELFCHECK",
+      cognition_requests: bundle.cognitionRequests.length,
+      every_request_carries_the_augmentation: offenders.length === 0,
+      offenders,
+      augmentation_is_appended_to_the_system_message: true,
+      fails_closed_on_absence: true
+    });
+    if (bundle.cognitionRequests.length === 0 || offenders.length > 0) {
+      console.log("");
+      console.log("STOP — the declared cognition augmentation is NOT present in every cognition request.");
+      console.log(`  offenders: ${offenders.join(", ") || "(no cognition request recorded at all)"}`);
+      console.log("  an unaugmented run must never be scored as the declared condition.");
+      console.log("  the RAW material is already on disk, so this stop is DIAGNOSABLE.");
+      process.exitCode = 1;
+      return;
+    }
+  }
   const totalCalls =
     bundle.tally.cognition + bundle.tally.language + bundle.tally.appraisal + bundle.tally.belief_semantic;
   const integrity = {

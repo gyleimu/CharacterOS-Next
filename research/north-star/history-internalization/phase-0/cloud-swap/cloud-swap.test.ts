@@ -678,3 +678,66 @@ describe("swapped condition — readiness criteria can fail", () => {
     expect(Object.keys(evaluation.criteria)).not.toContain("no_provider_reload_midway");
   });
 });
+
+// =============================================================================================
+// 5c. THE RECORDER / AUGMENTER ORDER — IT IS LOAD-BEARING
+// =============================================================================================
+
+describe("run-5 wiring — the recorder sits INSIDE the augmenter", () => {
+  const build = (order: "recorder_outside" | "recorder_inside") => {
+    const tally = { cognition: 0, language: 0, appraisal: 0, belief_semantic: 0 };
+    const cognitionRequests: Phase0BundleV0["cognitionRequests"] = [];
+    const providerCalls: Phase0BundleV0["providerCalls"] = [];
+    const wire: { messages: readonly { role: string; content: string }[] }[] = [];
+    const real = {
+      complete: async (request: never) => {
+        wire.push(request as { messages: readonly { role: string; content: string }[] });
+        return { content: "ok", model: "stub" };
+      }
+    } as unknown as ModelTransportV0;
+    const recorder = createRecordingFamilyTransportV0({
+      inner: real,
+      family: "cognition",
+      tally,
+      cognitionRequests,
+      providerCalls,
+      currentTurn: () => "A:turn_0"
+    });
+    const transport =
+      order === "recorder_inside"
+        ? createAugmentedCognitionTransportV0(recorder)
+        : createRecordingFamilyTransportV0({
+            inner: createAugmentedCognitionTransportV0(real),
+            family: "cognition",
+            tally,
+            cognitionRequests,
+            providerCalls,
+            currentTurn: () => "A:turn_0"
+          });
+    return { transport, cognitionRequests, wire };
+  };
+
+  const request = { messages: [{ role: "system", content: "PROD" }, { role: "user", content: "u" }] };
+
+  it("records exactly what reaches the wire when the recorder is INSIDE (the bundle's order)", async () => {
+    const h = build("recorder_inside");
+    await h.transport.complete(request as never);
+    const recorded = h.cognitionRequests[0]?.messages[0]?.content ?? "";
+    expect(recorded.endsWith(RUN5_SOURCE_QUOTE_AUGMENTATION_V0)).toBe(true);
+    // The recorded payload IS the wire payload — which is what makes the run's self-check meaningful.
+    expect(JSON.stringify(h.cognitionRequests[0]?.messages)).toBe(JSON.stringify(h.wire[0]?.messages));
+  });
+
+  it("NEGATIVE CONTROL: with the recorder OUTSIDE, the augmentation is invisible in the record", async () => {
+    // This is exactly the wiring that made run-5 attempt 1 stop: the augmentation DID reach the wire,
+    // but no recorded byte showed it, so "the augmentation was applied" was unverifiable. The self-check
+    // was right to refuse; the wiring was wrong.
+    const h = build("recorder_outside");
+    await h.transport.complete(request as never);
+    const recorded = h.cognitionRequests[0]?.messages[0]?.content ?? "";
+    expect(recorded.endsWith(RUN5_SOURCE_QUOTE_AUGMENTATION_V0)).toBe(false);
+    expect(recorded).toBe("PROD");
+    // …while the wire bytes WERE augmented, which is why the defect was invisible without this test.
+    expect(h.wire[0]?.messages[0]?.content.endsWith(RUN5_SOURCE_QUOTE_AUGMENTATION_V0)).toBe(true);
+  });
+});

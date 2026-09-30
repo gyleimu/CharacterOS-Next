@@ -46,6 +46,13 @@ export const P0_RUN4_SUBJECT_IDS: Phase0SubjectIdsV0 = Object.freeze({
   sessionB: "session-r4h6-7514-0001"
 });
 
+/** Run-4's own identities, which every LATER condition must forbid. */
+export const P0_RUN4_OWN_IDS: readonly string[] = Object.freeze([
+  P0_RUN4_SUBJECT_IDS.qualification,
+  P0_RUN4_SUBJECT_IDS.armA,
+  P0_RUN4_SUBJECT_IDS.armB
+]);
+
 /**
  * Identities that are CONSUMED and must never appear in run-4's bytes. `executed_leakage` keeps these
  * forbidden in every condition; this list exists so the audit's expectation is explicit.

@@ -1,0 +1,20 @@
+{
+  "artifact": "RUN5_AUGMENTATION_SELFCHECK",
+  "cognition_requests": 11,
+  "every_request_carries_the_augmentation": false,
+  "offenders": [
+    "QUALIFICATION:turn_0",
+    "A:turn_0",
+    "A:turn_1",
+    "A:turn_2",
+    "A:turn_3",
+    "A:turn_4",
+    "B:turn_0",
+    "B:turn_1",
+    "B:turn_2",
+    "B:turn_3",
+    "B:turn_4"
+  ],
+  "augmentation_is_appended_to_the_system_message": true,
+  "fails_closed_on_absence": true
+}

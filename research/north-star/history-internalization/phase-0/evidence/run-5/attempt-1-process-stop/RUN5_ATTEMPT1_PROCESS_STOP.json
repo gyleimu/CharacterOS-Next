@@ -1,0 +1,43 @@
+{
+  "artifact": "RUN5_ATTEMPT1_PROCESS_STOP",
+  "condition": "SWAPPED_EXECUTOR_CLOUD_WITH_SOURCE_QUOTE_AUGMENTATION",
+  "classification": "PROCESS_STOP_CONDITION_NOT_ESTABLISHED",
+  "is_a_scientific_verdict": false,
+  "borrowed_verdict_forbidden": "This is neither INCONCLUSIVE nor FAILURE_A. The run never established its declared condition and wrote no collection-integrity, no manifest, no scored state. A process stop is a readiness record, never a scientific one.",
+
+  "what_executed": {
+    "turns_executed": 11,
+    "arm_A_credence_walk": ["0.55 -> 0.6000000000000001", "0.6000000000000001 -> 0.6500000000000001", "0.6500000000000001 -> 0.7000000000000002", "0.7000000000000002 -> 0.7500000000000002", "A:turn_4 FAILED, no commit"],
+    "arm_B_credence_walk": ["0.55 -> 0.6000000000000001", "0.6000000000000001 -> 0.55", "0.55 -> 0.5", "0.5 -> 0.45", "0.45 -> 0.4"],
+    "qualification": "COMPLETE_COMMITTED 0.55 -> 0.6000000000000001",
+    "failed_turn": "A:turn_4",
+    "failure_class": "UNKNOWN"
+  },
+
+  "why_the_failure_class_is_unknown": {
+    "cause": "The condition self-check aborted BEFORE the raw artifacts were written, discarding providerCalls (the recorded raw responses) and the turn records.",
+    "this_is_my_defect": true,
+    "irony": "The response recorder was added specifically so a contract failure would be diagnosable; the abort path then destroyed the payload it exists to protect.",
+    "fix_applied": "the self-check now runs AFTER the raw material is persisted, and writes RUN5_PROCESS_STOP.json instead of returning without evidence"
+  },
+
+  "why_the_self_check_fired": {
+    "reported": "0 of 11 recorded cognition requests carried the augmentation",
+    "root_cause": "WIRING ORDER: the recorder sat OUTSIDE the augmenter (countedTransport(augmented(real))), so it recorded the PRE-augmentation request.",
+    "did_the_augmentation_reach_the_wire": "YES, by construction — the augmenter is inside the recorder chain and the real transport received its output. But that is a code-level argument, NOT verified bytes, and it is recorded as such rather than asserted.",
+    "conclusion": "The self-check was RIGHT to refuse. 'The augmentation was applied' must be verifiable from recorded bytes, not inferred from the shape of the composition.",
+    "fix_applied": "recorder now sits INSIDE the augmenter, so the recorded request is byte-for-byte what the real transport receives; pinned by a regression test with a NEGATIVE control for the wrong order"
+  },
+
+  "an_observation_that_is_NOT_a_result": {
+    "note": "A:turn_4 failed in BOTH run-4 and run-5 attempt 1 — same arm, same turn index, in two independent runs with different subjects, different request bytes (augmentation) and the same executor. This is recorded as an OBSERVATION ONLY. It is not evidence of a content-dependent trigger, because run-5's failure class was not preserved and run-4's differs from the class that killed run-1/run-3. A future run with the recorder working can test it."
+  },
+
+  "why_a_fresh_attempt_is_lawful": {
+    "reason": "A process stop that never established its declared condition and produced no scientific readout is not a scientific event, so the frozen 'no retry' rule is not engaged. The precedent is the run-1 -> remediation -> run-2/3 sequence, which fixed an infrastructure defect and re-ran the SAME frozen science; the rerun amendment recorded `Production code: NONE`.",
+    "what_changed": "HARNESS ONLY: recorder/augmenter order and the abort ordering. The augmentation text, the trajectories, the scorer, the predicate, the budgets, the identities and the invalid policy are all unchanged from the frozen run-5 preregistration.",
+    "forbidden_at_attempt_2": "any change to the augmentation text, the science, the identities or the invalid policy"
+  },
+
+  "provider_calls_this_attempt": "approximately 49 (not preserved — see why_the_failure_class_is_unknown)"
+}
