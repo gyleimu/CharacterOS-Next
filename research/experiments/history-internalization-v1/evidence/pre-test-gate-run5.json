@@ -1,0 +1,320 @@
+{
+  "schema_version": "history-internalization-v1-pre-test-gate-v0",
+  "role": "PRE_TEST_GATE",
+  "model_calls": 0,
+  "read_only": true,
+  "delta_state": null,
+  "delta_min": null,
+  "delta_state_note": "δ_state is the declared distance between a trajectory's state and ITS TWIN's state. The frozen design does not specify the twin construction, so this gate does not invent one.",
+  "forbidden_reading": [
+    "this is not evidence against H1",
+    "this is not a null result",
+    "GATE_INCOMPLETE is not a pass"
+  ],
+  "mode": "FROZEN_RUN_ARTIFACTS",
+  "run_dir": "D:\\Documents\\CharacterOS-Next\\research\\north-star\\history-internalization\\phase-0\\evidence\\run-5\\attempt-2",
+  "subjects": [
+    {
+      "arm": "A",
+      "subject_id": "subject-r5b3-4187",
+      "pre": {
+        "dimensions": [
+          {
+            "dimension": "affect",
+            "value": {
+              "valence": 0,
+              "activation": 0.2
+            },
+            "rule": "§7: activation NOT pinned at 1.0",
+            "passes": true,
+            "note": "arm A PRE: activation=0.2 valence=0 — activation is inside [0,1)"
+          },
+          {
+            "dimension": "belief",
+            "value": [
+              {
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "proposition_label": "Nadia keeps the commitments she makes to me.",
+                "credence": 0.55
+              }
+            ],
+            "rule": "§7: 0 < credence < 1 for at least one item",
+            "passes": true,
+            "note": "arm A PRE: 1 item(s) prop.nadia-keeps-commitments=0.55"
+          },
+          {
+            "dimension": "relationship",
+            "value": [],
+            "rule": "§7: below the 32/32 cap (carries no contrast when empty)",
+            "passes": true,
+            "note": "arm A PRE: 0 counterpart(s), credits=[] — carries_contrast=false"
+          },
+          {
+            "dimension": "regulation",
+            "value": {
+              "energy": 1,
+              "stress": 0,
+              "arousal": 0.5,
+              "fatigue": 0
+            },
+            "rule": "§7: recorded to document that it is inert (NOT gated)",
+            "passes": true,
+            "note": "arm A PRE: {\"energy\":1,\"stress\":0,\"arousal\":0.5,\"fatigue\":0}"
+          },
+          {
+            "dimension": "personality",
+            "value": "NONE",
+            "rule": "§7: reported as an ABSENCE, never as a null result",
+            "passes": true,
+            "note": "arm A PRE: absent by construction (personality adaptation is disabled in production)"
+          },
+          {
+            "dimension": "memory",
+            "value": {
+              "logical_time": 0,
+              "state_revision": 0
+            },
+            "rule": "§7: reported, not gated",
+            "passes": true,
+            "note": "arm A PRE: logical_time=0 state_revision=0"
+          }
+        ],
+        "decision": {
+          "outcome": "GATE_INCOMPLETE",
+          "reasons": [
+            "δ_state / δ_min not yet declared (the twin construction is not specified by the frozen design)"
+          ]
+        }
+      },
+      "post": {
+        "dimensions": [
+          {
+            "dimension": "affect",
+            "value": {
+              "valence": 0.14528893889507324,
+              "activation": 0.4905778777901465
+            },
+            "rule": "§7: activation NOT pinned at 1.0",
+            "passes": true,
+            "note": "arm A POST: activation=0.4905778777901465 valence=0.14528893889507324 — activation is inside [0,1)"
+          },
+          {
+            "dimension": "belief",
+            "value": [
+              {
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "proposition_label": "Nadia keeps the commitments she makes to me.",
+                "credence": 0.8000000000000003
+              }
+            ],
+            "rule": "§7: 0 < credence < 1 for at least one item",
+            "passes": true,
+            "note": "arm A POST: 1 item(s) prop.nadia-keeps-commitments=0.8000000000000003"
+          },
+          {
+            "dimension": "relationship",
+            "value": [],
+            "rule": "§7: below the 32/32 cap (carries no contrast when empty)",
+            "passes": true,
+            "note": "arm A POST: 0 counterpart(s), credits=[] — carries_contrast=false"
+          },
+          {
+            "dimension": "regulation",
+            "value": {
+              "energy": 1,
+              "stress": 0,
+              "arousal": 0.5,
+              "fatigue": 0
+            },
+            "rule": "§7: recorded to document that it is inert (NOT gated)",
+            "passes": true,
+            "note": "arm A POST: {\"energy\":1,\"stress\":0,\"arousal\":0.5,\"fatigue\":0}"
+          },
+          {
+            "dimension": "personality",
+            "value": "NONE",
+            "rule": "§7: reported as an ABSENCE, never as a null result",
+            "passes": true,
+            "note": "arm A POST: absent by construction (personality adaptation is disabled in production)"
+          },
+          {
+            "dimension": "memory",
+            "value": {
+              "logical_time": 5,
+              "state_revision": 47
+            },
+            "rule": "§7: reported, not gated",
+            "passes": true,
+            "note": "arm A POST: logical_time=5 state_revision=47"
+          }
+        ],
+        "decision": {
+          "outcome": "GATE_INCOMPLETE",
+          "reasons": [
+            "δ_state / δ_min not yet declared (the twin construction is not specified by the frozen design)"
+          ]
+        }
+      }
+    },
+    {
+      "arm": "B",
+      "subject_id": "subject-r5b3-7260",
+      "pre": {
+        "dimensions": [
+          {
+            "dimension": "affect",
+            "value": {
+              "valence": 0,
+              "activation": 0.2
+            },
+            "rule": "§7: activation NOT pinned at 1.0",
+            "passes": true,
+            "note": "arm B PRE: activation=0.2 valence=0 — activation is inside [0,1)"
+          },
+          {
+            "dimension": "belief",
+            "value": [
+              {
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "proposition_label": "Nadia keeps the commitments she makes to me.",
+                "credence": 0.55
+              }
+            ],
+            "rule": "§7: 0 < credence < 1 for at least one item",
+            "passes": true,
+            "note": "arm B PRE: 1 item(s) prop.nadia-keeps-commitments=0.55"
+          },
+          {
+            "dimension": "relationship",
+            "value": [],
+            "rule": "§7: below the 32/32 cap (carries no contrast when empty)",
+            "passes": true,
+            "note": "arm B PRE: 0 counterpart(s), credits=[] — carries_contrast=false"
+          },
+          {
+            "dimension": "regulation",
+            "value": {
+              "energy": 1,
+              "stress": 0,
+              "arousal": 0.5,
+              "fatigue": 0
+            },
+            "rule": "§7: recorded to document that it is inert (NOT gated)",
+            "passes": true,
+            "note": "arm B PRE: {\"energy\":1,\"stress\":0,\"arousal\":0.5,\"fatigue\":0}"
+          },
+          {
+            "dimension": "personality",
+            "value": "NONE",
+            "rule": "§7: reported as an ABSENCE, never as a null result",
+            "passes": true,
+            "note": "arm B PRE: absent by construction (personality adaptation is disabled in production)"
+          },
+          {
+            "dimension": "memory",
+            "value": {
+              "logical_time": 0,
+              "state_revision": 0
+            },
+            "rule": "§7: reported, not gated",
+            "passes": true,
+            "note": "arm B PRE: logical_time=0 state_revision=0"
+          }
+        ],
+        "decision": {
+          "outcome": "GATE_INCOMPLETE",
+          "reasons": [
+            "δ_state / δ_min not yet declared (the twin construction is not specified by the frozen design)"
+          ]
+        }
+      },
+      "post": {
+        "dimensions": [
+          {
+            "dimension": "affect",
+            "value": {
+              "valence": -0.1767846399309277,
+              "activation": 0.5044848548777169
+            },
+            "rule": "§7: activation NOT pinned at 1.0",
+            "passes": true,
+            "note": "arm B POST: activation=0.5044848548777169 valence=-0.1767846399309277 — activation is inside [0,1)"
+          },
+          {
+            "dimension": "belief",
+            "value": [
+              {
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "proposition_label": "Nadia keeps the commitments she makes to me.",
+                "credence": 0.4
+              }
+            ],
+            "rule": "§7: 0 < credence < 1 for at least one item",
+            "passes": true,
+            "note": "arm B POST: 1 item(s) prop.nadia-keeps-commitments=0.4"
+          },
+          {
+            "dimension": "relationship",
+            "value": [],
+            "rule": "§7: below the 32/32 cap (carries no contrast when empty)",
+            "passes": true,
+            "note": "arm B POST: 0 counterpart(s), credits=[] — carries_contrast=false"
+          },
+          {
+            "dimension": "regulation",
+            "value": {
+              "energy": 1,
+              "stress": 0,
+              "arousal": 0.5,
+              "fatigue": 0
+            },
+            "rule": "§7: recorded to document that it is inert (NOT gated)",
+            "passes": true,
+            "note": "arm B POST: {\"energy\":1,\"stress\":0,\"arousal\":0.5,\"fatigue\":0}"
+          },
+          {
+            "dimension": "personality",
+            "value": "NONE",
+            "rule": "§7: reported as an ABSENCE, never as a null result",
+            "passes": true,
+            "note": "arm B POST: absent by construction (personality adaptation is disabled in production)"
+          },
+          {
+            "dimension": "memory",
+            "value": {
+              "logical_time": 5,
+              "state_revision": 47
+            },
+            "rule": "§7: reported, not gated",
+            "passes": true,
+            "note": "arm B POST: logical_time=5 state_revision=47"
+          }
+        ],
+        "decision": {
+          "outcome": "GATE_INCOMPLETE",
+          "reasons": [
+            "δ_state / δ_min not yet declared (the twin construction is not specified by the frozen design)"
+          ]
+        }
+      }
+    }
+  ],
+  "declared_target_dimension": "belief: prop.nadia-keeps-commitments",
+  "target_dimension_contrast": {
+    "post_A": 0.8000000000000003,
+    "post_B": 0.4,
+    "measured_abs_difference": 0.40000000000000024,
+    "note": "measured, NOT yet compared to δ_min — δ_min is undeclared, and this is a between-TRAJECTORY distance, not the §7 twin distance"
+  },
+  "outcome_per_subject": [
+    {
+      "arm": "A",
+      "post": "GATE_INCOMPLETE"
+    },
+    {
+      "arm": "B",
+      "post": "GATE_INCOMPLETE"
+    }
+  ],
+  "published_consequence": "every gated dimension is NON-DEGENERATE in both arms' post-states, so the BOUND half of §7's gate passes on these subjects — unlike the real 216-episode subject, whose affect activation is pinned at 1.0. δ_state remains GATE_INCOMPLETE because the twin is unspecified."
+}

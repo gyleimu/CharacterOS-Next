@@ -3,6 +3,15 @@
   "role": "PRE_TEST_GATE",
   "model_calls": 0,
   "read_only": true,
+  "delta_state": null,
+  "delta_min": null,
+  "delta_state_note": "δ_state is the declared distance between a trajectory's state and ITS TWIN's state. The frozen design does not specify the twin construction, so this gate does not invent one.",
+  "forbidden_reading": [
+    "this is not evidence against H1",
+    "this is not a null result",
+    "GATE_INCOMPLETE is not a pass"
+  ],
+  "mode": "LIVE_SUBJECT_DIRECTORY",
   "subject": {
     "root": "D:\\Documents\\CharacterOS-Next\\product\\sandbox\\.data\\subjects\\alice-longrun",
     "snapshot_name": "subject-alice-longrun-869f387d.snapshot.json",
@@ -34,14 +43,14 @@
       },
       "rule": "§7: activation NOT pinned at 1.0",
       "passes": false,
-      "note": "activation=1 valence=0.9933555062550344"
+      "note": "activation=1 valence=0.9933555062550344 — activation IS PINNED AT THE BOUND 1.0"
     },
     {
       "dimension": "belief",
       "value": null,
       "rule": "§7: 0 < credence < 1 for at least one item",
       "passes": null,
-      "note": "REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this program refuses to guess"
+      "note": "REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this mode refuses to guess"
     },
     {
       "dimension": "relationship",
@@ -60,7 +69,7 @@
     {
       "dimension": "personality",
       "value": "NONE",
-      "rule": "§7: reported as an absence, never as a null result",
+      "rule": "§7: reported as an ABSENCE, never as a null result",
       "passes": true,
       "note": "disabled by construction — reported as an absence"
     },
@@ -74,20 +83,12 @@
       "note": "reported, not gated"
     }
   ],
-  "delta_state": null,
-  "delta_min": null,
-  "delta_state_note": "δ_state is the declared distance between a trajectory's state and ITS TWIN's state. It needs the twin construction, which the frozen design does not specify; this gate does not invent one.",
   "outcome": "INCONCLUSIVE_BY_SATURATION",
   "reasons": [
-    "affect IS AT A BOUND: activation=1 valence=0.9933555062550344",
-    "belief NOT READABLE by this path: REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this program refuses to guess",
+    "affect IS AT A BOUND: activation=1 valence=0.9933555062550344 — activation IS PINNED AT THE BOUND 1.0",
+    "belief NOT READABLE by this path: REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this mode refuses to guess",
     "relationship NOT READABLE by this path: REQUIRES_PRODUCTION_READ_PROJECTION — same reason as belief",
-    "δ_state / δ_min not yet declared or not yet measurable (needs the declared twin construction)"
+    "δ_state / δ_min not yet declared (the twin construction is not specified by the frozen design)"
   ],
-  "meaning": "INCONCLUSIVE_BY_SATURATION is a statement about the TRAJECTORY DESIGN, not evidence against H1 (§7). The design doc's Phase-0 honesty clause requires this gate result to be published FIRST.",
-  "forbidden_reading": [
-    "this is not evidence against H1",
-    "this is not a null result",
-    "GATE_INCOMPLETE is not a pass"
-  ]
+  "meaning": "INCONCLUSIVE_BY_SATURATION is a statement about the TRAJECTORY DESIGN, not evidence against H1 (§7). The design doc's Phase-0 honesty clause requires this gate result to be published FIRST."
 }
