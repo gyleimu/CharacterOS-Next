@@ -44,7 +44,11 @@ export default defineConfig({
       // Pins the swap's three claims: prompt bytes unchanged (frozen builder reused by identity),
       // no local fallback / credential never degraded or recorded, and the science reused by
       // reference (this tree cannot mint a verdict). Also fences the cloud readiness criteria.
-      "research/north-star/history-internalization/phase-0/cloud-swap/**/*.test.ts"
+      "research/north-star/history-internalization/phase-0/cloud-swap/**/*.test.ts",
+      // Phase-0 harness-level tests (offline; stub transports, 0 model calls). Covers the additive
+      // subject-id parameterisation and, decisively, proves the leakage audit is DEAF when the map
+      // does not travel with the identities — the disarmament that parameterisation exists to prevent.
+      "research/north-star/history-internalization/phase-0/*.test.ts"
     ],
     allowOnly: false,
     // Environment tolerance ONLY (assertions are unchanged): the deterministic

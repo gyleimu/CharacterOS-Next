@@ -32,7 +32,7 @@ import {
   hashPhase0,
   renderPhase0TurnTextV0
 } from "./contract.ts";
-import { buildQualificationSourceV0 } from "./fixtures.ts";
+import { buildPhase0SourceForSubjectV0 } from "./fixtures.ts";
 
 export interface Phase0BundleV0 {
   readonly cognitionTransport: ModelTransportV0;
@@ -234,9 +234,48 @@ export function targetItemOf(state: unknown): TargetItemV0 | null {
   return beliefs?.find((item) => item.proposition_id === P0_TARGET_PROPOSITION_ID) ?? null;
 }
 
-/** Executed-request leakage scan over the REAL recorded model-visible bytes (§4). */
+/**
+ * SUBJECT-ID MAP — added for the swapped (cloud) condition, additive and default-preserving.
+ *
+ * Why it exists: the rerun amendment §19 requires FRESH subjects, so a new condition cannot reuse
+ * run-1/run-3's identities. But this harness's leakage audit maps an arm to “its own” subject id, and
+ * that mapping is what gives the audit its teeth — “the OTHER arm's id must never appear” is untestable
+ * unless the audit knows which id belongs to which arm. Substituting ids from outside the harness would
+ * have silently disarmed it, so the mapping is parameterised here and the audit stays live.
+ *
+ * The DEFAULTS are the frozen identities, so every existing caller is byte-for-byte unchanged.
+ * Session ids travel with the map because the frozen session ids embed the frozen subject ids; deriving
+ * them would have changed the frozen default.
+ */
+export interface Phase0SubjectIdsV0 {
+  readonly qualification: string;
+  readonly armA: string;
+  readonly armB: string;
+  readonly sessionQualification: string;
+  readonly sessionA: string;
+  readonly sessionB: string;
+}
+
+export const P0_FROZEN_SUBJECT_IDS_V0: Phase0SubjectIdsV0 = Object.freeze({
+  qualification: P0_QUAL_SUBJECT_ID,
+  armA: P0_SUBJECT_A_ID,
+  armB: P0_SUBJECT_B_ID,
+  sessionQualification: "session-qualification-0001",
+  sessionA: "session-k7q2-4103-0001",
+  sessionB: "session-k7q2-8267-0001"
+});
+
+/**
+ * Executed-request leakage scan over the REAL recorded model-visible bytes (§4).
+ *
+ * The frozen ids are ALWAYS forbidden, whatever map is in force: a later condition's requests must
+ * never contain an earlier condition's subject identity. The effective ids are added on top, and only
+ * a subject's own id is exempt (it is rendered by production into its own prompt and cannot be removed
+ * without a production modification).
+ */
 export function scanExecutedRequestsV0(
-  requests: Phase0BundleV0["cognitionRequests"]
+  requests: Phase0BundleV0["cognitionRequests"],
+  subjectIds: Phase0SubjectIdsV0 = P0_FROZEN_SUBJECT_IDS_V0
 ): Record<string, unknown> {
   const strictNeedles = [
     "positive arm",
@@ -247,13 +286,22 @@ export function scanExecutedRequestsV0(
     "phase-0",
     P0_SUBJECT_A_ID,
     P0_SUBJECT_B_ID,
-    P0_QUAL_SUBJECT_ID
+    P0_QUAL_SUBJECT_ID,
+    subjectIds.armA,
+    subjectIds.armB,
+    subjectIds.qualification
   ];
   const hits: { turn: string; source: string; needle: string }[] = [];
   for (const request of requests) {
     const ownArm = request.turn.split(":")[0] as string;
     const ownIds: readonly string[] =
-      ownArm === "QUALIFICATION" ? [P0_QUAL_SUBJECT_ID] : ownArm === "A" ? [P0_SUBJECT_A_ID] : ownArm === "B" ? [P0_SUBJECT_B_ID] : [];
+      ownArm === "QUALIFICATION"
+        ? [subjectIds.qualification]
+        : ownArm === "A"
+          ? [subjectIds.armA]
+          : ownArm === "B"
+            ? [subjectIds.armB]
+            : [];
     for (const [index, message] of request.messages.entries()) {
       const lower = message.content.toLowerCase();
       for (const needle of strictNeedles) {
@@ -292,14 +340,19 @@ const LAWFUL_TERMINALS = [
 /**
  * Runs the frozen schedule: qualification turn, pre-state freeze, arm A turns, arm B turns,
  * post-state freeze. One pass, no branching on observed effects, no retry, no extension.
+ *
+ * `subjectIds` defaults to the frozen identities, so the default path is the frozen path. A new
+ * condition passes a fresh map (rerun amendment §19); nothing else about the schedule changes.
  */
 export async function runPhase0ScheduleV0(input: {
   readonly bundle: Phase0BundleV0;
   readonly sourceA: SubjectStateV0;
   readonly sourceB: SubjectStateV0;
+  readonly subjectIds?: Phase0SubjectIdsV0 | undefined;
   readonly log?: (line: string) => void;
 }): Promise<Phase0ScheduleResultV0> {
   const { bundle } = input;
+  const subjectIds = input.subjectIds ?? P0_FROZEN_SUBJECT_IDS_V0;
   const log = input.log ?? ((): void => {});
   const turns: TurnRecordV0[] = [];
   const integrityFailures: string[] = [];
@@ -346,9 +399,9 @@ export async function runPhase0ScheduleV0(input: {
   // ---- STAGE 1: qualification (non-target subject, non-target evidence, NOT evidence) --------
   log("STAGE 1 — qualification");
   const qualificationRuntime = await openPhase0RuntimeV0(
-    P0_QUAL_SUBJECT_ID,
-    buildQualificationSourceV0(),
-    "session-qualification-0001",
+    subjectIds.qualification,
+    buildPhase0SourceForSubjectV0(subjectIds.qualification, "QUALIFICATION"),
+    subjectIds.sessionQualification,
     bundle
   );
   await runTurn(qualificationRuntime, "QUALIFICATION", 0, P0_QUAL_TURN_TEXT);
@@ -356,13 +409,13 @@ export async function runPhase0ScheduleV0(input: {
   const qualification = {
     purpose:
       "mechanical qualification of the production live path only: proves the turn completes, the belief semantic provider is reachable and returns a lawful envelope through the frozen runner, and per-turn call families can be counted. It is NOT scientific evidence and cannot contribute to the endpoint (different subject, different proposition, different evidence).",
-    subject_id: P0_QUAL_SUBJECT_ID,
+    subject_id: subjectIds.qualification,
     proposition_id: P0_QUAL_PROPOSITION_ID,
     turn_status: turns[0]?.status ?? null,
     terminal_kind: qualTerminal,
     provider_calls: turns[0]?.belief_adaptation?.current?.provider_calls ?? null,
     lawful_terminal_observed: (LAWFUL_TERMINALS as readonly string[]).includes(qualTerminal),
-    state_after_qualification: await capturePhase0StateV0(qualificationRuntime, P0_QUAL_SUBJECT_ID)
+    state_after_qualification: await capturePhase0StateV0(qualificationRuntime, subjectIds.qualification)
   };
   const qualificationPassed =
     turns[0]?.status === "COMPLETE" && (LAWFUL_TERMINALS as readonly string[]).includes(qualTerminal);
@@ -372,10 +425,10 @@ export async function runPhase0ScheduleV0(input: {
 
   // ---- STAGE 2: PRE-state freeze (before any scientific turn) --------------------------------
   log("STAGE 2 — pre-state freeze");
-  const runtimeA = await openPhase0RuntimeV0(P0_SUBJECT_A_ID, input.sourceA, "session-k7q2-4103-0001", bundle);
-  const runtimeB = await openPhase0RuntimeV0(P0_SUBJECT_B_ID, input.sourceB, "session-k7q2-8267-0001", bundle);
-  const preStateA = await capturePhase0StateV0(runtimeA, P0_SUBJECT_A_ID);
-  const preStateB = await capturePhase0StateV0(runtimeB, P0_SUBJECT_B_ID);
+  const runtimeA = await openPhase0RuntimeV0(subjectIds.armA, input.sourceA, subjectIds.sessionA, bundle);
+  const runtimeB = await openPhase0RuntimeV0(subjectIds.armB, input.sourceB, subjectIds.sessionB, bundle);
+  const preStateA = await capturePhase0StateV0(runtimeA, subjectIds.armA);
+  const preStateB = await capturePhase0StateV0(runtimeB, subjectIds.armB);
   const itemPreA = targetItemOf(preStateA);
   const itemPreB = targetItemOf(preStateB);
 
@@ -396,8 +449,8 @@ export async function runPhase0ScheduleV0(input: {
 
   // ---- STAGE 4: POST-state freeze ------------------------------------------------------------
   log("STAGE 4 — post-state freeze");
-  const postStateA = await capturePhase0StateV0(runtimeA, P0_SUBJECT_A_ID);
-  const postStateB = await capturePhase0StateV0(runtimeB, P0_SUBJECT_B_ID);
+  const postStateA = await capturePhase0StateV0(runtimeA, subjectIds.armA);
+  const postStateB = await capturePhase0StateV0(runtimeB, subjectIds.armB);
 
   return {
     qualification,
@@ -411,7 +464,7 @@ export async function runPhase0ScheduleV0(input: {
     itemPostB: targetItemOf(postStateB),
     turns,
     integrityFailures,
-    executedLeakage: scanExecutedRequestsV0(bundle.cognitionRequests),
+    executedLeakage: scanExecutedRequestsV0(bundle.cognitionRequests, subjectIds),
     tally: bundle.tally,
     qualificationPassed
   };
