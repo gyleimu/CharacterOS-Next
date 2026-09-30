@@ -113,6 +113,58 @@ export function declareCloudExecutorV0(config: CsExecutorConfigV0): CsExecutorDe
 }
 
 /**
+ * Wraps a transport so EVERY model-backed call of a cognition/language/appraisal family is counted and
+ * its RAW response recorded, valid or invalid.
+ *
+ * Exported so it can be verified with a stub transport at 0 model calls: the repository's law is that an
+ * instrument must be exercised offline before it is relied on for real calls. Two properties matter and
+ * both are asserted by the suite: the request reaches the inner transport UNCHANGED, and a failure is
+ * recorded AND still thrown (the wrapper never swallows).
+ */
+export function createRecordingFamilyTransportV0(input: {
+  readonly inner: ModelTransportV0;
+  readonly family: "cognition" | "language" | "appraisal";
+  readonly tally: Phase0BundleV0["tally"];
+  readonly cognitionRequests: Phase0BundleV0["cognitionRequests"];
+  readonly providerCalls: Phase0BundleV0["providerCalls"];
+  readonly currentTurn: () => string;
+}): ModelTransportV0 {
+  return {
+    complete: async (request: never) => {
+      const turn = input.currentTurn();
+      input.tally[input.family] += 1;
+      if (input.family === "cognition") {
+        const messages = (request as { messages: readonly { role: string; content: string }[] }).messages;
+        input.cognitionRequests.push({
+          turn,
+          messages: messages.map((message) => ({ role: message.role, content: message.content }))
+        });
+      }
+      try {
+        const response = await input.inner.complete(request);
+        input.providerCalls.push({
+          turn,
+          family: input.family,
+          input: request,
+          output: (response as { content?: unknown }).content ?? response,
+          error: null
+        });
+        return response;
+      } catch (error) {
+        input.providerCalls.push({
+          turn,
+          family: input.family,
+          input: request,
+          output: null,
+          error: redactCsV0(error instanceof Error ? error.message : String(error))
+        });
+        throw error;
+      }
+    }
+  } as ModelTransportV0;
+}
+
+/**
  * Builds the swapped condition's real bundle. Identical in shape and in accounting to
  * `execute.ts`'s `realBundle()`; the transports and the belief-semantic provider are the only
  * differences, and both are named in the declaration above.
@@ -126,21 +178,15 @@ export function buildCloudPhase0BundleV0(config: CsExecutorConfigV0): Phase0Bund
   const countedTransport = (
     inner: ModelTransportV0,
     family: "cognition" | "language" | "appraisal"
-  ): ModelTransportV0 => {
-    return {
-      complete: async (request: never) => {
-        tally[family] += 1;
-        if (family === "cognition") {
-          const messages = (request as { messages: readonly { role: string; content: string }[] }).messages;
-          cognitionRequests.push({
-            turn: currentTurn,
-            messages: messages.map((message) => ({ role: message.role, content: message.content }))
-          });
-        }
-        return inner.complete(request);
-      }
-    } as ModelTransportV0;
-  };
+  ): ModelTransportV0 =>
+    createRecordingFamilyTransportV0({
+      inner,
+      family,
+      tally,
+      cognitionRequests,
+      providerCalls,
+      currentTurn: () => currentTurn
+    });
 
   const beliefSemantic = new OpenAiCompatibleBeliefSemanticProviderV0({
     transport: createCloudTransportForFamilyV0(config, "belief_semantic")
@@ -158,7 +204,7 @@ export function buildCloudPhase0BundleV0(config: CsExecutorConfigV0): Phase0Bund
         const turn = currentTurn;
         try {
           const output = await beliefSemantic.propose(input);
-          providerCalls.push({ turn, input, output, error: null });
+          providerCalls.push({ turn, family: "belief_semantic", input, output, error: null });
           return output;
         } catch (error) {
           // The recorded error string is REDACTED before it can reach an artifact: a provider

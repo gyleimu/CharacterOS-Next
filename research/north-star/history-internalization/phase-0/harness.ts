@@ -41,7 +41,17 @@ export interface Phase0BundleV0 {
   readonly beliefSemanticProvider: { propose: (input: never) => Promise<unknown> };
   readonly tally: { cognition: number; language: number; appraisal: number; belief_semantic: number };
   readonly cognitionRequests: { turn: string; messages: readonly { role: string; content: string }[] }[];
-  readonly providerCalls: { turn: string; input: unknown; output: unknown; error: string | null }[];
+  readonly providerCalls: {
+    readonly turn: string;
+    /**
+     * Which family the call belongs to. Optional and additive: the pre-existing callers recorded only
+     * the belief-semantic family, so their artifacts stay byte-identical.
+     */
+    readonly family?: "cognition" | "language" | "appraisal" | "belief_semantic";
+    readonly input: unknown;
+    readonly output: unknown;
+    readonly error: string | null;
+  }[];
   readonly executorModel: string;
   readonly executorBaseUrl: string;
   readonly isStub: boolean;

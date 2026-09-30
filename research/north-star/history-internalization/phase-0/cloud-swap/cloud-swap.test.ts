@@ -29,6 +29,7 @@ import {
 } from "../../../../../packages/runtime/dist/index.js";
 
 import { P0_APPRAISAL_NUM_PREDICT, P0_COGNITION_NUM_PREDICT, P0_QUAL_SUBJECT_ID, P0_SUBJECT_A_ID, P0_SUBJECT_B_ID } from "../contract.ts";
+import type { Phase0BundleV0 } from "../harness.ts";
 import {
   CS_BELIEF_SEMANTIC_PROMPT_BUILDER,
   CS_BELIEF_SEMANTIC_PROVIDER_ERROR_CODES,
@@ -36,7 +37,7 @@ import {
   CsBeliefSemanticProviderErrorV0,
   OpenAiCompatibleBeliefSemanticProviderV0
 } from "./cloud-belief-semantic-provider.ts";
-import { CS_FAMILY_BUDGETS, buildCloudPhase0BundleV0 } from "./cloud-bundle.ts";
+import { CS_FAMILY_BUDGETS, buildCloudPhase0BundleV0, createRecordingFamilyTransportV0 } from "./cloud-bundle.ts";
 import {
   CS_CHANGED_CONDITIONS,
   CS_FAMILY_TIMEOUTS_MS,
@@ -348,7 +349,93 @@ describe("swapped condition — the science is reused, never re-implemented", ()
 });
 
 // =============================================================================================
-// 5. THE QUALIFICATION DETECTOR — IT MUST BE ABLE TO FIRE
+// 5. THE RESPONSE RECORDER — EVERY CALL, VALID OR INVALID
+// =============================================================================================
+
+describe("swapped condition — the raw-response recorder", () => {
+  const makeHarness = (script: { readonly content?: string; readonly throw?: unknown }) => {
+    const tally = { cognition: 0, language: 0, appraisal: 0, belief_semantic: 0 };
+    const cognitionRequests: Phase0BundleV0["cognitionRequests"] = [];
+    const providerCalls: Phase0BundleV0["providerCalls"] = [];
+    const seen: unknown[] = [];
+    const inner = {
+      complete: async (request: never) => {
+        seen.push(request);
+        if (script.throw !== undefined) throw script.throw;
+        return { content: script.content as string, model: "stub" };
+      }
+    } as ModelTransportV0;
+    const transport = createRecordingFamilyTransportV0({
+      inner,
+      family: "cognition",
+      tally,
+      cognitionRequests,
+      providerCalls,
+      currentTurn: () => "A:turn_4"
+    });
+    return { transport, tally, cognitionRequests, providerCalls, seen };
+  };
+
+  const request = { messages: [{ role: "system", content: "sys" }, { role: "user", content: "usr" }] };
+
+  it("records the raw response of a VALID call, attributed to its turn and family", async () => {
+    const h = makeHarness({ content: '{"kind":"PRIMARY_STANCE"}' });
+    await h.transport.complete(request as never);
+    expect(h.providerCalls).toHaveLength(1);
+    expect(h.providerCalls[0]?.turn).toBe("A:turn_4");
+    expect(h.providerCalls[0]?.family).toBe("cognition");
+    expect(h.providerCalls[0]?.output).toBe('{"kind":"PRIMARY_STANCE"}');
+    expect(h.providerCalls[0]?.error).toBeNull();
+    expect(h.tally.cognition).toBe(1);
+  });
+
+  it("records an INVALID call AND still throws — the wrapper never swallows a failure", async () => {
+    const h = makeHarness({ throw: new Error("MODEL_TRANSPORT_MODEL_HTTP_FAILURE: boom") });
+    await expect(h.transport.complete(request as never)).rejects.toThrow(/boom/);
+    // This is the case that was missing in run-1/run-3/run-4: the failing payload is now preserved.
+    expect(h.providerCalls).toHaveLength(1);
+    expect(h.providerCalls[0]?.output).toBeNull();
+    expect(h.providerCalls[0]?.error).toContain("boom");
+    expect(h.tally.cognition).toBe(1);
+  });
+
+  it("redacts a credential that appears in a recorded failure", async () => {
+    const h = makeHarness({ throw: new Error(`auth failed for sk-${"a".repeat(32)}`) });
+    await expect(h.transport.complete(request as never)).rejects.toThrow();
+    expect(h.providerCalls[0]?.error).not.toMatch(/sk-[A-Za-z0-9]{6,}/);
+    expect(h.providerCalls[0]?.error).toContain("<redacted>");
+  });
+
+  it("passes the request to the inner transport UNCHANGED (recording is not modification)", async () => {
+    const h = makeHarness({ content: "x" });
+    await h.transport.complete(request as never);
+    expect(h.seen).toHaveLength(1);
+    expect(JSON.stringify(h.seen[0])).toBe(JSON.stringify(request));
+  });
+
+  it("records the cognition request ONLY for the cognition family", async () => {
+    const tally = { cognition: 0, language: 0, appraisal: 0, belief_semantic: 0 };
+    const cognitionRequests: Phase0BundleV0["cognitionRequests"] = [];
+    const providerCalls: Phase0BundleV0["providerCalls"] = [];
+    const language = createRecordingFamilyTransportV0({
+      inner: { complete: async () => ({ content: "y", model: "stub" }) } as unknown as ModelTransportV0,
+      family: "language",
+      tally,
+      cognitionRequests,
+      providerCalls,
+      currentTurn: () => "A:turn_0"
+    });
+    await language.complete(request as never);
+    expect(cognitionRequests).toHaveLength(0);
+    expect(providerCalls).toHaveLength(1);
+    expect(providerCalls[0]?.family).toBe("language");
+    expect(tally.language).toBe(1);
+    expect(tally.cognition).toBe(0);
+  });
+});
+
+// =============================================================================================
+// 6. THE QUALIFICATION DETECTOR — IT MUST BE ABLE TO FIRE
 // =============================================================================================
 
 describe("swapped condition — the qualification detector can fire", () => {

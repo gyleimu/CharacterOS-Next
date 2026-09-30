@@ -49,17 +49,32 @@ function allEvidenceText(): string {
 
 const consumedIds = new Set(allEvidenceText().match(IDENTITY_PATTERN) ?? []);
 
+/**
+ * Run-4's OWN identities are consumed BY run-4, so once run-4 has executed they appear in the evidence
+ * as well — and they are obviously not inherited. Excluding them is what keeps the completeness check
+ * meaningful: every identity from an EARLIER run must still be forbidden.
+ *
+ * This exclusion is not cosmetic. The first version omitted it, and the check fired correctly the moment
+ * run-4's own evidence landed, demanding that run-4 forbid its own subjects.
+ */
+const RUN4_OWN_IDS = new Set([
+  P0_RUN4_SUBJECT_IDS.qualification,
+  P0_RUN4_SUBJECT_IDS.armA,
+  P0_RUN4_SUBJECT_IDS.armB
+]);
+const inheritedIds = new Set([...consumedIds].filter((id) => !RUN4_OWN_IDS.has(id)));
+
 // =============================================================================================
 // 1. COMPLETENESS — DERIVED FROM THE EVIDENCE, NOT TRUSTED
 // =============================================================================================
 
 describe("run-4 contract — the forbidden-inherited list is complete", () => {
-  it("finds a non-empty set of consumed identities in the evidence (the check is not vacuous)", () => {
-    expect(consumedIds.size).toBeGreaterThanOrEqual(10);
+  it("finds a non-empty set of previously consumed identities in the evidence (the check is not vacuous)", () => {
+    expect(inheritedIds.size).toBeGreaterThanOrEqual(10);
   });
 
-  it("lists EVERY identity that appears anywhere in the phase-0 evidence", () => {
-    const missing = [...consumedIds].filter((id) => !P0_RUN4_FORBIDDEN_INHERITED_IDS.includes(id)).sort();
+  it("lists EVERY identity consumed by an EARLIER run that appears anywhere in the phase-0 evidence", () => {
+    const missing = [...inheritedIds].filter((id) => !P0_RUN4_FORBIDDEN_INHERITED_IDS.includes(id)).sort();
     expect(missing, `identities consumed but not forbidden to run-4: ${missing.join(", ")}`).toEqual([]);
   });
 
@@ -107,12 +122,17 @@ describe("run-4 contract — the fresh identities satisfy §4", () => {
     expect(stem(P0_RUN4_SUBJECT_IDS.qualification)).not.toBe(stem(P0_RUN4_SUBJECT_IDS.armA));
   });
 
-  it("collides with NOTHING already consumed, and is not the frozen map", () => {
+  it("collides with nothing it must not, and is not the frozen map", () => {
     const fresh = [P0_RUN4_SUBJECT_IDS.qualification, P0_RUN4_SUBJECT_IDS.armA, P0_RUN4_SUBJECT_IDS.armB];
     expect(new Set(fresh).size).toBe(3);
     for (const id of fresh) {
-      expect(consumedIds.has(id), `${id} was already used`).toBe(false);
+      // NOT "absent from the evidence": run-4 has now executed, so its own identities are IN the
+      // evidence by construction. Pre-run freshness was verified against the then-existing evidence and
+      // is recorded in the preregistration; it cannot be re-derived from evidence that now contains
+      // run-4 itself. What remains checkable, and is what matters, is that run-4's ids are not
+      // forbidden to run-4 and do not collide with the frozen identities.
       expect(P0_RUN4_FORBIDDEN_INHERITED_IDS).not.toContain(id);
+      expect(inheritedIds.has(id), `${id} collides with an earlier run's identity`).toBe(false);
     }
     expect(fresh).not.toContain(P0_FROZEN_SUBJECT_IDS_V0.armA);
     expect(P0_RUN4_SUBJECT_IDS.sessionA).not.toBe(P0_FROZEN_SUBJECT_IDS_V0.sessionA);
