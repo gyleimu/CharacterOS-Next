@@ -1,0 +1,75 @@
+{
+  "levels": [
+    "HIGH",
+    "LOW",
+    "NEUTRAL"
+  ],
+  "expected_credences": {
+    "HIGH": 0.8,
+    "LOW": 0.2,
+    "NEUTRAL": 0.5
+  },
+  "actual_credences": {
+    "HIGH": 0.8,
+    "LOW": 0.2,
+    "NEUTRAL": 0.5
+  },
+  "identity_parity": {
+    "subject_id_constant": "d1-belief-sensitivity-subject",
+    "subject_ids": [
+      "undefined",
+      "undefined",
+      "undefined"
+    ],
+    "proposition_ids": [
+      "belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae",
+      "belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae",
+      "belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae"
+    ],
+    "proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "proposition_label_constant_across_arms": true,
+    "observation_ids": [
+      "observation:o-d1-p1-awaiting-inspection",
+      "observation:o-d1-p1-awaiting-inspection",
+      "observation:o-d1-p1-awaiting-inspection"
+    ],
+    "observation_refs": [
+      "observation:o-d1-p1-awaiting-inspection",
+      "observation:o-d1-p1-awaiting-inspection",
+      "observation:o-d1-p1-awaiting-inspection"
+    ],
+    "event_counts": [
+      1,
+      1,
+      1
+    ]
+  },
+  "state_hashes": {
+    "HIGH": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+    "LOW": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+    "NEUTRAL": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41"
+  },
+  "pre_observation_state_hashes": {
+    "HIGH": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+    "LOW": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+    "NEUTRAL": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a"
+  },
+  "commit_transition_ids": {
+    "HIGH": "t-obs-7c298609fcd29f8f2bbd87e76b25e559a8bc44c944a2b1ef74d0b9c6e8c86ae7",
+    "LOW": "t-obs-7c298609fcd29f8f2bbd87e76b25e559a8bc44c944a2b1ef74d0b9c6e8c86ae7",
+    "NEUTRAL": "t-obs-7c298609fcd29f8f2bbd87e76b25e559a8bc44c944a2b1ef74d0b9c6e8c86ae7"
+  },
+  "frozen_context_provenance": {
+    "canonical_proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "observation_probe_id": "D1-P1-AWAITING-INSPECTION",
+    "observation_id": "observation:o-d1-p1-awaiting-inspection",
+    "observation_text": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+    "task": null,
+    "scene_source": "the observation commit's own scene (D1 world-a1.ts:160) — not written here",
+    "state_construction_path": "production genesis materialisation + production facade observation commit (D1 frozen)",
+    "projection_path": "buildCognitiveContextProjectionV2ForExplicitV4 (production)",
+    "instrument": "buildD2StructuralReadoutRequestV0 (REV1.1b frozen contract)",
+    "authored_in_this_round": false,
+    "section_3_determination": "A0 binds NO probe family: `probe_family` appears only in the D2-B laws, and D2A_INSTRUMENT_LAWS.same_projection_path freezes the A0 stimulus as the unmodified production projection. Every literal byte of the stimulus therefore comes from an artifact frozen before this round; the round composes, it does not author. D2_A0_STATE_REQUEST_NOT_FULLY_PREREGISTERED is NOT emitted."
+  }
+}

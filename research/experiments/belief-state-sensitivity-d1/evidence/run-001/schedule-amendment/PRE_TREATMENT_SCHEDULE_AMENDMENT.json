@@ -1,0 +1,47 @@
+{
+  "amendment_kind": "PRE_TREATMENT_SCHEDULE_AMENDMENT",
+  "not_a_global_pre_data_amendment": true,
+  "neutral_calls_before_amendment": 6,
+  "high_low_calls_before_amendment": 0,
+  "treatment_outputs_seen": false,
+  "reason_for_amendment": "the conditional restart block was incorrectly serialized into the immediately executable treatment queue",
+  "amendment_trigger": "schedule integrity audit",
+  "amendment_depends_on_high_low_outcomes": false,
+  "must_not_claim_model_calls_before_amendment_zero": "6 NEUTRAL calls already exist",
+  "scope": "schedule execution semantics only",
+  "unmodified": [
+    "CAUTION proposition",
+    "HIGH/LOW/NEUTRAL",
+    "P1/P2/P3",
+    "DecisionProbeV2",
+    "Revision 3",
+    "Revision 4",
+    "noise rule",
+    "Wilson ceiling",
+    "delta_min = 0.50",
+    "r_confirm = 6",
+    "scorer",
+    "positive predicate",
+    "frame logic",
+    "state reversal",
+    "restart unlock predicate",
+    "history absence",
+    "request certification"
+  ],
+  "budget": {
+    "neutral_pilot_executed": 6,
+    "core_treatment_pending": 60,
+    "cumulative_after_core": 66,
+    "conditional_restart_if_unlocked": 12,
+    "maximum_total": 78,
+    "matches_frozen_formula": "6 + 10r = 66; restart addon 2r = 12"
+  },
+  "noise_rule_preserved": {
+    "observed_same_request_disagreement": 0,
+    "frozen_wilson_upper_bound_at_n6": 0.3903,
+    "delta_min": 0.5,
+    "pilot_rerun": false,
+    "neutral_replicates_appended": false,
+    "pilot_result_used_to_change_schedule_ordering": false
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "rows": {
+    "all_predicted_directions": {
+      "outcome": "POSITIVE",
+      "subkind": null,
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": false,
+      "must_differ": false,
+      "row_ok": true
+    },
+    "both_abstained": {
+      "outcome": "FAILURE_A",
+      "subkind": "BOTH_ABSTAINED_NO_MOVEMENT",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "a_abstained": {
+      "outcome": "FAILURE_A",
+      "subkind": "A_ABSTAINED_NO_MOVEMENT",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "b_abstained": {
+      "outcome": "FAILURE_A",
+      "subkind": "B_ABSTAINED_NO_MOVEMENT",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "a_wrong_direction": {
+      "outcome": "FAILURE_A",
+      "subkind": "WRONG_DIRECTION_A",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "b_wrong_direction": {
+      "outcome": "FAILURE_A",
+      "subkind": "WRONG_DIRECTION_B",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "both_up": {
+      "outcome": "FAILURE_A",
+      "subkind": "WRONG_DIRECTION_B",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "both_down": {
+      "outcome": "FAILURE_A",
+      "subkind": "WRONG_DIRECTION_A",
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    },
+    "integrity_failure_is_not_a_null": {
+      "outcome": "INCONCLUSIVE",
+      "subkind": null,
+      "matches_expected": true,
+      "changed_the_outcome_versus_positive_baseline": true,
+      "must_differ": true,
+      "row_ok": true
+    }
+  },
+  "every_row_ok": true,
+  "a_null_input_can_never_be_read_as_positive": true,
+  "falsifiable": true
+}

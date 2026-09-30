@@ -1,0 +1,109 @@
+{
+  "allowed_difference_classes": [
+    "/beliefs/items/0/credence",
+    "/trace_window/entries/0/state_hash_before",
+    "/trace_window/entries/0/state_hash_after",
+    "/trace_window/entries/0/trace_id"
+  ],
+  "source_of_the_allow_list": "D1 REVISION 4 (frozen before D1's treatment)",
+  "new_allowed_difference_classes_added": false,
+  "per_pair": {
+    "HIGH_vs_LOW": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_matches_revision_4_allow_list": true,
+      "unexpected_raw_paths_outside_the_frozen_allow_list": [],
+      "sentinelised_paths": [
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalized_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalized_diff_is_exactly_the_credence": true,
+      "non_belief_non_trace_state_bytes_identical": true
+    },
+    "HIGH_vs_NEUTRAL": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_matches_revision_4_allow_list": true,
+      "unexpected_raw_paths_outside_the_frozen_allow_list": [],
+      "sentinelised_paths": [
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalized_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalized_diff_is_exactly_the_credence": true,
+      "non_belief_non_trace_state_bytes_identical": true
+    },
+    "LOW_vs_NEUTRAL": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_matches_revision_4_allow_list": true,
+      "unexpected_raw_paths_outside_the_frozen_allow_list": [],
+      "sentinelised_paths": [
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalized_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalized_diff_is_exactly_the_credence": true,
+      "non_belief_non_trace_state_bytes_identical": true
+    }
+  },
+  "trace_bookkeeping_derivation_proof": {
+    "HIGH": {
+      "recorded_state_hash_before": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+      "recomputed_state_hash_before": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+      "state_hash_before_matches": true,
+      "recorded_state_hash_after": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+      "recomputed_state_hash_after": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+      "state_hash_after_matches": true,
+      "recorded_trace_id": "trace:7c410c3685d7b59ebfdf7cd39f5f878fa85a52699a6d40f49a975b24cc64b5cf",
+      "recomputed_trace_id": "trace:7c410c3685d7b59ebfdf7cd39f5f878fa85a52699a6d40f49a975b24cc64b5cf",
+      "trace_id_matches": true
+    },
+    "LOW": {
+      "recorded_state_hash_before": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+      "recomputed_state_hash_before": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+      "state_hash_before_matches": true,
+      "recorded_state_hash_after": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+      "recomputed_state_hash_after": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+      "state_hash_after_matches": true,
+      "recorded_trace_id": "trace:e0bc2cc093e2d5aace0b190e78698af326b2affbca324a7ab3dba4658bd3f362",
+      "recomputed_trace_id": "trace:e0bc2cc093e2d5aace0b190e78698af326b2affbca324a7ab3dba4658bd3f362",
+      "trace_id_matches": true
+    },
+    "NEUTRAL": {
+      "recorded_state_hash_before": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a",
+      "recomputed_state_hash_before": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a",
+      "state_hash_before_matches": true,
+      "recorded_state_hash_after": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41",
+      "recomputed_state_hash_after": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41",
+      "state_hash_after_matches": true,
+      "recorded_trace_id": "trace:c1869c9fac9fc11908a347ac31509292d2e71196bb1a8082556f619e754d1b21",
+      "recomputed_trace_id": "trace:c1869c9fac9fc11908a347ac31509292d2e71196bb1a8082556f619e754d1b21",
+      "trace_id_matches": true
+    }
+  },
+  "trace_bookkeeping_is_derived_not_assumed": true,
+  "verdict": "D2_A0_STATE_ISOLATION_HOLDS"
+}

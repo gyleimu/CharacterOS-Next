@@ -1,0 +1,84 @@
+{
+  "stage": "D3_PREREGISTRATION",
+  "model_calls": 0,
+  "section_a_subsumption": {
+    "proposed_d3a": {
+      "source": "the D3 round brief, §3",
+      "construct": "3B1 canonical stance binding",
+      "measurement_target": "the exact canonical proposition itself",
+      "prediction": "HIGH 0.80 -> SUPPORTS_CANONICAL_PRINCIPLE; LOW 0.20 -> OPPOSES_CANONICAL_PRINCIPLE",
+      "proposed_tokens": [
+        "SUPPORTS_CANONICAL_PRINCIPLE",
+        "UNCERTAIN_ABOUT_CANONICAL_PRINCIPLE",
+        "OPPOSES_CANONICAL_PRINCIPLE"
+      ]
+    },
+    "frozen_d2a0": {
+      "source": "contract-rev1-1b-a0-fixtures.ts :: D2A0_CONTRACT_TEXT and contract-rev1.ts :: D2A0_ANCHORS / D2A0_PREDICTION",
+      "contract_question_literal": "Which bucket describes the subject's stance on the proposition shown in the belief line?",
+      "measurement_target": "the proposition shown in the belief line — in the state experiment, the canonical CAUTION proposition",
+      "tokens": [
+        "ENDORSES_STRONGLY",
+        "ENDORSES_MILDLY",
+        "UNDECIDED",
+        "DOUBTS_MILDLY",
+        "DOUBTS_STRONGLY"
+      ],
+      "anchor_for_the_strongest_endorsing_bucket": "the subject treats the proposition as settled in its favour and would rely on it without reservation",
+      "anchor_for_the_strongest_doubting_bucket": "the subject treats the proposition as settled against it and would rely on its denial without reservation",
+      "directional_requirement": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+      "endorsing_set": [
+        "ENDORSES_STRONGLY",
+        "ENDORSES_MILDLY"
+      ],
+      "doubting_set": [
+        "DOUBTS_STRONGLY",
+        "DOUBTS_MILDLY"
+      ],
+      "observed_high_counts": {
+        "ENDORSES_STRONGLY": 6
+      },
+      "observed_low_counts": {
+        "DOUBTS_STRONGLY": 6
+      }
+    },
+    "equivalence_claim": {
+      "same_measurement_target": true,
+      "why": "A0 asks for the subject's stance on the proposition carried in the belief line; in the A0 state experiment that proposition is the canonical CAUTION proposition, so A0's target and D3-A's target are the same object",
+      "a0_buckets_are_stance_buckets": true,
+      "why_buckets": "A0's anchors define its extreme buckets as the subject treating the proposition as settled in its favour / against it, i.e. support / oppose of that proposition",
+      "a0_predicate_is_the_3b1_predicate": true,
+      "why_predicate": "A0's frozen directional requirement is exactly 'HIGH's modal is in the endorsing set AND LOW's modal is in the doubting set AND they differ', which is 3B1's definition with A0's bucket names",
+      "only_difference": "the proposed D3-A would use three buckets and renamed tokens instead of A0's five",
+      "outcome_already_met": true
+    },
+    "verdict": "D3_A_IS_SUBSUMED_BY_D2_A0"
+  },
+  "section_b_d3b_integrity": {
+    "contract_checks": {
+      "contract_carries_statement_a": true,
+      "contract_carries_statement_b": true,
+      "contract_defines_all_three_relation_meanings": true,
+      "contract_names_one_of_the_three_tokens_as_the_answer": false,
+      "why_that_is_false": "the contract lists the three relation names in the schema field, which every instrument must do; it never states which relation holds and never hints at the expected one",
+      "contract_mentions_a_credence": false,
+      "contract_contains_a_numeric_value": false,
+      "contract_contains_an_arm_label": false,
+      "contract_contains_an_action_token": false,
+      "the_canonical_proposition_may_appear_because_it_is_an_input": true
+    },
+    "leak_checks": {
+      "fixture_text_contains_the_canonical_proposition": false,
+      "fixture_text_contains_the_paraphrase": false,
+      "fixture_text_contains_an_a1_token": false,
+      "fixture_text_contains_the_caution_wording": false,
+      "fixtures_share_one_unrelated_proposition": true,
+      "each_token_expected_exactly_once": true,
+      "expected_map_agrees_with_fixtures": true
+    },
+    "contaminating_fields": [],
+    "leaking_fields": []
+  },
+  "design_integrity": "D3's design was triggered only by the fact that D2-A1 produced a valid null; the specific LOW 5 SUPPORTS + 1 UNCERTAIN pattern was not used to choose tokens, wording, thresholds or expected directions, and the D3-B fixtures use a synthetic workshop proposition unrelated to CAUTION",
+  "verdict": "D3_A_IS_SUBSUMED_BY_D2_A0"
+}

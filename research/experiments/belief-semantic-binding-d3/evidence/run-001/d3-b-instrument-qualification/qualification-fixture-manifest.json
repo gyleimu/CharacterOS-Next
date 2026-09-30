@@ -1,0 +1,57 @@
+{
+  "source": "belief-semantic-binding-d3/contract.ts (revision 1, unchanged at revision 2)",
+  "rewritten_at_runtime": false,
+  "fixtures": [
+    {
+      "fixture_id": "D3B-QF-A-ALIGNED",
+      "statement_a": "A clamp should always be used when gluing a joint.",
+      "statement_b": "Clamping a joint while the glue sets is always the right thing to do.",
+      "expected_relation": "SEMANTICALLY_ALIGNED"
+    },
+    {
+      "fixture_id": "D3B-QF-B-UNRELATED",
+      "statement_a": "A clamp should always be used when gluing a joint.",
+      "statement_b": "The workshop's saw blade needs sharpening this month.",
+      "expected_relation": "SEMANTICALLY_UNRELATED"
+    },
+    {
+      "fixture_id": "D3B-QF-C-OPPOSED",
+      "statement_a": "A clamp should always be used when gluing a joint.",
+      "statement_b": "Clamping a joint while the glue sets does more harm than good.",
+      "expected_relation": "SEMANTICALLY_OPPOSED"
+    }
+  ],
+  "expected_relation_map": {
+    "D3B-QF-A-ALIGNED": "SEMANTICALLY_ALIGNED",
+    "D3B-QF-B-UNRELATED": "SEMANTICALLY_UNRELATED",
+    "D3B-QF-C-OPPOSED": "SEMANTICALLY_OPPOSED"
+  },
+  "qualification_rule": {
+    "fixtures": 3,
+    "replicates_per_fixture": 3,
+    "planned_calls": 9,
+    "rule": "each fixture's modal relation must equal the fixture's pre-registered expected relation, exactly",
+    "invalid_rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+    "counts_as_invalid": [
+      "transport failure",
+      "timeout classified as a failed provider attempt",
+      "malformed output",
+      "parser invalid",
+      "relation token outside the frozen D3-B vocabulary"
+    ],
+    "denominator": "always the full nine planned trials",
+    "retry_allowed": false,
+    "replacement_allowed": false,
+    "extra_call_allowed": false,
+    "invalid_may_be_deleted": false,
+    "verdict_if_met": "D3_B_INSTRUMENT_QUALIFIED",
+    "verdict_if_not": "D3_B_INSTRUMENT_UNQUALIFIED",
+    "tolerance_or_similarity_substitution": false
+  },
+  "states_blind": {
+    "uses_characteros_canonical_state": false,
+    "contains_treatment": false,
+    "contains_caution": false,
+    "contains_the_target_paraphrase": false
+  }
+}

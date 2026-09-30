@@ -1,0 +1,30 @@
+{
+  "artifact": "CURRENT_SCHEMA_SEMANTIC_COVERAGE_AUDIT",
+  "question": "does the CURRENT structured-output schema express the failed semantic invariant?",
+  "current_request_does_carry_a_schema": {
+    "answer": true,
+    "evidence": "conversation-cognition-provider-v8.ts:635 sets structured_output = { kind: JSON_SCHEMA, schema: CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA }",
+    "transport_maps_it": "ollama-native-cognition-transport.ts:238-240 maps structured_output.schema to the provider's native `format`",
+    "runtime_passes_it_through": "interactive-subject-runtime-v0.ts:265-267"
+  },
+  "schema_coverage": {
+    "response_semantics": "a oneOf over response-mode atoms, including a bare { kind: PRIMARY_STANCE } branch",
+    "subjective_selection": "a oneOf over { kind: NO_SUBJECTIVE_SELECTION } and { kind: SUBJECTIVE_SELECTION, stance, subjective_rationale }",
+    "cross_field_dependency_present": false,
+    "conditional_keywords_present_in_the_production_schema": {
+      "oneOf": true,
+      "anyOf": true,
+      "allOf": false,
+      "if_then_else": false,
+      "not": false,
+      "dependentSchemas": false
+    },
+    "conclusion": "the schema constrains each field INDEPENDENTLY. The combination (PRIMARY_STANCE, NO_SUBJECTIVE_SELECTION) is admitted by the schema and rejected by the authoritative validator, which is precisely the reproduced failure class."
+  },
+  "case_determination": {
+    "CASE_A_current_schema_already_expresses_the_invariant": false,
+    "CASE_A_reason": "refuted by direct reading: there is no cross-field construct anywhere in the schema, and the failing combination is a legal member of its accepted set",
+    "schema_present_but_not_enforced": "NOT the finding — a schema IS present and IS mapped to the provider's format; it simply does not cover this rule",
+    "CASE_B_or_C_requires_the_next_question": "can the required cross-field conditional be expressed in a construct the provider's grammar compiler actually honours?"
+  }
+}

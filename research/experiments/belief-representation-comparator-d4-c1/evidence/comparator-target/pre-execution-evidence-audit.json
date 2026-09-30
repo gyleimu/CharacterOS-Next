@@ -1,0 +1,13 @@
+{
+  "c0a_target_dataset_hash": "sha256:8a6ca2c850aef8886eef9b4592ec1a58e348e717f9c93e0186306ae38ebfe691",
+  "c0a_target_dataset_unchanged": true,
+  "c1_revision_1_manifest_unchanged": true,
+  "c1_revision_1_1_manifest_unchanged": true,
+  "record_stability_dataset_hash": "sha256:11528ddefcb6e95ae1c1b80c2b9184e7f669a7d06b19ed62f78b19d51256b90e",
+  "record_stability_dataset_unchanged": true,
+  "record_stability_verdict_still_pass": true,
+  "frozen_schedule_present": true,
+  "c1_target_outputs_currently": 0,
+  "production_packages_changed_by_this_round": false,
+  "verdict": "D4_C1_CLOSURE_GATE_HOLDS"
+}

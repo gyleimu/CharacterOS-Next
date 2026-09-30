@@ -1,0 +1,206 @@
+{
+  "version": "belief-semantic-binding-localization-d3-rev4",
+  "incompatibility": {
+    "verdict": "D3_B_NOISE_EXTENSION_INCOMPATIBLE_WITH_UNANIMITY_SCORER",
+    "discovered_at_noise_calls": 0,
+    "discovered_at_target_calls": 0,
+    "the_two_rules_that_cannot_both_stand": [
+      "noise modal_count 5 -> r_confirm_B = 14, i.e. buy more trials when the endpoint is noisy",
+      "target positive requires every one of the r_confirm_B trials to return the expected relation"
+    ],
+    "why_they_conflict": "under unanimity, increasing r does not absorb trial-level variability; it strictly increases the number of agreements required. The extension branch can never turn a noisy endpoint into a positive",
+    "worked_example": "six calls with five expected and one dissent already fail a six-trial unanimity target, and fourteen trials demanding fourteen agreements fail harder",
+    "classification": "scorer-compatibility correction",
+    "is_outcome_based_tuning": false,
+    "no_d3_b_noise_or_target_output_existed": true
+  },
+  "target_preserved": {
+    "target_pair": {
+      "statement_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+      "statement_b": "the view that a finding depending mainly on secondhand report is to be held with reserve"
+    },
+    "target_pair_changed": false,
+    "expected_target_relation": "SEMANTICALLY_ALIGNED",
+    "expected_relation_changed": false,
+    "target_request_changed": false,
+    "target_scorer_changed": false,
+    "unanimity_positive_criterion_unchanged": true,
+    "target_positive_requires": "planned target trials all legal AND every relation token equals the expected relation",
+    "any_legal_dissent_yields": "the frozen valid NULL",
+    "any_invalid_or_integrity_failure_yields": "the frozen INCONCLUSIVE",
+    "target_scientific_meaning_unchanged": true,
+    "vocabulary_changed": false,
+    "anchors_changed": false,
+    "transformer_changed": false,
+    "qualification_result_changed": false,
+    "d1_evidence_changed": false,
+    "d2_evidence_changed": false
+  },
+  "stability_gate": {
+    "rule": "the noise pilot is a STABILITY GATE: it never enlarges the target sample",
+    "planned_calls": 6,
+    "one_request_six_times": true,
+    "pass": {
+      "condition": "all six trials legal AND the unique modal token's count equals 6 (all six agree with each other)",
+      "verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+      "r_confirm_B": 6,
+      "target_authorised": true
+    },
+    "self_noise_inconclusive": {
+      "condition": "all six trials legal BUT the unique modal count is 5 or lower, including any unique-modal tie",
+      "verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+      "r_confirm_B": null,
+      "target_authorised": false
+    },
+    "invalid_inconclusive": {
+      "condition": "any invalid trial",
+      "verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+      "r_confirm_B": null,
+      "target_authorised": false,
+      "invalid_policy": "the frozen invalid policy applies unchanged"
+    },
+    "the_gate_is_on_agreement_not_correctness": true,
+    "why": "the six calls must agree with EACH OTHER; the gate deliberately does NOT require the modal token to equal the fixture's pre-registered expected relation, because agreement is a property of the executor while correctness is a property of the fixture — the D2 neutral pilot established exactly this distinction",
+    "extra_pilot_replicates_allowed": false,
+    "conversion_to_r_14_allowed": false,
+    "r_values_reachable": [
+      6
+    ],
+    "unique_modal_definition_unchanged": true,
+    "tie_semantics_unchanged": "D3_B_INCONCLUSIVE_BY_MODAL_TIE_UNDEFINED"
+  },
+  "superseded_branch": {
+    "retired": true,
+    "retired_prospectively": true,
+    "retired_at": "SUPERSEDED_BEFORE_ANY_D3_B_NOISE_OR_TARGET_OUTPUT",
+    "rule": "modal_count 5 -> r_confirm_B = 14",
+    "source": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "history_deleted": false,
+    "why_retired": "it suits a modal-based confirmation criterion, where extra trials can outvote noise, and is incompatible with the frozen unanimity target scorer",
+    "still_reachable_by_the_pilot": false,
+    "the_historical_classifier_is_retained_but_must_not_be_used": "classifyD3BNoisePilotV0",
+    "the_gate_classifier_is_the_authoritative_one": "classifyD3BNoiseStabilityV0"
+  },
+  "budget": {
+    "qualification_completed": 9,
+    "noise_planned": 6,
+    "target_planned_if_the_gate_passes": 6,
+    "complete_success_path": 21,
+    "absolute_maximum": 21,
+    "if_the_gate_fails_total_stops_at": 15,
+    "target_calls_after_a_failed_gate": 0,
+    "superseded_maximum": 29,
+    "superseded_maximum_source": 29,
+    "superseded": true,
+    "d3a_calls": 0,
+    "d2b_calls": 0,
+    "old_29_was_superseded_by_revision_4": true
+  },
+  "noise_request": {
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "fixture_selection_changed": false,
+    "fixture_may_be_reselected": false,
+    "fixture_may_be_reselected_from_qualification_outputs": false,
+    "request_identity_unchanged_from_revision_3": true,
+    "request_identity": {
+      "fixture_id": "D3B-QF-A-ALIGNED",
+      "fixture_id_under_the_lexicographic_rule": "D3B-QF-A-ALIGNED",
+      "the_two_rules_agree": true,
+      "request_bytes_source": "the exact model-facing request frozen during D3-B qualification for this fixture, reused verbatim",
+      "re_render_at_pilot_time": false,
+      "may_not_modify_the_statement_pair": true,
+      "must_not_contain_the_canonical_caution": true,
+      "must_not_contain_the_target_paraphrase": true,
+      "must_not_be_the_target_request": true,
+      "must_not_contain_any_characteros_state": true,
+      "hash_must_equal_the_qualification_request_hash_for_this_fixture": true,
+      "hash_source": "the D3-B qualification evidence's fixture request artifact"
+    },
+    "frozen_request_hash_source": "the D3-B qualification evidence's fixture request artifact",
+    "frozen_request_hash_must_equal": true
+  },
+  "prior_exposure": {
+    "same_request_was_called_during_qualification": true,
+    "prior_call_count": 3,
+    "prior_calls_belong_exclusively_to": "D3-B qualification evidence",
+    "prior_calls_included_in_the_noise_pilot_dataset": false,
+    "prior_calls_influence_the_six_call_classification": false,
+    "prior_calls_are_target_evidence": false,
+    "prior_calls_occurred_before": "the revision 3 / revision 4 noise batch",
+    "the_new_six_calls_are": "a prospectively frozen independent calibration batch",
+    "limitation_stated_plainly": "the selected calibration request HAS already been observed during qualification; it must not be described as a never-before-seen calibration stimulus",
+    "what_this_does_not_undermine": "the gate reads agreement among the six new calls, and prior exposure cannot make six identical answers more or less agreeing than they are"
+  },
+  "target_not_executed": true,
+  "target_calls": 0,
+  "revision_3_manifest_hash_preserved": "sha256:07e6a52a8eec4ec39f8bfd19008db49a791255463f96b499fbb0973a435dfad2",
+  "tests": {
+    "gate_cases": [
+      {
+        "case": "six_identical",
+        "verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+        "r_confirm_B": 6,
+        "target_authorised": true,
+        "modal_count": 6
+      },
+      {
+        "case": "five_plus_one_legal",
+        "verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "r_confirm_B": null,
+        "target_authorised": false,
+        "modal_count": 5
+      },
+      {
+        "case": "four_plus_two",
+        "verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "r_confirm_B": null,
+        "target_authorised": false,
+        "modal_count": 4
+      },
+      {
+        "case": "three_three_tie",
+        "verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "r_confirm_B": null,
+        "target_authorised": false,
+        "modal_count": 3
+      },
+      {
+        "case": "one_invalid",
+        "verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "r_confirm_B": null,
+        "target_authorised": false,
+        "modal_count": null
+      },
+      {
+        "case": "six_invalid",
+        "verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "r_confirm_B": null,
+        "target_authorised": false,
+        "modal_count": null
+      }
+    ],
+    "any_path_yields_r_14": false,
+    "only_six_identical_authorises_the_target": true,
+    "five_plus_one_is_inconclusive": true,
+    "tie_is_inconclusive": true,
+    "invalid_is_invalid_inconclusive": true,
+    "r_values_reachable": [
+      6
+    ],
+    "target_unanimity_unchanged": true,
+    "superseded_branch_retired_prospectively": true,
+    "budget_absolute_maximum": 21,
+    "prior_qualification_calls_on_the_same_request": 3,
+    "target_calls": 0,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:b5f962f03ce6e33a8c0f8c8ce7f976a67c925bcb46d7033ee41525af47d49e6f"
+}

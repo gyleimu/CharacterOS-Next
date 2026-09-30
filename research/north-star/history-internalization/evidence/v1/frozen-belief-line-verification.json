@@ -1,0 +1,80 @@
+{
+  "frozen": [
+    {
+      "label": "D1 core-treatment dataset (D1 convention)",
+      "path": "research/experiments/belief-state-sensitivity-d1/evidence/run-001/core-treatment/core-treatment-dataset.json",
+      "recorded": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908",
+      "matches": true
+    },
+    {
+      "label": "D2-A0 state dataset",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a0-state-experiment/a0-state-dataset.json",
+      "recorded": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+      "matches": true
+    },
+    {
+      "label": "D2-A1 state dataset",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a1-state-experiment/a1-state-dataset.json",
+      "recorded": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+      "matches": true
+    },
+    {
+      "label": "D3-B target dataset",
+      "path": "research/experiments/belief-semantic-binding-d3/evidence/run-001/d3-b-target/target-dataset.json",
+      "recorded": "sha256:8fee6b2655db663811f9ba0e766f47f5e9968fe5bf7c095f5757f7887dd5bf54",
+      "matches": true
+    },
+    {
+      "label": "D4-C0a target dataset",
+      "path": "research/experiments/belief-cross-expression-d4/evidence/d4-c0a-target/target-dataset.json",
+      "recorded": "sha256:8a6ca2c850aef8886eef9b4592ec1a58e348e717f9c93e0186306ae38ebfe691",
+      "matches": true
+    },
+    {
+      "label": "D4-C1 comparator dataset",
+      "path": "research/experiments/belief-representation-comparator-d4-c1/evidence/comparator-target/comparator-target-dataset.json",
+      "recorded": "sha256:a388a1bc45d57f33995b3266eaff35750632a17cc0493208a24f4ce1fa3624f0",
+      "matches": true
+    }
+  ],
+  "beliefLine": {
+    "D1": {
+      "verdict": "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED",
+      "collection": "D1_CORE_TREATMENT_COMPLETED",
+      "dataset": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908"
+    },
+    "D2_A0": {
+      "verdict": "CANONICAL_PROPOSITION_STANCE_BINDING_ESTABLISHED",
+      "dataset": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287"
+    },
+    "D2_A1": {
+      "verdict": "CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED_ON_PREREGISTERED_PARAPHRASE",
+      "dataset": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+      "class": "VALID_NULL"
+    },
+    "D3_B": {
+      "verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "dataset": "sha256:8fee6b2655db663811f9ba0e766f47f5e9968fe5bf7c095f5757f7887dd5bf54",
+      "evidence_class": "EXECUTOR_STATE_BLIND_CAPABILITY"
+    },
+    "D4_C0a": {
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "dataset": "sha256:8a6ca2c850aef8886eef9b4592ec1a58e348e717f9c93e0186306ae38ebfe691"
+    },
+    "D4_C1": {
+      "verdict": "CHARACTEROS_BELIEF_RECORD_SUPPORTS_STATE_BLIND_CROSS_EXPRESSION_COMPOSITION",
+      "dataset": "sha256:a388a1bc45d57f33995b3266eaff35750632a17cc0493208a24f4ce1fa3624f0",
+      "four_cells": "6/6 in the predicted direction in all four cells",
+      "consequence": "H_REPRESENTATION_FORM: SUBSTANTIALLY_WEAKENED"
+    },
+    "closure_verdicts": [
+      "BELIEF_CAUSAL_PATH_D1_D2_D3_EVIDENCE_FROZEN",
+      "LINK_3B_LOCALIZATION_COMPLETE",
+      "LINK_4_REMAINS_LOCKED",
+      "NO_NEW_SCIENTIFIC_CLAIM_ADDED"
+    ],
+    "closure_integrity": "ALL_RECOMPUTED_HASHES_MATCH"
+  },
+  "all_reproduce": true,
+  "model_calls": 0
+}

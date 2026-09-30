@@ -1,0 +1,29 @@
+{
+  "diffs": {
+    "HIGH_vs_LOW": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "HIGH_vs_NEUTRAL": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "LOW_vs_NEUTRAL": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ]
+  },
+  "frozen_expected_paths": [
+    "/beliefs/items/0/credence",
+    "/trace_window/entries/0/state_hash_before",
+    "/trace_window/entries/0/state_hash_after",
+    "/trace_window/entries/0/trace_id"
+  ],
+  "high_vs_low_exact": true
+}

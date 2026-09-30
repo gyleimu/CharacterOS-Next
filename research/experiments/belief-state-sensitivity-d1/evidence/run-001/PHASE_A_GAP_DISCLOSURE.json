@@ -1,0 +1,50 @@
+{
+  "record": "D1_RUN_001_PHASE_A_VERDICT_WITH_DISCLOSED_GAP",
+  "run": "BELIEF_STATE_SENSITIVITY_D1_RUN_001",
+  "model_calls_made": 0,
+  "treatment_calls_made": 0,
+
+  "phase_a_passed": true,
+  "phase_a_verdict": "D1_PHASE_A_READY",
+  "what_phase_a_actually_validated": [
+    "the base subject is production-authored via createInteractiveSubjectSeedV0 (the product's own entry point), with ONLY the belief container authored",
+    "the proposition identity is production-derived (deriveBeliefPropositionKeyV0 -> deriveBeliefPropositionId) and is SUBJECT-SCOPED, so HIGH/LOW/NEUTRAL necessarily share one proposition_id",
+    "HIGH 0.80 / LOW 0.20 / NEUTRAL 0.50 all materialise through materializeSubjectStateV4V0 with production validation",
+    "state isolation: the HIGH-vs-LOW canonical deep diff yields EXACTLY ONE differing path — /beliefs/items/0/credence",
+    "state separation: 0.60; stances +0.60 / 0 / -0.60; all three levels interior; proposition_id and label identical across levels",
+    "the production V2 projection carries the belief line",
+    "lexical audit PASS: no decision token, no arm metadata, no shared 6-gram between the belief block and the frozen contract",
+    "history absence PASS once matching uses WORD BOUNDARIES (the earlier failure was the substring 'formation' inside 'information', a production noun, not a leak)",
+    "the declared arm-dependent byte set after removing the belief block is EXACTLY ONE line: [projection_hash], the content-address of that arm's own projection; the other 51 of 52 lines are byte-identical across levels",
+    "instrument identity: the request uses the qualified DecisionProbeV2 contract hash; no D1-specific instrument was created"
+  ],
+
+  "DISCLOSED_GAP_found_before_any_call": {
+    "severity": "BLOCKING for Phase B and treatment",
+    "symptom": "the built D1 request renders `[current observation] (none)` and `[context] scene=\"idle\" task=(none)`",
+    "meaning": "the P1 observation text is NOT in the request",
+    "why": "buildD1RequestV0 materialises a genesis state and projects it directly; it never commits the probe observation through the production observation path",
+    "consequence": "the Phase A lexical and history-absence audits validated the STATE CHANNEL, not the full probe request. They do not yet certify the request that would be sent.",
+    "this_is_the_same_defect_class_as_D0Q_RUN_001": true,
+    "caught_before_spending_calls": true,
+    "secondary_defect": "phase-b-pilot.ts passed an already-contract-appended request to runV2Trial as if it were the production request, so the frozen V2 probe reported schema_substituted=false; the pilot must instead build a PRODUCTION request (no D1 contract, production V8 schema) and let the frozen probe apply the contract and substitute the schema",
+    "required_fix": "add the production observation commit to the D1 request builder, reusing the already-verified pattern from research/experiments/decision-probe-v0/observation-binding.ts:124 (observationInput -> buildContextDelta -> buildObservationProposal -> facade.reserveAndRoute -> facade.commitReserved), setting scene = the frozen P1 observation text and task = null; then re-run the Phase A lexical and history-absence gates against the FULL request, and only then proceed to Phase B",
+    "no_frozen_verdict_is_claimed_for_this_gap": true
+  },
+
+  "pilot_status": "NOT_RUN — the six pilot calls were attempted once, failed at the pre-call fidelity check, and NO model call was transmitted (runV2Trial throws before transport.complete)",
+  "model_calls_actually_transmitted": 0,
+
+  "required_next_step": [
+    "1. extend the D1 request builder with the production observation commit (P1 text as the current observation)",
+    "2. re-run the Phase A lexical + history-absence gates on the FULL request and re-freeze the Phase A artifacts",
+    "3. rerun phase-b-pilot.ts with a true production request passed to the frozen V2 probe",
+    "4. derive r_confirm mechanically, freeze the actual treatment schedule, and STOP"
+  ],
+
+  "standing_states": {
+    "d1": "NOT_EXECUTED",
+    "cross_transport_replication": "PENDING",
+    "history_internalization": "NOT_TESTED"
+  }
+}

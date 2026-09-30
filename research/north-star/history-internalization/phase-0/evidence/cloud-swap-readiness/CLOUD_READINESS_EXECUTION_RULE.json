@@ -1,0 +1,15 @@
+{
+  "planned": 3,
+  "planned_equals_actual": true,
+  "run_all_planned_probes_regardless_of_intermediate_outcomes": true,
+  "forbidden": [
+    "stopping early and reporting a different N",
+    "running extra probes until three succeed",
+    "raising the timeout",
+    "lowering max_tokens",
+    "swapping the provider or model",
+    "changing generation settings",
+    "retrying a failed probe (a retry would change what N means)"
+  ],
+  "on_any_failure": "the gate is FAIL and the run stops after the planned probes are done"
+}

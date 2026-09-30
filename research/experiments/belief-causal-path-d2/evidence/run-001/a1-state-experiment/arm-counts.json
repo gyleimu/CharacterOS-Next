@@ -1,0 +1,15 @@
+{
+  "counts_source": "the frozen a1-state-dataset.json bytes, re-read from disk",
+  "high_counts": {
+    "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+    "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+  },
+  "low_counts": {
+    "SUPPORTS_PARAPHRASED_PRINCIPLE": 5,
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 1,
+    "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+  },
+  "invalid_count": 0,
+  "invalid_trials_are_not_a_modal_category": true
+}

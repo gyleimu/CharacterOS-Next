@@ -1,0 +1,80 @@
+{
+  "normalisation_used": "D1 REVISION 3 normalizeArmSpecificBytes — the two already-frozen classes only",
+  "new_normalisation_exception_added": false,
+  "per_arm_normalised": {
+    "HIGH": {
+      "hash": "sha256:ae07d077d3b25f7e74d081f0b92cb4fd551f3eabda8af6545c2d119f29e0dccd",
+      "bytes": 19519,
+      "replacements": [
+        1,
+        1
+      ]
+    },
+    "NEUTRAL": {
+      "hash": "sha256:ae07d077d3b25f7e74d081f0b92cb4fd551f3eabda8af6545c2d119f29e0dccd",
+      "bytes": 19519,
+      "replacements": [
+        1,
+        1
+      ]
+    },
+    "LOW": {
+      "hash": "sha256:ae07d077d3b25f7e74d081f0b92cb4fd551f3eabda8af6545c2d119f29e0dccd",
+      "bytes": 19519,
+      "replacements": [
+        1,
+        1
+      ]
+    }
+  },
+  "raw_model_facing_differences": {
+    "HIGH_vs_NEUTRAL": {
+      "system_lines": [],
+      "user_lines": [
+        {
+          "line": 21,
+          "first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+          "second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.5}"
+        },
+        {
+          "line": 46,
+          "first": "[projection_hash] sha256:bbd2f161f2f0754af1846b99233293998f173c5ab899b187384e4368cef2621f",
+          "second": "[projection_hash] sha256:f5126707e97c637330e7fe25a6f84f72bed678945d7aa0c88199da59c7ca8210"
+        }
+      ]
+    },
+    "HIGH_vs_LOW": {
+      "system_lines": [],
+      "user_lines": [
+        {
+          "line": 21,
+          "first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+          "second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}"
+        },
+        {
+          "line": 46,
+          "first": "[projection_hash] sha256:bbd2f161f2f0754af1846b99233293998f173c5ab899b187384e4368cef2621f",
+          "second": "[projection_hash] sha256:00e3f8a3bace81f80a9a1c5ecd51bf70dfda46a57d59e5b0c14bd0ceb02d05f1"
+        }
+      ]
+    },
+    "NEUTRAL_vs_LOW": {
+      "system_lines": [],
+      "user_lines": [
+        {
+          "line": 21,
+          "first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.5}",
+          "second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}"
+        },
+        {
+          "line": 46,
+          "first": "[projection_hash] sha256:f5126707e97c637330e7fe25a6f84f72bed678945d7aa0c88199da59c7ca8210",
+          "second": "[projection_hash] sha256:00e3f8a3bace81f80a9a1c5ecd51bf70dfda46a57d59e5b0c14bd0ceb02d05f1"
+        }
+      ]
+    }
+  },
+  "distinct_normalised_forms": 1,
+  "normalize_HIGH_equals_normalize_NEUTRAL_equals_normalize_LOW": true,
+  "verdict": "D2_A1_CROSS_ARM_REQUEST_ISOLATION_HOLDS"
+}

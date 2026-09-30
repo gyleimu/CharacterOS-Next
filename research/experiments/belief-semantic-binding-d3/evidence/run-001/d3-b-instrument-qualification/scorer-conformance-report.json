@@ -1,0 +1,43 @@
+{
+  "scorers": [
+    "scoreD3BQualificationV0",
+    "classifyD3BNoisePilotV0",
+    "scoreD3BTargetV0"
+  ],
+  "called_not_reimplemented": true,
+  "synthetic_checks": {
+    "qualification_perfect_qualifies": true,
+    "qualification_one_invalid_fails": true,
+    "qualification_all_same_fails": true,
+    "noise_six_maps_to_six": true,
+    "noise_five_maps_to_fourteen": true,
+    "noise_four_stops": true,
+    "noise_tie_is_undefined": true,
+    "noise_one_invalid_is_inconclusive": true,
+    "noise_all_invalid_is_inconclusive": true,
+    "target_perfect_is_positive": true,
+    "target_one_off_is_null_not_positive": true,
+    "target_invalid_is_inconclusive_not_null": true,
+    "target_integrity_failure_is_inconclusive": true,
+    "no_result_reopens_link_4": true,
+    "target_positive_carries_the_frozen_combined_statement": true
+  },
+  "observations": {
+    "qualification_perfect": "D3_B_INSTRUMENT_QUALIFIED",
+    "qualification_one_invalid": "D3_B_INSTRUMENT_UNQUALIFIED",
+    "noise_six_five_four": [
+      6,
+      14,
+      null
+    ],
+    "noise_tie": "D3_B_INCONCLUSIVE_BY_MODAL_TIE_UNDEFINED",
+    "noise_all_invalid_modal_count": null,
+    "target_perfect": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+    "unique_modal_example": {
+      "modal": null,
+      "modal_count": 3,
+      "tie": true
+    }
+  },
+  "verdict": "D3_B_SCORERS_CONFORMANT"
+}

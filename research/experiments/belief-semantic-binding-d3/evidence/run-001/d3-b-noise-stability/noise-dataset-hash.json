@@ -1,0 +1,6 @@
+{
+  "D3_B_NOISE_DATASET_SHA256": "sha256:493156e3edc2bc4610337f728192833f71c6e5df542bbdbf4e7922a0c51246e3",
+  "frozen_before_classification": true,
+  "trials": 6,
+  "planned_denominator": 6
+}

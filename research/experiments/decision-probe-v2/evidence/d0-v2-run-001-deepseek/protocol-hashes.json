@@ -1,0 +1,9 @@
+{
+  "protocol_version": "decision-probe-v2",
+  "semantic_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+  "format_only_contract_hash": "sha256:a4a56d69c00f57898c3066913cb0cde5df0f9e7b15b2428202ab2c0f38e46913",
+  "token_remap_contract_hash": "sha256:5979e6948986f5146616c22e19baba3d6426ff71f0d3c6988891269152603988",
+  "protocol_hash": "sha256:87764dfe2608f8ef2be4284790dd349715c4fd15745148021cb09cd0faf37966",
+  "c3_manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157",
+  "primary_contract_is_v1_contract_byte_identical": true
+}

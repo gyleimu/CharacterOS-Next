@@ -1,0 +1,91 @@
+{
+  "artifact": "CONSTRAINED_OUTPUT_FEASIBILITY_VERDICT_FINAL",
+  "supersedes": "CONSTRAINED_OUTPUT_FEASIBILITY_VERDICT.json (whose ONE_OF reading was void — see 'corrections_made_this_round')",
+  "provider_calls_this_round": 4,
+  "scientific_provider_calls_this_round": 0,
+
+  "CASE": "C_CONSTRAINT_CANNOT_FAITHFULLY_ENFORCE_THE_REPRODUCED_FAILURE_CLASS",
+  "tokens": [
+    "CONSTRAINED_OUTPUT_CANNOT_FAITHFULLY_ENFORCE_REPRODUCED_FAILURE_CLASS",
+    "EXECUTOR_SWAP_DECISION_REQUIRED"
+  ],
+
+  "the_question": "can the required cross-field conditional (PRIMARY_STANCE => SELECTIVE stance) be expressed in a construct this provider's constrained decoding ACTUALLY HONOURS?",
+
+  "what_was_established_locally_at_zero_provider_calls": {
+    "IF_THEN_encoding": {
+      "forbids_the_targeted_combination": true,
+      "accepted_set_matches_the_intended_acceptor": true,
+      "status": "CONTRACT_EQUIVALENT — a valid instrument"
+    },
+    "ONE_OF_encoding_as_first_sent": {
+      "forbids_the_targeted_combination": false,
+      "status": "INVALID INSTRUMENT — it admitted the very combination it was meant to forbid, so its provider result could not distinguish ENFORCED from IGNORED"
+    },
+    "ONE_OF_encoding_corrected": {
+      "forbids_the_targeted_combination": true,
+      "accepted_set_matches_the_intended_acceptor": false,
+      "status": "OVER-CONSTRAINING — it additionally rejects legitimate outputs such as (FACT, SELECTED) and (ACT, SELECTED), which the authoritative validator ACCEPTS",
+      "why_that_disqualifies_the_oneOf_route_as_a_free_fallback":
+        "a faithful oneOf encoding would have to enumerate EVERY legal combination of all response modes against all semantic completeness rules, not just the one rule at issue. That is a rewrite of the production schema, and its acceptance-set equivalence could not be established here."
+    }
+  },
+
+  "what_the_provider_did": {
+    "IF_THEN": {
+      "schema_accepted_by_the_provider": true,
+      "forbidden_combination_emitted": true,
+      "probes": 2,
+      "both_probes_emitted_it": true,
+      "reading": "the provider ACCEPTS an if/then schema and SILENTLY IGNORES the conditional. The constraint did not constrain."
+    },
+    "ONE_OF_as_first_sent": {
+      "reading": "VOID — the instrument did not forbid the target, so its result carries no information about the provider"
+    }
+  },
+
+  "verdict_reasoning": [
+    "the only locally-verified contract-equivalent encoding of the invariant uses if/then",
+    "this provider accepts if/then schemas and does not enforce them — proven by a valid instrument, twice",
+    "the alternative encoding family (oneOf) is either unsound as sent, or over-constrains legitimate outputs when corrected",
+    "therefore grammar-constrained decoding CANNOT be shown to enforce the reproduced invariant on this provider, and must NOT be applied as a claimed fix"
+  ],
+
+  "corrections_made_this_round": {
+    "defect": "the first feasibility run's ONE_OF schema left the mode field free in its second branch, so (STANCE, NONE) was a lawful member of the union",
+    "how_found": "by computing the schema's accepted set locally, at 0 provider calls, instead of trusting the schema's intent",
+    "consequence": "that probe's IGNORED reading was an artefact of the instrument, not a fact about the provider",
+    "second_defect_found_and_fixed": "the audit's INTENDED acceptor modelled the conditional alone instead of structural-validator AND conditional, which reported false divergences for structurally invalid documents",
+    "law": "a constraint that does not constrain proves nothing; and an instrument must be validated locally before it is spent on provider calls",
+    "the_void_result_is_retained": true
+  },
+
+  "why_no_qualification_was_run": {
+    "rule": "§11 permits a real provider qualification only after CASE A is resolved or a CASE B equivalence audit PASSes",
+    "state": "CASE C was reached, so the qualification (N = 6) was NOT executed",
+    "consequence": "no qualification-request.json, no qualification-attempt-*.json, no qualification-verdict.json exists for this round"
+  },
+
+  "what_this_does_not_mean": [
+    "it is not evidence that grammar-constrained decoding is useless in general — only that it cannot be shown to enforce THIS invariant on THIS provider",
+    "it is not a scientific result; no Phase-0 turn was executed this round",
+    "it is not a decision — the decision is the operator's"
+  ],
+
+  "the_decision_now_resting_with_the_operator": {
+    "option_1": "keep qwen3.5:9b and accept the executor reliability risk, with the contained-failure protocol and a bounded retry policy that the scientific invalid policy still governs",
+    "option_2": "replace the executor as infrastructure, per the brief's §16-§17: fresh subjects, fresh execution identity, same frozen trajectories, same scorer, same scientific endpoint, executor recorded as a CHANGED infrastructure condition, and re-running provider readiness plus contract qualification",
+    "what_this_round_does_NOT_do": "it does not perform option 2, and it does not begin one"
+  },
+
+  "supporting_artifacts": [
+    "OLD_VS_NEW_ACCEPTANCE_SET_AUDIT.json",
+    "CONTRACT_EQUIVALENCE_MUTATION_AUDIT.json",
+    "CONSTRAINED_OUTPUT_FEASIBILITY_DESIGN.json",
+    "CONSTRAINED_OUTPUT_FEASIBILITY_DESIGN_HASH.json",
+    "feasibility-if_then-001.json",
+    "feasibility-if_then-002.json",
+    "feasibility-one_of-001.json",
+    "feasibility-one_of-002.json"
+  ]
+}

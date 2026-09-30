@@ -1,0 +1,79 @@
+{
+  "transformer": "buildD3RelationReadoutRequestV0",
+  "per_fixture": {
+    "D3B-QF-A-ALIGNED": {
+      "accepts_a_pristine_production_v8_request": true,
+      "frozen_contract_text_reproduced_for_the_target_pair": true,
+      "fixture_render_differs_only_on_the_two_statement_lines": true,
+      "frozen_schema_exact": true,
+      "contract_appended_exactly_once": true,
+      "anchors_exact": true,
+      "fixture_literals_used_verbatim": true,
+      "no_decision_probe_v2": true,
+      "no_a0_contract": true,
+      "no_a1_contract": true,
+      "no_d2b_contract": true,
+      "d3b_marker_present": true,
+      "subject_data_contains_no_caution": true,
+      "subject_data_contains_no_target_paraphrase": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "render_differences": [
+        6,
+        8
+      ]
+    },
+    "D3B-QF-B-UNRELATED": {
+      "accepts_a_pristine_production_v8_request": true,
+      "frozen_contract_text_reproduced_for_the_target_pair": true,
+      "fixture_render_differs_only_on_the_two_statement_lines": true,
+      "frozen_schema_exact": true,
+      "contract_appended_exactly_once": true,
+      "anchors_exact": true,
+      "fixture_literals_used_verbatim": true,
+      "no_decision_probe_v2": true,
+      "no_a0_contract": true,
+      "no_a1_contract": true,
+      "no_d2b_contract": true,
+      "d3b_marker_present": true,
+      "subject_data_contains_no_caution": true,
+      "subject_data_contains_no_target_paraphrase": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "render_differences": [
+        6,
+        8
+      ]
+    },
+    "D3B-QF-C-OPPOSED": {
+      "accepts_a_pristine_production_v8_request": true,
+      "frozen_contract_text_reproduced_for_the_target_pair": true,
+      "fixture_render_differs_only_on_the_two_statement_lines": true,
+      "frozen_schema_exact": true,
+      "contract_appended_exactly_once": true,
+      "anchors_exact": true,
+      "fixture_literals_used_verbatim": true,
+      "no_decision_probe_v2": true,
+      "no_a0_contract": true,
+      "no_a1_contract": true,
+      "no_d2b_contract": true,
+      "d3b_marker_present": true,
+      "subject_data_contains_no_caution": true,
+      "subject_data_contains_no_target_paraphrase": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "render_differences": [
+        6,
+        8
+      ]
+    }
+  },
+  "qualification_base_binding": {
+    "production_base": "a real committed production world's V8 request",
+    "binding": "the belief block is stripped so the qualification fixture carries no CharacterOS state and no CAUTION",
+    "helper": "the D1-frozen stripBeliefBlockV0",
+    "belief_block_stripped_cleanly": true,
+    "is_a_scientific_rule": false
+  },
+  "verdict": "D3_B_TRANSFORMER_CONFORMANT"
+}

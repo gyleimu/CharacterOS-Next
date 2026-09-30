@@ -1,0 +1,123 @@
+{
+  "artifact": "CLOUD_QUALIFICATION_BOOTSTRAP",
+  "revision": "REV2_MULTI_TURN",
+  "role": "NON_SCIENTIFIC_BOOTSTRAP",
+  "scientific": false,
+  "cannot_contribute_to_any_endpoint": true,
+  "why_rev2": {
+    "rev1_was_not_a_gate": "REV1 ran one turn per subject; the reproduced failure never occurs at turn 0. Frozen run-1 evidence proves REV1's fixture does not discriminate: qualification.json records turn_status COMPLETE and lawful_terminal_observed true, i.e. the LOCAL executor passed it.",
+    "failure_occurred_at": [
+      "run-1 B:turn_2",
+      "run-3 A:turn_1"
+    ],
+    "rev2_shape": "3 turns x 2 subjects = 6 turns",
+    "discrimination_is_argued_not_measured": "proving this fixture would fail on the local executor would require running the local executor, which the operator's constraint forbids"
+  },
+  "fixture": {
+    "proposition_id": "prop.qual-floorboards",
+    "proposition_label": "The floorboards in the hallway are level.",
+    "turn_texts": [
+      "I told the carpenter I would keep the hallway clear today, so the floor is free for him to work.",
+      "About the hallway: I did keep it clear as I said, and he told me he would bring the long level tomorrow.",
+      "About the level: he brought it and ran it along the whole hallway, and the boards are still level under it."
+    ],
+    "subject_ids": [
+      "subject-qcf-5213",
+      "subject-qcf-7748"
+    ],
+    "note": "the non-target qualification fixture; the target proposition and the valence table are never loaded by this program"
+  },
+  "looking_for": {
+    "failure_class": "CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED",
+    "marker": "PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance"
+  },
+  "declaration": {
+    "provider": "DEEPSEEK_OPENAI_COMPATIBLE",
+    "api_style": "OPENAI_COMPATIBLE_CHAT_COMPLETIONS",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-flash",
+    "schema_enforcement_mode": "OPENAI_COMPATIBLE_JSON_SYNTAX_MODE_ONLY",
+    "reasoning_policy": "provider-level thinking.type=disabled",
+    "temperature": 0,
+    "family_timeouts_ms": {
+      "cognition": 120000,
+      "language": 120000,
+      "appraisal": 120000,
+      "belief_semantic": 60000
+    },
+    "families": [
+      "cognition",
+      "language",
+      "appraisal",
+      "belief_semantic"
+    ],
+    "family_output_budgets": {
+      "cognition": 2048,
+      "language": 2048,
+      "appraisal": 256,
+      "belief_semantic": 512
+    },
+    "credential_present": true,
+    "credential_value_recorded": false,
+    "fallback_configured": false,
+    "changed_conditions": {
+      "provider": "Ollama -> DEEPSEEK_OPENAI_COMPATIBLE",
+      "model": "qwen3.5:9b -> deepseek-flash",
+      "transport_class": "OllamaNativeCognitionTransportV0 + OllamaBeliefSemanticProviderV0 -> OpenAiCompatibleTransportV0 (all four families)",
+      "schema_enforcement_mode": "OLLAMA_NATIVE_FORMAT_GRAMMAR_ENFORCED -> OPENAI_COMPATIBLE_JSON_SYNTAX_MODE_ONLY",
+      "reasoning_policy": "ollama-native think:false -> provider-level thinking.type=disabled",
+      "context_allocation": "explicit num_ctx (8192 cognition/language, 4096 appraisal) -> provider-managed; NOT transferable (see §5)",
+      "execution_identity": "new opaque subject ids + a new run identity; the swapped condition is a new condition"
+    },
+    "unchanged_conditions": {
+      "scientific_question": "unchanged (Phase 0: does controlled LIVED evidence reach canonical belief?)",
+      "target_proposition_id": "unchanged (reused by reference from ../contract.ts)",
+      "target_proposition_label": "unchanged (reused by reference from ../contract.ts)",
+      "baseline_credence": "unchanged (reused by reference from ../contract.ts)",
+      "predicted_directions": "unchanged (reused by reference from ../contract.ts)",
+      "turn_templates": "unchanged (reused by reference from ../contract.ts)",
+      "valence_table": "unchanged (reused by reference from ../contract.ts)",
+      "turns_per_arm": "unchanged (reused by reference from ../contract.ts)",
+      "model_visible_prompt_text": "unchanged for every family — the prompt bytes are built by the PRODUCTION providers, not by the transport; the belief-semantic family reuses the exported frozen builder verbatim",
+      "scorer": "unchanged (scorePhase0V0 imported by reference from ../contract.ts; not re-implemented)",
+      "primary_predicate": "unchanged (P0_PRIMARY_PREDICATE, imported by reference)",
+      "invalid_policy": "unchanged (any required invalid trial => INCONCLUSIVE; no retry, no replacement, no extension)",
+      "inconclusive_conditions": "unchanged (P0_INCONCLUSIVE_CONDITIONS, imported by reference)",
+      "evidence_hierarchy_ceiling": "unchanged (L1 -> L2 at most; P0_L2_MEANING imported by reference)",
+      "subject_genesis": "unchanged construction path (fixtures.ts buildPhase0SourceV0), new opaque ids only"
+    },
+    "non_transferred_parameters": [
+      {
+        "parameter": "num_ctx (context_window_tokens)",
+        "local_value": "8192 cognition/language, 4096 appraisal",
+        "status": "NOT_TRANSFERABLE",
+        "consequence": "the remote endpoint manages its own context window; no equivalent field exists on the frozen OpenAI-compatible transport, so the allocation cannot be held equal and is not claimed to be"
+      },
+      {
+        "parameter": "model digest",
+        "local_value": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+        "status": "NOT_OBSERVABLE_REMOTELY",
+        "consequence": "a remote endpoint publishes no content digest. A provider-reported model id can be observed, and it is strictly weaker: it cannot detect a silent revision change behind a stable id"
+      },
+      {
+        "parameter": "provider residency / mid-gate reload",
+        "local_value": "resident-vs-unloaded, one initial load allowed",
+        "status": "NOT_APPLICABLE",
+        "consequence": "there is no resident process to sample. The criterion is NOT substituted by a look-alike; it is declared inapplicable and the readiness verdict says so"
+      }
+    ],
+    "belief_semantic_error_vocabulary": [
+      "PROVIDER_INVALID_CONFIG",
+      "PROVIDER_TIMEOUT",
+      "PROVIDER_TRANSPORT_FAILURE",
+      "PROVIDER_HTTP_FAILURE",
+      "PROVIDER_INVALID_ENVELOPE",
+      "PROVIDER_EMPTY_CONTENT",
+      "PROVIDER_MALFORMED_JSON",
+      "PROVIDER_OUTPUT_TRUNCATED"
+    ]
+  },
+  "credential_fingerprint": "sha256:e8d0105a0ac6ab4a",
+  "credential_value_recorded": false,
+  "packages_modified": false
+}

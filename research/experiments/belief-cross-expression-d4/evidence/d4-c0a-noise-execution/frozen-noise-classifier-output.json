@@ -1,0 +1,26 @@
+{
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "outcome": "PASS",
+    "integrity_ok": true,
+    "integrity_failures": [],
+    "counts": {
+      "SUPPORTS_B": 6,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 0
+    },
+    "unique_modal": "SUPPORTS_B",
+    "modal_count": 6,
+    "tie": false,
+    "invalid_count": 0,
+    "scientific_stability_scoring_executed": true,
+    "gate_verdict": "D4C0A_STABILITY_GATE_PASS",
+    "modal_token_matched_the_fixture_expected": true,
+    "modal_token_identity_used_as_a_pass_condition": false,
+    "target_authorised": true,
+    "r_after_the_gate": 6,
+    "r_changed_by_the_gate": false,
+    "evidence_class": "INSTRUMENT_STABILITY"
+  }
+}

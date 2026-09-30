@@ -1,0 +1,20 @@
+{
+  "stage": "D2_A1_STATE_EXPERIMENT",
+  "model_calls": 0,
+  "scorer_gate": "D2_A1_STATE_SCORER_PREREGISTERED",
+  "failure_policy_gate": "D2_A1_STATE_INVALID_HANDLING_NOT_PREREGISTERED",
+  "both_gates_passed": false,
+  "final_verdict": "D2_A1_STATE_INVALID_HANDLING_NOT_PREREGISTERED",
+  "missing_before_the_treatment_can_run": [
+    "no_retry_specified_for_the_treatment",
+    "no_replacement_specified_for_the_treatment",
+    "no_deletion_specified_for_the_treatment",
+    "no_extra_replicate_specified_for_the_treatment",
+    "invalid_handling_specified_for_the_treatment",
+    "invalid_verdict_specified_for_the_treatment"
+  ],
+  "high_low_calls_executed": 0,
+  "d2_model_calls_total": 42,
+  "no_scorer_or_tolerance_invented": true,
+  "next_round_required_action": "a revision that freezes (1) the treatment's recovery policy and invalid handling with its verdict, using model_calls_before_amendment_for_the_a1_treatment = 0, and (2) the scorer as a callable pure function so the audit can call the frozen procedure rather than re-implement it (the REV1.1d pattern)"
+}

@@ -1,0 +1,61 @@
+{
+  "artifact": "PROVIDER_READINESS_SERVER_SIDE_EVIDENCE",
+  "source": "the local inference server's own access and slot-timing log for the three planned probes",
+  "role": "diagnostic evidence for WHY the gate failed. It does not change the gate's outcome and it is not a scientific observation.",
+
+  "http_layer": [
+    { "probe": 1, "endpoint": "POST /api/chat", "status": 500, "duration": "2m0s", "meaning": "cancelled at the client's frozen 120s bound" },
+    { "probe": 2, "endpoint": "POST /api/chat", "status": 500, "duration": "2m0s", "meaning": "cancelled at the client's frozen 120s bound" },
+    { "probe": 3, "endpoint": "POST /api/chat", "status": 500, "duration": "2m0s", "meaning": "cancelled at the client's frozen 120s bound" }
+  ],
+
+  "generation_layer": {
+    "observed_n_gen_at_cancellation": 509,
+    "cumulative_rate_tok_per_s": 4.39,
+    "three_second_window_rate_tok_per_s": 10.46,
+    "three_second_window_rate_trend": [8.99, 8.08, 9.13, 9.12, 10.3, 10.46],
+    "interpretation":
+      "the cumulative rate (4.39 tok/s) is far below the recent-window rate (10.46 tok/s) and the window rate is RISING. That signature is a slow start that recovers, which is what VRAM pressure looks like: the first tens of seconds are spent paging the working set in, after which throughput climbs toward the machine's actual capability."
+  },
+
+  "what_the_probe_required": {
+    "demand": "the integers 1..400, one per line, with no other output",
+    "estimated_completion_tokens": "roughly 900-1000",
+    "tokens_produced_in_120s": 509,
+    "implied_sustained_rate_required_tok_per_s": "approximately 7.5 or better",
+    "verdict_on_capacity":
+      "the machine reached ~10 tok/s in its best 3-second window but sustained only ~4.4 tok/s across the probe, so it is MARGINAL rather than dead: it needs roughly a 2x improvement in sustained rate, which is exactly what removing the paging pressure would supply"
+  },
+
+  "environment_at_gate_time": {
+    "vram_used_mib": 7672,
+    "vram_total_mib": 8188,
+    "gpu_temperature_c": 80,
+    "model_digest_unchanged": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "note": "the model is ~5.05 GiB, so at 7672/8188 MiB used there is no headroom for the 8192-token KV cache and compute buffers"
+  },
+
+  "recovery_path_is_environmental_not_protocol": {
+    "what_would_likely_make_the_same_frozen_gate_pass": [
+      "closing GPU-consuming desktop applications so that roughly 6.5 GiB or more of the 8.19 GiB device is free before the model loads",
+      "or restarting the machine, which releases all accumulated VRAM"
+    ],
+    "what_must_NOT_change": [
+      "the model (qwen3.5:9b) and its digest",
+      "the provider (production Ollama) and the transport configuration",
+      "num_ctx, num_predict, temperature, the 120s timeout, the absence of a structured-output constraint",
+      "the frozen scientific trajectory, valence table, turn count, scorer, predicate and invalid policy"
+    ],
+    "classification": "EXECUTION_ENVIRONMENT_RESTORATION — not a CharacterOS scientific-design modification",
+    "then": "re-run this same frozen readiness gate; a PASS authorises PHASE0-RUN-3"
+  },
+
+  "what_was_not_done": [
+    "the timeout was not raised",
+    "num_ctx was not lowered",
+    "no provider or model was swapped",
+    "no generation setting was changed",
+    "no probe beyond the three planned was sent",
+    "no operator application was terminated and no OS or GPU setting was altered"
+  ]
+}

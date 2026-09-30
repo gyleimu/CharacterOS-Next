@@ -1,0 +1,59 @@
+[
+  {
+    "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+    "observation": {
+      "observation_ref": "observation:o-d0-a-obvious-accept",
+      "scene": "Workshop note. A colleague says the thicknesser's extraction hose is 100 mm. You can see the hose's collar in front of you and it is stamped \"100 MM\". The claim and the visible stamp agree. Given this, what should be done with the claim?",
+      "task": null
+    },
+    "hashes": {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "subject_id": "subject-s0",
+      "state_revision": 1,
+      "projection_hash": "sha256:845b775591079aaf8056ce2f055f002cdf6bdaa7e3169c1c81a70e5e75faf515",
+      "system_content_hash": "sha256:ea7de77fb17254115abd54a94416f8270ee9561aa9cddd3b3368c8e1953a599f",
+      "user_content_hash": "sha256:308878cb48b265f830ac229fe2e7bed97f32cb42733323e23d046ff7a7d8312d",
+      "production_schema_hash": "sha256:ab505e8d835f693df9652091098a453a23b290dc54273f89840d5529ac205b1e",
+      "production_request_hash": "sha256:c67e5232f019b82e7ab5003c2bd039d0c3230b87ed9c89568793e20b47bc345e",
+      "binding_hash": "sha256:f5cc868431d3315524f04c1fef7124db91e4844bea5ee5e8e49de20e9eab09e5"
+    }
+  },
+  {
+    "fixture_id": "D0-B-OBVIOUS-REJECT",
+    "observation": {
+      "observation_ref": "observation:o-d0-b-obvious-reject",
+      "scene": "Workshop note. A colleague says the bandsaw blade is on the shelf above the bench. You can see the shelf above the bench and it is empty; the blade is visible on the floor beside the saw. The claim and the visible fact disagree. Given this, what should be done with the claim?",
+      "task": null
+    },
+    "hashes": {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "subject_id": "subject-s0",
+      "state_revision": 1,
+      "projection_hash": "sha256:b26b74e66d634d469dc78aa2cba4f8d12ee9710eb20b234260258e16fdddc25b",
+      "system_content_hash": "sha256:ea7de77fb17254115abd54a94416f8270ee9561aa9cddd3b3368c8e1953a599f",
+      "user_content_hash": "sha256:39b432e3185a21585aed39ff20f828270c7de5a0ac7d512abf0b0a5bb83c8152",
+      "production_schema_hash": "sha256:ab505e8d835f693df9652091098a453a23b290dc54273f89840d5529ac205b1e",
+      "production_request_hash": "sha256:8c013effd2c9cae49d0bec7f52457e5520c8413bae84bda2685ee596c2685e6b",
+      "binding_hash": "sha256:d0b00fd762bf0f530b08a3b17150a9635b78692eb816d1f514cf5e47dd932690"
+    }
+  },
+  {
+    "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+    "observation": {
+      "observation_ref": "observation:o-d0-c-ambiguous-verify",
+      "scene": "Workshop note. A colleague says their plane iron takes a 25 degree bevel. You cannot see their plane and you have no record of it either way. Their sharpening jig is on the bench in front of you and it takes one minute to check. Given this, what should be done with the claim?",
+      "task": null
+    },
+    "hashes": {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "subject_id": "subject-s0",
+      "state_revision": 1,
+      "projection_hash": "sha256:30a6d92a561db427e0a900e180e087a512babf26030794a7b82092ec679db427",
+      "system_content_hash": "sha256:ea7de77fb17254115abd54a94416f8270ee9561aa9cddd3b3368c8e1953a599f",
+      "user_content_hash": "sha256:fcbda48d9dd4a993ee8b21ed49a752fed18fb8c14e7fd6370ad9b739fbb91695",
+      "production_schema_hash": "sha256:ab505e8d835f693df9652091098a453a23b290dc54273f89840d5529ac205b1e",
+      "production_request_hash": "sha256:196d75441744522bf982daf356aa0a3fc8f0ecfff83bac4a6f49bee386b19571",
+      "binding_hash": "sha256:8efd7e43356a05b3516322b7a7fd80390159176a8613232807efeb8be2ed7a55"
+    }
+  }
+]

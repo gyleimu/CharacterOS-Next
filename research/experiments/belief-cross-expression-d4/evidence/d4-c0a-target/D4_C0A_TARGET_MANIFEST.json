@@ -1,0 +1,78 @@
+{
+  "stage": "D4_C0a-target",
+  "final_states": [
+    "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+    "D4_C0A_TARGET_EXECUTED",
+    "H_EXEC_COMPOSITION_STRONG_FORM_WEAKENED",
+    "CHARACTEROS_UNMODIFIED",
+    "D4_C0B_NOT_PREREGISTERED"
+  ],
+  "outcome_class": "POSITIVE",
+  "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+  "dataset_hash": "sha256:8a6ca2c850aef8886eef9b4592ec1a58e348e717f9c93e0186306ae38ebfe691",
+  "schedule_hash": "sha256:d85ffc134a2e2a4cada319f4843690374dfebbdf49a63c18c13139d0eb17335f",
+  "support_request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "oppose_request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "collection": {
+    "planned": 12,
+    "records": 12,
+    "support_records": 6,
+    "oppose_records": 6,
+    "duplicate_identities": 0,
+    "missing_identities": 0,
+    "extra_identities": 0,
+    "every_recorded_arm_matches_the_frozen_schedule": true,
+    "every_request_hash_matches_the_frozen_arm_identity": true,
+    "invalid_trials": 0,
+    "transport_failures": 0,
+    "frozen_ordering_preserved": true,
+    "verdict": "D4_C0A_TARGET_COLLECTION_COMPLETE"
+  },
+  "treatment_isolation": {
+    "system_message_byte_identical": true,
+    "same_proposition_a": true,
+    "same_proposition_b": true,
+    "same_explicit_relation": true,
+    "same_measurement_contract": true,
+    "same_schema": true,
+    "same_anchors": true,
+    "same_output_vocabulary": true,
+    "same_surrounding_framing": true,
+    "differing_user_line_count": 1,
+    "differing_lines": [
+      {
+        "index": 4,
+        "support": "SUBJECT STANCE TOWARD A: SUPPORTS",
+        "oppose": "SUBJECT STANCE TOWARD A: OPPOSES"
+      }
+    ],
+    "treatment_correlated_differences_beyond_the_stance": 0,
+    "byte_identical_after_the_frozen_sentinel_normalisation": true
+  },
+  "model_calls_this_round": 12,
+  "d4_model_calls_cumulative": 27,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "characteros_modified": false,
+  "link_4_reopened": false,
+  "non_claims": [
+    "no spontaneous or implicit composition is claimed",
+    "no arbitrary or UNCERTAIN stance transfer is claimed",
+    "no CharacterOS representation defect is claimed, and no projection defect is claimed",
+    "the reverse direction, a 3-2-1 plurality and a tie are NULLs, never effects",
+    "A1's framing ambiguity (H6) remains open regardless of this result"
+  ],
+  "next_round_may_only": "freeze this scientific result; any comparator or C0b requires its own preregistration and may not modify CharacterOS",
+  "next_round_may_not": [
+    "design a comparator in this round",
+    "design C0b in this round",
+    "modify CharacterOS"
+  ]
+}

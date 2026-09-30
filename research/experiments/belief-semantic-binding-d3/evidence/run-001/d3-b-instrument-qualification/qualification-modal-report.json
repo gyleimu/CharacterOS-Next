@@ -1,0 +1,24 @@
+{
+  "per_fixture": {
+    "D3B-QF-A-ALIGNED": {
+      "modal": "SEMANTICALLY_ALIGNED",
+      "tie": false,
+      "expected": "SEMANTICALLY_ALIGNED",
+      "pass": true
+    },
+    "D3B-QF-B-UNRELATED": {
+      "modal": "SEMANTICALLY_UNRELATED",
+      "tie": false,
+      "expected": "SEMANTICALLY_UNRELATED",
+      "pass": true
+    },
+    "D3B-QF-C-OPPOSED": {
+      "modal": "SEMANTICALLY_OPPOSED",
+      "tie": false,
+      "expected": "SEMANTICALLY_OPPOSED",
+      "pass": true
+    }
+  },
+  "exact_token_match_required": true,
+  "similarity_substitution_allowed": false
+}

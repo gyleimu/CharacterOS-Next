@@ -1,0 +1,17 @@
+{
+  "phase": "HISTORY_INTERNALIZATION_TEST_V1_PHASE_0",
+  "revision": "REV2_PHASE_BOUNDARIES",
+  "scored": false,
+  "next_step": "run score.ts against the frozen post-state artifacts",
+  "artifact_hashes": {
+    "qualification.json": "sha256:a85926618e202cde9cf3d0d16fe4bce6d075074d414d3f8878964a4dad778057",
+    "pre-state-A.json": "sha256:9b98ab3fee68df537e827ba9bbc6517be15177e300d22f741a20daf772eb62fa",
+    "pre-state-B.json": "sha256:8dedfa3a84a6516273215855488961c13a40b8cfcd5fb08568dcc9591b97da94",
+    "post-state-A.json": "sha256:ff51045606418659c1573c2b26822253ccd567d4ecc2d2e8594b23e94dedbf64",
+    "post-state-B.json": "sha256:6a82a7850993272cc2bd2e97387c9a9758052e0858d6a31cda3b13f490da58f4",
+    "raw-trials.json": "sha256:39b5d3e77e1c9bea98590161103f93ffe7f4770889090869727c9bbbb41b67ce",
+    "executed-leakage-audit.json": "sha256:4ad0129cd02bce6e13c1c128f7f46b544ccdace5d6aea9321007dc3e646c87c4",
+    "persistence-scope.json": "sha256:e9f7445103b22916de555407bd2c40b7d8fd83ba0b8854e512bb0a876ffffe47",
+    "collection-integrity.json": "sha256:b391cfbd6f5556365b4a8ac8386d6c28d33284715aa068dd5e4cc3d92c8af16a"
+  }
+}

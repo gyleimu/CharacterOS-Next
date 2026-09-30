@@ -1,0 +1,31 @@
+{
+  "schema_version": "decision-probe-v1",
+  "results": [
+    {
+      "audit": "CONSTRUCT_NEUTRALITY",
+      "status": "PASS",
+      "detail": [
+        "all 16 lines classified; categories used: MEASUREMENT_INSTRUCTION, OTHER, OUTPUT_CONTRACT, VOCABULARY_DEFINITION; no STATE_GUIDANCE, no CONDITION_GUIDANCE"
+      ],
+      "block_hash": "sha256:80593fe7c6eb4f683789797321b7bf244e0ea2dd4d46c5ed49357d6e9ef6ba27"
+    },
+    {
+      "audit": "FIXTURE_BLINDNESS",
+      "status": "PASS",
+      "detail": [
+        "no fixture text, id, marker, expected-token mapping or 6-gram present across 3 frozen fixtures"
+      ],
+      "block_hash": "sha256:80593fe7c6eb4f683789797321b7bf244e0ea2dd4d46c5ed49357d6e9ef6ba27"
+    },
+    {
+      "audit": "STATE_BLINDNESS",
+      "status": "PASS",
+      "detail": [
+        "exception (1x): \"SUBJECT DATA\" — Uppercase reference to the PRODUCTION prompt's own section name, occurring only inside the clause that BINDS the existing SUBJECT DATA / untrusted-content / evidence laws for this invocation. It constrains the override; it never guides the executor toward any state value, and it never varies with condition or arm. Removing it would let the override appear to void safety and evidence laws, which would be worse.",
+        "no unexplained subject-state vocabulary present"
+      ],
+      "block_hash": "sha256:80593fe7c6eb4f683789797321b7bf244e0ea2dd4d46c5ed49357d6e9ef6ba27"
+    }
+  ],
+  "all_pass": true
+}

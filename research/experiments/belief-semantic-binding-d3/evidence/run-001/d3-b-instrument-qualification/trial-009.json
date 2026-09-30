@@ -1,0 +1,30 @@
+{
+  "trial_id": "d3b-qf-009",
+  "group": "D3B-QF-C-OPPOSED",
+  "replicate_ordinal": 3,
+  "request_hash": "sha256:01e8285a4985e9bb69afa485e85d7b5d6910190e6299ba20b5bc662cfb5d5484",
+  "expected_relation": "SEMANTICALLY_OPPOSED",
+  "raw_response": "{\"d3_relation_schema_version\":\"d3-relation-readout-v0\",\"relation\":\"SEMANTICALLY_OPPOSED\"}",
+  "parsed_relation": "SEMANTICALLY_OPPOSED",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "invalid_reason": null,
+  "provider_response_model": "deepseek-flash",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 767
+}

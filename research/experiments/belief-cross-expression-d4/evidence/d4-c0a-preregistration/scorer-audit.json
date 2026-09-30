@@ -1,0 +1,107 @@
+{
+  "scorer": "scoreD4C0AV0 (frozen) — called, not re-implemented",
+  "cases": [
+    {
+      "case": "perfect_transfer",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "support_modal": "SUPPORTS_B",
+      "oppose_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "constant_answer_both_support",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_modal": "SUPPORTS_B",
+      "oppose_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "constant_answer_both_oppose",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_modal": "OPPOSES_B",
+      "oppose_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "reversed_direction",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_modal": "OPPOSES_B",
+      "oppose_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "support_arm_tie",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_modal": null,
+      "oppose_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "both_arms_uncertain",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_modal": "UNCERTAIN_B",
+      "oppose_modal": "UNCERTAIN_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "one_invalid",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "scoring_executed": false,
+      "pass": true
+    },
+    {
+      "case": "all_invalid",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "scoring_executed": false,
+      "pass": true
+    },
+    {
+      "case": "out_of_vocabulary_token",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "scoring_executed": false,
+      "pass": true
+    },
+    {
+      "case": "two_deviations_modal_still_unique",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "support_modal": "SUPPORTS_B",
+      "oppose_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    }
+  ],
+  "forbidden_patterns_never_positive": true,
+  "integrity_failure_case": {
+    "observed": "INCONCLUSIVE",
+    "verdict": "D4C0A_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "integrity": false
+  },
+  "reversed_direction_is_a_null_not_an_effect": true,
+  "verdict": "D4_C0A_SCORER_PROVEN"
+}

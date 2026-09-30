@@ -1,0 +1,24 @@
+{
+  "classifier": "classifyC1RecordStabilityV0",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "outcome": "PASS",
+    "integrity_ok": true,
+    "integrity_failures": [],
+    "counts": {
+      "SUPPORTS_B": 6,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 0
+    },
+    "unique_modal": "SUPPORTS_B",
+    "modal_count": 6,
+    "tie": false,
+    "invalid_count": 0,
+    "scoring_executed": true,
+    "gate_verdict": "D4_C1_RECORD_STABILITY_GATE_PASS",
+    "target_authorised": true,
+    "target_sample_size_set_by_this_gate": false,
+    "target_schedule_modified": false,
+    "evidence_class": "INSTRUMENT_STABILITY"
+  }
+}

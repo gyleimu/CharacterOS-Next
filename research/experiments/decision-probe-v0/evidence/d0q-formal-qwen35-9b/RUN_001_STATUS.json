@@ -1,0 +1,20 @@
+{
+  "run_id": "D0Q_RUN_001",
+  "run_label": "d0q-run-001-observation-binding-defect",
+  "status": "PERMANENTLY PRESERVED — do not delete, overwrite, rewrite or reinterpret",
+  "phase": "D0Q (formal qualification)",
+  "verdict": "DECISION_INSTRUMENT_UNQUALIFIED",
+  "verdict_scope": "non-primary executor run (declares_primary_executor = false)",
+  "known_defect_identified_by_this_run": {
+    "name": "CURRENT_OBSERVATION_BINDING_DEFECT",
+    "summary": "The binding wrote the fixture observation_text into context.task and never committed an observation, so the production request rendered [context] scene=\"idle\" and [current observation] (none). The executor decided about an absent observation.",
+    "verified_evidence": [
+      "[current observation] (none) in the rendered production request",
+      "D0-C raw executor output: \"the observation is empty; no evidence supports acceptance\""
+    ],
+    "classification": "request-construction defect in the research binding — NOT a belief, vocabulary or executor-capability finding"
+  },
+  "artifact_integrity": "No file in this directory was modified by the repair or by D0Q_RUN_002. This status file is an addition only.",
+  "superseded_by": "D0Q_RUN_002 (evidence/d0q-run-002-qwen35-9b) — a separately numbered re-verification after the binding repair, with fixtures, expected decisions, vocabulary, schema, modes, r and generation settings frozen byte-identical",
+  "added_at_utc": "2026-09-20T16:30:00Z"
+}

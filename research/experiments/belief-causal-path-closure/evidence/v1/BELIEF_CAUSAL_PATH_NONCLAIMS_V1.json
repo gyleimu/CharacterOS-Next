@@ -1,0 +1,42 @@
+{
+  "version": "belief-causal-path-nonclaims-v1",
+  "entries": [
+    {
+      "claim": "the belief module is globally ineffective",
+      "status": "NOT CLAIMED"
+    },
+    {
+      "claim": "semantic understanding is globally absent",
+      "status": "NOT CLAIMED"
+    },
+    {
+      "claim": "the executor cannot understand paraphrases",
+      "status": "CONTRADICTED_BY_D3_B_TARGET"
+    },
+    {
+      "claim": "the canonical credence is unreadable",
+      "status": "CONTRADICTED_BY_D2_A0"
+    },
+    {
+      "claim": "the belief is cognitively inert",
+      "status": "NOT_ESTABLISHED"
+    },
+    {
+      "claim": "the appraisal link failed",
+      "status": "NOT_TESTED"
+    },
+    {
+      "claim": "an integration mechanism failed",
+      "status": "NOT_OBSERVED"
+    },
+    {
+      "claim": "D1 is overturned",
+      "status": "FALSE"
+    },
+    {
+      "claim": "D2-B is reopened",
+      "status": "FALSE"
+    }
+  ],
+  "note": "'cognitively inert' would require A0 positive + A1 positive + B null; D2 never reached an A1 positive, so the term remains unearned"
+}

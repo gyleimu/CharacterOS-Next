@@ -1,0 +1,68 @@
+{
+  "gate": {
+    "audit": "TRANSPORT_EQUIVALENCE_GATE",
+    "status": "PASS",
+    "detail": [
+      "Layer A is delivered at message level for both contracts; `structured_output` is the only family-varying member (Layer B) and carries no construct information"
+    ]
+  },
+  "all_audits_pass": true,
+  "audits": [
+    {
+      "audit": "CONSTRUCT_NEUTRALITY",
+      "status": "PASS",
+      "detail": [
+        "all 16 lines classified; categories used: MEASUREMENT_INSTRUCTION, OTHER, OUTPUT_CONTRACT, VOCABULARY_DEFINITION; no STATE_GUIDANCE, no CONDITION_GUIDANCE"
+      ]
+    },
+    {
+      "audit": "FIXTURE_BLINDNESS",
+      "status": "PASS",
+      "detail": [
+        "no fixture text, id, marker, expected-token mapping or 6-gram present across 3 frozen fixtures"
+      ]
+    },
+    {
+      "audit": "STATE_BLINDNESS",
+      "status": "PASS",
+      "detail": [
+        "exception (1x): \"SUBJECT DATA\" — Uppercase reference to the PRODUCTION prompt's own section name, occurring only inside the clause that BINDS the existing SUBJECT DATA / untrusted-content / evidence laws for this invocation. It constrains the override; it never guides the executor toward any state value, and it never varies with condition or arm. Removing it would let the override appear to void safety and evidence laws, which would be worse.",
+        "no unexplained subject-state vocabulary present"
+      ]
+    },
+    {
+      "audit": "SEMANTIC_CONTRACT_INHERITANCE",
+      "status": "PASS",
+      "detail": [
+        "V2's primary semantic contract is byte-identical to DecisionProbeV1's override block — V2 changes zero sent bytes"
+      ]
+    },
+    {
+      "audit": "FORMAT_ONLY_CONSTRUCTION",
+      "status": "PASS",
+      "detail": [
+        "exactly the 4 anchor lines (header + 3 definitions) removed; measurement task, output object definition and legal token names retained"
+      ]
+    },
+    {
+      "audit": "TOKEN_REMAP_CONSTRUCTION",
+      "status": "PASS",
+      "detail": [
+        "labels swapped to OPTION_A/B/C, anchors retained, English tokens no longer advertised, mapping lives in the protocol only"
+      ]
+    },
+    {
+      "audit": "TRANSPORT_EQUIVALENCE_GATE",
+      "status": "PASS",
+      "detail": [
+        "Layer A is delivered at message level for both contracts; `structured_output` is the only family-varying member (Layer B) and carries no construct information"
+      ]
+    }
+  ],
+  "layer_a_carrier": "messages",
+  "layer_b": {
+    "native_schema_transmitted": false,
+    "mechanism": "PROMPT_CONTRACT_PLUS_HOST_FAIL_CLOSED_PARSER"
+  },
+  "cross_transport_output_comparison": "NOT_PERFORMED_LOCAL_EXECUTOR_DEFERRED_BY_HUMAN"
+}

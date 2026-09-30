@@ -1,0 +1,15 @@
+{
+  "planned": 12,
+  "records": 12,
+  "support_records": 6,
+  "oppose_records": 6,
+  "duplicate_identities": 0,
+  "missing_identities": 0,
+  "extra_identities": 0,
+  "every_recorded_arm_matches_the_frozen_schedule": true,
+  "every_request_hash_matches_the_frozen_arm_identity": true,
+  "invalid_trials": 0,
+  "transport_failures": 0,
+  "frozen_ordering_preserved": true,
+  "verdict": "D4_C0A_TARGET_COLLECTION_COMPLETE"
+}

@@ -1,0 +1,8 @@
+{
+  "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "high_modal_tie": false,
+  "low_modal_tie": false,
+  "unique_modal_definition": "the token with a strictly highest count; a tie yields null",
+  "permissive_interpretation_used": false
+}

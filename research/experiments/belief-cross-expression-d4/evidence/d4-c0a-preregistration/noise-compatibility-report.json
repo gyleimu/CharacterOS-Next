@@ -1,0 +1,31 @@
+{
+  "scorer_kind": "per-arm unique modal plus a between-arm contrast",
+  "gate_reachable_outcomes": [
+    "PASS",
+    "STOP"
+  ],
+  "gate_sample_size_branches": 0,
+  "gate_reachable_r_values": [
+    6
+  ],
+  "r_is_a_frozen_constant": true,
+  "there_is_no_function_from_the_gate_to_r": true,
+  "argument": "the D2/D3 failure mode required a branch that sets the sample size from the noise result; this gate has none, so the pair cannot conflict mathematically",
+  "contrast_with_the_retired_d2_pattern": "D2 had '5 -> r = 14' paired with a unanimity scorer, where buying trials raised the bar; here buying trials is not expressible",
+  "budget_derivation": {
+    "derived_from": "the frozen scorer's shape, not from any previous line's budget",
+    "step_1": "the criterion is a per-arm unique modal plus a between-arm contrast, so the target needs BOTH arms measured",
+    "step_2": "therefore target total = 2r, with r replicates per arm; r is not the total",
+    "step_3": "r = 6 per arm, because at r = 6 the criterion tolerates up to TWO deviating trials without losing modal uniqueness (6-0, 5-1 and 4-2 all leave a unique modal; only 3-3 ties)",
+    "step_4": "no r-extension branch exists, so the derivation stops at the smallest r that keeps the modal unique under a two-trial deviation",
+    "r_per_arm": 6,
+    "target_total": 12,
+    "target_is_2r": true,
+    "not_inherited_from_d2_or_d3": true,
+    "qualification": 9,
+    "stability_gate": 6,
+    "total_budget": 27,
+    "budget_note": "27 is a CONSEQUENCE of the frozen scorer, the frozen qualification rule and the frozen gate shape; it was not assumed and then justified"
+  },
+  "verdict": "D4_C0A_NOISE_RULE_IS_SCORER_COMPATIBLE"
+}

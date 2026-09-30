@@ -1,0 +1,57 @@
+{
+  "stage": "D4_C1",
+  "model_calls": 0,
+  "final_states": [
+    "D4_C1_COMPARATOR_PREREGISTRATION_READY",
+    "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+    "LINK_4_REMAINS_LOCKED",
+    "CHARACTEROS_UNMODIFIED",
+    "MODEL_CALLS_THIS_ROUND = 0"
+  ],
+  "the_question": "holding the executor, A, B, the explicit semantic-alignment relation, the measurement contract, its anchors, the vocabulary, the framing and the generation settings identical, does changing the stance representation from an explicit word to the CharacterOS belief record change cross-expression stance composition?",
+  "design": {
+    "structure": "2 x 2",
+    "representations": [
+      "EXPLICIT_STANCE",
+      "CHARACTEROS_BELIEF_RECORD"
+    ],
+    "stances": [
+      "SUPPORT",
+      "OPPOSE"
+    ],
+    "cells": 4
+  },
+  "reference_decision": "RERUN_BOTH_CONDITIONS_CONTEMPORANEOUSLY_IN_ONE_FROZEN_SCHEDULE",
+  "reference_decision_reason": "`deepseek-flash` is a hosted model whose revision can change without notice, and the API exposes no pinned revision; a difference observed across two sessions could be provider drift rather than the representation. The eight conditions are satisfied on paper but the ninth — the same model at the same revision — cannot be verified",
+  "allowed_model_facing_differences": [
+    "the VALUE after the cue prefix: a stance word, or the CharacterOS belief record"
+  ],
+  "budget": {
+    "requalification": 0,
+    "stability_gate": 6,
+    "target_cells": 4,
+    "replicates_per_cell": 6,
+    "target_calls": 24,
+    "total": 30,
+    "derivation": "0 + 6 + (4 cells x 6 replicates), each term justified above rather than inherited",
+    "compared_to": {
+      "naively_copying_c0a_conventions": "9 qualification + 6 gate + 24 target = 39",
+      "saving": 9
+    },
+    "the_saving_is_the_justified_one": "no requalification, because the instrument did not change",
+    "d4_model_calls_before_this_stage": 27
+  },
+  "c0b": "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+  "architecture_gate": "CLOSED",
+  "h6": "REMAINS OPEN in every row of the outcome matrix",
+  "next_round_may_only": "implement the frozen record-form condition and its non-target stability fixture, pass offline conformance at zero calls, freeze implementation hashes, then run the stability gate",
+  "next_round_may_not": [
+    "call any model",
+    "modify CharacterOS",
+    "modify the production representation",
+    "add a helpful annotation or a derived stance to the record",
+    "change the measurement contract, anchors, schema or vocabulary",
+    "lower the per-cell scoring standard"
+  ],
+  "contract_manifest_hash": "sha256:0e115f94c79b8eb8ce40357a18c9cf5904d189b747a88d8a1ae2fe99bac5b2a2"
+}

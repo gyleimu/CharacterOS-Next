@@ -1,0 +1,18 @@
+{
+  "transformer": "buildD4C0AStanceTransferRequestV0",
+  "transformer_source_hash": "sha256:90d2228cea253f5a6341c43e0309739e59c903d0ec36903cbfa4e7609c6eeaae",
+  "transformer_contract_name": "buildD4C0AStanceTransferRequestV0",
+  "transformer_contract_hash": "sha256:a1818bc23b5adab1ce4c83c0c00c60afb0d595660570bb832c2326c5313c2a1d",
+  "frozen_base_system_text_hash": "sha256:6f95090282d34895b5d24805a09e7de3862d8cc0ea1ef9a4297fdf32c9ccd50b",
+  "frozen_contract_text_hash": "sha256:5d66b99d31e971a2f02130fc1e41e8785aaa6d087db0e5adf31fa81cb8c16ec6",
+  "schema_hash": "sha256:2034a688a12459f2eea8b0111a7ed453be9c27a8def816b4e6e6e37099ce1b0a",
+  "anchors_hash": "sha256:1b65129cd62d297d2f20c8bc776d51217a8828c5c0099b516376f89c09bd95d2",
+  "vocabulary_hash": "sha256:191d97afd0c075fa53499692a1d0ac578a45c1dd4f0a0080689f711858625d44",
+  "qualification_scorer_source_hash": "sha256:57708a5e5bc7dbde4c4fa279d49987fe018524cf1475b17c937ed116445c25d3",
+  "target_scorer_source_hash": "unchanged from revision 1: contract-rev1-directional-majority.ts",
+  "noise_stability_classifier_source_hash": "NOT YET IMPLEMENTED — the noise round's first offline step",
+  "qualification_outputs_seen_before_implementation_freeze": false,
+  "target_outputs_seen_before_implementation_freeze": false,
+  "implementation_frozen": true,
+  "rule_if_a_bug_is_found": "stop the whole qualification; a fixed implementation may not continue the remaining calls"
+}

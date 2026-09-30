@@ -1,0 +1,27 @@
+{
+  "diffs": {
+    "HIGH_vs_LOW": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "HIGH_vs_NEUTRAL": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "LOW_vs_NEUTRAL": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ]
+  },
+  "expected_high_vs_low": [
+    "/beliefs/items/0/credence"
+  ],
+  "high_vs_low_is_credence_only": false,
+  "observation_commit_produced_shared_updates_only": true
+}

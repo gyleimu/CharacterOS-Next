@@ -1,0 +1,98 @@
+{
+  "artifact": "CLOUD_QUALIFICATION_VERDICT",
+  "revision": "REV2_MULTI_TURN",
+  "supersedes": "the REV1 single-turn qualification PASS, whose fixture was shown to be non-discriminating",
+  "outcome": "PASS",
+  "tokens": [
+    "PHASE0_CLOUD_CONTRACT_QUALIFICATION_PASS",
+    "PHASE0_CLOUD_SCIENTIFIC_RUN_AUTHORISED"
+  ],
+  "executor": {
+    "provider": "DEEPSEEK_OPENAI_COMPATIBLE",
+    "model": "deepseek-flash",
+    "base_url": "https://api.deepseek.com"
+  },
+  "role": "NON_SCIENTIFIC_BOOTSTRAP",
+  "scientific": false,
+  "cannot_contribute_to_any_endpoint": true,
+  "turns_planned": 6,
+  "turns_executed": 6,
+  "planned_equals_actual": true,
+  "retries": 0,
+  "criteria": {
+    "all_planned_turns_executed": true,
+    "all_turns_completed": true,
+    "all_terminals_lawful": true,
+    "the_failing_shape_was_reached": true,
+    "reproduced_failure_class_absent": true,
+    "no_other_failure": true
+  },
+  "counters": {
+    "completed": 6,
+    "reproduced_failure_class": 0,
+    "other_failures": 0,
+    "turns_that_reached_the_multi_turn_evidence_feedback_shape": 4,
+    "provider_attempts_total": 28
+  },
+  "per_turn": [
+    {
+      "subject_ordinal": 1,
+      "turn_index": 0,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "reaches_multi_turn_evidence_feedback": false
+    },
+    {
+      "subject_ordinal": 1,
+      "turn_index": 1,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "reaches_multi_turn_evidence_feedback": true
+    },
+    {
+      "subject_ordinal": 1,
+      "turn_index": 2,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "reaches_multi_turn_evidence_feedback": true
+    },
+    {
+      "subject_ordinal": 2,
+      "turn_index": 0,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "reaches_multi_turn_evidence_feedback": false
+    },
+    {
+      "subject_ordinal": 2,
+      "turn_index": 1,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "reaches_multi_turn_evidence_feedback": true
+    },
+    {
+      "subject_ordinal": 2,
+      "turn_index": 2,
+      "status": "COMPLETE",
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "reaches_multi_turn_evidence_feedback": true
+    }
+  ],
+  "what_a_pass_means": "on six non-target turns spanning the multi-turn evidence-feedback shape where the local executor failed twice, the swapped executor completed every turn without producing the reproduced failure class. It is a mechanical result about the executor on THIS non-target fixture. It is NOT scientific evidence, NOT an endpoint, and it does NOT establish general contract compliance.",
+  "what_a_pass_does_not_establish": [
+    "that the swapped executor would survive the SCIENTIFIC trajectory (a different, larger, target-bearing request)",
+    "that the fixture is discriminating — no local-executor comparison exists, by the operator's constraint",
+    "any scientific claim or endpoint",
+    "PHASE_1",
+    "comparability with run-1 or run-3",
+    "anything about D1"
+  ],
+  "next_step_if_pass": "PHASE0_CLOUD_SCIENTIFIC_RUN_AUTHORISED — Phase-0 REV2 on the swapped condition with fresh opaque subjects, the same frozen trajectories, the same scorer and the same predicate. That run is a SEPARATE, separately-authorised round; it is NOT executed here.",
+  "next_step_if_fail": "PHASE0_CLOUD_SWAP_UNUSABLE — the swap does not fix the reproduced failure class, and the scientific run is NOT attempted. That outcome points at the production cognition contract itself rather than at executor capability."
+}

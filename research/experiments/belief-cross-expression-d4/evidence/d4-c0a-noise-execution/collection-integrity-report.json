@@ -1,0 +1,12 @@
+{
+  "planned": 6,
+  "records": 6,
+  "duplicate_identities": 0,
+  "missing_identities": 0,
+  "extra_identities": 0,
+  "all_request_hashes_exact": true,
+  "target_request_hash_present": 0,
+  "invalid_trials": 0,
+  "transport_failures": 0,
+  "verdict": "D4_C0A_NOISE_COLLECTION_COMPLETE"
+}

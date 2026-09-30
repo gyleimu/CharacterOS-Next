@@ -1,0 +1,11 @@
+{
+  "artifact": "CLOUD_READINESS_IDENTITY",
+  "path": "/models",
+  "http_status": 200,
+  "credential_accepted": true,
+  "served_model_ids_count": 2,
+  "configured_model_listed": true,
+  "error": null,
+  "is_an_identity_proof": false,
+  "stated_weakness": "a provider-reported model id is strictly weaker than a content digest: it cannot detect a silent revision change behind a stable id"
+}

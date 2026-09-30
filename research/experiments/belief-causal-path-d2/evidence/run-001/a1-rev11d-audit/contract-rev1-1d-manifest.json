@@ -1,0 +1,159 @@
+{
+  "version": "belief-causal-path-d2-rev1.1d",
+  "invalid_policy": {
+    "scope": "A1 neutral pilot ONLY",
+    "planned_trials": 6,
+    "planned_denominator": 6,
+    "planned_trial_ids": [
+      "d2-a1-neutral-001",
+      "d2-a1-neutral-002",
+      "d2-a1-neutral-003",
+      "d2-a1-neutral-004",
+      "d2-a1-neutral-005",
+      "d2-a1-neutral-006"
+    ],
+    "one_trial_is_one_attempt": true,
+    "max_provider_calls_per_scheduled_trial": 1,
+    "retry_forbidden": true,
+    "replacement_forbidden": true,
+    "deletion_forbidden": true,
+    "extra_replicate_forbidden": true,
+    "seventh_call_forbidden": true,
+    "executor_substitution_forbidden": true,
+    "counts_as_invalid": [
+      "transport failure",
+      "timeout classified as a failed provider attempt",
+      "malformed output",
+      "parser invalid",
+      "token outside the frozen A1 vocabulary"
+    ],
+    "invalid_trials_are_recorded": true,
+    "invalid_is_not_a_stance_token": true,
+    "multiple_invalids_may_not_be_grouped_as_one_modal_category": true,
+    "noise_mapping_precondition": "all 6 scheduled trials produce legal A1 stance tokens",
+    "valid_required_for_noise_scoring": 6,
+    "mapping_source": "D2_NOISE_RULE.deterministic_mapping (unchanged)",
+    "mapping": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "mapping_may_not_be_modified": true,
+    "on_zero_invalid": {
+      "compute": "legal token counts, then modal token and modal_count over the 6 valid trials",
+      "modal_count_6": "r_confirm_A1 = 6",
+      "modal_count_5": "r_confirm_A1 = 14",
+      "modal_count_at_most_4": "INCONCLUSIVE_BY_DECISION_NOISE"
+    },
+    "on_any_invalid": {
+      "minimum_invalid_trials_to_trigger": 1,
+      "verdict": "D2_A1_INCONCLUSIVE_BY_PILOT_INVALID_OUTPUTS",
+      "r_confirm_A1_computed": false,
+      "high_low_a1_experiment_may_run": false,
+      "reason": "the frozen mapping is defined over a complete, fully valid six-trial pilot; a pilot with any invalid trial has no defined modal_count"
+    },
+    "must_guarantee": [
+      "six invalid trials can never produce modal_count = 6",
+      "a transport failure can never be silently dropped",
+      "an invalid trial can never change the denominator",
+      "six valid outputs can never be manufactured by re-running"
+    ],
+    "applied_retroactively_to": [],
+    "retroactivity": "NONE — A0 qualification, A0 pilot, A0 state experiment and A1 qualification are untouched",
+    "extends_to_d2b": false,
+    "d2b_rule_source": "D2-B must use its own authoritative preregistration when it is reached"
+  },
+  "context_binding": {
+    "binding_rule": "the A1 state experiment uses the SAME production context identity as the A0 structural-readout state experiment",
+    "identity": {
+      "path_in_state": "/identity/subject_id",
+      "exact_value": "d1-belief-sensitivity-subject",
+      "source": "D1 world-a1.ts :: D1_SUBJECT_ID (the D1 controlled trajectory's subject)"
+    },
+    "observation": {
+      "probe_id": "D1-P1-AWAITING-INSPECTION",
+      "exact_observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "exact_observation_bytes": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+      "exact_scene_bytes": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+      "scene_source": "the observation commit's own scene (D1 world-a1.ts:160)",
+      "committed_observation_identity": "observation:o-d1-p1-awaiting-inspection",
+      "source": "D1 contract.ts :: D1_P1, and D1 world-a1.ts :: D1_OBSERVATION_ID"
+    },
+    "task": {
+      "exact_value": null,
+      "source": "D1 world-a1.ts:160 (the observation commit sets task: null)"
+    },
+    "environment_current_context": {
+      "rule": "byte-exact reuse of the A0-frozen production context; the A1 transformer appends a measurement contract and cannot introduce a context",
+      "verification": "the audit rebuilds the three states offline and asserts byte-identity of the normalised model-facing request against the A0-frozen pristine requests"
+    },
+    "state_construction": [
+      "production genesis materialisation",
+      "lawful belief materialisation",
+      "production observation lifecycle",
+      "production projection",
+      "pristine V8 request"
+    ],
+    "hand_written_subject_data": false,
+    "experimental_variable": {
+      "only_scientific_state_variable": "/beliefs/items/0/credence",
+      "HIGH": 0.8,
+      "NEUTRAL": 0.5,
+      "LOW": 0.2,
+      "derived_bookkeeping_rule": "D1 REVISION 4 normalisation only",
+      "new_diff_classes_added": false
+    },
+    "canonical_proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "provenance": {
+      "a0_results_known_before_context_binding": true,
+      "context_selection_depended_on_a0_token_pattern": false,
+      "a1_outputs_seen_before_context_binding": false,
+      "a1_neutral_calls_before_amendment": 0,
+      "a1_high_low_calls_before_amendment": 0,
+      "why_this_context": [
+        "D1 P1 is the controlled underdetermined secondhand-information context",
+        "A0 and A1 are consecutive links 3A / 3B on the same causal chain",
+        "the A1 semantic-transfer construct targets the same CAUTION belief",
+        "P1 directly instantiates the antecedent relevant to that proposition"
+      ]
+    },
+    "stimulus_family_unchanged": true,
+    "observation_wording_changed": false,
+    "probe_swapped": false,
+    "new_context_added": false,
+    "proposition_changed": false,
+    "paraphrase_changed": false,
+    "high_low_prediction_changed": false
+  },
+  "supersedes_scope": [
+    "A1 neutral pilot invalid handling",
+    "A1 production-context explicit binding"
+  ],
+  "scientific_prediction_changed": false,
+  "measurement_contract_changed": false,
+  "a1_model_calls_before_amendment": 9,
+  "a1_state_experiment_calls_before_amendment": 0,
+  "a1_neutral_calls_before_amendment": 0,
+  "revision_1_1c_manifest_hash_preserved": "sha256:170a97cea01727b5073ab9253b047f6e571c83638e031b6d4654d8a479f67efa",
+  "tests": {
+    "planned_denominator": 6,
+    "trial_ids_fixed_before_the_first_call": 6,
+    "retry_replacement_deletion_extra_all_forbidden": true,
+    "invalid_is_not_a_stance_token": true,
+    "six_invalid_yields_r": null,
+    "six_invalid_yielded_verdict": "D2_A1_INCONCLUSIVE_BY_PILOT_INVALID_OUTPUTS",
+    "one_invalid_yielded_verdict": "D2_A1_INCONCLUSIVE_BY_PILOT_INVALID_OUTPUTS",
+    "six_valid_yields_r": 6,
+    "out_of_vocabulary_token_treated_as_invalid": true,
+    "observation_id_matches_frozen_source": true,
+    "observation_bytes_match_frozen_source": true,
+    "task_is_null": true,
+    "subject_identity_matches_frozen_source": true,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b"
+}

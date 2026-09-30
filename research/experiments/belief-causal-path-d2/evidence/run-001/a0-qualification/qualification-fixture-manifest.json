@@ -1,0 +1,37 @@
+{
+  "source": "contract-rev1-1b-a0-fixtures.ts",
+  "rewritten_at_runtime": false,
+  "fixtures": [
+    {
+      "fixture_id": "A0-QF-A-STRONG-ENDORSEMENT",
+      "kind": "explicit strong endorsement",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a0-qf-a\",\"proposition_label\":\"A clamp should always be used when gluing a joint.\",\"credence\":0.95}",
+      "expected_token": "ENDORSES_STRONGLY"
+    },
+    {
+      "fixture_id": "A0-QF-B-UNDECIDED",
+      "kind": "explicit undecided",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a0-qf-b\",\"proposition_label\":\"A clamp should always be used when gluing a joint.\",\"credence\":0.49}",
+      "expected_token": "UNDECIDED"
+    },
+    {
+      "fixture_id": "A0-QF-C-STRONG-DOUBT",
+      "kind": "explicit strong doubt",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a0-qf-c\",\"proposition_label\":\"A clamp should always be used when gluing a joint.\",\"credence\":0.06}",
+      "expected_token": "DOUBTS_STRONGLY"
+    }
+  ],
+  "invariants": {
+    "all_fixtures_share_one_proposition": true,
+    "proposition_is_unrelated_to_caution": true,
+    "only_the_credence_varies_between_fixtures": true,
+    "uses_characteros_canonical_state": false,
+    "contains_treatment": false,
+    "experimental_credences_0_80_0_20_0_50_present": false,
+    "fixture_credences": [
+      0.95,
+      0.49,
+      0.06
+    ]
+  }
+}

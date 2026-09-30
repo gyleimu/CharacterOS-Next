@@ -1,0 +1,8 @@
+{
+  "counts": {
+    "SEMANTICALLY_ALIGNED": 6
+  },
+  "counts_source": "the frozen noise-dataset.json bytes, re-read from disk",
+  "invalid_trials": 0,
+  "note": "the modal token need not equal the fixture's expected relation; this batch is a stability measurement, not a re-run of qualification correctness"
+}

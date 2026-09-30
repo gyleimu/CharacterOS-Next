@@ -1,0 +1,24 @@
+{
+  "global_ordinal": 35,
+  "block": "P3_NEGATIVE_CONTROL",
+  "arm": "LOW",
+  "replicate_ordinal": 11,
+  "frozen_payload_hash": "sha256:304e0333b1be541e93eb281dcf2b04554d22932d289c5917c2a22099eeaa439b",
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "outcome": "DECIDED",
+  "parser_status": "VALID",
+  "parsed_decision": "ACCEPT",
+  "raw_text": "{\"decision_probe_schema_version\":\"decision-probe-v1\",\"decision\":\"ACCEPT\",\"explanation\":\"Direct first-hand count of four clamps in the open drawer confirms the colleague's remark; no independent check needed.\"}",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "latency_ms": 684,
+  "provider_request_metadata": "not exposed by the transport"
+}

@@ -1,0 +1,12 @@
+{
+  "order": [
+    "V1_C3_PARAPHRASE_MANIFEST.json written and hashed BEFORE any model call",
+    "PRIMARY measurement-mode qualification",
+    "CONTROL PURE_SUBSTITUTION diagnostic",
+    "C3 definition-paraphrase control"
+  ],
+  "c3_manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157",
+  "c3_all_audits_pass": true,
+  "recorded_at_utc": "2026-09-20T17:49:11.376Z",
+  "model_calls_before_this_record": 0
+}

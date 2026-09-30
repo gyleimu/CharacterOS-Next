@@ -1,0 +1,10 @@
+{
+  "version": "belief-causal-path-combined-statement-v1",
+  "statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+  "mechanical_expansion": [
+    "canonical credence can be read as a stance toward the canonical proposition (D2-A0)",
+    "the executor can directly recognize the canonical proposition and the frozen paraphrase as semantically aligned (D3-B, state-blind)",
+    "the frozen CharacterOS A1 experiment did not establish transfer of that stance to the paraphrased expression (D2-A1 valid null)"
+  ],
+  "is_the_maximum_observational_claim": true
+}

@@ -1,0 +1,10 @@
+{
+  "modal_count": 6,
+  "p_hat": 0,
+  "r_confirm": 6,
+  "noise_ceiling": 0.3903,
+  "verdict": "R_CONFIRM_FROZEN",
+  "rule": "frozen deterministic mapping from modal_count (contract.ts D1_R_CONFIRM_TABLE)",
+  "hand_computed_or_adjusted": false,
+  "modal_tie_handled_by_frozen_implementation": true
+}

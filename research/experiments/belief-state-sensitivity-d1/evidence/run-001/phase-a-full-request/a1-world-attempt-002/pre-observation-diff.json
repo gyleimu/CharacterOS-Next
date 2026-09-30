@@ -1,0 +1,11 @@
+{
+  "HIGH_vs_LOW": [
+    "/beliefs/items/0/credence"
+  ],
+  "HIGH_vs_NEUTRAL": [
+    "/beliefs/items/0/credence"
+  ],
+  "LOW_vs_NEUTRAL": [
+    "/beliefs/items/0/credence"
+  ]
+}

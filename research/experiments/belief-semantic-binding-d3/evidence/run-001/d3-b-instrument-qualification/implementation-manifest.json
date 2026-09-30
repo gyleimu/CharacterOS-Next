@@ -1,0 +1,16 @@
+{
+  "transformer": "buildD3RelationReadoutRequestV0",
+  "transformer_source_hash": "sha256:9daa5521e010597443d0d67801ba200b3811fc165804c18b6a94c11a460259aa",
+  "transformer_contract_hash": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+  "schema_hash": "sha256:a1a9f5c9e325a91332cb31ff58b5c49776fd0a26a6394dd0ebefd810d0d1d9c0",
+  "anchors_hash": "sha256:6382a496178aea7c200ea7bd97890031d543b59775bb5a24e076041ab6f2f0c8",
+  "fixture_manifest_hash": "sha256:ffbd62411035a41db733942b0bc5e284d2346efb8f6a8f4c32e4f3875b89ac16",
+  "qualification_scorer_source_hash": "sha256:24eef4995108450dcf7855479bfda8bd1dbffc35c7bed35f3ed75ab55a777b67",
+  "noise_classifier_source_hash": "sha256:24eef4995108450dcf7855479bfda8bd1dbffc35c7bed35f3ed75ab55a777b67",
+  "target_scorer_source_hash": "sha256:24eef4995108450dcf7855479bfda8bd1dbffc35c7bed35f3ed75ab55a777b67",
+  "qualification_base_source_hash": "sha256:c92621d471e3328254389e52c14e366725916e48500eee59f52fc90b28a520a2",
+  "d3_b_outputs_seen_before_implementation_freeze": false,
+  "implementation_frozen": true,
+  "may_not_be_modified_after_the_first_call": true,
+  "rule_if_a_bug_is_found": "stop the whole qualification; a fixed implementation may not continue the remaining replicates"
+}

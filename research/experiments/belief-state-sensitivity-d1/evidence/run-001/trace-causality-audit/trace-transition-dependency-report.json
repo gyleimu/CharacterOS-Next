@@ -1,0 +1,12 @@
+{
+  "code_evidence": "canonical-transition-effect.ts:217-231",
+  "order": [
+    "stateHashBefore = stateHashAnyVersion(cur)",
+    "stateHashAfter = stateHashAnyVersion(preTraceValidation.value)  // taken BEFORE trace_window is written",
+    "traceEntry = buildTraceEntry({ ...state_hash_before, ...state_hash_after })",
+    "nextWindow = nextTraceWindow(cur.trace_window, traceEntry, nextRevision)",
+    "draft[\"trace_window\"] = nextWindow"
+  ],
+  "reverse_dependency_exists": false,
+  "acyclicity_law": "trace_window is excluded from the StateHash input set, which is what makes the cycle impossible"
+}

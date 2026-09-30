@@ -1,0 +1,103 @@
+{
+  "artifact": "PROVIDER_READINESS_VERDICT",
+  "outcome": "PASS",
+  "tokens": [
+    "PHASE0_PROVIDER_READINESS_GATE_PASS",
+    "PHASE0_FRESH_RERUN_AUTHORISED"
+  ],
+  "identity": {
+    "provider": "Ollama",
+    "base_url": "http://127.0.0.1:11434",
+    "model_expected": "qwen3.5:9b",
+    "model_digest_expected": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "model_digest_observed": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+    "identity_unchanged": true,
+    "fallback_configured": false
+  },
+  "request_hash": "sha256:00339f4acf551b10c185c0cbbc427b511ec2f4a6c84530dd73075c001c96f338",
+  "probes_planned": 3,
+  "probes_executed": 3,
+  "planned_equals_actual": true,
+  "criteria": {
+    "all_probes_completed_within_the_frozen_timeout": true,
+    "all_probes_completed_normally": true,
+    "all_probes_used_the_same_frozen_request_hash": true,
+    "same_model_digest_throughout": true,
+    "no_provider_reload_midway": true,
+    "no_fallback_used": "STRUCTURALLY_TRUE_BY_CONSTRUCTION"
+  },
+  "criteria_actually_gating_the_verdict": [
+    "all_probes_completed_within_the_frozen_timeout",
+    "all_probes_completed_normally",
+    "all_probes_used_the_same_frozen_request_hash",
+    "same_model_digest_throughout",
+    "no_provider_reload_midway"
+  ],
+  "conformance_note": "an earlier revision of this program computed PASS from a subset of the conditions its own frozen predicate named, leaving digest and reload recorded but non-gating. The gap was closed BEFORE this execution; the request bytes, request hash, provider, model, transport, context and generation configuration, timeout and planned N are all byte-identical to the first gate.",
+  "descriptive_metrics_not_gating": {
+    "throughput_tok_s_per_probe": [
+      35.29,
+      33.82,
+      31.89
+    ],
+    "throughput_min": 31.89,
+    "throughput_max": 35.29,
+    "latencies_ms": [
+      51710,
+      44320,
+      46980
+    ]
+  },
+  "environment_diagnostics": {
+    "vram_total_mib": "8188",
+    "vram_used_mib_after_probes": "7299",
+    "gpu_temperature_c": "86",
+    "note": "diagnostic only; §8 forbids an arbitrary VRAM number from itself gating the rerun"
+  },
+  "blocker_if_failed": null,
+  "on_failure_what_was_NOT_done": [],
+  "next_step_if_pass": "PHASE0_FRESH_RERUN_AUTHORISED — execute PHASE0-RUN-3 in a NEW evidence directory with fresh opaque subjects and the same frozen design; no infrastructure work in that round",
+  "next_step_if_fail": "PHASE0_RERUN_REMAINS_BLOCKED_BY_PROVIDER_ENVIRONMENT. Restoring the environment (closing GPU-consuming applications, restarting the machine) is execution-environment restoration, not a protocol amendment, and the SAME frozen gate may be re-run afterwards.",
+  "authorized_phase_1": false,
+  "mid_gate_reload_detection": {
+    "timeline": [
+      {
+        "at": "probe_1:before",
+        "loaded": false,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      },
+      {
+        "at": "probe_1:after",
+        "loaded": true,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      },
+      {
+        "at": "probe_2:before",
+        "loaded": true,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      },
+      {
+        "at": "probe_2:after",
+        "loaded": true,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      },
+      {
+        "at": "probe_3:before",
+        "loaded": true,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      },
+      {
+        "at": "probe_3:after",
+        "loaded": true,
+        "digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+      }
+    ],
+    "mid_gate_reload": false,
+    "reason": "at most one initial load; the same resident model served every remaining planned probe",
+    "transitions_observed": 1,
+    "unloads_observed": 0,
+    "loads_observed": 1,
+    "digest_changes_observed": 0,
+    "detection_scope": "detects every unload and every digest change observable at the per-probe sample points, and any second load transition. It does NOT detect a silent unload-and-reload that completes entirely between two sample points while ending resident — that limitation is recorded rather than hidden."
+  }
+}

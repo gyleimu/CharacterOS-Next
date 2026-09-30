@@ -1,0 +1,147 @@
+{
+  "version": "belief-causal-path-d2-rev1.1e",
+  "recovery_policy": {
+    "scope": "A1 HIGH/LOW state experiment ONLY",
+    "planned_trials": 12,
+    "planned_denominator": 12,
+    "high_planned": 6,
+    "low_planned": 6,
+    "trial_identities_fixed_by": "the frozen A1 schedule artifact, mirrored by D2A1_STATE_SCHEDULE_IDENTITIES",
+    "one_trial_is_one_attempt": true,
+    "max_provider_attempts_per_scheduled_trial": 1,
+    "retry_forbidden": true,
+    "replacement_forbidden": true,
+    "deletion_forbidden": true,
+    "extra_replicate_forbidden": true,
+    "thirteenth_call_forbidden": true,
+    "executor_fallback_forbidden": true,
+    "moving_a_failed_trial_to_the_end_forbidden": true,
+    "replacing_an_invalid_output_with_a_later_valid_output_forbidden": true,
+    "denominator_comes_from_the_planned_sample": true,
+    "counts_as_invalid": [
+      "transport failure",
+      "timeout classified as a failed provider attempt",
+      "malformed output",
+      "parser invalid",
+      "parsed token outside the frozen A1 stance vocabulary",
+      "missing provider result for a scheduled attempted trial"
+    ],
+    "invalid_is_not_a_stance_token": true,
+    "invalid_does_not_enter_the_modal_count": true,
+    "invalid_may_not_be_deleted_replaced_or_retried": true,
+    "on_any_invalid": {
+      "minimum_invalid_trials_to_trigger": 1,
+      "verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "outcome_class": "INCONCLUSIVE",
+      "scientific_positive": false,
+      "scientific_null": false,
+      "high_modal_scientific_scoring_executed": false,
+      "low_modal_scientific_scoring_executed": false,
+      "d2_b_authorised": false,
+      "replacement_calls": 0,
+      "rationale": "a provider or format failure is not evidence about semantic transfer; reporting it as a semantic-transfer null would be a category error"
+    },
+    "on_zero_invalid": "all twelve trials transport-valid, parser-valid and token-legal — only then may the frozen scorer run",
+    "applied_retroactively_to": [],
+    "reuse_from_the_pilot_policy": false,
+    "rationale_for_a_separate_rule": "REV1.1d scopes its policy to the neutral pilot, so the treatment needed its own; this is the rule that was missing"
+  },
+  "schedule_identities": [
+    {
+      "position": 1,
+      "trial_id": "d2-a1-state-001",
+      "arm": "HIGH"
+    },
+    {
+      "position": 2,
+      "trial_id": "d2-a1-state-002",
+      "arm": "LOW"
+    },
+    {
+      "position": 3,
+      "trial_id": "d2-a1-state-003",
+      "arm": "LOW"
+    },
+    {
+      "position": 4,
+      "trial_id": "d2-a1-state-004",
+      "arm": "HIGH"
+    },
+    {
+      "position": 5,
+      "trial_id": "d2-a1-state-005",
+      "arm": "HIGH"
+    },
+    {
+      "position": 6,
+      "trial_id": "d2-a1-state-006",
+      "arm": "LOW"
+    },
+    {
+      "position": 7,
+      "trial_id": "d2-a1-state-007",
+      "arm": "LOW"
+    },
+    {
+      "position": 8,
+      "trial_id": "d2-a1-state-008",
+      "arm": "HIGH"
+    },
+    {
+      "position": 9,
+      "trial_id": "d2-a1-state-009",
+      "arm": "HIGH"
+    },
+    {
+      "position": 10,
+      "trial_id": "d2-a1-state-010",
+      "arm": "LOW"
+    },
+    {
+      "position": 11,
+      "trial_id": "d2-a1-state-011",
+      "arm": "LOW"
+    },
+    {
+      "position": 12,
+      "trial_id": "d2-a1-state-012",
+      "arm": "HIGH"
+    }
+  ],
+  "positive_verdict": "CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE_ON_PREREGISTERED_PARAPHRASE",
+  "null_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+  "inconclusive_verdicts": [
+    "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS"
+  ],
+  "supersedes_scope": [
+    "A1 state-experiment invalid/recovery policy",
+    "executable operationalization of existing A1 scorer"
+  ],
+  "model_calls_before_amendment_for_a1_treatment": 0,
+  "a1_state_outputs_seen_before_amendment": false,
+  "a1_requests_modified": false,
+  "a1_schedule_modified": false,
+  "a1_prediction_modified": false,
+  "scientific_positive_criterion_changed": false,
+  "null_localization_changed": false,
+  "revision_1_1d_manifest_hash_preserved": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b",
+  "tests": {
+    "planned_denominator": 12,
+    "arm_split": "6 HIGH / 6 LOW",
+    "perfect_predicted_case": "POSITIVE",
+    "perfect_predicted_case_b_authorised": true,
+    "same_token_case": "NULL",
+    "reversed_case": "NULL",
+    "high_tie_case": "NULL (unique modal null)",
+    "one_invalid_case": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+    "six_invalid_case": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+    "duplicate_identity_case": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "scheme_missing_identity_case": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "out_of_vocabulary_case": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+    "null_is_distinct_from_inconclusive": true,
+    "no_threshold_added": true,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:91697567fba28d3a067eb1bdc822c18f45a1948434d8b7516da836e1d642103c"
+}

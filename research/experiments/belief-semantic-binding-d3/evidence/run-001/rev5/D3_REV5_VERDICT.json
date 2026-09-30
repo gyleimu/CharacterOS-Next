@@ -1,0 +1,43 @@
+{
+  "stage": "D3_REVISION_5",
+  "model_calls": 0,
+  "verdicts": [
+    "D3_PREREGISTRATION_FINALIZED_REV5",
+    "D3_B_TARGET_REQUEST_NOT_STATE_BLIND",
+    "D3_B_TARGET_STATE_BLIND_REQUEST_FROZEN",
+    "D3_B_TARGET_SCHEDULE_REFROZEN",
+    "D3_B_TARGET_AUTHORISED",
+    "D3_B_TARGET_NOT_EXECUTED"
+  ],
+  "old_invalid_target": {
+    "hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+    "marking": "INVALID_FOR_EXECUTION_BY_STATE_BLINDNESS_CONTRACT",
+    "retained": true,
+    "calls_made_with_it": 0
+  },
+  "corrected_target": {
+    "hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+    "state_blind": true,
+    "occurrences_of_the_canonical_proposition": 1
+  },
+  "target_calls": 0,
+  "target_outputs_seen": false,
+  "d3_model_calls": 15,
+  "preserved": {
+    "instrument_qualified": true,
+    "noise_gate_pass": true,
+    "r_confirm_B": 6,
+    "qualification_rerun": false,
+    "noise_rerun": false
+  },
+  "next_round_may_only": "execute the six corrected target calls, freeze the dataset before scoring, and classify with scoreD3BTargetV0",
+  "next_round_may_not": [
+    "use the invalid target request",
+    "re-run qualification or the noise pilot",
+    "execute D3-A",
+    "execute D2-B",
+    "modify any frozen artifact"
+  ],
+  "revision_4_manifest_hash_preserved": "sha256:b5f962f03ce6e33a8c0f8c8ce7f976a67c925bcb46d7033ee41525af47d49e6f",
+  "rev5_manifest_hash": "sha256:76c9b99e8c85f361772295cafa2ce2d0009ba6e770994be7c23beb79fdb83a20"
+}

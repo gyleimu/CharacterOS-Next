@@ -1,0 +1,53 @@
+{
+  "binding_source": "contract-rev1-1d-a1-neutral-and-context.ts :: D2A1_PRODUCTION_CONTEXT_BINDING",
+  "revision_1_1d_manifest_hash": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b",
+  "per_arm": {
+    "HIGH": {
+      "subject_id_equals_rev11d_binding": true,
+      "subject_id_equals_D1": true,
+      "observation_id_equals_rev11d_binding": true,
+      "observation_id_equals_D1_OBSERVATION_ID": true,
+      "committed_observation_identity_equals_D1": true,
+      "observation_literal_equals_rev11d_binding": true,
+      "probe_id_equals_D1_P1": true,
+      "scene_bytes_equal_the_observation_bytes": true,
+      "task_is_null": true,
+      "canonical_proposition_equals_D1": true,
+      "credence_equals_the_rev11d_arm_value": true,
+      "pass": true
+    },
+    "NEUTRAL": {
+      "subject_id_equals_rev11d_binding": true,
+      "subject_id_equals_D1": true,
+      "observation_id_equals_rev11d_binding": true,
+      "observation_id_equals_D1_OBSERVATION_ID": true,
+      "committed_observation_identity_equals_D1": true,
+      "observation_literal_equals_rev11d_binding": true,
+      "probe_id_equals_D1_P1": true,
+      "scene_bytes_equal_the_observation_bytes": true,
+      "task_is_null": true,
+      "canonical_proposition_equals_D1": true,
+      "credence_equals_the_rev11d_arm_value": true,
+      "pass": true
+    },
+    "LOW": {
+      "subject_id_equals_rev11d_binding": true,
+      "subject_id_equals_D1": true,
+      "observation_id_equals_rev11d_binding": true,
+      "observation_id_equals_D1_OBSERVATION_ID": true,
+      "committed_observation_identity_equals_D1": true,
+      "observation_literal_equals_rev11d_binding": true,
+      "probe_id_equals_D1_P1": true,
+      "scene_bytes_equal_the_observation_bytes": true,
+      "task_is_null": true,
+      "canonical_proposition_equals_D1": true,
+      "credence_equals_the_rev11d_arm_value": true,
+      "pass": true
+    }
+  },
+  "observation_id": "observation:o-d1-p1-awaiting-inspection",
+  "observation_ref": "observation:o-d1-p1-awaiting-inspection",
+  "probe_id": "D1-P1-AWAITING-INSPECTION",
+  "task": null,
+  "verdict": "D2_A1_CONTEXT_BINDING_VERIFIED"
+}

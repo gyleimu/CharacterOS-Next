@@ -1,0 +1,31 @@
+{
+  "stage": "D3_REVISION_2",
+  "model_calls": 0,
+  "verdicts": [
+    "D3_PREREGISTRATION_FINALIZED",
+    "D3_A_REDUNDANT_WITH_D2_A0",
+    "D3_B_QUALIFICATION_AUTHORISED",
+    "D3_B_TARGET_NOT_EXECUTED"
+  ],
+  "d3a_execution_path": "DELETED — no D3-A call may be made in any future round",
+  "d3b_status": "design frozen; transformer and the three scorers still to be implemented and conformance-gated at zero calls",
+  "d3b_all_decisions_frozen": true,
+  "d3b_implementations_pending": 4,
+  "authorised_budget": {
+    "min": 9,
+    "max": 29,
+    "d3a": 0
+  },
+  "d2_b_authorised": false,
+  "d2_b_even_if_d3_b_positive": false,
+  "d1_d2_modified": false,
+  "next_round_may_only": "implement the D3-B transformer and the three frozen scorers, run their conformance gates at zero calls, freeze the implementation hashes, then run D3-B qualification",
+  "next_round_may_not": [
+    "execute any D3-A call",
+    "re-run D1 or D2",
+    "execute D2-B",
+    "modify any D1 or D2 frozen artifact"
+  ],
+  "revision_1_manifest_hash_preserved": "sha256:adcb3212726a972383b72d826c522b074bab9fbe0396df0f6d9844961df78d8a",
+  "rev2_manifest_hash": "sha256:f860575614ce180c1ad51244b6013b1dbf677db5cd6589a06f6fb0922e06cd55"
+}

@@ -1,0 +1,21 @@
+{
+  "A": {
+    "fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+    "expected_token": "SUPPORTS_B",
+    "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+  },
+  "B": {
+    "fixture_id": "D4C0A-QF-B-OPPOSE-TRANSFER",
+    "expected_token": "OPPOSES_B",
+    "request_hash": "sha256:e2f704406a0ff73ec7b793f366dbabf956997465aa09705770875ba434b30998"
+  },
+  "C": {
+    "fixture_id": "D4C0A-QF-C-NO-TRANSFER",
+    "expected_token": "UNCERTAIN_B",
+    "request_hash": "sha256:454a29538fafcfbc39872b11671ac52699a03bd94dd0af24374269a72dee5e1d"
+  },
+  "built_once_per_fixture": true,
+  "replicates_reuse_the_same_bytes": true,
+  "replicate_ordinal_in_the_request": false,
+  "planned_calls": 9
+}

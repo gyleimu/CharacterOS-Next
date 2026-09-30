@@ -1,0 +1,22 @@
+{
+  "P1_FULL": {
+    "HIGH": 6,
+    "LOW": 6
+  },
+  "P2_FULL": {
+    "HIGH": 6,
+    "LOW": 6
+  },
+  "P3_NEGATIVE_CONTROL": {
+    "HIGH": 6,
+    "LOW": 6
+  },
+  "P1_FRAME_MINIMAL": {
+    "HIGH": 6,
+    "LOW": 6
+  },
+  "STATE_REVERSAL": {
+    "HIGH": 6,
+    "LOW": 6
+  }
+}

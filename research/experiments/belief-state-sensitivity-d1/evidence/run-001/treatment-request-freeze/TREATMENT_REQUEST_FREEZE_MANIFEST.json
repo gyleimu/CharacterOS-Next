@@ -1,0 +1,9 @@
+{
+  "verdict": "D1_CORE_TREATMENT_REQUEST_SET_FROZEN",
+  "core_treatment_calls_authorised": 60,
+  "high_low_treatment_started": false,
+  "model_calls_transmitted_total": 6,
+  "model_calls_this_round": 0,
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "payload_count": 10
+}

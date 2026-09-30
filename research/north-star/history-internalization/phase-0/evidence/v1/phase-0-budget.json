@@ -1,0 +1,22 @@
+{
+  "per_turn_families": [
+    "cognition 1",
+    "language 1",
+    "factual event appraisal at least 1",
+    "belief semantic exactly 1"
+  ],
+  "v1_assumed_calls_per_turn": 2,
+  "v1_defect": "the V1 preregistration counted only cognition + belief semantic; the production turn also runs language and appraisal, so 2 was wrong and the Phase-0 budget was not extractable",
+  "v1_n_was_calibration_derived": true,
+  "rev2_n_is_frozen_a_priori": true,
+  "rev2_n_turns_per_arm": 5,
+  "qualification_turns": 1,
+  "exact_turns": 11,
+  "exact_belief_semantic_calls": 11,
+  "auxiliary_calls_are_measured_not_scientific": true,
+  "frozen_auxiliary_upper_bound_per_turn": 5,
+  "frozen_total_model_call_upper_bound": 66,
+  "v1_budget_was": 115,
+  "stop_rule_frozen_on": "turns, never on calls or on an observed effect",
+  "stop_rule": "exactly 11 turns: 1 qualification + 5 per arm; then STOP regardless of result"
+}

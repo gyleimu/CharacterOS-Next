@@ -1,0 +1,32 @@
+{
+  "HIGH": {
+    "before_schema": "conversation-cognition-proposal-v8",
+    "after_schema_is_decision_probe": true,
+    "schema_substituted": true,
+    "contract_header_count": 1,
+    "anchor_block_count": 1,
+    "contract_footer_count": 1,
+    "duplicate_override": false,
+    "already_probed_reentry": false
+  },
+  "LOW": {
+    "before_schema": "conversation-cognition-proposal-v8",
+    "after_schema_is_decision_probe": true,
+    "schema_substituted": true,
+    "contract_header_count": 1,
+    "anchor_block_count": 1,
+    "contract_footer_count": 1,
+    "duplicate_override": false,
+    "already_probed_reentry": false
+  },
+  "NEUTRAL": {
+    "before_schema": "conversation-cognition-proposal-v8",
+    "after_schema_is_decision_probe": true,
+    "schema_substituted": true,
+    "contract_header_count": 1,
+    "anchor_block_count": 1,
+    "contract_footer_count": 1,
+    "duplicate_override": false,
+    "already_probed_reentry": false
+  }
+}

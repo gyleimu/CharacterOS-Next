@@ -1,0 +1,29 @@
+{
+  "stage": "D4_C1-rev1",
+  "model_calls": 0,
+  "final_states": [
+    "D4_C1_PREREGISTRATION_FINALIZED_REV1",
+    "D4_C1_RECORD_STABILITY_IMPLEMENTATION_AUTHORISED",
+    "D4_C1_TARGET_SCHEDULE_FROZEN",
+    "D4_C1_TARGET_NOT_EXECUTED",
+    "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+    "LINK_4_REMAINS_LOCKED",
+    "CHARACTEROS_UNMODIFIED"
+  ],
+  "explicit_reference_is_byte_identical_to_c0a": true,
+  "four_way_isolation_holds": true,
+  "target_calls_planned": 24,
+  "stability_calls_planned": 6,
+  "c1_total_budget": 30,
+  "requalification_calls": 0,
+  "revision_0_manifest_hash_preserved": "sha256:0e115f94c79b8eb8ce40357a18c9cf5904d189b747a88d8a1ae2fe99bac5b2a2",
+  "rev1_manifest_hash": "sha256:265368c5a94f7b763728d76cba401c9b0ce6c2b05e2973a2b822e7695f947ae8",
+  "scientific_content_changed": false,
+  "next_round_may_only": "implement the record-cell renderer and the record-form stability fixture, pass offline conformance at zero calls, freeze implementation hashes, then execute ONLY the six stability calls and stop",
+  "next_round_may_not": [
+    "run the 24-call target in the same round as the stability gate",
+    "modify CharacterOS",
+    "change the record bytes or credences",
+    "lower the per-cell standard"
+  ]
+}

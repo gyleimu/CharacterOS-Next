@@ -1,0 +1,27 @@
+{
+  "constructor": "buildArmWorldV0",
+  "levels": [
+    "HIGH",
+    "LOW",
+    "NEUTRAL"
+  ],
+  "subject_id": "d1-belief-sensitivity-subject",
+  "proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+  "proposition_id": "belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae",
+  "credences": {
+    "HIGH": 0.8,
+    "LOW": 0.2,
+    "NEUTRAL": 0.5
+  },
+  "operation_order": [
+    "fresh InMemoryMemoryRepository + R0",
+    "createInteractiveSubjectSeedV0",
+    "deriveBeliefPropositionKeyV0 -> deriveBeliefPropositionId",
+    "materializeSubjectStateV4V0",
+    "fresh createInMemorySubjectCoreFacadeForExplicitV4V0 + issuer + micl minter",
+    "observationInput -> buildContextDelta -> buildObservationProposal",
+    "facade.reserveAndRoute -> facade.commitReserved"
+  ],
+  "composed_production_exports_only": true,
+  "production_semantics_copied": false
+}

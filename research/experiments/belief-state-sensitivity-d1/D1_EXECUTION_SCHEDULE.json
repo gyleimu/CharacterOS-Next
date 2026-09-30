@@ -1,0 +1,1252 @@
+{
+  "schedule_spec_version": "d1-belief-state-sensitivity-revision-2",
+  "frozen_before_any_treatment_call": true,
+  "model_calls_at_freeze": 0,
+  "seed_source": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+  "r_confirm_note": "this schedule is a SPECIMEN generated at r_confirm = 14 (the pilot modal_count = 5 case). The execution-time schedule is regenerated from the SAME pure function once r_confirm is mechanically determined; nothing else may change.",
+  "properties": {
+    "determinism": "same preregistration hash and r_confirm -> byte-identical schedule",
+    "counterbalancing": "each block is r pairs of (HIGH, LOW); max run length is 2",
+    "forbidden_orders": "all HIGH then all LOW, and all LOW then all HIGH, are structurally impossible",
+    "outcome_blindness": "the generator takes no trial output; the schedule is complete before the block's first call",
+    "ordinal_handling": "replicate_ordinal is bookkeeping only and never enters the model-facing request bytes",
+    "pilot_separation": "the STATE_NEUTRAL noise pilot is separate; only its modal_count feeds r_confirm, and the treatment schedule is generated after r_confirm is frozen",
+    "temporal_drift_caveat": "counterbalancing does NOT prove provider drift is absent; it only prevents the treatment arm from being fully collinear with call time"
+  },
+  "specimen": {
+    "amendment_version": "d1-belief-state-sensitivity-revision-2",
+    "seed_source": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "r_confirm": 14,
+    "blocks": [
+      {
+        "block": "P1_FULL",
+        "arms": [
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      },
+      {
+        "block": "P2_FULL",
+        "arms": [
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      },
+      {
+        "block": "P3_NEGATIVE_CONTROL",
+        "arms": [
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      },
+      {
+        "block": "P1_FRAME_MINIMAL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      },
+      {
+        "block": "STATE_REVERSAL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      },
+      {
+        "block": "RESTART_CONTRAST",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 14,
+        "low_count": 14,
+        "max_run_length": 2
+      }
+    ],
+    "trials": [
+      {
+        "ordinal": 1,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 2,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 3,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 4,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 5,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 6,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 7,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 8,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 9,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 10,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 11,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 12,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 13,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 14,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 15,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 16,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 17,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 18,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 19,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 20,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 21,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 22,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 23,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 24,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 25,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 26,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 27,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 28,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 28
+      },
+      {
+        "ordinal": 29,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 30,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 31,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 32,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 33,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 34,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 35,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 36,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 37,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 38,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 39,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 40,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 41,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 42,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 43,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 44,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 45,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 46,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 47,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 48,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 49,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 50,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 51,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 52,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 53,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 54,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 55,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 56,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 28
+      },
+      {
+        "ordinal": 57,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 58,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 59,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 60,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 61,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 62,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 63,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 64,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 65,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 66,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 67,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 68,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 69,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 70,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 71,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 72,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 73,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 74,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 75,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 76,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 77,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 78,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 79,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 80,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 81,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 82,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 83,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 84,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 28
+      },
+      {
+        "ordinal": 85,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 86,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 87,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 88,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 89,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 90,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 91,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 92,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 93,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 94,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 95,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 96,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 97,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 98,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 99,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 100,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 101,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 102,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 103,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 104,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 105,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 106,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 107,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 108,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 109,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 110,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 111,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 112,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 28
+      },
+      {
+        "ordinal": 113,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 114,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 115,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 116,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 117,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 118,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 119,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 120,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 121,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 122,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 123,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 124,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 125,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 126,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 127,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 128,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 129,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 130,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 131,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 132,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 133,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 134,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 135,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 136,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 137,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 138,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 139,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 140,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 28
+      },
+      {
+        "ordinal": 141,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 142,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 143,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 144,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 145,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 146,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 147,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 148,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 149,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 150,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 151,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 152,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 153,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 13
+      },
+      {
+        "ordinal": 154,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 14
+      },
+      {
+        "ordinal": 155,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 15
+      },
+      {
+        "ordinal": 156,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 16
+      },
+      {
+        "ordinal": 157,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 17
+      },
+      {
+        "ordinal": 158,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 18
+      },
+      {
+        "ordinal": 159,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 19
+      },
+      {
+        "ordinal": 160,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 20
+      },
+      {
+        "ordinal": 161,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 21
+      },
+      {
+        "ordinal": 162,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 22
+      },
+      {
+        "ordinal": 163,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 23
+      },
+      {
+        "ordinal": 164,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 24
+      },
+      {
+        "ordinal": 165,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 25
+      },
+      {
+        "ordinal": 166,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 26
+      },
+      {
+        "ordinal": 167,
+        "block": "RESTART_CONTRAST",
+        "arm": "LOW",
+        "replicate_ordinal": 27
+      },
+      {
+        "ordinal": 168,
+        "block": "RESTART_CONTRAST",
+        "arm": "HIGH",
+        "replicate_ordinal": 28
+      }
+    ],
+    "outcome_blind": true,
+    "replicate_ordinal_in_request_bytes": false,
+    "schedule_hash": "sha256:b088a214be157546e558b1bc2fbc5415d010c3cf57a27341f8a7a77e48754d8e"
+  }
+}

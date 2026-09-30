@@ -1,0 +1,150 @@
+{
+  "version": "belief-semantic-binding-localization-d3-rev3",
+  "conflict": {
+    "verdict": "D3_B_TARGET_AND_NOISE_REQUEST_IDENTITY_CONFLICT",
+    "discovered_at_target_calls": 0,
+    "discovered_at_qualification_calls": 9,
+    "the_two_mutually_exclusive_facts": [
+      "the target request has been called",
+      "D3_B_TARGET_NOT_EXECUTED"
+    ],
+    "half_a_identity": "a pilot on the target request is target evidence: the first call would already execute the target, so the target's trial count and the claim that it has not been run would both be false",
+    "half_b_unanimity_interaction": "the frozen target scorer requires unanimity over r_confirm_B trials. Six pilot calls on the target request returning five expected plus one dissent would make the unanimity positive impossible before the target stage starts, and the mapping's 5 -> r = 14 branch cannot restore eligibility — it would fund fourteen further calls for a run that can no longer succeed",
+    "consequence_of_half_b": "under the old design the extension branch was a formality rather than a remedy; the pilot's noise estimate could only ever disqualify the target, never repair it",
+    "resolution": "the noise pilot uses a NON-TARGET frozen request, chosen by a frozen outcome-blind rule",
+    "any_target_call_was_made_to_find_this": false,
+    "any_pilot_call_was_made_to_find_this": false
+  },
+  "preserved": {
+    "target_pair": {
+      "statement_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+      "statement_b": "the view that a finding depending mainly on secondhand report is to be held with reserve"
+    },
+    "target_pair_changed": false,
+    "expected_target_relation": "SEMANTICALLY_ALIGNED",
+    "expected_relation_changed": false,
+    "vocabulary_changed": false,
+    "anchors_changed": false,
+    "transformer_changed": false,
+    "qualification_result_changed": false,
+    "target_scorer_changed": false,
+    "unanimity_requirement_changed": false,
+    "modal_count_mapping_changed": false,
+    "d1_evidence_changed": false,
+    "d2_evidence_changed": false,
+    "d3_a_still_deleted": true,
+    "only_thing_changed": "the noise pilot's request identity"
+  },
+  "selection": {
+    "rule": "noise_fixture_id = qualification_fixture_manifest[0], equivalently the lexicographically smallest frozen fixture_id",
+    "no_fourth_fixture_was_written": true,
+    "selection_is_a_pure_function_of_the_frozen_manifest": true,
+    "reads_qualification_outputs": false,
+    "reads_modal_tokens": false,
+    "reads_correctness": false,
+    "reads_latency": false,
+    "reads_provider_metadata": false,
+    "reads_target_output": false,
+    "reads_scientific_outcome": false,
+    "selection_was_made_before_any_target_call": true,
+    "selection_was_made_before_any_pilot_call": true
+  },
+  "noise_request_identity": {
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "fixture_id_under_the_lexicographic_rule": "D3B-QF-A-ALIGNED",
+    "the_two_rules_agree": true,
+    "request_bytes_source": "the exact model-facing request frozen during D3-B qualification for this fixture, reused verbatim",
+    "re_render_at_pilot_time": false,
+    "may_not_modify_the_statement_pair": true,
+    "must_not_contain_the_canonical_caution": true,
+    "must_not_contain_the_target_paraphrase": true,
+    "must_not_be_the_target_request": true,
+    "must_not_contain_any_characteros_state": true,
+    "hash_must_equal_the_qualification_request_hash_for_this_fixture": true,
+    "hash_source": "the D3-B qualification evidence's fixture request artifact"
+  },
+  "pilot_meaning": {
+    "measures": "instrument-level identical-request self-noise on one preregistered synthetic NON-TARGET relation request",
+    "does_not_measure": [
+      "the canonical/paraphrase relation",
+      "target-specific difficulty",
+      "CharacterOS state or behaviour",
+      "cross-wording stance transfer"
+    ],
+    "sole_use": "to choose the target replicate count through the frozen modal-count mapping",
+    "residual_limitation": "the calibration is therefore instrument-level rather than target-specific: a target whose difficulty differs from the synthetic fixture could carry different noise. That limitation is accepted here because the alternative — calibrating on the target — would consume the target's own trials and could pre-empt its unanimity requirement. It is recorded rather than hidden.",
+    "calibration_still_meaningful_because": "the pilot and the target share the same executor, the same measurement contract, the same closed set of three relation tokens and the same request shape; what differs is which two statements are compared"
+  },
+  "noise_rule": {
+    "planned_calls": 6,
+    "one_request_six_times": true,
+    "mapping": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "mapping_changed": false,
+    "invalid_policy_unchanged": true,
+    "valid_required_for_noise_scoring": 6,
+    "unique_modal": "the relation token with a strictly highest count among the six valid trials",
+    "modal_count": "the number of the six valid pilot trials carrying the single most frequent relation token",
+    "tie_verdict": "D3_B_INCONCLUSIVE_BY_MODAL_TIE_UNDEFINED",
+    "invalid_verdict": "D3_B_INCONCLUSIVE_BY_PILOT_INVALID_OUTPUTS",
+    "stop_verdict": "INCONCLUSIVE_BY_DECISION_NOISE"
+  },
+  "target_isolation": {
+    "target_calls_before_noise_pilot": 0,
+    "target_calls_after_noise_pilot_must_remain": 0,
+    "target_calls_after_noise_pilot_are_target_evidence": false,
+    "target_dataset_must_not_include_noise_trials": true,
+    "noise_trials_may_not_appear_in": [
+      "the target counts",
+      "the target unanimity scorer",
+      "the target dataset hash",
+      "the target scientific verdict"
+    ],
+    "two_evidence_sets_fully_separated": true,
+    "target_is_the_only_source_of_target_evidence": true,
+    "d3_b_target_not_executed_remains_true": true
+  },
+  "budget": {
+    "qualification_calls_completed": 9,
+    "noise_pilot_calls": 6,
+    "target_formula": "r_confirm_B",
+    "target_is_not_2r": true,
+    "why_not_2r": "D3-B has no HIGH/LOW arms: it is a single state-blind relation question, so the target run is r_confirm_B byte-identical calls and not 2 * r",
+    "target_planned_calls_after_noise": "r_confirm_B, i.e. exactly 6 or exactly 14",
+    "target_planned_calls_depends_on_the_noise_pilot": true,
+    "revision_1_already_used_r": true,
+    "revision_1_note": "the revision-1 budget already recorded d3b_formula = r_confirm_B and an authorised maximum of 29 = 9 + 6 + 14, so the budget is unchanged by this revision",
+    "minimum_path_total": 21,
+    "maximum_path_total": 29,
+    "d3a_calls": 0,
+    "d2b_calls": 0,
+    "authorised_total_max": 29,
+    "budget_changed_by_this_revision": false
+  },
+  "subsumption_verdict_unchanged": "D3_A_IS_SUBSUMED_BY_D2_A0",
+  "revision_2_manifest_hash_preserved": "sha256:f860575614ce180c1ad51244b6013b1dbf677db5cd6589a06f6fb0922e06cd55",
+  "tests": {
+    "selection_rule": "noise_fixture_id = qualification_fixture_manifest[0], equivalently the lexicographically smallest frozen fixture_id",
+    "selected_fixture_id": "D3B-QF-A-ALIGNED",
+    "lexicographic_rule_agrees": true,
+    "selected_is_not_the_target_pair": true,
+    "selection_reads_no_outputs": true,
+    "noise_mapping_unchanged": true,
+    "tie_verdict_unchanged": true,
+    "target_calls_before_noise_pilot": 0,
+    "target_planned_calls_formula": "r_confirm_B",
+    "target_is_not_2r": true,
+    "budget_unchanged": true,
+    "d3a_calls": 0,
+    "d2b_calls": 0,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:07e6a52a8eec4ec39f8bfd19008db49a791255463f96b499fbb0973a435dfad2"
+}

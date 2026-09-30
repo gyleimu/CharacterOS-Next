@@ -1,0 +1,28 @@
+{
+  "artifact": "MODEL_FACING_PROMPT_BYTE_COMPARISON",
+  "status": "BASELINE_RECORDED — nothing has been changed yet, so there is no new version to compare",
+  "baseline": {
+    "run_1_first_cognition_request": {
+      "system_bytes": "12771",
+      "user_bytes": "4307",
+      "message_hash": "sha256:485c483c8abef2b62be306ffe814ee2b90e03e914bef792619fc94dca64a1a39"
+    },
+    "run_3_scientific_cognition_request_hashes": [
+      {
+        "scientific_turn_id": "A:turn_0",
+        "request_hash": "sha256:40e5f0bb5cc36f4fcb521b24062c750cf0cc3bfa4c8354db59a670142a6c39e1"
+      },
+      {
+        "scientific_turn_id": "A:turn_1",
+        "request_hash": "sha256:b75730085f6e9dad7171bb70db23eb89354528025fe561b1a19e53f0cc50e01f"
+      }
+    ]
+  },
+  "requirement_if_a_constraint_is_added": {
+    "system_prompt_bytes_must_stay_equal": true,
+    "user_prompt_bytes_must_stay_equal": true,
+    "prompt_text_change_allowed": false,
+    "if_prompt_text_must_change": "STOP — a prompt change would be a prompt rescue and is forbidden"
+  },
+  "source_evidence_that_the_schema_is_not_part_of_the_prompt_text": "conversation-cognition-provider-v8.ts builds the messages and separately sets structured_output; the schema travels as a transport parameter, not as prompt text"
+}

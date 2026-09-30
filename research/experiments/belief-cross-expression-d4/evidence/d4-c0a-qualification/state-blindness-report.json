@@ -1,0 +1,27 @@
+{
+  "forbidden_substrings_checked": [
+    "CharacterOS",
+    "characteros",
+    "[SUBJECTIVE BELIEF STANCES",
+    "proposition_id",
+    "credence",
+    "projection_hash",
+    "belief-prop-v0-",
+    "HIGH",
+    "LOW",
+    "ENDORSES_",
+    "DOUBTS_",
+    "SUPPORTS_PARAPHRASED",
+    "OPPOSES_PARAPHRASED",
+    "UNCERTAIN_ABOUT_PARAPHRASED"
+  ],
+  "hits": [],
+  "material_covers": {
+    "base": 1,
+    "contract": 1,
+    "target_arms": 2,
+    "qualification_fixtures": 3
+  },
+  "state_blind": true,
+  "verdict": "D4_C0A_REQUEST_MATERIAL_IS_STATE_BLIND"
+}

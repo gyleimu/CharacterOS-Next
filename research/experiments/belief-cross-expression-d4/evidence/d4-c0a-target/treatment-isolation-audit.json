@@ -1,0 +1,22 @@
+{
+  "system_message_byte_identical": true,
+  "same_proposition_a": true,
+  "same_proposition_b": true,
+  "same_explicit_relation": true,
+  "same_measurement_contract": true,
+  "same_schema": true,
+  "same_anchors": true,
+  "same_output_vocabulary": true,
+  "same_surrounding_framing": true,
+  "differing_user_line_count": 1,
+  "differing_lines": [
+    {
+      "index": 4,
+      "support": "SUBJECT STANCE TOWARD A: SUPPORTS",
+      "oppose": "SUBJECT STANCE TOWARD A: OPPOSES"
+    }
+  ],
+  "treatment_correlated_differences_beyond_the_stance": 0,
+  "byte_identical_after_the_frozen_sentinel_normalisation": true,
+  "verdict": "D4_C0A_TARGET_TREATMENT_ISOLATION_HOLDS"
+}

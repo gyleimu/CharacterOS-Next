@@ -1,0 +1,20 @@
+{
+  "HIGH": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers": [],
+    "expected_answer_hints": []
+  },
+  "LOW": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers": [],
+    "expected_answer_hints": []
+  },
+  "NEUTRAL": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers": [],
+    "expected_answer_hints": []
+  }
+}

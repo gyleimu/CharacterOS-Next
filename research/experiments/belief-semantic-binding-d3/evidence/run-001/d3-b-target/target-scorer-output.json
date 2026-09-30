@@ -1,0 +1,19 @@
+{
+  "scorer": "scoreD3BTargetV0 (frozen) — called, not re-implemented",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "outcome_class": "POSITIVE",
+    "collection_integrity": true,
+    "collection_integrity_failures": [],
+    "invalid_count": 0,
+    "scientific_scoring_executed": true,
+    "counts": {
+      "SEMANTICALLY_ALIGNED": 6,
+      "SEMANTICALLY_UNRELATED": 0,
+      "SEMANTICALLY_OPPOSED": 0
+    },
+    "verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+    "frozen_combined_statement_if_positive": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+    "may_not_reopen_link_4": true
+  }
+}

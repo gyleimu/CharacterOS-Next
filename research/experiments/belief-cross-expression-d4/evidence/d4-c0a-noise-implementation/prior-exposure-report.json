@@ -1,0 +1,11 @@
+{
+  "same_request_was_called_during_qualification": true,
+  "prior_call_count": 3,
+  "prior_calls_belong_only_to": "D4-C0a qualification evidence",
+  "prior_outputs_enter_the_noise_dataset": false,
+  "prior_outputs_affect_the_stability_classification": false,
+  "new_noise_batch_denominator": 6,
+  "the_stimulus_has_been_seen_before": true,
+  "may_not_be_described_as_never_seen": true,
+  "what_this_does_not_undermine": "the gate reads agreement among the six NEW calls; prior exposure cannot make six identical answers more or less agreeing than they are"
+}

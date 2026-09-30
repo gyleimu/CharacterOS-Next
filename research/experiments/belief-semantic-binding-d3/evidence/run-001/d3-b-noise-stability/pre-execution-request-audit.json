@@ -1,0 +1,23 @@
+{
+  "fixture_id": "D3B-QF-A-ALIGNED",
+  "selection_rule": "frozen at REV3: qualification_fixture_manifest[0], equivalently the lexicographically smallest frozen fixture_id",
+  "reselected": false,
+  "newly_rendered_calibration_stimulus": false,
+  "recorded_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+  "recomputed_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+  "hash_matches_the_frozen_revision_3_and_4_identity": true,
+  "does_not_contain_the_canonical_caution": true,
+  "does_not_contain_the_frozen_a1_paraphrase": true,
+  "does_not_contain_characteros_subject_state": true,
+  "does_not_contain_a_credence": true,
+  "does_not_contain_high_low_neutral": true,
+  "does_not_contain_an_a1_token": true,
+  "is_not_the_d3b_target_request": true,
+  "d3_b_target_calls": 0,
+  "prior_qualification_calls_on_this_request": 3,
+  "prior_calls_enter_this_dataset": false,
+  "prior_calls_enter_the_modal_count": false,
+  "prior_calls_are_target_evidence": false,
+  "planned_denominator": 6,
+  "verdict": "D3_B_NOISE_REQUEST_VERIFIED"
+}

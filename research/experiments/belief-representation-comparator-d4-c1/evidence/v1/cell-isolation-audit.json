@@ -1,0 +1,64 @@
+{
+  "cells": [
+    {
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT",
+      "predicted_token": "SUPPORTS_B",
+      "value_bytes": 8
+    },
+    {
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE",
+      "predicted_token": "OPPOSES_B",
+      "value_bytes": 7
+    },
+    {
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT",
+      "predicted_token": "SUPPORTS_B",
+      "value_bytes": 223
+    },
+    {
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE",
+      "predicted_token": "OPPOSES_B",
+      "value_bytes": 223
+    }
+  ],
+  "constant_across_cells": [
+    "the system message, including the base research frame and the measurement contract",
+    "the schema",
+    "the anchors",
+    "the output vocabulary",
+    "the proposition A literal",
+    "the proposition B literal",
+    "the explicitly supplied semantic-alignment relation",
+    "the measurement question",
+    "the cue prefix SUBJECT STANCE TOWARD A: ",
+    "the generation settings"
+  ],
+  "pairwise_differing_line_counts": {
+    "E-SUPPORT_vs_R-SUPPORT": 1,
+    "E-SUPPORT_vs_R-OPPOSE": 1,
+    "E-OPPOSE_vs_E-SUPPORT": 1,
+    "E-OPPOSE_vs_R-SUPPORT": 1,
+    "E-OPPOSE_vs_R-OPPOSE": 1,
+    "R-OPPOSE_vs_R-SUPPORT": 1
+  },
+  "every_pair_differs_on_exactly_one_line": true,
+  "normalisation_replacements_per_cell": {
+    "E-SUPPORT": 1,
+    "E-OPPOSE": 1,
+    "R-SUPPORT": 1,
+    "R-OPPOSE": 1
+  },
+  "all_four_normalised_forms_are_one_value": true,
+  "distinct_normalised_forms": 1,
+  "the_cue_prefix_is_constant": true,
+  "second_correlated_difference_present": false,
+  "verdict": "D4_C1_CELL_ISOLATION_HOLDS"
+}

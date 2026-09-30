@@ -1,0 +1,131 @@
+{
+  "classifier": "classifyC1RecordStabilityV0 (frozen revision 1.1 name, revision 1 rule)",
+  "baseline": {
+    "outcome": "PASS",
+    "integrity_ok": true,
+    "integrity_failures": [],
+    "counts": {
+      "SUPPORTS_B": 6,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 0
+    },
+    "unique_modal": "SUPPORTS_B",
+    "modal_count": 6,
+    "tie": false,
+    "invalid_count": 0,
+    "scoring_executed": true,
+    "gate_verdict": "D4_C1_RECORD_STABILITY_GATE_PASS",
+    "target_authorised": true,
+    "target_sample_size_set_by_this_gate": false,
+    "target_schedule_modified": false,
+    "evidence_class": "INSTRUMENT_STABILITY"
+  },
+  "matrix": [
+    {
+      "row": "six_identical_a_different_legal_token",
+      "kind": "POSITIVE_CONTROL",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_changed": false,
+      "pass": true
+    },
+    {
+      "row": "one_legal_disagreement",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_RECORD_FORM_SELF_NOISE",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "one_invalid",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "all_invalid",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "out_of_vocabulary_token",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "missing_trial",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "duplicate_identity",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "extra_trial",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "wrong_request_hash",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "verdict_changed": true,
+      "pass": true
+    },
+    {
+      "row": "comparator_target_hash_substituted",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "verdict_before": "D4_C1_RECORD_STABILITY_GATE_PASS",
+      "verdict_after": "D4_C1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "verdict_changed": true,
+      "pass": true
+    }
+  ],
+  "boundary_case_read_as_a_stop": {
+    "token_used": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "verdict": "D4_C1_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS"
+  },
+  "correctness_is_not_stability": {
+    "demonstrated_by": "six_identical_a_different_legal_token",
+    "verdict_unchanged": true,
+    "note": "six identical UNCERTAIN_B tokens — not the fixture's expected token — still PASS"
+  },
+  "reachable_outcomes": [
+    "PASS",
+    "STOP"
+  ],
+  "target_sample_size_set_by_this_gate": false,
+  "target_schedule_modified": false,
+  "verdict": "D4_C1_STABILITY_CLASSIFIER_CONFORMANT"
+}

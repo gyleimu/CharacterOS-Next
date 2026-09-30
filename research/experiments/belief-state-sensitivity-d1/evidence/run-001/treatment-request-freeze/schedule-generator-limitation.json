@@ -1,0 +1,14 @@
+{
+  "limitation": "SCHEDULE_GENERATOR_BLOCK_SEED_COLLISION_LIMITATION",
+  "detail": "the frozen generator's per-block seed depends only on the base seed, the block NAME LENGTH and r_confirm, so blocks whose names share a length can receive the same arm ordering",
+  "observed_same_length_blocks": [
+    "P1_FULL",
+    "P2_FULL"
+  ],
+  "action_taken_here": "recorded only",
+  "generator_modified": false,
+  "schedule_rerandomised": false,
+  "schedule_hash_unchanged": true,
+  "why_acceptable": "the schedule is already deterministic, outcome-blind, 6/6 balanced with max run <= 2, and no HIGH/LOW output has been observed; the limitation does not change this round's execution authorisation",
+  "reported_before_treatment": true
+}

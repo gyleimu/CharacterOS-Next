@@ -1,0 +1,20 @@
+{
+  "proposition_id_matches_the_frozen_extract": true,
+  "support_bytes_identical": true,
+  "oppose_bytes_identical": true,
+  "comparison_is_byte_for_byte_not_parsed_equality": true,
+  "checks_performed": [
+    "field ordering",
+    "key spelling",
+    "quote style",
+    "whitespace",
+    "numeric rendering",
+    "proposition_id",
+    "proposition_label"
+  ],
+  "renderer_support_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+  "renderer_oppose_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}",
+  "frozen_support_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+  "frozen_oppose_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}",
+  "verdict": "D4_C1_RECORD_RENDERER_IS_PRODUCTION_FAITHFUL"
+}

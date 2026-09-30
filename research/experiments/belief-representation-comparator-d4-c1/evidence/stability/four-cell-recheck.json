@@ -1,0 +1,12 @@
+{
+  "explicit_cells_still_reproduce_the_frozen_c0a_identities": true,
+  "record_cells_use_the_renderer_bytes": true,
+  "distinct_normalised_forms": 1,
+  "cell_hashes": {
+    "E-SUPPORT": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+    "E-OPPOSE": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+    "R-SUPPORT": "sha256:5db015a3610efe29bfcf9e36d80cdd3a3a5f2a2d01dfa094a0b301a00d729955",
+    "R-OPPOSE": "sha256:95020e8e385795fdb9028995287ed8f5f374211075a7974ff943ae58886fe6f5"
+  },
+  "verdict": "D4_C1_FOUR_CELLS_RECHECKED"
+}

@@ -1,0 +1,24 @@
+{
+  "global_ordinal": 39,
+  "block": "P1_FRAME_MINIMAL",
+  "arm": "LOW",
+  "replicate_ordinal": 3,
+  "frozen_payload_hash": "sha256:880efa7a4cb2959b48f0ca8e93b9e4524cf4b29a23374274a5231fe0173bf718",
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "outcome": "DECIDED",
+  "parser_status": "VALID",
+  "parsed_decision": "VERIFY",
+  "raw_text": "{\"decision_probe_schema_version\":\"decision-probe-v1\",\"decision\":\"VERIFY\",\"explanation\":\"The colleague's claim about worn rollers is unverified and I have no note either way; checking the machine before acting is warranted.\"}",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "latency_ms": 855,
+  "provider_request_metadata": "not exposed by the transport"
+}

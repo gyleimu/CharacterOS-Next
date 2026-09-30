@@ -1,0 +1,18 @@
+{
+  "question": "can the swapped executor configuration complete a production-shaped, non-target request repeatedly, inside the frozen timeout, over the real credential, with no fallback?",
+  "derivation_status": "FUNCTIONAL_PREDICATE_DERIVED_FROM_FROZEN_LIMITS",
+  "derived_from": [
+    "the frozen transport timeout: 120000 ms",
+    "the frozen production output budget: max_tokens 2048",
+    "the local gate's measured prompt sizes (system ~12.8 KB, user ~4.3-5.6 KB), reused as the probe's calibration",
+    "the probe's forced output demand: 400 numbered lines"
+  ],
+  "functional_predicate": "ALL planned probes must complete normally, inside the frozen timeout, with the same frozen request hash, with no transport failure, no provider error and no fallback; and the credential must be accepted; and the configured model must be served by the endpoint",
+  "descriptive_metrics_recorded_but_not_gating": [
+    "wall-clock latency per probe (also gating for the frozen-timeout criterion)",
+    "completion tokens per probe",
+    "prompt tokens per probe",
+    "provider-reported finish_reason per probe"
+  ],
+  "stated_limitation": "a PASS establishes only that a frozen, non-target, production-shaped request completes repeatedly inside the frozen timeout over the real credential. It does NOT establish that the remote model revision is unchanged (no digest exists remotely), and it is NOT evidence about any scientific question."
+}

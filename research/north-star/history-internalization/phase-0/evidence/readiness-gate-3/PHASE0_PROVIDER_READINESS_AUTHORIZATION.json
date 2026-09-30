@@ -1,0 +1,109 @@
+{
+  "artifact": "PHASE0_PROVIDER_READINESS_AUTHORIZATION",
+  "gate_execution": 3,
+  "outcome": "PASS",
+  "tokens": [
+    "PHASE0_PROVIDER_READINESS_GATE_PASS",
+    "PHASE0_RUN_3_AUTHORISED",
+    "PHASE0_FRESH_RERUN_AUTHORISED",
+    "SCIENTIFIC_SUBJECT_TURNS_THIS_ROUND = 0",
+    "HISTORY_INTERNALIZATION_PHASE_1_NOT_AUTHORISED"
+  ],
+
+  "frozen_scope_of_this_authorization": {
+    "NEXT_EXECUTION_ID": "PHASE0_RUN_3",
+    "MODEL_VISIBLE_SUBJECT_ID_POLICY": "OPAQUE_NON_SEMANTIC",
+    "FRESH_SUBJECTS_REQUIRED": true,
+    "scientific_denominator_created_this_round": false,
+    "run_3_started_this_round": false,
+    "what_this_authorizes":
+      "a re-attempt at executing the frozen Phase-0 protocol in a NEW evidence directory, with fresh opaque subjects. It authorizes execution only.",
+    "what_this_does_NOT_authorize": [
+      "starting Run-3 in this round",
+      "creating or pre-populating a scientific denominator",
+      "any change to the trajectory, valence table, turn count, scorer, predicate or invalid policy",
+      "any change to the provider, model, digest, transport configuration or timeout",
+      "Phase 1",
+      "any belief about whether Run-3 will succeed"
+    ]
+  },
+
+  "exact_accounting": {
+    "READINESS_PLANNED_PROBES": 3,
+    "READINESS_EXECUTED_PROBES": 3,
+    "planned_equals_actual": true,
+    "SCIENTIFIC_SUBJECT_TURNS": 0,
+    "SCIENTIFIC_PROVIDER_ATTEMPTS": 0,
+    "READINESS_PROVIDER_ATTEMPTS": 3,
+    "OTHER_NON_SCIENTIFIC_PROVIDER_ATTEMPTS": 0,
+    "terminology_law":
+      "SCIENTIFIC_MODEL_CALLS = 0 must never be abbreviated to MODEL_CALLS = 0. This round made three real provider attempts; none was scientific. Environment inspection used only GET /api/tags and GET /api/ps, which invoke no generation, and nvidia-smi.",
+    "why_OTHER_is_zero":
+      "no diagnostic generation was run outside the three planned probes. The previous rounds' diagnostics were NOT repeated, precisely so this count stays clean."
+  },
+
+  "the_conformance_correction_was_load_bearing_not_cosmetic": {
+    "claim":
+      "the previous implementation of `no_provider_reload_midway` would have reported this HEALTHY environment as a mid-gate reload, producing a FALSE FAIL.",
+    "evidence": {
+      "old_rule": "every probe's `model_loaded_before` must equal probe 1's `model_loaded_before`",
+      "this_run_timeline": "probe 1 started with the model NOT resident (loaded_before = false), probes 2 and 3 started with it resident (loaded_before = true)",
+      "old_rule_result": "false — reported as a reload",
+      "why_that_is_wrong":
+        "a cold load caused by the first planned probe is exactly the ALLOWED case: the model may start unloaded and be loaded once by the first probe, after which the same resident model serves the remaining probes",
+      "new_rule_result": "mid_gate_reload = false, with transitions = 1, loads = 1, unloads = 0 over the timeline 011111"
+    },
+    "significance":
+      "without the correction, a machine that is now demonstrably healthy (32-35 tok/s, all probes completing in ~44-52s) would have been rejected. The correction is what makes the gate able to PASS at all when the model legitimately starts cold.",
+    "it_did_not_rescue_anything":
+      "gate 1 and gate 2 both failed on unambiguous primary conditions — no probe completed within the frozen timeout — so the correction changes neither of their verdicts. It was written and audited at 0 provider calls BEFORE this execution."
+  },
+
+  "why_the_gate_passed_now": {
+    "descriptive_only": true,
+    "not_a_criterion": "no VRAM threshold gates this verdict; the functional predicate does",
+    "environment_at_gate_time": { "vram_used_mib": 1236, "vram_total_mib": 8188, "gpu_temperature_c": 68, "model_resident_before_probe_1": false },
+    "throughput_tok_per_s": [35.29, 33.82, 31.89],
+    "latencies_ms": [51710, 44320, 46980],
+    "completion_tokens": [1492, 1492, 1492],
+    "comparison_across_the_three_executions": {
+      "gate_1": { "completed": "0/3", "tokens_in_120s": 509, "outcome": "FAIL" },
+      "gate_2": { "completed": "0/3", "tokens_in_120s": 125, "outcome": "FAIL" },
+      "gate_3": { "completed": "3/3", "completion_tokens": 1492, "tok_per_s": "31.9-35.3", "outcome": "PASS" }
+    },
+    "note":
+      "the environment was restored to roughly run-1's working conditions; the frozen configuration now fits with headroom"
+  },
+
+  "prior_gates_preserved": {
+    "gate_1": "FAIL — immutable, artifacts untouched",
+    "gate_2": "FAIL — immutable, artifacts untouched",
+    "gate_2_still_fails": "planned probes 3, completed within the frozen timeout 0, timeouts 3",
+    "retroactive_change": "none, and none is permitted"
+  },
+
+  "interpretation_boundary": {
+    "what_PASS_means":
+      "the current execution environment is sufficient to run the FROZEN provider configuration faithfully",
+    "what_PASS_does_NOT_mean": [
+      "that Phase-0 will succeed",
+      "that the executor schema-invalid risk is gone (it remains UNFIXED_MODEL_RELIABILITY_RISK)",
+      "that History Internalization holds",
+      "that belief adaptation works",
+      "that the rerun will produce a positive rather than a null or an inconclusive"
+    ],
+    "is_this_a_scientific_result": false,
+    "evidence_hierarchy": "L1 (unchanged — nothing scientific ran)"
+  },
+
+  "state": {
+    "run_1": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE (frozen)",
+    "run_2": "NOT_STARTED / BLOCKED (pre-scientific infrastructure block)",
+    "gate_1": "FAIL",
+    "gate_2": "FAIL",
+    "gate_3": "PASS",
+    "PHASE0_RUN_3": "AUTHORISED — execute next round",
+    "HISTORY_INTERNALIZATION_PHASE_1": "NOT AUTHORISED",
+    "CHARACTEROS_CORE_SEMANTICS": "UNMODIFIED"
+  }
+}

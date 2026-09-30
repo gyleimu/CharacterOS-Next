@@ -1,0 +1,214 @@
+{
+  "stage": "D4_C1-comparator-target",
+  "final_states": [
+    "CHARACTEROS_BELIEF_RECORD_SUPPORTS_STATE_BLIND_CROSS_EXPRESSION_COMPOSITION",
+    "D4_C1_COMPARATOR_TARGET_EXECUTED",
+    "CHARACTEROS_UNMODIFIED",
+    "LINK_4_REMAINS_LOCKED",
+    "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN"
+  ],
+  "comparator": {
+    "case": "A_BOTH_POSITIVE",
+    "verdict": "CHARACTEROS_BELIEF_RECORD_SUPPORTS_STATE_BLIND_CROSS_EXPRESSION_COMPOSITION",
+    "means": "under the same framing, executor, A/B, relation and measurement instrument, the current three-field CharacterOS belief record is enough to support the preregistered polar stance composition",
+    "evidence_update": {
+      "H_REPRESENTATION_FORM": "SUBSTANTIALLY_WEAKENED"
+    },
+    "next_hypotheses_in_priority": [
+      "production framing",
+      "placement",
+      "A1's H6",
+      "the broader executor-facing interface"
+    ],
+    "authorises": "nothing; no new experiment may be designed this round",
+    "does_not_mean": [
+      "the production belief path works",
+      "A1's null is explained",
+      "H6 is closed",
+      "the production framing is cleared"
+    ]
+  },
+  "four_cell_counts": {
+    "E-SUPPORT": "SUPPORTS_B",
+    "E-OPPOSE": "OPPOSES_B",
+    "R-SUPPORT": "SUPPORTS_B",
+    "R-OPPOSE": "OPPOSES_B"
+  },
+  "explicit_outcome_class": "POSITIVE",
+  "record_outcome_class": "POSITIVE",
+  "dataset_hash": "sha256:a388a1bc45d57f33995b3266eaff35750632a17cc0493208a24f4ce1fa3624f0",
+  "collection": {
+    "planned": 24,
+    "records": 24,
+    "per_cell": {
+      "E-SUPPORT": 6,
+      "E-OPPOSE": 6,
+      "R-SUPPORT": 6,
+      "R-OPPOSE": 6
+    },
+    "duplicate_positions": 0,
+    "missing_positions": 0,
+    "extra_positions": 0,
+    "recorded_cell_equals_frozen_schedule_cell": true,
+    "request_hash_equals_frozen_request_for_every_record": true,
+    "frozen_ordinal_order_preserved": true,
+    "invalid_trials": 0,
+    "transport_failures": 0,
+    "verdict": "D4_C1_COMPARATOR_COLLECTION_COMPLETE"
+  },
+  "identity_audit": {
+    "e_support": {
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "matches_the_frozen_c0a_support_hash": true,
+      "system_bytes_identical": true,
+      "user_bytes_identical": true,
+      "verdict": "EXPLICIT_IS_BYTE_IDENTICAL"
+    },
+    "e_oppose": {
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "matches_the_frozen_c0a_oppose_hash": true,
+      "system_bytes_identical": true,
+      "user_bytes_identical": true,
+      "verdict": "EXPLICIT_IS_BYTE_IDENTICAL"
+    },
+    "r_support": {
+      "request_hash": "sha256:5db015a3610efe29bfcf9e36d80cdd3a3a5f2a2d01dfa094a0b301a00d729955",
+      "carries_the_production_record_bytes": true,
+      "record_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+      "proposition_id": "belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8",
+      "credence": 0.8
+    },
+    "r_oppose": {
+      "request_hash": "sha256:95020e8e385795fdb9028995287ed8f5f374211075a7974ff943ae58886fe6f5",
+      "carries_the_production_record_bytes": true,
+      "record_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}",
+      "proposition_id": "belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8",
+      "credence": 0.2
+    },
+    "semantic_equivalence_accepted_as_sufficient": false,
+    "verdict": "D4_C1_FOUR_REQUEST_IDENTITIES_VERIFIED"
+  },
+  "isolation": {
+    "pairwise": {
+      "E-SUPPORT_vs_R-SUPPORT": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      },
+      "E-SUPPORT_vs_R-OPPOSE": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      },
+      "E-OPPOSE_vs_E-SUPPORT": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      },
+      "E-OPPOSE_vs_R-SUPPORT": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      },
+      "E-OPPOSE_vs_R-OPPOSE": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      },
+      "R-OPPOSE_vs_R-SUPPORT": {
+        "differing_lines": 1,
+        "every_difference_is_the_stance_value": true
+      }
+    },
+    "every_pair_differs_on_exactly_one_line": true,
+    "every_difference_is_the_stance_value": true,
+    "distinct_normalised_forms": 1,
+    "unexpected_treatment_correlated_differences": 0,
+    "allowed_difference_axes": [
+      "stance polarity (SUPPORTS vs OPPOSES, or 0.8 vs 0.2)",
+      "stance representation form (explicit lexical stance vs the production three-field belief record)"
+    ],
+    "verdict": "D4_C1_FOUR_CELL_ISOLATION_HOLDS"
+  },
+  "schedule_audit": {
+    "total_entries": 24,
+    "six_blocks": true,
+    "each_block_has_each_cell_once": true,
+    "per_cell_totals": {
+      "E-SUPPORT": 6,
+      "E-OPPOSE": 6,
+      "R-SUPPORT": 6,
+      "R-OPPOSE": 6
+    },
+    "identities_unique_exact": true,
+    "ordering_unchanged": true,
+    "max_consecutive_same_representation": 3,
+    "max_consecutive_same_stance": 2,
+    "max_consecutive_same_representation_matches_the_frozen_design": true,
+    "each_cell_ordinal_positions": {
+      "E-SUPPORT": [
+        1,
+        7,
+        12,
+        14,
+        17,
+        23
+      ],
+      "E-OPPOSE": [
+        2,
+        5,
+        11,
+        16,
+        18,
+        21
+      ],
+      "R-SUPPORT": [
+        4,
+        6,
+        9,
+        15,
+        20,
+        22
+      ],
+      "R-OPPOSE": [
+        3,
+        8,
+        10,
+        13,
+        19,
+        24
+      ]
+    },
+    "reordered_to_improve_the_metric": false,
+    "verdict": "D4_C1_TARGET_SCHEDULE_VERIFIED"
+  },
+  "model_calls_this_round": 24,
+  "c1_model_calls_cumulative": 30,
+  "model_call_accounting": {
+    "stability": 6,
+    "comparator_target": 24,
+    "requalification": 0,
+    "not_30_interchangeable_observations": true
+  },
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "characteros_modified": false,
+  "link_4_reopened": false,
+  "non_claims": [
+    "the record condition is NOT the production CharacterOS condition",
+    "no claim that the production belief path works",
+    "no claim that A1's null is explained, and H6 remains open",
+    "no claim about which component of the record form mattered",
+    "no spontaneous or implicit composition claim",
+    "no CharacterOS production modification is authorised"
+  ],
+  "next_round_may_only": "freeze this result; any localisation or comparator follow-up requires its own preregistration",
+  "next_round_may_not": [
+    "design a new experiment in this round",
+    "reopen C0b",
+    "reopen link 4",
+    "modify CharacterOS"
+  ]
+}

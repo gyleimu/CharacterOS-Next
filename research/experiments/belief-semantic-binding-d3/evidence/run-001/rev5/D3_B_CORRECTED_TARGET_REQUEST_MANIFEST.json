@@ -1,0 +1,22 @@
+{
+  "stage": "D3_B_TARGET",
+  "old_invalid_target_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+  "old_invalid_target_marking": "INVALID_FOR_EXECUTION_BY_STATE_BLINDNESS_CONTRACT",
+  "corrected_target_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+  "state_blind_base_identity": {
+    "construction": "production V8 request with the belief block removed by the D1-frozen stripBeliefBlockV0",
+    "same_as_qualification": true
+  },
+  "transformer_source_file": "transformer-d3b.ts",
+  "transformer_contract_name": "buildD3RelationReadoutRequestV0",
+  "contract_hash": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+  "schema_hash": "sha256:a1a9f5c9e325a91332cb31ff58b5c49776fd0a26a6394dd0ebefd810d0d1d9c0",
+  "anchors_hash": "sha256:6382a496178aea7c200ea7bd97890031d543b59775bb5a24e076041ab6f2f0c8",
+  "statement_a_hash": "sha256:41e1feba813d7b3f82cf1e233259bc4a4e043ae6a6bfb2ef1f0044babb7d618c",
+  "statement_b_hash": "sha256:5d734fe2bbc2d264677305fb5745a3b4c435d6ab840087a17c4e4084ea02f059",
+  "expected_relation": "SEMANTICALLY_ALIGNED",
+  "target_outputs_seen": false,
+  "target_calls": 0,
+  "revision_5_manifest_hash": "sha256:76c9b99e8c85f361772295cafa2ce2d0009ba6e770994be7c23beb79fdb83a20",
+  "corrected_target_bytes_are_now_immutable": true
+}

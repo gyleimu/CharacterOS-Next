@@ -1,0 +1,8 @@
+{
+  "role": "NON_SCIENTIFIC_BOOTSTRAP",
+  "scientific_turn": false,
+  "subject_id": "subject-r2-q0v8-3319",
+  "status": "FAILED",
+  "passed": false,
+  "note": "a bootstrap operation, accounted separately from the 10 required scientific subject turns; it cannot contribute to any endpoint"
+}

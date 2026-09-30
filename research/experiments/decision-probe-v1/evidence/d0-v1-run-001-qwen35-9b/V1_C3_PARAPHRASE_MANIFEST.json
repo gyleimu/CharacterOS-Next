@@ -1,0 +1,46 @@
+{
+  "manifest_version": "decision-probe-v1-c3-paraphrase-manifest",
+  "paraphrase_definitions": {
+    "ACCEPT": "the material in hand is enough, so the claim can be relied on immediately",
+    "VERIFY": "the claim should be confirmed against a separate party before being relied on",
+    "REJECT": "the claim should be set aside and not relied on"
+  },
+  "c3_override_block": "\n--- DECISION PROBE OUTPUT CONTRACT (research/evaluation instrument; binding for THIS invocation) ---\nThe output-format rules above are SUPERSEDED for this invocation. Nothing else changes:\nevery SUBJECT DATA law, every untrusted-content law and every evidence law above still binds.\nRespond with EXACTLY ONE JSON object and nothing else. No prose, no code fences.\nRequired members:\n  \"decision_probe_schema_version\": \"decision-probe-v1\"\n  \"decision\": one of \"ACCEPT\" | \"VERIFY\" | \"REJECT\"\nOptional member:\n  \"explanation\": a short string, at most 240 characters (NOT part of the measurement)\nDecision meanings (binding):\n  ACCEPT — the material in hand is enough, so the claim can be relied on immediately\n  VERIFY — the claim should be confirmed against a separate party before being relied on\n  REJECT — the claim should be set aside and not relied on\nChoose exactly one decision for the claim presented in the observation.\n--- END DECISION PROBE OUTPUT CONTRACT ---",
+  "hashes": {
+    "c3_override_block_hash": "sha256:711030fdc1a65155a445c2e95a603a3ef23aa5bc0fb70c3699cb44d0dbb6e38c",
+    "original_override_block_hash": "sha256:3c9fea388a6527f891de4042fd226fae7e101a1d472e9b67d9a80d01da4cf236",
+    "manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157"
+  },
+  "audits": [
+    {
+      "audit": "C3_CONSTRUCTION",
+      "status": "PASS",
+      "detail": [
+        "exactly lines [11, 12, 13] changed — the three definition lines, nothing else"
+      ]
+    },
+    {
+      "audit": "C3_LEXICAL_SEPARATION",
+      "status": "PASS",
+      "detail": [
+        "no forbidden term (check, checked, checking, verify, verification, independent, source, act, acted, acting); no shared 6-gram across 3 fixtures"
+      ]
+    },
+    {
+      "audit": "C3_SYMMETRY",
+      "status": "PASS",
+      "detail": [
+        "word counts ACCEPT=14 VERIFY=13 REJECT=10 (spread 4); chars ACCEPT=73 VERIFY=77 REJECT=47; all three are single unpunctuated clauses"
+      ]
+    },
+    {
+      "audit": "C3_STRUCTURAL_EQUIVALENCE",
+      "status": "PASS",
+      "detail": [
+        "both wordings satisfy the same frozen disposition+condition skeleton for all three tokens"
+      ]
+    }
+  ],
+  "all_audits_pass": true,
+  "semantic_equivalence": "DECLARED_BY_AUTHOR_NOT_MECHANICALLY_PROVEN"
+}

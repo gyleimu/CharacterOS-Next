@@ -1,0 +1,54 @@
+{
+  "stage": "D2_A1_STATE_EXPERIMENT",
+  "execution_status": "D2_A1_STATE_EXPERIMENT_COMPLETED",
+  "outcome_class": "NULL",
+  "verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+  "positive_predicate": false,
+  "collection_integrity": true,
+  "collection_integrity_failures": [],
+  "invalid_count": 0,
+  "scientific_scoring_executed": true,
+  "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "dataset_hash": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+  "r_confirm_A1": 6,
+  "calls_per_arm": 6,
+  "total_calls": 12,
+  "link_3b_status": "LINK 3B NOT ESTABLISHED (valid null)",
+  "claim_scope_note": "semantic uptake was not established on the preregistered near-semantic-transfer paraphrase",
+  "non_claims": [
+    "NOT global semantic understanding",
+    "NOT cognition use, appraisal effect or decision effect",
+    "NOT a statement that D1 was overturned",
+    "NOT human-like understanding",
+    "the term 'cognitively inert' is licensed only by A0 positive + A1 positive + B null, and is not used here"
+  ],
+  "frozen_request_identity": {
+    "high_final_request_hash": "sha256:4ada729e349e1633386ed7d8df639059668403854cedcb683aadfe7e76fd8ff1",
+    "low_final_request_hash": "sha256:0bbd6c81b40c1e398d55b5f8c7c54e6488ec59292ecad4a3c4f49ac3adb03ce7",
+    "request_set_manifest_hash": "sha256:5be552f3c0d76ebdbd537b7af2d7ffdcb33a585ac1f100540971a7e1b218810e"
+  },
+  "frozen_schedule_identity": {
+    "schedule_hash": "sha256:d49962e73ed449954f82433ceda7e217528d6705b75dace7a92d6256eb7f46c7",
+    "ordering": "HIGH LOW LOW HIGH HIGH LOW LOW HIGH HIGH LOW LOW HIGH",
+    "ordering_rule_respected": true,
+    "r_confirm_A1": 6
+  },
+  "frozen_policy": {
+    "recovery_policy": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+    "invariant": "one scheduled trial = one provider attempt; no retry, replacement, deletion, extra replicate or thirteenth call"
+  },
+  "unlock_decision_hash": "sha256:30a929b520b723deccf49ff3a4075d0466734a31480aac009ab555f18ee4df77",
+  "d2_model_calls_this_round": 12,
+  "d2_model_calls_cumulative": 54,
+  "d2_b_executed_this_round": false,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  }
+}

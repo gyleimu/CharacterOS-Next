@@ -1,0 +1,74 @@
+{
+  "artifact": "PROVIDER_READINESS_SERVER_SIDE_EVIDENCE_GATE_2",
+  "source": "the local inference server's own access and slot-timing log for the three planned probes of the SECOND execution of the frozen gate",
+  "role": "diagnostic evidence for why the gate failed again. It changes no verdict and is not a scientific observation.",
+
+  "http_layer": [
+    { "probe": 1, "endpoint": "POST /api/chat", "status": 500, "duration": "2m0s", "meaning": "cancelled at the client's frozen 120s bound" },
+    { "probe": 2, "endpoint": "POST /api/chat", "status": 500, "duration": "1m59s", "meaning": "cancelled at the client's frozen 120s bound" },
+    { "probe": 3, "endpoint": "POST /api/chat", "status": 500, "duration": "2m0s", "meaning": "cancelled at the client's frozen 120s bound" }
+  ],
+
+  "generation_layer": {
+    "observed_n_gen_at_cancellation": 125,
+    "cumulative_rate_tok_per_s": 1.05,
+    "three_second_window_rate_samples": [1.07, 0.53, 0.23, 1.47, 2.8, 1.65, 0.32, 0.28],
+    "interpretation":
+      "unlike the first gate, the recent-window rate is NOT rising — it oscillates between 0.2 and 2.8 tok/s. That is not a slow start that recovers; it is a machine that never reaches a workable rate at all."
+  },
+
+  "the_decisive_structural_fact": {
+    "server_log": "load_tensors: offloaded 34/34 layers to GPU",
+    "meaning":
+      "ALL 34 layers are resident on the GPU. The slowdown is therefore NOT a GPU/CPU split and NOT a partial-offload problem. The model is on the device, the device is nearly full, and the tokens still crawl.",
+    "vram_before_each_probe_mib": { "probe_1": 4728, "probe_2": 7886, "probe_3": 7864 },
+    "vram_total_mib": 8188
+  },
+
+  "comparison_of_the_two_executions_of_the_same_gate": {
+    "gate_1": { "tokens_in_120s": 509, "cumulative_tok_per_s": 4.39, "window_trend": "rising to 10.46", "outcome": "FAIL" },
+    "gate_2": { "tokens_in_120s": 125, "cumulative_tok_per_s": 1.05, "window_trend": "oscillating 0.2-2.8", "outcome": "FAIL" },
+    "direction_of_change": "WORSE, not better",
+    "honest_statement":
+      "the human's execution-environment restoration did not achieve workable headroom for this configuration. The environment did not improve between the two executions of the identical gate; it degraded. The gate rejected the environment both times on the same primary condition: no probe completed inside the frozen 120s bound."
+  },
+
+  "one_criterion_imprecision_to_record": {
+    "criterion": "no_provider_reload_midway",
+    "observed_value": false,
+    "why": "probe 1 ran cold (model not yet resident: 4728 MiB used), probes 2 and 3 ran with the model resident (7886/7864 MiB). The comparison against probe 1's state therefore reports `false`.",
+    "is_this_a_genuine_mid_gate_reload": "NO",
+    "distinction":
+      "a cold load BEFORE the first probe is a normal first-touch, not a reload between probes. The check as implemented conflates the two, so this criterion is reported as imprecise rather than as a true mid-gate reload.",
+    "does_it_affect_the_verdict": "No. The gate failed on the primary conditions — no probe completed within the frozen timeout — which are unambiguous. This imprecision is recorded rather than left as an unexplained flag.",
+    "not_fixed_now_because": "the gate's outcome is FAIL for independent reasons, and altering a criterion after seeing an outcome is exactly what this protocol forbids. It should be corrected before the gate is next run, and before it can ever matter."
+  },
+
+  "what_was_NOT_done": [
+    "no probe beyond the three planned was sent",
+    "the timeout was not raised",
+    "num_ctx was not lowered",
+    "no provider or model was swapped",
+    "no generation setting was changed",
+    "no provider reload was forced or scheduled between probes",
+    "no operator process was terminated and no OS or GPU setting was altered"
+  ],
+
+  "accounting_this_round": {
+    "READINESS_PLANNED_PROBES": 3,
+    "READINESS_EXECUTED_PROBES": 3,
+    "planned_equals_actual": true,
+    "SCIENTIFIC_SUBJECT_TURNS": 0,
+    "SCIENTIFIC_PROVIDER_ATTEMPTS": 0,
+    "OTHER_NON_SCIENTIFIC_PROVIDER_ATTEMPTS": 0,
+    "note":
+      "no generation was invoked outside the three planned probes. Environment inspection used only GET /api/ps and nvidia-smi, which invoke no generation."
+  },
+
+  "what_would_have_to_change": {
+    "not_a_protocol_change":
+      "the model, digest, provider, transport, context configuration, generation configuration, timeout, planned N, request bytes and the functional PASS predicate must all stay exactly as frozen",
+    "environmental": "the machine must actually sustain the frozen configuration — the two executions together show it currently cannot",
+    "verification": "re-run this same frozen gate; only a PASS authorises PHASE0-RUN-3"
+  }
+}

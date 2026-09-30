@@ -1,0 +1,21 @@
+{
+  "trial_id": "d2-a0-qf-003",
+  "fixture_id": "A0-QF-A-STRONG-ENDORSEMENT",
+  "replicate_ordinal": 3,
+  "request_hash": "sha256:3827e17103044b3d2c28bed29cef9f6865649209628c98aff96acc9bb715f2f5",
+  "expected_token": "ENDORSES_STRONGLY",
+  "raw_output": "{\"d2_readout_schema_version\":\"d2-a0-structural-readout-v0\",\"stance\":\"ENDORSES_STRONGLY\"}",
+  "parsed_token": "ENDORSES_STRONGLY",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "latency_ms": 456
+}

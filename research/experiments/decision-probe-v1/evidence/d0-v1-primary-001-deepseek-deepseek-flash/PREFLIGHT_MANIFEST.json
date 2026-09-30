@@ -1,0 +1,11 @@
+{
+  "artifacts": [
+    "primary-executor-identity.json",
+    "availability-gate.json",
+    "QWEN_TO_PRIMARY_PROTOCOL_EQUIVALENCE_REPORT.json",
+    "verdict.json"
+  ],
+  "verdict_hash": "sha256:d0e989f28274ce07bb32f2481511fc948b6fa44a725b64bea82bfc7aca0f183b",
+  "decision_probe_version": "decision-probe-v1",
+  "model_calls_made": 0
+}

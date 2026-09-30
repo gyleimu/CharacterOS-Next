@@ -1,0 +1,14 @@
+{
+  "verdict": "D2_A1_NEUTRAL_INVALID_HANDLING_NOT_PREREGISTERED",
+  "model_calls_this_round": 0,
+  "blocked_by": [
+    "no_retry",
+    "no_replacement",
+    "modal_count_calculation",
+    "invalid_trial_handling"
+  ],
+  "d2_model_calls_total": 36,
+  "a1_neutral_pilot_runs": false,
+  "a1_state_experiment_runs": false,
+  "no_rule_invented_on_the_spot": true
+}

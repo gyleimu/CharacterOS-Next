@@ -1,0 +1,21 @@
+{
+  "trial_id": "d2-a0-qf-007",
+  "fixture_id": "A0-QF-C-STRONG-DOUBT",
+  "replicate_ordinal": 1,
+  "request_hash": "sha256:f2ed1750f88cdc259bad195dd7e13229e9dbc776cca8a15a0dceada2c322b3c2",
+  "expected_token": "DOUBTS_STRONGLY",
+  "raw_output": "{\"d2_readout_schema_version\":\"d2-a0-structural-readout-v0\",\"stance\":\"DOUBTS_STRONGLY\"}",
+  "parsed_token": "DOUBTS_STRONGLY",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "latency_ms": 351
+}

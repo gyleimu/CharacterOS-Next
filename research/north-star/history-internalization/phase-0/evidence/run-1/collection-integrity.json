@@ -1,0 +1,39 @@
+{
+  "integrity": {
+    "turns_executed_qualification": 1,
+    "turns_executed_A": 5,
+    "turns_executed_B": 5,
+    "turns_expected_per_arm": 5,
+    "schedule_followed": true,
+    "qualification_passed": true,
+    "integrity_failures": [
+      "turn B:turn_2 status=FAILED failure=TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance)",
+      "turn B:turn_3 status=FAILED failure=TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)",
+      "turn B:turn_4 status=FAILED failure=TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)"
+    ],
+    "call_tally": {
+      "cognition": 9,
+      "language": 8,
+      "appraisal": 14,
+      "belief_semantic": 8
+    },
+    "total_model_calls": 39,
+    "exact_belief_semantic_calls": 8,
+    "executor_model": "qwen3.5:9b",
+    "executor_base_url": "http://127.0.0.1:11434",
+    "transport_substituted": false,
+    "transport_substitution_note": "NONE. The belief semantic provider is the shipped production OllamaBeliefSemanticProviderV0; transports are the shipped production OllamaNativeCognitionTransportV0; the appraisal provider is the shipped product composition. packages/ is unmodified.",
+    "arms_share_a_byte_identical_opening_turn": true,
+    "trajectory_evidence_carries_model_generated_content": "yes, and this is inherent to the production ordering law: from turn 1 the evidence offered to belief adaptation is the behaviour-outcome feedback of the PREVIOUS turn, which contains the subject's own delivered reply as well as the user text. Phase 0 therefore does NOT claim a single-byte intervention; it claims matched authored events whose only authored difference is the frozen valence span."
+  },
+  "artifact_hashes": {
+    "qualification.json": "sha256:a85926618e202cde9cf3d0d16fe4bce6d075074d414d3f8878964a4dad778057",
+    "pre-state-A.json": "sha256:9b98ab3fee68df537e827ba9bbc6517be15177e300d22f741a20daf772eb62fa",
+    "pre-state-B.json": "sha256:8dedfa3a84a6516273215855488961c13a40b8cfcd5fb08568dcc9591b97da94",
+    "post-state-A.json": "sha256:ff51045606418659c1573c2b26822253ccd567d4ecc2d2e8594b23e94dedbf64",
+    "post-state-B.json": "sha256:6a82a7850993272cc2bd2e97387c9a9758052e0858d6a31cda3b13f490da58f4",
+    "raw-trials.json": "sha256:39b5d3e77e1c9bea98590161103f93ffe7f4770889090869727c9bbbb41b67ce",
+    "executed-leakage-audit.json": "sha256:4ad0129cd02bce6e13c1c128f7f46b544ccdace5d6aea9321007dc3e646c87c4",
+    "persistence-scope.json": "sha256:e9f7445103b22916de555407bd2c40b7d8fd83ba0b8854e512bb0a876ffffe47"
+  }
+}

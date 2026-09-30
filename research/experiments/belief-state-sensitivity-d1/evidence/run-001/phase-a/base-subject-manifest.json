@@ -1,0 +1,12 @@
+{
+  "subject_id": "d1-belief-sensitivity-subject",
+  "display_name": "D1 Subject",
+  "identity_anchors": [
+    "characteros-next",
+    "d1-preregistration"
+  ],
+  "personality_genesis_prior": null,
+  "production_seed_function": "createInteractiveSubjectSeedV0",
+  "production_materializer": "materializeSubjectStateV4V0",
+  "base_seed_hash_before_belief_authoring": "sha256:966c0d813be00e60713b6bc144c55583c62e43d2cdb550ed2b9929d27d3a08eb"
+}

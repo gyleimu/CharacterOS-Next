@@ -1,0 +1,23 @@
+{
+  "requested_executor": "auto",
+  "requested_source": "DEFAULT",
+  "effective_executor": "ollama",
+  "resolution_reason": "CHARACTEROS_EXECUTOR is unset and no cloud credential is present → local executor",
+  "credential_env_var": "MODEL_API_KEY",
+  "credential_present": false,
+  "effective_family_model": "qwen3.5:9b",
+  "effective_family_endpoint": "http://127.0.0.1:11434",
+  "cloud_family_defaults": {
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "source": "product/sandbox/src/product-configuration.ts:377,381 (documented defaults for the cloud family)"
+  },
+  "local_model": "qwen3.5:9b",
+  "local_endpoint": "http://127.0.0.1:11434",
+  "structured_output_support": {
+    "cloud": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+    "local": "GRAMMAR_ENFORCED_VIA_NATIVE_format"
+  },
+  "identity_determined": true,
+  "declares_primary_executor": false
+}

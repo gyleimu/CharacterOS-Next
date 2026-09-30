@@ -1,0 +1,13 @@
+{
+  "r_confirm_A1": 6,
+  "total_calls": 12,
+  "high_calls": 6,
+  "low_calls": 6,
+  "arms_are_equal": true,
+  "max_consecutive_run": 2,
+  "max_run_is_bounded_by_2": true,
+  "regenerating_from_r_alone_reproduces_the_schedule": true,
+  "consecutive_arms_never_exceed_a_pair": true,
+  "schedule_hash": "sha256:d49962e73ed449954f82433ceda7e217528d6705b75dace7a92d6256eb7f46c7",
+  "first_high_low_call_executed_this_round": false
+}

@@ -1,0 +1,14 @@
+{
+  "arm_counts": {
+    "HIGH": {
+      "ENDORSES_STRONGLY": 6
+    },
+    "LOW": {
+      "DOUBTS_STRONGLY": 6
+    }
+  },
+  "invalid_and_transport_counts": {
+    "invalid": 0,
+    "transport_failures": 0
+  }
+}

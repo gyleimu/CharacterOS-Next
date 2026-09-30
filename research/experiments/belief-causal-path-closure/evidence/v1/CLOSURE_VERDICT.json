@@ -1,0 +1,17 @@
+{
+  "verdicts": [
+    "BELIEF_CAUSAL_PATH_D1_D2_D3_EVIDENCE_FROZEN",
+    "LINK_3B_LOCALIZATION_COMPLETE",
+    "LINK_4_REMAINS_LOCKED",
+    "NO_NEW_SCIENTIFIC_CLAIM_ADDED"
+  ],
+  "model_calls_this_round": 0,
+  "evidence_integrity": "ALL_RECOMPUTED_HASHES_MATCH",
+  "datasets_and_schedules_verified": 9,
+  "request_identities_verified": 7,
+  "implementation_sources_hashed": 13,
+  "combined_statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+  "link_4_authorised": false,
+  "d2_b_reopened": false,
+  "new_experiment_designed": false
+}

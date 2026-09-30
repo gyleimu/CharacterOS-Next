@@ -1,0 +1,89 @@
+{
+  "stage": "D3_REVISION_3",
+  "model_calls": 0,
+  "section_a_selection": {
+    "rule": "qualification_fixture_manifest[0] == lexicographically smallest frozen fixture_id",
+    "selected_fixture_id": "D3B-QF-A-ALIGNED",
+    "lexicographic_rule_agrees": true,
+    "fixture_manifest_length": 3,
+    "fixture_existed_in_the_frozen_manifest": true,
+    "fixture_existed_before_any_qualification_output": true,
+    "why": "the fixture manifest is a revision-1 artifact; the selection is a pure function of its ordering and of the id strings, so it cannot depend on any output",
+    "reads_qualification_outputs": false,
+    "reads_modal_tokens": false,
+    "reads_correctness": false,
+    "reads_latency": false,
+    "reads_provider_metadata": false,
+    "reads_target_output": false
+  },
+  "section_b_request_identity": {
+    "artifact": "fixture-A-request.json",
+    "fixture_id_in_the_artifact": "D3B-QF-A-ALIGNED",
+    "fixture_id_matches_the_selection": true,
+    "recorded_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "recomputed_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "hash_matches_the_recorded_qualification_hash": true,
+    "the_frozen_request_ends_with_the_rendered_contract": true,
+    "a_fresh_render_reproduces_the_frozen_contract_section": true,
+    "reuse_without_re_render_is_verifiable": true,
+    "re_render_at_pilot_time": false,
+    "statement_pair_modified": false
+  },
+  "section_c_containment": {
+    "contains_the_canonical_caution": false,
+    "contains_the_target_paraphrase": false,
+    "contains_an_a1_token": false,
+    "contains_an_arm_label": false,
+    "contains_a_credence": false,
+    "is_the_d3b_target_request": false,
+    "why_not_the_target_request": "the target request compares the canonical CAUTION proposition with the frozen A1 paraphrase; this request compares two synthetic clamp statements that appear in no CharacterOS state",
+    "subject_data_contains_a_belief_line": false,
+    "contaminating_fields": []
+  },
+  "section_d_conflict_and_isolation": {
+    "verdict": "D3_B_TARGET_AND_NOISE_REQUEST_IDENTITY_CONFLICT",
+    "discovered_at_target_calls": 0,
+    "qualification_trial_groups": [
+      "D3B-QF-A-ALIGNED",
+      "D3B-QF-B-UNRELATED",
+      "D3B-QF-C-OPPOSED"
+    ],
+    "target_calls_before_noise_pilot": 0,
+    "target_calls_after_noise_pilot_are_target_evidence": false,
+    "noise_trials_may_enter_the_target_dataset": false,
+    "the_old_design_was_self_defeating": true,
+    "why": "a pilot on the target request would both consume target trials and, on a five-plus-one outcome, pre-empt the target scorer's unanimity requirement — and the 5 -> 14 extension could not restore eligibility",
+    "budget": {
+      "qualification_calls_completed": 9,
+      "noise_pilot_calls": 6,
+      "target_formula": "r_confirm_B",
+      "target_is_not_2r": true,
+      "why_not_2r": "D3-B has no HIGH/LOW arms: it is a single state-blind relation question, so the target run is r_confirm_B byte-identical calls and not 2 * r",
+      "target_planned_calls_after_noise": "r_confirm_B, i.e. exactly 6 or exactly 14",
+      "target_planned_calls_depends_on_the_noise_pilot": true,
+      "revision_1_already_used_r": true,
+      "revision_1_note": "the revision-1 budget already recorded d3b_formula = r_confirm_B and an authorised maximum of 29 = 9 + 6 + 14, so the budget is unchanged by this revision",
+      "minimum_path_total": 21,
+      "maximum_path_total": 29,
+      "d3a_calls": 0,
+      "d2b_calls": 0,
+      "authorised_total_max": 29,
+      "budget_changed_by_this_revision": false
+    }
+  },
+  "noise_request_identity": {
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "fixture_id_under_the_lexicographic_rule": "D3B-QF-A-ALIGNED",
+    "the_two_rules_agree": true,
+    "request_bytes_source": "the exact model-facing request frozen during D3-B qualification for this fixture, reused verbatim",
+    "re_render_at_pilot_time": false,
+    "may_not_modify_the_statement_pair": true,
+    "must_not_contain_the_canonical_caution": true,
+    "must_not_contain_the_target_paraphrase": true,
+    "must_not_be_the_target_request": true,
+    "must_not_contain_any_characteros_state": true,
+    "hash_must_equal_the_qualification_request_hash_for_this_fixture": true,
+    "hash_source": "the D3-B qualification evidence's fixture request artifact"
+  },
+  "verdict": "D3_REV3_NOISE_IDENTITY_RESOLVED"
+}

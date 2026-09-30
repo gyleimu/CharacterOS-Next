@@ -1,0 +1,83 @@
+{
+  "artifact": "RUN3_FREEZE",
+  "frozen_verdict": "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_INCONCLUSIVE",
+  "immutable": true,
+  "forbidden_actions": [
+    "repairing its failed turn",
+    "re-running its event",
+    "appending later turns",
+    "reinterpreting the partial belief commit as success"
+  ],
+  "production_commit": "02b6c46e348d0187f4a28a6720f56cdb964031be",
+  "file_count": 17,
+  "files": {
+    "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_REPORT.md": {
+      "sha256": "sha256:1778299ecfada5dde1fc3ae6e457209dd26dd120d8ca01115794694431e1977b",
+      "bytes": 7798
+    },
+    "PHASE0_RUN3_DATASET.json": {
+      "sha256": "sha256:63b5b28302c4e6b6f33d6137c3a0e4f92b6c6bc3a28cd2695595a74906592e4c",
+      "bytes": 2041
+    },
+    "PHASE0_RUN3_DATASET_SHA256.json": {
+      "sha256": "sha256:416871c6256f34274b83a28e602313079a6a71966661cc9da06b544a60c02784",
+      "bytes": 388
+    },
+    "PHASE0_RUN3_SCORER_OUTPUT.json": {
+      "sha256": "sha256:5c3275d1dbb446d723b3559e6bde6ca74d64bd5bb8753acec74735e4b5905415",
+      "bytes": 164
+    },
+    "PHASE0_RUN3_VERDICT.json": {
+      "sha256": "sha256:63d3fcb5a6b3d1e15a36ceb0129ef967a78b2aaa8849b5a43ba855e8f2d460e3",
+      "bytes": 1276
+    },
+    "RUN3_BOOTSTRAP.json": {
+      "sha256": "sha256:33d62928422efc10fa6bd7e568c982f0f7975a9fcd4e18a96661637a7b2df2ef",
+      "bytes": 236
+    },
+    "RUN3_COLLECTION_INTEGRITY.json": {
+      "sha256": "sha256:dc30b205ecc76785752cccfcee63d23541e0e1171d9313b22ccec47703608098",
+      "bytes": 1282
+    },
+    "RUN3_DIAGNOSTIC_STATES.json": {
+      "sha256": "sha256:00e05e3bf0615e18a7034d570f1088b14d38e0c559e1dad7e24f17f4fc1d5316",
+      "bytes": 1418
+    },
+    "RUN3_EXECUTOR_FAILURE_CLASS_A_REPLICATION.json": {
+      "sha256": "sha256:90302bf2cc848ccb32dc2f9d58dd752834180cd37fde2d8dea94617362531100",
+      "bytes": 5530
+    },
+    "RUN3_INITIAL_STATE_EQUIVALENCE_AUDIT.json": {
+      "sha256": "sha256:7acf2b71e4400b2e300c96dd7a97dbd2227fddf79d41298d17beeca263af49b1",
+      "bytes": 1470
+    },
+    "RUN3_PREEXECUTION_AUTHORIZATION_AUDIT.json": {
+      "sha256": "sha256:f0bb80589530a3d362c5c353a0df1824b9218621df3fc95f8412ad572da46ad7",
+      "bytes": 655
+    },
+    "RUN3_PRE_STATE_A.json": {
+      "sha256": "sha256:fda1a191c33d8aab941055f016f80cf9b894062c3080c3be9c6fa74c2f51a4f8",
+      "bytes": 1098
+    },
+    "RUN3_PRE_STATE_B.json": {
+      "sha256": "sha256:d074647b3d4af97c80a2194eaa9b63903fc9ac75f0141b9dcc109db6a0866348",
+      "bytes": 1098
+    },
+    "RUN3_PROVIDER_ATTEMPT_LEDGER.json": {
+      "sha256": "sha256:d9c0e95eab2e06779f434344c241c42c2682a0d4410026fdafe8507c33b434c1",
+      "bytes": 6844
+    },
+    "RUN3_PROVIDER_IDENTITY.json": {
+      "sha256": "sha256:ba17675759807655654ce4a80dfd54b4cf8c380ab3fbc94a465871abc3e921b7",
+      "bytes": 472
+    },
+    "RUN3_SCIENTIFIC_SCHEDULE.json": {
+      "sha256": "sha256:5ff5d174f607ab20a7e2316b3798080de644b54165ffaa51bdd2578b255cf5d0",
+      "bytes": 952
+    },
+    "RUN3_SCIENTIFIC_TURNS.json": {
+      "sha256": "sha256:c1e9082693764384d2ae1245145e9b5b8ae0848491cf03912e037d9c604ebb05",
+      "bytes": 2524
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "stage": "D2_A1_STATE_EXPERIMENT",
+  "model_calls_this_round": 0,
+  "amendment": {
+    "file": "contract-rev1-1e-a1-state-scoring.ts",
+    "version": "belief-causal-path-d2-rev1.1e",
+    "manifest_hash": "sha256:91697567fba28d3a067eb1bdc822c18f45a1948434d8b7516da836e1d642103c",
+    "supersedes_scope": [
+      "A1 state-experiment invalid/recovery policy",
+      "executable operationalization of existing A1 scorer"
+    ],
+    "revision_1_1d_manifest_hash_preserved": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b",
+    "model_calls_before_amendment_for_a1_treatment": 0,
+    "a1_state_outputs_seen_before_amendment": false,
+    "a1_requests_modified": false,
+    "a1_schedule_modified": false,
+    "a1_prediction_modified": false,
+    "scientific_positive_criterion_changed": false,
+    "null_localization_changed": false
+  },
+  "synthetic_audit": {
+    "cases": 10,
+    "all_passed": true,
+    "verdict": "D2_A1_STATE_SCORER_AND_POLICY_PROVEN"
+  },
+  "verdicts": [
+    "D2_PREREGISTRATION_FINALIZED_REV1_1E",
+    "D2_A1_STATE_EXPERIMENT_AUTHORISED",
+    "D2_A1_STATE_EXPERIMENT_NOT_STARTED"
+  ],
+  "a1_high_low_calls_executed_this_round": 0,
+  "d2_model_calls_total": 42
+}

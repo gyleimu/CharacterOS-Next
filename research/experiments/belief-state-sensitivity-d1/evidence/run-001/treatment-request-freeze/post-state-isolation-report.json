@@ -1,0 +1,32 @@
+{
+  "P2_FULL": {
+    "raw_diff": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "raw_is_the_frozen_four": true,
+    "scene_is_frozen_literal": true
+  },
+  "P3_NEGATIVE_CONTROL": {
+    "raw_diff": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "raw_is_the_frozen_four": true,
+    "scene_is_frozen_literal": true
+  },
+  "STATE_REVERSAL": {
+    "raw_diff": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "raw_is_the_frozen_four": true,
+    "scene_is_frozen_literal": true
+  }
+}

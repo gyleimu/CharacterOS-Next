@@ -1,0 +1,30 @@
+{
+  "phase": "A",
+  "verdict": "D1_PHASE_A_READY",
+  "model_calls_made": 0,
+  "gates": {
+    "production_base_subject": "PASS",
+    "proposition_production_derived": "PASS",
+    "three_states_materialized": "PASS",
+    "state_isolation": "PASS",
+    "state_separation": "PASS",
+    "production_projection": "PASS",
+    "lexical_audit": "PASS",
+    "history_absence": "PASS",
+    "request_byte_equivalence": "PASS",
+    "instrument_identity": "PASS",
+    "probe_hashes": "PASS"
+  },
+  "levels": {
+    "HIGH": 0.8,
+    "LOW": 0.2,
+    "NEUTRAL": 0.5
+  },
+  "p1_probe_id": "D1-P1-AWAITING-INSPECTION",
+  "hashes": {
+    "preregistration_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "probe_manifest_hash": "sha256:0189a4a0aeedade58450d36a9ec51c32545e24fef451e7c47f6a45cd12ec84ce",
+    "frame_minimal_contract_hash": "sha256:f32bc0285baf0dadcd8f7c25f047300f9630b2addbf6dd5c47d922ae20d7f356",
+    "primary_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+  "components": {
+    "d2_a0_canonical_stance_binding": "ESTABLISHED",
+    "d3_b_direct_relation_recognition": "ESTABLISHED",
+    "d2_a1_cross_wording_stance_transfer": "NOT ESTABLISHED (frozen valid null)"
+  },
+  "integration_failure_may_only_be_stated_as": "an architectural hypothesis, never as an observational verdict",
+  "link_4_reopened": false,
+  "d2_b_authorised": false,
+  "d2_b_lock_reason": "D2's frozen sequential rule requires an A1 positive; the frozen A1 result is a valid null and no D3 result can substitute for it"
+}

@@ -1,0 +1,18 @@
+{
+  "attempt_id": "cloud-readiness-001",
+  "scientific": false,
+  "replicate_ordinal": 1,
+  "request_hash": "sha256:459f2686f27fc9b95408074343528dd347c10165ce549d0a8c1234f0f6722131",
+  "model_configured": "deepseek-flash",
+  "provider_reported_model": "deepseek-flash",
+  "started_at": "2026-09-30T13:22:14.808Z",
+  "ended_at": "2026-09-30T13:22:16.992Z",
+  "latency_ms": 2184,
+  "http_status": 200,
+  "completion_tokens": 799,
+  "prompt_tokens": 1767,
+  "finish_reason": "stop",
+  "status": "COMPLETED",
+  "error": null,
+  "timeout_ms": 120000
+}

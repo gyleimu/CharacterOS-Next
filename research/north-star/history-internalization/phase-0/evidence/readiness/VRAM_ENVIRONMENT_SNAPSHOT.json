@@ -1,0 +1,22 @@
+{
+  "artifact": "VRAM_ENVIRONMENT_SNAPSHOT",
+  "role": "DIAGNOSTIC_ONLY — this snapshot does NOT gate the rerun",
+  "why_not_a_gate": "§8: whether the scientific rerun is authorised must be decided by FUNCTIONAL provider readiness, not by an arbitrary VRAM number, unless that number has itself been derived mechanically from production resource requirements",
+  "vram_total_mib": "8188",
+  "vram_used_mib": "6521",
+  "gpu_utilization_percent": "35",
+  "gpu_temperature_c": "84",
+  "gpu_sm_clock_mhz": "1920",
+  "gpu_sm_clock_max_mhz": "3105",
+  "model_available": true,
+  "model_digest_now": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "model_digest_matches_frozen": true,
+  "model_currently_loaded": false,
+  "model_vram_bytes": null,
+  "measured_throughput_during_diagnosis": {
+    "before_reload_tok_s": 0.98,
+    "after_reload_tok_s": 3.99
+  },
+  "operator_processes_were_never_killed": true,
+  "os_or_gpu_settings_were_never_altered": true
+}

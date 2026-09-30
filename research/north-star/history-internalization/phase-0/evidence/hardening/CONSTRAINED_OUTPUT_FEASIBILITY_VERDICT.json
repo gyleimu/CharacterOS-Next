@@ -1,0 +1,53 @@
+{
+  "artifact": "CONSTRAINED_OUTPUT_FEASIBILITY_VERDICT",
+  "probes_executed": 4,
+  "probes_planned": 4,
+  "planned_equals_actual": true,
+  "if_then": {
+    "schema_accepted": true,
+    "forbidden_combination_emitted": true,
+    "verdict": "IGNORED_UNSAFE",
+    "rows": [
+      {
+        "ordinal": 1,
+        "mode": "STANCE",
+        "selection": "NONE",
+        "forbidden": true
+      },
+      {
+        "ordinal": 2,
+        "mode": "STANCE",
+        "selection": "NONE",
+        "forbidden": true
+      }
+    ]
+  },
+  "one_of": {
+    "schema_accepted": true,
+    "forbidden_combination_emitted": true,
+    "verdict": "IGNORED_UNSAFE",
+    "rows": [
+      {
+        "ordinal": 1,
+        "mode": "STANCE",
+        "selection": "NONE",
+        "forbidden": true
+      },
+      {
+        "ordinal": 2,
+        "mode": "STANCE",
+        "selection": "NONE",
+        "forbidden": true
+      }
+    ]
+  },
+  "CASE": "C_CONSTRAINT_CANNOT_FAITHFULLY_ENFORCE_THE_REPRODUCED_FAILURE_CLASS",
+  "enforcement_is_established_for": [],
+  "what_a_CASE_C_verdict_means": "the constraint mechanism cannot be shown to enforce the invariant faithfully, so grammar-constrained decoding must NOT be applied as a claimed fix. The decision then passes to the operator: keep the executor and accept the reliability risk, or swap the executor.",
+  "what_was_NOT_done": [
+    "no retry to obtain an enforcement result",
+    "no prompt strengthening",
+    "no scientific content in any probe",
+    "no Phase-0 turn executed"
+  ]
+}

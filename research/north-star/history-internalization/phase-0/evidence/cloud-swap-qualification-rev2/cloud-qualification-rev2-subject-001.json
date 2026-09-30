@@ -1,0 +1,49 @@
+{
+  "turns": [
+    {
+      "subject_ordinal": 1,
+      "subject_id": "subject-qcf-5213",
+      "turn_index": 0,
+      "turn_text": "I told the carpenter I would keep the hallway clear today, so the floor is free for him to work.",
+      "status": "COMPLETE",
+      "failure": null,
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "terminal_is_lawful": true,
+      "belief_wiring_failure": null,
+      "state_revision_before": 0,
+      "state_revision_after": 6,
+      "reaches_multi_turn_evidence_feedback": false
+    },
+    {
+      "subject_ordinal": 1,
+      "subject_id": "subject-qcf-5213",
+      "turn_index": 1,
+      "turn_text": "About the hallway: I did keep it clear as I said, and he told me he would bring the long level tomorrow.",
+      "status": "COMPLETE",
+      "failure": null,
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_NO_BEARING",
+      "terminal_is_lawful": true,
+      "belief_wiring_failure": null,
+      "state_revision_before": 6,
+      "state_revision_after": 15,
+      "reaches_multi_turn_evidence_feedback": true
+    },
+    {
+      "subject_ordinal": 1,
+      "subject_id": "subject-qcf-5213",
+      "turn_index": 2,
+      "turn_text": "About the level: he brought it and ran it along the whole hallway, and the boards are still level under it.",
+      "status": "COMPLETE",
+      "failure": null,
+      "failure_kind": "NONE",
+      "terminal_kind": "COMPLETE_COMMITTED",
+      "terminal_is_lawful": true,
+      "belief_wiring_failure": null,
+      "state_revision_before": 15,
+      "state_revision_after": 25,
+      "reaches_multi_turn_evidence_feedback": true
+    }
+  ]
+}

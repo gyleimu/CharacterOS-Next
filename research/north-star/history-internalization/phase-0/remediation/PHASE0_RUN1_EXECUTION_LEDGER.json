@@ -1,0 +1,633 @@
+{
+  "artifact": "PHASE0_RUN1_EXECUTION_LEDGER",
+  "purpose": "exact accounting for run-1: what was executed, under which subject and turn, in which call family, and why the turn count and the call count are different numbers",
+  "frozen_verdict": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+  "questions_this_ledger_answers": {
+    "why_scientific_turn_count_is_11": "the frozen schedule is 1 qualification turn + 5 turns for arm A + 5 turns for arm B. Turn 0 of each arm is a byte-identical shared opening; the schedule is counted in TURNS, and 11 is exactly the frozen number.",
+    "why_runtime_turn_count_is_not_11_for_every_subject": "each subject runs its own session. The qualification subject ran 1 turn, arm A ran turns 0..4, arm B ran turns 0..4. Arm B's turn index did NOT advance on its failed turn (documented fail-closed behaviour), so its later turns were refused at ingress rather than executed.",
+    "why_provider_call_count_is_39": "39 = cognition 9 + language 8 + appraisal 14 + belief-semantic 8. Only the belief-semantic family can move the endpoint. Three of the 11 turns never reached the belief-semantic step because they failed earlier in the turn lifecycle.",
+    "why_belief_semantic_count_is_8": "1 belief-semantic attempt per turn that reached the adaptation step. 11 turns − 3 failed turns = 8. The shortfall is a CONSEQUENCE of the failures, not a deviation from the frozen schedule."
+  },
+  "families": {
+    "cognition": {
+      "exact": 9,
+      "matches_runtime_tally": true,
+      "attribution": "RECORDED with request bytes"
+    },
+    "language": {
+      "exact": 8,
+      "matches_runtime_tally": true,
+      "attribution": "DERIVED = 8 completed turns"
+    },
+    "appraisal": {
+      "exact": 14,
+      "matches_runtime_tally": true,
+      "attribution": "TOTAL EXACT, PER-TURN ATTRIBUTION NOT RECORDED IN RUN1"
+    },
+    "belief_semantic": {
+      "exact": 8,
+      "matches_runtime_tally": true,
+      "attribution": "RECORDED with provider input and output"
+    }
+  },
+  "total_attempts": 39,
+  "runtime_tally": {
+    "cognition": 9,
+    "language": 8,
+    "appraisal": 14,
+    "belief_semantic": 8
+  },
+  "ledger_reconciles_with_runtime": true,
+  "per_turn": [
+    {
+      "arm": "QUALIFICATION",
+      "subject": "subject-q0v8-3319 (qualification)",
+      "runtime_turn": 0,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-4cf508e103b494745793f77b",
+      "state_revision_before": 0,
+      "state_revision_after": 7,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:db32c277c09212b687f229c1f2625cd65f3f38a9c2ef5943a60ef9acec9f74df"
+      ]
+    },
+    {
+      "arm": "A",
+      "subject": "subject-k7q2-4103",
+      "runtime_turn": 0,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-6238d0f2c09810ceabd5f386",
+      "state_revision_before": 0,
+      "state_revision_after": 7,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:b3d9a33142853a2845c09531cf67b2ea587fe0cb9f3ed0a991d83c71bb0a277f"
+      ]
+    },
+    {
+      "arm": "A",
+      "subject": "subject-k7q2-4103",
+      "runtime_turn": 1,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-aaa9ed59a58488d983ae41da",
+      "state_revision_before": 7,
+      "state_revision_after": 17,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:95154d1fbc0793b2bb826fc4dcef712354a83b406a3bc4af44ab05b69c2b575e"
+      ]
+    },
+    {
+      "arm": "A",
+      "subject": "subject-k7q2-4103",
+      "runtime_turn": 2,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-66643b86ec2601a81f35ae2d",
+      "state_revision_before": 17,
+      "state_revision_after": 27,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:d60a94eadcfe72875a7da038eb6672d92b9f1302a9d82cbca66a97bc8d322029"
+      ]
+    },
+    {
+      "arm": "A",
+      "subject": "subject-k7q2-4103",
+      "runtime_turn": 3,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-a0867c7a0f5f200e39d694d6",
+      "state_revision_before": 27,
+      "state_revision_after": 37,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:079dbae45bf26061b272d7c9684d509fb7708e2ce4f5785562e7466483790be1"
+      ]
+    },
+    {
+      "arm": "A",
+      "subject": "subject-k7q2-4103",
+      "runtime_turn": 4,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-d0e640c380b46cbdb852434e",
+      "state_revision_before": 37,
+      "state_revision_after": 47,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:afe9f0381c0bc3039859df8826869146619168f7ed4db5fdc9b8fdc212996cc1"
+      ]
+    },
+    {
+      "arm": "B",
+      "subject": "subject-k7q2-8267",
+      "runtime_turn": 0,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-6e96dae556bf1939b92889cd",
+      "state_revision_before": 0,
+      "state_revision_after": 7,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:dbc5c8b37a14562c2c2809ebfd55f85e3a01e8c91e9146f74e9464f68be76e52"
+      ]
+    },
+    {
+      "arm": "B",
+      "subject": "subject-k7q2-8267",
+      "runtime_turn": 1,
+      "status": "COMPLETE",
+      "failure": null,
+      "belief_semantic_attempts": 1,
+      "belief_semantic_terminal": "COMPLETE_COMMITTED",
+      "belief_workflow_id": "wf-belief-adapt-25da0b1eac2f7e1d2ccae025",
+      "state_revision_before": 7,
+      "state_revision_after": 17,
+      "reached_adaptation_step": true,
+      "evidence_episode_refs": [
+        "episode:14c99669d0af9f3b88b2b989562d218d50657ca818329c55a38fc902cb04598d"
+      ]
+    },
+    {
+      "arm": "B",
+      "subject": "subject-k7q2-8267",
+      "runtime_turn": 2,
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED",
+      "belief_semantic_attempts": 0,
+      "belief_semantic_terminal": null,
+      "belief_workflow_id": null,
+      "state_revision_before": 17,
+      "state_revision_after": 21,
+      "reached_adaptation_step": false,
+      "evidence_episode_refs": null
+    },
+    {
+      "arm": "B",
+      "subject": "subject-k7q2-8267",
+      "runtime_turn": 3,
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)",
+      "belief_semantic_attempts": 0,
+      "belief_semantic_terminal": null,
+      "belief_workflow_id": null,
+      "state_revision_before": 21,
+      "state_revision_after": 23,
+      "reached_adaptation_step": false,
+      "evidence_episode_refs": null
+    },
+    {
+      "arm": "B",
+      "subject": "subject-k7q2-8267",
+      "runtime_turn": 4,
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)",
+      "belief_semantic_attempts": 0,
+      "belief_semantic_terminal": null,
+      "belief_workflow_id": null,
+      "state_revision_before": 23,
+      "state_revision_after": 24,
+      "reached_adaptation_step": false,
+      "evidence_episode_refs": null
+    }
+  ],
+  "instrumentation_gap_found_and_fixed": {
+    "gap": "run-1 recorded payloads for only two of four call families, so appraisal attempts cannot be attributed to a turn, and language attempts have no request hash",
+    "consequence": "the ledger's TOTAL is exact for every family and the per-attempt attribution is exact for cognition and belief-semantic; appraisal per-turn attribution is permanently unavailable for run-1",
+    "fix": "the harness records every attempt of every family with its turn label, family, request hash and result status; verified in the 0-call smoke run",
+    "run1_remains_unchanged": true
+  },
+  "attempts": [
+    {
+      "sequence": 1,
+      "subject": "subject-q0v8-3319 (qualification)",
+      "arm": "QUALIFICATION",
+      "runtime_turn": 0,
+      "family": "cognition",
+      "request_hash": "sha256:485c483c8abef2b62be306ffe814ee2b90e03e914bef792619fc94dca64a1a39",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 2,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 0,
+      "family": "cognition",
+      "request_hash": "sha256:32246f105158161185a5a0d333a29adb1a1ef9dc8ea3852e95f5cedb4d227c2d",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 3,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 1,
+      "family": "cognition",
+      "request_hash": "sha256:dad3e9aea27dd9a1202af81dbba4cbb2f9cca27688642d3b3c6458a3531782f3",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 4,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 2,
+      "family": "cognition",
+      "request_hash": "sha256:70e3f895d792e0b1f1e0bbb16fb57bff766949e4cb23f207df8d22b23365def7",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 5,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 3,
+      "family": "cognition",
+      "request_hash": "sha256:4a9212b347e4c5b7f976a9a53b33f198596032f49c37294664bc683d7cc8387c",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 6,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 4,
+      "family": "cognition",
+      "request_hash": "sha256:89bfba59f282297ba7d280bbfa86ed861bc277519cc54bfaf7f494fad1d51313",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 7,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 0,
+      "family": "cognition",
+      "request_hash": "sha256:7b937f7cbe0c21f854563946037b1ab98c11de8c2bacebf780159d434d1dedca",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 8,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 1,
+      "family": "cognition",
+      "request_hash": "sha256:4e69713648d85920f82e7f802a82b432c659c37ad6cc95cc2b38b4a683d36636",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 9,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 2,
+      "family": "cognition",
+      "request_hash": "sha256:7c314737fdd585f5c4f84d47bfd055896d60fec66f0682812e5dce9eb7454a2d",
+      "result_status": "RECORDED_REQUEST",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 10,
+      "subject": "subject-q0v8-3319 (qualification)",
+      "arm": "QUALIFICATION",
+      "runtime_turn": 0,
+      "family": "belief_semantic",
+      "request_hash": "sha256:267d59a8c7548cee79ca3277ce15e0bd250fa3b82d6e3b3911ce1d0b79915489",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 11,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 0,
+      "family": "belief_semantic",
+      "request_hash": "sha256:8db666401e29b7923301f89cbc6bc3220085d3640dc20ceae0440d83418fb889",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 12,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 1,
+      "family": "belief_semantic",
+      "request_hash": "sha256:fdc13e3ce0e3b160604b611f712a43c8c67bf80d4c7d85351982ffe02033807a",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 13,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 2,
+      "family": "belief_semantic",
+      "request_hash": "sha256:97412b055918e43edf4b83457836eeeafa42b4a1d24a7a8b30bd3152cf219843",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 14,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 3,
+      "family": "belief_semantic",
+      "request_hash": "sha256:8921e046846293484515e854c9611e5138cc4bf7a8ff227308ac2944349037fb",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 15,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 4,
+      "family": "belief_semantic",
+      "request_hash": "sha256:7d41d8a34873248131f1297b10312c1d5af12ace5affc94f65af58ef5c69acb7",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 16,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 0,
+      "family": "belief_semantic",
+      "request_hash": "sha256:b44092ff67035d1c8c9147a889e6f0634483b6cf916657412aec2a2eedbb4d84",
+      "result_status": "EXISTING_PROPOSITION/SUPPORTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 17,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 1,
+      "family": "belief_semantic",
+      "request_hash": "sha256:d92808994f6f69c9bddbfe8b42d0305a075f0210c272632d78cdab8fd80531a0",
+      "result_status": "EXISTING_PROPOSITION/CONTRADICTS",
+      "attribution": "RECORDED"
+    },
+    {
+      "sequence": 18,
+      "subject": "subject-q0v8-3319 (qualification)",
+      "arm": "QUALIFICATION",
+      "runtime_turn": 0,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 19,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 0,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 20,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 1,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 21,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 2,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 22,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 3,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 23,
+      "subject": "subject-k7q2-4103",
+      "arm": "A",
+      "runtime_turn": 4,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 24,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 0,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 25,
+      "subject": "subject-k7q2-8267",
+      "arm": "B",
+      "runtime_turn": 1,
+      "family": "language",
+      "request_hash": null,
+      "result_status": "DELIVERED_BEHAVIOUR_PRESENT",
+      "attribution": "DERIVED",
+      "note": "one language realization per completed turn; run-1's recorder did not persist language payloads, so the request hash is unavailable (instrumentation gap, fixed for future runs)"
+    },
+    {
+      "sequence": 26,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 27,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 28,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 29,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 30,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 31,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 32,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 33,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 34,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 35,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 36,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 37,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 38,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    },
+    {
+      "sequence": 39,
+      "subject": "UNATTRIBUTED",
+      "arm": "UNATTRIBUTED",
+      "runtime_turn": null,
+      "family": "appraisal",
+      "request_hash": null,
+      "result_status": "UNATTRIBUTED",
+      "attribution": "NOT_ATTRIBUTABLE_IN_RUN1",
+      "note": "run-1's recorder persisted payloads only for the cognition and belief-semantic families, so the 14 appraisal attempts have an exact TOTAL but no per-turn attribution. The total is authoritative; the distribution is not reconstructible and is NOT guessed here."
+    }
+  ]
+}

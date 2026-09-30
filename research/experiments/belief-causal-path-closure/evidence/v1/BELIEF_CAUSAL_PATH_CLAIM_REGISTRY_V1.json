@@ -1,0 +1,129 @@
+{
+  "version": "belief-causal-path-claim-registry-v1",
+  "rows": [
+    {
+      "experiment": "D1 core treatment",
+      "planned_calls": 60,
+      "actual_calls": 60,
+      "pilot_calls": 6,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "D1 frozen categorical scorer",
+      "positive_predicate": "delta_verify or delta_accept exceeding the frozen noise ceiling",
+      "actual_verdict": "CONTRAST_NO_MOVEMENT in all five blocks",
+      "class": "VALID_NULL"
+    },
+    {
+      "experiment": "D1 restart contrast",
+      "planned_calls": 0,
+      "actual_calls": 0,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "n/a",
+      "positive_predicate": "n/a",
+      "actual_verdict": "RESTART_CONTRAST_LOCKED",
+      "class": "VALID_NULL"
+    },
+    {
+      "experiment": "D2-A0 qualification",
+      "planned_calls": 9,
+      "actual_calls": 9,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "frozen qualification rule",
+      "positive_predicate": "each fixture modal equals its pre-registered token",
+      "actual_verdict": "D2_A0_INSTRUMENT_QUALIFIED",
+      "class": "QUALIFIED"
+    },
+    {
+      "experiment": "D2-A0 neutral pilot",
+      "planned_calls": 6,
+      "actual_calls": 6,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "frozen noise mapping",
+      "positive_predicate": "n/a (self-noise)",
+      "actual_verdict": "r_confirm_A0 = 6",
+      "class": "CALIBRATION"
+    },
+    {
+      "experiment": "D2-A0 state experiment",
+      "planned_calls": 12,
+      "actual_calls": 12,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "frozen directional criterion",
+      "positive_predicate": "HIGH modal in endorsing set AND LOW modal in doubting set AND they differ",
+      "actual_verdict": "STRUCTURAL_DIRECTION_LEGIBLE",
+      "class": "POSITIVE"
+    },
+    {
+      "experiment": "D2-A1 qualification",
+      "planned_calls": 9,
+      "actual_calls": 9,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "frozen qualification rule",
+      "positive_predicate": "each fixture modal equals its pre-registered token",
+      "actual_verdict": "D2_A1_INSTRUMENT_QUALIFIED",
+      "class": "QUALIFIED"
+    },
+    {
+      "experiment": "D2-A1 neutral pilot",
+      "planned_calls": 6,
+      "actual_calls": 6,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "frozen noise mapping",
+      "positive_predicate": "n/a (self-noise)",
+      "actual_verdict": "r_confirm_A1 = 6",
+      "class": "CALIBRATION"
+    },
+    {
+      "experiment": "D2-A1 state experiment",
+      "planned_calls": 12,
+      "actual_calls": 12,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "classifyA1StateExperimentV0 (frozen)",
+      "positive_predicate": "HIGH unique modal SUPPORTS AND LOW unique modal OPPOSES AND they differ",
+      "actual_verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNITION_NOT_ESTABLISHED (as the frozen A1 null)",
+      "class": "VALID_NULL"
+    },
+    {
+      "experiment": "D3-B qualification",
+      "planned_calls": 9,
+      "actual_calls": 9,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "scoreD3BQualificationV0 (frozen)",
+      "positive_predicate": "each fixture modal equals its pre-registered relation",
+      "actual_verdict": "D3_B_INSTRUMENT_QUALIFIED",
+      "class": "QUALIFIED"
+    },
+    {
+      "experiment": "D3-B noise stability gate",
+      "planned_calls": 6,
+      "actual_calls": 6,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "classifyD3BNoiseStabilityV0 (frozen)",
+      "positive_predicate": "all six legal and mutually agreeing",
+      "actual_verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+      "class": "STABILITY_PASS"
+    },
+    {
+      "experiment": "D3-B target",
+      "planned_calls": 6,
+      "actual_calls": 6,
+      "invalid_count": 0,
+      "integrity": "HOLDS",
+      "scorer": "scoreD3BTargetV0 (frozen)",
+      "positive_predicate": "every one of six trials SEMANTICALLY_ALIGNED (unanimity)",
+      "actual_verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "class": "POSITIVE"
+    }
+  ],
+  "null_is_not_inconclusive": true,
+  "note": "an invalid or integrity-inconclusive run would be recorded as INCONCLUSIVE and never as a null; no such run exists in this ledger"
+}

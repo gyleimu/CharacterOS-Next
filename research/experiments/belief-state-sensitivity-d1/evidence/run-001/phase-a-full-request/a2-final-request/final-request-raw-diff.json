@@ -1,0 +1,17 @@
+{
+  "note": "raw final requests differ only in the belief credence line and the projection-hash line",
+  "per_arm_override_block_hash": [
+    {
+      "level": "HIGH",
+      "hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+    },
+    {
+      "level": "LOW",
+      "hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+    },
+    {
+      "level": "NEUTRAL",
+      "hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+    }
+  ]
+}

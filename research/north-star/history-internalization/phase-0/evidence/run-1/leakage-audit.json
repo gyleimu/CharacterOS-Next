@@ -1,0 +1,41 @@
+{
+  "forbidden_substrings": [
+    "subject-k7q2-4103",
+    "subject-k7q2-8267",
+    "subject-q0v8-3319",
+    "positive arm",
+    "negative arm",
+    "arm a",
+    "arm b",
+    "trusted",
+    "betrayed",
+    "high belief",
+    "low belief",
+    "expected direction",
+    "phase 0",
+    "phase-0",
+    "history internalization",
+    "credence",
+    "proposition_id",
+    "plasticity"
+  ],
+  "authored_model_visible_sources": [
+    "trajectory_A_turn_0",
+    "trajectory_A_turn_1",
+    "trajectory_A_turn_2",
+    "trajectory_A_turn_3",
+    "trajectory_A_turn_4",
+    "trajectory_B_turn_0",
+    "trajectory_B_turn_1",
+    "trajectory_B_turn_2",
+    "trajectory_B_turn_3",
+    "trajectory_B_turn_4",
+    "subject_display_name"
+  ],
+  "hits": [],
+  "clean": true,
+  "check_can_fire_on_constructed_input": true,
+  "subject_id_is_model_visible_in_production": true,
+  "subject_id_leak_resolution": "the production cognition prompt renders subject_id, and removing it would be a production modification; both subject ids are therefore opaque, equal-length, same-stem, and differ only in a non-semantic 4-digit suffix, so the exposed identifier carries zero arm information",
+  "ids_carry_no_arm_information": false
+}

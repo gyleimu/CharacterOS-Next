@@ -1,0 +1,41 @@
+{
+  "stage": "D4_C0A_NOISE_STABILITY",
+  "planned_calls": 6,
+  "all_six_reference_the_same_request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+  "is_a_treatment_request": false,
+  "trials": [
+    {
+      "position": 1,
+      "trial_id": "NOISE-001",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    },
+    {
+      "position": 2,
+      "trial_id": "NOISE-002",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    },
+    {
+      "position": 3,
+      "trial_id": "NOISE-003",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    },
+    {
+      "position": 4,
+      "trial_id": "NOISE-004",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    },
+    {
+      "position": 5,
+      "trial_id": "NOISE-005",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    },
+    {
+      "position": 6,
+      "trial_id": "NOISE-006",
+      "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+    }
+  ],
+  "replicate_ordinal_in_the_model_facing_bytes": false,
+  "not_yet_executed": true
+}

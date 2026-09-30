@@ -1,0 +1,15 @@
+{
+  "rule": "D4C0A-QF-A-SUPPORT-TRANSFER's frozen model-facing request — a synthetic qualification fixture, chosen by the frozen manifest order, never the treatment request",
+  "resolved_fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+  "artifact": "qualification-request-A.json",
+  "fixture_id_in_the_artifact": "D4C0A-QF-A-SUPPORT-TRANSFER",
+  "qualification_era_request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "recomputed_from_the_frozen_artifact_bytes": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "deterministic_rebuild_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "reuse_matches_the_qualification_identity": true,
+  "a_deterministic_rebuild_reproduces_the_same_bytes": true,
+  "re_rendered_as_a_new_request": false,
+  "is_a_treatment_request": false,
+  "is_the_canonical_pair": false,
+  "verdict": "D4_C0A_NOISE_REQUEST_RESOLVED_AND_REUSABLE"
+}

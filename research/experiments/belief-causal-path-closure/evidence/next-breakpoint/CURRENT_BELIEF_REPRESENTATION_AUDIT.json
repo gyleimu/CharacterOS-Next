@@ -1,0 +1,108 @@
+{
+  "representationAudit": {
+    "question": "what does the system actually represent belief AS, at each layer?",
+    "canonical_storage": {
+      "shape": "{ proposition_id, proposition_label, credence }",
+      "semantic_object_present": false,
+      "relation_or_alias_present": false,
+      "derived_stance_word_present": false,
+      "embedding_present": false,
+      "detail": "there is no proposition-level object distinct from the label string, and no structure relating one proposition to another"
+    },
+    "proposition_identity": {
+      "derivation": "proposition_key = hashEnvelope(projection, { canonical_label })",
+      "identity_is_the_content_address_of_the_exact_wording": true,
+      "consequence": "two semantically equivalent re-wordings are, at the representation level, two unrelated propositions with two different ids — nothing in the state says they express the same proposition"
+    },
+    "projection": {
+      "transformation": "a direct field copy",
+      "fields_added": [],
+      "fields_dropped": [],
+      "selection": "sorted by proposition_id, truncated at BELIEF_COGNITION_MAX_ITEMS (64)",
+      "enrichment_or_ranking_by_relevance": false
+    },
+    "executor_facing_block": {
+      "rendering": "one JSON object per line, under a section header",
+      "header_states": [
+        "credence is subject endorsement strength, NOT world truth",
+        "proposition IDs are STATE LOCATORS ONLY, never refs"
+      ],
+      "detail": "the executor receives an opaque id, a sentence and a scalar; nothing marks the sentence as a proposition whose content could be re-expressed"
+    },
+    "every_layer_carries_the_same_three_facts": true,
+    "no_layer_adds_a_proposition_level_object_or_any_relation": true
+  },
+  "source_extracts": {
+    "canonical_item": [
+      {
+        "file": "packages/subject-core/src/types/subject-state.ts",
+        "line": 90,
+        "text": " * Proposition identity is CharacterOS-owned. Items are unique and raw-ASCII\n * sorted by proposition_id. A credence records only the subject's stance; it is\n * not an objective truth claim or a second confidence/support scalar.\n */\nexport const BELIEF_STATE_SCHEMA_VERSION = \"belief-state-v0\" as const;\n\nexport interface BeliefItemStateV0 {\n  readonly proposition_id: IdentifierV0;\n  readonly proposition_label: string;\n  readonly credence: UnitIntervalV0;\n}\n\nexport interface BeliefStateV0 {"
+      }
+    ],
+    "canonical_belief_state": [
+      {
+        "file": "packages/subject-core/src/types/subject-state.ts",
+        "line": 96,
+        "text": "  readonly proposition_label: string;\n  readonly credence: UnitIntervalV0;\n}\n\nexport interface BeliefStateV0 {\n  readonly schema_version: typeof BELIEF_STATE_SCHEMA_VERSION;\n  readonly items: readonly BeliefItemStateV0[];\n}\n\r"
+      }
+    ],
+    "identity_is_the_label_hash": [
+      {
+        "file": "packages/runtime/src/transitions/belief/belief-proposition-admission.ts",
+        "line": 198,
+        "text": "      \"BELIEF_PROPOSITION_KEY_INPUT_NOT_CANONICAL: deriveBeliefPropositionKeyV0 requires the exact canonical label\"\n    );\n  }\n  const digest = await hashEnvelope(BELIEF_PROPOSITION_KEY_PROJECTION, {\n    canonical_label: canonicalLabel\n  });\n  const raw = `belief-prop-v0-${digest.replace(/^sha256:/, \"\")}`;\n  const checked = validateIdentifier(raw, \"belief.proposition_key\");\n  if (!checked.ok) {"
+      }
+    ],
+    "projection_maps_three_fields": [
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts",
+        "line": 309,
+        "text": "    belief_items: snapshot.beliefs.items\n      .map(\n        (item): BeliefStanceProjectionV0 => ({\n          proposition_id: item.proposition_id,\n          proposition_label: item.proposition_label,\n          credence: item.credence\n        })\n      )\n      .sort((a, b) =>"
+      },
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts",
+        "line": 446,
+        "text": "    belief_items: snapshot.beliefs.items\n      .map(\n        (item): BeliefStanceProjectionV0 => ({\n          proposition_id: item.proposition_id,\n          proposition_label: item.proposition_label,\n          credence: item.credence\n        })\n      )\n      .sort((a, b) =>"
+      }
+    ],
+    "projection_cap_and_sort": [
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts",
+        "line": 63,
+        "text": "} from \"../../transitions/relationship/relationship-interaction-familiarity-retrieval-orchestration.js\";\nimport {\n  actionIntentAllowed,\n  allowedEvidenceSet,\n  BELIEF_COGNITION_MAX_ITEMS,\n  cognitiveProjectionHash,\n  findUnsupportedEvidenceRef,\n  validateCognitionProposal,\n  COGNITIVE_CONTEXT_PROJECTION_V2_SCHEMA_VERSION,"
+      },
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts",
+        "line": 316,
+        "text": "      )\n      .sort((a, b) =>\n        a.proposition_id < b.proposition_id ? -1 : a.proposition_id > b.proposition_id ? 1 : 0\n      )\n      .slice(0, BELIEF_COGNITION_MAX_ITEMS),\n    relationship_counterpart_count: snapshot.relationships.counterparts.length,\n    relationship_dimensions: snapshot.relationships.counterparts\n      .flatMap((counterpart) =>\n        counterpart.dimensions"
+      },
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts",
+        "line": 453,
+        "text": "      )\n      .sort((a, b) =>\n        a.proposition_id < b.proposition_id ? -1 : a.proposition_id > b.proposition_id ? 1 : 0\n      )\n      .slice(0, BELIEF_COGNITION_MAX_ITEMS),\n    relationship_counterpart_count: snapshot.relationships.counterparts.length,\n    relationship_dimensions: snapshot.relationships.counterparts\n      .flatMap((counterpart) =>\n        counterpart.dimensions"
+      }
+    ],
+    "projection_item_schema": [
+      {
+        "file": "packages/runtime/src/transitions/cognition-action/types.ts",
+        "line": 189,
+        "text": " * Projection V0): the exact canonical stance surface — proposition id, label\r\n * and EXACT canonical credence (no rounding/banding). A subjective persistent\r\n * epistemic stance, NOT an objective world fact: STATE_VISIBLE_NOT_CITEABLE —\r\n * projected ids/labels never enter the allowed evidence set.\r\n */\r\nexport interface BeliefStanceProjectionV0 {\r\n  readonly proposition_id: IdentifierV0;\r\n  readonly proposition_label: string;\r\n  readonly credence: UnitIntervalV0;\r\n}\r\n\r"
+      }
+    ],
+    "executor_block_header": [
+      {
+        "file": "packages/runtime/src/providers/behavior/conversation-cognition-provider-v2.ts",
+        "line": 273,
+        "text": "    `[regulation] energy=${projection.regulation.energy} stress=${projection.regulation.stress} arousal=${projection.regulation.arousal} fatigue=${projection.regulation.fatigue}`,\n    `[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\\nshowing ${projection.belief_items.length} of ${projection.belief_item_count} canonical belief item(s)\\n${beliefStances}`,\n    `[relationships] ${relationships}`,"
+      }
+    ],
+    "executor_renders_json_per_item": [
+      {
+        "file": "packages/runtime/src/providers/behavior/conversation-cognition-provider-v2.ts",
+        "line": 213,
+        "text": "  const beliefStances =\n    projection.belief_items.length === 0\n      ? \"(none)\"\n      : projection.belief_items.map((item) => `  ${JSON.stringify(item)}`).join(\"\\n\");\n  const relationships =\n    projection.relationship_dimensions.length === 0\n      ? projection.relationship_counterpart_count === 0"
+      }
+    ]
+  }
+}

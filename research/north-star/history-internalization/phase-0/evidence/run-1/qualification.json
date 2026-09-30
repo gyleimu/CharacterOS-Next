@@ -1,0 +1,149 @@
+{
+  "purpose": "mechanical qualification of the production live path only: proves the turn completes, the belief semantic provider is reachable and returns a lawful envelope through the frozen runner, and per-turn call families can be counted. It is NOT scientific evidence and cannot contribute to the endpoint (different subject, different proposition, different evidence).",
+  "subject_id": "subject-q0v8-3319",
+  "proposition_id": "prop.qual-floorboards",
+  "turn_status": "COMPLETE",
+  "terminal_kind": "COMPLETE_COMMITTED",
+  "provider_calls": 1,
+  "lawful_terminal_observed": true,
+  "state_after_qualification": {
+    "subject_id": "subject-q0v8-3319",
+    "canonical_state_view": {
+      "schema_version": "interactive-subject-state-view-v0",
+      "identity": {
+        "subject_id": "subject-q0v8-3319",
+        "display_name": "Wren",
+        "identity_anchors": []
+      },
+      "logical_time": 1,
+      "state_revision": 7,
+      "repository_revision": "R2",
+      "affect": {
+        "valence": 0,
+        "activation": 0.203
+      },
+      "regulation": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality": [],
+      "traits_seed": {},
+      "beliefs": [
+        {
+          "proposition_id": "prop.qual-floorboards",
+          "proposition_label": "The floorboards in the hallway are level.",
+          "credence": 0.6000000000000001
+        }
+      ],
+      "relationships": []
+    },
+    "durable_identity": {
+      "subject_state_hash": "sha256:e22ab607d234fa63c57e4ccb105dade6f78ed8f6b773df076c53bf02582a4dc1",
+      "state_revision": 7,
+      "logical_time": 1,
+      "repository_revision": "R2",
+      "subject_head": {
+        "revision": 7,
+        "commit_ref": "commit:026d4f4454ce84fb165637eb4285ae5ecc220c354d35aaf1c9e450f95547ba65",
+        "record_checksum": "sha256:a95690cd42c39a413d0342366c23ba9ad4285ed4ee39a577dad58337305af9ef",
+        "state_hash": "sha256:69fadbba65fbc6637f396aad458c9f65d88ab7d65d44977034e8561ed853521f",
+        "snapshot_hash": "sha256:77863b5b92e4f4658cb3e183ba44d61251b683a1cc915a139fc2145d9e59d64d"
+      },
+      "affect": {
+        "valence": 0,
+        "activation": 0.203
+      },
+      "episode_refs": []
+    },
+    "durable_belief_workflow_store_state": {
+      "schema_version": "belief-adaptation-workflow-store-state-v0",
+      "records": [
+        {
+          "schema_version": "belief-adaptation-workflow-record-v0",
+          "workflow_id": "wf-belief-adapt-4cf508e103b494745793f77b",
+          "request_fingerprint": "sha256:fafd120886a62952f46aa1d1e51f3ce490d086e375e3245fa2b8d2e24930dc12",
+          "subject_id": "subject-q0v8-3319",
+          "initial_state_revision": 6,
+          "repository_revision": "R2",
+          "proposition_candidate_ids": [
+            "prop.qual-floorboards"
+          ],
+          "evidence_bindings": [
+            {
+              "episode_ref": "episode:db32c277c09212b687f229c1f2625cd65f3f38a9c2ef5943a60ef9acec9f74df",
+              "payload_hash": "sha256:93fcf7b9f7c742aec5c5364d9d4aa3a27b8b1debea13f07cc5a63a853f5fcc5f"
+            }
+          ],
+          "stage": "B7_COMPLETE",
+          "external_provider_call_count": 1,
+          "semantic_candidate": {
+            "schema_version": "belief-semantic-provider-output-v0",
+            "kind": "EXISTING_PROPOSITION",
+            "proposition_id": "prop.qual-floorboards",
+            "relation": "SUPPORTS",
+            "semantic_context_fingerprint": "sha256:d22be4705c935b347077c03747f30c6eda63962f2506e55f1e2c55611e713948",
+            "candidate_catalog_fingerprint": "sha256:5ea7eba0f969e223fd99c471cf02e861769bb6a9ab1117031237bfc5086e5037"
+          },
+          "semantic_candidate_fingerprint": "sha256:887f8f4d9dbe7faf646a1e72f55ce89abcc3e1ca685cf31e7642d8f07f7f9605",
+          "plasticity_receipt": {
+            "schema_version": "belief-plasticity-result-v0",
+            "policy_version": "belief-plasticity-policy-v0",
+            "subject_id": "subject-q0v8-3319",
+            "state_revision": 6,
+            "repository_revision": "R2",
+            "proposition_id": "prop.qual-floorboards",
+            "relation": "SUPPORTS",
+            "current_credence": 0.55,
+            "outcome": {
+              "kind": "CREDENCE_CHANGE",
+              "next_credence": 0.6000000000000001
+            },
+            "evidence_binding": {
+              "member_refs": [
+                "episode:db32c277c09212b687f229c1f2625cd65f3f38a9c2ef5943a60ef9acec9f74df"
+              ],
+              "member_set_fingerprint": "sha256:5dd5677ddd036961ed533297ebb6c2a3b4e2134c100093c3d7321bb0cc0f74c4"
+            },
+            "semantic_context_fingerprint": "sha256:d22be4705c935b347077c03747f30c6eda63962f2506e55f1e2c55611e713948",
+            "candidate_catalog_fingerprint": "sha256:5ea7eba0f969e223fd99c471cf02e861769bb6a9ab1117031237bfc5086e5037",
+            "output_fingerprint": "sha256:ac16536cb53fab9528034ad0465a19f247aa0c26cf62557d97f323a0528dc2e2"
+          },
+          "proposal_checkpoint": {
+            "schema_version": "belief-adaptation-proposal-checkpoint-v0",
+            "proposal": {
+              "schema_version": "belief-mutation-proposal-v0",
+              "subject_id": "subject-q0v8-3319",
+              "expected_state_revision": 6,
+              "mutation": {
+                "kind": "UPDATE",
+                "proposition_id": "prop.qual-floorboards",
+                "next_credence": 0.6000000000000001
+              },
+              "evidence_binding": {
+                "member_refs": [
+                  "episode:db32c277c09212b687f229c1f2625cd65f3f38a9c2ef5943a60ef9acec9f74df"
+                ],
+                "member_set_fingerprint": "sha256:5dd5677ddd036961ed533297ebb6c2a3b4e2134c100093c3d7321bb0cc0f74c4"
+              }
+            },
+            "transition_id": "t-belief-b6c7f0bc59702e024b8aa1ba8315ddbc6723a49412b32c6688b00a81dfb823fb",
+            "plasticity_output_fingerprint": "sha256:ac16536cb53fab9528034ad0465a19f247aa0c26cf62557d97f323a0528dc2e2",
+            "proposal_checkpoint_fingerprint": "sha256:5edff4fbdbca948c31c9d468089a27a1932ed8fcb2a4c608bc2451bc3fdc968e"
+          },
+          "terminal_result": {
+            "kind": "COMPLETE_COMMITTED",
+            "transition_id": "t-belief-b6c7f0bc59702e024b8aa1ba8315ddbc6723a49412b32c6688b00a81dfb823fb",
+            "commit_ref": "commit:026d4f4454ce84fb165637eb4285ae5ecc220c354d35aaf1c9e450f95547ba65",
+            "final_state_revision": 7,
+            "snapshot_hash": "sha256:69fadbba65fbc6637f396aad458c9f65d88ab7d65d44977034e8561ed853521f",
+            "canonical_commits": 1
+          },
+          "checkpoint_fingerprint": "sha256:fd19735eb12fa5f8dc9346cc0e94f3eb1d205b7624a985e18a6c24512a2cf569"
+        }
+      ]
+    },
+    "durable_identity_unavailable_reason": null
+  }
+}

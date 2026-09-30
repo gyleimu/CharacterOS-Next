@@ -1,0 +1,42 @@
+{
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "input_was_the_reused_frozen_request_identity": true,
+  "baseline": {
+    "outcome": "PASS",
+    "integrity_ok": true,
+    "integrity_failures": [],
+    "counts": {
+      "SUPPORTS_B": 0,
+      "UNCERTAIN_B": 6,
+      "OPPOSES_B": 0
+    },
+    "unique_modal": "UNCERTAIN_B",
+    "modal_count": 6,
+    "tie": false,
+    "invalid_count": 0,
+    "scientific_stability_scoring_executed": true,
+    "gate_verdict": "D4C0A_STABILITY_GATE_PASS",
+    "modal_token_matched_the_fixture_expected": false,
+    "modal_token_identity_used_as_a_pass_condition": false,
+    "target_authorised": true,
+    "r_after_the_gate": 6,
+    "r_changed_by_the_gate": false,
+    "evidence_class": "INSTRUMENT_STABILITY"
+  },
+  "integrity_requirements": {
+    "planned_count": 6,
+    "unique_trial_identities": true,
+    "no_missing": true,
+    "no_extra": true,
+    "every_request_hash_equals_the_selected_noise_request": true,
+    "no_target_request_hash_may_appear": true
+  },
+  "reads_only": [
+    "the frozen planned noise records",
+    "the frozen token vocabulary",
+    "the frozen invalid policy",
+    "the frozen collection-integrity requirements",
+    "the selected frozen noise request hash"
+  ],
+  "verdict": "D4_C0A_NOISE_CLASSIFIER_CONFORMANT"
+}

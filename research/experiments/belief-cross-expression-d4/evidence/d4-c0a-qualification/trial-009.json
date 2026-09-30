@@ -1,0 +1,29 @@
+{
+  "trial_id": "d4c0a-qf-009",
+  "fixture_id": "D4C0A-QF-C-NO-TRANSFER",
+  "replicate_ordinal": 3,
+  "request_hash": "sha256:454a29538fafcfbc39872b11671ac52699a03bd94dd0af24374269a72dee5e1d",
+  "expected_token": "UNCERTAIN_B",
+  "raw_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"UNCERTAIN_B\"}",
+  "parsed_token": "UNCERTAIN_B",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "invalid_reason": null,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 722
+}

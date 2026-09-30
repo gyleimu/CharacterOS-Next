@@ -1,0 +1,40 @@
+{
+  "gate": "§0A unique pre-frozen A1 state-experiment scorer",
+  "source": "contract-rev1.ts :: D2A1_PREDICTION",
+  "answers": {
+    "high_modal_must_be": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "low_modal_must_be": "OPPOSES_PARAPHRASED_PRINCIPLE",
+    "positive_condition": "the HIGH modal token is SUPPORTS and the LOW modal token is OPPOSES and the two differ",
+    "exact_frozen_tokens_required": true,
+    "other_thresholds_declared": null,
+    "negative_condition": "the frozen positive predicate is not satisfied — expressed by the frozen localisation matrix row A0_positive_A1_null",
+    "null_verdict_if_negative": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+    "null_verdict_note": "do NOT run B; do NOT call this cognitively inert",
+    "positive_verdict": "CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE",
+    "unlocks": "CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE"
+  },
+  "tie_handling": {
+    "explicitly_named_in_the_frozen_text": false,
+    "derived_from_the_frozen_text": true,
+    "derivation": "the frozen predicate reads 'the HIGH modal token is SUPPORTS and the LOW modal token is OPPOSES' — a definite singular. A tied maximum means there is no single modal token, so the predicate is unsatisfiable and the result falls to the frozen null row.",
+    "fails_closed": true,
+    "permissive_reading_rejected": "'a token that achieves the maximum count is A modal token, so a tie may still satisfy the predicate' — rejected: it would let a tied readout manufacture a positive, and a definite singular does not admit it",
+    "a_tie_can_only_ever_yield_non_positive_under_every_reading_that_respects_the_singular": true,
+    "unbound_vocabulary_entry_not_used": "INCONCLUSIVE_BY_INSUFFICIENT_STATE_SEPARATION exists in D2_VERDICTS_REV1 but is bound to no trigger anywhere in the contracts, so it may not be used as a tie verdict"
+  },
+  "unbound_verdict_vocabulary_entry": {
+    "name": "INCONCLUSIVE_BY_INSUFFICIENT_STATE_SEPARATION",
+    "present_in_the_frozen_vocabulary": true,
+    "bound_to_a_trigger": false,
+    "found_only_in_the_vocabulary_list": true,
+    "used_as_a_verdict_by_this_audit": false
+  },
+  "tie_entry_used_elsewhere_as_a_verdict": false,
+  "instrument": "buildD2SemanticReadoutRequestV0",
+  "closed_set": [
+    "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "OPPOSES_PARAPHRASED_PRINCIPLE"
+  ],
+  "verdict": "D2_A1_STATE_SCORER_PREREGISTERED"
+}

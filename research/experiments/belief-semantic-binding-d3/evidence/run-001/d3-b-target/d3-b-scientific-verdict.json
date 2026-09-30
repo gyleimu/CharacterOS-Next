@@ -1,0 +1,27 @@
+{
+  "stage": "D3_B_TARGET",
+  "execution_status": "D3_B_TARGET_EXECUTED",
+  "outcome_class": "POSITIVE",
+  "verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+  "collection_integrity": true,
+  "invalid_count": 0,
+  "scientific_scoring_executed": true,
+  "counts": {
+    "SEMANTICALLY_ALIGNED": 6
+  },
+  "combined_localization": {
+    "statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+    "components": {
+      "d2_a0_canonical_stance_binding": "ESTABLISHED",
+      "d3_b_direct_relation_recognition": "ESTABLISHED",
+      "d2_a1_cross_wording_stance_transfer": "NOT ESTABLISHED (frozen valid null)"
+    }
+  },
+  "non_claims": [
+    "NOT an observation that an internal integration mechanism failed",
+    "NOT proof of semantic integration failure; that reading stays an architectural hypothesis",
+    "NOT a licence to reopen D2-B or link 4",
+    "NOT a claim about CharacterOS cognition or appraisal",
+    "NOT a claim that the paraphrase is objectively non-equivalent, or that the executor lacks semantic understanding"
+  ]
+}

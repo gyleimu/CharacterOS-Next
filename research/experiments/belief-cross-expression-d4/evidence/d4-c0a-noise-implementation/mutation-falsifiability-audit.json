@@ -1,0 +1,124 @@
+{
+  "method": "each mutation is applied, then FIRST verified to have changed the intended bytes or value, and only then checked to change the gate's result — because a mutation that mutates nothing proves nothing",
+  "mutations": [
+    {
+      "mutation": "wrong_request_hash",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+      "mutated_value": "sha256:0000",
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "target_hash_substituted",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+      "mutated_value": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "missing_trial",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": 6,
+      "mutated_value": 5,
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "duplicate_identity",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": 6,
+      "mutated_value": 5,
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "extra_trial",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": 6,
+      "mutated_value": 7,
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "one_invalid",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": "UNCERTAIN_B",
+      "mutated_value": null,
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "one_different_legal_token",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": "UNCERTAIN_B",
+      "mutated_value": "SUPPORTS_B",
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    },
+    {
+      "mutation": "all_same_but_a_different_legal_token",
+      "kind": "POSITIVE_CONTROL",
+      "changed_intended_value": true,
+      "baseline_value": "UNCERTAIN_B",
+      "mutated_value": "SUPPORTS_B",
+      "gate_before": "PASS",
+      "gate_after": "PASS",
+      "gate_changed": false,
+      "expected_to_change_the_gate": false,
+      "pass": true
+    },
+    {
+      "mutation": "out_of_vocabulary_token",
+      "kind": "FALSIFYING",
+      "changed_intended_value": true,
+      "baseline_value": "UNCERTAIN_B",
+      "mutated_value": "ENDORSES_STRONGLY",
+      "gate_before": "PASS",
+      "gate_after": "STOP",
+      "gate_changed": true,
+      "expected_to_change_the_gate": true,
+      "pass": true
+    }
+  ],
+  "every_row_changed_the_intended_value": true,
+  "falsifying_mutations_changed_the_gate": true,
+  "positive_controls_did_not_change_the_gate": true,
+  "positive_control_meaning": "the all-same-different-token row must NOT change the gate's result: that is the evidence that stability does not depend on WHICH legal token the six calls agree on",
+  "forbidden_patterns_avoided": [
+    "self-comparison",
+    "impossible type comparison",
+    "a mutation that does not actually mutate",
+    "a single-occurrence String.replace where several occurrences exist"
+  ],
+  "verdict": "D4_C0A_MUTATIONS_ARE_REAL_AND_FALSIFYING"
+}

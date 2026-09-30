@@ -1,0 +1,28 @@
+{
+  "version": "d1-belief-state-sensitivity-revision-3",
+  "model_calls_before_amendment": 0,
+  "supersedes": "d1-belief-state-sensitivity-revision-2",
+  "supersedes_scope": "request-equivalence contract only",
+  "preserved_revision2_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+  "admissible_arm_dependent_classes": [
+    "frozen_proposition_credence_in_the_canonical_belief_projection",
+    "projection_hash_derived_from_the_whole_projection"
+  ],
+  "sentinels": {
+    "credence": "__D1_BELIEF_CREDENCE__",
+    "projection_hash": "__D1_PROJECTION_HASH__"
+  },
+  "failure_verdict": "D1_BLOCKED_BY_REQUEST_ISOLATION_FAILURE",
+  "amendment_hash": "sha256:1781b3458fd760a73c27adb224e29e4c9d156ac60815383ac1d65e2dd298b60c",
+  "provenance": {
+    "revision_2_hash_preserved": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "revision_2_status": "superseded on the request-equivalence contract ONLY; all other REVISION 2 content stands",
+    "model_calls_before_amendment": 0,
+    "recorded_at_utc": "2026-09-20T19:54:24.460Z"
+  },
+  "what_changed": {
+    "before": "strip-belief-line byte-identity across HIGH/LOW/NEUTRAL (REVISION 2)",
+    "after": "normalizeArmSpecificBytes() replaces exactly the frozen proposition's credence and the [projection_hash] value with fixed sentinels; the normalized forms must then be byte-identical",
+    "why": "production rendering showed [projection_hash] is the content-address of the whole projection, so it necessarily changes with the credence; that is the arm's own state, not history"
+  }
+}

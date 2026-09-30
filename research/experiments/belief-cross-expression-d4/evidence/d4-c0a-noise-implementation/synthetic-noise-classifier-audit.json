@@ -1,0 +1,112 @@
+{
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "cases": [
+    {
+      "case": "six_identical_token_A",
+      "expected": "PASS",
+      "observed": "PASS",
+      "verdict": "D4C0A_STABILITY_GATE_PASS",
+      "modal": "SUPPORTS_B",
+      "modal_count": 6,
+      "matched_the_fixture_expected": true,
+      "target_authorised": true,
+      "pass": true
+    },
+    {
+      "case": "six_identical_token_B",
+      "expected": "PASS",
+      "observed": "PASS",
+      "verdict": "D4C0A_STABILITY_GATE_PASS",
+      "modal": "OPPOSES_B",
+      "modal_count": 6,
+      "matched_the_fixture_expected": false,
+      "target_authorised": true,
+      "pass": true
+    },
+    {
+      "case": "six_identical_token_C",
+      "expected": "PASS",
+      "observed": "PASS",
+      "verdict": "D4C0A_STABILITY_GATE_PASS",
+      "modal": "UNCERTAIN_B",
+      "modal_count": 6,
+      "matched_the_fixture_expected": false,
+      "target_authorised": true,
+      "pass": true
+    },
+    {
+      "case": "five_plus_one_legal",
+      "expected": "STOP",
+      "observed": "STOP",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+      "modal": "UNCERTAIN_B",
+      "modal_count": 5,
+      "matched_the_fixture_expected": false,
+      "target_authorised": false,
+      "pass": true
+    },
+    {
+      "case": "four_plus_two",
+      "expected": "STOP",
+      "observed": "STOP",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+      "modal": "UNCERTAIN_B",
+      "modal_count": 4,
+      "matched_the_fixture_expected": false,
+      "target_authorised": false,
+      "pass": true
+    },
+    {
+      "case": "three_three_tie",
+      "expected": "STOP",
+      "observed": "STOP",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+      "modal": null,
+      "modal_count": 3,
+      "matched_the_fixture_expected": null,
+      "target_authorised": false,
+      "pass": true
+    },
+    {
+      "case": "one_invalid",
+      "expected": "STOP",
+      "observed": "STOP",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+      "modal": null,
+      "modal_count": null,
+      "matched_the_fixture_expected": null,
+      "target_authorised": false,
+      "pass": true
+    },
+    {
+      "case": "all_invalid",
+      "expected": "STOP",
+      "observed": "STOP",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+      "modal": null,
+      "modal_count": null,
+      "matched_the_fixture_expected": null,
+      "target_authorised": false,
+      "pass": true
+    }
+  ],
+  "integrity_failure_case": {
+    "observed": "STOP",
+    "verdict": "D4C0A_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "integrity_ok": false
+  },
+  "correctness_is_not_stability": {
+    "demonstrated": true,
+    "rows": [
+      "six_identical_token_B",
+      "six_identical_token_C"
+    ],
+    "detail": "the selected fixture D4C0A-QF-A-SUPPORT-TRANSFER expects SUPPORTS_B, so the SUPPORTS_B row matches and is uninformative here; the OPPOSES_B and UNCERTAIN_B rows have modals that are NOT the fixture's expected token and they still PASS, which is the evidence",
+    "why": "qualification owns correctness; this gate owns stability"
+  },
+  "reachable_r_values": [
+    6
+  ],
+  "adaptive_replication_present": false,
+  "verdict": "D4_C0A_NOISE_CLASSIFIER_MATRIX_PROVEN"
+}

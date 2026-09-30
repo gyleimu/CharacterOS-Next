@@ -1,0 +1,26 @@
+{
+  "HIGH": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers_in_belief_block": [],
+    "production_prompt_hits_informational": [
+      "summary"
+    ]
+  },
+  "LOW": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers_in_belief_block": [],
+    "production_prompt_hits_informational": [
+      "summary"
+    ]
+  },
+  "NEUTRAL": {
+    "phrase_hits": [],
+    "word_hits": [],
+    "arm_markers_in_belief_block": [],
+    "production_prompt_hits_informational": [
+      "summary"
+    ]
+  }
+}

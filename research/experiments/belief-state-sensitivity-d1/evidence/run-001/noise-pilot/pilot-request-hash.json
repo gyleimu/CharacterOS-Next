@@ -1,0 +1,4 @@
+{
+  "pilot_request_hash": "sha256:94631e06212edbcdfff1001a33560804f235b3762124c9f7ae0f1937f4dafdba",
+  "expectation": "all six trials must report this exact model_facing_request_hash"
+}

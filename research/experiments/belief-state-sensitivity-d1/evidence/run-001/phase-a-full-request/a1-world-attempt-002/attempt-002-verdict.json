@@ -1,0 +1,20 @@
+{
+  "phase": "A1_ATTEMPT_002",
+  "verdict": "D1_A1_POST_OBSERVATION_STATE_ISOLATION_VERIFIED_UNDER_REVISION_4",
+  "model_calls_transmitted": 0,
+  "revision_4_hash": "sha256:ed8e6949f9b4cf2b393e3ec57d6b87682dd05ef03507edc3bb42dc2ab327f885",
+  "trace_recompute_proof_ok": true,
+  "raw_high_vs_low": [
+    "/beliefs/items/0/credence",
+    "/trace_window/entries/0/state_hash_after",
+    "/trace_window/entries/0/state_hash_before",
+    "/trace_window/entries/0/trace_id"
+  ],
+  "normalized_high_vs_low": [
+    "/beliefs/items/0/credence"
+  ],
+  "observation_id": "observation:o-d1-p1-awaiting-inspection",
+  "scene_is_frozen_p1": true,
+  "decision_probe_applied": false,
+  "next_phase": "A2"
+}

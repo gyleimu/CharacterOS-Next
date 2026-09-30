@@ -1,0 +1,24 @@
+{
+  "artifact_hashes": {
+    "source-state-manifest.json": "sha256:d220feaa41e36fa1e45d0fbd505dbf9fac54d6b620f8d9ff5ebcb2d639279a9e",
+    "pristine-observation-fidelity-report.json": "sha256:b8ec9faf1fba85d327df319facfb3050dc172aa7b548bdea448e5b079e29a16c",
+    "pristine-history-absence-report.json": "sha256:c003f7647bcffb9f60b73c9c052f29eb58e2db1211f633c6c7310ace6b52a60b",
+    "pristine-normalized-equivalence-report.json": "sha256:a9a7db3a7679c9a8ba432c8a4317a2f443d0a2cd5b890b61a8039a3b84383351",
+    "trace-non-exposure-report.json": "sha256:d5dc9e194c546e6b769bbf559f7ac16cd2e37f5d50f81cc3f616fefa168bf64a",
+    "instrument-application-report.json": "sha256:28a97f4b8f78a4aad1a83524582d5763997dd2ed14da6779dc79781f0439311f",
+    "final-history-absence-report.json": "sha256:c64bd6eca93836fae963a1dac662154724899724ea695cb55226c017fc71399d",
+    "final-lexical-audit.json": "sha256:04e35467d4b8a77bcedbd782f87865f0b0b046a87af9b57822ed8ea3e67d6f3d",
+    "final-normalized-equivalence-report.json": "sha256:aab9675ea7946825129c04aa1113396f33b1151376fb5131bc089a77cd5006a6",
+    "instrument-identity-report.json": "sha256:37b31c66a06699ff6d9508f85833f44373fbef4556ac0171883d6e0aa9a0b25e",
+    "executor-generation-manifest.json": "sha256:2043c6014f87246bf39000c560300ab9926cfec7c98d5c15570568935ae75c4e",
+    "phase-a-full-request-verdict.json": "sha256:0b5e148be758a57a75d4b6aab256cc62f84389b0e1d92e47003fb53fcdf18cc4",
+    "pristine-request-high.json": "sha256:07c46924d8215726a4a8d30f3f1acb287a5d02906ca87caba21c6da91dda505c",
+    "final-request-high.json": "sha256:9111444abd6cf45556d4be1406aeee2d5fc0069202ecee2385403c7a6b37af0f",
+    "pristine-request-low.json": "sha256:14aa46fc72d7efca1fd45c9996298eafa35eba1bf8b50ef45c36832fe9c66a02",
+    "final-request-low.json": "sha256:c6608ba0f9e20a6b18abd6ffba3f445fceeb372294073a4eb459854ade1d01a9",
+    "pristine-request-neutral.json": "sha256:5b438d0275a0777c86118aadaa986bf66663179421318e7fb3e6cbab047add6f",
+    "final-request-neutral.json": "sha256:8583c588a1c74ca540e8112facfbac611b69ad421fc655f444d8c3382f9fccf7"
+  },
+  "model_calls_transmitted": 0,
+  "verdict": "D1_PHASE_A_FULL_REQUEST_CERTIFIED"
+}

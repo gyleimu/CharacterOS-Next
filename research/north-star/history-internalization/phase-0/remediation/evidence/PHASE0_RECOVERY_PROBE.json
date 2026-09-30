@@ -1,0 +1,46 @@
+{
+  "scope": "0 model calls, stub transports, no production change",
+  "documented_contract": "interactive-subject-runtime-v0.ts FAILED branch: 'The host must surface this and stop, or restore the last durable snapshot.'",
+  "steps": [
+    {
+      "step": "turn_0_valid",
+      "status": "COMPLETE",
+      "turn_index": 1,
+      "state_revision": 6
+    },
+    {
+      "step": "snapshot_before_failing_turn",
+      "taken": true,
+      "note": ""
+    },
+    {
+      "step": "turn_1_invalid",
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED",
+      "turn_index": 1,
+      "state_revision": 10
+    },
+    {
+      "step": "path_A_valid_turn_on_poisoned_session",
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)",
+      "completed": false
+    },
+    {
+      "step": "path_B_restore_then_valid_turn",
+      "attempted": true,
+      "restore_threw": false,
+      "restored_turn_index": 1,
+      "restored_state_revision": 6,
+      "valid_turn_status": "COMPLETE",
+      "valid_turn_failure": null,
+      "completed": true
+    }
+  ],
+  "observations": {
+    "valid_turn_after_failure_on_poisoned_session_is_rejected": true,
+    "documented_recovery_available": true,
+    "documented_recovery_restores_a_usable_session": true
+  },
+  "verdict": "DOCUMENTED_RECOVERY_PATH_WORKS"
+}

@@ -1,0 +1,64 @@
+{
+  "stage": "D2_A0_STATE_EXPERIMENT",
+  "execution_status": "D2_A0_STATE_EXPERIMENT_COMPLETED",
+  "dataset_hash": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+  "r_confirm_A0": 6,
+  "calls_per_arm": 6,
+  "total_calls": 12,
+  "high_counts": {
+    "ENDORSES_STRONGLY": 6
+  },
+  "low_counts": {
+    "DOUBTS_STRONGLY": 6
+  },
+  "high_modal": "ENDORSES_STRONGLY",
+  "low_modal": "DOUBTS_STRONGLY",
+  "primary_direction_criterion_met": true,
+  "scientific_verdict": [
+    "STRUCTURAL_DIRECTION_LEGIBLE",
+    "CANONICAL_BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE"
+  ],
+  "secondary_magnitude_calibrated": true,
+  "a1_unlock_decision": "D2_A1_AUTHORISED",
+  "a1_or_b_executed_this_round": false,
+  "d2_execution_stopped_at_a0": false,
+  "invalid_trials": 0,
+  "transport_failures": 0,
+  "degraded_evidence_note": null,
+  "neutral_noise_context": {
+    "source": "the A0 endpoint's own frozen NEUTRAL pilot",
+    "modal_count": 6,
+    "r_confirm_A0": 6,
+    "observed_self_noise": 0,
+    "neutral_token_used_as_correctness_evidence": false
+  },
+  "non_claims": [
+    "NOT proposition-semantic uptake (that is A1)",
+    "NOT cognition use, appraisal effect or structured-decision effect",
+    "NOT a statement that D1 was wrong",
+    "NOT history internalization and NOT autonomous belief formation",
+    "A0 answers ONE question only: whether the production canonical belief representation is distinguishable by the executor at the structural/numeric readout layer"
+  ],
+  "frozen_request_identity": {
+    "high_request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac",
+    "low_request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d",
+    "a0_contract_hash": "sha256:5778f97ec048110fe35644fca383e8b5b938a382bef8d7247fd7c78992fc2e0b",
+    "request_set_manifest_hash": "sha256:289b52c30923440b084aa603af40f31c321ffd63b3e7b83e16f0888c82e45271"
+  },
+  "frozen_schedule_identity": {
+    "schedule_hash": "sha256:20220b27bab67cd063bb121b980048c93308718b32c7e1b94370d13d7924df2d",
+    "ordering": "HIGH LOW LOW HIGH HIGH LOW LOW HIGH HIGH LOW LOW HIGH",
+    "ordering_rule_respected": true
+  },
+  "d2_model_calls_this_round": 12,
+  "d2_model_calls_cumulative": 27,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  }
+}

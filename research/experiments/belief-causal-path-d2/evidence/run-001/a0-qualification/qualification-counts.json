@@ -1,0 +1,11 @@
+{
+  "A0-QF-A-STRONG-ENDORSEMENT": {
+    "ENDORSES_STRONGLY": 3
+  },
+  "A0-QF-B-UNDECIDED": {
+    "UNDECIDED": 3
+  },
+  "A0-QF-C-STRONG-DOUBT": {
+    "DOUBTS_STRONGLY": 3
+  }
+}

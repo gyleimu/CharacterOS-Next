@@ -1,0 +1,42 @@
+{
+  "artifact": "RUN3_INITIAL_STATE_EQUIVALENCE_AUDIT",
+  "subjects": {
+    "subject_1": "subject-r3-7p4n-2185",
+    "subject_2": "subject-r3-7p4n-9047",
+    "bootstrap": "subject-r3-2wq9-6631"
+  },
+  "identity_fields_stripped": [
+    "subject_id",
+    "display_name",
+    "identity_anchors"
+  ],
+  "canonical_scientific_state_equivalent": true,
+  "raw_subject_objects_unequal": true,
+  "both_directions_observed": false,
+  "target_belief_proposition_1": {
+    "proposition_id": "prop.nadia-keeps-commitments",
+    "proposition_label": "Nadia keeps the commitments she makes to me.",
+    "credence": 0.55
+  },
+  "target_belief_proposition_2": {
+    "proposition_id": "prop.nadia-keeps-commitments",
+    "proposition_label": "Nadia keeps the commitments she makes to me.",
+    "credence": 0.55
+  },
+  "proposition_id_equal": true,
+  "initial_credence_equal": true,
+  "target_proposition_id": "prop.nadia-keeps-commitments",
+  "components_compared": [
+    "target belief proposition (proposition_id and credence)",
+    "affect state",
+    "relationship state",
+    "personality state and traits seed",
+    "relevant memory state",
+    "regulation and runtime metadata",
+    "runtime configuration (identical frozen constants for both subjects)"
+  ],
+  "model_visible_subject_id_policy": "OPAQUE_NON_SEMANTIC",
+  "model_visible_ids_share_stem_and_differ_only_in_an_opaque_suffix": true,
+  "no_arm_letter_in_either_id": true,
+  "arm_mapping_is_experiment_side_only": true
+}

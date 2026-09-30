@@ -1,0 +1,12 @@
+{
+  "counts": {
+    "ACCEPT": 0,
+    "VERIFY": 6,
+    "REJECT": 0
+  },
+  "invalid": 0,
+  "total": 6,
+  "modal": "VERIFY",
+  "modal_count": 6,
+  "tie": false
+}

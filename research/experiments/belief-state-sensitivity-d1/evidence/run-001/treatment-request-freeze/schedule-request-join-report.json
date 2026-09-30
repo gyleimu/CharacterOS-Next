@@ -1,0 +1,10 @@
+{
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "schedule_entries": 60,
+  "joined": 60,
+  "missing": 0,
+  "ambiguous": 0,
+  "all_joined": true,
+  "dynamic_construction_at_runtime": false,
+  "fallback_to_p1": false
+}

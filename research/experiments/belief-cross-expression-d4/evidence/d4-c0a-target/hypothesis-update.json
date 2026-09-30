@@ -1,0 +1,20 @@
+{
+  "positive": {
+    "h_exec_composition_strong_form": "WEAKENED",
+    "statement": "the claim that the executor would not perform stance composition even with every required fact supplied explicitly is no longer a good standalone explanation",
+    "forbidden_even_on_positive": [
+      "spontaneous composition established",
+      "implicit composition established",
+      "arbitrary stance transfer established",
+      "UNCERTAIN transfer established",
+      "CharacterOS representation proven defective",
+      "projection broken",
+      "semantic ID required",
+      "integration mechanism failed"
+    ]
+  },
+  "null_result": null,
+  "inconclusive": null,
+  "h6_boundary_remains_open": true,
+  "h6_note": "even on a C0a positive, A1's frozen framing ambiguity stays open: C0a's contract is a deliberately explicit composition baseline, so a C0a positive plus an A1 null cannot separate CharacterOS representation/binding from executor-facing framing from A1 measurement-contract ambiguity"
+}

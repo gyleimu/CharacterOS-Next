@@ -1,0 +1,24 @@
+{
+  "rule": {
+    "is_primary_qualification_requirement": true,
+    "requirement": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+    "endorsing_set": [
+      "ENDORSES_STRONGLY",
+      "ENDORSES_MILDLY"
+    ],
+    "doubting_set": [
+      "DOUBTS_STRONGLY",
+      "DOUBTS_MILDLY"
+    ],
+    "verdict_if_met": "STRUCTURAL_DIRECTION_LEGIBLE"
+  },
+  "high_modal": "ENDORSES_STRONGLY",
+  "high_modal_in_endorsing_set": true,
+  "low_modal": "DOUBTS_STRONGLY",
+  "low_modal_in_doubting_set": true,
+  "modalities_differ": true,
+  "primary_criterion_met": true,
+  "verdict_if_met": "STRUCTURAL_DIRECTION_LEGIBLE",
+  "verdict_if_not_met": null,
+  "individual_calls_used_to_override_the_modal": false
+}

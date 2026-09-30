@@ -1,0 +1,86 @@
+{
+  "version": "belief-causal-path-protocol-lessons-v1",
+  "scope": "governance lessons only; these are not scientific evidence and they changed no outcome, because every affected run was stopped before the affected calls were made",
+  "lessons": [
+    {
+      "id": "self_comparison_check",
+      "pattern": "a check compared a value to itself and could never fail",
+      "where_found": "D3-B target schedule audit (schema compared to itself)",
+      "resolution": "replaced with a real comparison against the frozen schema"
+    },
+    {
+      "id": "constant_comparison_cannot_fail",
+      "pattern": "a literal-typed comparison the compiler proves cannot fail",
+      "where_found": "D3 REV4 gate audit and D3-B target runner",
+      "resolution": "values widened to string/number so the assertion stays falsifiable, plus a new check that the two constants differ"
+    },
+    {
+      "id": "wrong_expected_property",
+      "pattern": "an audit encoded the defective state as a PASS",
+      "where_found": "the target request kept the subject block and the audit recorded target_subject_data_untouched: true",
+      "resolution": "REV5: violation recorded, corrected request frozen, invalid artifact retained uncalled"
+    },
+    {
+      "id": "forbidden_subject_state_in_request",
+      "pattern": "a state-blind instrument's request carried CharacterOS subject state",
+      "where_found": "D3-B target request",
+      "resolution": "REV5 rebuilt on the state-blind base"
+    },
+    {
+      "id": "pilot_identical_to_target",
+      "pattern": "a noise pilot used the treatment request",
+      "where_found": "D3-B noise design",
+      "resolution": "REV3: non-target frozen request, reused never re-rendered"
+    },
+    {
+      "id": "sample_size_logic_incompatible_with_scorer",
+      "pattern": "an r-extension mapping paired with a unanimity scorer",
+      "where_found": "D3-B noise rule",
+      "resolution": "REV4: stability gate; the extension branch retired prospectively"
+    },
+    {
+      "id": "verdict_name_narrower_than_instrument",
+      "pattern": "a verdict name understates what the instrument measured",
+      "where_found": "D2-A0",
+      "resolution": "recorded in the naming audit; no rename"
+    },
+    {
+      "id": "missing_invalid_policy",
+      "pattern": "no rule for how an invalid trial enters the denominator",
+      "where_found": "D2 A1 pilot; D2-A1 state experiment",
+      "resolution": "REV1.1c, REV1.1d and REV1.1e froze them before the affected calls"
+    },
+    {
+      "id": "undefined_modal_count",
+      "pattern": "a mapping keyed by a count whose definition the rule never supplied",
+      "where_found": "D2_NOISE_RULE; D3-B rev1",
+      "resolution": "REV1.1d and D3 REV2 defined the counted quantity and the tie verdict"
+    },
+    {
+      "id": "schedule_tamper_test_that_did_not_tamper",
+      "pattern": "a check substituted a value equal to the frozen one, so genuine forgery would pass",
+      "where_found": "D3 REV1.1e-era schedule check",
+      "resolution": "the check now flips the arm to its opposite"
+    },
+    {
+      "id": "task_specificity_not_respected",
+      "pattern": "a lexical law scoped to the whole request, including inherited production text, making an instrument unimplementable",
+      "where_found": "D3-B / A1 transformer conformance",
+      "resolution": "law scoped to the stage's own artifact, plus a no-introduction delta for what it inherits"
+    },
+    {
+      "id": "false_integrity_failure_from_a_wrong_hash_convention",
+      "pattern": "recomputing a frozen hash with a different payload convention than the producer used produces a FALSE integrity failure",
+      "where_found": "this closure round: D1 hashes { dataset } while D2/D3 hash { name, content }, so hashing D1 the D2 way reported a mismatch",
+      "resolution": "each line is recomputed with its own producer convention; the failure report was withdrawn and the near-miss recorded here",
+      "the_wrong_fix_to_avoid": "adjusting the recorded value, or the artifact, to match a recomputation that used the wrong convention"
+    },
+    {
+      "id": "stage_specificity_of_audit_checks",
+      "pattern": "an audit check satisfied by another stage's artifact, clearing a stage that had nothing",
+      "where_found": "D1.1a A1 prerequisite audit",
+      "resolution": "checks made stage-specific by id and by meaning-map shape"
+    }
+  ],
+  "retrospective_effect": "NONE — every affected run was invalidated or corrected BEFORE the affected calls were made; no scientific output was altered"
+}

@@ -1,0 +1,55 @@
+{
+  "stage": "D2_A1",
+  "pilot_dataset_hash": "sha256:4a28b57f98c5c4ba8f53b67247a4970b20a97a4120a412d0b3ff4133637d9d80",
+  "pilot_dataset_frozen_before_classification": true,
+  "model_calls_this_round": 6,
+  "retries_replacements_deletions_extra_replicates_or_a_seventh_call": false,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "neutral_request_hash": "sha256:cc417f778cb0cf9008a17b4210947a8287f063b47f50614c4b0be59c5577d370",
+  "six_request_hashes_identical": true,
+  "counts": {
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 6
+  },
+  "invalid_trials": 0,
+  "classification": {
+    "pilot_verdict": "D2_A1_NEUTRAL_PILOT_QUALIFIED",
+    "valid_count": 6,
+    "invalid_count": 0,
+    "counts": {
+      "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 6
+    },
+    "modal_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "modal_count": 6,
+    "r_confirm_A1": 6,
+    "noise_verdict": null
+  },
+  "r_confirm_A1": 6,
+  "schedule_hash": "sha256:d49962e73ed449954f82433ceda7e217528d6705b75dace7a92d6256eb7f46c7",
+  "final_states": [
+    "D2_A1_NEUTRAL_PILOT_COMPLETED",
+    "r_confirm_A1 = 6",
+    "D2_A1_STATE_REQUEST_SET_FROZEN",
+    "D2_A1_STATE_EXPERIMENT_SCHEDULE_FROZEN",
+    "D2_A1_STATE_EXPERIMENT_NOT_STARTED"
+  ],
+  "d2_model_calls_this_round": 6,
+  "d2_model_calls_cumulative": 42,
+  "a1_high_low_executed_this_round": false,
+  "establishes": "A1 endpoint self-noise under one byte-identical NEUTRAL CharacterOS request",
+  "does_not_establish": [
+    "semantic transfer",
+    "proposition understanding",
+    "cognition use",
+    "appraisal effect",
+    "behaviour effect"
+  ],
+  "real_link_3b_evidence_requires": "the frozen HIGH vs LOW A1 state experiment in a later round"
+}

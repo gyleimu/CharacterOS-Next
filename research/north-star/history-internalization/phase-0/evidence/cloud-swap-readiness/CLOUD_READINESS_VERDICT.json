@@ -1,0 +1,95 @@
+{
+  "artifact": "CLOUD_READINESS_VERDICT",
+  "outcome": "PASS",
+  "tokens": [
+    "PHASE0_CLOUD_PROVIDER_READINESS_GATE_PASS",
+    "PHASE0_CONTRACT_QUALIFICATION_AUTHORISED"
+  ],
+  "identity": {
+    "provider": "DEEPSEEK_OPENAI_COMPATIBLE",
+    "api_style": "OPENAI_COMPATIBLE_CHAT_COMPLETIONS",
+    "base_url": "https://api.deepseek.com",
+    "model_configured": "deepseek-flash",
+    "credential_present": true,
+    "credential_fingerprint": "sha256:e8d0105a0ac6ab4a",
+    "credential_value_recorded": false,
+    "fallback_configured": false,
+    "identity_path": "/models",
+    "identity_http_status": 200,
+    "served_model_ids_count": 2,
+    "configured_model_listed": true
+  },
+  "probes_planned": 3,
+  "probes_executed": 3,
+  "planned_equals_actual": true,
+  "criteria": {
+    "credential_present_and_accepted": true,
+    "configured_model_is_served_by_the_endpoint": true,
+    "all_probes_completed_normally": true,
+    "all_probes_completed_within_the_frozen_timeout": true,
+    "all_probes_used_the_same_frozen_request_hash": true,
+    "provider_reported_model_identical_across_all_probes": true,
+    "no_fallback_configured_or_used": "STRUCTURALLY_TRUE_BY_CONSTRUCTION"
+  },
+  "criteria_actually_gating_the_verdict": [
+    "credential_present_and_accepted",
+    "configured_model_is_served_by_the_endpoint",
+    "all_probes_completed_normally",
+    "all_probes_completed_within_the_frozen_timeout",
+    "all_probes_used_the_same_frozen_request_hash",
+    "provider_reported_model_identical_across_all_probes"
+  ],
+  "criteria_NOT_EVALUABLE_ON_A_REMOTE_PROVIDER": [
+    {
+      "criterion": "same_model_digest_throughout",
+      "status": "NOT_OBSERVABLE_REMOTELY",
+      "reason": "a remote endpoint publishes no content digest. A provider-reported model id is observed instead and is strictly weaker: it cannot detect a silent revision change behind a stable id."
+    },
+    {
+      "criterion": "no_provider_reload_midway",
+      "status": "NOT_APPLICABLE",
+      "reason": "there is no resident process to sample and no load/unload transition to observe. The criterion is declared inapplicable, NOT substituted by a look-alike and NOT silently reported true."
+    },
+    {
+      "criterion": "environment VRAM / temperature diagnostics",
+      "status": "NOT_APPLICABLE",
+      "reason": "the endpoint is remote; local GPU state has no bearing on it."
+    }
+  ],
+  "descriptive_metrics_not_gating": {
+    "latencies_ms": [
+      2184,
+      2143,
+      2425
+    ],
+    "completion_tokens": [
+      799,
+      799,
+      799
+    ],
+    "prompt_tokens": [
+      1767,
+      1767,
+      1767
+    ],
+    "finish_reasons": [
+      "stop",
+      "stop",
+      "stop"
+    ],
+    "provider_reported_models": [
+      "deepseek-flash",
+      "deepseek-flash",
+      "deepseek-flash"
+    ]
+  },
+  "what_a_pass_means": "a PASS establishes only that a frozen, non-target, production-shaped request completes repeatedly inside the frozen timeout over the real credential. It does NOT establish that the remote model revision is unchanged (no digest exists remotely), and it is NOT evidence about any scientific question.",
+  "what_a_pass_does_not_authorise": [
+    "the scientific run (contract qualification must pass first)",
+    "HISTORY_INTERNALIZATION_PHASE_1",
+    "any claim that the swapped executor satisfies the production cognition contract",
+    "any claim that the remote model revision is unchanged"
+  ],
+  "next_step_if_pass": "PHASE0_CONTRACT_QUALIFICATION_AUTHORISED — the N=6 state-blind qualification on the production cognition path (a separate, separately-authorised gate)",
+  "next_step_if_fail": "PHASE0_CLOUD_SWAP_REMAINS_BLOCKED_BY_PROVIDER — the scientific run is NOT attempted"
+}

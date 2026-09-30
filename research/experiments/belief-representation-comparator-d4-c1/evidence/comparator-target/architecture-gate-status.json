@@ -1,0 +1,17 @@
+{
+  "characteros_production_modification_closed": true,
+  "even_explicit_positive_record_null_authorises": "representation-component localization research only",
+  "immediate_changes_forbidden": [
+    "removing proposition_id",
+    "converting credence to stance text",
+    "adding semantic IDs",
+    "adding embeddings",
+    "adding a relation graph",
+    "rewriting the production prompt"
+  ],
+  "must_first_localise_which_component_mattered": true,
+  "c0b_status": "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+  "c0b_reopened": false,
+  "link_4_status": "LINK_4_REMAINS_LOCKED",
+  "link_4_note": "C1 is not an A1-positive replacement inside the D2 sequential chain and does not authorise appraisal"
+}

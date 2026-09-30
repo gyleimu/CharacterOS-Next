@@ -1,0 +1,134 @@
+{
+  "primary": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "phase": "PRIMARY",
+      "ACCEPT": 3,
+      "VERIFY": 0,
+      "REJECT": 0,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "ACCEPT",
+      "agreement": 1,
+      "expected": "ACCEPT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "phase": "PRIMARY",
+      "ACCEPT": 0,
+      "VERIFY": 0,
+      "REJECT": 3,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "REJECT",
+      "agreement": 1,
+      "expected": "REJECT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "phase": "PRIMARY",
+      "ACCEPT": 0,
+      "VERIFY": 3,
+      "REJECT": 0,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "VERIFY",
+      "agreement": 1,
+      "expected": "VERIFY",
+      "passes": true
+    }
+  ],
+  "control": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "phase": "CONTROL",
+      "ACCEPT": 0,
+      "VERIFY": 0,
+      "REJECT": 0,
+      "rejected": 3,
+      "transport_failed": 0,
+      "valid": 0,
+      "modal": null,
+      "agreement": 0,
+      "expected": "ACCEPT",
+      "passes": false
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "phase": "CONTROL",
+      "ACCEPT": 0,
+      "VERIFY": 0,
+      "REJECT": 0,
+      "rejected": 3,
+      "transport_failed": 0,
+      "valid": 0,
+      "modal": null,
+      "agreement": 0,
+      "expected": "REJECT",
+      "passes": false
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "phase": "CONTROL",
+      "ACCEPT": 0,
+      "VERIFY": 0,
+      "REJECT": 0,
+      "rejected": 3,
+      "transport_failed": 0,
+      "valid": 0,
+      "modal": null,
+      "agreement": 0,
+      "expected": "VERIFY",
+      "passes": false
+    }
+  ],
+  "c3": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "phase": "C3",
+      "ACCEPT": 3,
+      "VERIFY": 0,
+      "REJECT": 0,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "ACCEPT",
+      "agreement": 1,
+      "expected": "ACCEPT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "phase": "C3",
+      "ACCEPT": 0,
+      "VERIFY": 0,
+      "REJECT": 3,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "REJECT",
+      "agreement": 1,
+      "expected": "REJECT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "phase": "C3",
+      "ACCEPT": 0,
+      "VERIFY": 3,
+      "REJECT": 0,
+      "rejected": 0,
+      "transport_failed": 0,
+      "valid": 3,
+      "modal": "VERIFY",
+      "agreement": 1,
+      "expected": "VERIFY",
+      "passes": true
+    }
+  ]
+}

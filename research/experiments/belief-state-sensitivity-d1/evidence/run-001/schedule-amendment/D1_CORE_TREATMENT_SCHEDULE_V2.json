@@ -1,0 +1,552 @@
+{
+  "schedule_spec_version": "d1-belief-state-sensitivity-revision-2",
+  "amendment_kind": "PRE_TREATMENT_SCHEDULE_AMENDMENT",
+  "created_before_first_treatment_call": true,
+  "treatment_calls_made_at_freeze": 0,
+  "r_confirm": 6,
+  "block_list": [
+    "P1_FULL",
+    "P2_FULL",
+    "P3_NEGATIVE_CONTROL",
+    "P1_FRAME_MINIMAL",
+    "STATE_REVERSAL"
+  ],
+  "superseded_invalid_schedule_hash": "sha256:11b32f96fe4d43688cadd5ca5347c2ed144b9f1954a3696be71e154e3c89729c",
+  "protocol_chain": {
+    "revision_2": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "revision_3": "sha256:1781b3458fd760a73c27adb224e29e4c9d156ac60815383ac1d65e2dd298b60c",
+    "revision_4": "sha256:ed8e6949f9b4cf2b393e3ec57d6b87682dd05ef03507edc3bb42dc2ab327f885",
+    "current_effective_preregistration_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b"
+  },
+  "audit": {
+    "total_entries": 60,
+    "block_count": 5,
+    "block_list": [
+      "P1_FULL",
+      "P2_FULL",
+      "P3_NEGATIVE_CONTROL",
+      "P1_FRAME_MINIMAL",
+      "STATE_REVERSAL"
+    ],
+    "restart_entries_present": false,
+    "per_block": [
+      {
+        "block": "P1_FULL",
+        "HIGH": 6,
+        "LOW": 6,
+        "max_run_length": 1
+      },
+      {
+        "block": "P2_FULL",
+        "HIGH": 6,
+        "LOW": 6,
+        "max_run_length": 1
+      },
+      {
+        "block": "P3_NEGATIVE_CONTROL",
+        "HIGH": 6,
+        "LOW": 6,
+        "max_run_length": 2
+      },
+      {
+        "block": "P1_FRAME_MINIMAL",
+        "HIGH": 6,
+        "LOW": 6,
+        "max_run_length": 2
+      },
+      {
+        "block": "STATE_REVERSAL",
+        "HIGH": 6,
+        "LOW": 6,
+        "max_run_length": 2
+      }
+    ],
+    "deterministic": true,
+    "balanced": true,
+    "max_run_length": 2,
+    "frozen_max_run_bound": 2,
+    "outcome_dependency": false,
+    "replicate_ordinal_model_facing": false,
+    "generator_semantics_unchanged": true,
+    "only_the_block_list_changed": true
+  },
+  "ordering_preserved_versus_the_invalid_schedule_per_block": {
+    "P1_FULL": true,
+    "P2_FULL": true,
+    "P3_NEGATIVE_CONTROL": true,
+    "P1_FRAME_MINIMAL": true,
+    "STATE_REVERSAL": true
+  },
+  "schedule": {
+    "amendment_version": "d1-belief-state-sensitivity-revision-2",
+    "seed_source": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "r_confirm": 6,
+    "blocks": [
+      {
+        "block": "P1_FULL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 6,
+        "low_count": 6,
+        "max_run_length": 1
+      },
+      {
+        "block": "P2_FULL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 6,
+        "low_count": 6,
+        "max_run_length": 1
+      },
+      {
+        "block": "P3_NEGATIVE_CONTROL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 6,
+        "low_count": 6,
+        "max_run_length": 2
+      },
+      {
+        "block": "P1_FRAME_MINIMAL",
+        "arms": [
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW"
+        ],
+        "high_count": 6,
+        "low_count": 6,
+        "max_run_length": 2
+      },
+      {
+        "block": "STATE_REVERSAL",
+        "arms": [
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH",
+          "HIGH",
+          "LOW",
+          "LOW",
+          "HIGH",
+          "LOW",
+          "HIGH"
+        ],
+        "high_count": 6,
+        "low_count": 6,
+        "max_run_length": 2
+      }
+    ],
+    "trials": [
+      {
+        "ordinal": 1,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 2,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 3,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 4,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 5,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 6,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 7,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 8,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 9,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 10,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 11,
+        "block": "P1_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 12,
+        "block": "P1_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 13,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 14,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 15,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 16,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 17,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 18,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 19,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 20,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 21,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 22,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 23,
+        "block": "P2_FULL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 24,
+        "block": "P2_FULL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 25,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 26,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 27,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 28,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 29,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 30,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 31,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 32,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 33,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 34,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 35,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 36,
+        "block": "P3_NEGATIVE_CONTROL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 37,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 38,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 39,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 40,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 41,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 42,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 43,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 44,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 45,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 46,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 47,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 48,
+        "block": "P1_FRAME_MINIMAL",
+        "arm": "LOW",
+        "replicate_ordinal": 12
+      },
+      {
+        "ordinal": 49,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 1
+      },
+      {
+        "ordinal": 50,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 2
+      },
+      {
+        "ordinal": 51,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 3
+      },
+      {
+        "ordinal": 52,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 4
+      },
+      {
+        "ordinal": 53,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 5
+      },
+      {
+        "ordinal": 54,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 6
+      },
+      {
+        "ordinal": 55,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 7
+      },
+      {
+        "ordinal": 56,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 8
+      },
+      {
+        "ordinal": 57,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 9
+      },
+      {
+        "ordinal": 58,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 10
+      },
+      {
+        "ordinal": 59,
+        "block": "STATE_REVERSAL",
+        "arm": "LOW",
+        "replicate_ordinal": 11
+      },
+      {
+        "ordinal": 60,
+        "block": "STATE_REVERSAL",
+        "arm": "HIGH",
+        "replicate_ordinal": 12
+      }
+    ],
+    "outcome_blind": true,
+    "replicate_ordinal_in_request_bytes": false,
+    "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371"
+  }
+}

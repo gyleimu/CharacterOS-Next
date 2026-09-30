@@ -1,0 +1,10 @@
+{
+  "distinct_worlds": true,
+  "three_worlds_built": true,
+  "shared_mutable_state": false,
+  "note": "each arm constructs its own repository, facade, issuer, micl minter and workflow store inside buildArmWorldV0; nothing is passed between arms",
+  "same_constructor": true,
+  "same_subject_identity": true,
+  "same_identity_anchors": true,
+  "same_proposition_id": true
+}

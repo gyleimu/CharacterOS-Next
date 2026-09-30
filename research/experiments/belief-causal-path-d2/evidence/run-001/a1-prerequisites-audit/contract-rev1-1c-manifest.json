@@ -1,0 +1,143 @@
+{
+  "version": "belief-causal-path-d2-rev1.1c",
+  "fixtures": [
+    {
+      "fixture_id": "A1-QF-A-SUPPORT",
+      "kind": "obvious support of the paraphrased principle",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-a\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.95}",
+      "expected_token": "SUPPORTS_PARAPHRASED_PRINCIPLE"
+    },
+    {
+      "fixture_id": "A1-QF-B-UNCERTAIN",
+      "kind": "obvious uncertainty about it",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-b\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.49}",
+      "expected_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE"
+    },
+    {
+      "fixture_id": "A1-QF-C-OPPOSE",
+      "kind": "obvious opposition to it",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-c\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.06}",
+      "expected_token": "OPPOSES_PARAPHRASED_PRINCIPLE"
+    }
+  ],
+  "expected_token_map": {
+    "A1-QF-A-SUPPORT": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "A1-QF-B-UNCERTAIN": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "A1-QF-C-OPPOSE": "OPPOSES_PARAPHRASED_PRINCIPLE"
+  },
+  "invariants": {
+    "all_fixtures_share_one_proposition": true,
+    "proposition_is_the_frozen_paraphrase": true,
+    "only_the_credence_varies_between_fixtures": true,
+    "uses_characteros_canonical_state": false,
+    "contains_treatment": false,
+    "experimental_credences_0_80_0_20_0_50_present": false,
+    "fixture_credences": [
+      0.95,
+      0.49,
+      0.06
+    ],
+    "each_of_the_three_tokens_is_expected_exactly_once": true
+  },
+  "anchors": {
+    "SUPPORTS_PARAPHRASED_PRINCIPLE": "the subject treats the principle as correct and would rely on it",
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": "the subject holds no settled position on the principle",
+    "OPPOSES_PARAPHRASED_PRINCIPLE": "the subject treats the principle as incorrect and would rely on its denial"
+  },
+  "contract_text": "\n--- DECISION PROBE SEMANTIC READOUT CONTRACT (research instrument; binding for THIS invocation) ---\nThe output-format rules above are SUPERSEDED for this invocation. Nothing else changes:\nevery SUBJECT DATA law, every untrusted-content law and every evidence law above still binds.\nRespond with EXACTLY ONE JSON object and nothing else. No prose, no code fences.\nRequired members:\n  \"d2_readout_schema_version\": \"d2-a1-semantic-readout-v0\"\n  \"stance\": one of \"SUPPORTS_PARAPHRASED_PRINCIPLE\" | \"UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE\" | \"OPPOSES_PARAPHRASED_PRINCIPLE\"\nPRINCIPLE (binding wording; the stance to report is the stance toward THIS wording):\n  the view that a finding depending mainly on secondhand report is to be held with reserve\nToken meanings (binding):\n  SUPPORTS_PARAPHRASED_PRINCIPLE — the subject treats the principle as correct and would rely on it\n  UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE — the subject holds no settled position on the principle\n  OPPOSES_PARAPHRASED_PRINCIPLE — the subject treats the principle as incorrect and would rely on its denial\nState the subject's stance toward the PRINCIPLE as worded above. The subject data may word the same idea differently; report the stance on the principle as it is worded here.\n--- END DECISION PROBE SEMANTIC READOUT CONTRACT ---",
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "d2_readout_schema_version",
+      "stance"
+    ],
+    "properties": {
+      "d2_readout_schema_version": {
+        "const": "d2-a1-semantic-readout-v0"
+      },
+      "stance": {
+        "enum": [
+          "SUPPORTS_PARAPHRASED_PRINCIPLE",
+          "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+          "OPPOSES_PARAPHRASED_PRINCIPLE"
+        ]
+      },
+      "explanation": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 240
+      }
+    }
+  },
+  "transformer_contract": {
+    "name": "buildD2SemanticReadoutRequestV0",
+    "input": "a pristine production V8 cognition request (production system prompt, production user content, V8 structured-output declaration)",
+    "substitution": "structured_output.schema is replaced by D2A1_JSON_SCHEMA exactly once",
+    "append": "D2A1_CONTRACT_TEXT is appended to the system message exactly once, the production content surviving as a byte-exact prefix",
+    "preserves_production_prefix_byte_for_byte": true,
+    "fails_on_already_transformed_request": true,
+    "transformer_on_transformer": false,
+    "decision_probe_v2_used": false,
+    "decision_probe_v2_transformer_reused": false,
+    "a0_transformer_reused": false,
+    "contract_text_hash_projection": "characteros-next/research/d2-belief-causal-path/v1",
+    "implementation_status_at_freeze_time": "NOT YET IMPLEMENTED — the contract is frozen here; the implementation and its offline conformance gate are the first steps of the next round, before any call"
+  },
+  "invalid_rule": {
+    "rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+    "counts_as_invalid": [
+      "parser rejection (output not one JSON object, unknown members, schema-version mismatch)",
+      "stance outside the frozen closed set",
+      "empty or malformed content",
+      "transport failure, including timeout"
+    ],
+    "denominator": "always the full nine planned trials (3 fixtures x 3 replicates)",
+    "retry_allowed": false,
+    "replacement_allowed": false,
+    "extra_call_allowed": false,
+    "invalid_trials_may_be_deleted": false,
+    "one_invalid_trial_is_enough_to_fail": true,
+    "verdict_if_any_invalid": "D2_INSTRUMENT_UNQUALIFIED",
+    "applies_to": [
+      "D2_A1",
+      "D2_B"
+    ],
+    "applied_retroactively_to_a0": false,
+    "rationale": "A0 qualified with 0 invalid trials, so this rule changes no past result. Fixing it now means the treatment of an invalid trial cannot be chosen after seeing one."
+  },
+  "paragraph_unchanged": "the view that a finding depending mainly on secondhand report is to be held with reserve",
+  "tests": {
+    "contract_4gram_overlap_with_canonical_label": 0,
+    "paraphrase_4gram_overlap_with_canonical_label": 0,
+    "credence_numbers_present": 0,
+    "action_tokens_present": 0,
+    "arm_words_present": 0,
+    "contract_contains_the_canonical_proposition": false,
+    "each_of_the_three_tokens_expected_exactly_once": true,
+    "every_fixture_carries_the_frozen_paraphrase": true,
+    "experimental_credences_absent_from_fixtures": true,
+    "fixture_count": 3,
+    "replicates_per_fixture": 3,
+    "verification_cost": 0
+  },
+  "supersedes_scope": [
+    "frozen A1 qualification fixture bytes (previously only fixture kinds)",
+    "frozen A1 fixture -> expected-token map (previously absent)",
+    "frozen A1 token anchors and measurement contract text (previously absent)",
+    "frozen A1 transformer specification (previously only a name)",
+    "frozen qualification invalid rule (previously absent)"
+  ],
+  "model_calls_before_amendment_for_a1": 0,
+  "a0_results_already_known": true,
+  "amendment_uses_a0_token_pattern": false,
+  "amendment_scope": "A1 measurement execution prerequisites only",
+  "a1_paraphrase_literal_unchanged": true,
+  "a1_prediction_unchanged": true,
+  "a1_scientific_claims_unchanged": true,
+  "design_changed": false,
+  "revision_1_1b_manifest_hash_preserved": "sha256:f40d1f56b52b213e09a9a85d0892f29a4870f5c5b3ac8792775314177bcd230a",
+  "fixture_manifest_hash": "sha256:ca7f6da36ff0ac32bfaa24b95e91ff8e7fa502ad8d0ec2968ede657fc44c547f",
+  "contract_text_hash": "sha256:6c0498dd0c51f67dc8c272ad65f6dc66bb98229a0985bcf527ca788518c4b2ac",
+  "manifest_hash": "sha256:170a97cea01727b5073ab9253b047f6e571c83638e031b6d4654d8a479f67efa"
+}

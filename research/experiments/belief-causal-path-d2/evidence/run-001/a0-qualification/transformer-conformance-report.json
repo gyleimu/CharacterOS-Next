@@ -1,0 +1,44 @@
+{
+  "transformer": "buildD2StructuralReadoutRequestV0",
+  "frozen_contract_hash": "sha256:5778f97ec048110fe35644fca383e8b5b938a382bef8d7247fd7c78992fc2e0b",
+  "per_fixture": {
+    "A0-QF-A-STRONG-ENDORSEMENT": {
+      "production_prefix_byte_identical": true,
+      "schema_is_frozen_a0_schema": true,
+      "contract_text_appended_count": 1,
+      "decision_probe_v2_absent": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "outside_block_bytes_identical": true,
+      "line_count_delta": 0,
+      "system_prompt_bytes": 14015,
+      "user_content_bytes": 4704
+    },
+    "A0-QF-B-UNDECIDED": {
+      "production_prefix_byte_identical": true,
+      "schema_is_frozen_a0_schema": true,
+      "contract_text_appended_count": 1,
+      "decision_probe_v2_absent": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "outside_block_bytes_identical": true,
+      "line_count_delta": 0,
+      "system_prompt_bytes": 14015,
+      "user_content_bytes": 4704
+    },
+    "A0-QF-C-STRONG-DOUBT": {
+      "production_prefix_byte_identical": true,
+      "schema_is_frozen_a0_schema": true,
+      "contract_text_appended_count": 1,
+      "decision_probe_v2_absent": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "outside_block_bytes_identical": true,
+      "line_count_delta": 0,
+      "system_prompt_bytes": 14015,
+      "user_content_bytes": 4704
+    }
+  },
+  "transformer_on_transformer_rejected": true,
+  "decision_probe_v2_used": false,
+  "a1_transformer_present": false,
+  "b_transformer_present": false,
+  "verdict": "D2_A0_TRANSFORMER_CONFORMANT"
+}

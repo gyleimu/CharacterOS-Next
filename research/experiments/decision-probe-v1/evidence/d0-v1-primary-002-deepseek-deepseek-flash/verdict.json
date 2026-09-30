@@ -1,0 +1,41 @@
+{
+  "decision_probe_version": "decision-probe-v1",
+  "round": "PRIMARY_EXECUTOR_QUALIFICATION_PREFLIGHT",
+  "executor_identity": {
+    "requested_executor": "deepseek",
+    "requested_source": "ENVIRONMENT",
+    "effective_executor": "deepseek",
+    "resolution_reason": "explicitly requested with CHARACTEROS_EXECUTOR=deepseek",
+    "credential_env_var": "MODEL_API_KEY",
+    "credential_present": true,
+    "effective_family_model": "deepseek-flash",
+    "effective_family_endpoint": "https://api.deepseek.com",
+    "cloud_family_defaults": {
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "source": "product/sandbox/src/product-configuration.ts:377,381 (documented defaults for the cloud family)"
+    },
+    "local_model": "qwen3.5:9b",
+    "local_endpoint": "http://127.0.0.1:11434",
+    "structured_output_support": {
+      "cloud": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+      "local": "GRAMMAR_ENFORCED_VIA_NATIVE_format"
+    },
+    "identity_determined": true,
+    "declares_primary_executor": false
+  },
+  "availability_gate": {
+    "verdict": "PRIMARY_EXECUTOR_AVAILABLE",
+    "detail": [
+      "credential MODEL_API_KEY is present (presence only; value never read)",
+      "endpoint https://api.deepseek.com reachable, HTTP 200"
+    ]
+  },
+  "protocol_equivalence_verdict": "QWEN_TO_PRIMARY_PROTOCOL_EQUIVALENT",
+  "protocol_equivalence_forbidden_differences": [],
+  "primary_d0_v1_run_started": false,
+  "model_calls_made": 0,
+  "verdict": "PRIMARY_EXECUTOR_AVAILABLE",
+  "d1_gate": "D1 LOCKED",
+  "reason": "primary executor available; D0-V1 may now be executed"
+}

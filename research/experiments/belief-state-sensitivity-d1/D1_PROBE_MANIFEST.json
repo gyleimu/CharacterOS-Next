@@ -1,0 +1,130 @@
+{
+  "manifest_version": "d1-belief-state-sensitivity-v1",
+  "generated_before_any_model_call": true,
+  "model_calls_at_freeze": 0,
+  "proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+  "state_levels": {
+    "HIGH": 0.8,
+    "LOW": 0.2,
+    "NEUTRAL_NOISE_CALIBRATION": 0.5
+  },
+  "separation_gate": {
+    "min_separation": 0.4,
+    "bound_margin": 0.05
+  },
+  "probes": [
+    {
+      "probe_id": "D1-P1-AWAITING-INSPECTION",
+      "family": "PRIMARY",
+      "observation_text": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+      "expected_direction": "HIGH -> VERIFY more often than LOW; LOW -> ACCEPT more often than HIGH",
+      "underdetermination": "the observation neither vouches for the source (would force ACCEPT), nor states that looking is cheap (would force VERIFY), nor contradicts the remark (would force REJECT)"
+    },
+    {
+      "probe_id": "D1-P2-BOOKING-CHANGE",
+      "family": "NEAR_TRANSFER",
+      "observation_text": "A colleague sends a message saying the Thursday delivery slot has been moved to Friday. You have not seen the booking system and you have no other message about it. You could ask the person who runs the bookings before telling anyone else, but they are usually busy and it would take a while. What should be done about the message?",
+      "expected_direction": "same direction as P1",
+      "underdetermination": "same structure as P1 in a different domain: no source endorsement, no statement that asking is cheap, no contradiction"
+    },
+    {
+      "probe_id": "D1-P3-DIRECT-COUNT",
+      "family": "NEGATIVE_CONTROL",
+      "observation_text": "A colleague says there are four clamps left in the drawer. You have the drawer open in front of you and you can count four clamps. What should be done about the colleague's remark?",
+      "expected_direction": "HIGH == LOW; expected decision ACCEPT in both",
+      "underdetermination": "not underdetermined by design: the observation settles it; the CAUTION belief's antecedent (information not seen first-hand) is false"
+    }
+  ],
+  "r_confirm": {
+    "rule": "deterministic: modal_count of the 6 byte-identical pilot replicates -> r_confirm",
+    "noise_ceiling_target": 0.4,
+    "delta_min": 0.5,
+    "table": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "worked_examples": [
+      {
+        "modal_count": 6,
+        "p_hat": 0,
+        "r_confirm": 6,
+        "noise_ceiling": 0.3903,
+        "verdict": "R_CONFIRM_FROZEN"
+      },
+      {
+        "modal_count": 5,
+        "p_hat": 0.16666666666666666,
+        "r_confirm": 14,
+        "noise_ceiling": 0.3994,
+        "verdict": "R_CONFIRM_FROZEN"
+      },
+      {
+        "modal_count": 4,
+        "p_hat": 0.3333333333333333,
+        "r_confirm": null,
+        "noise_ceiling": null,
+        "verdict": "INCONCLUSIVE_BY_DECISION_NOISE"
+      }
+    ]
+  },
+  "frame_minimal_contract": "\nThe output-format rules above are SUPERSEDED for this invocation. Nothing else changes:\nevery SUBJECT DATA law, every untrusted-content law and every evidence law above still binds.\nRespond with EXACTLY ONE JSON object and nothing else. No prose, no code fences.\nRequired members:\n  \"decision_probe_schema_version\": \"decision-probe-v1\"\n  \"decision\": one of \"ACCEPT\" | \"VERIFY\" | \"REJECT\"\nOptional member:\n  \"explanation\": a short string, at most 240 characters (NOT part of the measurement)\nDecision meanings (binding):\n  ACCEPT — the available information is sufficient and the claim should be acted on without further checking\n  VERIFY — the claim should be checked against an independent source before it is acted on\n  REJECT — the claim should not be accepted and should not be acted on",
+  "frame_interpretation": {
+    "full_positive_minimal_positive_same_direction": "FRAME_ROBUST_STATE_SENSITIVITY",
+    "full_positive_minimal_null": "STATE_EFFECT_FRAME_DEPENDENT",
+    "full_null_minimal_positive": "MEASUREMENT_FRAME_SUPPRESSED_STATE_SENSITIVITY",
+    "opposite_directions": "INCONCLUSIVE_BY_FRAME_INTERACTION",
+    "full_null_minimal_null": "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED",
+    "precedence": "the frame verdicts cap the claim: FRAME_ROBUST_STATE_SENSITIVITY is required for the strongest claim; STATE_EFFECT_FRAME_DEPENDENT and MEASUREMENT_FRAME_SUPPRESSED_STATE_SENSITIVITY are weaker"
+  },
+  "reversal_semantics": {
+    "name": "STATE_REVERSAL_WITHIN_IDENTITY_CROSSOVER",
+    "identities": 1,
+    "construction": "one canonical identity; HIGH and LOW materialised lawfully under byte-identical other fields; the direction is re-tested on an INDEPENDENT fresh construction of the same two states",
+    "proves": "within-identity canonical belief intervention — the decision follows the credence value, not a single artifact instance",
+    "does_not_prove": "cross-identity mediation (no second identity is created)",
+    "two_identity_policy": "a second identity requires its own separate preregistration arguing a necessary identification gain that does not introduce a new identity confound; the default and the only design in this round is one identity"
+  },
+  "verdicts": [
+    "BELIEF_STATE_DECISION_SENSITIVITY_SUPPORTED",
+    "FRAME_ROBUST_STATE_SENSITIVITY",
+    "STATE_EFFECT_FRAME_DEPENDENT",
+    "MEASUREMENT_FRAME_SUPPRESSED_STATE_SENSITIVITY",
+    "INCONCLUSIVE_BY_FRAME_INTERACTION",
+    "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED",
+    "STATE_EFFECT_NOT_SPECIFIC",
+    "SCENARIO_BOUND",
+    "STATE_REVERSAL_DOES_NOT_TRACK_BELIEF",
+    "LANGUAGE_ONLY_EFFECT",
+    "INCONCLUSIVE_BY_INSUFFICIENT_STATE_SEPARATION",
+    "INCONCLUSIVE_BY_DECISION_NOISE",
+    "D1_BLOCKED_BY_STATE_ISOLATION_FAILURE",
+    "D1_HISTORY_ABSENCE_VIOLATED",
+    "D1_BLOCKED_BY_INSTRUMENT_MISMATCH",
+    "RESTART_EFFECT_RETAINED",
+    "RESTART_EFFECT_LOST",
+    "RESTORE_NOT_EXACT"
+  ],
+  "call_budget": {
+    "phase_a_offline": 0,
+    "phase_b_noise_pilot": 6,
+    "formula": "6 + (4r + 2r + 2r + 2r) = 6 + 10r",
+    "minimum_r6": 66,
+    "expected_r14": 146,
+    "maximum_r20": 206,
+    "restart_addon_per_r": 2,
+    "conditional": [
+      "restart (only after a positive direct state effect)"
+    ]
+  },
+  "hashes": {
+    "primary_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+    "frame_minimal_contract_hash": "sha256:f32bc0285baf0dadcd8f7c25f047300f9630b2addbf6dd5c47d922ae20d7f356",
+    "probe_manifest_hash": "sha256:0189a4a0aeedade58450d36a9ec51c32545e24fef451e7c47f6a45cd12ec84ce",
+    "preregistration_hash": "sha256:a4c326eb62647b75def011d621fc6ccf0ef9e3d363cb18042992a2e586585c59"
+  }
+}

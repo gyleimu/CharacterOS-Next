@@ -1,0 +1,21 @@
+{
+  "question": "is what changes a treatment representation or a measurement instrument?",
+  "answer": "a treatment representation only",
+  "measurement_contract_unchanged": true,
+  "anchors_unchanged": true,
+  "schema_unchanged": true,
+  "output_vocabulary_unchanged": true,
+  "base_system_framing_unchanged": true,
+  "therefore_requalification_required": false,
+  "requalification_calls": 0,
+  "why": "D4-C0a qualification established that the instrument can report the three stance tokens; C1 changes the stimulus, not the instrument, so the qualified instrument carries over unchanged",
+  "what_would_have_required_requalification": "a change to the contract, the anchors, the schema, the vocabulary or the required output form — none of which occurs here",
+  "current_instrument_hashes": {
+    "contract_text_hash": "sha256:5d66b99d31e971a2f02130fc1e41e8785aaa6d087db0e5adf31fa81cb8c16ec6",
+    "schema_hash": "sha256:2034a688a12459f2eea8b0111a7ed453be9c27a8def816b4e6e6e37099ce1b0a",
+    "anchors_hash": "sha256:1b65129cd62d297d2f20c8bc776d51217a8828c5c0099b516376f89c09bd95d2",
+    "vocabulary_hash": "sha256:191d97afd0c075fa53499692a1d0ac578a45c1dd4f0a0080689f711858625d44"
+  },
+  "the_qualified_instrument_hashes_are_unchanged": true,
+  "verdict": "D4_C1_REUSES_THE_QUALIFIED_INSTRUMENT_UNCHANGED"
+}

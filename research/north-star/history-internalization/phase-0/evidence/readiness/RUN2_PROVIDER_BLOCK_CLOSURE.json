@@ -1,0 +1,33 @@
+{
+  "artifact": "RUN2_PROVIDER_BLOCK_CLOSURE",
+  "run": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN (run-2)",
+  "closure_token": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN_BLOCKED_BEFORE_SCIENTIFIC_START",
+  "classification": "PRE_SCIENTIFIC_INFRASTRUCTURE_BLOCK",
+  "is_it_positive": false,
+  "is_it_a_scientific_null": false,
+  "is_it_a_scientific_inconclusive": false,
+  "why_not": "the run stopped at the NON-SCIENTIFIC bootstrap turn. No subject under study was ever created, so no scientific object exists to be positive, null, or inconclusive about.",
+  "facts": {
+    "scientific_subjects_created": false,
+    "scientific_subject_turns": 0,
+    "scientific_dataset_created": false,
+    "scientific_denominator_started": false,
+    "scientific_status": "NOT_STARTED",
+    "operational_status": "BLOCKED"
+  },
+  "blocker": {
+    "failure_class": "PROVIDER_INFRASTRUCTURE_VRAM_EXHAUSTION",
+    "observed_error": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+    "where": "the non-scientific qualification/bootstrap turn"
+  },
+  "run2_evidence_is_immutable": true,
+  "run2_report_modified_by_this_round": false,
+  "next_execution_identity_recommended": "PHASE0-RUN-3",
+  "why_a_new_identity": "run-2 already contains real bootstrap and provider-block evidence. Even with a zero scientific denominator, that provenance must not be overwritten.",
+  "run3_must_use": [
+    "a new evidence directory",
+    "fresh opaque subjects",
+    "the same frozen scientific design",
+    "the same provider identity"
+  ]
+}

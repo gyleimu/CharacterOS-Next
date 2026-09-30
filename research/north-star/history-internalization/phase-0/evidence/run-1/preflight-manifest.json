@@ -1,0 +1,24 @@
+{
+  "phase": "HISTORY_INTERNALIZATION_TEST_V1_PHASE_0",
+  "revision": "REV2_PHASE_BOUNDARIES",
+  "model_calls_this_step": 0,
+  "inconclusive_conditions": [
+    "qualification turn did not reach status COMPLETE",
+    "any scientific turn did not reach status COMPLETE",
+    "any turn reported a belief-adaptation wiring failure",
+    "a canonical state artifact is missing or unreadable",
+    "the frozen schedule was not followed (turn count or order mismatch)",
+    "the pre-state equivalence audit failed"
+  ],
+  "primary_predicate": "delta_A > 0 AND delta_B < 0 AND credence_A_post != credence_B_post",
+  "audit_hashes": {
+    "pre-execution-architecture-audit.json": "sha256:ec398fa87de1483561fe377bc6b506e1eed0eb96e20859835b1a7f74b1be0812",
+    "initial-state-equivalence.json": "sha256:1ad5fdc142b1a3e4b22efff2a68a9d9569ba8a8ba73aebb76494c91b10e4c365",
+    "target-belief-identity.json": "sha256:f46ef8b60c545f3c171b32f552fa638ca78649f8faa75b11cf99f5db8465773c",
+    "trajectory-schedule.json": "sha256:465cbed45ae687a3ac7567b3a6ee6cc53bd8e17e7b4668aa216f88a7755f914b",
+    "trajectory-isolation-audit.json": "sha256:98b83a843b8500cb75b2835cd300b66e7db7d9749606de545bf49c105e06694d",
+    "leakage-audit.json": "sha256:15505e15e59374cb88052b95a68c440d445d488c7fbd61538d2c9a8978adb2a1",
+    "scorer-falsifiability.json": "sha256:3761dd9054d32cef8bf0d646c1b2bc7288c6856166f02949eb796c182cf70ba9",
+    "phase-0-budget.json": "sha256:6345ed29fa9655d81e35791813ad48b757147770a69eb1e4cffcfe068a1810f1"
+  }
+}

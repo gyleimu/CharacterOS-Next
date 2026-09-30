@@ -1,0 +1,48 @@
+{
+  "artifact": "RUN3_FAILURE_CONTRACT_RECONSTRUCTION",
+  "method": "the exact acceptance rule is read from production SOURCE, and the observed failures are read from the two runs' frozen artifacts. The failing RESPONSE SHAPE is then DERIVED by intersecting the structural schema with the negation of the semantic rule — it is not quoted from a log line.",
+  "instrumentation_gap_that_must_be_stated": {
+    "finding": "the raw malformed executor payload was NOT preserved in either run",
+    "evidence": "neither run's turn records carry a raw_cognition_response field; run-1 persisted cognition REQUESTS only, and run-3 persisted turn records without the raw response",
+    "consequence": "the offending JSON cannot be quoted. The failing shape is therefore derived from the authoritative rule rather than observed, which is the stronger of the two routes anyway because the rule defines the whole family and a sample defines one member.",
+    "fix_for_future_runs": "persist the raw executor response on every turn, valid or invalid"
+  },
+  "the_two_failures": {
+    "run_3": {
+      "turn": "A:turn_1",
+      "subject": "subject-r3-7p4n-2185",
+      "error": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance)"
+    },
+    "run_1": {
+      "turn": "B:turn_2",
+      "subject": "subject-k7q2-8267",
+      "error": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance)"
+    },
+    "same_semantic_validator": true,
+    "same_error_class": true,
+    "same_authoritative_invariant": true,
+    "independent_subject": true,
+    "independent_arm": true,
+    "independent_turn_index": true
+  },
+  "the_exact_rule": {
+    "source": "packages/runtime/src/transitions/conversation/conversation-cognition-proposal.ts",
+    "line": 1909,
+    "executable_predicate": "response_semantics.kind === PRIMARY_RESPONSE_KIND_STANCE_V0  AND  proposal.subjective_selection.kind !== SUBJECTIVE_SELECTION_KIND_SELECTED_V1  =>  REJECT as SEMANTIC_COMPLETENESS_FAILED",
+    "equivalent_form": "response_semantics.kind == \"PRIMARY_STANCE\"  =>  subjective_selection.kind == \"SUBJECTIVE_SELECTION\"",
+    "rule_is_a_cross_field_conditional": true,
+    "it_is_NOT_expressed_by": [
+      "required keys",
+      "closed keys",
+      "JSON well-formedness",
+      "enum membership"
+    ],
+    "why_that_matters": "the reproduced failure proves exactly this: structural validity is not semantic validity"
+  },
+  "derived_failing_shape_family": {
+    "description": "every document that satisfies the V8 structural schema AND has response_semantics.kind == PRIMARY_STANCE AND subjective_selection.kind == NO_SUBJECTIVE_SELECTION",
+    "cardinality": "open in the remaining fields (factual_assessment, cognition, communication_directive, clarification_basis are unconstrained by the rule)",
+    "minimal_member": "{\"schema_version\":\"conversation-cognition-proposal-v8\",\"response_semantics\":{\"kind\":\"PRIMARY_STANCE\"},\"subjective_selection\":{\"kind\":\"NO_SUBJECTIVE_SELECTION\"}, ...remaining fields structurally valid...}",
+    "conclusion": "the CURRENT schema ADMITS this whole family; the authoritative validator REJECTS it"
+  }
+}

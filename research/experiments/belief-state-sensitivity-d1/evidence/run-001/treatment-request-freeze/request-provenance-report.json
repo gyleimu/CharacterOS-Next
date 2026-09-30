@@ -1,0 +1,137 @@
+{
+  "logical_payloads": 10,
+  "distinct_final_hashes": 8,
+  "note": "deterministic construction may legitimately yield identical model-facing hashes across different provenances; identity here is provenance identity",
+  "per_payload": {
+    "P1_FULL_HIGH": {
+      "source": "A2_CERTIFIED",
+      "rebuilt": false,
+      "decision_probe_reapplied": false
+    },
+    "P1_FULL_LOW": {
+      "source": "A2_CERTIFIED",
+      "rebuilt": false,
+      "decision_probe_reapplied": false
+    },
+    "P2_FULL_HIGH": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "P2_FULL_LOW": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "P3_NEGATIVE_CONTROL_HIGH": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "P3_NEGATIVE_CONTROL_LOW": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "STATE_REVERSAL_HIGH": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "STATE_REVERSAL_LOW": {
+      "source": "FRESH_INDEPENDENT_WORLD",
+      "fresh_construction": true,
+      "shared_mutable_world_with_p1": false,
+      "treatment_output_dependency": false
+    },
+    "P1_FRAME_MINIMAL_HIGH": {
+      "source": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "forked_from": "pristine V8 (no Full DecisionProbe applied first)",
+      "full_to_minimal_conversion_used": false,
+      "schema_substituted": true
+    },
+    "P1_FRAME_MINIMAL_LOW": {
+      "source": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "forked_from": "pristine V8 (no Full DecisionProbe applied first)",
+      "full_to_minimal_conversion_used": false,
+      "schema_substituted": true
+    }
+  },
+  "payloads": [
+    {
+      "block": "P1_FULL",
+      "arm": "HIGH",
+      "provenance": "A2_CERTIFIED",
+      "final_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+      "contract": "FULL"
+    },
+    {
+      "block": "P1_FULL",
+      "arm": "LOW",
+      "provenance": "A2_CERTIFIED",
+      "final_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c",
+      "contract": "FULL"
+    },
+    {
+      "block": "P2_FULL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:8e8977596dcf3f62d3b99498d0a44fe6cca2f4063cd799557b0a16befc6ccfd3",
+      "contract": "FULL"
+    },
+    {
+      "block": "P2_FULL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:6b961b09e681105ae53cc570dca64d33490c73090e5050fff8c1aef50077ad8d",
+      "contract": "FULL"
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:7392d5ff83cc955d231ee7a45ebf9d65d2d0dbc758c0d5424cf1195bc40ce74e",
+      "contract": "FULL"
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:304e0333b1be541e93eb281dcf2b04554d22932d289c5917c2a22099eeaa439b",
+      "contract": "FULL"
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+      "contract": "FULL"
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "final_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c",
+      "contract": "FULL"
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "arm": "HIGH",
+      "provenance": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "final_hash": "sha256:3c00c87ca06aa1e9bb97d5c57b55d653c6349edc67e35915d99e80a576dbff6e",
+      "contract": "FRAME_MINIMAL"
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "arm": "LOW",
+      "provenance": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "final_hash": "sha256:880efa7a4cb2959b48f0ca8e93b9e4524cf4b29a23374274a5231fe0173bf718",
+      "contract": "FRAME_MINIMAL"
+    }
+  ]
+}

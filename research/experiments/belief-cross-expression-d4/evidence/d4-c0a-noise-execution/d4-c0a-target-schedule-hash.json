@@ -1,0 +1,8 @@
+{
+  "schedule_hash": "sha256:d85ffc134a2e2a4cada319f4843690374dfebbdf49a63c18c13139d0eb17335f",
+  "planned_calls": 12,
+  "support_request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "oppose_request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "support_trials": 6,
+  "oppose_trials": 6
+}

@@ -1,0 +1,13 @@
+{
+  "executor_family": "openai-compatible cloud",
+  "provider": "DeepSeek",
+  "model": "deepseek-flash",
+  "endpoint_family": "https://api.deepseek.com",
+  "temperature": 0,
+  "max_output_tokens": 256,
+  "provider_thinking": "disabled",
+  "structured_output_enforcement": "PROMPT_CONTRACT_PLUS_HOST_FAIL_CLOSED_PARSER",
+  "native_schema_transmitted": false,
+  "notebook_calls_made": 0,
+  "consistency_with_qualified_v2_run": "same family, same model, same generation settings as D0_V2_RUN_001_DEEPSEEK"
+}

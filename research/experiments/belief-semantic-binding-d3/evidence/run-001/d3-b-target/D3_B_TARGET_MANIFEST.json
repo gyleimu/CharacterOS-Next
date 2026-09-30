@@ -1,0 +1,44 @@
+{
+  "stage": "D3_B_TARGET",
+  "final_verdicts": [
+    "D3_B_TARGET_COMPLETED",
+    "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+    "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+    "D3_B_TARGET_EXECUTED",
+    "D2_B_STILL_LOCKED"
+  ],
+  "corrected_target_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+  "old_invalid_target_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+  "old_invalid_target_status": "INVALID_FOR_EXECUTION_BY_STATE_BLINDNESS_CONTRACT",
+  "old_invalid_target_calls": 0,
+  "expected_relation": "SEMANTICALLY_ALIGNED",
+  "dataset_hash": "sha256:8fee6b2655db663811f9ba0e766f47f5e9968fe5bf7c095f5757f7887dd5bf54",
+  "collection": {
+    "planned": 6,
+    "records": 6,
+    "duplicate_identities": 0,
+    "missing_identities": 0,
+    "extra_identities": 0,
+    "every_record_references_the_corrected_hash": true,
+    "invalid_trials": 0,
+    "transport_failures": 0,
+    "frozen_ordering_preserved": true,
+    "verdict": "D3_B_TARGET_COLLECTION_COMPLETE"
+  },
+  "model_calls_this_round": 6,
+  "d3_model_calls_cumulative": 21,
+  "target_calls_total": 6,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "d2_b_authorised": false,
+  "d3_a_calls": 0,
+  "d2_b_calls": 0,
+  "qualification_or_noise_rerun": false
+}

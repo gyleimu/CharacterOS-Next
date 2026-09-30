@@ -1,0 +1,10 @@
+{
+  "artifact": "evidence/run-001/noise-pilot/D1_EXECUTION_SCHEDULE_ACTUAL.json",
+  "recorded_hash": "sha256:11b32f96fe4d43688cadd5ca5347c2ed144b9f1954a3696be71e154e3c89729c",
+  "recorded_entries": 72,
+  "retained_as_failure_evidence": true,
+  "rewritten": false,
+  "entries_deleted": false,
+  "on_disk_content_hash": "sha256:4330ec36b811b2c653663eec047ae758d43dbf468441f3de61df68d21d64755a",
+  "on_disk_hash_matches_recorded_schedule_hash": true
+}

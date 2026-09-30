@@ -1,0 +1,60 @@
+{
+  "spec_version": "d1-belief-state-sensitivity-revision-2",
+  "amendment": "REVISION 2 — supersedes REVISION 1 ONLY on scoring formalization and execution ordering",
+  "frozen_before_any_treatment_call": true,
+  "model_calls_at_freeze": 0,
+  "constants": {
+    "delta_min": 0.5,
+    "invalid_fraction_max": 0.5,
+    "denominator": "ALL_PREREGISTERED_TRIALS_INCLUDING_INVALID_AND_TRANSPORT_FAILURES",
+    "transport_failure_policy": "a transport failure IS a pre-registered trial: it stays in the denominator and is also counted as invalid; it is never removed, retried or replaced",
+    "modal_tie_policy": "counts equal at the top -> modal is null (a tie never satisfies a modal requirement)"
+  },
+  "formulas": {
+    "p_H_VERIFY": "count_H(VERIFY) / n_H",
+    "p_L_VERIFY": "count_L(VERIFY) / n_L",
+    "p_H_ACCEPT": "count_H(ACCEPT) / n_H",
+    "p_L_ACCEPT": "count_L(ACCEPT) / n_L",
+    "delta_verify": "p_H_VERIFY - p_L_VERIFY",
+    "delta_accept": "p_L_ACCEPT - p_H_ACCEPT",
+    "invalid_fraction": "(invalid_H + invalid_L) / (n_H + n_L)"
+  },
+  "denominator_rule": "every n is the number of PRE-REGISTERED trials in that cell; REJECT, schema-invalid, parser-rejected and transport-failed trials all remain in it",
+  "transport_failure_policy": "a transport failure IS a pre-registered trial: it stays in the denominator and is also counted as invalid; it is never removed, retried or replaced",
+  "contrast_verdicts": [
+    "CONTRAST_POSITIVE",
+    "CONTRAST_NO_MOVEMENT",
+    "CONTRAST_AMBIGUOUS",
+    "INCONCLUSIVE_BY_INVALID_OUTPUTS"
+  ],
+  "contrast_rule": {
+    "INCONCLUSIVE_BY_INVALID_OUTPUTS": "invalid_fraction > invalid_fraction_max (strictly greater)",
+    "CONTRAST_POSITIVE": "modal_H=VERIFY AND modal_L=ACCEPT AND delta_verify>=delta_min AND delta_accept>=delta_min AND delta_verify>noise_ceiling AND delta_accept>noise_ceiling",
+    "CONTRAST_NO_MOVEMENT": "not positive AND delta_verify<=0 AND delta_accept<=0",
+    "CONTRAST_AMBIGUOUS": "everything else (directional but below the bar, or the wrong direction)",
+    "no_post_hoc_choice": "both contrasts must clear the bar jointly; selecting the more favourable of VERIFY/ACCEPT is forbidden"
+  },
+  "negative_control_verdicts": [
+    "NEGATIVE_CONTROL_HELD",
+    "NEGATIVE_CONTROL_PROBE_INVALID",
+    "STATE_EFFECT_NOT_SPECIFIC"
+  ],
+  "negative_control_rule": {
+    "NEGATIVE_CONTROL_PROBE_INVALID": "modal_H != ACCEPT OR modal_L != ACCEPT (the probe itself failed)",
+    "STATE_EFFECT_NOT_SPECIFIC": "probe valid AND (|delta_verify| > noise_ceiling OR |delta_accept| > noise_ceiling)",
+    "NEGATIVE_CONTROL_HELD": "probe valid AND no movement beyond the ceiling"
+  },
+  "frame_rule": {
+    "scorer": "the SAME classifyContrastV0 and the SAME thresholds for Full, Minimal and Reversal",
+    "FRAME_ROBUST_STATE_SENSITIVITY": "full positive AND minimal positive",
+    "STATE_EFFECT_FRAME_DEPENDENT": "full positive AND minimal NOT positive",
+    "MEASUREMENT_FRAME_SUPPRESSED_STATE_SENSITIVITY": "full NOT positive AND minimal positive",
+    "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED": "neither positive",
+    "ambiguity_policy": "'not positive' includes ambiguous; ambiguity therefore resolves AGAINST the stronger claim"
+  },
+  "reversal_rule": "the reversal block is scored by the identical classifyContrastV0 over its own cell counts; 'follows belief' means CONTRAST_POSITIVE in the same direction",
+  "hashes": {
+    "preregistration_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "primary_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+  }
+}

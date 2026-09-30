@@ -1,0 +1,23 @@
+{
+  "characteros_architecture_may_be_modified": false,
+  "c0a_positive_alone_authorises_nothing": true,
+  "comparator_must_hold_all_equal": [
+    "the same executor",
+    "the same A literal",
+    "the same B literal",
+    "the same stance value",
+    "the same supplied semantic relation information",
+    "the same measurement question",
+    "the same anchors",
+    "the same output vocabulary",
+    "the same surrounding research framing",
+    "the same generation settings"
+  ],
+  "comparator_must_enumerate_all_model_facing_byte_differences": true,
+  "only_permitted_scientific_difference": "the source / representation of the stance information — for example an explicit state-blind stance representation versus the CharacterOS production belief representation",
+  "if_framing_or_relation_explicitness_also_changes": "the result may not be attributed to the CharacterOS representation",
+  "until_then": "semantic IDs, embeddings, proposition graphs, relation propagation, extra model passes, prompt rescues and projection rewrites remain candidates only",
+  "c0b_status": "D4_C0B_NOT_PREREGISTERED",
+  "link_4_status": "LINK_4_REMAINS_LOCKED",
+  "status": "CLOSED"
+}

@@ -1,0 +1,158 @@
+{
+  "binding": {
+    "binding_rule": "the A1 state experiment uses the SAME production context identity as the A0 structural-readout state experiment",
+    "identity": {
+      "path_in_state": "/identity/subject_id",
+      "exact_value": "d1-belief-sensitivity-subject",
+      "source": "D1 world-a1.ts :: D1_SUBJECT_ID (the D1 controlled trajectory's subject)"
+    },
+    "observation": {
+      "probe_id": "D1-P1-AWAITING-INSPECTION",
+      "exact_observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "exact_observation_bytes": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+      "exact_scene_bytes": "Workshop note. A colleague remarks that the shared thicknesser's feed rollers are worn and that they ought to be replaced before the next job. You have not had the machine in front of you since it was last serviced, and you have no note about the rollers either way. There is a chance to look at it before the job starts, but stopping to do that would push the job further behind. What should be done about the colleague's remark?",
+      "scene_source": "the observation commit's own scene (D1 world-a1.ts:160)",
+      "committed_observation_identity": "observation:o-d1-p1-awaiting-inspection",
+      "source": "D1 contract.ts :: D1_P1, and D1 world-a1.ts :: D1_OBSERVATION_ID"
+    },
+    "task": {
+      "exact_value": null,
+      "source": "D1 world-a1.ts:160 (the observation commit sets task: null)"
+    },
+    "environment_current_context": {
+      "rule": "byte-exact reuse of the A0-frozen production context; the A1 transformer appends a measurement contract and cannot introduce a context",
+      "verification": "the audit rebuilds the three states offline and asserts byte-identity of the normalised model-facing request against the A0-frozen pristine requests"
+    },
+    "state_construction": [
+      "production genesis materialisation",
+      "lawful belief materialisation",
+      "production observation lifecycle",
+      "production projection",
+      "pristine V8 request"
+    ],
+    "hand_written_subject_data": false,
+    "experimental_variable": {
+      "only_scientific_state_variable": "/beliefs/items/0/credence",
+      "HIGH": 0.8,
+      "NEUTRAL": 0.5,
+      "LOW": 0.2,
+      "derived_bookkeeping_rule": "D1 REVISION 4 normalisation only",
+      "new_diff_classes_added": false
+    },
+    "canonical_proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "provenance": {
+      "a0_results_known_before_context_binding": true,
+      "context_selection_depended_on_a0_token_pattern": false,
+      "a1_outputs_seen_before_context_binding": false,
+      "a1_neutral_calls_before_amendment": 0,
+      "a1_high_low_calls_before_amendment": 0,
+      "why_this_context": [
+        "D1 P1 is the controlled underdetermined secondhand-information context",
+        "A0 and A1 are consecutive links 3A / 3B on the same causal chain",
+        "the A1 semantic-transfer construct targets the same CAUTION belief",
+        "P1 directly instantiates the antecedent relevant to that proposition"
+      ]
+    },
+    "stimulus_family_unchanged": true,
+    "observation_wording_changed": false,
+    "probe_swapped": false,
+    "new_context_added": false,
+    "proposition_changed": false,
+    "paraphrase_changed": false,
+    "high_low_prediction_changed": false
+  },
+  "per_arm_parity_against_the_frozen_A0_context": {
+    "HIGH": {
+      "subject_id_matches_D1": true,
+      "observation_id_matches_D1": true,
+      "observation_id_matches_A0_manifest": true,
+      "observation_ref_matches_A0_manifest": true,
+      "observation_literal_matches_D1_P1": true,
+      "observation_id_matches_A0_provenance": true,
+      "task_is_null_in_A0_provenance": true,
+      "canonical_proposition_matches_A0_provenance": true,
+      "current_context_bytes_hash": "sha256:63f59b81491b091d12b9bd13c968651e5fee81c802d82028cd62b99b8e0d87bb",
+      "rebuilt_request_hash": "sha256:87e13a2ae4b25533bfa4d878b12667ae13fbd673fe0eaf29b2736659b1c7cea8",
+      "frozen_request_hash": "sha256:87e13a2ae4b25533bfa4d878b12667ae13fbd673fe0eaf29b2736659b1c7cea8",
+      "pristine_request_reproduces_byte_for_byte": true,
+      "system_bytes_match": true,
+      "user_bytes_match": true,
+      "normalised_rebuilt_equals_normalised_frozen": true,
+      "current_context_bytes": 712,
+      "pass": true
+    },
+    "LOW": {
+      "subject_id_matches_D1": true,
+      "observation_id_matches_D1": true,
+      "observation_id_matches_A0_manifest": true,
+      "observation_ref_matches_A0_manifest": true,
+      "observation_literal_matches_D1_P1": true,
+      "observation_id_matches_A0_provenance": true,
+      "task_is_null_in_A0_provenance": true,
+      "canonical_proposition_matches_A0_provenance": true,
+      "current_context_bytes_hash": "sha256:63f59b81491b091d12b9bd13c968651e5fee81c802d82028cd62b99b8e0d87bb",
+      "rebuilt_request_hash": "sha256:a5eda1bde8ddf09a37ac77911cabc80e1593312038c01a64f5597361ca3fd58c",
+      "frozen_request_hash": "sha256:a5eda1bde8ddf09a37ac77911cabc80e1593312038c01a64f5597361ca3fd58c",
+      "pristine_request_reproduces_byte_for_byte": true,
+      "system_bytes_match": true,
+      "user_bytes_match": true,
+      "normalised_rebuilt_equals_normalised_frozen": true,
+      "current_context_bytes": 712,
+      "pass": true
+    },
+    "NEUTRAL": {
+      "subject_id_matches_D1": true,
+      "observation_id_matches_D1": true,
+      "observation_id_matches_A0_manifest": true,
+      "observation_ref_matches_A0_manifest": true,
+      "observation_literal_matches_D1_P1": true,
+      "observation_id_matches_A0_provenance": true,
+      "task_is_null_in_A0_provenance": true,
+      "canonical_proposition_matches_A0_provenance": true,
+      "current_context_bytes_hash": "sha256:63f59b81491b091d12b9bd13c968651e5fee81c802d82028cd62b99b8e0d87bb",
+      "rebuilt_request_hash": "sha256:8eb37a57969eb888f7a4c322ce50881de50ff8bc9cc02be9ad5e3ef7d2694feb",
+      "frozen_request_hash": "sha256:8eb37a57969eb888f7a4c322ce50881de50ff8bc9cc02be9ad5e3ef7d2694feb",
+      "pristine_request_reproduces_byte_for_byte": true,
+      "system_bytes_match": true,
+      "user_bytes_match": true,
+      "normalised_rebuilt_equals_normalised_frozen": true,
+      "current_context_bytes": 712,
+      "pass": true
+    }
+  },
+  "cross_arm": {
+    "HIGH_vs_LOW": {
+      "raw_state_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalised_frozen_requests_identical": true
+    },
+    "HIGH_vs_NEUTRAL": {
+      "raw_state_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalised_frozen_requests_identical": true
+    },
+    "LOW_vs_NEUTRAL": {
+      "raw_state_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "normalised_frozen_requests_identical": true
+    }
+  },
+  "context_diff_after_frozen_normalisation": [
+    "/beliefs/items/0/credence"
+  ],
+  "new_diff_classes_added": false,
+  "defect_noted_in_the_frozen_A0_artifact": "the A0 state-manifest recorded identity_parity.subject_ids as [\"undefined\",\"undefined\",\"undefined\"] because that round read `state.subject_id` instead of the real `state.identity.subject_id`. It affected no A0 result — A0's isolation was proved by diffPathsOf over the states, and subject identity came from D1_SUBJECT_ID — but the identity binding here is therefore verified against D1_SUBJECT_ID and `state.identity.subject_id`, not against that broken field.",
+  "verdict": "D2_A1_CONTEXT_BINDING_PROVEN"
+}

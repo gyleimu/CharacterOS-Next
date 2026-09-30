@@ -1,0 +1,12 @@
+{
+  "formulation": "IF_THEN",
+  "ordinal": 2,
+  "schema_accepted": true,
+  "http_status": 200,
+  "error": null,
+  "raw_content": "{\n  \"mode\": \"STANCE\",\n  \"selection\": \"NONE\",\n  \"note\": \"probe\"\n}",
+  "parsed_mode": "STANCE",
+  "parsed_selection": "NONE",
+  "emitted_the_forbidden_combination": true,
+  "latency_ms": 833
+}

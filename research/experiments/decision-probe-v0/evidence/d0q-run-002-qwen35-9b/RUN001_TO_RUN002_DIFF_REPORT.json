@@ -1,0 +1,108 @@
+{
+  "run_001_dir": "research/experiments/decision-probe-v0/evidence/d0q-formal-qwen35-9b",
+  "run_002_dir": "research/experiments/decision-probe-v0/evidence/d0q-run-002-qwen35-9b",
+  "expected_differences": [
+    "context.current_observation_ref: null -> a committed observation ref (the repair)",
+    "context.scene: \"idle\" -> the fixture observation text (the repair)",
+    "context.task: the fixture text -> null (no duplication, the repair)",
+    "consequently: projection_hash, user_content_hash, production_request_hash per fixture"
+  ],
+  "forbidden_differences": [
+    "any fixture text or expected decision token",
+    "the decision vocabulary or the VERIFY definition",
+    "the DecisionProbe JSON schema or the override block",
+    "the primary or control mode names",
+    "r_pilot, verdict thresholds, modal rules, agreement threshold, noise rules",
+    "the executor family, model, temperature, num_predict, num_ctx or think setting",
+    "the production output schema (CONVERSATION_COGNITION_PROPOSAL_V8_JSON_SCHEMA)",
+    "any added history, retrieval, summary, transcript or experiment-specific prompt"
+  ],
+  "actual_differences": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "observation_ref": "observation:o-d0-a-obvious-accept",
+      "scene_carries_fixture": true,
+      "task_is_null": true,
+      "production_request_hash_before": "sha256:27e2618c59955a048bcd886b110b0fcd75b70562fce2c8eac4c6165cff46fa91",
+      "production_request_hash_after": "sha256:c67e5232f019b82e7ab5003c2bd039d0c3230b87ed9c89568793e20b47bc345e",
+      "projection_hash_before": "sha256:c36032c4afacb70f20781754a89e0a35ab9134258baf1a8f1d0c320ea98ae5bf",
+      "projection_hash_after": "sha256:845b775591079aaf8056ce2f055f002cdf6bdaa7e3169c1c81a70e5e75faf515",
+      "production_schema_hash_unchanged": true
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "observation_ref": "observation:o-d0-b-obvious-reject",
+      "scene_carries_fixture": true,
+      "task_is_null": true,
+      "production_request_hash_before": "sha256:4cf616c815b094f1b11a193c4e214c18d2642ac88cd96f01cf0321c7b795c4fb",
+      "production_request_hash_after": "sha256:8c013effd2c9cae49d0bec7f52457e5520c8413bae84bda2685ee596c2685e6b",
+      "projection_hash_before": "sha256:33b27b8668c39b7028eabb3895ea985ad6aa2847945918f8b726ed88748349c4",
+      "projection_hash_after": "sha256:b26b74e66d634d469dc78aa2cba4f8d12ee9710eb20b234260258e16fdddc25b",
+      "production_schema_hash_unchanged": true
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "observation_ref": "observation:o-d0-c-ambiguous-verify",
+      "scene_carries_fixture": true,
+      "task_is_null": true,
+      "production_request_hash_before": "sha256:24ac868786c0d0fdadfb986427cc3451192a119d1721d272a09e383ce8f0014d",
+      "production_request_hash_after": "sha256:196d75441744522bf982daf356aa0a3fc8f0ecfff83bac4a6f49bee386b19571",
+      "projection_hash_before": "sha256:f5340a23bc675f13513eeaeecee23140fabe63a710074080643ec20d2f48d251",
+      "projection_hash_after": "sha256:30a6d92a561db427e0a900e180e087a512babf26030794a7b82092ec679db427",
+      "production_schema_hash_unchanged": true
+    }
+  ],
+  "forbidden_differences_found": [],
+  "run_001_outcomes": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "mode": "SUBSTITUTION_WITH_OVERRIDE",
+      "modal": "ACCEPT",
+      "expected": "ACCEPT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "mode": "PURE_SUBSTITUTION",
+      "modal": "ACCEPT",
+      "expected": "ACCEPT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "mode": "SUBSTITUTION_WITH_OVERRIDE",
+      "modal": "REJECT",
+      "expected": "REJECT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "mode": "PURE_SUBSTITUTION",
+      "modal": "REJECT",
+      "expected": "REJECT",
+      "passes": true
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "mode": "SUBSTITUTION_WITH_OVERRIDE",
+      "modal": "REJECT",
+      "expected": "VERIFY",
+      "passes": false
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "mode": "PURE_SUBSTITUTION",
+      "modal": "REJECT",
+      "expected": "VERIFY",
+      "passes": false
+    }
+  ],
+  "run_001_overall_verdict": "DECISION_INSTRUMENT_UNQUALIFIED",
+  "schema_surface_unchanged": {
+    "probe_schema_hash": "sha256:17a2a4f9cbfb44a1a107978b651cf6535052c7fd612124b703f4cf897277ea1b",
+    "override_block_hash": "sha256:179170a61ceccfa7defe2c079c28015c10879cf1f4edf8ccee37dafa2534a2cd",
+    "decision_schema_token_count": 3,
+    "override_block_present": true
+  },
+  "verdict": "OBSERVATION_BINDING_REPAIR_ONLY"
+}

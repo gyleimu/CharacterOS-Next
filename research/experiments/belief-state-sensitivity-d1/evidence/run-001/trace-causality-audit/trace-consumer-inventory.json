@@ -1,0 +1,35 @@
+{
+  "behavioral_consumer_count": 0,
+  "classifications": {
+    "VALIDATION": [
+      "packages/subject-core/src/validation/subject-state.ts:800-1020",
+      "packages/subject-core/src/validation/subject-state-v4.ts:28,79",
+      "packages/subject-core/src/validation/atomic-commit-bundle.ts:111,138,207,237,270-277,397",
+      "packages/subject-core/src/validation/atomic-commit-bundle-shapes.ts:119,297",
+      "packages/subject-core/src/validation/ownership.ts:78"
+    ],
+    "WRITE_PATH": [
+      "packages/subject-core/src/canonical/canonical-transition-effect.ts:230-231 (nextTraceWindow -> draft)",
+      "packages/subject-core/src/commit/bundle.ts:149-154",
+      "packages/subject-core/src/commit/bundle-v2.ts:230-234",
+      "packages/subject-core/src/commit/facade.ts:603-604,775-776"
+    ],
+    "GOVERNANCE": [
+      "packages/runtime/src/authority/atomic-commit-chain-validator.ts:458-539,643",
+      "packages/runtime/src/authority/restore-chain-authority-v4.ts:88-89,167-168",
+      "packages/runtime/src/authority/trusted-canonical-history-boundary.ts:198-308",
+      "packages/subject-core/src/restore/{restore,restore-v4,envelope}.ts"
+    ],
+    "SERIALIZATION": [
+      "packages/subject-core/src/types/{persistence,persistence-v2,subject-state,subject-state-v4,trace}.ts",
+      "packages/subject-core/src/genesis/subject-state-v4-genesis.ts:133,166"
+    ],
+    "EXPLICIT_SKIP": [
+      "packages/runtime/src/authority/affect-application-history-validator-v0.ts:268 (continue)"
+    ],
+    "TEST_ONLY": [
+      "packages/runtime/src/transitions/observation/observation-fixtures.ts:94-95"
+    ]
+  },
+  "behavioral_consumers": []
+}

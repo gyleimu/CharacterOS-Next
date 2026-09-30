@@ -1,0 +1,6 @@
+{
+  "full_frame_verdict": "CONTRAST_NO_MOVEMENT",
+  "minimal_frame_verdict": "CONTRAST_NO_MOVEMENT",
+  "frame_verdict": "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED",
+  "matrix_used": "the frozen five-row frame matrix; no new interpretation category added"
+}

@@ -1,0 +1,60 @@
+{
+  "stage": "D3_REVISION_5",
+  "model_calls": 0,
+  "section_1_violation": {
+    "old_request_hash_matches_the_invalid_artifact": true,
+    "canonical_proposition_occurrences_in_the_old_request": 2,
+    "canonical_proposition_occurrences_owned_by_STATEMENT_A": 1,
+    "canonical_proposition_occurrences_owned_by_the_subject_block": 1,
+    "old_user_contains_the_belief_block": true,
+    "old_user_contains_a_credence_field": true,
+    "verdict": "D3_B_TARGET_REQUEST_NOT_STATE_BLIND"
+  },
+  "section_2_shape": {
+    "same_state_blind_base_path": true,
+    "same_production_system_prompt": true,
+    "same_transformer_implementation": true,
+    "same_schema": true,
+    "same_contract_and_anchors": true,
+    "same_executor_facing_structure": true,
+    "corrected_contract_reproduces_the_frozen_literal": true,
+    "fixture_contract_differs_on_exactly_the_two_statement_lines": true,
+    "target_only_subject_state_context": false,
+    "additional_context_added_for_the_target": false
+  },
+  "section_3_occurrences": {
+    "canonical_proposition_occurrences_total": 1,
+    "canonical_proposition_owned_by_STATEMENT_A": 1,
+    "canonical_proposition_owned_by_subject_data": 0,
+    "paraphrase_occurrences_total": 1,
+    "paraphrase_owned_by_STATEMENT_B": 1,
+    "paraphrase_owned_by_subject_data": 0,
+    "user_content_contains_the_belief_block": false,
+    "user_content_contains_a_credence_field": false,
+    "user_content_contains_an_arm_label": false,
+    "verdict": "D3_B_CORRECTED_TARGET_OCCURRENCE_AUDIT_HOLDS"
+  },
+  "section_4_corrected_identity": {
+    "corrected_target_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+    "old_invalid_target_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+    "correction_changed_the_bytes": true,
+    "schedule_hash": "sha256:aaeaef7b020e950b49d85ff7026a8f7ebd5c8db58f42c7bb2dc38c69c17feec2"
+  },
+  "section_5_scorer": {
+    "called_not_reimplemented": true,
+    "checks": {
+      "six_aligned_is_positive": true,
+      "one_dissent_is_a_valid_null": true,
+      "one_invalid_is_inconclusive": true,
+      "integrity_failure_is_inconclusive": true,
+      "every_outcome_leaves_link_4_closed": true
+    },
+    "outcomes": {
+      "six_aligned": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "one_dissent": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNITION_NOT_ESTABLISHED",
+      "one_invalid": "D3_B_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "integrity": "D3_B_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE"
+    }
+  },
+  "verdict": "D3_REV5_CORRECTED_TARGET_FROZEN"
+}

@@ -1,0 +1,299 @@
+{
+  "artifact": "OLD_VS_NEW_ACCEPTANCE_SET_AUDIT",
+  "provider_calls": 0,
+  "purpose": "prove locally, BEFORE any provider call, which candidate schemas actually forbid the targeted combination and how their accepted sets compare with the intended invariant",
+  "intended_invariant": "mode == \"STANCE\" => selection == \"SELECTED\"",
+  "corpus_size": 10,
+  "formulations": {
+    "IF_THEN": {
+      "schema": "IF_THEN",
+      "forbids_the_targeted_combination": true,
+      "accepted_set_matches_intended_invariant": true,
+      "divergences": [],
+      "rows": [
+        {
+          "id": "stance_selected",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_selected",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "act_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "act_selected",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "TARGET_stance_none",
+          "kind": "TARGET_FORBIDDEN",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "missing_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "extra_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_enum",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_type",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        }
+      ]
+    },
+    "ONE_OF_AS_FIRST_SENT": {
+      "schema": "ONE_OF_AS_FIRST_SENT",
+      "forbids_the_targeted_combination": false,
+      "accepted_set_matches_intended_invariant": false,
+      "divergences": [
+        {
+          "id": "fact_selected",
+          "kind": "VALID",
+          "schema_accepts": false
+        },
+        {
+          "id": "act_selected",
+          "kind": "VALID",
+          "schema_accepts": false
+        },
+        {
+          "id": "TARGET_stance_none",
+          "kind": "TARGET_FORBIDDEN",
+          "schema_accepts": true
+        }
+      ],
+      "rows": [
+        {
+          "id": "stance_selected",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_selected",
+          "kind": "VALID",
+          "schema_accepts": false,
+          "agrees": false
+        },
+        {
+          "id": "act_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "act_selected",
+          "kind": "VALID",
+          "schema_accepts": false,
+          "agrees": false
+        },
+        {
+          "id": "TARGET_stance_none",
+          "kind": "TARGET_FORBIDDEN",
+          "schema_accepts": true,
+          "agrees": false
+        },
+        {
+          "id": "missing_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "extra_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_enum",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_type",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        }
+      ]
+    },
+    "ONE_OF_CORRECTED": {
+      "schema": "ONE_OF_CORRECTED",
+      "forbids_the_targeted_combination": true,
+      "accepted_set_matches_intended_invariant": false,
+      "divergences": [
+        {
+          "id": "fact_selected",
+          "kind": "VALID",
+          "schema_accepts": false
+        },
+        {
+          "id": "act_selected",
+          "kind": "VALID",
+          "schema_accepts": false
+        }
+      ],
+      "rows": [
+        {
+          "id": "stance_selected",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "fact_selected",
+          "kind": "VALID",
+          "schema_accepts": false,
+          "agrees": false
+        },
+        {
+          "id": "act_none",
+          "kind": "VALID",
+          "schema_accepts": true,
+          "agrees": true
+        },
+        {
+          "id": "act_selected",
+          "kind": "VALID",
+          "schema_accepts": false,
+          "agrees": false
+        },
+        {
+          "id": "TARGET_stance_none",
+          "kind": "TARGET_FORBIDDEN",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "missing_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "extra_key",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_enum",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        },
+        {
+          "id": "wrong_type",
+          "kind": "STRUCTURALLY_INVALID",
+          "schema_accepts": false,
+          "agrees": true
+        }
+      ]
+    }
+  },
+  "the_defect_the_audit_caught": {
+    "which": "ONE_OF_AS_FIRST_SENT",
+    "defect": "branch 2 constrained only `selection: NONE` and left `mode` free, so (STANCE, NONE) was a lawful member of the union.",
+    "consequence": "that formulation does NOT forbid the targeted combination, so its provider result could not distinguish ENFORCED from IGNORED. Any reading taken from it is void.",
+    "how_it_was_caught": "by computing the accepted set locally instead of trusting the schema's intent",
+    "law": "a constraint that does not constrain proves nothing"
+  },
+  "mutation_audit": {
+    "artifact": "CONTRACT_EQUIVALENCE_MUTATION_AUDIT",
+    "rows": [
+      {
+        "id": "M1",
+        "mutation": "SELECTED -> NONE",
+        "payload_bytes_actually_changed": true,
+        "corrected_schema_verdict_changed": true,
+        "intended_verdict_changed": true,
+        "corrected_schema_matches_intent_on_the_mutation": true
+      },
+      {
+        "id": "M2",
+        "mutation": "STANCE -> ACT",
+        "payload_bytes_actually_changed": true,
+        "corrected_schema_verdict_changed": true,
+        "intended_verdict_changed": false,
+        "corrected_schema_matches_intent_on_the_mutation": false
+      },
+      {
+        "id": "M3",
+        "mutation": "delete selection",
+        "payload_bytes_actually_changed": true,
+        "corrected_schema_verdict_changed": true,
+        "intended_verdict_changed": true,
+        "corrected_schema_matches_intent_on_the_mutation": true
+      },
+      {
+        "id": "M4",
+        "mutation": "add unknown key",
+        "payload_bytes_actually_changed": true,
+        "corrected_schema_verdict_changed": true,
+        "intended_verdict_changed": true,
+        "corrected_schema_matches_intent_on_the_mutation": true
+      },
+      {
+        "id": "M5",
+        "mutation": "change note bytes",
+        "payload_bytes_actually_changed": true,
+        "corrected_schema_verdict_changed": false,
+        "intended_verdict_changed": false,
+        "corrected_schema_matches_intent_on_the_mutation": true
+      }
+    ],
+    "every_mutation_changed_the_payload_bytes": true,
+    "falsifiable": true
+  },
+  "conclusion": {
+    "IF_THEN_is_a_valid_instrument": true,
+    "ONE_OF_CORRECTED_is_a_valid_instrument": true,
+    "ONE_OF_AS_FIRST_SENT_is_a_valid_instrument": false
+  }
+}

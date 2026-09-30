@@ -1,0 +1,47 @@
+{
+  "stage": "D3_REVISION_3",
+  "model_calls": 0,
+  "verdicts": [
+    "D3_PREREGISTRATION_FINALIZED_REV3",
+    "D3_B_TARGET_AND_NOISE_REQUEST_IDENTITY_CONFLICT",
+    "D3_B_NON_TARGET_NOISE_PILOT_AUTHORISED",
+    "D3_B_TARGET_NOT_EXECUTED"
+  ],
+  "conflict_resolved": true,
+  "noise_pilot_request": {
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "is_the_frozen_qualification_request": true
+  },
+  "target_calls_before_the_pilot": 0,
+  "target_calls_the_pilot_will_make": 0,
+  "target_planned_calls_after_the_pilot": "r_confirm_B",
+  "budget": {
+    "qualification_calls_completed": 9,
+    "noise_pilot_calls": 6,
+    "target_formula": "r_confirm_B",
+    "target_is_not_2r": true,
+    "why_not_2r": "D3-B has no HIGH/LOW arms: it is a single state-blind relation question, so the target run is r_confirm_B byte-identical calls and not 2 * r",
+    "target_planned_calls_after_noise": "r_confirm_B, i.e. exactly 6 or exactly 14",
+    "target_planned_calls_depends_on_the_noise_pilot": true,
+    "revision_1_already_used_r": true,
+    "revision_1_note": "the revision-1 budget already recorded d3b_formula = r_confirm_B and an authorised maximum of 29 = 9 + 6 + 14, so the budget is unchanged by this revision",
+    "minimum_path_total": 21,
+    "maximum_path_total": 29,
+    "d3a_calls": 0,
+    "d2b_calls": 0,
+    "authorised_total_max": 29,
+    "budget_changed_by_this_revision": false
+  },
+  "d3a_calls": 0,
+  "d2b_calls": 0,
+  "next_round_may_only": "run the 6-call non-target noise pilot on the frozen noise request, freeze its dataset before scoring, then classify with the frozen noise classifier and, if it authorises, freeze the target schedule",
+  "next_round_may_not": [
+    "call the D3-B target request",
+    "execute D3-A",
+    "execute D2-B",
+    "modify any frozen artifact"
+  ],
+  "revision_2_manifest_hash_preserved": "sha256:f860575614ce180c1ad51244b6013b1dbf677db5cd6589a06f6fb0922e06cd55",
+  "rev3_manifest_hash": "sha256:07e6a52a8eec4ec39f8bfd19008db49a791255463f96b499fbb0973a435dfad2"
+}

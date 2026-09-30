@@ -1,0 +1,26 @@
+{
+  "stage": "D2_A1_STATE_EXPERIMENT",
+  "execution_status": "D2_A1_STATE_EXPERIMENT_COMPLETED",
+  "outcome_class": "NULL",
+  "verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+  "positive_predicate": false,
+  "collection_integrity": true,
+  "collection_integrity_failures": [],
+  "invalid_count": 0,
+  "scientific_scoring_executed": true,
+  "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+  "dataset_hash": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+  "r_confirm_A1": 6,
+  "calls_per_arm": 6,
+  "total_calls": 12,
+  "link_3b_status": "LINK 3B NOT ESTABLISHED (valid null)",
+  "claim_scope_note": "semantic uptake was not established on the preregistered near-semantic-transfer paraphrase",
+  "non_claims": [
+    "NOT global semantic understanding",
+    "NOT cognition use, appraisal effect or decision effect",
+    "NOT a statement that D1 was overturned",
+    "NOT human-like understanding",
+    "the term 'cognitively inert' is licensed only by A0 positive + A1 positive + B null, and is not used here"
+  ]
+}

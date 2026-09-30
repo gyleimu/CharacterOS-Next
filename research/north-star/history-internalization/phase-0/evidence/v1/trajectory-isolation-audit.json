@@ -1,0 +1,99 @@
+{
+  "method": "single-span-difference proof: each arm is rebased by substituting its own frozen span with a sentinel; the two rebased strings must be byte-identical to each other and to the template with the sentinel in place",
+  "why_not_a_raw_byte_diff": "the two frozen spans share the opening 'I did ', so a common-prefix diff absorbs part of the span into the prefix and reports a false difference; the rebase proof does not have that failure mode",
+  "rows": [
+    {
+      "turn_index": 0,
+      "arms_identical": true,
+      "expected_identical": true,
+      "proof": "identical shared opening",
+      "proof_holds": true,
+      "differing_bytes": 0,
+      "arm_A_span_length": 0,
+      "arm_B_span_length": 0,
+      "span_length_delta": 0
+    },
+    {
+      "turn_index": 1,
+      "arms_identical": false,
+      "expected_identical": false,
+      "proof": {
+        "span_occurs_exactly_once_in_A": true,
+        "span_occurs_exactly_once_in_B": true,
+        "rebased_arms_identical": true,
+        "rebased_equals_template_with_sentinel": true,
+        "proof_holds": true
+      },
+      "proof_holds": true,
+      "raw_common_prefix": 21,
+      "raw_common_suffix": 79,
+      "raw_diff_bytes": 71,
+      "arm_A_span_length": 43,
+      "arm_B_span_length": 44,
+      "span_length_delta": 1
+    },
+    {
+      "turn_index": 2,
+      "arms_identical": false,
+      "expected_identical": false,
+      "proof": {
+        "span_occurs_exactly_once_in_A": true,
+        "span_occurs_exactly_once_in_B": true,
+        "rebased_arms_identical": true,
+        "rebased_equals_template_with_sentinel": true,
+        "proof_holds": true
+      },
+      "proof_holds": true,
+      "raw_common_prefix": 24,
+      "raw_common_suffix": 74,
+      "raw_diff_bytes": 71,
+      "arm_A_span_length": 43,
+      "arm_B_span_length": 44,
+      "span_length_delta": 1
+    },
+    {
+      "turn_index": 3,
+      "arms_identical": false,
+      "expected_identical": false,
+      "proof": {
+        "span_occurs_exactly_once_in_A": true,
+        "span_occurs_exactly_once_in_B": true,
+        "rebased_arms_identical": true,
+        "rebased_equals_template_with_sentinel": true,
+        "proof_holds": true
+      },
+      "proof_holds": true,
+      "raw_common_prefix": 22,
+      "raw_common_suffix": 62,
+      "raw_diff_bytes": 71,
+      "arm_A_span_length": 43,
+      "arm_B_span_length": 44,
+      "span_length_delta": 1
+    },
+    {
+      "turn_index": 4,
+      "arms_identical": false,
+      "expected_identical": false,
+      "proof": {
+        "span_occurs_exactly_once_in_A": true,
+        "span_occurs_exactly_once_in_B": true,
+        "rebased_arms_identical": true,
+        "rebased_equals_template_with_sentinel": true,
+        "proof_holds": true
+      },
+      "proof_holds": true,
+      "raw_common_prefix": 22,
+      "raw_common_suffix": 61,
+      "raw_diff_bytes": 71,
+      "arm_A_span_length": 43,
+      "arm_B_span_length": 44,
+      "span_length_delta": 1
+    }
+  ],
+  "every_row_as_designed": true,
+  "turn_0_is_a_shared_opening": true,
+  "differing_spans_total": 4,
+  "max_span_length_delta": 1,
+  "span_length_parity_tolerance_frozen": 2,
+  "span_length_parity_within_tolerance": true
+}

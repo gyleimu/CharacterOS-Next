@@ -1,0 +1,11 @@
+{
+  "probe_id": "D1-P1-AWAITING-INSPECTION",
+  "observation_id": "observation:o-d1-p1-awaiting-inspection",
+  "literal_bytes_hash": "sha256:6a31584b7cccbb53a389ddc0f4f57b230dbd34bcbcad8807e50aa62a8d95b508",
+  "submitted_via": "observationInput -> buildContextDelta -> buildObservationProposal -> reserveAndRoute -> commitReserved",
+  "task_injection_used": false,
+  "manual_context_mutation": false,
+  "manual_scene_patch": false,
+  "manual_current_observation_ref_patch": false,
+  "hand_written_projection": false
+}

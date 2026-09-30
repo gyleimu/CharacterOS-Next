@@ -1,0 +1,47 @@
+{
+  "scorer": "scoreD4C0ARev1V0 (frozen revision 1) — called, not re-implemented",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "outcome_class": "POSITIVE",
+    "collection_integrity": true,
+    "collection_integrity_failures": [],
+    "invalid_count": 0,
+    "scientific_scoring_executed": true,
+    "arm_counts": {
+      "ARM_SUPPORT": {
+        "SUPPORTS_B": 6,
+        "UNCERTAIN_B": 0,
+        "OPPOSES_B": 0
+      },
+      "ARM_OPPOSE": {
+        "SUPPORTS_B": 0,
+        "UNCERTAIN_B": 0,
+        "OPPOSES_B": 6
+      }
+    },
+    "arm_unique_modals": {
+      "ARM_SUPPORT": "SUPPORTS_B",
+      "ARM_OPPOSE": "OPPOSES_B"
+    },
+    "arm_modal_ties": {
+      "ARM_SUPPORT": false,
+      "ARM_OPPOSE": false
+    },
+    "arm_predicted_counts": {
+      "ARM_SUPPORT": 6,
+      "ARM_OPPOSE": 6
+    },
+    "arm_meets_directional_majority": {
+      "ARM_SUPPORT": true,
+      "ARM_OPPOSE": true
+    },
+    "contrast_holds": true,
+    "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+    "forbidden_interpretations": [
+      "the relation between A and B",
+      "the truth of B",
+      "the model's own opinion",
+      "the model's confidence in the relation"
+    ]
+  }
+}

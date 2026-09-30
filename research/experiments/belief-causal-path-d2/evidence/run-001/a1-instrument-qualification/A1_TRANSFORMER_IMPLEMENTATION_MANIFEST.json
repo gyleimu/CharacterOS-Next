@@ -1,0 +1,15 @@
+{
+  "transformer": "buildD2SemanticReadoutRequestV0",
+  "transformer_source_file": "research/experiments/belief-causal-path-d2/transformer-a1.ts",
+  "transformer_source_hash": "sha256:628c5094deee14dea88b79b8e1a65692f9cd9766490347f2ba2e6c3125172406",
+  "a1_contract_hash": "sha256:6c0498dd0c51f67dc8c272ad65f6dc66bb98229a0985bcf527ca788518c4b2ac",
+  "a1_schema_hash": "sha256:6d3e1924c890a35a14f827511f04645e4f3fec00ee130a329464586aaf3c06fd",
+  "anchors_hash": "sha256:37553dd7593ea846dce02d8d9e54bb5a2a83535d4d12630b201065731b424c6c",
+  "paraphrases_hash": "sha256:99e07b1fea44e9df3919911f6ab19389e66433c6fc6bbede7e6dfbbb8fd026b3",
+  "fixture_manifest_hash": "sha256:ca7f6da36ff0ac32bfaa24b95e91ff8e7fa502ad8d0ec2968ede657fc44c547f",
+  "revision_1_1c_manifest_hash": "sha256:170a97cea01727b5073ab9253b047f6e571c83638e031b6d4654d8a479f67efa",
+  "a1_outputs_seen_before_implementation_freeze": false,
+  "implementation_frozen": true,
+  "may_not_be_modified_during_qualification": true,
+  "rule_if_a_bug_is_found": "stop the experiment; a fixed transformer may not continue the remaining replicates"
+}

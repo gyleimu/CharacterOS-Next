@@ -1,0 +1,24 @@
+{
+  "version": "belief-causal-path-hypothesis-registry-v1",
+  "entries": [
+    {
+      "id": "CROSS_WORDING_STANCE_BINDING_OR_COMPOSITION_PROBLEM",
+      "status": "HYPOTHESIS",
+      "supporting_pattern": [
+        "3B1 positive",
+        "3B2 positive",
+        "3B3 null"
+      ],
+      "forbidden_status_words": [
+        "proven",
+        "established",
+        "observed mechanism failure"
+      ],
+      "allowed_wording": [
+        "consistent with",
+        "suggests investigating",
+        "candidate architectural explanation"
+      ]
+    }
+  ]
+}

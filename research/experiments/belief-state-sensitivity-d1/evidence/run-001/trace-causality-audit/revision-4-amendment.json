@@ -1,0 +1,31 @@
+{
+  "version": "d1-belief-state-sensitivity-revision-4",
+  "model_calls_before_amendment": 0,
+  "supersedes_scope": "POST_OBSERVATION_STATE_ISOLATION_GATE only",
+  "revision_2_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+  "revision_3_hash": "sha256:1781b3458fd760a73c27adb224e29e4c9d156ac60815383ac1d65e2dd298b60c",
+  "attempt_001_blocked_verdict": "D1_BLOCKED_BY_POST_OBSERVATION_STATE_ISOLATION_FAILURE",
+  "retrospective_reinterpretation": false,
+  "allowed_paths_frozen": [
+    "/beliefs/items/0/credence",
+    "/trace_window/entries/0/state_hash_before",
+    "/trace_window/entries/0/state_hash_after",
+    "/trace_window/entries/0/trace_id"
+  ],
+  "wildcard_allowed": false,
+  "residual_difference_verdict": "D1_BLOCKED_BY_POST_OBSERVATION_STATE_ISOLATION_FAILURE",
+  "unmodified": [
+    "belief intervention",
+    "HIGH/LOW/NEUTRAL",
+    "observation",
+    "Revision 3 request normalization",
+    "probes",
+    "DecisionProbe",
+    "scorer",
+    "thresholds",
+    "noise pilot",
+    "schedule",
+    "history absence"
+  ],
+  "amendment_hash": "sha256:ed8e6949f9b4cf2b393e3ec57d6b87682dd05ef03507edc3bb42dc2ab327f885"
+}

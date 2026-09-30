@@ -1,0 +1,8 @@
+{
+  "cognition_projection_references_to_trace_window": 0,
+  "production_hits_in_providers_or_cognition_action": 0,
+  "existing_test_asserts_absence": "packages/runtime/src/providers/cognition/llm-cognition-provider.test.ts:224 expects the projection NOT to contain trace_window",
+  "reaches_model_facing_messages": false,
+  "reaches_retrieval_query": false,
+  "reaches_provider_metadata": false
+}

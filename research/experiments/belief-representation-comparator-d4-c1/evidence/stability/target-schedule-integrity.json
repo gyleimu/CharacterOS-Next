@@ -1,0 +1,16 @@
+{
+  "entries": 24,
+  "six_blocks_of_four": true,
+  "each_block_has_each_cell_once": true,
+  "per_cell_totals": {
+    "E-SUPPORT": 6,
+    "E-OPPOSE": 6,
+    "R-SUPPORT": 6,
+    "R-OPPOSE": 6
+  },
+  "ordering_unchanged": true,
+  "max_consecutive_same_representation": 3,
+  "temporal_balance_design_unchanged": true,
+  "reoptimised_because_of_the_run_of_three": false,
+  "verdict": "D4_C1_TARGET_SCHEDULE_INTEGRITY_HOLDS"
+}

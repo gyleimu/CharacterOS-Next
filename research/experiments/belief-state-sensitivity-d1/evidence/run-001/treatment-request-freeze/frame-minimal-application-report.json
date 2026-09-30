@@ -1,0 +1,10 @@
+{
+  "forked_from": "A2 certified pristine production V8 requests",
+  "full_request_then_minimal_used": false,
+  "second_minimal_application_used": false,
+  "anchors_present": 1,
+  "banner_present": 1,
+  "three_line_prose_deletion_only": true,
+  "normalized_equivalence": "normalised HIGH / LOW / NEUTRAL are byte-identical: the only arm-dependent model-facing facts are the frozen proposition's credence and the projection hash derived from it",
+  "contract_hash": "sha256:f32bc0285baf0dadcd8f7c25f047300f9630b2addbf6dd5c47d922ae20d7f356"
+}

@@ -1,0 +1,7 @@
+{
+  "verdict": "PRIMARY_EXECUTOR_AVAILABLE",
+  "detail": [
+    "credential MODEL_API_KEY is present (presence only; value never read)",
+    "endpoint https://api.deepseek.com reachable, HTTP 200"
+  ]
+}

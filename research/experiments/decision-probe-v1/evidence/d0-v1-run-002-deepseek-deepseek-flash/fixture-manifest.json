@@ -1,0 +1,32 @@
+{
+  "fixtures": [
+    {
+      "fixture_id": "D0-A-OBVIOUS-ACCEPT",
+      "observation_text": "Workshop note. A colleague says the thicknesser's extraction hose is 100 mm. You can see the hose's collar in front of you and it is stamped \"100 MM\". The claim and the visible stamp agree. Given this, what should be done with the claim?",
+      "expected_decision": "ACCEPT",
+      "determinant": "The observation itself states that an available, directly inspected fact agrees with the claim, so no further checking can change the decision."
+    },
+    {
+      "fixture_id": "D0-B-OBVIOUS-REJECT",
+      "observation_text": "Workshop note. A colleague says the bandsaw blade is on the shelf above the bench. You can see the shelf above the bench and it is empty; the blade is visible on the floor beside the saw. The claim and the visible fact disagree. Given this, what should be done with the claim?",
+      "expected_decision": "REJECT",
+      "determinant": "The observation itself states that an available, directly inspected fact contradicts the claim, so the claim should not be accepted or acted on."
+    },
+    {
+      "fixture_id": "D0-C-AMBIGUOUS-VERIFY",
+      "observation_text": "Workshop note. A colleague says their plane iron takes a 25 degree bevel. You cannot see their plane and you have no record of it either way. Their sharpening jig is on the bench in front of you and it takes one minute to check. Given this, what should be done with the claim?",
+      "expected_decision": "VERIFY",
+      "determinant": "Nothing available determines the claim, and an independent check is stated to be available and cheap, so the lawful action is to check before acting."
+    }
+  ],
+  "protocol": {
+    "r_pilot": 3,
+    "r_pilot_max": 6,
+    "fixture_passes_when": "MODAL_DECISION_EQUALS_EXPECTED",
+    "min_agreement_fraction": 0.6666666666666666,
+    "qualify_requires_all_fixtures": true,
+    "primary_mode": "SUBSTITUTION_WITH_OVERRIDE",
+    "fidelity_control_mode": "PURE_SUBSTITUTION",
+    "max_schema_rejection_rate": 0.5
+  }
+}

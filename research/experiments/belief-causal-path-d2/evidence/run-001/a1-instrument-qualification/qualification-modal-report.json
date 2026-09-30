@@ -1,0 +1,34 @@
+{
+  "per_fixture": {
+    "A1-QF-A-SUPPORT": {
+      "counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 3
+      },
+      "modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "expected": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "pass": true,
+      "tie": false
+    },
+    "A1-QF-B-UNCERTAIN": {
+      "counts": {
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 3
+      },
+      "modal": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+      "expected": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+      "pass": true,
+      "tie": false
+    },
+    "A1-QF-C-OPPOSE": {
+      "counts": {
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 3
+      },
+      "modal": "OPPOSES_PARAPHRASED_PRINCIPLE",
+      "expected": "OPPOSES_PARAPHRASED_PRINCIPLE",
+      "pass": true,
+      "tie": false
+    }
+  },
+  "exact_token_match_required": true,
+  "semantic_similarity_substitution_allowed": false,
+  "human_interpretation_allowed": false
+}

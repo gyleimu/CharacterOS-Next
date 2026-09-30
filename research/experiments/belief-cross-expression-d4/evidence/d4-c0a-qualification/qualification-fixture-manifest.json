@@ -1,0 +1,66 @@
+{
+  "source": "contract.ts (revision 0, unchanged since)",
+  "rewritten_at_runtime": false,
+  "fixtures": [
+    {
+      "fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+      "kind": "aligned pair, subject supports A",
+      "binding": {
+        "proposition_a": "A clamp should always be used when gluing a joint.",
+        "proposition_b": "Clamping a joint while the glue sets is always the right thing to do.",
+        "relation": "A and B express the same underlying view.",
+        "subject_stance_toward_a": "SUPPORTS"
+      },
+      "expected_token": "SUPPORTS_B"
+    },
+    {
+      "fixture_id": "D4C0A-QF-B-OPPOSE-TRANSFER",
+      "kind": "aligned pair, subject opposes A",
+      "binding": {
+        "proposition_a": "A clamp should always be used when gluing a joint.",
+        "proposition_b": "Clamping a joint while the glue sets is always the right thing to do.",
+        "relation": "A and B express the same underlying view.",
+        "subject_stance_toward_a": "OPPOSES"
+      },
+      "expected_token": "OPPOSES_B"
+    },
+    {
+      "fixture_id": "D4C0A-QF-C-NO-TRANSFER",
+      "kind": "unrelated pair, subject supports A — no transfer is defined",
+      "binding": {
+        "proposition_a": "A clamp should always be used when gluing a joint.",
+        "proposition_b": "The workshop's saw blade needs sharpening this month.",
+        "relation": "A and B are about different matters and do not express the same view.",
+        "subject_stance_toward_a": "SUPPORTS"
+      },
+      "expected_token": "UNCERTAIN_B"
+    }
+  ],
+  "expected_token_map": {
+    "D4C0A-QF-A-SUPPORT-TRANSFER": "SUPPORTS_B",
+    "D4C0A-QF-B-OPPOSE-TRANSFER": "OPPOSES_B",
+    "D4C0A-QF-C-NO-TRANSFER": "UNCERTAIN_B"
+  },
+  "qualification_rule": {
+    "fixtures": 3,
+    "replicates_per_fixture": 3,
+    "planned_calls": 9,
+    "rule": "each fixture's modal token must equal its pre-registered expected token, exactly",
+    "invalid_rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+    "counts_as_invalid": [
+      "transport failure",
+      "timeout classified as a failed provider attempt",
+      "malformed output",
+      "parser invalid",
+      "a token outside the frozen D4-C0a vocabulary"
+    ],
+    "denominator": "always the full nine planned trials",
+    "retry_allowed": false,
+    "replacement_allowed": false,
+    "extra_call_allowed": false,
+    "tolerance_or_similarity_substitution": false,
+    "what_it_proves": "only that the measurement instrument can express the three stance tokens on state-blind synthetic fixtures",
+    "what_it_does_not_prove": "composition ability; qualification is not composition evidence"
+  },
+  "covers_all_three_tokens": true
+}

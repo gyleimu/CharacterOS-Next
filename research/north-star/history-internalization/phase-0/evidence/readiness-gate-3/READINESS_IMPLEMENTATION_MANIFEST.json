@@ -1,0 +1,25 @@
+{
+  "artifact": "READINESS_IMPLEMENTATION_MANIFEST",
+  "correction": {
+    "scientific_content_changed": false,
+    "readiness_predicate_changed": false,
+    "request_bytes_changed": false,
+    "provider_config_changed": false,
+    "implementation_conformance_changed": true,
+    "what_changed": "`no_provider_reload_midway` no longer compares every probe's pre-state against probe 1's. It now implements the frozen semantics: one initial load caused by the first planned probe is ALLOWED; any unload, second load, digest change or provider restart within the planned sequence is FORBIDDEN."
+  },
+  "frozen_by_this_round": [
+    "reload-detection.ts source hash",
+    "the synthetic audit result",
+    "this manifest"
+  ],
+  "prior_gates": {
+    "gate_1": "FAIL (immutable)",
+    "gate_2": "FAIL (immutable)",
+    "note": "a correction made after gate 2 does NOT retroactively change gate 2, and must not. Gate 2 already failed on unambiguous primary conditions: 3 planned probes, 0 completed within the frozen timeout, 3 timeouts."
+  },
+  "source_hashes": {
+    "reload-detection.ts#detectMidGateReloadV0": "sha256:f06f3f2cb5215abdcbe0c9447439c403f7d6532f7ed89213c194beb83bc00110",
+    "RELOAD_DETECTION_SYNTHETIC_AUDIT.json": "sha256:7fc082fd583f0bcc3d99c4b87bc7105003f94ab382cec9ee2681a3ae2ed5c90b"
+  }
+}

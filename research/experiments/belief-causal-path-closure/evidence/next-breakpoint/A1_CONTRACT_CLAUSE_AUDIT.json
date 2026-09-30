@@ -1,0 +1,9 @@
+{
+  "invites_transfer": true,
+  "binds_the_stance_to_the_paraphrase_wording": true,
+  "both_present_in_the_frozen_bytes": true,
+  "reading": "the frozen A1 contract simultaneously invites equivalence-based transfer and directs the reported stance to be toward the paraphrase's own wording; a model that answers the second clause literally is not obviously answering the transfer question",
+  "status": "POST_HOC_READING_OF_FROZEN_BYTES",
+  "does_not_invalidate_a1": "the A1 run remains a valid null for the question it asked",
+  "what_it_does_do": "it supplies a rival explanation of the null that does not require the CharacterOS representation to be at fault"
+}

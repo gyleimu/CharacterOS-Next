@@ -1,0 +1,100 @@
+{
+  "logical_payloads": 10,
+  "expected": 10,
+  "payloads": [
+    {
+      "block": "P1_FULL",
+      "arm": "HIGH",
+      "provenance": "A2_CERTIFIED",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+      "contract": "FULL",
+      "state_hash": "sha256:042cc66ab4fb5b29b42fc8169ade123b0ea4332df342d933cbd354bcbcad4698"
+    },
+    {
+      "block": "P1_FULL",
+      "arm": "LOW",
+      "provenance": "A2_CERTIFIED",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c",
+      "contract": "FULL",
+      "state_hash": "sha256:e538ebbf9cd1e258fff9bc20e0d258dd900690d1443961af2db0f20ed396875d"
+    },
+    {
+      "block": "P2_FULL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p2-booking-change",
+      "request_hash": "sha256:8e8977596dcf3f62d3b99498d0a44fe6cca2f4063cd799557b0a16befc6ccfd3",
+      "contract": "FULL",
+      "state_hash": "sha256:0c30c9eb419c51a1e58ce359c1d4b1c6da9f3ce244c6956531db63e4cfd830b5"
+    },
+    {
+      "block": "P2_FULL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p2-booking-change",
+      "request_hash": "sha256:6b961b09e681105ae53cc570dca64d33490c73090e5050fff8c1aef50077ad8d",
+      "contract": "FULL",
+      "state_hash": "sha256:a06582b189c268026ccad9fa256848b7697383e3d466bac6c53bc15d77b61de6"
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p3-direct-count",
+      "request_hash": "sha256:7392d5ff83cc955d231ee7a45ebf9d65d2d0dbc758c0d5424cf1195bc40ce74e",
+      "contract": "FULL",
+      "state_hash": "sha256:0764d389068e140af6f01186bc0c69177c401fc959447437521cd3cdf67a87ef"
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p3-direct-count",
+      "request_hash": "sha256:304e0333b1be541e93eb281dcf2b04554d22932d289c5917c2a22099eeaa439b",
+      "contract": "FULL",
+      "state_hash": "sha256:fa2653ecb6fe7c5abc1d86d3977e5144084419e6770a3aa63613da35eae9ef49"
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "arm": "HIGH",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+      "contract": "FULL",
+      "state_hash": "sha256:042cc66ab4fb5b29b42fc8169ade123b0ea4332df342d933cbd354bcbcad4698"
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "arm": "LOW",
+      "provenance": "FRESH_INDEPENDENT_WORLD",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c",
+      "contract": "FULL",
+      "state_hash": "sha256:e538ebbf9cd1e258fff9bc20e0d258dd900690d1443961af2db0f20ed396875d"
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "arm": "HIGH",
+      "provenance": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:3c00c87ca06aa1e9bb97d5c57b55d653c6349edc67e35915d99e80a576dbff6e",
+      "contract": "FRAME_MINIMAL",
+      "state_hash": "sha256:042cc66ab4fb5b29b42fc8169ade123b0ea4332df342d933cbd354bcbcad4698"
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "arm": "LOW",
+      "provenance": "A2_CERTIFIED_PRISTINE_V8_FORK",
+      "observation_id": "observation:o-d1-p1-awaiting-inspection",
+      "request_hash": "sha256:880efa7a4cb2959b48f0ca8e93b9e4524cf4b29a23374274a5231fe0173bf718",
+      "contract": "FRAME_MINIMAL",
+      "state_hash": "sha256:e538ebbf9cd1e258fff9bc20e0d258dd900690d1443961af2db0f20ed396875d"
+    }
+  ],
+  "per_arm_replicate_reuse": "one frozen request per (block, arm), referenced by that block/arm's 6 scheduled replicates",
+  "replicate_ordinal_in_model_facing_content": false,
+  "treatment_outputs_seen_before_request_freeze": false,
+  "high_low_treatment_started": false
+}

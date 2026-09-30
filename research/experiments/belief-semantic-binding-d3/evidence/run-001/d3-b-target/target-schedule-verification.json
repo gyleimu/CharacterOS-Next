@@ -1,0 +1,19 @@
+{
+  "planned_identities": 6,
+  "expected_identities": [
+    "TARGET-001",
+    "TARGET-002",
+    "TARGET-003",
+    "TARGET-004",
+    "TARGET-005",
+    "TARGET-006"
+  ],
+  "identities_match": true,
+  "positions_are_1_to_6": true,
+  "duplicate_identities": 0,
+  "missing_identities": 0,
+  "every_entry_references_the_corrected_hash": true,
+  "old_invalid_hash_in_executable_entries": 0,
+  "schedule_rebuilt_at_runtime": false,
+  "verdict": "D3_B_TARGET_SCHEDULE_VERIFIED"
+}

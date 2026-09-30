@@ -1,0 +1,48 @@
+{
+  "artifact": "CONTRACT_EQUIVALENCE_MUTATION_AUDIT",
+  "provider_calls": 0,
+  "rows": [
+    {
+      "id": "M1",
+      "mutation": "SELECTED -> NONE",
+      "payload_bytes_actually_changed": true,
+      "corrected_schema_verdict_changed": true,
+      "intended_verdict_changed": true,
+      "corrected_schema_matches_intent_on_the_mutation": true
+    },
+    {
+      "id": "M2",
+      "mutation": "STANCE -> ACT",
+      "payload_bytes_actually_changed": true,
+      "corrected_schema_verdict_changed": true,
+      "intended_verdict_changed": false,
+      "corrected_schema_matches_intent_on_the_mutation": false
+    },
+    {
+      "id": "M3",
+      "mutation": "delete selection",
+      "payload_bytes_actually_changed": true,
+      "corrected_schema_verdict_changed": true,
+      "intended_verdict_changed": true,
+      "corrected_schema_matches_intent_on_the_mutation": true
+    },
+    {
+      "id": "M4",
+      "mutation": "add unknown key",
+      "payload_bytes_actually_changed": true,
+      "corrected_schema_verdict_changed": true,
+      "intended_verdict_changed": true,
+      "corrected_schema_matches_intent_on_the_mutation": true
+    },
+    {
+      "id": "M5",
+      "mutation": "change note bytes",
+      "payload_bytes_actually_changed": true,
+      "corrected_schema_verdict_changed": false,
+      "intended_verdict_changed": false,
+      "corrected_schema_matches_intent_on_the_mutation": true
+    }
+  ],
+  "every_mutation_changed_the_payload_bytes": true,
+  "falsifiable": true
+}

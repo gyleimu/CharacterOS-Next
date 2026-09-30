@@ -1,0 +1,73 @@
+{
+  "stage": "D4_C1-record-stability",
+  "final_states": [
+    "D4_C1_RECORD_STABILITY_GATE_PASS",
+    "D4_C1_TARGET_EXECUTION_AUTHORISED",
+    "D4_C1_TARGET_NOT_EXECUTED",
+    "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+    "LINK_4_REMAINS_LOCKED",
+    "CHARACTEROS_UNMODIFIED"
+  ],
+  "outcome_class": "PASS",
+  "gate_verdict": "D4_C1_RECORD_STABILITY_GATE_PASS",
+  "dataset_hash": "sha256:11528ddefcb6e95ae1c1b80c2b9184e7f669a7d06b19ed62f78b19d51256b90e",
+  "stability_request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417",
+  "collection": {
+    "planned": 6,
+    "records": 6,
+    "duplicate_identities": 0,
+    "missing_identities": 0,
+    "extra_identities": 0,
+    "all_request_hashes_exact": true,
+    "comparator_target_requests_used": 0,
+    "invalid_trials": 0,
+    "transport_failures": 0,
+    "verdict": "D4_C1_STABILITY_COLLECTION_COMPLETE"
+  },
+  "implementation_manifest": {
+    "record_renderer_source_hash": "sha256:16bb88e667c4807c8e5463b5c91d5f20c8e7560afe83a5bf6912c229046e59a6",
+    "proposition_id_derivation_identity": "hashEnvelope('characteros-next/belief/proposition-key/v1', { canonical_label }) — the production derivation",
+    "stability_fixture_request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417",
+    "stability_classifier": "classifyC1RecordStabilityV0",
+    "stability_classifier_source_hash": "sha256:cb9ae1eba0abd94567c484f0c66d3788084ca0126140e815e125c6743c380351",
+    "contract_identities": {
+      "c1_rev1_manifest_hash": "sha256:265368c5a94f7b763728d76cba401c9b0ce6c2b05e2973a2b822e7695f947ae8",
+      "c1_rev1_1_manifest_hash": "sha256:7df04ca36689e60537e299442694654e81bc82a46ca400d07c83cc605000d738",
+      "d4_c0a_contract_text_and_schema_and_anchors_and_vocabulary_reused_unchanged": true
+    },
+    "requalification_calls": 0,
+    "stability_outputs_seen_before_implementation_freeze": false,
+    "target_outputs_seen_before_implementation_freeze": false,
+    "implementation_frozen": true
+  },
+  "model_calls_this_round": 6,
+  "c1_model_calls_cumulative": 6,
+  "target_calls_this_round": 0,
+  "target_execution_authorised": true,
+  "target_not_executed": true,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "characteros_modified": false,
+  "link_4_reopened": false,
+  "what_the_stability_result_means": "only that, under one frozen non-target record-form request, the measurement path was self-consistent across the six planned calls",
+  "what_it_does_not_mean": [
+    "that the CharacterOS record representation works",
+    "that record composition works",
+    "that H_REPRESENTATION is weakened",
+    "that H_FRAMING is strengthened"
+  ],
+  "next_round_may_only": "execute the frozen 24-call comparator target and classify with the frozen scorer",
+  "next_round_may_not": [
+    "re-select the stability fixture",
+    "add calibration or adaptive replication",
+    "modify CharacterOS",
+    "modify the schedules or the classifier"
+  ]
+}

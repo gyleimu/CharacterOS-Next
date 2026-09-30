@@ -1,0 +1,16 @@
+{
+  "fixture_count": 3,
+  "uses_the_frozen_proposition_a": false,
+  "uses_the_frozen_proposition_b": false,
+  "uses_the_caution_wording": false,
+  "characters_material_present": false,
+  "expected_tokens": [
+    "SUPPORTS_B",
+    "OPPOSES_B",
+    "UNCERTAIN_B"
+  ],
+  "all_three_tokens_covered": true,
+  "expected_map_agrees": true,
+  "includes_an_internal_negative_control": true,
+  "verdict": "D4_C0A_QUALIFICATION_FIXTURES_FROZEN"
+}

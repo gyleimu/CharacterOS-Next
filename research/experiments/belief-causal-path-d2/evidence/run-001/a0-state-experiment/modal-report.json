@@ -1,0 +1,22 @@
+{
+  "high": {
+    "counts": {
+      "ENDORSES_STRONGLY": 6
+    },
+    "modal": "ENDORSES_STRONGLY",
+    "modal_count": 6,
+    "tie": false
+  },
+  "low": {
+    "counts": {
+      "DOUBTS_STRONGLY": 6
+    },
+    "modal": "DOUBTS_STRONGLY",
+    "modal_count": 6,
+    "tie": false
+  },
+  "counts_source": "the frozen a0-state-dataset.json bytes, re-read from disk",
+  "invalid_trials_excluded_from_the_modal": false,
+  "invalid_trials_disclosed": false,
+  "denominator_unchanged": true
+}

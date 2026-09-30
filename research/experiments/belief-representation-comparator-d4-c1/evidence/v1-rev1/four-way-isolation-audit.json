@@ -1,0 +1,37 @@
+{
+  "pairwise": {
+    "E-SUPPORT_vs_R-SUPPORT": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    },
+    "E-SUPPORT_vs_R-OPPOSE": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    },
+    "E-OPPOSE_vs_E-SUPPORT": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    },
+    "E-OPPOSE_vs_R-SUPPORT": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    },
+    "E-OPPOSE_vs_R-OPPOSE": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    },
+    "R-OPPOSE_vs_R-SUPPORT": {
+      "differing_lines": 1,
+      "all_differing_lines_are_the_stance_value": true
+    }
+  },
+  "every_pair_differs_on_exactly_one_line": true,
+  "every_difference_is_the_stance_value": true,
+  "distinct_normalised_forms": 1,
+  "treatment_correlated_differences": 0,
+  "allowed_difference_classes": [
+    "stance polarity (SUPPORTS vs OPPOSES, or 0.80 vs 0.20)",
+    "representation form (explicit lexical stance vs the production three-field belief record)"
+  ],
+  "verdict": "D4_C1_FOUR_WAY_ISOLATION_HOLDS"
+}

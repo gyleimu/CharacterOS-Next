@@ -1,0 +1,143 @@
+{
+  "version": "belief-causal-path-d4-design-direction-v1",
+  "verdict": "D4_DESIGN_DIRECTION_IDENTIFIED",
+  "model_calls": 0,
+  "production_changes": 0,
+  "architecture_changes": 0,
+  "new_scientific_result": false,
+  "closure_verified": {
+    "states": [
+      "BELIEF_CAUSAL_PATH_D1_D2_D3_EVIDENCE_FROZEN",
+      "LINK_3B_LOCALIZATION_COMPLETE",
+      "LINK_4_REMAINS_LOCKED",
+      "NO_NEW_SCIENTIFIC_CLAIM_ADDED"
+    ],
+    "independent_mismatches": 0,
+    "link_4_locked": true
+  },
+  "failure_space": [
+    {
+      "id": "H1",
+      "name": "representation_binding",
+      "status": "OPEN_ARCHITECTURALLY_CONFIRMED"
+    },
+    {
+      "id": "H2",
+      "name": "projection_interface",
+      "status": "WEAKENED_BY_EVIDENCE",
+      "reason": "the projection is a direct three-field copy and the canonical item is the same three fields; there is nothing richer to flatten, so H2 collapses into H1"
+    },
+    {
+      "id": "H3",
+      "name": "instruction_boundary",
+      "status": "WEAKENED_BY_EVIDENCE",
+      "reason": "the frozen A1 contract does invite equivalence: \"The subject data may word the same idea differently\""
+    },
+    {
+      "id": "H4",
+      "name": "object_vs_proposition_semantics",
+      "status": "OPEN_COINCIDES_WITH_H1_OBSERVABLY"
+    },
+    {
+      "id": "H5",
+      "name": "transfer_not_automatic_in_the_executor",
+      "status": "OPEN_UNTOUCHED"
+    },
+    {
+      "id": "H6",
+      "name": "measurement_contract_clause_conflict",
+      "status": "OPEN_NEWLY_EVIDENCED",
+      "reason": "the frozen A1 contract both invites equivalence and binds the reported stance to the paraphrase wording"
+    }
+  ],
+  "not_yet_distinguishable": [
+    "H1_H4",
+    "H5",
+    "H6"
+  ],
+  "the_single_question": "Can the frozen executor perform the composition stance(A) + semantically-aligned(A,B) -> stance(B) at all, when A, B, stance(A) and the relation are supplied explicitly and CharacterOS is entirely absent?",
+  "why_it_is_prior": "every other candidate next question presupposes its answer; if composition fails when the executor is handed more than CharacterOS provides, then the A1 null is at least largely an executor-level limitation and no CharacterOS representation change can be shown to be its cause",
+  "minimal_experiment": {
+    "name": "STATE_BLIND_COMPOSITION_BASELINE_C0",
+    "evidence_class": "EXECUTOR_STATE_BLIND_CAPABILITY",
+    "is_characteros_causal_evidence": false,
+    "cells": [
+      {
+        "id": "C0a",
+        "measures": "composition alone: stance(A) as a stance word + explicit aligned relation -> stance(B)",
+        "run": "first"
+      },
+      {
+        "id": "C0b",
+        "measures": "composition plus decoding: stance(A) as a credence scalar + explicit aligned relation -> stance(B)",
+        "run": "only if C0a is positive"
+      }
+    ],
+    "characteros_absent": true,
+    "relation_supplied_explicitly": true,
+    "is_a1_minus_a_field": false,
+    "budget": {
+      "per_cell": {
+        "qualification": 9,
+        "stability_gate": 6,
+        "measurement": 6,
+        "total": 21
+      },
+      "c0a_only": 21,
+      "c0a_then_c0b": 42
+    }
+  },
+  "outcome_meaning": {
+    "c0a_valid_null": {
+      "localization": "EXECUTOR_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "licenses": "de-prioritising the CharacterOS-representation line",
+      "forbids": "any CharacterOS architecture change; this outcome blocks that line"
+    },
+    "c0a_and_c0b_positive": {
+      "localization": "composition and decoding available state-blind; the A1 null is left unexplained",
+      "licenses": "designing a C2 comparison of explicit state-blind stance vs the CharacterOS projection",
+      "forbids": "an architecture change; any claim that the projection is wrong"
+    },
+    "c0a_positive_c0b_valid_null": {
+      "localization": "the failure is in the credence-to-stance decoding step when the target is a re-wording",
+      "licenses": "a sharper localization; examining how credence is interpreted with a paraphrase present",
+      "forbids": "claims about the projection or the prompt"
+    },
+    "inconclusive": {
+      "localization": "nothing",
+      "licenses": "nothing",
+      "forbids": "re-running to force a result; calling it a null"
+    }
+  },
+  "no_outcome_blames_characteros": true,
+  "architecture_change_gate": {
+    "required_all_of": [
+      "C0a positive AND C0b positive",
+      "the same executor on the CharacterOS projection, same pair, same stance values, remains a valid null",
+      "the information difference between the baseline and the projection is enumerated explicitly",
+      "any proposed change is expressible as supplying an item on that enumeration"
+    ],
+    "until_then_forbidden": [
+      "projection change",
+      "semantic ids",
+      "embedding",
+      "proposition graph",
+      "prompt instruction",
+      "relation propagation",
+      "additional model pass"
+    ],
+    "these_remain": "candidates, not a plan"
+  },
+  "not_done_this_round": [
+    "D4 preregistration",
+    "model calls",
+    "production changes",
+    "running any experiment",
+    "designing an appraisal experiment as a way around 3B3"
+  ],
+  "research_economy": {
+    "spent": 141,
+    "c0a_cost": 21,
+    "note": "21 calls to decide whether CharacterOS should be under suspicion at all, against 141 already spent inside CharacterOS"
+  }
+}

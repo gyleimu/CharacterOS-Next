@@ -1,0 +1,9 @@
+{
+  "restart_unlocked": false,
+  "restart_schedule_materialized": false,
+  "restart_currently_executable_trials": 0,
+  "unlock_predicate": "the frozen direct-positive predicate on the core treatment contrast (P1_FULL): modal_HIGH=VERIFY AND modal_LOW=ACCEPT AND delta_verify>=delta_min AND delta_accept>=delta_min AND both deltas exceed the frozen Wilson ceiling",
+  "if_gate_fails": "the restart schedule is never materialised",
+  "if_gate_passes": "generate 12 entries (HIGH=6, LOW=6) via the frozen derivation rule above",
+  "observed_neutral_pilot_informs_the_gate": false
+}

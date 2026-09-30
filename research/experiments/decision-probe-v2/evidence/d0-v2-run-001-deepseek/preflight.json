@@ -1,0 +1,19 @@
+{
+  "requested_executor": "deepseek",
+  "effective_executor": "deepseek",
+  "resolution_reason": "explicitly requested with CHARACTEROS_EXECUTOR=deepseek",
+  "credential_env_var": "MODEL_API_KEY",
+  "credential_present": true,
+  "credential_value_recorded": false,
+  "model": "deepseek-flash",
+  "endpoint": "https://api.deepseek.com",
+  "generation": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "semantic_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+  "c3_manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157",
+  "c3_all_audits_pass": true,
+  "local_executor_invoked": false
+}

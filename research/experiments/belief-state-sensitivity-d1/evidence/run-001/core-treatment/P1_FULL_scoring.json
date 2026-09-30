@@ -1,0 +1,35 @@
+{
+  "block": "P1_FULL",
+  "high_counts": {
+    "n": 6,
+    "ACCEPT": 0,
+    "VERIFY": 6,
+    "REJECT": 0,
+    "invalid": 0
+  },
+  "low_counts": {
+    "n": 6,
+    "ACCEPT": 0,
+    "VERIFY": 6,
+    "REJECT": 0,
+    "invalid": 0
+  },
+  "contrast": {
+    "p_H_VERIFY": 1,
+    "p_L_VERIFY": 1,
+    "p_H_ACCEPT": 0,
+    "p_L_ACCEPT": 0,
+    "delta_verify": 0,
+    "delta_accept": 0,
+    "modal_H": "VERIFY",
+    "modal_L": "VERIFY",
+    "invalid_fraction": 0,
+    "noise_ceiling": 0.3903
+  },
+  "contrast_verdict": "CONTRAST_NO_MOVEMENT",
+  "frozen_inputs": {
+    "noise_ceiling": 0.3903,
+    "delta_min": 0.5
+  },
+  "scorer": "classifyContrastV0 (frozen, uncopied)"
+}

@@ -1,0 +1,318 @@
+{
+  "version": "belief-representation-comparator-d4-c1-rev1",
+  "reference_requirement": {
+    "requirement": "the C1 EXPLICIT cells must be BYTE-IDENTICAL to the frozen D4-C0a target requests, and their hashes must match exactly",
+    "on_failure": "STOP; 'semantically the same' is not sufficient to call it a contemporaneous reference, and the byte differences must be reported",
+    "reconstructed_from": "the frozen D4-C0a base text, contract, schema, binding renderer and arm bindings",
+    "bytes_persisted_this_round": true,
+    "semantic_equivalence_is_not_sufficient": true
+  },
+  "frozen_c0a_target_hashes": {
+    "support": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+    "oppose": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+  },
+  "record_condition_wording": {
+    "permitted_description": "CURRENT CHARACTEROS BELIEF-RECORD REPRESENTATION IN A MATCHED STATE-BLIND RESEARCH FRAME",
+    "forbidden_description": [
+      "the production CharacterOS condition",
+      "the production belief condition",
+      "CharacterOS in production"
+    ],
+    "why": "production placement is removed, the full subject state is removed, and the production framing is removed — deliberately, so that C1 measures representation-form usability rather than production-context usability",
+    "this_is_intended_design": true,
+    "c1_does_not_measure": "production-context usability"
+  },
+  "temporal_principle": {
+    "reason": "the executor is a hosted model whose provider revision cannot be pinned",
+    "consequence": "no historical C0a evidence serves as the C1 causal comparator reference; ALL FOUR CELLS ARE EXECUTED CONTEMPORANEOUSLY IN ONE PRE-REGISTERED SCHEDULE",
+    "is_a_cost_decision": false,
+    "is_a_provider_drift_control": true
+  },
+  "target_structure": {
+    "blocks": 6,
+    "cells_per_block": 4,
+    "each_block_contains_each_cell_exactly_once": true,
+    "target_calls": 24,
+    "replicates_per_cell": 6,
+    "forbidden_structures": [
+      "12 explicit cells followed by 12 record cells",
+      "12 SUPPORT cells followed by 12 OPPOSE cells",
+      "any part of the comparator run without the others"
+    ],
+    "ordering_rule": "block k uses balanced-Latin-square row (k mod 4) over the four cells",
+    "ordering_is_deterministic": true,
+    "ordering_is_outcome_blind": true,
+    "ordering_depends_on": [
+      "the block index and the frozen cell list, and nothing else"
+    ],
+    "ordering_does_not_depend_on": [
+      "runtime latency",
+      "timestamps",
+      "qualification or stability token identities",
+      "the C0a result pattern",
+      "human choice after execution starts"
+    ]
+  },
+  "temporal_balance_claim": {
+    "permitted_claim": "the design reduces systematic collinearity between representation and execution-time ordering",
+    "forbidden_claim": "this eliminates all provider drift",
+    "forbidden_claim_reason": "no within-session design can eliminate drift; it can only stop the drift from being systematically aligned with a condition"
+  },
+  "stability_fixture": {
+    "kind": "NON_TARGET RECORD-FORM INSTRUMENT / INPUT-FORM STABILITY FIXTURE",
+    "proposition": "A clamp should always be used when gluing a joint.",
+    "credence": 0.95,
+    "proposition_b": "Clamping a joint while the glue sets is always the right thing to do.",
+    "relation": "A and B express the same underlying view.",
+    "record_form": "the same three production fields, in the same order, with the proposition_id derived by the PRODUCTION derivation and never hand-written",
+    "proposition_id_must_be_derived_not_written": true,
+    "must_not_use": [
+      "the C1 canonical A/B target pair",
+      "a scientific target cell",
+      "any arm label"
+    ],
+    "credence_is_not_an_experimental_value": true,
+    "measured": "identical-request self-consistency of the measurement path on the RECORD input form",
+    "separate_from_the_target": true,
+    "stability_outputs_enter_the_comparator_dataset": false,
+    "the_24_target_trials_are_not_used_as_a_stability_pilot": true
+  },
+  "stability_correctness_separation": {
+    "pass_condition": "all six trials legal and mutually agreeing on one token",
+    "correctness_required": false,
+    "six_of_six_agreement_passes_even_when_the_token_is_not_the_fixtures_expected_one": true,
+    "why": "qualification owns correctness; this gate owns stability",
+    "contrary_rule_frozen_anywhere": false
+  },
+  "preserved": {
+    "record_bytes_changed": false,
+    "credences_changed": false,
+    "a_and_b_literals_changed": false,
+    "explicit_relation_changed": false,
+    "measurement_contract_changed": false,
+    "anchors_changed": false,
+    "vocabulary_changed": false,
+    "scorer_changed": false,
+    "c0a_historical_result_changed": false,
+    "characteros_production_code_changed": false,
+    "requalification_calls": 0,
+    "requalification_reason": "the measurement instrument is unchanged; the new variable is the stance representation",
+    "scorer_acceptance_region_changed": false,
+    "per_cell_requirement": "predicted token is the unique modal AND its count >= 4 of 6",
+    "c1_stability_is_separate_from_the_target": true,
+    "architecture_gate": "CLOSED",
+    "link_4": "REMAINS_LOCKED",
+    "characteros": "UNMODIFIED"
+  },
+  "next_round_boundary": {
+    "may_only": [
+      "implement the frozen record-cell renderer",
+      "implement the frozen non-target record stability fixture",
+      "pass a zero-call offline conformance gate",
+      "freeze the implementation hashes",
+      "execute only the six record-form stability calls",
+      "freeze that dataset",
+      "classify it and stop"
+    ],
+    "may_not": [
+      "execute the 24-call target in the same round as the stability gate",
+      "modify CharacterOS",
+      "change the record bytes or the credences",
+      "change the measurement contract, anchors, schema or vocabulary",
+      "lower the per-cell scoring standard",
+      "treat the stability gate's token identity as a correctness condition"
+    ],
+    "target_after_stability_pass": "a separate round",
+    "must_stop_after_stability_pass": true
+  },
+  "schedule": [
+    {
+      "position": 1,
+      "block": 1,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 2,
+      "block": 1,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 3,
+      "block": 1,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 4,
+      "block": 1,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 5,
+      "block": 2,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 6,
+      "block": 2,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 7,
+      "block": 2,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 8,
+      "block": 2,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 9,
+      "block": 3,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 10,
+      "block": 3,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 11,
+      "block": 3,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 12,
+      "block": 3,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 13,
+      "block": 4,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 14,
+      "block": 4,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 15,
+      "block": 4,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 16,
+      "block": 4,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 17,
+      "block": 5,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 18,
+      "block": 5,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 19,
+      "block": 5,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 20,
+      "block": 5,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 21,
+      "block": 6,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 22,
+      "block": 6,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 23,
+      "block": 6,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 24,
+      "block": 6,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    }
+  ],
+  "supersedes_scope": [
+    "the EXPLICIT reference's byte-identity requirement against the frozen C0a target requests",
+    "the 24-call target temporal structure (six four-trial blocks) and its frozen ordering"
+  ],
+  "revision_0_manifest_hash_preserved": "sha256:0e115f94c79b8eb8ce40357a18c9cf5904d189b747a88d8a1ae2fe99bac5b2a2",
+  "scientific_content_changed": false,
+  "tests": {
+    "schedule_entries": 24,
+    "blocks": 6,
+    "each_block_has_each_cell_once": true,
+    "each_cell_appears_six_times": true,
+    "target_calls": 24,
+    "reference_must_be_byte_identical": true,
+    "requalification_calls": 0,
+    "stability_calls": 6,
+    "total_c1_budget": 30,
+    "scientific_content_changed": false,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:265368c5a94f7b763728d76cba401c9b0ce6c2b05e2973a2b822e7695f947ae8"
+}

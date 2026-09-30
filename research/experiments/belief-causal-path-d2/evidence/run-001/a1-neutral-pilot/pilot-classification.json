@@ -1,0 +1,21 @@
+{
+  "classification": {
+    "pilot_verdict": "D2_A1_NEUTRAL_PILOT_QUALIFIED",
+    "valid_count": 6,
+    "invalid_count": 0,
+    "counts": {
+      "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 6
+    },
+    "modal_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "modal_count": 6,
+    "r_confirm_A1": 6,
+    "noise_verdict": null
+  },
+  "produced_by": "classifyA1NeutralPilotV0 (REV1.1d, frozen) — called, not re-implemented",
+  "counts_derived_from": "the frozen pilot-dataset.json bytes, re-read from disk",
+  "is_a_correctness_test": false,
+  "required_correct_token": null,
+  "neutral_token_identity_influenced_r": false,
+  "example": "six SUPPORTS and six UNCERTAIN are equivalent for noise calibration: both are modal_count = 6",
+  "modal_tie_undefined": false
+}

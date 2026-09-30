@@ -1,0 +1,39 @@
+{
+  "stage": "D4_C1_RECORD_STABILITY",
+  "planned_calls": 6,
+  "trials": [
+    {
+      "position": 1,
+      "trial_id": "STABILITY-001",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    },
+    {
+      "position": 2,
+      "trial_id": "STABILITY-002",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    },
+    {
+      "position": 3,
+      "trial_id": "STABILITY-003",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    },
+    {
+      "position": 4,
+      "trial_id": "STABILITY-004",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    },
+    {
+      "position": 5,
+      "trial_id": "STABILITY-005",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    },
+    {
+      "position": 6,
+      "trial_id": "STABILITY-006",
+      "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417"
+    }
+  ],
+  "replicate_ordinal_in_the_model_facing_bytes": false,
+  "is_a_comparator_target": false,
+  "frozen_before_the_first_call": true
+}

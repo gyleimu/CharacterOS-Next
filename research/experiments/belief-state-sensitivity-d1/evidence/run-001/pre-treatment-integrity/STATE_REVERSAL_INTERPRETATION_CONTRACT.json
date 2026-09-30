@@ -1,0 +1,50 @@
+{
+  "frozen_before_any_high_low_output": true,
+  "treatment_outputs_seen_at_freeze": false,
+  "mechanically_observed": {
+    "p1_high_equals_reversal_high": true,
+    "p1_low_equals_reversal_low": true,
+    "p1_high_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+    "reversal_high_hash": "sha256:0e953b9206cedbc9de1ecefbd4a420651bfd18a6aae93244729ec1af8e225b69",
+    "p1_low_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c",
+    "reversal_low_hash": "sha256:c3e9668b532585e0a2b3ef695373f5365d6cf6f4b99c1ddc58fd189d94154b4c"
+  },
+  "what_state_reversal_does_prove": [
+    "a fresh independent canonical world reconstruction occurred",
+    "the same canonical identity and the same frozen CAUTION proposition were used",
+    "HIGH = 0.80 and LOW = 0.20 were re-materialised independently",
+    "a fresh production observation lifecycle was executed (commit + post-observation isolation)",
+    "deterministic regeneration of the same model-facing HIGH/LOW treatment representation",
+    "repeated executor behaviour under an independently reconstructed but byte-identical contrast"
+  ],
+  "therefore_it_can_support": [
+    "WITHIN_IDENTITY_RECONSTRUCTION_REPLICATION",
+    "STATE_EFFECT_REPLICATED_AFTER_FRESH_RECONSTRUCTION (if the result tracks the belief direction)"
+  ],
+  "what_it_does_NOT_prove": [
+    "a second independent model-facing intervention",
+    "an information-independent causal contrast",
+    "cross-identity mediation",
+    "a separate behavioural mechanism",
+    "independent evidence equivalent to a different probe family"
+  ],
+  "reason_for_the_boundary": "the final executor input is byte-identical to the corresponding P1_FULL arm, so it cannot carry information P1_FULL did not already carry",
+  "scoring": {
+    "scorer_modified": false,
+    "uses": "the frozen classifyContrastV0",
+    "still_assessed_for": "whether the decision tracks the belief value",
+    "scientific_role_in_the_final_report": "confirmatory reconstruction replication, NOT a second independent estimand",
+    "forbidden": [
+      "multiplying, pooling or summing P1_FULL and STATE_REVERSAL as two statistically independent pieces of evidence",
+      "claiming double independent verification",
+      "reporting it as an additional independent probe family"
+    ]
+  },
+  "frozen_evidence_families": {
+    "primary": "P1_FULL",
+    "near_transfer": "P2_FULL",
+    "specificity_control": "P3_NEGATIVE_CONTROL",
+    "measurement_frame_diagnostic": "P1_FRAME_MINIMAL",
+    "reconstruction_replication": "STATE_REVERSAL"
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "version": "belief-semantic-binding-localization-d3-rev2",
+  "redundancy_verdict": {
+    "verdict": "D3_A_REDUNDANT_WITH_D2_A0",
+    "proposed_stage": "D3_A",
+    "proposed_link": "3B1 canonical proposition stance binding",
+    "subsuming_stage": "D2_A0",
+    "measured_object_compared": "the subject's stance on the canonical proposition",
+    "d2_a0_measurement_target": "the subject's stance on the proposition shown in the belief line",
+    "d2_a0_measurement_target_source": "contract-rev1-1b-a0-fixtures.ts :: D2A0_CONTRACT_TEXT",
+    "d2_a0_anchor_favourable": "the subject treats the proposition as settled in its favour and would rely on it without reservation",
+    "d2_a0_anchor_unsettled": "the subject holds no stance either way on the proposition",
+    "d2_a0_anchor_against": "the subject treats the proposition as settled against it and would rely on its denial without reservation",
+    "d2_a0_primary_criterion": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+    "d2_a0_acceptance_sets": {
+      "endorsing": [
+        "ENDORSES_STRONGLY",
+        "ENDORSES_MILDLY"
+      ],
+      "doubting": [
+        "DOUBTS_STRONGLY",
+        "DOUBTS_MILDLY"
+      ]
+    },
+    "d2_a0_observed": {
+      "HIGH_0_80": "ENDORSES_STRONGLY 6/6",
+      "LOW_0_20": "DOUBTS_STRONGLY 6/6"
+    },
+    "d2_a0_dataset_hash": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+    "conclusion": "canonical credence -> canonical proposition stance binding is ALREADY ESTABLISHED by D2-A0; a D3-A that differs only by using three buckets instead of five is not a new measurement",
+    "therefore": "the D3-A execution path is deleted; no D3-A call may be made in any future round",
+    "what_this_does_not_say": "this is not a claim about what a D3-A run would return; it is a claim that the result would not be new information",
+    "outcome_based": false,
+    "removed_because": "redundant with an already-frozen positive result, not because of any D3 outcome"
+  },
+  "graph": {
+    "chain": [
+      "canonical_belief",
+      "production_projection",
+      "canonical_proposition_stance_binding",
+      "canonical_paraphrase_relation_recognition",
+      "cross_wording_stance_transfer",
+      "epistemic_appraisal",
+      "structured_decision"
+    ],
+    "links": [
+      {
+        "link": "1_canonical_state",
+        "status": "ESTABLISHED_BY_D1_OFFLINE_PRODUCTION_STATE_EVIDENCE",
+        "stage": "D1"
+      },
+      {
+        "link": "2_production_projection",
+        "status": "ESTABLISHED_BY_D1_PRODUCTION_PROJECTION_EVIDENCE",
+        "stage": "D1"
+      },
+      {
+        "link": "3B1_canonical_proposition_stance_binding",
+        "status": "ESTABLISHED_BY_D2_A0_DO_NOT_RETEST",
+        "stage": "D2_A0"
+      },
+      {
+        "link": "3B2_canonical_paraphrase_relation_recognition",
+        "status": "UNTESTED",
+        "stage": "D3_B"
+      },
+      {
+        "link": "3B3_cross_wording_stance_transfer",
+        "status": "NOT_ESTABLISHED_BY_FROZEN_D2_A1_VALID_NULL",
+        "stage": "D2_A1_DO_NOT_RERUN"
+      },
+      {
+        "link": "4_epistemic_appraisal",
+        "status": "NOT_AUTHORISED",
+        "stage": "D2_B_LOCKED"
+      },
+      {
+        "link": "5_structured_decision",
+        "status": "D1_STRUCTURED_DECISION_NULL_REMAINS_FROZEN",
+        "stage": "D1"
+      }
+    ],
+    "law": "no link may be re-tested once established or once adjudicated; D3 tests exactly one link, 3B2"
+  },
+  "role": {
+    "role": "STATE-BLIND EXECUTOR CAPABILITY DIAGNOSTIC",
+    "inputs_are_only_two_frozen_expressions": true,
+    "input_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "input_b": "the view that a finding depending mainly on secondhand report is to be held with reserve",
+    "must_not_contain": [
+      "CharacterOS subject state",
+      "a credence",
+      "HIGH / LOW / NEUTRAL",
+      "A1 outputs",
+      "D1 outputs",
+      "a behaviour or action endpoint"
+    ],
+    "is_characteros_causal_evidence": false,
+    "what_it_checks": "whether the executor can identify the semantic relation between these two literal texts in a direct relation task",
+    "target_pair_frozen": true,
+    "target_pair_modified_after_a1": false,
+    "new_paraphrase_added": false,
+    "design_used_the_specific_a1_low_count_pattern": false,
+    "target_prediction": "SEMANTICALLY_ALIGNED",
+    "vocabulary": [
+      "SEMANTICALLY_ALIGNED",
+      "SEMANTICALLY_UNRELATED",
+      "SEMANTICALLY_OPPOSED"
+    ]
+  },
+  "modal_count_definition": {
+    "counted_quantity": "the number of the six valid pilot trials carrying the single most frequent relation token",
+    "modal_token": "the relation token with a strictly highest count among the six valid trials",
+    "tie_at_the_top": {
+      "consequence": "there is no unique modal token, so the mapping has no defined input",
+      "verdict": "D3_B_INCONCLUSIVE_BY_MODAL_TIE_UNDEFINED",
+      "rationale": "the frozen mapping keys are bare counts; without a unique modal there is nothing to look up, and a tie may not be resolved permissively"
+    },
+    "mapping_reachable_only_when": "every one of the six planned trials carries a legal relation token",
+    "invalid_trials_never_contribute_to_the_count": true,
+    "six_invalid_trials_can_never_yield_modal_count_six": true,
+    "mapping": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "mapping_unchanged_from_revision_1": true
+  },
+  "matrix": {
+    "positive": {
+      "condition": "the frozen relation diagnostic returns its preregistered positive",
+      "verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "combined_with_existing_evidence": {
+        "d2_a0": "canonical stance binding established",
+        "d3_b": "canonical/paraphrase relation recognition established in a direct diagnostic",
+        "d2_a1": "cross-wording stance transfer not established"
+      },
+      "frozen_combined_statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+      "forbidden_unconditional_mechanism_verdict": "SEMANTIC_COMPONENTS_PRESENT_BUT_CROSS_WORDING_STANCE_INTEGRATION_FAILED",
+      "why_forbidden": "an integration failure is one explanation of the pattern, not an observation; issuing it as a verdict would state a mechanism the design cannot observe",
+      "permitted_discussion_form": "the pattern is consistent with a failure of compositional / integrative use — to be labelled a hypothesis or architectural interpretation, never an observational verdict",
+      "may_not_reopen_link_4": true
+    },
+    "null": {
+      "condition": "the frozen relation diagnostic returns a valid null",
+      "verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNITION_NOT_ESTABLISHED",
+      "consequence": "the A1 null may NOT be further attributed to cross-wording integration",
+      "strongest_permitted_conclusion": "canonical proposition stance binding is established, relation recognition for the preregistered paraphrase was not established in the direct diagnostic, and A1 cross-wording stance transfer was also not established"
+    },
+    "inconclusive": {
+      "condition": "collection integrity failure or invalid provider/parser data",
+      "produces_a_new_localization_verdict": false,
+      "retained": "the D2-A1 valid null, unchanged",
+      "recorded_as": "D3-B diagnostic inconclusive"
+    },
+    "link_4_reopened_by_any_row": false
+  },
+  "d2b_lock": {
+    "d2_b_authorised": false,
+    "d2_b_executed": false,
+    "even_if_d3_b_is_positive": true,
+    "why": "D2's frozen sequential rule authorises B only after an A1 POSITIVE; the frozen A1 result is a valid null, and a D3-B positive cannot substitute for it",
+    "d3_b_may_not_substitute_for_a1_positive": true,
+    "link_4_reopened": false,
+    "any_result_of_d3_reopens_link_4": false,
+    "d2_remains_permanently_stopped_at_a1": true
+  },
+  "executability_audit": [
+    {
+      "rule_id": "qualification_fixtures_and_expected_relation_map",
+      "decision_frozen": true,
+      "executable_form_present": true,
+      "closing_step": "already executable: literal bytes and an explicit map",
+      "blocks_the_round_before_calls": false
+    },
+    {
+      "rule_id": "qualification_rule_and_invalid_policy",
+      "decision_frozen": true,
+      "executable_form_present": false,
+      "closing_step": "implement the qualification scorer as a callable pure function in the next round's offline step",
+      "blocks_the_round_before_calls": false
+    },
+    {
+      "rule_id": "transformer_contract",
+      "decision_frozen": true,
+      "executable_form_present": false,
+      "closing_step": "implement the frozen transformer name and pass its offline conformance gate at zero calls",
+      "blocks_the_round_before_calls": false
+    },
+    {
+      "rule_id": "pilot_noise_mapping_and_modal_count_definition",
+      "decision_frozen": true,
+      "executable_form_present": false,
+      "closing_step": "implement the pilot classifier as a callable pure function, including the tie verdict",
+      "blocks_the_round_before_calls": false
+    },
+    {
+      "rule_id": "measurement_rule_unanimity_and_invalid_handling",
+      "decision_frozen": true,
+      "executable_form_present": false,
+      "closing_step": "implement the measurement scorer as a callable pure function",
+      "blocks_the_round_before_calls": false
+    },
+    {
+      "rule_id": "call_budget",
+      "decision_frozen": true,
+      "executable_form_present": true,
+      "closing_step": "already executable: frozen integers",
+      "blocks_the_round_before_calls": false
+    }
+  ],
+  "executability_summary": {
+    "rules_audited": 6,
+    "decisions_missing": 0,
+    "executable_forms_missing": 4,
+    "blocking_gaps": 0,
+    "distinction": "a frozen decision whose implementation is pending is closed by the next round's offline step; a missing decision would be a preregistration gap and would stop that round before any call",
+    "verdict": "D3_B_ALL_DECISIONS_FROZEN_IMPLEMENTATIONS_PENDING"
+  },
+  "design_integrity": {
+    "d3_a_removed_because_redundant": true,
+    "d3_a_removed_due_to_outcome": false,
+    "d3_b_design_used_specific_a1_low_count_pattern": false,
+    "d3_b_target_pair_changed_after_a1": false,
+    "d3_b_expected_relation_changed_after_a1": false,
+    "d3_b_contract_text_changed_from_revision_1": false,
+    "d3_b_fixtures_changed_from_revision_1": false,
+    "d1_modified": false,
+    "d2_modified": false,
+    "caution_modified": false,
+    "arm_credences_modified": false,
+    "a1_paraphrase_modified": false
+  },
+  "budget": {
+    "d3b_qualification": 9,
+    "d3b_pilot": 6,
+    "d3b_formula": "r_confirm_B",
+    "r_candidates": {
+      "6": 6,
+      "14": 14
+    },
+    "authorised_total_max": 29,
+    "authorised_detail_max": "9 qualification + 6 pilot + 14 measurement",
+    "minimum_path": 9,
+    "minimum_detail": "D3-B qualification fails; nothing further runs",
+    "d3a_calls": 0,
+    "d3a_detail": "D3-A is not authorised: it is subsumed by D2-A0",
+    "if_a_human_were_to_insist_on_d3a_anyway": "9 + 6 + 2r, i.e. 27 to 55 further calls, for information D2-A0 already carries — recorded for completeness, NOT authorised",
+    "d1_or_d2_calls_reused": false,
+    "sequential_stopping_counted": true
+  },
+  "d2_a1_null_verdict_unchanged": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+  "revision_1_manifest_hash_preserved": "sha256:adcb3212726a972383b72d826c522b074bab9fbe0396df0f6d9844961df78d8a",
+  "tests": {
+    "a0_still_targets_the_proposition_stance": true,
+    "a0_acceptance_sets_present": true,
+    "d3b_vocabulary_unchanged": true,
+    "d3b_fixtures_unchanged": true,
+    "d3b_contract_hash_unchanged": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+    "d3b_contract_still_carries_both_frozen_inputs": true,
+    "d3b_modal_count_now_explicitly_defined": true,
+    "six_invalid_cannot_yield_modal_count_six": true,
+    "mechanism_verdict_demoted_to_hypothesis": true,
+    "d2b_locked_absolutely": true,
+    "executability_rules_audited": 6,
+    "executability_decisions_missing": 0,
+    "executability_blocking_gaps": 0,
+    "d3a_calls_authorised": 0,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:f860575614ce180c1ad51244b6013b1dbf677db5cd6589a06f6fb0922e06cd55"
+}

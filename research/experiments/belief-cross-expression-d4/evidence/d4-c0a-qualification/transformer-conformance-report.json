@@ -1,0 +1,30 @@
+{
+  "transformer": "buildD4C0AStanceTransferRequestV0",
+  "baseline_checks_all_true": true,
+  "baseline": {
+    "frozen_schema_exact": true,
+    "anchors_exact": true,
+    "contract_text_exact": true,
+    "output_vocabulary_exact": true,
+    "contract_rendered_exactly_once": true,
+    "stance_input_rendered_exactly_once": true,
+    "statement_a_rendered_exactly_once": true,
+    "statement_b_rendered_exactly_once": true,
+    "semantic_relation_rendered_exactly_once": true,
+    "no_expected_output_token_leakage": true,
+    "no_treatment_arm_label_leakage": true,
+    "no_request_hash_leakage": true,
+    "no_replicate_ordinal": true,
+    "no_schedule_information": true,
+    "system_is_the_frozen_base_plus_the_contract": true
+  },
+  "fail_closed_exercised": {
+    "teacher_on_transformer": true,
+    "already_transformed_schema": true,
+    "wrong_message_count": true,
+    "non_frozen_system_text": true,
+    "missing_binding_line": true,
+    "foreign_contract_present": true
+  },
+  "verdict": "D4_C0A_TRANSFORMER_CONFORMANT"
+}

@@ -1,0 +1,30 @@
+{
+  "trial_id": "C1-TARGET-009",
+  "position": 9,
+  "block": 3,
+  "cell_id": "R-SUPPORT",
+  "request_hash": "sha256:5db015a3610efe29bfcf9e36d80cdd3a3a5f2a2d01dfa094a0b301a00d729955",
+  "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+  "parsed_token": "SUPPORTS_B",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "invalid_reason": null,
+  "provider_response_model": "deepseek-flash",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 571
+}

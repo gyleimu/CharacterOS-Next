@@ -1,0 +1,146 @@
+{
+  "version": "belief-causal-path-hash-ledger-v1",
+  "recomputed_from": "artifact bytes",
+  "all_match": true,
+  "datasets_and_schedules": [
+    {
+      "label": "D1 core-treatment dataset (D1 convention: hashEnvelope(projection, { dataset }))",
+      "path": "research/experiments/belief-state-sensitivity-d1/evidence/run-001/core-treatment/core-treatment-dataset.json",
+      "recorded": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908",
+      "recomputed": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908",
+      "matches": true
+    },
+    {
+      "label": "D2-A0 state dataset",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a0-state-experiment/a0-state-dataset.json",
+      "recorded": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+      "recomputed": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+      "matches": true
+    },
+    {
+      "label": "D2-A1 state dataset",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a1-state-experiment/a1-state-dataset.json",
+      "recorded": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+      "recomputed": "sha256:2cacbf0159af95d9693b8e1fbfd88f3cfa90a38e61ecb043638a28766e061446",
+      "matches": true
+    },
+    {
+      "label": "D3-B qualification dataset",
+      "path": "research/experiments/belief-semantic-binding-d3/evidence/run-001/d3-b-instrument-qualification/qualification-dataset.json",
+      "recorded": "sha256:04f232f38788889868f1787f8823bf5713cfd3690d5c20e65deeb3d138571bf1",
+      "recomputed": "sha256:04f232f38788889868f1787f8823bf5713cfd3690d5c20e65deeb3d138571bf1",
+      "matches": true
+    },
+    {
+      "label": "D3-B noise dataset",
+      "path": "research/experiments/belief-semantic-binding-d3/evidence/run-001/d3-b-noise-stability/noise-dataset.json",
+      "recorded": "sha256:493156e3edc2bc4610337f728192833f71c6e5df542bbdbf4e7922a0c51246e3",
+      "recomputed": "sha256:493156e3edc2bc4610337f728192833f71c6e5df542bbdbf4e7922a0c51246e3",
+      "matches": true
+    },
+    {
+      "label": "D3-B target dataset",
+      "path": "research/experiments/belief-semantic-binding-d3/evidence/run-001/d3-b-target/target-dataset.json",
+      "recorded": "sha256:8fee6b2655db663811f9ba0e766f47f5e9968fe5bf7c095f5757f7887dd5bf54",
+      "recomputed": "sha256:8fee6b2655db663811f9ba0e766f47f5e9968fe5bf7c095f5757f7887dd5bf54",
+      "matches": true
+    },
+    {
+      "label": "D2-A0 schedule",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a0-neutral-pilot/A0_STATE_EXPERIMENT_SCHEDULE.json",
+      "recorded": "sha256:20220b27bab67cd063bb121b980048c93308718b32c7e1b94370d13d7924df2d",
+      "recomputed": "sha256:20220b27bab67cd063bb121b980048c93308718b32c7e1b94370d13d7924df2d",
+      "matches": true
+    },
+    {
+      "label": "D2-A1 schedule",
+      "path": "research/experiments/belief-causal-path-d2/evidence/run-001/a1-neutral-pilot/A1_STATE_EXPERIMENT_SCHEDULE.json",
+      "recorded": "sha256:d49962e73ed449954f82433ceda7e217528d6705b75dace7a92d6256eb7f46c7",
+      "recomputed": "sha256:d49962e73ed449954f82433ceda7e217528d6705b75dace7a92d6256eb7f46c7",
+      "matches": true
+    },
+    {
+      "label": "D3-B target schedule",
+      "path": "research/experiments/belief-semantic-binding-d3/evidence/run-001/rev5/D3_B_TARGET_SCHEDULE.json",
+      "recorded": "sha256:aaeaef7b020e950b49d85ff7026a8f7ebd5c8db58f42c7bb2dc38c69c17feec2",
+      "recomputed": "sha256:aaeaef7b020e950b49d85ff7026a8f7ebd5c8db58f42c7bb2dc38c69c17feec2",
+      "matches": true
+    }
+  ],
+  "request_sets": [
+    {
+      "label": "D2-A0 HIGH request",
+      "record": {
+        "recorded": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac",
+        "recomputed": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac",
+        "matches": true
+      }
+    },
+    {
+      "label": "D2-A0 LOW request",
+      "record": {
+        "recorded": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d",
+        "recomputed": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d",
+        "matches": true
+      }
+    },
+    {
+      "label": "D2-A0 NEUTRAL request",
+      "record": {
+        "recorded": "sha256:9938d540e5a44882bae74ca7846c25987409f5a8170068e704753e5cc080dfc0",
+        "recomputed": "sha256:9938d540e5a44882bae74ca7846c25987409f5a8170068e704753e5cc080dfc0",
+        "matches": true
+      }
+    },
+    {
+      "label": "D2-A1 HIGH request",
+      "record": {
+        "recorded": "sha256:4ada729e349e1633386ed7d8df639059668403854cedcb683aadfe7e76fd8ff1",
+        "recomputed": "sha256:4ada729e349e1633386ed7d8df639059668403854cedcb683aadfe7e76fd8ff1",
+        "matches": true
+      }
+    },
+    {
+      "label": "D2-A1 LOW request",
+      "record": {
+        "recorded": "sha256:0bbd6c81b40c1e398d55b5f8c7c54e6488ec59292ecad4a3c4f49ac3adb03ce7",
+        "recomputed": "sha256:0bbd6c81b40c1e398d55b5f8c7c54e6488ec59292ecad4a3c4f49ac3adb03ce7",
+        "matches": true
+      }
+    },
+    {
+      "label": "D2-A1 NEUTRAL request",
+      "record": {
+        "recorded": "sha256:cc417f778cb0cf9008a17b4210947a8287f063b47f50614c4b0be59c5577d370",
+        "recomputed": "sha256:cc417f778cb0cf9008a17b4210947a8287f063b47f50614c4b0be59c5577d370",
+        "matches": true
+      }
+    },
+    {
+      "label": "D3-B target request",
+      "record": {
+        "recorded": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+        "recomputed": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+        "matches": true
+      }
+    }
+  ],
+  "implementation_sources": {
+    "research/experiments/belief-causal-path-d2/transformer-a0.ts": "sha256:e95600a5a5281f33df8914169075aa6101426be12ffcbbdf6d08041111a36f61",
+    "research/experiments/belief-causal-path-d2/transformer-a1.ts": "sha256:ddb63c1828177c6a95a1d61b7b2617c787be9b680d0cb4d5f06e2149f6f24811",
+    "research/experiments/belief-semantic-binding-d3/transformer-d3b.ts": "sha256:9daa5521e010597443d0d67801ba200b3811fc165804c18b6a94c11a460259aa",
+    "research/experiments/belief-semantic-binding-d3/scorers-d3b.ts": "sha256:c0e9531e11f6b9920b7ce95f352e3cf34021c932bd998adc26f738054e2967ae",
+    "research/experiments/belief-semantic-binding-d3/qualification-base.ts": "sha256:c92621d471e3328254389e52c14e366725916e48500eee59f52fc90b28a520a2",
+    "research/experiments/belief-causal-path-d2/contract-rev1-1c-a1-prerequisites.ts": "sha256:0296531c54df09e563afbef7e2aa51543417a689910b1686b2b7adec48014532",
+    "research/experiments/belief-causal-path-d2/contract-rev1-1d-a1-neutral-and-context.ts": "sha256:92b95dc7dec7271e0aa8bca4f43c126f9b279e8ac663287da986bedfd66187ed",
+    "research/experiments/belief-causal-path-d2/contract-rev1-1e-a1-state-scoring.ts": "sha256:430aa85e596bef981caaeeab0deba6c22a9519c2868b19cead9817f816a164bc",
+    "research/experiments/belief-semantic-binding-d3/contract.ts": "sha256:ef08b8d09b6cd9069e86ce802b218f986a5ea5df7b3ada78877c2da970bededf",
+    "research/experiments/belief-semantic-binding-d3/contract-rev2-d3b-only.ts": "sha256:b967d6c24492ecab6f0967377e67ca93ef23119484fc4ae931676a1bff3a037e",
+    "research/experiments/belief-semantic-binding-d3/contract-rev3-noise-identity.ts": "sha256:42fa375eb06b23c702ebb0c91bf9e0e239414c780757a78df842d7048738d63e",
+    "research/experiments/belief-semantic-binding-d3/contract-rev4-noise-stability-gate.ts": "sha256:3b1a0c2fcb4112dd6f733a79ff421670c16973aa58b3c0255313eb24ae07633f",
+    "research/experiments/belief-semantic-binding-d3/contract-rev5-target-state-blind.ts": "sha256:b1d349e66c12b1d1a90b51d747c24c7f242d195633f8e4c285eb2ae5329e2e03"
+  },
+  "revision_contracts": {
+    "d3_revision_5_manifest": "sha256:76c9b99e8c85f361772295cafa2ce2d0009ba6e770994be7c23beb79fdb83a20"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "artifact": "PHASE0_RUN3_DATASET_SHA256",
+  "dataset_sha256": "sha256:63b5b28302c4e6b6f33d6137c3a0e4f92b6c6bc3a28cd2695595a74906592e4c",
+  "hash_function": "sha256 over the exact serialized PHASE0_RUN3_DATASET.json bytes",
+  "advanced_hash_envelope": "sha256:a5756d0041d4af440b565a7dfb8d2f1afa34667d2c40475b4a4b6238ed5ea3e6",
+  "frozen_before_scoring": true,
+  "scored_flag": false
+}

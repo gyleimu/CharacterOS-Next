@@ -1,0 +1,30 @@
+{
+  "trial_id": "C1-TARGET-012",
+  "position": 12,
+  "block": 3,
+  "cell_id": "E-SUPPORT",
+  "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+  "parsed_token": "SUPPORTS_B",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "invalid_reason": null,
+  "provider_response_model": "deepseek-flash",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 738
+}

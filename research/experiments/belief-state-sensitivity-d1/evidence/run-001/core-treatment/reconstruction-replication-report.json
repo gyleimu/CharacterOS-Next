@@ -1,0 +1,14 @@
+{
+  "contrast_verdict": "CONTRAST_NO_MOVEMENT",
+  "tracks_belief_value": false,
+  "supported_claim": "WITHIN_IDENTITY_RECONSTRUCTION_NOT_TRACKING_BELIEF",
+  "interpretation_boundary": "governed by STATE_REVERSAL_INTERPRETATION_CONTRACT.json, frozen before any HIGH/LOW output",
+  "forbidden_and_not_claimed": [
+    "second independent intervention",
+    "second independent estimand",
+    "independent behavioural mechanism",
+    "cross-identity mediation",
+    "double independent confirmation",
+    "pooling with P1_FULL as statistically independent evidence"
+  ]
+}

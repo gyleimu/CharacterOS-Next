@@ -1,0 +1,55 @@
+{
+  "matrix": {
+    "HIGH": {
+      "recorded_state_hash_before": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+      "recorded_state_hash_after": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+      "recorded_trace_id": "trace:7c410c3685d7b59ebfdf7cd39f5f878fa85a52699a6d40f49a975b24cc64b5cf",
+      "recomputed_state_hash_after": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+      "state_hash_after_matches": true,
+      "recomputed_trace_id": "trace:7c410c3685d7b59ebfdf7cd39f5f878fa85a52699a6d40f49a975b24cc64b5cf",
+      "trace_id_matches": true,
+      "entry_body_fields_other_than_trace_id": 17,
+      "acyclicity_note": "`trace_window` is excluded from the StateHash input set (canonical/projections.ts:37), so state_hash_after is reproducible by hashing the post state directly"
+    },
+    "LOW": {
+      "recorded_state_hash_before": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+      "recorded_state_hash_after": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+      "recorded_trace_id": "trace:e0bc2cc093e2d5aace0b190e78698af326b2affbca324a7ab3dba4658bd3f362",
+      "recomputed_state_hash_after": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+      "state_hash_after_matches": true,
+      "recomputed_trace_id": "trace:e0bc2cc093e2d5aace0b190e78698af326b2affbca324a7ab3dba4658bd3f362",
+      "trace_id_matches": true,
+      "entry_body_fields_other_than_trace_id": 17,
+      "acyclicity_note": "`trace_window` is excluded from the StateHash input set (canonical/projections.ts:37), so state_hash_after is reproducible by hashing the post state directly"
+    },
+    "NEUTRAL": {
+      "recorded_state_hash_before": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a",
+      "recorded_state_hash_after": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41",
+      "recorded_trace_id": "trace:c1869c9fac9fc11908a347ac31509292d2e71196bb1a8082556f619e754d1b21",
+      "recomputed_state_hash_after": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41",
+      "state_hash_after_matches": true,
+      "recomputed_trace_id": "trace:c1869c9fac9fc11908a347ac31509292d2e71196bb1a8082556f619e754d1b21",
+      "trace_id_matches": true,
+      "entry_body_fields_other_than_trace_id": 17,
+      "acyclicity_note": "`trace_window` is excluded from the StateHash input set (canonical/projections.ts:37), so state_hash_after is reproducible by hashing the post state directly"
+    }
+  },
+  "beforeProof": {
+    "HIGH": {
+      "recorded": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+      "recomputed": "sha256:0c7c49397dba05dd30118e8bef04dbf7860153a718618865bc0e2724c88b729f",
+      "matches": true
+    },
+    "LOW": {
+      "recorded": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+      "recomputed": "sha256:b2bce8e54394adbd8e43d82e7b108cdf12dc646e9b688b6a747306383a0f0d1e",
+      "matches": true
+    },
+    "NEUTRAL": {
+      "recorded": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a",
+      "recomputed": "sha256:578e6a7a9b85a2ca10827b5ad40b4d5ba43a4976d1b9fdb2009f50cbb35c651a",
+      "matches": true
+    }
+  },
+  "proof_ok": true
+}

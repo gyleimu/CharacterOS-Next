@@ -1,0 +1,89 @@
+{
+  "scorer": "scoreD4C0ARev1V0 (frozen revision 1) — called, not re-implemented",
+  "cases": [
+    {
+      "case": "perfect_polar_transfer",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "predicted_count": 6,
+      "meets": true,
+      "pass": true
+    },
+    {
+      "case": "five_one_each",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "predicted_count": 5,
+      "meets": true,
+      "pass": true
+    },
+    {
+      "case": "four_two_each",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "predicted_count": 4,
+      "meets": true,
+      "pass": true
+    },
+    {
+      "case": "three_two_one_predicted_plurality",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 3,
+      "meets": false,
+      "pass": true
+    },
+    {
+      "case": "three_three_tie",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 3,
+      "meets": false,
+      "pass": true
+    },
+    {
+      "case": "constant_support",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 6,
+      "meets": true,
+      "pass": true
+    },
+    {
+      "case": "constant_oppose",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 0,
+      "meets": false,
+      "pass": true
+    },
+    {
+      "case": "reverse_direction",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 0,
+      "meets": false,
+      "pass": true
+    },
+    {
+      "case": "one_arm_correct_only",
+      "expected": "NULL",
+      "observed": "NULL",
+      "predicted_count": 6,
+      "meets": true,
+      "pass": true
+    },
+    {
+      "case": "one_invalid",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "predicted_count": null,
+      "meets": null,
+      "pass": true
+    }
+  ],
+  "integrity_failure_case": "INCONCLUSIVE",
+  "predicted_count_actually_participates_in_the_positive_predicate": true,
+  "note": "the 3-2-1 row is the one that shows the >= 4 requirement is enforced by the predicate and not merely described in prose",
+  "verdict": "D4_C0A_TARGET_SCORER_UNCHANGED_AND_ENFORCING"
+}

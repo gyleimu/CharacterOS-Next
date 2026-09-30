@@ -1,0 +1,11 @@
+{
+  "fresh_independent_construction": true,
+  "shares_mutable_world_with_p1_full": false,
+  "treatment_output_dependency": false,
+  "same_canonical_identity": true,
+  "same_caution_proposition": true,
+  "high_credence": 0.8,
+  "low_credence": 0.2,
+  "identical_final_hash_to_p1_is_permitted": true,
+  "identification_gain_comes_from": "fresh reconstruction and crossover provenance, not from artificially differing prompt bytes"
+}

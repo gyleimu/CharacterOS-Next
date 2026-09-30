@@ -1,0 +1,59 @@
+{
+  "artifact": "AFFECT_WRITE_PROVENANCE_AUDIT",
+  "question": "which production write path produced the affect change Phase 0 observed, and can a dedicated experience-to-affect adapter wiring be claimed?",
+  "observed_fact_only": "AFFECT_STATE_CHANGED_DURING_PRODUCTION_TURNS — valence moved from an identical {valence: 0, activation: 0.2} baseline to {valence: 1.0, activation: 0.723} (arm A) and {valence: 0.407, activation: 0.418} (arm B) across the frozen trajectory",
+  "provenance_chain_verified_by_source": [
+    {
+      "step": 1,
+      "kind": "trigger",
+      "site": "packages/runtime/src/session/interactive-subject-runtime-v0.ts:506",
+      "detail": "the turn loop calls this.authority.completePendingLifecycleWork()"
+    },
+    {
+      "step": 2,
+      "kind": "producer function",
+      "site": "packages/runtime/src/session/explicit-v4-session-authority-v0.ts:676-686",
+      "detail": "for each pending lifecycle work item the authority calls the factual-event appraisal provider (proposeFactualEventAppraisal), then this.affectWriter.applyForEvent(...)"
+    },
+    {
+      "step": 3,
+      "kind": "construction",
+      "site": "packages/runtime/src/session/explicit-v4-session-authority-v0.ts:354 and :402",
+      "detail": "private readonly affectWriter = createCanonicalAffectApplicationV0ForExplicitV4({...}) — the executor IS constructed by the session authority even though it is not exported from the runtime index"
+    },
+    {
+      "step": 4,
+      "kind": "transition/executor",
+      "site": "packages/runtime/src/transitions/affect-application/affect-application-executor-v0.ts (CanonicalAffectApplicationExecutorV0, class at :222; factory used at :402)",
+      "detail": "exactly-once canonical AffectApplication, gated on a verified canonical INITIAL Appraisal"
+    },
+    {
+      "step": 5,
+      "kind": "canonical write",
+      "site": "packages/runtime/src/session/explicit-v4-session-authority-v0.ts:687-700",
+      "detail": "outcome.kind === 'COMMITTED' writes canonical affect; 'NOT_ELIGIBLE' is a lawful abstention (no write); every other outcome fails the lifecycle closed"
+    },
+    {
+      "step": 6,
+      "kind": "observable",
+      "site": "packages/runtime/src/session/interactive-subject-runtime-v0.ts:880-905 (subjectStateView) and :819 (snapshot)",
+      "detail": "the changed affect is read back as canonical SubjectState affect.valence/activation"
+    }
+  ],
+  "conclusion": {
+    "EXPERIENCE_TO_AFFECT_WIRED": true,
+    "wiring_route": "TURN_LIFECYCLE_APPRAISAL_TO_AFFECT_APPLICATION",
+    "why_this_token_is_earned": "an explicit producer function, transition and durable canonical write path were traced end to end from source, and the write is gated on a committed Appraisal with an exactly-once law",
+    "DEDICATED_EXPERIENCE_TO_AFFECT_ADAPTER_WIRING": "DEDICATED_EXPERIENCE_TO_AFFECT_ADAPTER_WIRING_UNRESOLVED",
+    "why_the_second_token_is_not_earned": "there is no dedicated adaptation adapter fed from episode refs for affect, in the way belief (BeliefAdaptationWiringV0) and relationship (runLivedEvidenceRelationshipFamiliarity) have one. Affect is driven by the turn-lifecycle appraisal path. Claiming an 'adapter' would conflate two different mechanisms."
+  },
+  "correction_to_the_prior_audit": {
+    "prior_claim": "EXPERIENCE_TO_AFFECT — PRESENT_BUT_NOT_WIRED_TO_TURNS",
+    "prior_claim_source": "research/north-star/history-internalization/evidence/v1/CURRENT_EXPERIENCE_INTERNALIZATION_PATHS.json",
+    "how_it_was_wrong": "it inferred 'not wired to turns' from two export-surface facts: the executor is instantiated only inside its own module, and an existing test asserts it is not exported from the runtime index. Both are true and neither implies the executor is not invoked per turn. The executor is constructed by the session authority (line 402) and driven by the turn lifecycle.",
+    "status": "CORRECTED",
+    "law": "a module-boundary or export-surface fact is not a wiring fact"
+  },
+  "scope_note": "affect remains OUT of Phase 0's scope. No affect value was read as an endpoint, no affect wiring was touched, and this audit changes no scientific result. It corrects a factual claim about the production architecture.",
+  "model_calls_to_produce": 0
+}

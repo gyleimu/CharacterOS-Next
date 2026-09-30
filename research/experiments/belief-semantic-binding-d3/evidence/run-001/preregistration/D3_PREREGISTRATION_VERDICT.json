@@ -1,0 +1,49 @@
+{
+  "stage": "D3_PREREGISTRATION",
+  "model_calls": 0,
+  "final_verdict": "D3_DESIGN_BLOCKED",
+  "blocked_on": "the D3-A premise: link 3B1 was already tested and already met by the frozen D2-A0 instrument",
+  "evidence": {
+    "a0_contract_question": "Which bucket describes the subject's stance on the proposition shown in the belief line?",
+    "a0_directional_requirement": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+    "a0_observed_high": {
+      "ENDORSES_STRONGLY": 6
+    },
+    "a0_observed_low": {
+      "DOUBTS_STRONGLY": 6
+    },
+    "subsumption_verdict": "D3_A_IS_SUBSUMED_BY_D2_A0"
+  },
+  "what_is_ready": {
+    "d3b_fully_frozen": true,
+    "d3b_contract_text_hash": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+    "d3b_fixture_manifest_hash": "sha256:ffbd62411035a41db733942b0bc5e284d2346efb8f6a8f4c32e4f3875b89ac16",
+    "d3b_budget": {
+      "d3b_qualification": 9,
+      "d3b_pilot": 6,
+      "d3b_formula": "r_confirm_B",
+      "r_candidates": {
+        "6": 6,
+        "14": 14
+      },
+      "authorised_total_max": 29,
+      "authorised_detail_max": "9 qualification + 6 pilot + 14 measurement",
+      "minimum_path": 9,
+      "minimum_detail": "D3-B qualification fails; nothing further runs",
+      "d3a_calls": 0,
+      "d3a_detail": "D3-A is not authorised: it is subsumed by D2-A0",
+      "if_a_human_were_to_insist_on_d3a_anyway": "9 + 6 + 2r, i.e. 27 to 55 further calls, for information D2-A0 already carries — recorded for completeness, NOT authorised",
+      "d1_or_d2_calls_reused": false,
+      "sequential_stopping_counted": true
+    },
+    "d3b_unlocks_only_after": "D3-B qualification passes"
+  },
+  "what_is_not_authorised": {
+    "d3a_calls": 0,
+    "reason": "subsumed by D2-A0; running it would spend a full cycle re-measuring a settled link",
+    "d2_b_calls": 0,
+    "reason_d2b": "D2-B is not authorised and D2 is permanently stopped at A1"
+  },
+  "next_step_for_a_human_decision": "either (a) authorise D3-B alone, which localises the frozen A1 null between a relation-recognition problem and a cross-wording integration failure, or (b) explain how D3-A would differ from D2-A0 in its measurement target rather than only in its token count",
+  "d1_d2_modified": false
+}

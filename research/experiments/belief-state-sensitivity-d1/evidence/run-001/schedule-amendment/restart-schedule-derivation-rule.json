@@ -1,0 +1,31 @@
+{
+  "rule_version": "d1-restart-schedule-derivation-v1",
+  "seed_projection": "characteros-next/research/d1-belief-state-sensitivity/restart-seed/v1",
+  "seed_function_inputs": [
+    "rule_version",
+    "current_protocol_identity",
+    "block",
+    "r_confirm"
+  ],
+  "forbidden_inputs": [
+    "treatment decisions",
+    "treatment counts",
+    "effect size",
+    "any sample statistic",
+    "timestamps",
+    "human-selected seed"
+  ],
+  "generator": "the same frozen planScheduleV0 with balancing and max-run semantics unchanged",
+  "restart_r_confirm": 6,
+  "restart_block_list": [
+    "RESTART_CONTRAST"
+  ],
+  "restart_entries_if_unlocked": 12,
+  "frozen_seed_for_this_protocol": "sha256:0ff63a3c690783935fff58e71f11df780ec24b6a9244264b4a69406978d58ac7",
+  "hypothetical_check_when_unlocked": {
+    "entries": 12,
+    "balanced": true
+  },
+  "can_consume_treatment_output": false,
+  "materialized_now": false
+}

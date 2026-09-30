@@ -1,0 +1,372 @@
+{
+  "stage": "D2_A1_STATE_EXPERIMENT",
+  "model_calls": 0,
+  "frozen_scorer_called_not_reimplemented": true,
+  "synthetic_cases": [
+    {
+      "case": "case_1_perfect_predicted",
+      "description": "HIGH SUPPORTS x6, LOW OPPOSES x6",
+      "expected_class": "POSITIVE",
+      "expected_verdict": "CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE_ON_PREREGISTERED_PARAPHRASE",
+      "expected_b_authorised": true,
+      "observed_class": "POSITIVE",
+      "observed_verdict": "CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE_ON_PREREGISTERED_PARAPHRASE",
+      "observed_b_authorised": true,
+      "collection_integrity": true,
+      "invalid_count": 0,
+      "scientific_scoring_executed": true,
+      "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "low_unique_modal": "OPPOSES_PARAPHRASED_PRINCIPLE",
+      "high_modal_tie": false,
+      "high_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+      },
+      "low_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 0,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 6
+      },
+      "positive_predicate": true,
+      "pass": true
+    },
+    {
+      "case": "case_2_same_token_both_arms",
+      "description": "HIGH SUPPORTS x6, LOW SUPPORTS x6",
+      "expected_class": "NULL",
+      "expected_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "expected_b_authorised": false,
+      "observed_class": "NULL",
+      "observed_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 0,
+      "scientific_scoring_executed": true,
+      "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "high_modal_tie": false,
+      "high_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+      },
+      "low_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+      },
+      "positive_predicate": false,
+      "pass": true
+    },
+    {
+      "case": "case_3_valid_opposite_direction",
+      "description": "HIGH OPPOSES x6, LOW SUPPORTS x6 — a real direction, opposite to the prediction",
+      "expected_class": "NULL",
+      "expected_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "expected_b_authorised": false,
+      "observed_class": "NULL",
+      "observed_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 0,
+      "scientific_scoring_executed": true,
+      "high_unique_modal": "OPPOSES_PARAPHRASED_PRINCIPLE",
+      "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+      "high_modal_tie": false,
+      "high_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 0,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 6
+      },
+      "low_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+      },
+      "positive_predicate": false,
+      "pass": true
+    },
+    {
+      "case": "case_4_high_tie",
+      "description": "HIGH SUPPORTS x3 + UNCERTAIN x3, LOW OPPOSES x6",
+      "expected_class": "NULL",
+      "expected_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "expected_b_authorised": false,
+      "observed_class": "NULL",
+      "observed_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 0,
+      "scientific_scoring_executed": true,
+      "high_unique_modal": null,
+      "low_unique_modal": "OPPOSES_PARAPHRASED_PRINCIPLE",
+      "high_modal_tie": true,
+      "high_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 3,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 3,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+      },
+      "low_counts": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 0,
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+        "OPPOSES_PARAPHRASED_PRINCIPLE": 6
+      },
+      "positive_predicate": false,
+      "pass": true
+    },
+    {
+      "case": "case_5_one_invalid",
+      "description": "HIGH 5 legal + 1 invalid, LOW 6 legal",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 1,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    },
+    {
+      "case": "case_6_all_invalid",
+      "description": "every trial invalid",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 12,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    },
+    {
+      "case": "case_7_duplicate_trial_identity",
+      "description": "two records share a trial identity",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "observed_b_authorised": false,
+      "collection_integrity": false,
+      "invalid_count": 0,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    },
+    {
+      "case": "case_8_missing_trial_identity",
+      "description": "one scheduled identity absent",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "observed_b_authorised": false,
+      "collection_integrity": false,
+      "invalid_count": 0,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    },
+    {
+      "case": "case_9_out_of_vocabulary_token",
+      "description": "a token from another instrument's vocabulary",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "observed_b_authorised": false,
+      "collection_integrity": true,
+      "invalid_count": 1,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    },
+    {
+      "case": "case_10_arm_mismatch",
+      "description": "a record's arm contradicts the frozen schedule identity",
+      "expected_class": "INCONCLUSIVE",
+      "expected_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "expected_b_authorised": false,
+      "observed_class": "INCONCLUSIVE",
+      "observed_verdict": "D2_A1_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+      "observed_b_authorised": false,
+      "collection_integrity": false,
+      "invalid_count": 0,
+      "scientific_scoring_executed": false,
+      "high_unique_modal": null,
+      "low_unique_modal": null,
+      "high_modal_tie": false,
+      "high_counts": null,
+      "low_counts": null,
+      "positive_predicate": null,
+      "pass": true
+    }
+  ],
+  "all_cases_passed": true,
+  "outcome_classes": {
+    "POSITIVE": "valid data and the preregistered prediction holds",
+    "NULL": "valid data and the preregistered prediction does not hold",
+    "INCONCLUSIVE": "collection integrity or invalid provider/parser data makes a scientific verdict impossible",
+    "null_is_not_inconclusive": true
+  },
+  "null_and_inconclusive_are_distinct": true,
+  "tampered_schedule_refused": true,
+  "reversed_direction_is_a_null_not_a_reversed_effect": "the positive predicate is unmet, and the frozen prediction admits no direction other than the preregistered one",
+  "no_threshold_added": true,
+  "schedule_identity_parity": [
+    {
+      "position": 1,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 2,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 3,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 4,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 5,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 6,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 7,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 8,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 9,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 10,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 11,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    },
+    {
+      "position": 12,
+      "position_matches": true,
+      "arm_matches": true,
+      "request_hash_matches_the_frozen_request_set": true
+    }
+  ],
+  "schedule_identities_equal_the_frozen_artifact": true,
+  "recovery_policy": {
+    "scope": "A1 HIGH/LOW state experiment ONLY",
+    "planned_trials": 12,
+    "planned_denominator": 12,
+    "high_planned": 6,
+    "low_planned": 6,
+    "trial_identities_fixed_by": "the frozen A1 schedule artifact, mirrored by D2A1_STATE_SCHEDULE_IDENTITIES",
+    "one_trial_is_one_attempt": true,
+    "max_provider_attempts_per_scheduled_trial": 1,
+    "retry_forbidden": true,
+    "replacement_forbidden": true,
+    "deletion_forbidden": true,
+    "extra_replicate_forbidden": true,
+    "thirteenth_call_forbidden": true,
+    "executor_fallback_forbidden": true,
+    "moving_a_failed_trial_to_the_end_forbidden": true,
+    "replacing_an_invalid_output_with_a_later_valid_output_forbidden": true,
+    "denominator_comes_from_the_planned_sample": true,
+    "counts_as_invalid": [
+      "transport failure",
+      "timeout classified as a failed provider attempt",
+      "malformed output",
+      "parser invalid",
+      "parsed token outside the frozen A1 stance vocabulary",
+      "missing provider result for a scheduled attempted trial"
+    ],
+    "invalid_is_not_a_stance_token": true,
+    "invalid_does_not_enter_the_modal_count": true,
+    "invalid_may_not_be_deleted_replaced_or_retried": true,
+    "on_any_invalid": {
+      "minimum_invalid_trials_to_trigger": 1,
+      "verdict": "D2_A1_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "outcome_class": "INCONCLUSIVE",
+      "scientific_positive": false,
+      "scientific_null": false,
+      "high_modal_scientific_scoring_executed": false,
+      "low_modal_scientific_scoring_executed": false,
+      "d2_b_authorised": false,
+      "replacement_calls": 0,
+      "rationale": "a provider or format failure is not evidence about semantic transfer; reporting it as a semantic-transfer null would be a category error"
+    },
+    "on_zero_invalid": "all twelve trials transport-valid, parser-valid and token-legal — only then may the frozen scorer run",
+    "applied_retroactively_to": [],
+    "reuse_from_the_pilot_policy": false,
+    "rationale_for_a_separate_rule": "REV1.1d scopes its policy to the neutral pilot, so the treatment needed its own; this is the rule that was missing"
+  },
+  "verdict": "D2_A1_STATE_SCORER_AND_POLICY_PROVEN"
+}

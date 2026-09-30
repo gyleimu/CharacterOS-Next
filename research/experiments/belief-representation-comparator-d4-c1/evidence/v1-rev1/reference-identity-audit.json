@@ -1,0 +1,29 @@
+{
+  "reconstructed_from": "the frozen D4-C0a base text, contract, schema, binding renderer and arm bindings",
+  "c0a_support_reconstructed_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "c0a_support_frozen_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "c0a_support_hash_exact": true,
+  "c0a_oppose_reconstructed_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "c0a_oppose_frozen_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "c0a_oppose_hash_exact": true,
+  "bytes_were_never_previously_persisted": true,
+  "bytes_persisted_this_round": true,
+  "verdict": "D4_C1_C0A_REFERENCE_REPRODUCED",
+  "explicit_cells": {
+    "e_support_request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+    "equals_the_frozen_c0a_support_hash": true,
+    "e_oppose_request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+    "equals_the_frozen_c0a_oppose_hash": true,
+    "byte_identical_check": {
+      "system_equal": true,
+      "user_equal_between_explicit_cells": false,
+      "note": "the two EXPLICIT cells differ from each other only in the stance value, as designed"
+    },
+    "e_support_system_equals_the_c0a_support_system": true,
+    "e_support_user_equals_the_c0a_support_user": true,
+    "e_oppose_system_equals_the_c0a_oppose_system": true,
+    "e_oppose_user_equals_the_c0a_oppose_user": true,
+    "semantic_equivalence_was_not_accepted_as_sufficient": true,
+    "verdict": "D4_C1_EXPLICIT_IS_BYTE_IDENTICAL_TO_THE_FROZEN_C0A_REFERENCE"
+  }
+}

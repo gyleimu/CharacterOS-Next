@@ -1,0 +1,45 @@
+{
+  "record": "D1_RUN_001_PHASE_A_READINESS",
+  "run": "BELIEF_STATE_SENSITIVITY_D1_RUN_001",
+  "preregistration": "REVISION 2, sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+  "model_calls_made": 0,
+  "execution_status": "NOT_EXECUTED",
+  "reason": "BUDGET_EXHAUSTED_BEFORE_PHASE_A_CONSTRUCTION_MODULE_COULD_BE_BUILT_AND_VALIDATED",
+  "gate_discipline_applied": "the frozen ladder forbids any model call before the Phase A offline gates PASS; no gate was executed, so no call was legitimate",
+  "not_a_scientific_result": true,
+  "no_frozen_verdict_is_claimed": true,
+
+  "established_this_round": {
+    "finding": "the lawful state-construction path for the HIGH/LOW/NEUTRAL counterfactual states EXISTS in production and is fully exported",
+    "verified_chain": [
+      "createInteractiveSubjectSeedV0(subjectId, displayName, identityAnchors, personalityGenesisPrior) -> SubjectStateV0 — packages/runtime/src/session/interactive-subject-runtime-v0.ts:305; this is the PRODUCT's own subject-creation entry point, so the base subject is production-authored rather than hand-written",
+      "author ONLY the belief: spread the returned v3 seed and set `beliefs` to { schema_version: BELIEF_STATE_SCHEMA_VERSION, items: [one item carrying the frozen CAUTION label at the level credence] }",
+      "deriveBeliefPropositionId(canonical_label) — exported from @characteros-next/subject-core (packages/subject-core/dist/index.d.ts:31); the proposition identity must be derived by the production derivation, never invented",
+      "materializeSubjectStateV4V0({ mode: EXPLICIT_V4_FOUNDATION_V0, seed: { subject, v3_source, r0_binding }, r0_binding, reference_validator }) -> the lawful SubjectStateV4",
+      "buildCognitiveContextProjectionV2ForExplicitV4(snapshot) -> the production V2 projection carrying the belief",
+      "cognitionSystemPromptForV8 / cognitionUserContentForV8 -> the production messages",
+      "append the frozen D1 contract (primary, or frame-minimal) -> the probe request"
+    ],
+    "explicitly_not_used": [
+      "hand-writing SubjectStateV4 (forbidden: no JSON patching)",
+      "the unexported canonical-affect harness fixture s0() (not importable)",
+      "the belief plasticity path (it is evidence-driven and would make the treatment a lived-history formation rather than a lawful counterfactual)"
+    ],
+    "isolation_diff_is_mechanizable": "the three states are produced from the SAME production seed with only `beliefs` differing, so the full-state diff can assert: proposition identity equal, canonical label equal, credence the only differing value, and affect / relationships / personality / memory / context / identity anchors / traits_seed / regulation identical"
+  },
+
+  "remaining_work": {
+    "phase_a": "build state-construction.ts + isolation/separation/lexical/history-absence gates + audit.test.ts (offline, 0 calls)",
+    "phase_b": "6 byte-identical NEUTRAL pilot calls, then the deterministic r_confirm mapping",
+    "schedule": "planScheduleV0 at the actual r_confirm, written and hashed BEFORE the first treatment call",
+    "blocks": "P1_FULL, P2_FULL, P3_NEGATIVE_CONTROL, P1_FRAME_MINIMAL, STATE_REVERSAL at r_confirm each arm (168 calls at r = 14)",
+    "scoring": "classifyContrastV0 only; P1/P2/P3/frame/reversal verdicts; artifacts + RUN_MANIFEST + REPORT.md",
+    "restart": "only if the direct state effect reaches the frozen positive condition"
+  },
+
+  "standing_states": {
+    "cross_transport_replication": "PENDING",
+    "history_internalization": "NOT_TESTED",
+    "d1": "NOT_EXECUTED"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "explicit_reference_verdict": "EXPLICIT_REFERENCE_POSITIVE",
+  "record_representation_verdict": "CHARACTEROS_RECORD_CONDITION_POSITIVE",
+  "record_condition_claim_boundary": "CURRENT CHARACTEROS BELIEF-RECORD REPRESENTATION IN A MATCHED STATE-BLIND RESEARCH FRAME",
+  "forbidden_description": "the production CharacterOS condition",
+  "comparator": {
+    "case": "A_BOTH_POSITIVE",
+    "verdict": "CHARACTEROS_BELIEF_RECORD_SUPPORTS_STATE_BLIND_CROSS_EXPRESSION_COMPOSITION",
+    "means": "under the same framing, executor, A/B, relation and measurement instrument, the current three-field CharacterOS belief record is enough to support the preregistered polar stance composition",
+    "evidence_update": {
+      "H_REPRESENTATION_FORM": "SUBSTANTIALLY_WEAKENED"
+    },
+    "next_hypotheses_in_priority": [
+      "production framing",
+      "placement",
+      "A1's H6",
+      "the broader executor-facing interface"
+    ],
+    "authorises": "nothing; no new experiment may be designed this round",
+    "does_not_mean": [
+      "the production belief path works",
+      "A1's null is explained",
+      "H6 is closed",
+      "the production framing is cleared"
+    ]
+  },
+  "mechanism_is_a_separate_stage": true
+}

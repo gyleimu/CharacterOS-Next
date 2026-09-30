@@ -1,0 +1,18 @@
+{
+  "pilot_state": "NEUTRAL",
+  "pilot_credence": 0.5,
+  "probe_id": "D1-P1-AWAITING-INSPECTION",
+  "frame": "FULL",
+  "replicates": 6,
+  "byte_identical_requests": true,
+  "distinct_request_hashes_observed": 1,
+  "agreement": 1,
+  "disagreement_rate": 0,
+  "invalid_count": 0,
+  "transport_metadata_note": "provider/HTTP metadata is not experimental content; the scientific object is the frozen model-facing request, which was byte-identical across all six trials",
+  "planning_values": {
+    "noise_ceiling_target": 0.4,
+    "delta_min": 0.5,
+    "invalid_fraction_max": 0.5
+  }
+}

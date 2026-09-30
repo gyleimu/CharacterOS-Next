@@ -1,0 +1,43 @@
+{
+  "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "request": {
+    "messages": [
+      {
+        "role": "system",
+        "content": "[D4-C0A MEASUREMENT TASK — research instrument; this is not a production conversation]\nYou are answering a measurement question about a SUBJECT's epistemic stance.\nThe user message states: proposition A, proposition B, the relation between A and B, and the subject's\nstance toward A. Report the subject's stance toward proposition B.\nOutput EXACTLY ONE JSON object and nothing else. No prose, no code fences.\n--- D4-C0A STANCE TRANSFER CONTRACT (research instrument; binding for THIS invocation) ---\nThe output-format rules above are SUPERSEDED for this invocation. Nothing else changes.\nRespond with EXACTLY ONE JSON object and nothing else. No prose, no code fences.\nREAD CAREFULLY:\n  - the subject's stated stance belongs to the UNDERLYING VIEW that proposition A expresses;\n  - the RELATION line states how proposition B stands to that view. When it says the two express the\n    same view, B expresses that same underlying view;\n  - report the SUBJECT's stance toward proposition B.\nReport the SUBJECT's stance toward B — not the relation between A and B, not whether B is true, not\nyour own opinion, and not your confidence in the relation.\nRequired members:\n  \"d4_c0a_schema_version\": \"d4-c0a-stance-transfer-readout-v0\"\n  \"stance_toward_b\": one of \"SUPPORTS_B\" | \"UNCERTAIN_B\" | \"OPPOSES_B\"\nToken meanings (binding):\n  SUPPORTS_B — the subject treats proposition B as correct and would rely on it\n  UNCERTAIN_B — the subject holds no settled position on proposition B\n  OPPOSES_B — the subject treats proposition B as incorrect and would rely on its denial\n--- END D4-C0A STANCE TRANSFER CONTRACT ---"
+      },
+      {
+        "role": "user",
+        "content": "[BINDING]\nPROPOSITION A: Caution is warranted when the conclusion rests on information I have not seen myself.\nPROPOSITION B: the view that a finding depending mainly on secondhand report is to be held with reserve\nRELATION(A,B): A and B express the same underlying view.\nSUBJECT STANCE TOWARD A: SUPPORTS\nWhich stance does the subject hold toward proposition B?"
+      }
+    ],
+    "structured_output": {
+      "kind": "JSON_SCHEMA",
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "d4_c0a_schema_version",
+          "stance_toward_b"
+        ],
+        "properties": {
+          "d4_c0a_schema_version": {
+            "const": "d4-c0a-stance-transfer-readout-v0"
+          },
+          "stance_toward_b": {
+            "enum": [
+              "SUPPORTS_B",
+              "UNCERTAIN_B",
+              "OPPOSES_B"
+            ]
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          }
+        }
+      }
+    }
+  }
+}

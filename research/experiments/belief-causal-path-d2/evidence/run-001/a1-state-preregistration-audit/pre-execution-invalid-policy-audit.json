@@ -1,0 +1,50 @@
+{
+  "gate": "§0B frozen A1 state-experiment failure policy",
+  "rule_inventory": [
+    {
+      "source": "contract-rev1-1c-a1-prerequisites.ts :: D2A1_QUALIFICATION_INVALID_RULE",
+      "rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+      "scope_claimed": [
+        "D2_A1",
+        "D2_B"
+      ],
+      "covers_a1_qualification": true,
+      "covers_a1_neutral_pilot": false,
+      "covers_a1_treatment": false,
+      "why": "its verdict is D2_INSTRUMENT_UNQUALIFIED, a statement about qualification, and its applies_to scope names instrument qualification"
+    },
+    {
+      "source": "contract-rev1-1d-a1-neutral-and-context.ts :: D2A1_NEUTRAL_PILOT_INVALID_POLICY",
+      "rule": "D2_A1_INCONCLUSIVE_BY_PILOT_INVALID_OUTPUTS",
+      "scope_claimed": "A1 neutral pilot ONLY",
+      "covers_a1_qualification": false,
+      "covers_a1_neutral_pilot": true,
+      "covers_a1_treatment": false,
+      "why": "its scope field reads 'A1 neutral pilot ONLY', applied_retroactively_to is empty, and the policy text never mentions the HIGH/LOW treatment — so reusing it for the treatment would be an extension the contract does not make"
+    }
+  ],
+  "rules_covering_the_a1_treatment": 0,
+  "presence": {
+    "planned_trials_12_at_r6": true,
+    "a1_has_a_2r_treatment_stage": true,
+    "arm_split_6_and_6": "derived from the frozen schedule artifact (6 HIGH + 6 LOW at r_confirm_A1 = 6), not from a contract field",
+    "no_retry_specified_for_the_treatment": false,
+    "no_replacement_specified_for_the_treatment": false,
+    "no_deletion_specified_for_the_treatment": false,
+    "no_extra_replicate_specified_for_the_treatment": false,
+    "invalid_handling_specified_for_the_treatment": false,
+    "invalid_verdict_specified_for_the_treatment": false
+  },
+  "missing_items": [
+    "no_retry_specified_for_the_treatment",
+    "no_replacement_specified_for_the_treatment",
+    "no_deletion_specified_for_the_treatment",
+    "no_extra_replicate_specified_for_the_treatment",
+    "invalid_handling_specified_for_the_treatment",
+    "invalid_verdict_specified_for_the_treatment"
+  ],
+  "reuse_of_the_pilot_policy_permitted": false,
+  "reuse_refusal_reason": "REV1.1d scopes its policy to 'A1 neutral pilot ONLY' with an empty applied_retroactively_to; the brief forbids reusing it unless the authoritative contract states that scope, and it does not",
+  "tolerance_ratio_invented_this_round": false,
+  "verdict": "D2_A1_STATE_INVALID_HANDLING_NOT_PREREGISTERED"
+}

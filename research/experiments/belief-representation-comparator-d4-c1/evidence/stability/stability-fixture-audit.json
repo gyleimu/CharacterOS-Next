@@ -1,0 +1,36 @@
+{
+  "fixture": {
+    "kind": "NON_TARGET RECORD-FORM INSTRUMENT / INPUT-FORM STABILITY FIXTURE",
+    "proposition": "A clamp should always be used when gluing a joint.",
+    "credence": 0.95,
+    "proposition_b": "Clamping a joint while the glue sets is always the right thing to do.",
+    "relation": "A and B express the same underlying view.",
+    "record_form": "the same three production fields, in the same order, with the proposition_id derived by the PRODUCTION derivation and never hand-written",
+    "proposition_id_must_be_derived_not_written": true,
+    "must_not_use": [
+      "the C1 canonical A/B target pair",
+      "a scientific target cell",
+      "any arm label"
+    ],
+    "credence_is_not_an_experimental_value": true,
+    "measured": "identical-request self-consistency of the measurement path on the RECORD input form",
+    "separate_from_the_target": true,
+    "stability_outputs_enter_the_comparator_dataset": false,
+    "the_24_target_trials_are_not_used_as_a_stability_pilot": true
+  },
+  "derived_proposition_id": "belief-prop-v0-ac9a923f23c8624681eaba20eb5f54b87be4e9bc2eb2774c89cd42543b2771ce",
+  "record_bytes": "{\"proposition_id\":\"belief-prop-v0-ac9a923f23c8624681eaba20eb5f54b87be4e9bc2eb2774c89cd42543b2771ce\",\"proposition_label\":\"A clamp should always be used when gluing a joint.\",\"credence\":0.95}",
+  "uses_the_same_renderer_as_the_target_record_conditions": true,
+  "simplified_stability_only_renderer": false,
+  "contains_the_canonical_target_a": false,
+  "contains_the_target_b": false,
+  "contains_the_target_proposition_id": false,
+  "contains_an_e_or_r_cell_label": false,
+  "contains_a_target_schedule_identity": false,
+  "contains_an_expected_target_token": false,
+  "contains_a_c1_scientific_result": false,
+  "uses_no_experimental_credence": true,
+  "request_hash": "sha256:6aba0d79e2600b5f5c087730053f4c74592c43d7dbbb3446c7eb2a00ede68417",
+  "planned_calls": 6,
+  "verdict": "D4_C1_STABILITY_FIXTURE_IS_NON_TARGET"
+}

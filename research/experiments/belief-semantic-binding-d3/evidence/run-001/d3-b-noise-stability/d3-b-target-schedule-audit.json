@@ -1,0 +1,20 @@
+{
+  "planned_calls": 6,
+  "all_trials_reference_one_request_hash": true,
+  "ordering_depends_only_on_the_planned_count": true,
+  "generated_from_the_gate_outcome_alone": true,
+  "noise_modal_token_used": false,
+  "first_target_call_executed_this_round": false,
+  "target_request_checks": {
+    "target_pair_is_the_canonical_proposition_and_the_frozen_paraphrase": true,
+    "expected_relation_unchanged": true,
+    "target_subject_data_untouched": true,
+    "target_schema_is_the_frozen_d3b_schema": true
+  },
+  "target_request_bytes_created_for_the_first_time_in_this_round": true,
+  "target_request_derivation_is_pinned_by": [
+    "the production base (unmodified subject data)",
+    "the frozen target pair",
+    "the frozen transformer, whose source hash was frozen at qualification"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "stage": "D4_C0A_TARGET",
+  "planned_calls": 12,
+  "calls_per_arm": 6,
+  "support_request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "oppose_request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "ordering_rule": "pairs alternate arms; within each pair SUPPORT,OPPOSE then OPPOSE,SUPPORT — a pure function of the planned count",
+  "ordering_is_deterministic": true,
+  "ordering_is_outcome_blind": true,
+  "ordering_did_not_depend_on": [
+    "the noise modal token identity",
+    "the noise counts",
+    "qualification outputs",
+    "latency",
+    "the timestamp",
+    "human choice"
+  ],
+  "r_from_the_noise_gate": 6,
+  "trials": [
+    {
+      "position": 1,
+      "trial_id": "TARGET-001",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    },
+    {
+      "position": 2,
+      "trial_id": "TARGET-002",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 3,
+      "trial_id": "TARGET-003",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 4,
+      "trial_id": "TARGET-004",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    },
+    {
+      "position": 5,
+      "trial_id": "TARGET-005",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    },
+    {
+      "position": 6,
+      "trial_id": "TARGET-006",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 7,
+      "trial_id": "TARGET-007",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 8,
+      "trial_id": "TARGET-008",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    },
+    {
+      "position": 9,
+      "trial_id": "TARGET-009",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    },
+    {
+      "position": 10,
+      "trial_id": "TARGET-010",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 11,
+      "trial_id": "TARGET-011",
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5"
+    },
+    {
+      "position": 12,
+      "trial_id": "TARGET-012",
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a"
+    }
+  ],
+  "not_yet_executed": true
+}

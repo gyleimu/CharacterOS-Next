@@ -1,0 +1,7 @@
+{
+  "counts": {
+    "SEMANTICALLY_ALIGNED": 6
+  },
+  "counts_source": "the frozen target-dataset.json bytes, re-read from disk",
+  "invalid_trials": 0
+}

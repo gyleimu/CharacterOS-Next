@@ -1,0 +1,126 @@
+{
+  "artifact": "CONSTRAINED_OUTPUT_FEASIBILITY_DESIGN",
+  "frozen_before_first_probe": true,
+  "non_scientific": true,
+  "contains_phase0_content": false,
+  "question": "can the required cross-field conditional be expressed in a construct the provider's constrained decoding actually honours?",
+  "why_a_probe_and_not_an_assumption": "a schema keyword can be SILENTLY IGNORED by a grammar compiler. Assuming enforcement would produce a 'fix' that does nothing while appearing to work.",
+  "probes_per_formulation": 2,
+  "total_probes": 4,
+  "run_until_success_forbidden": true,
+  "formulations": {
+    "IF_THEN": {
+      "schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode",
+          "selection",
+          "note"
+        ],
+        "properties": {
+          "mode": {
+            "enum": [
+              "FACT",
+              "STANCE",
+              "ACT"
+            ]
+          },
+          "selection": {
+            "enum": [
+              "SELECTED",
+              "NONE"
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 40
+          }
+        },
+        "if": {
+          "properties": {
+            "mode": {
+              "const": "STANCE"
+            }
+          },
+          "required": [
+            "mode"
+          ]
+        },
+        "then": {
+          "properties": {
+            "selection": {
+              "const": "SELECTED"
+            }
+          }
+        }
+      },
+      "keyword_set": "if/then — NOT used anywhere in the production schema"
+    },
+    "ONE_OF": {
+      "schema": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "selection",
+              "note"
+            ],
+            "properties": {
+              "mode": {
+                "const": "STANCE"
+              },
+              "selection": {
+                "const": "SELECTED"
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 40
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "selection",
+              "note"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "FACT",
+                  "STANCE",
+                  "ACT"
+                ]
+              },
+              "selection": {
+                "const": "NONE"
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 40
+              }
+            }
+          }
+        ]
+      },
+      "keyword_set": "oneOf over whole-object variants — a keyword the production schema ALREADY relies on"
+    }
+  },
+  "the_prompt_demands_the_forbidden_combination": "Reply with one JSON object with exactly three keys: \"mode\", \"selection\", \"note\". Set \"mode\" to the string STANCE. Set \"selection\" to the string NONE. Set \"note\" to \"probe\". Output the JSON object only, with no other text.",
+  "forbidden_combination": {
+    "mode": "STANCE",
+    "selection": "NONE"
+  },
+  "decisive_reading": {
+    "ENFORCED": "schema accepted AND the forbidden combination never appears",
+    "IGNORED_UNSAFE": "schema accepted AND the forbidden combination appears",
+    "UNSUPPORTED": "schema rejected by the provider"
+  },
+  "model": "qwen3.5:9b",
+  "base_url": "http://127.0.0.1:11434"
+}

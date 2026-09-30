@@ -1,0 +1,17 @@
+{
+  "HIGH": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_in_belief_block": [],
+    "caution_label_unchanged": true
+  },
+  "LOW": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_in_belief_block": [],
+    "caution_label_unchanged": true
+  },
+  "NEUTRAL": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_in_belief_block": [],
+    "caution_label_unchanged": true
+  }
+}

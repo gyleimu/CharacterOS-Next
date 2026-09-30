@@ -1,0 +1,23 @@
+{
+  "source": "a1-world-attempt-002",
+  "attempt_001_read": false,
+  "levels": [
+    "HIGH",
+    "LOW",
+    "NEUTRAL"
+  ],
+  "state_hashes": [
+    {
+      "level": "HIGH",
+      "state_hash": "sha256:042cc66ab4fb5b29b42fc8169ade123b0ea4332df342d933cbd354bcbcad4698"
+    },
+    {
+      "level": "LOW",
+      "state_hash": "sha256:e538ebbf9cd1e258fff9bc20e0d258dd900690d1443961af2db0f20ed396875d"
+    },
+    {
+      "level": "NEUTRAL",
+      "state_hash": "sha256:c3cba29d10ba3bee1ed898bfb54f66754c6306560d862e71b74fbec11f5cf11f"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "stage": "D4_C0a-target",
+  "outcome_class": "POSITIVE",
+  "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+  "collection_integrity": true,
+  "invalid_count": 0,
+  "scientific_scoring_executed": true,
+  "support_counts": {
+    "SUPPORTS_B": 6,
+    "UNCERTAIN_B": 0,
+    "OPPOSES_B": 0
+  },
+  "oppose_counts": {
+    "SUPPORTS_B": 0,
+    "UNCERTAIN_B": 0,
+    "OPPOSES_B": 6
+  },
+  "support_unique_modal": "SUPPORTS_B",
+  "oppose_unique_modal": "OPPOSES_B",
+  "support_predicted_count": 6,
+  "oppose_predicted_count": 6,
+  "directional_majority": {
+    "ARM_SUPPORT": true,
+    "ARM_OPPOSE": true
+  },
+  "contrast_holds": true,
+  "claim_scope": "PREREGISTERED POLAR STANCE COMPOSITION",
+  "authoritative_expansion": "Under the frozen state-blind task with explicit polar stance and an explicitly supplied semantic-alignment relation, the executor transferred SUPPORT and OPPOSE stances from proposition A to proposition B in the preregistered directions.",
+  "minimal_wording": null,
+  "forbidden_interpretations": [
+    "the relation between A and B",
+    "the truth of B",
+    "the model's own opinion",
+    "the model's confidence in the relation"
+  ]
+}

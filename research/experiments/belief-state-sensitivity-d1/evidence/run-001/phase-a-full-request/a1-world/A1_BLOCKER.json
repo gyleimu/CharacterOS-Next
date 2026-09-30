@@ -1,0 +1,80 @@
+{
+  "record": "D1_A1_POST_OBSERVATION_STATE_ISOLATION_BLOCKER",
+  "run": "BELIEF_STATE_SENSITIVITY_D1_RUN_001",
+  "phase": "A1",
+  "verdict": "D1_BLOCKED_BY_POST_OBSERVATION_STATE_ISOLATION_FAILURE",
+  "model_calls_transmitted": 0,
+  "decision_probe_applied": false,
+  "decision_probe_request_built": false,
+
+  "the_gate_fired_as_frozen": {
+    "frozen_rule": "HIGH_post vs LOW_post treatment-dependent differing paths must be exactly [\"/beliefs/items/0/credence\"]; ANY additional arm-specific path halts with D1_BLOCKED_BY_POST_OBSERVATION_STATE_ISOLATION_FAILURE",
+    "observed_high_vs_low": [
+      "/beliefs/items/0/credence",
+      "/trace_window/entries/0/state_hash_after",
+      "/trace_window/entries/0/state_hash_before",
+      "/trace_window/entries/0/trace_id"
+    ],
+    "observed_high_vs_neutral": "same three trace_window paths in addition to the credence path",
+    "observed_low_vs_neutral": "same three trace_window paths in addition to the credence path",
+    "rule_applied_literally": true,
+    "rule_reinterpreted_to_pass": false
+  },
+
+  "mechanism_established_from_evidence": {
+    "what_trace_window_is": "the canonical per-transition ledger of the world's own history: before/after state hashes and a trace id",
+    "why_it_differs": "state_hash_before and state_hash_after are content-addressed hashes of the arm's OWN canonical state, which necessarily differs because the belief credence differs; trace_id is derived from the trace entry content, which includes those hashes",
+    "classification": "ARM-DERIVED HASH BOOKKEEPING, exactly the same class as [projection_hash] in the model-facing request",
+    "explicitly_NOT": [
+      "affect divergence",
+      "relationship divergence",
+      "memory divergence",
+      "personality divergence",
+      "context semantic divergence",
+      "observation identity divergence",
+      "regulation divergence",
+      "a second belief difference",
+      "revision divergence (revision progression is identical across arms)"
+    ],
+    "this_is_NOT_a_belief_effect": true,
+    "this_is_NOT_evidence_of_design_failure": true
+  },
+
+  "what_was_already_verified_and_stands": {
+    "three_independent_worlds": "PASS — each arm constructs its own repository, facade, issuer, micl minter and workflow store inside buildArmWorldV0",
+    "production_observation_path_used": "PASS — observationInput -> buildContextDelta -> buildObservationProposal -> facade.reserveAndRoute -> facade.commitReserved; no task injection, no manual context mutation, no manual scene or current_observation_ref patch, no hand-written projection",
+    "arm_blind_observation_identity": "PASS — one identical observation id across all three worlds, containing no arm/treatment/credence/experiment token",
+    "all_three_commits_succeeded": "PASS — COMMITTED in every arm",
+    "lifecycle_symmetry": "PASS — same observation id, same current_observation_ref, same scene, same task (null), same event count (1), same repository revision progression",
+    "pre_observation_diff_credence_only": "PASS — exactly [\"/beliefs/items/0/credence\"]",
+    "same_proposition_id_across_arms": "PASS — subject-scoped derivation, so the three arms necessarily share one proposition_id"
+  },
+
+  "required_remedy": {
+    "kind": "preregistration amendment, written and hashed BEFORE it is applied",
+    "precedent": "REVISION 3 did exactly this for [projection_hash]: the admissibility class was extended, hashed, and frozen with MODEL_CALLS_BEFORE_AMENDMENT = 0",
+    "candidate_revision_4_scope": "extend the admissible arm-dependent state class from {frozen proposition credence} to {frozen proposition credence, arm-derived hash/trace bookkeeping computed from the arm's own state}",
+    "must_include": [
+      "a mechanical enumeration of exactly which trace_window fields are admissible, by name and path",
+      "a statement that trace_id difference FOLLOWS from the hash difference and is not independent",
+      "a normalisation analogous to normalizeArmSpecificBytes for the state channel, so the gate compares normalised states and any residual difference fails closed",
+      "hash + provenance + MODEL_CALLS_BEFORE_AMENDMENT = 0",
+      "preservation of the REVISION 3 hash and the REVISION 2 hash"
+    ],
+    "must_not": [
+      "weaken the gate to 'some metadata may differ'",
+      "be applied retrospectively to reinterpret this round's result",
+      "be written after any treatment call"
+    ],
+    "why_this_is_safe_to_do": "MODEL_CALLS_TRANSMITTED = 0, so the amendment is still pre-data; the gate itself was not loosened, its admissible-class list is being completed with a mechanically enumerated, evidence-backed entry"
+  },
+
+  "standing_states": {
+    "d1": "NOT_EXECUTED",
+    "phase_a_full_request_certified": false,
+    "phase_b_noise_pilot": "NOT_RUN",
+    "treatment_schedule": "NOT_FROZEN",
+    "cross_transport_replication": "PENDING",
+    "history_internalization": "NOT_TESTED"
+  }
+}

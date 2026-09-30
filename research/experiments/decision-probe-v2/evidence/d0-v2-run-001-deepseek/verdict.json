@@ -1,0 +1,29 @@
+{
+  "protocol_version": "decision-probe-v2",
+  "r": 3,
+  "executor": {
+    "family": "openai",
+    "transport_class": "OpenAiCompatibleTransportV0",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "generation": {
+      "temperature": 0,
+      "max_output_tokens": 256,
+      "provider_thinking": "disabled"
+    },
+    "structured_enforcement": "PROMPT_CONTRACT_PLUS_HOST_FAIL_CLOSED_PARSER",
+    "native_schema_transmitted": false,
+    "declares_primary_executor": true
+  },
+  "primary_measurement_verdict": "PRIMARY_MEASUREMENT_PASSED",
+  "c3_diagnostic_verdict": "CONSTRUCT_RESPONSE_PARAPHRASE_STABLE",
+  "format_only_diagnostic_verdict": "CONSTRUCT_ANCHORS_NOT_NECESSARY",
+  "token_remap_diagnostic_verdict": "TOKEN_PRIORS_NOT_LOAD_BEARING",
+  "diagnostics_veto": false,
+  "overall_qualification_verdict": "DECISION_INSTRUMENT_V2_QUALIFIED",
+  "qualified_executor_label": "DECISION_INSTRUMENT_V2_QUALIFIED_ON_DEEPSEEK_FLASH",
+  "cross_transport_replication_status": "PENDING",
+  "cross_transport_validated": false,
+  "d1_gate": "PRIMARY_EXECUTOR_V2_QUALIFIED",
+  "d1_executed": false
+}

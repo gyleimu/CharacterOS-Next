@@ -1,0 +1,15 @@
+{
+  "replicate": 3,
+  "subject_id": "subject-qcf-2091",
+  "session_id": "session-cloud-qualification-0003",
+  "turn_text": "The carpenter looked at the hallway this morning and said the boards he laid last month are still level.",
+  "status": "COMPLETE",
+  "failure": null,
+  "failure_kind": "NONE",
+  "terminal_kind": "COMPLETE_COMMITTED",
+  "terminal_is_lawful": true,
+  "belief_wiring_failure": null,
+  "state_revision_before": 0,
+  "state_revision_after": 7,
+  "subject_text_excerpt": "The carpenter looked at the hallway this morning and said the boards he laid last month are still level."
+}

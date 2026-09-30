@@ -1,0 +1,53 @@
+{
+  "transformer": "buildD2SemanticReadoutRequestV0",
+  "transformer_source_hash": "sha256:628c5094deee14dea88b79b8e1a65692f9cd9766490347f2ba2e6c3125172406",
+  "transformer_source_unchanged_since_qualification": true,
+  "per_arm": {
+    "HIGH": {
+      "production_prefix_byte_identical": true,
+      "user_content_untouched": true,
+      "a1_measurement_contract_exactly_once": true,
+      "a1_schema_exactly_once": true,
+      "a1_contract_hash_exact": true,
+      "frozen_paraphrase_exactly_once": true,
+      "a1_anchors_exact": true,
+      "decision_probe_v2_absent": true,
+      "a0_contract_absent": true,
+      "b_contract_absent": true,
+      "transformer_on_transformer_rejected": true,
+      "arm_words_introduced_by_the_transformer": [],
+      "action_tokens_introduced_by_the_transformer": []
+    },
+    "NEUTRAL": {
+      "production_prefix_byte_identical": true,
+      "user_content_untouched": true,
+      "a1_measurement_contract_exactly_once": true,
+      "a1_schema_exactly_once": true,
+      "a1_contract_hash_exact": true,
+      "frozen_paraphrase_exactly_once": true,
+      "a1_anchors_exact": true,
+      "decision_probe_v2_absent": true,
+      "a0_contract_absent": true,
+      "b_contract_absent": true,
+      "transformer_on_transformer_rejected": true,
+      "arm_words_introduced_by_the_transformer": [],
+      "action_tokens_introduced_by_the_transformer": []
+    },
+    "LOW": {
+      "production_prefix_byte_identical": true,
+      "user_content_untouched": true,
+      "a1_measurement_contract_exactly_once": true,
+      "a1_schema_exactly_once": true,
+      "a1_contract_hash_exact": true,
+      "frozen_paraphrase_exactly_once": true,
+      "a1_anchors_exact": true,
+      "decision_probe_v2_absent": true,
+      "a0_contract_absent": true,
+      "b_contract_absent": true,
+      "transformer_on_transformer_rejected": true,
+      "arm_words_introduced_by_the_transformer": [],
+      "action_tokens_introduced_by_the_transformer": []
+    }
+  },
+  "verdict": "D2_A1_TRANSFORMER_APPLIED_ONCE_PER_ARM"
+}

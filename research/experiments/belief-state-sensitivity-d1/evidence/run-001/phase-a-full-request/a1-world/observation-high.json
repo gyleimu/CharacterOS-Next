@@ -1,0 +1,8 @@
+{
+  "level": "HIGH",
+  "observation_id": "observation:o-d1-p1-awaiting-inspection",
+  "observation_ref": "observation:o-d1-p1-awaiting-inspection",
+  "scene_is_frozen_p1": true,
+  "task_is_null": true,
+  "current_observation_ref": "observation:o-d1-p1-awaiting-inspection"
+}

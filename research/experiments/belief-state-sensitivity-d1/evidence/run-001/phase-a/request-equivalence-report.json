@@ -1,0 +1,37 @@
+{
+  "stripped_bodies_byte_identical": false,
+  "total_lines_per_request": 52,
+  "declared_arm_dependent_lines": [
+    "36:[projection_hash] sha256:11d94b9c58a6b1cd26e1d97da0b93af5068"
+  ],
+  "undeclared_arm_dependent_lines": [],
+  "interpretation": "after removing the belief block, 51 of 52 lines are byte-identical across HIGH/LOW/NEUTRAL; the single differing line is [projection_hash], the content-address of that arm's own projection. No history, summary, retrieval or provenance byte varies with the arm.",
+  "stripped_hashes": [
+    {
+      "level": "HIGH",
+      "stripped_hash": "sha256:c7a4deb9e3682f987d0f27e554f11f6ae022926712cbecfcf0143b2f669f0c43"
+    },
+    {
+      "level": "LOW",
+      "stripped_hash": "sha256:90074ff739f25fb1981a4bfecf9b60aa3e4aa955bd8831b3af66a3415c9cfab3"
+    },
+    {
+      "level": "NEUTRAL",
+      "stripped_hash": "sha256:18c50ae2291ed66e566248e64408516f198f20639fbe1ceb6662ad5a7291660c"
+    }
+  ],
+  "full_request_hashes": [
+    {
+      "level": "HIGH",
+      "request_hash": "sha256:f010225788ea320aba6c36d86b8e597d60d30fd901aae130d82209e06cee2d36"
+    },
+    {
+      "level": "LOW",
+      "request_hash": "sha256:e115c3d7b398b549b41dd0fd5ce693683f0d00d6739a1fea990c1b8a1809b5cd"
+    },
+    {
+      "level": "NEUTRAL",
+      "request_hash": "sha256:874bfeca148f16fe3f4847aac2d0234f00a470edd3dac49b5e9d8e85fc4ed4f3"
+    }
+  ]
+}

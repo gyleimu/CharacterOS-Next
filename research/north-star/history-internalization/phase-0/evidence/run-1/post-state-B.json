@@ -1,0 +1,226 @@
+{
+  "scored": false,
+  "role": "POST_TRAJECTORY_STATE_B",
+  "state": {
+    "subject_id": "subject-k7q2-8267",
+    "canonical_state_view": {
+      "schema_version": "interactive-subject-state-view-v0",
+      "identity": {
+        "subject_id": "subject-k7q2-8267",
+        "display_name": "Wren",
+        "identity_anchors": []
+      },
+      "logical_time": 5,
+      "state_revision": 24,
+      "repository_revision": "R6",
+      "affect": {
+        "valence": 0.4074590074940301,
+        "activation": 0.41796287655981174
+      },
+      "regulation": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality": [],
+      "traits_seed": {},
+      "beliefs": [
+        {
+          "proposition_id": "prop.nadia-keeps-commitments",
+          "proposition_label": "Nadia keeps the commitments she makes to me.",
+          "credence": 0.55
+        }
+      ],
+      "relationships": []
+    },
+    "durable_identity": {
+      "subject_state_hash": "sha256:f97fb6d4f737ddfe4fa77143d0c5c84a5deea62e04d89ca67fa6505f40c1b73c",
+      "state_revision": 24,
+      "logical_time": 5,
+      "repository_revision": "R6",
+      "subject_head": {
+        "revision": 24,
+        "commit_ref": "commit:bdcf1ec9f9b847ed7dce721db67b9b9c080fc9671ab47c75701cf4b611a4c2ed",
+        "record_checksum": "sha256:c4cae0067170a52e2feb0965a82f4bd07d2b0eb6bfdaab1401c9a28002db05d4",
+        "state_hash": "sha256:35346a41ab79f09f568c46823400d3b71cd1bf40471d7bb8b982e977d551e272",
+        "snapshot_hash": "sha256:8e4afdbcb5509b01a326aa8973010f59b91a06562e52e1337aa7c90106f12101"
+      },
+      "affect": {
+        "valence": 0.4074590074940301,
+        "activation": 0.41796287655981174
+      },
+      "episode_refs": []
+    },
+    "durable_belief_workflow_store_state": {
+      "schema_version": "belief-adaptation-workflow-store-state-v0",
+      "records": [
+        {
+          "schema_version": "belief-adaptation-workflow-record-v0",
+          "workflow_id": "wf-belief-adapt-6e96dae556bf1939b92889cd",
+          "request_fingerprint": "sha256:82bdd1dcf1df64bd719f86e76c17d3a70b630219a20c04b46153ed5a886e2eac",
+          "subject_id": "subject-k7q2-8267",
+          "initial_state_revision": 6,
+          "repository_revision": "R2",
+          "proposition_candidate_ids": [
+            "prop.nadia-keeps-commitments"
+          ],
+          "evidence_bindings": [
+            {
+              "episode_ref": "episode:dbc5c8b37a14562c2c2809ebfd55f85e3a01e8c91e9146f74e9464f68be76e52",
+              "payload_hash": "sha256:aad2389a144234a57e2848c79de48fb47043971f86625bd00f708beada26f539"
+            }
+          ],
+          "stage": "B7_COMPLETE",
+          "external_provider_call_count": 1,
+          "semantic_candidate": {
+            "schema_version": "belief-semantic-provider-output-v0",
+            "kind": "EXISTING_PROPOSITION",
+            "proposition_id": "prop.nadia-keeps-commitments",
+            "relation": "SUPPORTS",
+            "semantic_context_fingerprint": "sha256:6684d2d8594d2cfbfb4c9fc7cb07c19f27764fe4c8e22261af0d4f9779b74163",
+            "candidate_catalog_fingerprint": "sha256:91b471271becc119345521ba03ac41bdcf672d0ef00f762325fc7bdc24272265"
+          },
+          "semantic_candidate_fingerprint": "sha256:2619947fae902f75d1103af94953b560b195702380e17f166f1a7aab7a50ffac",
+          "plasticity_receipt": {
+            "schema_version": "belief-plasticity-result-v0",
+            "policy_version": "belief-plasticity-policy-v0",
+            "subject_id": "subject-k7q2-8267",
+            "state_revision": 6,
+            "repository_revision": "R2",
+            "proposition_id": "prop.nadia-keeps-commitments",
+            "relation": "SUPPORTS",
+            "current_credence": 0.55,
+            "outcome": {
+              "kind": "CREDENCE_CHANGE",
+              "next_credence": 0.6000000000000001
+            },
+            "evidence_binding": {
+              "member_refs": [
+                "episode:dbc5c8b37a14562c2c2809ebfd55f85e3a01e8c91e9146f74e9464f68be76e52"
+              ],
+              "member_set_fingerprint": "sha256:9e51eeb1792e225e83fab4e0c5f19f7b09f5d2117a75196ec6b0280e62f6ad48"
+            },
+            "semantic_context_fingerprint": "sha256:6684d2d8594d2cfbfb4c9fc7cb07c19f27764fe4c8e22261af0d4f9779b74163",
+            "candidate_catalog_fingerprint": "sha256:91b471271becc119345521ba03ac41bdcf672d0ef00f762325fc7bdc24272265",
+            "output_fingerprint": "sha256:0658d0a5e7df09a4ced987a98a6bba38f53f8fdd6e21cde352066bc8178cc62f"
+          },
+          "proposal_checkpoint": {
+            "schema_version": "belief-adaptation-proposal-checkpoint-v0",
+            "proposal": {
+              "schema_version": "belief-mutation-proposal-v0",
+              "subject_id": "subject-k7q2-8267",
+              "expected_state_revision": 6,
+              "mutation": {
+                "kind": "UPDATE",
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "next_credence": 0.6000000000000001
+              },
+              "evidence_binding": {
+                "member_refs": [
+                  "episode:dbc5c8b37a14562c2c2809ebfd55f85e3a01e8c91e9146f74e9464f68be76e52"
+                ],
+                "member_set_fingerprint": "sha256:9e51eeb1792e225e83fab4e0c5f19f7b09f5d2117a75196ec6b0280e62f6ad48"
+              }
+            },
+            "transition_id": "t-belief-543e9c8c8514cd2537deb85cad25e7d6dbf8971a8988c2e38bd8712321ee7f0f",
+            "plasticity_output_fingerprint": "sha256:0658d0a5e7df09a4ced987a98a6bba38f53f8fdd6e21cde352066bc8178cc62f",
+            "proposal_checkpoint_fingerprint": "sha256:fa5048f64856106d1ab11435871c6f7fde8f40bae7f989743901c2e19a1ff5a8"
+          },
+          "terminal_result": {
+            "kind": "COMPLETE_COMMITTED",
+            "transition_id": "t-belief-543e9c8c8514cd2537deb85cad25e7d6dbf8971a8988c2e38bd8712321ee7f0f",
+            "commit_ref": "commit:0f2b50358c6b057d3fa39c5fbeb97f50ad65f1ef5f8193df53a0ff71f38419f6",
+            "final_state_revision": 7,
+            "snapshot_hash": "sha256:815dc84f2cc30f9da5a7e1a66de0afb6d64157ad60e8632f6ecd3b134fca3d6f",
+            "canonical_commits": 1
+          },
+          "checkpoint_fingerprint": "sha256:3bd885752cfb6697a694560f6cda04bc7515b040d9f35a96cb816e1de6473c2e"
+        },
+        {
+          "schema_version": "belief-adaptation-workflow-record-v0",
+          "workflow_id": "wf-belief-adapt-25da0b1eac2f7e1d2ccae025",
+          "request_fingerprint": "sha256:f1a9be0ffabab356aa1e58e4ff0efb7cb12ede3283e0540ff5c55ae3d0551ba4",
+          "subject_id": "subject-k7q2-8267",
+          "initial_state_revision": 16,
+          "repository_revision": "R5",
+          "proposition_candidate_ids": [
+            "prop.nadia-keeps-commitments"
+          ],
+          "evidence_bindings": [
+            {
+              "episode_ref": "episode:14c99669d0af9f3b88b2b989562d218d50657ca818329c55a38fc902cb04598d",
+              "payload_hash": "sha256:e9eafb81b7059924453a5912f9dc7df8a8ff9beb175c6a461d4309f5dce1379a"
+            }
+          ],
+          "stage": "B7_COMPLETE",
+          "external_provider_call_count": 1,
+          "semantic_candidate": {
+            "schema_version": "belief-semantic-provider-output-v0",
+            "kind": "EXISTING_PROPOSITION",
+            "proposition_id": "prop.nadia-keeps-commitments",
+            "relation": "CONTRADICTS",
+            "semantic_context_fingerprint": "sha256:cbe4eeafa92559bbb9424406f71f04dc1f46655a16fb6f165578530b037c9d5e",
+            "candidate_catalog_fingerprint": "sha256:91b471271becc119345521ba03ac41bdcf672d0ef00f762325fc7bdc24272265"
+          },
+          "semantic_candidate_fingerprint": "sha256:8095da7f183d08e9a7501bea6c2d685d128e7c532de761edfb32d47c7e476459",
+          "plasticity_receipt": {
+            "schema_version": "belief-plasticity-result-v0",
+            "policy_version": "belief-plasticity-policy-v0",
+            "subject_id": "subject-k7q2-8267",
+            "state_revision": 16,
+            "repository_revision": "R5",
+            "proposition_id": "prop.nadia-keeps-commitments",
+            "relation": "CONTRADICTS",
+            "current_credence": 0.6000000000000001,
+            "outcome": {
+              "kind": "CREDENCE_CHANGE",
+              "next_credence": 0.55
+            },
+            "evidence_binding": {
+              "member_refs": [
+                "episode:14c99669d0af9f3b88b2b989562d218d50657ca818329c55a38fc902cb04598d"
+              ],
+              "member_set_fingerprint": "sha256:1ed7a643d9641bdccad0f6c0cc32761af033bdc534d32e19473d5c40765e6db4"
+            },
+            "semantic_context_fingerprint": "sha256:cbe4eeafa92559bbb9424406f71f04dc1f46655a16fb6f165578530b037c9d5e",
+            "candidate_catalog_fingerprint": "sha256:91b471271becc119345521ba03ac41bdcf672d0ef00f762325fc7bdc24272265",
+            "output_fingerprint": "sha256:9d862bfef58b3509d4999257eed791ed921d1e43dab12e70ba360b90fd6153ff"
+          },
+          "proposal_checkpoint": {
+            "schema_version": "belief-adaptation-proposal-checkpoint-v0",
+            "proposal": {
+              "schema_version": "belief-mutation-proposal-v0",
+              "subject_id": "subject-k7q2-8267",
+              "expected_state_revision": 16,
+              "mutation": {
+                "kind": "UPDATE",
+                "proposition_id": "prop.nadia-keeps-commitments",
+                "next_credence": 0.55
+              },
+              "evidence_binding": {
+                "member_refs": [
+                  "episode:14c99669d0af9f3b88b2b989562d218d50657ca818329c55a38fc902cb04598d"
+                ],
+                "member_set_fingerprint": "sha256:1ed7a643d9641bdccad0f6c0cc32761af033bdc534d32e19473d5c40765e6db4"
+              }
+            },
+            "transition_id": "t-belief-292232adaa56eb6984fdb323fb4202497f8ab0c9a8689ef088d90b3e4479441a",
+            "plasticity_output_fingerprint": "sha256:9d862bfef58b3509d4999257eed791ed921d1e43dab12e70ba360b90fd6153ff",
+            "proposal_checkpoint_fingerprint": "sha256:c9c889fb1882f397164f334a14cafc15c0b01fbcd7b1309b841a8a3abfbbc907"
+          },
+          "terminal_result": {
+            "kind": "COMPLETE_COMMITTED",
+            "transition_id": "t-belief-292232adaa56eb6984fdb323fb4202497f8ab0c9a8689ef088d90b3e4479441a",
+            "commit_ref": "commit:d9c43dface1d255d2596c33fd545f9af5c3fbb04cbccaa21314767b3caa307a9",
+            "final_state_revision": 17,
+            "snapshot_hash": "sha256:97170bbd770f79716f6122d423a7939fbddbb4c3406a1edb8061c6ac05370724",
+            "canonical_commits": 1
+          },
+          "checkpoint_fingerprint": "sha256:a4898a9c0d83abbf5f069964ece904351eb203b39c4e15f656f326f82d4b1c89"
+        }
+      ]
+    },
+    "durable_identity_unavailable_reason": null
+  }
+}

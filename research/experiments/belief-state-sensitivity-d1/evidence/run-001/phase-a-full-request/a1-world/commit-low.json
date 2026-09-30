@@ -1,0 +1,8 @@
+{
+  "level": "LOW",
+  "transition_id": "t-obs-7c298609fcd29f8f2bbd87e76b25e559a8bc44c944a2b1ef74d0b9c6e8c86ae7",
+  "repository_revision_pre": "R0",
+  "repository_revision_post": "R0",
+  "event_count": 1,
+  "commit_kind": "COMMITTED"
+}

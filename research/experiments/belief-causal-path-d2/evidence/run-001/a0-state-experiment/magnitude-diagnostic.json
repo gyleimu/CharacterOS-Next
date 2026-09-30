@@ -1,0 +1,13 @@
+{
+  "rule": {
+    "is_primary_qualification_requirement": false,
+    "is_secondary_calibration_diagnostic": true,
+    "requirement": "HIGH modal = ENDORSES_STRONGLY AND LOW modal = DOUBTS_STRONGLY",
+    "verdict_if_met": "STRUCTURAL_MAGNITUDE_CALIBRATED"
+  },
+  "high_modal": "ENDORSES_STRONGLY",
+  "low_modal": "DOUBTS_STRONGLY",
+  "secondary_magnitude_calibrated": true,
+  "replaces_the_primary_criterion": false,
+  "primary_criterion_unaffected_by_this_diagnostic": true
+}

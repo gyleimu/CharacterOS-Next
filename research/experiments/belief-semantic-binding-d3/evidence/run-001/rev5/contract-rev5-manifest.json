@@ -1,0 +1,135 @@
+{
+  "version": "belief-semantic-binding-localization-d3-rev5",
+  "violation": {
+    "verdict": "D3_B_TARGET_REQUEST_NOT_STATE_BLIND",
+    "the_frozen_law_that_was_breached": [
+      "CharacterOS subject state",
+      "a credence",
+      "HIGH / LOW / NEUTRAL",
+      "A1 outputs",
+      "D1 outputs",
+      "a behaviour or action endpoint"
+    ],
+    "the_frozen_role": "STATE-BLIND EXECUTOR CAPABILITY DIAGNOSTIC",
+    "measured_in_the_invalid_request": {
+      "canonical_proposition_occurrences_total": 2,
+      "canonical_proposition_occurrence_1_owner": "STATEMENT A of the relation task",
+      "canonical_proposition_occurrence_2_owner": "the production subject belief block — THIS IS THE VIOLATION",
+      "user_content_contains_the_belief_block": true,
+      "user_content_contains_a_credence_field": true,
+      "paraphrase_occurrences_total": 1,
+      "paraphrase_owner": "STATEMENT B only"
+    },
+    "why_it_matters": "a state-blind diagnostic must not carry the subject's own belief state: the subject block supplies a second copy of the proposition under test and a credence, so a result from that request could not be attributed to the relation judgement alone",
+    "target_outputs_seen_before_correction": false,
+    "target_calls_before_correction": 0,
+    "noise_gate_result_known_before_correction": true,
+    "correction_reason_independent_of_the_noise_modal_token_identity": true,
+    "correction_reason_source": "the frozen state-blindness law, not the gate's outcome",
+    "introduced_and_certified_by_the_same_audit": true,
+    "the_audit_check_that_certified_it": "target_subject_data_untouched: true — a check encoding the wrong expectation",
+    "the_second_defect_in_the_same_check_list": "target_schema_is_the_frozen_d3b_schema compared the schema to itself and could never fail"
+  },
+  "invalid_target": {
+    "request_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+    "source": "evidence/run-001/d3-b-noise-stability/d3-b-target-schedule-audit.json + D3_B_TARGET_SCHEDULE.json",
+    "marking": "INVALID_FOR_EXECUTION_BY_STATE_BLINDNESS_CONTRACT",
+    "scheduled_superseded_marking": "SUPERSEDED_BEFORE_ANY_TARGET_CALL",
+    "deleted": false,
+    "silently_overwritten": false,
+    "any_provider_call_was_made_with_it": false,
+    "retained_as": "failure evidence"
+  },
+  "preserved": {
+    "d3_b_instrument_qualified": true,
+    "d3_b_instrument_qualification_rerun": false,
+    "d3_b_noise_stability_gate_pass": true,
+    "noise_rerun": false,
+    "r_confirm_B": 6,
+    "r_confirm_changed": false,
+    "target_pair": {
+      "statement_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+      "statement_b": "the view that a finding depending mainly on secondhand report is to be held with reserve"
+    },
+    "target_pair_changed": false,
+    "expected_relation": "SEMANTICALLY_ALIGNED",
+    "expected_relation_changed": false,
+    "target_scorer_changed": false,
+    "unanimity_criterion_changed": false,
+    "target_invalid_policy_changed": false,
+    "scientific_claim_changed": false,
+    "d3_model_calls_still": 15,
+    "d1_evidence_changed": false,
+    "d2_evidence_changed": false,
+    "d3_a_still_deleted": true
+  },
+  "corrected_construction": {
+    "base_construction": "the SAME state-blind base the qualification round already used and froze: the production V8 request with the belief block removed by the D1-frozen stripBeliefBlockV0",
+    "new_base_design": false,
+    "transformer": "the frozen transformer, unchanged",
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "d3_relation_schema_version",
+        "relation"
+      ],
+      "properties": {
+        "d3_relation_schema_version": {
+          "const": "d3-relation-readout-v0"
+        },
+        "relation": {
+          "enum": [
+            "SEMANTICALLY_ALIGNED",
+            "SEMANTICALLY_UNRELATED",
+            "SEMANTICALLY_OPPOSED"
+          ]
+        },
+        "explanation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        }
+      }
+    },
+    "contract": "the frozen relation contract, unchanged",
+    "anchors": "the frozen anchors, unchanged",
+    "statement_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "statement_b": "the view that a finding depending mainly on secondhand report is to be held with reserve",
+    "statement_literals_modified": false,
+    "only_difference_from_qualification": "the STATEMENT A / STATEMENT B literal pair: synthetic frozen pair for qualification, canonical CAUTION plus frozen paraphrase for the target",
+    "target_only_subject_state_context": false,
+    "additional_context_added_for_the_target": false,
+    "additional_cleanup_done_for_the_target_only": false
+  },
+  "provenance": {
+    "target_calls_before_rev5": 0,
+    "target_outputs_seen_before_rev5": false,
+    "qualification_rerun": false,
+    "noise_rerun": false,
+    "r_confirm_changed": false,
+    "target_pair_changed": false,
+    "expected_relation_changed": false,
+    "target_scorer_changed": false,
+    "scientific_claim_changed": false,
+    "the_only_correction": "target request state-blindness / request identity",
+    "budget_unchanged": true,
+    "budget_maximum": 21
+  },
+  "revision_4_manifest_hash_preserved": "sha256:b5f962f03ce6e33a8c0f8c8ce7f976a67c925bcb46d7033ee41525af47d49e6f",
+  "tests": {
+    "violation_verdict": "D3_B_TARGET_REQUEST_NOT_STATE_BLIND",
+    "invalid_request_retained": true,
+    "invalid_request_marking": "INVALID_FOR_EXECUTION_BY_STATE_BLINDNESS_CONTRACT",
+    "target_calls_before_correction": 0,
+    "target_outputs_seen_before_correction": false,
+    "qualification_preserved": true,
+    "noise_gate_preserved": true,
+    "r_confirm_B": 6,
+    "corrected_base_is_the_qualification_base": true,
+    "only_difference_is_the_statement_pair": true,
+    "budget_unchanged": true,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:76c9b99e8c85f361772295cafa2ce2d0009ba6e770994be7c23beb79fdb83a20"
+}

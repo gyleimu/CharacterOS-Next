@@ -1,0 +1,171 @@
+{
+  "stage": "D2_A1_NEUTRAL_PILOT_PREREGISTRATION_AUDIT",
+  "model_calls": 0,
+  "section_1_noise_rule": {
+    "gate": "§1 frozen noise rule must already determine invalid handling",
+    "required_items": [
+      "planned_neutral_trials_equals_6",
+      "no_retry",
+      "no_replacement",
+      "modal_count_calculation",
+      "mapping_6_to_r6",
+      "mapping_5_to_r14",
+      "stop_at_4_or_fewer",
+      "invalid_trial_handling"
+    ],
+    "presence": {
+      "planned_neutral_trials_equals_6": true,
+      "no_retry": false,
+      "no_replacement": false,
+      "modal_count_calculation": false,
+      "mapping_6_to_r6": true,
+      "mapping_5_to_r14": true,
+      "stop_at_4_or_fewer": true,
+      "invalid_trial_handling": false
+    },
+    "missing_items": [
+      "no_retry",
+      "no_replacement",
+      "modal_count_calculation",
+      "invalid_trial_handling"
+    ],
+    "invalid_trial_handling_is_among_the_missing": true,
+    "frozen_noise_rule": {
+      "each_endpoint_has_its_own_neutral_pilot": true,
+      "pilots_may_not_be_shared_between_endpoints": true,
+      "d1_pilot_result_reused_as_d2_noise_evidence": false,
+      "pilot_shape": "6 byte-identical NEUTRAL requests through that endpoint's frozen transformer",
+      "deterministic_mapping": {
+        "0": "STOP",
+        "1": "STOP",
+        "2": "STOP",
+        "3": "STOP",
+        "4": "STOP",
+        "5": 14,
+        "6": 6
+      },
+      "stop_verdict": "INCONCLUSIVE_BY_DECISION_NOISE",
+      "r_frozen_from_that_endpoints_own_pilot": true,
+      "r_may_be_chosen_after_seeing_treatment_output": false,
+      "reason_for_separate_pilots": "the three measurement contracts differ, so one endpoint's self-noise is not evidence about another's"
+    },
+    "invalid_rule_inventory": [
+      {
+        "source": "contract-rev1-1c-a1-prerequisites.ts :: D2A1_QUALIFICATION_INVALID_RULE",
+        "rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+        "applies_to": [
+          "D2_A1",
+          "D2_B"
+        ],
+        "verdict_if_any_invalid": "D2_INSTRUMENT_UNQUALIFIED",
+        "denominator": "always the full nine planned trials (3 fixtures x 3 replicates)",
+        "reaches_the_neutral_pilot": false,
+        "why_not": "its verdict is about INSTRUMENT QUALIFICATION (D2_INSTRUMENT_UNQUALIFIED), which is not definable for a pilot whose instrument is already qualified; it is scoped by name and by applies_to to qualification trials"
+      }
+    ],
+    "any_invalid_rule_that_reaches_the_pilot": false,
+    "divergence_proof": [
+      {
+        "scenario": "all_six_agree",
+        "observed_counts": [
+          {
+            "key": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+            "count": 6
+          }
+        ],
+        "outcomes_under_each_reading": {
+          "INVALIDS_EXCLUDED_FROM_THE_MODAL": 6,
+          "INVALIDS_ARE_ORDINARY_KEYS": 6,
+          "ANY_INVALID_STOPS": 6
+        },
+        "readings_disagree": false
+      },
+      {
+        "scenario": "five_agree_one_transport_failure",
+        "observed_counts": [
+          {
+            "key": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+            "count": 5
+          },
+          {
+            "key": "INVALID:TRANSPORT_FAILED",
+            "count": 1
+          }
+        ],
+        "outcomes_under_each_reading": {
+          "INVALIDS_EXCLUDED_FROM_THE_MODAL": 14,
+          "INVALIDS_ARE_ORDINARY_KEYS": 14,
+          "ANY_INVALID_STOPS": "STOP"
+        },
+        "readings_disagree": true
+      },
+      {
+        "scenario": "three_agree_three_invalid",
+        "observed_counts": [
+          {
+            "key": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+            "count": 3
+          },
+          {
+            "key": "INVALID:TRANSPORT_FAILED",
+            "count": 3
+          }
+        ],
+        "outcomes_under_each_reading": {
+          "INVALIDS_EXCLUDED_FROM_THE_MODAL": "STOP",
+          "INVALIDS_ARE_ORDINARY_KEYS": "UNDEFINED",
+          "ANY_INVALID_STOPS": "STOP"
+        },
+        "readings_disagree": true
+      },
+      {
+        "scenario": "all_six_invalid",
+        "observed_counts": [
+          {
+            "key": "INVALID:TRANSPORT_FAILED",
+            "count": 6
+          }
+        ],
+        "outcomes_under_each_reading": {
+          "INVALIDS_EXCLUDED_FROM_THE_MODAL": "STOP",
+          "INVALIDS_ARE_ORDINARY_KEYS": 6,
+          "ANY_INVALID_STOPS": "STOP"
+        },
+        "readings_disagree": true
+      }
+    ],
+    "scenarios_where_the_readings_disagree": [
+      "five_agree_one_transport_failure",
+      "three_agree_three_invalid",
+      "all_six_invalid"
+    ],
+    "materiality": "the mapping is keyed by modal_count, so 'a completely failed pilot' is r = STOP under two readings and r = 6 under the third — i.e. the ambiguity is at its widest exactly where a fully failed pilot would otherwise authorise a 12-call treatment run",
+    "verdict": "D2_A1_NEUTRAL_INVALID_HANDLING_NOT_PREREGISTERED"
+  },
+  "section_3_production_context": {
+    "question": "is the A1 state experiment's observation/task/production context uniquely bound by an authoritative contract?",
+    "a1_has_an_explicit_same_projection_path_equivalent": false,
+    "note_on_a0": "A0 had D2A_INSTRUMENT_LAWS.same_projection_path ('the stimulus is the unmodified production canonical projection; no hand-written subject data'), which settled it directly",
+    "arguments_that_do_bind_it": [
+      "D2_TRANSFORMER_LAWS.each_requires_pristine_production_v8_input — the A1 stimulus is a pristine production request, not a hand-written scene",
+      "the D2 causal graph places A0 (link 3A) and A1 (link 3B) on the SAME chain, so a different production context would make the localisation matrix incoherent",
+      "1_canonical_state (LINK 1) and LINK 2 are carried forward as established by D1 without any model call: the 0.80/0.20 credence materialises through production genesis authoring as the ONLY canonical state difference, and the production V2 projection carries the belief line — that is a bound state+projection path, and the projection contains the world's own observation",
+      "the A1 transformer appends a measurement contract only; it cannot introduce a context, so the context is whatever the production request already contains",
+      "the P1 observation is itself a secondhand-report scenario ('a colleague remarks...'), the exact antecedent the CAUTION proposition and its paraphrase are about, so the frozen context is construct-aligned rather than arbitrary"
+    ],
+    "reasoned_resolution": "the context is uniquely determined, and it is the SAME frozen production context A0 used",
+    "residual_weakness": "A1 reaches this by inference from the causal chain and the D1 handoff rather than from an explicit A1 context field; an explicit binding would remove the inference and belongs in the amendment that closes §1",
+    "would_have_stopped_if_unresolvable": "D2_A1_STATE_CONTEXT_NOT_FULLY_PREREGISTERED",
+    "verdict_emitted": false,
+    "resolved": true
+  },
+  "a1_prediction_reaffirmed_frozen": {
+    "HIGH_0_80_expected": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "LOW_0_20_expected": "OPPOSES_PARAPHRASED_PRINCIPLE",
+    "transformer_contract_name": "buildD2SemanticReadoutRequestV0",
+    "changed_by_this_round": false
+  },
+  "blocked": true,
+  "final_verdict": "D2_A1_NEUTRAL_INVALID_HANDLING_NOT_PREREGISTERED",
+  "next_round_required_action": "a revision that freezes the pilot's invalid handling (and, while it is being written, an explicit A1 production-context binding) with model_calls_before_amendment_for_the_a1_pilot = 0"
+}

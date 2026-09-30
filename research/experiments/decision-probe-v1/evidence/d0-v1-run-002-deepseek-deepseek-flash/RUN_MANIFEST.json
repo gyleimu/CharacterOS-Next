@@ -1,0 +1,36 @@
+{
+  "artifact_hashes": {
+    "V1_C3_PARAPHRASE_MANIFEST.json": "sha256:71314d4f5fd40fe02c83296ed42dee655312c462197eccd3235eda279e2d9610",
+    "PREREGISTRATION.json": "sha256:443c343f0a79ffcd9289df912e708e198ba351d76299d17c3638028984bfaea1",
+    "audit-manifest.json": "sha256:40b636424320453522b9a401d96405b4dfb3d2deac719a556fc1c6e08d46683e",
+    "executor-manifest.json": "sha256:3de653060c9b27e1ff71e349cc57e8a7fda34591ed88f563d6c37b495bc3075e",
+    "inherited-parameter-manifest.json": "sha256:c034fed0c64acfd84820090dce2908122cbb98118831f80cf934ab5520d869a9",
+    "fixture-manifest.json": "sha256:63af4bad77525ec323ecd72fb018ac6de52a2f993d8e7f371471c5532f3c8223",
+    "binding-manifest.json": "sha256:665986632a759da6be4934f1860c71785aec2638bed2d9ea6ca2803bb099c0db",
+    "trials.json": "sha256:ceab72ab63d8e837e120481fec9195bd0fab6bfffe8dc065502f1bf8203a7878",
+    "cells.json": "sha256:5fee7791da66417fbf3a5b9ab254032754270a306672e4b27d22656459f762ae",
+    "verdict.json": "sha256:10ee1268f1034760b81f7088e71f57a54bd5a970a2963fcf0b24a8682a8e6a6f"
+  },
+  "decision_probe_version": "decision-probe-v1",
+  "executor": {
+    "family": "openai",
+    "transport_class": "OpenAiCompatibleTransportV0",
+    "model": "deepseek-flash",
+    "model_digest": null,
+    "endpoint": "https://api.deepseek.com",
+    "generation": {
+      "temperature": 0,
+      "cognition_num_predict": 256,
+      "context_window_tokens": "NOT_APPLICABLE_CLOUD_FAMILY",
+      "think": false,
+      "provider_thinking": "disabled"
+    },
+    "structured_output_support": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+    "declares_primary_executor": true
+  },
+  "r": 3,
+  "primary_measurement_mode_verdict": "DECISION_INSTRUMENT_V1_QUALIFIED_ON_QWEN35_9B",
+  "control_diagnostic_verdict": "EXECUTOR_UNQUALIFIED_FOR_DECISION_PROBE",
+  "c3_diagnostic_verdict": "CONSTRUCT_RESPONSE_PARAPHRASE_STABLE",
+  "override_identity_verdict": "OVERRIDE_IDENTITY_HELD"
+}

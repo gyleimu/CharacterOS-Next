@@ -1,0 +1,9 @@
+{
+  "pilot_request_hash": "sha256:94631e06212edbcdfff1001a33560804f235b3762124c9f7ae0f1937f4dafdba",
+  "modal": "VERIFY",
+  "modal_count": 6,
+  "r_confirm": 6,
+  "schedule_hash": "sha256:11b32f96fe4d43688cadd5ca5347c2ed144b9f1954a3696be71e154e3c89729c",
+  "model_calls_transmitted": 6,
+  "high_low_treatment_started": false
+}

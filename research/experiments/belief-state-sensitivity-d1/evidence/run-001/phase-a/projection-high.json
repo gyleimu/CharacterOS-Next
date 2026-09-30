@@ -1,0 +1,6 @@
+{
+  "level": "HIGH",
+  "belief_block": "[SUBJECTIVE BELIEF STANCES — read-only subject state; persistent subjective epistemic stances that may be wrong or uncertain; NOT objective world facts; credence is subject endorsement strength, NOT world truth; proposition IDs are STATE LOCATORS ONLY, never refs]\nshowing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+  "request_hash": "sha256:f010225788ea320aba6c36d86b8e597d60d30fd901aae130d82209e06cee2d36",
+  "stripped_hash": "sha256:c7a4deb9e3682f987d0f27e554f11f6ae022926712cbecfcf0143b2f669f0c43"
+}

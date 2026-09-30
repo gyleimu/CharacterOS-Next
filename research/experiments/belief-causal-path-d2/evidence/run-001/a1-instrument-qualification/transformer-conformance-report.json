@@ -1,0 +1,168 @@
+{
+  "transformer": "buildD2SemanticReadoutRequestV0",
+  "frozen_contract_hash": "sha256:6c0498dd0c51f67dc8c272ad65f6dc66bb98229a0985bcf527ca788518c4b2ac",
+  "frozen_revision_1_1c_manifest_hash": "sha256:170a97cea01727b5073ab9253b047f6e571c83638e031b6d4654d8a479f67efa",
+  "per_fixture": {
+    "A1-QF-A-SUPPORT": {
+      "accepts_a_pristine_production_v8_request": true,
+      "production_prefix_byte_identical": true,
+      "v8_structured_output_replaced_exactly_once": true,
+      "schema_exactly_the_frozen_a1_schema": true,
+      "a1_contract_appended_exactly_once": true,
+      "a1_contract_literal_hash_exact": true,
+      "frozen_paraphrase_appears_exactly_once": true,
+      "frozen_anchors_present_exactly": true,
+      "no_decision_probe_v2_contract": true,
+      "no_a0_contract": true,
+      "no_b_contract": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "lexical_no_experimental_credence_values": true,
+      "lexical_no_mapping_hint_for_0_80_or_0_20": true,
+      "lexical_contract_has_no_high_low_neutral_and_introduces_none": true,
+      "lexical_does_not_restate_the_canonical_proposition": true,
+      "lexical_contract_has_no_accept_verify_reject_and_introduces_none": true,
+      "paraphrase_occurrences": 1,
+      "contract_occurrences": 1,
+      "experimental_credence_hits": [],
+      "arm_word_contract_hits": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "arm_word_introduced_by_the_transformer": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "action_token_contract_hits": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "action_token_introduced_by_the_transformer": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "canonical_label_4gram_overlap": 0,
+      "line_count_delta": 0
+    },
+    "A1-QF-B-UNCERTAIN": {
+      "accepts_a_pristine_production_v8_request": true,
+      "production_prefix_byte_identical": true,
+      "v8_structured_output_replaced_exactly_once": true,
+      "schema_exactly_the_frozen_a1_schema": true,
+      "a1_contract_appended_exactly_once": true,
+      "a1_contract_literal_hash_exact": true,
+      "frozen_paraphrase_appears_exactly_once": true,
+      "frozen_anchors_present_exactly": true,
+      "no_decision_probe_v2_contract": true,
+      "no_a0_contract": true,
+      "no_b_contract": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "lexical_no_experimental_credence_values": true,
+      "lexical_no_mapping_hint_for_0_80_or_0_20": true,
+      "lexical_contract_has_no_high_low_neutral_and_introduces_none": true,
+      "lexical_does_not_restate_the_canonical_proposition": true,
+      "lexical_contract_has_no_accept_verify_reject_and_introduces_none": true,
+      "paraphrase_occurrences": 1,
+      "contract_occurrences": 1,
+      "experimental_credence_hits": [],
+      "arm_word_contract_hits": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "arm_word_introduced_by_the_transformer": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "action_token_contract_hits": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "action_token_introduced_by_the_transformer": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "canonical_label_4gram_overlap": 0,
+      "line_count_delta": 0
+    },
+    "A1-QF-C-OPPOSE": {
+      "accepts_a_pristine_production_v8_request": true,
+      "production_prefix_byte_identical": true,
+      "v8_structured_output_replaced_exactly_once": true,
+      "schema_exactly_the_frozen_a1_schema": true,
+      "a1_contract_appended_exactly_once": true,
+      "a1_contract_literal_hash_exact": true,
+      "frozen_paraphrase_appears_exactly_once": true,
+      "frozen_anchors_present_exactly": true,
+      "no_decision_probe_v2_contract": true,
+      "no_a0_contract": true,
+      "no_b_contract": true,
+      "belief_block_is_the_only_substituted_region": true,
+      "user_content_untouched_by_the_transformer": true,
+      "already_transformed_input_rejected": true,
+      "lexical_no_experimental_credence_values": true,
+      "lexical_no_mapping_hint_for_0_80_or_0_20": true,
+      "lexical_contract_has_no_high_low_neutral_and_introduces_none": true,
+      "lexical_does_not_restate_the_canonical_proposition": true,
+      "lexical_contract_has_no_accept_verify_reject_and_introduces_none": true,
+      "paraphrase_occurrences": 1,
+      "contract_occurrences": 1,
+      "experimental_credence_hits": [],
+      "arm_word_contract_hits": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "arm_word_introduced_by_the_transformer": {
+        "HIGH": 0,
+        "LOW": 0,
+        "NEUTRAL": 0
+      },
+      "action_token_contract_hits": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "action_token_introduced_by_the_transformer": {
+        "ACCEPT": 0,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "proceed": 0,
+        "choose": 0,
+        "decide": 0
+      },
+      "canonical_label_4gram_overlap": 0,
+      "line_count_delta": 0
+    }
+  },
+  "transformer_on_transformer_rejected": true,
+  "decision_probe_v2_used": false,
+  "a0_transformer_reused": false,
+  "lexical_laws_source": "D2A1_LEXICAL_LAWS (frozen) verified on the FINAL model-facing request, not only on the contract text",
+  "verdict": "D2_A1_TRANSFORMER_CONFORMANT"
+}

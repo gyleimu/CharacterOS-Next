@@ -1,0 +1,163 @@
+{
+  "scope": "0 model calls, no production change, deterministic stub transports",
+  "sequence": [
+    "VALID",
+    "PRIMARY_STANCE_WITHOUT_SUBJECTIVE_SELECTION",
+    "VALID"
+  ],
+  "turns": [
+    {
+      "turn": 0,
+      "scripted_response": "VALID",
+      "status": "COMPLETE",
+      "failure": null,
+      "turn_index_reported": 0,
+      "runtime_turn_index_before": 0,
+      "runtime_turn_index_after": 1,
+      "state_revision_before": 0,
+      "state_revision_after": 6,
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R2",
+      "pending_lifecycle_work_before": 0,
+      "pending_lifecycle_work_after": 0
+    },
+    {
+      "turn": 1,
+      "scripted_response": "PRIMARY_STANCE_WITHOUT_SUBJECTIVE_SELECTION",
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance)",
+      "turn_index_reported": 1,
+      "runtime_turn_index_before": 1,
+      "runtime_turn_index_after": 1,
+      "state_revision_before": 6,
+      "state_revision_after": 10,
+      "repository_revision_before": "R2",
+      "repository_revision_after": "R3",
+      "pending_lifecycle_work_before": 0,
+      "pending_lifecycle_work_after": 1
+    },
+    {
+      "turn": 2,
+      "scripted_response": "VALID",
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)",
+      "turn_index_reported": 1,
+      "runtime_turn_index_before": 1,
+      "runtime_turn_index_after": 1,
+      "state_revision_before": 10,
+      "state_revision_after": 12,
+      "repository_revision_before": "R3",
+      "repository_revision_after": "R3",
+      "pending_lifecycle_work_before": 1,
+      "pending_lifecycle_work_after": 0
+    }
+  ],
+  "observations": {
+    "turn0_valid_passed": true,
+    "turn1_invalid_failed_closed": true,
+    "turn1_failure_is_the_schema_rejection": true,
+    "turn1_did_not_advance_the_turn_index": true,
+    "turn1_did_advance_canonical_state": true,
+    "turn2_valid_was_rejected_at_ingress": true,
+    "turn2_reused_the_same_source_event_id": true,
+    "poisoned_next_turn_reproduced": true
+  },
+  "every_observation_holds": true,
+  "post_state_after_poisoning": {
+    "subject_id": "subject-k7q2-4103",
+    "canonical_state_view": {
+      "schema_version": "interactive-subject-state-view-v0",
+      "identity": {
+        "subject_id": "subject-k7q2-4103",
+        "display_name": "Wren",
+        "identity_anchors": []
+      },
+      "logical_time": 3,
+      "state_revision": 12,
+      "repository_revision": "R3",
+      "affect": {
+        "valence": 0,
+        "activation": 0.2476821238833727
+      },
+      "regulation": {
+        "energy": 1,
+        "stress": 0,
+        "arousal": 0.5,
+        "fatigue": 0
+      },
+      "personality": [],
+      "traits_seed": {},
+      "beliefs": [
+        {
+          "proposition_id": "prop.nadia-keeps-commitments",
+          "proposition_label": "Nadia keeps the commitments she makes to me.",
+          "credence": 0.55
+        }
+      ],
+      "relationships": []
+    },
+    "durable_identity": {
+      "subject_state_hash": "sha256:b4cd351c5aac02a847a1b934191e0587f90e7b61d476c5208657f68bad146789",
+      "state_revision": 12,
+      "logical_time": 3,
+      "repository_revision": "R3",
+      "subject_head": {
+        "revision": 12,
+        "commit_ref": "commit:599458649fb58a6299be0962b5fe81ab3cbe024f9e7067653a34e399f202f3df",
+        "record_checksum": "sha256:d707317b2bd479e592c60677a516c62cdc24e53285cae6bdaa4294f40f54203d",
+        "state_hash": "sha256:1aa2249c82b5a66ffb9b9569fd638b2f33057bc74f563f3bebe90cba74df9e2b",
+        "snapshot_hash": "sha256:96cfbaa00645d8253e3743ba78faeb5fa3aad30288c4b70c1ffe5d2a217b5095"
+      },
+      "affect": {
+        "valence": 0,
+        "activation": 0.2476821238833727
+      },
+      "episode_refs": []
+    },
+    "durable_belief_workflow_store_state": {
+      "schema_version": "belief-adaptation-workflow-store-state-v0",
+      "records": [
+        {
+          "schema_version": "belief-adaptation-workflow-record-v0",
+          "workflow_id": "wf-belief-adapt-6238d0f2c09810ceabd5f386",
+          "request_fingerprint": "sha256:190d48fc1016cadf8ba082bf2b9d8e84108c8cffc1bf40178763724084738d5a",
+          "subject_id": "subject-k7q2-4103",
+          "initial_state_revision": 6,
+          "repository_revision": "R2",
+          "proposition_candidate_ids": [
+            "prop.nadia-keeps-commitments"
+          ],
+          "evidence_bindings": [
+            {
+              "episode_ref": "episode:b3d9a33142853a2845c09531cf67b2ea587fe0cb9f3ed0a991d83c71bb0a277f",
+              "payload_hash": "sha256:72c73bae6c20b7da2ac3591e93b5158e8f4655473725e7715ca3f0a643b44c49"
+            }
+          ],
+          "stage": "B7_COMPLETE",
+          "external_provider_call_count": 1,
+          "semantic_candidate": {
+            "schema_version": "belief-semantic-provider-output-v0",
+            "kind": "NO_BEARING",
+            "semantic_context_fingerprint": "sha256:4078666f500dd25503635f7721a848ce299016070c187ce42178530c93a3da19",
+            "candidate_catalog_fingerprint": "sha256:91b471271becc119345521ba03ac41bdcf672d0ef00f762325fc7bdc24272265"
+          },
+          "semantic_candidate_fingerprint": "sha256:f6764d3a667bf237a1878f83e305b3c607a737afd6960abab7ee3ea513914965",
+          "plasticity_receipt": null,
+          "proposal_checkpoint": null,
+          "terminal_result": {
+            "kind": "COMPLETE_NO_BEARING",
+            "canonical_commits": 0
+          },
+          "checkpoint_fingerprint": "sha256:f112b574e960c29d76369ed58d4b7110febb4eb5b98feeb22bff4fe4bbe2cc9d"
+        }
+      ]
+    },
+    "durable_identity_unavailable_reason": null
+  },
+  "call_tally": {
+    "cognition": 0,
+    "language": 0,
+    "appraisal": 0,
+    "belief_semantic": 0
+  }
+}

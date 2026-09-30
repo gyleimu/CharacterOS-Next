@@ -1,0 +1,144 @@
+{
+  "version": "belief-cross-expression-composition-d4-rev3",
+  "frozen_decision_audit": {
+    "scientific_decisions_extracted": [
+      {
+        "id": "construct",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.purpose",
+        "value": "a determinism precondition on a NON-TARGET request, not a sample-size rule"
+      },
+      {
+        "id": "request_selection_rule",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.non_target_request_source",
+        "value": "D4C0A-QF-A-SUPPORT-TRANSFER's frozen model-facing request — a synthetic qualification fixture, chosen by the frozen manifest order, never the treatment request"
+      },
+      {
+        "id": "planned_calls",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.planned_calls",
+        "value": 6
+      },
+      {
+        "id": "invalid_rule",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.invalid_verdict",
+        "value": "D4C0A_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS"
+      },
+      {
+        "id": "pass_rule",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.pass_condition",
+        "value": "all six trials legal AND the unique modal token's count equals 6"
+      },
+      {
+        "id": "stop_rule",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.self_noise_verdict",
+        "value": "D4C0A_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE"
+      },
+      {
+        "id": "reachable_r_values",
+        "frozen": true,
+        "source": "contract.ts :: D4C0A_NOISE_GATE.reachable_r_values",
+        "value": [
+          6
+        ]
+      }
+    ],
+    "scientific_decisions_not_frozen": [],
+    "not_frozen_but_executable_identity": {
+      "classifier_name": {
+        "frozen": false,
+        "why_it_is_not_scientific": "a function name is an engineering fact; the rule it implements was already frozen"
+      },
+      "target_authorisation_rule": {
+        "frozen": false,
+        "classification": "PROCEDURAL, not scientific",
+        "derivation": "the frozen purpose calls the gate a precondition on a non-target request, and the frozen reachable outcomes are exactly PASS and STOP; a precondition that is not met cannot leave the next stage available",
+        "recorded_so_a_reader_can_disagree": true
+      }
+    },
+    "model_calls_before_amendment": 0,
+    "noise_outputs_seen_before_amendment": false,
+    "target_outputs_seen_before_amendment": false,
+    "scientific_rule_unchanged": true
+  },
+  "classifier": {
+    "name": "classifyD4C0ANoiseStabilityV0",
+    "may_read": [
+      "the frozen planned noise records",
+      "the frozen token vocabulary",
+      "the frozen invalid policy",
+      "the frozen collection-integrity requirements",
+      "the selected frozen noise request hash"
+    ],
+    "may_not_read": [
+      "qualification correctness",
+      "target outputs",
+      "a target arm",
+      "latency",
+      "provider metadata",
+      "a timestamp",
+      "a human label"
+    ],
+    "correctness_is_not_stability": true,
+    "why": "the gate asks whether the six calls agree with EACH OTHER; it must NOT additionally require the modal token to equal the fixture's expected token, because that would fuse instrument correctness (qualification's job) with instrument stability (this gate's job) into one construct"
+  },
+  "target_authorisation": {
+    "rule": "the target may proceed only on D4C0A_STABILITY_GATE_PASS; every other reachable outcome sets target_authorised = false",
+    "pass_authorises_the_target": true,
+    "self_noise_inconclusive_authorises_the_target": false,
+    "invalid_inconclusive_authorises_the_target": false,
+    "integrity_failure_authorises_the_target": false,
+    "r_after_the_gate": 6,
+    "r_changed_by_the_gate": false,
+    "classification": "PROCEDURAL",
+    "derived_from": "the frozen purpose ('a precondition') and the frozen reachable outcomes ('PASS', 'STOP')",
+    "new_scientific_rule_introduced": false
+  },
+  "selection_resolution": {
+    "rule": "D4C0A-QF-A-SUPPORT-TRANSFER's frozen model-facing request — a synthetic qualification fixture, chosen by the frozen manifest order, never the treatment request",
+    "resolved_fixture_index": 0,
+    "resolved_fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+    "selection_is_a_pure_function_of_the_frozen_manifest": true,
+    "read_qualification_correctness": false,
+    "read_which_fixture_performed_best": false,
+    "must_not_be_a_treatment_request": true,
+    "must_not_be_the_canonical_pair": true
+  },
+  "evidence_class": {
+    "noise_evidence_class": "INSTRUMENT_STABILITY",
+    "measures": "identical-request measurement-path self-consistency",
+    "does_not_measure": [
+      "SUPPORT -> SUPPORTS_B composition",
+      "OPPOSE -> OPPOSES_B composition",
+      "treatment sensitivity",
+      "target correctness",
+      "CharacterOS anything",
+      "semantic relation recognition"
+    ]
+  },
+  "supersedes_scope": [
+    "the noise classifier's executable name — previously unfrozen",
+    "the target-authorisation rule — previously unfrozen and procedural, now recorded explicitly"
+  ],
+  "revision_2_manifest_hash_preserved": "sha256:a1818bc23b5adab1ce4c83c0c00c60afb0d595660570bb832c2326c5313c2a1d",
+  "revision_0_manifest_hash_preserved": "sha256:5bac6aa45dc5c3c9f4e3daf57aa98aac5d39ed04bb54897893a477551fe3ea01",
+  "scientific_rule_unchanged": true,
+  "tests": {
+    "scientific_decisions_frozen": 7,
+    "scientific_decisions_missing": 0,
+    "classifier_name": "classifyD4C0ANoiseStabilityV0",
+    "target_authorisation_is_procedural": true,
+    "selection_resolved_to": "D4C0A-QF-A-SUPPORT-TRANSFER",
+    "reachable_r_values": [
+      6
+    ],
+    "evidence_class": "INSTRUMENT_STABILITY",
+    "scientific_rule_changed": false,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:529ef4dbbaa7c98ba3a107116baf7ef0521fa618249a5e4a19ed8983f7b9e692"
+}

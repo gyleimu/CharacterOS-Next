@@ -1,0 +1,195 @@
+{
+  "version": "belief-cross-expression-composition-d4-rev1",
+  "mismatch": {
+    "verdict": "D4_C0A_SCORER_RATIONALE_MISMATCH",
+    "characterisation": "textual_noise_tolerance_rationale_vs_executable_unique_modal_scorer",
+    "written_rationale": "at most two non-predicted outputs per arm",
+    "executable_region_before_this_revision": "the predicted token is the unique modal, with no bound on how many non-predicted outputs it takes to get there",
+    "demonstrated_disagreement": "the SUPPORT-arm pattern 3-2-1 (three non-predicted outputs) was eligible because the predicted token was still the unique modal",
+    "why_it_matters": "an acceptance region wider than its written justification is a preregistration defect: the design document and the code would license different results, and the difference is exactly the kind of thing that gets settled after seeing data",
+    "qualification_outputs_seen_before_amendment": false,
+    "target_outputs_seen_before_amendment": false,
+    "any_output_of_any_kind_existed": false,
+    "is_outcome_based_tuning": false,
+    "resolution": "the executable scorer is narrowed to the written requirement, not the other way round"
+  },
+  "per_arm_requirement": {
+    "name": "PRE_REGISTERED_DIRECTIONAL_MAJORITY",
+    "for_each_target_arm": [
+      "planned records complete",
+      "invalid_count = 0",
+      "the predicted token is the unique modal",
+      "the predicted token's count is at least r_per_arm - 2"
+    ],
+    "max_non_predicted_per_arm": 2,
+    "at_r_6": {
+      "support_arm": "SUPPORTS_B >= 4 of 6 AND unique modal",
+      "oppose_arm": "OPPOSES_B >= 4 of 6 AND unique modal"
+    },
+    "thresholds_added": [],
+    "confidence_interval_added": false,
+    "effect_size_threshold_added": false,
+    "margin_threshold_added": false,
+    "significance_test_added": false,
+    "why_no_statistical_threshold_is_added": "this amendment only makes the executable rule agree with a tolerance that was already written down; it does not introduce a new inferential standard"
+  },
+  "positive": {
+    "requires_all_of": [
+      "ARM_SUPPORT: predicted count >= 4 AND unique modal == SUPPORTS_B",
+      "ARM_OPPOSE: predicted count >= 4 AND unique modal == OPPOSES_B",
+      "the two arm modals differ"
+    ],
+    "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED"
+  },
+  "null_rule": {
+    "condition": "collection integrity PASS AND invalid_count = 0 AND the positive predicate is false",
+    "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+    "explicitly_includes": [
+      "a 3-2-1 arm in which the predicted token is the unique modal but the directional majority is not met",
+      "a constant answer across both arms",
+      "the reversed direction",
+      "a tie in either arm",
+      "only one arm meeting the requirement",
+      "the predicted token losing the modal",
+      "UNCERTAIN_B dominating"
+    ],
+    "a_3_2_1_arm_may_not_be_reinterpreted_as_a_weak_positive": true
+  },
+  "inconclusive": {
+    "conditions": [
+      "any invalid output preventing legal scoring",
+      "a collection integrity failure"
+    ],
+    "verdicts": [
+      "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "D4C0A_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE"
+    ],
+    "null_is_not_inconclusive": true
+  },
+  "r6_table": {
+    "eligibility_rule": "predicted token is the unique modal AND its count is at least r - 2",
+    "rows": [
+      {
+        "pattern": "6-0-0",
+        "non_predicted": 0,
+        "eligible": true
+      },
+      {
+        "pattern": "5-1-0",
+        "non_predicted": 1,
+        "eligible": true
+      },
+      {
+        "pattern": "4-2-0",
+        "non_predicted": 2,
+        "eligible": true
+      },
+      {
+        "pattern": "3-3-0",
+        "non_predicted": 3,
+        "eligible": false,
+        "why": "no unique modal"
+      },
+      {
+        "pattern": "3-2-1",
+        "non_predicted": 3,
+        "eligible": false,
+        "why": "the predicted token is the unique modal but the directional majority is not met"
+      }
+    ],
+    "statement": "at most two non-predicted outputs per arm",
+    "acceptance_region_now_matches_the_written_rationale": true,
+    "target_calls": {
+      "arms": 2,
+      "per_arm": 6,
+      "total": 12
+    },
+    "total_budget": 27,
+    "budget_breakdown": {
+      "qualification": 9,
+      "stability_gate": 6,
+      "target": 12
+    },
+    "budget_unchanged_by_this_revision": true
+  },
+  "noise_division": {
+    "noise_gate_task": "checks that the measurement path is self-consistent on one byte-identical non-target request",
+    "target_scorer_task": "checks treatment-sensitive directional composition across the two stance arms",
+    "the_gate_certifies_the_path_not_the_criterion": true,
+    "why_the_target_allows_two_deviations_when_the_gate_demands_six_agreeing_calls": "the gate can only certify determinism on ONE fixed input; the target's tolerance is about variation across the two TREATMENT arms, which the gate cannot observe at all. They answer different questions, so their thresholds are not in tension.",
+    "may_not_derive_the_target_answer_from_the_gate_modal_identity": true,
+    "may_not_change_r_dynamically": true,
+    "reachable_r_values": [
+      6
+    ],
+    "sample_size_branches": [],
+    "unchanged_from_revision_0": true
+  },
+  "claim_scope": {
+    "covered_by_the_target_arms": [
+      "SUPPORT",
+      "OPPOSE"
+    ],
+    "canonical_interpretation": "PREREGISTERED POLAR STANCE COMPOSITION",
+    "permitted_verdict_string": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+    "authoritative_expansion": "Under the frozen state-blind explicit-relation task, the executor transferred preregistered SUPPORT and OPPOSE stances from proposition A to semantically aligned proposition B with the required directional-majority criterion.",
+    "may_not_claim": [
+      "arbitrary stance transfer",
+      "UNCERTAIN transfer established",
+      "spontaneous composition",
+      "implicit semantic composition",
+      "CharacterOS causal capability"
+    ],
+    "why_uncertain_is_excluded": "no target arm supplies an UNCERTAIN stance, so the design has no evidence about transferring it; UNCERTAIN_B appears only as an output token and in the qualification negative control"
+  },
+  "architecture_gate": {
+    "c0a_positive_alone_authorises_nothing": true,
+    "characteros_belief_architecture_may_not_be_modified": true,
+    "a_future_comparator_must_hold_all_of_these_equal": [
+      "the same executor",
+      "the same A literal",
+      "the same B literal",
+      "the same stance value",
+      "the same supplied semantic relation information",
+      "the same measurement question",
+      "the same anchors",
+      "the same output vocabulary",
+      "the same surrounding research framing",
+      "the same generation settings"
+    ],
+    "must_mechanically_enumerate_all_model_facing_byte_differences": true,
+    "the_only_permitted_scientific_difference": "the source / representation of the stance information — for example an explicit state-blind stance representation versus the CharacterOS production belief representation",
+    "if_relation_explicitness_instruction_framing_or_measurement_semantics_also_change": "the result may not be attributed to the CharacterOS representation",
+    "purpose": "to keep H1/H4 (representation binding), H5 (executor composition) and H6 (measurement framing) separately identifiable",
+    "until_then": "semantic IDs, embeddings, proposition graphs, relation propagation, extra model passes, prompt rescues and projection rewrites remain candidates only"
+  },
+  "supersedes_scope": [
+    "the acceptance region of the per-arm criterion (narrowed to the written tolerance)",
+    "the wording of the positive claim (scoped to polar stances)",
+    "the architecture-gate conditions (equality list and required enumeration)"
+  ],
+  "maximum_non_predicted_per_arm": 2,
+  "revision_0_manifest_hash_preserved": "sha256:5bac6aa45dc5c3c9f4e3daf57aa98aac5d39ed04bb54897893a477551fe3ea01",
+  "preserved_elements_changed": false,
+  "c0b_still_not_preregistered": true,
+  "link_4_reopened": false,
+  "tests": {
+    "amended_6_0_0": "POSITIVE",
+    "amended_5_1_0": "POSITIVE",
+    "amended_4_2_0": "POSITIVE",
+    "amended_3_2_1": "NULL",
+    "amended_3_3_tie": "NULL",
+    "amended_constant_support": "NULL",
+    "amended_constant_oppose": "NULL",
+    "amended_reversed": "NULL",
+    "amended_uncertain_dominates": "NULL",
+    "amended_one_invalid": "INCONCLUSIVE",
+    "amended_integrity_failure": "INCONCLUSIVE",
+    "three_two_one_arm_modal_is_still_the_predicted_token": true,
+    "three_two_one_fails_on_the_directional_majority": true,
+    "acceptance_region_matches_the_written_rationale": true,
+    "budget": 27,
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:66afec1d5b574aab1444dc719d29cd81527d50852e9d68c4905405580ac01d4b"
+}

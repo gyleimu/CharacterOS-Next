@@ -1,0 +1,35 @@
+{
+  "HIGH": {
+    "a0_contract_appended_exactly_once": true,
+    "production_prefix_byte_identical": true,
+    "a0_schema_exactly_once": true,
+    "user_content_untouched": true,
+    "decision_probe_v2_absent": true,
+    "a1_transformer_absent": true,
+    "b_transformer_absent": true,
+    "no_transformer_on_transformer": true,
+    "second_application_rejected": true
+  },
+  "LOW": {
+    "a0_contract_appended_exactly_once": true,
+    "production_prefix_byte_identical": true,
+    "a0_schema_exactly_once": true,
+    "user_content_untouched": true,
+    "decision_probe_v2_absent": true,
+    "a1_transformer_absent": true,
+    "b_transformer_absent": true,
+    "no_transformer_on_transformer": true,
+    "second_application_rejected": true
+  },
+  "NEUTRAL": {
+    "a0_contract_appended_exactly_once": true,
+    "production_prefix_byte_identical": true,
+    "a0_schema_exactly_once": true,
+    "user_content_untouched": true,
+    "decision_probe_v2_absent": true,
+    "a1_transformer_absent": true,
+    "b_transformer_absent": true,
+    "no_transformer_on_transformer": true,
+    "second_application_rejected": true
+  }
+}

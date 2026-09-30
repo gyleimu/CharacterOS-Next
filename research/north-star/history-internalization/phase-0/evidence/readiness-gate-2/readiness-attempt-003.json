@@ -1,0 +1,18 @@
+{
+  "attempt_id": "readiness-003",
+  "scientific": false,
+  "replicate_ordinal": 3,
+  "request_hash": "sha256:00339f4acf551b10c185c0cbbc427b511ec2f4a6c84530dd73075c001c96f338",
+  "model": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "vram_used_before_mib": "7864",
+  "model_loaded_before": true,
+  "started_at": "2026-09-21T13:04:12.463Z",
+  "timeout_ms": 120000,
+  "ended_at": "2026-09-21T13:06:12.644Z",
+  "latency_ms": 120181,
+  "completion_tokens": null,
+  "throughput_tok_s": null,
+  "status": "MODEL_TIMEOUT",
+  "error": "The operation was aborted due to timeout"
+}

@@ -1,0 +1,21 @@
+{
+  "decision_probe_version": "decision-probe-v1",
+  "inherited_from": "decision-probe-v0",
+  "r": 3,
+  "executor_declares_primary": false,
+  "audits_all_pass": true,
+  "primary_measurement_mode_verdict": "DECISION_INSTRUMENT_V1_QUALIFIED_ON_QWEN35_9B",
+  "control_diagnostic_verdict": "CONSTRUCT_NOT_INSTANTIATED_BY_SCHEMA_ALONE (D0-C-AMBIGUOUS-VERIFY)",
+  "c3_diagnostic_verdict": "CONSTRUCT_RESPONSE_PARAPHRASE_STABLE",
+  "override_identity": {
+    "rule": "OVERRIDE_IDENTITY_ACROSS_ARMS",
+    "primary_cells_share_one_block_hash": true,
+    "primary_override_block_hashes": [
+      "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53"
+    ],
+    "c3_block_hash_distinct": true,
+    "verdict": "OVERRIDE_IDENTITY_HELD"
+  },
+  "d1_unlock_eligible": false,
+  "d1_unlock_rule": false
+}

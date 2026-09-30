@@ -1,0 +1,27 @@
+{
+  "trial_id": "TARGET-002",
+  "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+  "raw_provider_response": "{\"d3_relation_schema_version\":\"d3-relation-readout-v0\",\"relation\":\"SEMANTICALLY_ALIGNED\"}",
+  "parsed_relation": "SEMANTICALLY_ALIGNED",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "invalid_reason": null,
+  "provider_response_model": "deepseek-flash",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 433
+}

@@ -1,0 +1,101 @@
+{
+  "stage": "D4_C0a-noise-execution",
+  "final_states": [
+    "D4_C0A_NOISE_STABILITY_GATE_PASS",
+    "r_confirm_C0A = 6",
+    "D4_C0A_TARGET_EXECUTION_AUTHORISED",
+    "D4_C0A_TARGET_NOT_EXECUTED"
+  ],
+  "noise_request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "schedule_hash": "sha256:00ebd3d10635091c908c02eca1b38f41da4067ddd506e0dfb81846cda719961f",
+  "dataset_hash": "sha256:d7f969ca7c2a9e90419aac49643aed6a3a9543bcbee718fa0e735a91c679e232",
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "classifier_output": {
+    "outcome": "PASS",
+    "integrity_ok": true,
+    "integrity_failures": [],
+    "counts": {
+      "SUPPORTS_B": 6,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 0
+    },
+    "unique_modal": "SUPPORTS_B",
+    "modal_count": 6,
+    "tie": false,
+    "invalid_count": 0,
+    "scientific_stability_scoring_executed": true,
+    "gate_verdict": "D4C0A_STABILITY_GATE_PASS",
+    "modal_token_matched_the_fixture_expected": true,
+    "modal_token_identity_used_as_a_pass_condition": false,
+    "target_authorised": true,
+    "r_after_the_gate": 6,
+    "r_changed_by_the_gate": false,
+    "evidence_class": "INSTRUMENT_STABILITY"
+  },
+  "collection": {
+    "planned": 6,
+    "records": 6,
+    "duplicate_identities": 0,
+    "missing_identities": 0,
+    "extra_identities": 0,
+    "all_request_hashes_exact": true,
+    "target_request_hash_present": 0,
+    "invalid_trials": 0,
+    "transport_failures": 0,
+    "verdict": "D4_C0A_NOISE_COLLECTION_COMPLETE"
+  },
+  "model_calls_this_round": 6,
+  "d4_model_calls_cumulative": 15,
+  "target_calls_this_round": 0,
+  "target_not_executed": true,
+  "target_execution_authorised": true,
+  "r_confirm_C0A": 6,
+  "target_schedule_hash": "sha256:d85ffc134a2e2a4cada319f4843690374dfebbdf49a63c18c13139d0eb17335f",
+  "target_planned_calls": 12,
+  "target_treatment_isolation": {
+    "system_messages_identical": true,
+    "differing_user_line_count": 1,
+    "differing_lines": [
+      {
+        "index": 4,
+        "support": "SUBJECT STANCE TOWARD A: SUPPORTS",
+        "oppose": "SUBJECT STANCE TOWARD A: OPPOSES"
+      }
+    ],
+    "support_stance_occurrences": 1,
+    "oppose_stance_occurrences": 1,
+    "byte_identical_after_the_frozen_normalisation": true,
+    "replicate_ordinal_or_schedule_identity_in_the_model_facing_bytes": false,
+    "verdict": "D4_C0A_TARGET_TREATMENT_ISOLATION_HOLDS"
+  },
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "correctness_vs_stability": {
+    "noise_modal": "SUPPORTS_B",
+    "noise_modal_matches_fixture_expected": true,
+    "used_as_a_pass_condition": false,
+    "note": "recorded as descriptive metadata only; the classifier's output does not depend on it"
+  },
+  "characteros_modified": false,
+  "link_4_reopened": false,
+  "non_claims": [
+    "the gate says nothing about composition, treatment sensitivity or the target",
+    "the six tokens are not evidence about SUPPORTS_B or OPPOSES_B transfer",
+    "no CharacterOS claim of any kind"
+  ],
+  "next_round_may_only": "execute the 12 frozen target calls, freeze the dataset before scoring, and classify with scoreD4C0ARev1V0",
+  "next_round_may_not": [
+    "run C0b",
+    "change r",
+    "adaptive replication",
+    "modify CharacterOS",
+    "modify the classifier or the scorers"
+  ]
+}

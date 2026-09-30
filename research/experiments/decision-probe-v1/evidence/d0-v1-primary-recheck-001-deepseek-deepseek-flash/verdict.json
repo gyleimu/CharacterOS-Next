@@ -1,0 +1,43 @@
+{
+  "decision_probe_version": "decision-probe-v1",
+  "round": "PRIMARY_EXECUTOR_QUALIFICATION_PREFLIGHT",
+  "executor_identity": {
+    "requested_executor": "auto",
+    "requested_source": "DEFAULT",
+    "effective_executor": "ollama",
+    "resolution_reason": "CHARACTEROS_EXECUTOR is unset and no cloud credential is present → local executor",
+    "credential_env_var": "MODEL_API_KEY",
+    "credential_present": false,
+    "effective_family_model": "qwen3.5:9b",
+    "effective_family_endpoint": "http://127.0.0.1:11434",
+    "cloud_family_defaults": {
+      "model": "deepseek-flash",
+      "endpoint": "https://api.deepseek.com",
+      "source": "product/sandbox/src/product-configuration.ts:377,381 (documented defaults for the cloud family)"
+    },
+    "local_model": "qwen3.5:9b",
+    "local_endpoint": "http://127.0.0.1:11434",
+    "structured_output_support": {
+      "cloud": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+      "local": "GRAMMAR_ENFORCED_VIA_NATIVE_format"
+    },
+    "identity_determined": true,
+    "declares_primary_executor": false
+  },
+  "availability_gate": {
+    "verdict": "PRIMARY_EXECUTOR_UNAVAILABLE_FOR_D0_V1",
+    "detail": [
+      "CHARACTEROS_EXECUTOR is unset → resolution is 'auto', and under 'auto' the effective executor is credential-dependent",
+      "credential MODEL_API_KEY is ABSENT from the environment → the cloud family cannot be authenticated",
+      "under 'auto' the effective executor here is 'ollama' (the local family), not the cloud family",
+      "no fallback executor may be marked as primary; the run is not started"
+    ]
+  },
+  "protocol_equivalence_verdict": "QWEN_TO_PRIMARY_PROTOCOL_EQUIVALENT",
+  "protocol_equivalence_forbidden_differences": [],
+  "primary_d0_v1_run_started": false,
+  "model_calls_made": 0,
+  "verdict": "PRIMARY_EXECUTOR_UNAVAILABLE_FOR_D0_V1",
+  "d1_gate": "D1 LOCKED",
+  "reason": "the primary (cloud) executor cannot be authenticated in this environment; no substitution is permitted"
+}

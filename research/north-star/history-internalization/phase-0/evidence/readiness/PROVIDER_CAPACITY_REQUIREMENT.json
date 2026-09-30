@@ -1,0 +1,38 @@
+{
+  "artifact": "PROVIDER_CAPACITY_REQUIREMENT",
+  "planned_probes": 3,
+  "question": "does the current provider have enough capacity to complete production cognition calls without changing the frozen timeout or any other configuration?",
+  "derivation_status": "FUNCTIONAL_PREDICATE_DERIVED_FROM_FROZEN_LIMITS",
+  "why_not_a_throughput_threshold": "run-1 artifacts persist request bytes but no completion lengths and no per-call latency, so any tokens/second number would be invented rather than derived. §7 forbids fabricating one.",
+  "derived_from": [
+    "the frozen transport timeout: 120,000 ms",
+    "the frozen production output budget: num_predict 2048",
+    "the frozen production context: num_ctx 8192",
+    "run-1's measured prompt sizes: system 12,771 bytes, user 4,300-5,584 bytes",
+    "the probe's forced output demand: 400 numbered lines"
+  ],
+  "functional_predicate": "ALL planned readiness probes must complete normally, under the existing frozen timeout and the frozen transport configuration, with no transport failure, no model timeout, no mid-run provider reload, and no fallback",
+  "descriptive_metrics_recorded_but_not_gating": [
+    "wall-clock latency per probe",
+    "completion tokens per probe",
+    "tokens/second per probe",
+    "time-to-first-token if reported"
+  ],
+  "stated_limitation": "even a PASS establishes only that a production-shaped request with a long forced output fits inside the frozen timeout. It does NOT prove that a worst-case 2048-token production output fits, because run-1 did not persist completion lengths. The limitation is recorded rather than papered over.",
+  "execution_rule": {
+    "planned": 3,
+    "planned_equals_actual": true,
+    "run_all_planned_probes_regardless_of_intermediate_outcomes": true,
+    "forbidden": [
+      "stopping early and reporting a different N",
+      "running extra probes until three succeed",
+      "raising the timeout",
+      "lowering num_ctx",
+      "swapping the provider or model",
+      "changing generation settings",
+      "killing the operator's GPU consumers or altering OS/GPU settings"
+    ],
+    "on_any_failure": "the gate is FAIL and the run stops after the planned probes are done"
+  },
+  "honest_note": "this gate decides whether to ATTEMPT the scientific rerun. It is not evidence about any scientific question, and a PASS authorises a re-attempt at execution — nothing more."
+}

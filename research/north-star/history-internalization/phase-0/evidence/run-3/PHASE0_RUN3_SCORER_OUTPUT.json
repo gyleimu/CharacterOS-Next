@@ -1,0 +1,5 @@
+{
+  "scorer": "scorePhase0V0",
+  "invoked_on_scientific_data": false,
+  "reason": "no scientific post-state endpoint exists without all ten valid required turns"
+}

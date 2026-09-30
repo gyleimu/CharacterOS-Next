@@ -1,0 +1,12 @@
+{
+  "planned_calls": 6,
+  "all_trials_reference_one_request_hash": true,
+  "references_the_corrected_state_blind_request": true,
+  "references_the_invalid_request": false,
+  "call_count": 6,
+  "expected_relation_unchanged": true,
+  "unanimity_scorer_unchanged": true,
+  "target_invalid_policy_unchanged": true,
+  "first_target_call_executed_this_round": false,
+  "manifest_hash": "sha256:aa597f25ed7493f456b9a792a77412f7835b8e0cb1101e5f26f249aae3916cec"
+}

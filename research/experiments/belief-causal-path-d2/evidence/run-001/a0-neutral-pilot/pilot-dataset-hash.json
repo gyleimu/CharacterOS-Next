@@ -1,0 +1,5 @@
+{
+  "pilot_dataset_sha256": "sha256:b321d5e3282b14f2716b24bd1d74e170be9f4198f5744df2f7427b9739601981",
+  "frozen_before_noise_calculation": true,
+  "trials": 6
+}

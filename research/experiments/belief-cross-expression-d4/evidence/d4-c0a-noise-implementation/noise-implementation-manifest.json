@@ -1,0 +1,22 @@
+{
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "classifier_source_hash": "sha256:535e04a61a50b998578c01ffec2f255dc867d1f06e1b406449d4dbe81f8c95b1",
+  "selected_noise_request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "selected_fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+  "invalid_policy_identity": "D4C0A_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS",
+  "collection_integrity_checker_identity": {
+    "planned_count": 6,
+    "unique_trial_identities": true,
+    "no_missing": true,
+    "no_extra": true,
+    "every_request_hash_equals_the_selected_noise_request": true,
+    "no_target_request_hash_may_appear": true
+  },
+  "target_authorisation_identity": "the target may proceed only on D4C0A_STABILITY_GATE_PASS; every other reachable outcome sets target_authorised = false",
+  "rev3_manifest_hash": "sha256:529ef4dbbaa7c98ba3a107116baf7ef0521fa618249a5e4a19ed8983f7b9e692",
+  "revision_2_manifest_hash_preserved": "sha256:a1818bc23b5adab1ce4c83c0c00c60afb0d595660570bb832c2326c5313c2a1d",
+  "revision_0_manifest_hash_preserved": "sha256:5bac6aa45dc5c3c9f4e3daf57aa98aac5d39ed04bb54897893a477551fe3ea01",
+  "noise_outputs_seen_before_implementation_freeze": false,
+  "target_outputs_seen_before_noise_implementation_freeze": false,
+  "implementation_frozen": true
+}

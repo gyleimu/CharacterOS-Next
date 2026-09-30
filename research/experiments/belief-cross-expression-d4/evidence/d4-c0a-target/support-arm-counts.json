@@ -1,0 +1,13 @@
+{
+  "arm": "ARM_SUPPORT",
+  "counts": {
+    "SUPPORTS_B": 6,
+    "UNCERTAIN_B": 0,
+    "OPPOSES_B": 0
+  },
+  "unique_modal": "SUPPORTS_B",
+  "predicted_token": "SUPPORTS_B",
+  "predicted_token_count": 6,
+  "predicted_count_at_least_4": true,
+  "criterion_met": true
+}

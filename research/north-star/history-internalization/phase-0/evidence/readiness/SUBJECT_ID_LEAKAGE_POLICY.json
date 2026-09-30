@@ -1,0 +1,32 @@
+{
+  "artifact": "SUBJECT_ID_LEAKAGE_POLICY",
+  "confirmed_production_fact": {
+    "claim": "the production cognition prompt renders the subject id into model-visible content",
+    "evidence": "packages/runtime/src/providers/behavior/conversation-cognition-provider-v2.ts:256",
+    "line": "`[identity] subject_id=${JSON.stringify(projection.subject_id)}`",
+    "verified": true
+  },
+  "frozen_policy": {
+    "MODEL_VISIBLE_SUBJECT_ID_POLICY": "OPAQUE_NON_SEMANTIC",
+    "rule": "a subject id that appears in model-visible content must be opaque and non-semantic. Arm membership exists ONLY in experiment metadata, never in the identity bytes the executor can read.",
+    "future_scientific_subject_ids": "subject-r3-<opaque>",
+    "forbidden_in_model_visible_identity": [
+      "Alice-A",
+      "Alice-B",
+      "positive",
+      "negative",
+      "trusted",
+      "betrayed"
+    ],
+    "structural_requirements": [
+      "equal length across arms",
+      "a shared non-semantic stem",
+      "a suffix with no order or valence meaning",
+      "no substring that encodes arm membership"
+    ]
+  },
+  "classification": "REMOVAL_OF_UNNECESSARY_ARM_LABEL_LEAKAGE",
+  "explicitly_not": "a scientific treatment change",
+  "why_it_is_not_a_treatment_change": "the policy constrains only the identity BYTES the executor can read. It changes no prompt semantics, no trajectory content, no proposition, no credence law, no scorer and no predicate. Two subjects remain identical in every respect except their opaque identity.",
+  "prior_application": "run-2 already used subject-r2-k7q2-4103 / subject-r2-k7q2-8267 on this policy"
+}

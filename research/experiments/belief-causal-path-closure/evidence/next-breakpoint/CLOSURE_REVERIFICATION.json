@@ -1,0 +1,38 @@
+{
+  "closure_final_states": [
+    "BELIEF_CAUSAL_PATH_D1_D2_D3_EVIDENCE_FROZEN",
+    "LINK_3B_LOCALIZATION_COMPLETE",
+    "LINK_4_REMAINS_LOCKED",
+    "NO_NEW_SCIENTIFIC_CLAIM_ADDED"
+  ],
+  "closure_integrity": "ALL_RECOMPUTED_HASHES_MATCH",
+  "independent_recomputation": {
+    "rows": 9,
+    "mismatches": 0
+  },
+  "frozen_facts_reproduced": {
+    "d2_a0": {
+      "HIGH": {
+        "ENDORSES_STRONGLY": 6
+      },
+      "LOW": {
+        "DOUBTS_STRONGLY": 6
+      }
+    },
+    "d2_a1": {
+      "HIGH": {
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 6
+      },
+      "LOW": {
+        "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 1,
+        "SUPPORTS_PARAPHRASED_PRINCIPLE": 5
+      }
+    },
+    "d3_b_target": {
+      "SEMANTICALLY_ALIGNED": 6
+    }
+  },
+  "link_4_locked": true,
+  "d2_b_reopened": false,
+  "model_calls": 0
+}

@@ -1,0 +1,9 @@
+{
+  "planned": 9,
+  "records": 9,
+  "duplicate_trial_ids": 0,
+  "fixture_identities_exact": true,
+  "request_hashes_exact": true,
+  "invalid_trials": 0,
+  "transport_failures": 0
+}

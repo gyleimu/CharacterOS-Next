@@ -1,0 +1,103 @@
+{
+  "artifact": "RUN3_EXECUTOR_FAILURE_CLASS_A_REPLICATION",
+  "run": "PHASE0_RUN3",
+  "classification": "FAILURE_CLASS_A — EXECUTOR_SCHEMA_INVALID",
+  "status_of_that_class": "UNFIXED_MODEL_RELIABILITY_RISK",
+  "scientific_status": "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_INCONCLUSIVE",
+
+  "the_replication": {
+    "run_3_failure": {
+      "turn": "A:turn_1",
+      "subject": "subject-r3-7p4n-2185",
+      "error": "CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance"
+    },
+    "run_1_failure": {
+      "turn": "B:turn_2",
+      "subject": "subject-k7q2-8267",
+      "error": "CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance"
+    },
+    "identity": "BYTE-IDENTICAL error string, on a DIFFERENT subject, DIFFERENT arm, and DIFFERENT turn index",
+    "significance":
+      "the executor defect is reproducible across runs and is not an artefact of one subject, one arm or one position in the trajectory. It is the same production contract at conversation-cognition-proposal.ts:1909."
+  },
+
+  "a_hypothesis_recorded_but_NOT_claimed": {
+    "statement":
+      "both observed Class A failures occurred on turns whose evidence contains a COMMITMENT OUTCOME, while turns without one completed normally.",
+    "the_exact_counts": {
+      "failures_on_outcome_bearing_turns": 2,
+      "failures_on_non_outcome_turns": 0,
+      "non_outcome_turns_executed_across_runs": 3,
+      "outcome_bearing_turns_executed_across_runs": "run-1: 7 completed + 1 failed in arm B, 5 completed in arm A; run-3: 1 failed, 0 completed"
+    },
+    "status": "HYPOTHESIS ONLY — n = 2 failures, pooled across two runs with different subjects and arms",
+    "why_it_is_not_a_finding":
+      "two failures cannot separate 'the outcome content invites a stance-shaped reply' from 'the executor intermittently produces this shape on any sufficiently rich turn'. No rate is claimed and no denominator is asserted.",
+    "why_it_is_recorded_anyway":
+      "if it were true, the failure would preferentially strike the very turns that carry the treatment evidence, which matters for any future attempt. It is recorded so a future pre-registration can test it DELIBERATELY rather than rediscover it.",
+    "what_it_does_NOT_authorise": [
+      "changing the trajectory, event wording, ordering or proposition",
+      "adding a structured-output constraint or any prompt rescue",
+      "switching model or provider",
+      "treating the executor as the scientific object"
+    ]
+  },
+
+  "the_remediation_behaved_exactly_as_designed": {
+    "what_would_have_happened_without_it":
+      "in run-1, one Class A failure produced TWO additional spurious failures (`session: ingress must record (CONFLICT)`) because the un-advanced turn index reused `turn-<index>`. The record then contained three failures where only one was real, and the reported cause named the ingress rather than the executor.",
+    "what_happened_in_run_3": {
+      "invalid_scientific_turns": 1,
+      "extra_spurious_failures": 0,
+      "other_arm_finished": false,
+      "post_state_frozen": false,
+      "dataset_scored": false
+    },
+    "conclusion":
+      "Class B (session poisoning) did NOT occur. The host layer surfaced the failure truthfully and the run stopped cleanly. The run-3 record is therefore scientifically clean: exactly one invalid turn, no cascade, and no misleading cause.",
+    "value_of_the_remediation": "it converted a three-failure cascade into a single, correctly-attributed failure"
+  },
+
+  "what_was_NOT_done": [
+    "no retry of the invalid turn",
+    "no restore-and-continue into the scientific dataset",
+    "no event replacement or replay",
+    "no trajectory extension",
+    "no model, provider, timeout, num_ctx or schema change",
+    "the other arm was not finished to collect extra descriptive data",
+    "no run-4 was started"
+  ],
+
+  "accounting": {
+    "scientific_subject_turns_planned": 10,
+    "scientific_subject_turns_executed": 2,
+    "scientific_subject_turns_valid": 1,
+    "invalid_scientific_turns": 1,
+    "non_scientific_runtime_operations": 1,
+    "provider_attempts_total": 10,
+    "cognition_attempts": 3,
+    "language_attempts": 2,
+    "appraisal_attempts": 3,
+    "belief_semantic_attempts": 2,
+    "invalid_provider_attempts": 0,
+    "families_sum_to_total": true
+  },
+
+  "the_one_valid_turn_that_did_complete": {
+    "turn": "A:turn_0",
+    "terminal": "COMPLETE_COMMITTED",
+    "credence": "0.55 -> 0.60",
+    "note":
+      "recorded as a raw observation only. A:turn_0 is the SHARED OPENING turn — its text is byte-identical in both arms — so it carries no arm-differing evidence and can never support a between-arm claim. No scientific verdict is formed from it."
+  },
+
+  "verdict": {
+    "outcome": "INCONCLUSIVE",
+    "token": "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_INCONCLUSIVE",
+    "evidence_level": "L1",
+    "phase_1_authorised": false,
+    "run_1_unchanged": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+    "run_2_unchanged": "NOT_STARTED / BLOCKED (pre-scientific infrastructure block)",
+    "next_step": "STOP. No run-4 this round. The question this round asked — does lived experience enter the persistent canonical belief state — remains OPEN and UNANSWERED, because the executor did not let the trajectory finish."
+  }
+}

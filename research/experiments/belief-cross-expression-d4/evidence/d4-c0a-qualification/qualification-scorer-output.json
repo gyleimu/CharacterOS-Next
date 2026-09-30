@@ -1,0 +1,53 @@
+{
+  "scorer": "scoreD4C0AQualificationV0 (frozen) — called, not re-implemented",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "instrument_verdict": "D4_C0A_INSTRUMENT_QUALIFIED",
+    "per_fixture": {
+      "D4C0A-QF-A-SUPPORT-TRANSFER": {
+        "counts": {
+          "SUPPORTS_B": 3,
+          "UNCERTAIN_B": 0,
+          "OPPOSES_B": 0
+        },
+        "modal": "SUPPORTS_B",
+        "tie": false,
+        "expected": "SUPPORTS_B",
+        "records": 3,
+        "pass": true
+      },
+      "D4C0A-QF-B-OPPOSE-TRANSFER": {
+        "counts": {
+          "SUPPORTS_B": 0,
+          "UNCERTAIN_B": 0,
+          "OPPOSES_B": 3
+        },
+        "modal": "OPPOSES_B",
+        "tie": false,
+        "expected": "OPPOSES_B",
+        "records": 3,
+        "pass": true
+      },
+      "D4C0A-QF-C-NO-TRANSFER": {
+        "counts": {
+          "SUPPORTS_B": 0,
+          "UNCERTAIN_B": 3,
+          "OPPOSES_B": 0
+        },
+        "modal": "UNCERTAIN_B",
+        "tie": false,
+        "expected": "UNCERTAIN_B",
+        "records": 3,
+        "pass": true
+      }
+    },
+    "invalid_trials": 0,
+    "invalid_rule_triggered": false,
+    "denominator": 9,
+    "total_records": 9,
+    "exact_token_match_required": true,
+    "tolerance_or_similarity_substitution": false,
+    "what_it_proves": "only that the measurement instrument can express the three stance tokens on state-blind synthetic fixtures",
+    "what_it_does_not_prove": "composition ability; qualification is not composition evidence"
+  }
+}

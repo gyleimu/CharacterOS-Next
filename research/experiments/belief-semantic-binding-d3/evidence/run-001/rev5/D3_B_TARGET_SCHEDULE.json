@@ -1,0 +1,55 @@
+{
+  "stage": "D3_B_TARGET",
+  "planned_calls": 6,
+  "all_six_reference_the_same_target_request": true,
+  "target_request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800",
+  "supersedes": {
+    "old_schedule_hash_source": "evidence/run-001/d3-b-noise-stability/D3_B_TARGET_SCHEDULE.json",
+    "old_target_request_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+    "marking": "SUPERSEDED_BEFORE_ANY_TARGET_CALL",
+    "old_schedule_retained": true
+  },
+  "target_pair": {
+    "statement_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+    "statement_b": "the view that a finding depending mainly on secondhand report is to be held with reserve"
+  },
+  "expected_relation": "SEMANTICALLY_ALIGNED",
+  "trials": [
+    {
+      "position": 1,
+      "trial_id": "TARGET-001",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    },
+    {
+      "position": 2,
+      "trial_id": "TARGET-002",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    },
+    {
+      "position": 3,
+      "trial_id": "TARGET-003",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    },
+    {
+      "position": 4,
+      "trial_id": "TARGET-004",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    },
+    {
+      "position": 5,
+      "trial_id": "TARGET-005",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    },
+    {
+      "position": 6,
+      "trial_id": "TARGET-006",
+      "request_hash": "sha256:27fe6b992b1d5b433ae889d7cbb5507c3818638e955e79112b4fe7f661c7b800"
+    }
+  ],
+  "generated_from": [
+    "r_confirm_B = 6",
+    "the corrected state-blind target request"
+  ],
+  "call_count_changed": false,
+  "not_yet_executed": true
+}

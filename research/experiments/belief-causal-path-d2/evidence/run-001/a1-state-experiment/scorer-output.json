@@ -1,0 +1,30 @@
+{
+  "scorer": "classifyA1StateExperimentV0 (REV1.1e, frozen) — called, not re-implemented",
+  "scorer_manifest_hash": "sha256:91697567fba28d3a067eb1bdc822c18f45a1948434d8b7516da836e1d642103c",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "outcome_class": "NULL",
+    "collection_integrity": true,
+    "collection_integrity_failures": [],
+    "invalid_count": 0,
+    "scientific_scoring_executed": true,
+    "high_counts": {
+      "SUPPORTS_PARAPHRASED_PRINCIPLE": 6,
+      "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 0,
+      "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+    },
+    "low_counts": {
+      "SUPPORTS_PARAPHRASED_PRINCIPLE": 5,
+      "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 1,
+      "OPPOSES_PARAPHRASED_PRINCIPLE": 0
+    },
+    "high_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "low_unique_modal": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "high_modal_tie": false,
+    "low_modal_tie": false,
+    "positive_predicate": false,
+    "verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+    "d2_b_authorised": false,
+    "claim_scope_note": "semantic uptake was not established on the preregistered near-semantic-transfer paraphrase"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "artifact": "RUN3_SCIENTIFIC_SCHEDULE",
+  "scientific_subject_turns_planned": 10,
+  "scientific_turns_per_arm": 5,
+  "bootstrap_operations": 1,
+  "bootstrap_carries_scientific_turn_false": true,
+  "order": [
+    "BOOTSTRAP (scientific_turn = false)",
+    "ARM_A turns 0..4",
+    "ARM_B turns 0..4"
+  ],
+  "design_reused_verbatim": true,
+  "outcome_informed_redesign": false,
+  "note": "run-1's partial observations did not influence any character of this design: the trajectory texts, VALENCE_TABLE, turn count, proposition, predicted directions and scorer are the frozen ones",
+  "model_visible_subject_id_policy": "OPAQUE_NON_SEMANTIC",
+  "forbidden_model_visible_tokens": [
+    "arm a",
+    "arm b",
+    "positive",
+    "negative",
+    "trusted",
+    "betrayed",
+    "support",
+    "contradict",
+    "condition",
+    "alice-a",
+    "alice-b"
+  ],
+  "arm_mapping": {
+    "ARM_A": "subject-r3-7p4n-2185",
+    "ARM_B": "subject-r3-7p4n-9047"
+  }
+}

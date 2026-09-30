@@ -1,0 +1,20 @@
+{
+  "attempt_id": "readiness-001",
+  "scientific": false,
+  "replicate_ordinal": 1,
+  "request_hash": "sha256:00339f4acf551b10c185c0cbbc427b511ec2f4a6c84530dd73075c001c96f338",
+  "model": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "vram_used_before_mib": "1256",
+  "model_loaded_before": false,
+  "started_at": "2026-09-21T13:18:04.836Z",
+  "timeout_ms": 120000,
+  "ended_at": "2026-09-21T13:18:56.546Z",
+  "latency_ms": 51710,
+  "completion_tokens": 1492,
+  "throughput_tok_s": 35.29,
+  "status": "COMPLETED",
+  "error": null,
+  "model_loaded_after": true,
+  "model_digest_after": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7"
+}

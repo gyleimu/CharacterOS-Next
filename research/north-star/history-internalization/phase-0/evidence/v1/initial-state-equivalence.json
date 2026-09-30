@@ -1,0 +1,33 @@
+{
+  "compared": [
+    "complete canonical genesis state with identity fields removed",
+    "canonical belief items (proposition_id, proposition_label, credence)",
+    "relationship state",
+    "affect state",
+    "personality state (traits_seed and personality)",
+    "memory state",
+    "goals / preferences if present",
+    "regulation and runtime metadata",
+    "executor configuration (identical frozen constants for both subjects)"
+  ],
+  "identity_fields_stripped": [
+    "subject_id",
+    "display_name",
+    "identity_anchors"
+  ],
+  "states_equal_after_identity_stripped": true,
+  "raw_states_are_unequal": true,
+  "both_directions_observed": false,
+  "state_equivalence_hash": "sha256:2d3c65ddd32632755c21f40f4812b56ad3d8e612b7b293e1133b304b109bd862",
+  "target_belief_item_A": {
+    "proposition_id": "prop.nadia-keeps-commitments",
+    "proposition_label": "Nadia keeps the commitments she makes to me.",
+    "credence": 0.55
+  },
+  "target_belief_item_B": {
+    "proposition_id": "prop.nadia-keeps-commitments",
+    "proposition_label": "Nadia keeps the commitments she makes to me.",
+    "credence": 0.55
+  },
+  "note": "a parity check that cannot fail is not a check, so the raw (identity-included) bytes are also required to differ"
+}

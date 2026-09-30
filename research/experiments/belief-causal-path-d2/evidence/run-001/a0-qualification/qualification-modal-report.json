@@ -1,0 +1,26 @@
+{
+  "A0-QF-A-STRONG-ENDORSEMENT": {
+    "counts": {
+      "ENDORSES_STRONGLY": 3
+    },
+    "modal": "ENDORSES_STRONGLY",
+    "expected": "ENDORSES_STRONGLY",
+    "pass": true
+  },
+  "A0-QF-B-UNDECIDED": {
+    "counts": {
+      "UNDECIDED": 3
+    },
+    "modal": "UNDECIDED",
+    "expected": "UNDECIDED",
+    "pass": true
+  },
+  "A0-QF-C-STRONG-DOUBT": {
+    "counts": {
+      "DOUBTS_STRONGLY": 3
+    },
+    "modal": "DOUBTS_STRONGLY",
+    "expected": "DOUBTS_STRONGLY",
+    "pass": true
+  }
+}

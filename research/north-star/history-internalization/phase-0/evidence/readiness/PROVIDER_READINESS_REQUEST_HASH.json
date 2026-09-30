@@ -1,0 +1,7 @@
+{
+  "artifact": "PROVIDER_READINESS_REQUEST_HASH",
+  "hash_function": "sha256 over JSON.stringify(wire_request)",
+  "request_hash": "sha256:00339f4acf551b10c185c0cbbc427b511ec2f4a6c84530dd73075c001c96f338",
+  "every_replicate_must_reuse_this_hash": true,
+  "replicate_ordinal_in_request": false
+}

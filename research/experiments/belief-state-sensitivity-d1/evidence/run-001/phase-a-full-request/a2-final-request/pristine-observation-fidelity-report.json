@@ -1,0 +1,29 @@
+{
+  "HIGH": {
+    "current_observation_line": "observation:o-d1-p1-awaiting-inspection",
+    "current_observation_is_none": false,
+    "scene_decoded_is_frozen_p1": true,
+    "task_is_none": true,
+    "p1_occurrences_in_user_content": 1,
+    "messages_length": 2,
+    "production_schema_is_v8": true
+  },
+  "LOW": {
+    "current_observation_line": "observation:o-d1-p1-awaiting-inspection",
+    "current_observation_is_none": false,
+    "scene_decoded_is_frozen_p1": true,
+    "task_is_none": true,
+    "p1_occurrences_in_user_content": 1,
+    "messages_length": 2,
+    "production_schema_is_v8": true
+  },
+  "NEUTRAL": {
+    "current_observation_line": "observation:o-d1-p1-awaiting-inspection",
+    "current_observation_is_none": false,
+    "scene_decoded_is_frozen_p1": true,
+    "task_is_none": true,
+    "p1_occurrences_in_user_content": 1,
+    "messages_length": 2,
+    "production_schema_is_v8": true
+  }
+}

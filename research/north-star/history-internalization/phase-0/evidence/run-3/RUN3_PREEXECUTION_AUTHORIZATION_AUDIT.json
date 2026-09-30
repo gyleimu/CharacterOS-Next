@@ -1,0 +1,18 @@
+{
+  "artifact": "RUN3_PREEXECUTION_AUTHORIZATION_AUDIT",
+  "model_calls": 0,
+  "checks": {
+    "gate_3_verdict_is_pass": true,
+    "gate_3_request_hash_unchanged": true,
+    "gate_3_provider_identity_unchanged": true,
+    "authorization_artifact_hash": "sha256:b2a3e63f5c05fa919ce269a803dbaa5f4492d2ca7351dc03b8e68ddb25557e7c",
+    "run1_frozen_artifacts_unchanged": true,
+    "run2_closure_unchanged": true,
+    "production_commit": "02b6c46e348d0187f4a28a6720f56cdb964031be",
+    "production_tree_unmodified": true
+  },
+  "drift": {
+    "run1_drifted_files": []
+  },
+  "rule": "if the authorization identity has drifted, STOP with 0 scientific turns"
+}

@@ -1,0 +1,79 @@
+{
+  "stage": "D2_A0_STATE_EXPERIMENT",
+  "r_confirm_A0": 6,
+  "calls_per_arm": 6,
+  "total_calls": 12,
+  "ordering_rule": "position k (1-based) alternates arms per pair; within each pair the arm order is HIGH,LOW then LOW,HIGH, and so on — a pure function of r alone",
+  "ordering_is_deterministic": true,
+  "ordering_is_counterbalanced": true,
+  "ordering_is_outcome_blind": true,
+  "neutral_modal_token_influenced_ordering": false,
+  "neutral_pilot_influenced_anything_but_r": false,
+  "requests_must_equal_the_frozen_hashes": {
+    "HIGH": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac",
+    "LOW": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+  },
+  "trials": [
+    {
+      "position": 1,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    },
+    {
+      "position": 2,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 3,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 4,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    },
+    {
+      "position": 5,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    },
+    {
+      "position": 6,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 7,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 8,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    },
+    {
+      "position": 9,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    },
+    {
+      "position": 10,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 11,
+      "arm": "LOW",
+      "request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d"
+    },
+    {
+      "position": 12,
+      "arm": "HIGH",
+      "request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac"
+    }
+  ],
+  "not_yet_executed": true
+}

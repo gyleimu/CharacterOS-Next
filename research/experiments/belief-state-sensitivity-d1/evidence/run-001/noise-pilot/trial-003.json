@@ -1,0 +1,24 @@
+{
+  "trial_id": "d1-pilot-neutral-003",
+  "trial_ordinal": 3,
+  "phase": "NEUTRAL_NOISE_PILOT",
+  "arm": "NEUTRAL",
+  "probe_id": "D1-P1-AWAITING-INSPECTION",
+  "frame": "FULL",
+  "model_facing_request_hash": "sha256:94631e06212edbcdfff1001a33560804f235b3762124c9f7ae0f1937f4dafdba",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "outcome": "DECIDED",
+  "parser_status": "VALID",
+  "parsed_decision": "VERIFY",
+  "raw_output": "{\"decision_probe_schema_version\":\"decision-probe-v1\",\"decision\":\"VERIFY\",\"explanation\":\"The colleague's claim about worn feed rollers is unverified secondhand information; the machine has not been inspected and no note exists, so it should be checked before acting.\"}",
+  "transport_failure": null,
+  "latency_ms": 719,
+  "provider_metadata": "not captured beyond the transport response (transport exposes no request id)"
+}

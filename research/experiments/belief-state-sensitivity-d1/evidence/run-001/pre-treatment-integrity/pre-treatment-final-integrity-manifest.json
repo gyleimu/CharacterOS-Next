@@ -1,0 +1,15 @@
+{
+  "verdict": "D1_PRE_TREATMENT_INTEGRITY_FINALIZED",
+  "treatment_outputs_seen_before_correction": false,
+  "high_low_calls_before_correction": 0,
+  "schedule_regeneration_exact": true,
+  "collision_record_corrected": true,
+  "state_reversal_interpretation_frozen": true,
+  "schedule_unchanged": true,
+  "requests_unchanged": true,
+  "core_treatment_calls_authorised": 60,
+  "high_low_treatment_started": false,
+  "model_calls_transmitted_total": 6,
+  "model_calls_this_round": 0,
+  "no_new_pre_treatment_gate_added": true
+}

@@ -1,0 +1,123 @@
+{
+  "artifact": "PHASE0_RUN1_FREEZE",
+  "purpose": "run-1 is immutable evidence. It is INCONCLUSIVE and must never be overwritten, repaired, or re-interpreted as a positive.",
+  "frozen_verdict": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+  "descriptive_partial_observation": "LIVED_EXPERIENCE_TO_CANONICAL_BELIEF_COMMIT_OBSERVED_IN_PARTIAL_RUN",
+  "forbidden_mislabels": [
+    "LIVED_EXPERIENCE_TO_PERSISTENT_BELIEF_CHANGE_ESTABLISHED",
+    "HISTORY_INTERNALIZATION_ESTABLISHED"
+  ],
+  "production_commit": "02b6c46e348d0187f4a28a6720f56cdb964031be",
+  "production_tree_dirty_paths": [],
+  "file_count": 27,
+  "files": {
+    "HISTORY_INTERNALIZATION_V1_PHASE0_REPORT.md": {
+      "sha256": "5d2deb1e22223b829f231b0ba1cbb808c71e2eed2ea47a58d269f5e1d5963314",
+      "bytes": 11515
+    },
+    "PHASE_0_CORRECTIONS.json": {
+      "sha256": "c8e0825738996ebc193cf6793d311bc5fba8c7fd1cf08ac5a81a547feb28c88d",
+      "bytes": 3882
+    },
+    "collection-integrity.json": {
+      "sha256": "dff28fce1bbea12296cfe1d58bbe6d1a549ac69f7d832081d0ec5682c25faef9",
+      "bytes": 2797
+    },
+    "evidence-hierarchy-update.json": {
+      "sha256": "67291699fbd8a638194a57a374fdc39bae75d2643eb04d688c641cc93f0b49df",
+      "bytes": 855
+    },
+    "executed-leakage-audit.json": {
+      "sha256": "d18693686d3b9eae19eed439b8ff316caf42f5de5be7908be843bc316c3eadd5",
+      "bytes": 847
+    },
+    "execution-manifest.json": {
+      "sha256": "c7813589cbee3e25a8ee6c995602aa1385872f00b683318b62b70688f37908bf",
+      "bytes": 1133
+    },
+    "frozen-scorer-output.json": {
+      "sha256": "3b5c81633fe694fa73eaf07e880b7a6c7098b9c72ca4d3983070e662b831b1ed",
+      "bytes": 1103
+    },
+    "initial-state-equivalence.json": {
+      "sha256": "e0b9588edac36cc38969da3a3487c90d6d26e16c814afed4f284d070ed55f234",
+      "bytes": 1251
+    },
+    "leakage-audit.json": {
+      "sha256": "2e745bfa8910cd3b4af15cdc9839b0034b5411ce167d0ef4ceebeafc28addf34",
+      "bytes": 1207
+    },
+    "persistence-scope.json": {
+      "sha256": "ee84bb5a995f8b375262994728db975343272f6330f050e2dc1338ca914bac20",
+      "bytes": 1049
+    },
+    "phase-0-budget.json": {
+      "sha256": "6b8d99c93d4493aa9d8e6ed3e697a81692b73e7240e7f4a778b4254e6dc5f9de",
+      "bytes": 906
+    },
+    "phase-0-dataset-hash.json": {
+      "sha256": "1f2ea705f91f361c6df332ca2dd3b56ddbf0b4b83b2db16811f58fac0642a0f9",
+      "bytes": 148
+    },
+    "phase-0-dataset.json": {
+      "sha256": "8ad61b1f5b5030d32369f5f0ef11ebc3e63905818c821151e6af917f10032fb5",
+      "bytes": 2990
+    },
+    "phase-0-verdict.json": {
+      "sha256": "ea9e0548db637f7c628e16755060970809b3dd197f6d8df77333e543078c219c",
+      "bytes": 2887
+    },
+    "post-state-A.json": {
+      "sha256": "92a68dbdb939b05b0e87504b76acd45375778799962a2b1c618c2ff57682ea99",
+      "bytes": 24138
+    },
+    "post-state-B.json": {
+      "sha256": "defd7434e16dfd3d8a9e174d7a5267cd9ff2a6d4ebba8362b66663dffb7176b7",
+      "bytes": 10803
+    },
+    "pre-execution-architecture-audit.json": {
+      "sha256": "677d327a7c80591aaf65cff8c0a3629b4033520ab4e3dd3d46f5793e5489b1db",
+      "bytes": 1304
+    },
+    "pre-state-A.json": {
+      "sha256": "a6dd80ec0b048d5128252eefedc6797aa866427199d8a378a4c9fbd5ee1fd6bb",
+      "bytes": 1087
+    },
+    "pre-state-B.json": {
+      "sha256": "622dc997af6084c64c02492bff162faaa3930468d45a8459573a3f48a8cbfea6",
+      "bytes": 1087
+    },
+    "preflight-manifest.json": {
+      "sha256": "651fb9daaccd1cc63ebd8f389ab41f1783c5976cb69936ac30293b140762fff6",
+      "bytes": 1507
+    },
+    "qualification.json": {
+      "sha256": "d16702044521f5c5e347ed9a8fc17df897226e0814363142c30d687f9c4d4500",
+      "bytes": 6844
+    },
+    "raw-trials.json": {
+      "sha256": "b837ff5a13b0e1fefe00544746141686643b981115f328d953c061850542a462",
+      "bytes": 209331
+    },
+    "scorer-falsifiability.json": {
+      "sha256": "d10cd61d74228521010abd416b706d4db3a7c9b2e9e82fcd4b3ad6ee462a645a",
+      "bytes": 2281
+    },
+    "state-delta-report.json": {
+      "sha256": "66fdc7142cfae66ce64f17539cac30be6fd2b4cdb2807aefcff26f4d732fe672",
+      "bytes": 667
+    },
+    "target-belief-identity.json": {
+      "sha256": "03ab778c43c9b0e379b0655136093b7144d88267ed467b204ab725137d85c734",
+      "bytes": 511
+    },
+    "trajectory-isolation-audit.json": {
+      "sha256": "4ff187a0ba032928cc3670084b4673b610ba0fa12409dd2c74fd3883b4328b5b",
+      "bytes": 3193
+    },
+    "trajectory-schedule.json": {
+      "sha256": "ec3b12a2bf1092ee0b50c1d637bca6b4200ac1fd7cb583ae24d8f559cc463f50",
+      "bytes": 1598
+    }
+  }
+}

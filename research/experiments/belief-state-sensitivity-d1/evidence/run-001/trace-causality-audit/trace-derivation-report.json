@@ -1,0 +1,11 @@
+{
+  "projection": "characteros-next/trace/v1",
+  "trace_id_derivation": "deriveRef(\"trace\", TRACE_ID_PROJECTION, body) where body = the trace entry minus trace_id",
+  "state_hash_inputs": "the twelve top-level values defined by canonical/projections.ts:37, with trace_window EXCLUDED to avoid self-reference",
+  "dependency_direction": "canonical state -> stateHashAnyVersion -> buildTraceEntry -> trace_id -> nextTraceWindow",
+  "random_number_use": "none",
+  "clock_time_use": "none",
+  "arm_label_use": "none",
+  "executor_output_use": "none",
+  "hidden_experiment_metadata_use": "none"
+}

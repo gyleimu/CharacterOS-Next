@@ -1,0 +1,14 @@
+{
+  "HIGH": 0.8,
+  "LOW": 0.2,
+  "NEUTRAL": 0.5,
+  "separation_high_low": 0.6000000000000001,
+  "stance_HIGH": 0.6000000000000001,
+  "stance_NEUTRAL": 0,
+  "stance_LOW": -0.6,
+  "min_separation_required": 0.4,
+  "bound_margin_required": 0.05,
+  "all_levels_interior": true,
+  "proposition_id_identical_across_levels": true,
+  "label_identical_across_levels": true
+}

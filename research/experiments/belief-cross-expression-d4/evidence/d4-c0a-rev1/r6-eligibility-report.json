@@ -1,0 +1,48 @@
+{
+  "eligibility_rule": "predicted token is the unique modal AND its count is at least r - 2",
+  "rows": [
+    {
+      "pattern": "6-0-0",
+      "non_predicted": 0,
+      "eligible": true
+    },
+    {
+      "pattern": "5-1-0",
+      "non_predicted": 1,
+      "eligible": true
+    },
+    {
+      "pattern": "4-2-0",
+      "non_predicted": 2,
+      "eligible": true
+    },
+    {
+      "pattern": "3-3-0",
+      "non_predicted": 3,
+      "eligible": false,
+      "why": "no unique modal"
+    },
+    {
+      "pattern": "3-2-1",
+      "non_predicted": 3,
+      "eligible": false,
+      "why": "the predicted token is the unique modal but the directional majority is not met"
+    }
+  ],
+  "statement": "at most two non-predicted outputs per arm",
+  "acceptance_region_now_matches_the_written_rationale": true,
+  "target_calls": {
+    "arms": 2,
+    "per_arm": 6,
+    "total": 12
+  },
+  "total_budget": 27,
+  "budget_breakdown": {
+    "qualification": 9,
+    "stability_gate": 6,
+    "target": 12
+  },
+  "budget_unchanged_by_this_revision": true,
+  "acceptance_region_now_agrees_with_the_executable_scorer": true,
+  "cross_check": "every row of the table was reproduced by calling scoreD4C0ARev1V0, not asserted"
+}

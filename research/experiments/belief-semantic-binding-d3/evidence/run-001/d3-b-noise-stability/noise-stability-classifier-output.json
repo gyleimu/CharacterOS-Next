@@ -1,0 +1,13 @@
+{
+  "classifier": "classifyD3BNoiseStabilityV0 (frozen revision 4) — called, not re-implemented",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "pilot_verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+    "r_confirm_B": 6,
+    "modal_token": "SEMANTICALLY_ALIGNED",
+    "modal_count": 6,
+    "unique_modal_tie": false,
+    "invalid_count": 0,
+    "target_authorised": true
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "production_source_tree_dirty_paths": [],
+  "production_source_tree_unmodified": true,
+  "head_commit": "02b6c46e348d0187f4a28a6720f56cdb964031be",
+  "checks": [
+    {
+      "claim": "the production turn loop still drives belief adaptation every turn",
+      "verified_by": "interactive-subject-runtime-v0.ts contains the per-turn runLivedEvidenceBeliefAdaptation call",
+      "holds": true
+    },
+    {
+      "claim": "the canonical belief store is unchanged",
+      "verified_by": "packages/ is unmodified against HEAD",
+      "holds": true
+    },
+    {
+      "claim": "the production ordering law is unchanged (turn N reaches only turn N+1)",
+      "verified_by": "the same-turn isolation comment is present in the turn loop",
+      "holds": true
+    },
+    {
+      "claim": "personality adaptation remains out of scope (optional factory)",
+      "verified_by": "no personality provider is supplied by this harness",
+      "holds": true
+    },
+    {
+      "claim": "affect application remains out of scope (not wired into the turn loop)",
+      "verified_by": "this harness supplies no affect executor and reads no affect value as an endpoint",
+      "holds": true
+    }
+  ],
+  "note": "any false check stops the round at zero calls; production code is never modified to make an experiment run"
+}

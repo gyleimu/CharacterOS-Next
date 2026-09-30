@@ -1,0 +1,72 @@
+{
+  "stage": "D2_A1_PREREQUISITES_AUDIT",
+  "model_calls": 0,
+  "method": "introspection of the exported values of every D2 contract module, not grep-and-read",
+  "gaps_found": 5,
+  "gap_names": [
+    "literal A1 qualification fixture bytes",
+    "fixture -> expected-token mapping",
+    "a callable buildD2SemanticReadoutRequestV0",
+    "frozen qualification invalid rule",
+    "frozen A1 token anchors"
+  ],
+  "findings": {
+    "gap1": {
+      "prerequisite": "literal A1 qualification fixture bytes",
+      "declared_kinds_only": [
+        "obvious support of the paraphrased principle",
+        "obvious uncertainty about it",
+        "obvious opposition to it"
+      ],
+      "declared_kinds_are_type_descriptions": true,
+      "any_object_carrying_an_A1_fixture_id": [],
+      "any_object_carrying_a_belief_line_under_an_A1_name": false,
+      "present": false,
+      "gap": true
+    },
+    "gap2": {
+      "prerequisite": "fixture -> expected-token mapping",
+      "exported_values_carrying_some_expected_token": [
+        "contract-rev1-1b-a0-fixtures.ts:D2A0_QUALIFICATION_FIXTURES"
+      ],
+      "all_of_which_belong_to_A0_not_A1": true,
+      "exported_values_keyed_by_an_A1_fixture_id": [],
+      "A1_fixtures_carrying_their_own_expected_token": [],
+      "present": false,
+      "gap": true
+    },
+    "gap3": {
+      "prerequisite": "a callable buildD2SemanticReadoutRequestV0",
+      "named_in_D2_TRANSFORMER_LAWS": true,
+      "exported_as_a_function": false,
+      "implementation_module_present": false,
+      "frozen_input_contract": false,
+      "frozen_output_schema": false,
+      "frozen_contract_text_hash": false,
+      "present": false,
+      "gap": true
+    },
+    "gap4": {
+      "prerequisite": "frozen qualification invalid rule",
+      "exported_values_mentioning_invalid": [],
+      "present": false,
+      "gap": true
+    },
+    "gap5": {
+      "prerequisite": "frozen A1 token anchors",
+      "D2A1_ANCHORS_export_exists": false,
+      "D2A0_ANCHORS_export_exists": true,
+      "exports_merely_listing_the_token_names": [
+        "contract-rev1.ts:D2A1_PREDICTION",
+        "contract-rev1.ts:D2A1_TOKENS"
+      ],
+      "exports_mapping_every_token_name_to_a_meaning": [],
+      "note": "the A1 token names exist in D2A1_TOKENS, but a token NAME is not an anchor: without meanings the measurement contract cannot be rendered state-blind",
+      "present": false,
+      "gap": true
+    }
+  },
+  "conclusion": "A1 was NOT executable as preregistered; the round freezes the prerequisites and makes zero calls rather than writing stimuli, an answer key, an instrument and a failure rule at execution time",
+  "section_4_mechanism_note": "A1 does NOT remove the canonical credence from the request — it must stay, or the HIGH/LOW manipulation would not exist. A1 removes the measurement-side numeric shortcut: D2A1_LEXICAL_LAWS already forbids a credence number, a mapping hint, arm words, the canonical proposition, action tokens and any 4-gram shared with the canonical label in the CONTRACT.",
+  "section_6_scope_note": "the paraphrase literal is byte-identical to D2A1_PARAPHRASE and the claim scope stays narrowed: a positive licenses CANONICAL_BELIEF_PROPOSITION_SEMANTICALLY_LEGIBLE_ON_PREREGISTERED_PARAPHRASE only, and a null may not be widened to global proposition unreadability"
+}

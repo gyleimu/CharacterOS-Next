@@ -1,0 +1,168 @@
+{
+  "stage": "D3_REVISION_2",
+  "model_calls": 0,
+  "section_a_redundancy": {
+    "d2_a0_dataset_hash_recomputed": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+    "d2_a0_dataset_hash_expected": "sha256:eb8be177c7954147ef71a0b8b465a4551809d99ad2c7449a99e3b45c7bb17287",
+    "d2_a0_measurement_target": "the subject's stance on the proposition shown in the belief line",
+    "d2_a0_measurement_target_found_in_the_frozen_contract_text": true,
+    "d2_a0_anchors": {
+      "favourable": "the subject treats the proposition as settled in its favour and would rely on it without reservation",
+      "unsettled": "the subject holds no stance either way on the proposition",
+      "against": "the subject treats the proposition as settled against it and would rely on its denial without reservation"
+    },
+    "d2_a0_primary_criterion": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+    "d2_a0_vocabulary_size": 5,
+    "observed_high_counts": {
+      "ENDORSES_STRONGLY": 6
+    },
+    "observed_low_counts": {
+      "DOUBTS_STRONGLY": 6
+    },
+    "observed_modals": {
+      "HIGH": "ENDORSES_STRONGLY",
+      "LOW": "DOUBTS_STRONGLY"
+    },
+    "the_frozen_criterion_is_already_met": true,
+    "the_proposed_d3a_would_add": "three buckets with different names, and nothing else",
+    "verdict": "D3_A_REDUNDANT_WITH_D2_A0",
+    "d3a_calls_authorised_in_the_budget": 0
+  },
+  "section_b_executability": {
+    "rows": [
+      {
+        "rule_id": "qualification_fixtures_and_expected_relation_map",
+        "decision_frozen": true,
+        "executable_form_present": true,
+        "closing_step": "already executable: literal bytes and an explicit map",
+        "blocks_the_round_before_calls": false
+      },
+      {
+        "rule_id": "qualification_rule_and_invalid_policy",
+        "decision_frozen": true,
+        "executable_form_present": false,
+        "closing_step": "implement the qualification scorer as a callable pure function in the next round's offline step",
+        "blocks_the_round_before_calls": false
+      },
+      {
+        "rule_id": "transformer_contract",
+        "decision_frozen": true,
+        "executable_form_present": false,
+        "closing_step": "implement the frozen transformer name and pass its offline conformance gate at zero calls",
+        "blocks_the_round_before_calls": false
+      },
+      {
+        "rule_id": "pilot_noise_mapping_and_modal_count_definition",
+        "decision_frozen": true,
+        "executable_form_present": false,
+        "closing_step": "implement the pilot classifier as a callable pure function, including the tie verdict",
+        "blocks_the_round_before_calls": false
+      },
+      {
+        "rule_id": "measurement_rule_unanimity_and_invalid_handling",
+        "decision_frozen": true,
+        "executable_form_present": false,
+        "closing_step": "implement the measurement scorer as a callable pure function",
+        "blocks_the_round_before_calls": false
+      },
+      {
+        "rule_id": "call_budget",
+        "decision_frozen": true,
+        "executable_form_present": true,
+        "closing_step": "already executable: frozen integers",
+        "blocks_the_round_before_calls": false
+      }
+    ],
+    "summary": {
+      "rules_audited": 6,
+      "decisions_missing": 0,
+      "executable_forms_missing": 4,
+      "blocking_gaps": 0,
+      "distinction": "a frozen decision whose implementation is pending is closed by the next round's offline step; a missing decision would be a preregistration gap and would stop that round before any call",
+      "verdict": "D3_B_ALL_DECISIONS_FROZEN_IMPLEMENTATIONS_PENDING"
+    }
+  },
+  "section_c_unchanged": {
+    "d3b_contract_text_hash_rev1": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+    "d3b_contract_text_hash_rev2": "sha256:b2bbeb6a28ae6a4f3fde3f42109d821067135878d774410d03c9eb73a0a8c792",
+    "contract_text_identical": true,
+    "fixture_manifest_hash_unchanged": "sha256:ffbd62411035a41db733942b0bc5e284d2346efb8f6a8f4c32e4f3875b89ac16",
+    "anchors_unchanged": "sha256:6382a496178aea7c200ea7bd97890031d543b59775bb5a24e076041ab6f2f0c8",
+    "fixtures_carry_only_the_synthetic_proposition": true,
+    "target_pair_is_the_canonical_proposition_and_the_frozen_paraphrase": true,
+    "vocabulary": [
+      "SEMANTICALLY_ALIGNED",
+      "SEMANTICALLY_UNRELATED",
+      "SEMANTICALLY_OPPOSED"
+    ],
+    "anchors_present_in_the_contract": true
+  },
+  "graph_status": [
+    {
+      "link": "1_canonical_state",
+      "status": "ESTABLISHED_BY_D1_OFFLINE_PRODUCTION_STATE_EVIDENCE",
+      "stage": "D1"
+    },
+    {
+      "link": "2_production_projection",
+      "status": "ESTABLISHED_BY_D1_PRODUCTION_PROJECTION_EVIDENCE",
+      "stage": "D1"
+    },
+    {
+      "link": "3B1_canonical_proposition_stance_binding",
+      "status": "ESTABLISHED_BY_D2_A0_DO_NOT_RETEST",
+      "stage": "D2_A0"
+    },
+    {
+      "link": "3B2_canonical_paraphrase_relation_recognition",
+      "status": "UNTESTED",
+      "stage": "D3_B"
+    },
+    {
+      "link": "3B3_cross_wording_stance_transfer",
+      "status": "NOT_ESTABLISHED_BY_FROZEN_D2_A1_VALID_NULL",
+      "stage": "D2_A1_DO_NOT_RERUN"
+    },
+    {
+      "link": "4_epistemic_appraisal",
+      "status": "NOT_AUTHORISED",
+      "stage": "D2_B_LOCKED"
+    },
+    {
+      "link": "5_structured_decision",
+      "status": "D1_STRUCTURED_DECISION_NULL_REMAINS_FROZEN",
+      "stage": "D1"
+    }
+  ],
+  "modal_count_now_defined": "the number of the six valid pilot trials carrying the single most frequent relation token",
+  "mechanism_verdict_demoted": {
+    "forbidden": "SEMANTIC_COMPONENTS_PRESENT_BUT_CROSS_WORDING_STANCE_INTEGRATION_FAILED",
+    "frozen_combined_statement": "SEMANTIC_COMPONENT_CAPABILITIES_SEPARATELY_PRESENT_BUT_CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED",
+    "permitted_discussion_form": "the pattern is consistent with a failure of compositional / integrative use — to be labelled a hypothesis or architectural interpretation, never an observational verdict"
+  },
+  "d2b_lock": {
+    "d2_b_authorised": false,
+    "d2_b_executed": false,
+    "even_if_d3_b_is_positive": true,
+    "why": "D2's frozen sequential rule authorises B only after an A1 POSITIVE; the frozen A1 result is a valid null, and a D3-B positive cannot substitute for it",
+    "d3_b_may_not_substitute_for_a1_positive": true,
+    "link_4_reopened": false,
+    "any_result_of_d3_reopens_link_4": false,
+    "d2_remains_permanently_stopped_at_a1": true
+  },
+  "design_integrity": {
+    "d3_a_removed_because_redundant": true,
+    "d3_a_removed_due_to_outcome": false,
+    "d3_b_design_used_specific_a1_low_count_pattern": false,
+    "d3_b_target_pair_changed_after_a1": false,
+    "d3_b_expected_relation_changed_after_a1": false,
+    "d3_b_contract_text_changed_from_revision_1": false,
+    "d3_b_fixtures_changed_from_revision_1": false,
+    "d1_modified": false,
+    "d2_modified": false,
+    "caution_modified": false,
+    "arm_credences_modified": false,
+    "a1_paraphrase_modified": false
+  },
+  "verdict": "D3_A_REDUNDANT_WITH_D2_A0"
+}

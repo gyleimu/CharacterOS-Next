@@ -1,0 +1,31 @@
+{
+  "run": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN",
+  "outcome": "INCONCLUSIVE",
+  "verdict": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN_INCONCLUSIVE",
+  "failure_class": "PROVIDER_INFRASTRUCTURE_VRAM_EXHAUSTION",
+  "reason": {
+    "error": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+    "meaning": "the production transport's frozen 120s bound was reached while the model had produced only ~132 tokens",
+    "generation_rate_at_failure_tok_per_s": 1.48,
+    "sequence": "the qualification turn's cognition call exceeded its bound, the turn failed closed, and the frozen bootstrap gate (R2_QUALIFICATION_FAILED) stopped the run at zero scientific turns"
+  },
+  "scientific_turns_executed": 0,
+  "scientific_data_produced": false,
+  "states": {
+    "run1": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE (unchanged)",
+    "run2": "INCONCLUSIVE — infrastructure, zero scientific turns",
+    "evidence_hierarchy": "L1 (unchanged)",
+    "phase_1_authorised": false
+  },
+  "explicitly_not_established": [
+    "that persistent belief alters cognition in a new scenario with the history removed (L3)",
+    "that it alters decision or behaviour (L4; D1 measured a null on an authored difference)",
+    "that it survives restart (L5)",
+    "that it separates from a summary baseline (L6)",
+    "that the subject has been shaped by its life, or that history internalization works",
+    "that a failed turn leaves no state mutation (it can, and does)",
+    "that the executor schema-invalid risk is fixed (it is not)",
+    "anything about the model's own dispositions: the LLM is an executor; the subject is the canonical state"
+  ],
+  "note": "no retry, no provider swap, no configuration change, no event redesign. The precondition to resume is recorded in r2-infrastructure-block.json."
+}

@@ -1,0 +1,14 @@
+{
+  "family": "ollama",
+  "transport_class": "OllamaNativeCognitionTransportV0",
+  "model": "qwen3.5:9b",
+  "model_digest": "6488c96fa5faab64bb65cbd30d4289e20e6130ef535a93ef9a49f42eda893ea7",
+  "endpoint": "http://127.0.0.1:11434",
+  "generation": {
+    "temperature": 0,
+    "cognition_num_predict": 256,
+    "context_window_tokens": 8192,
+    "think": false
+  },
+  "declares_primary_executor": false
+}

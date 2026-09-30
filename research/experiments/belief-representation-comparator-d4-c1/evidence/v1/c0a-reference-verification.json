@@ -1,0 +1,14 @@
+{
+  "dataset_hash_recomputed": "sha256:8a6ca2c850aef8886eef9b4592ec1a58e348e717f9c93e0186306ae38ebfe691",
+  "dataset_hash_matches_the_recorded_value": true,
+  "support_counts": {
+    "SUPPORTS_B": 6
+  },
+  "oppose_counts": {
+    "OPPOSES_B": 6
+  },
+  "support_is_six_of_six_supports_b": true,
+  "oppose_is_six_of_six_opposes_b": true,
+  "frozen_c0a_verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+  "verdict": "D4_C1_C0A_REFERENCE_VERIFIED"
+}

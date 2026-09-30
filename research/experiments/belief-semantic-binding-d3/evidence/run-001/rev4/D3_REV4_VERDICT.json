@@ -1,0 +1,38 @@
+{
+  "stage": "D3_REVISION_4",
+  "model_calls": 0,
+  "verdicts": [
+    "D3_PREREGISTRATION_FINALIZED_REV4",
+    "D3_B_NOISE_EXTENSION_INCOMPATIBLE_WITH_UNANIMITY_SCORER",
+    "D3_B_NON_TARGET_NOISE_PILOT_AUTHORISED",
+    "D3_B_TARGET_NOT_EXECUTED"
+  ],
+  "noise_rule": "stability gate; the only reachable r_confirm_B is 6, and only on six mutually agreeing calls",
+  "superseded": {
+    "branch": "5 -> r_confirm_B = 14",
+    "retired_prospectively": true,
+    "at": "SUPERSEDED_BEFORE_ANY_D3_B_NOISE_OR_TARGET_OUTPUT",
+    "history_retained": true
+  },
+  "target_scientific_meaning_unchanged": true,
+  "target_calls": 0,
+  "target_not_executed": true,
+  "budget": {
+    "complete_success_path": 21,
+    "absolute_maximum": 21,
+    "stops_at_if_the_gate_fails": 15
+  },
+  "noise_fixture": "D3B-QF-A-ALIGNED",
+  "noise_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+  "prior_qualification_calls_on_that_request": 3,
+  "next_round_may_only": "run the six-call non-target noise pilot on the frozen noise request, freeze its dataset before scoring, and classify it with classifyD3BNoiseStabilityV0; on PASS, freeze the six target calls, otherwise stop",
+  "next_round_may_not": [
+    "call the D3-B target request",
+    "widen r beyond 6",
+    "execute D3-A",
+    "execute D2-B",
+    "modify any frozen artifact"
+  ],
+  "revision_3_manifest_hash_preserved": "sha256:07e6a52a8eec4ec39f8bfd19008db49a791255463f96b499fbb0973a435dfad2",
+  "rev4_manifest_hash": "sha256:b5f962f03ce6e33a8c0f8c8ce7f976a67c925bcb46d7033ee41525af47d49e6f"
+}

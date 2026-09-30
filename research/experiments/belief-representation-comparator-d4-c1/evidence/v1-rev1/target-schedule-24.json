@@ -1,0 +1,281 @@
+{
+  "total_entries": 24,
+  "per_block": [
+    {
+      "block": 1,
+      "cells": [
+        "E-SUPPORT",
+        "E-OPPOSE",
+        "R-OPPOSE",
+        "R-SUPPORT"
+      ],
+      "each_cell_exactly_once": true
+    },
+    {
+      "block": 2,
+      "cells": [
+        "E-OPPOSE",
+        "R-SUPPORT",
+        "E-SUPPORT",
+        "R-OPPOSE"
+      ],
+      "each_cell_exactly_once": true
+    },
+    {
+      "block": 3,
+      "cells": [
+        "R-SUPPORT",
+        "R-OPPOSE",
+        "E-OPPOSE",
+        "E-SUPPORT"
+      ],
+      "each_cell_exactly_once": true
+    },
+    {
+      "block": 4,
+      "cells": [
+        "R-OPPOSE",
+        "E-SUPPORT",
+        "R-SUPPORT",
+        "E-OPPOSE"
+      ],
+      "each_cell_exactly_once": true
+    },
+    {
+      "block": 5,
+      "cells": [
+        "E-SUPPORT",
+        "E-OPPOSE",
+        "R-OPPOSE",
+        "R-SUPPORT"
+      ],
+      "each_cell_exactly_once": true
+    },
+    {
+      "block": 6,
+      "cells": [
+        "E-OPPOSE",
+        "R-SUPPORT",
+        "E-SUPPORT",
+        "R-OPPOSE"
+      ],
+      "each_cell_exactly_once": true
+    }
+  ],
+  "per_cell_totals": {
+    "E-SUPPORT": 6,
+    "E-OPPOSE": 6,
+    "R-SUPPORT": 6,
+    "R-OPPOSE": 6
+  },
+  "per_cell_ordinal_positions": {
+    "E-SUPPORT": [
+      1,
+      7,
+      12,
+      14,
+      17,
+      23
+    ],
+    "E-OPPOSE": [
+      2,
+      5,
+      11,
+      16,
+      18,
+      21
+    ],
+    "R-SUPPORT": [
+      4,
+      6,
+      9,
+      15,
+      20,
+      22
+    ],
+    "R-OPPOSE": [
+      3,
+      8,
+      10,
+      13,
+      19,
+      24
+    ]
+  },
+  "max_consecutive_same_representation": 3,
+  "max_consecutive_same_stance": 2,
+  "forbidden_structure_12_then_12": false,
+  "verdict": "D4_C1_TARGET_SCHEDULE_FROZEN",
+  "schedule": [
+    {
+      "position": 1,
+      "block": 1,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 2,
+      "block": 1,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 3,
+      "block": 1,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 4,
+      "block": 1,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 5,
+      "block": 2,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 6,
+      "block": 2,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 7,
+      "block": 2,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 8,
+      "block": 2,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 9,
+      "block": 3,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 10,
+      "block": 3,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 11,
+      "block": 3,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 12,
+      "block": 3,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 13,
+      "block": 4,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 14,
+      "block": 4,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 15,
+      "block": 4,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 16,
+      "block": 4,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 17,
+      "block": 5,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 18,
+      "block": 5,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 19,
+      "block": 5,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 20,
+      "block": 5,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 21,
+      "block": 6,
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE"
+    },
+    {
+      "position": 22,
+      "block": 6,
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 23,
+      "block": 6,
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT"
+    },
+    {
+      "position": 24,
+      "block": 6,
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE"
+    }
+  ],
+  "ordering_rule": "balanced-Latin-square row (block mod 4)",
+  "not_yet_executed": true
+}

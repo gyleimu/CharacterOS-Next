@@ -1,0 +1,28 @@
+{
+  "turns_per_arm": 5,
+  "total_scientific_turns": 10,
+  "qualification_turns": 1,
+  "order": [
+    "QUALIFICATION",
+    "A_turn_0..N-1 (ascending)",
+    "B_turn_0..N-1 (ascending)"
+  ],
+  "turn_0_identical_across_arms": true,
+  "valence_table_entries": 4,
+  "texts": {
+    "A": [
+      "I've told you I'll pick up the replacement key on Wednesday, so you know where I'll be.",
+      "About the key: I did it, and I did it when I said I would. And I've told you I'll bring the ladder back to the shed before the weekend.",
+      "About the ladder: I did it, and I did it when I said I would. And I've told you I'll send the deposit form to the landlord on Monday.",
+      "About the form: I did it, and I did it when I said I would. And I've told you I'll collect the repaired lamp on Friday.",
+      "About the lamp: I did it, and I did it when I said I would. And I've told you I'll water the plants while you're away."
+    ],
+    "B": [
+      "I've told you I'll pick up the replacement key on Wednesday, so you know where I'll be.",
+      "About the key: I did not do it, and the day I named passed. And I've told you I'll bring the ladder back to the shed before the weekend.",
+      "About the ladder: I did not do it, and the day I named passed. And I've told you I'll send the deposit form to the landlord on Monday.",
+      "About the form: I did not do it, and the day I named passed. And I've told you I'll collect the repaired lamp on Friday.",
+      "About the lamp: I did not do it, and the day I named passed. And I've told you I'll water the plants while you're away."
+    ]
+  }
+}

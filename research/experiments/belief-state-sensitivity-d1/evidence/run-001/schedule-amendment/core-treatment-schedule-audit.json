@@ -1,0 +1,59 @@
+{
+  "total_entries": 60,
+  "block_count": 5,
+  "block_list": [
+    "P1_FULL",
+    "P2_FULL",
+    "P3_NEGATIVE_CONTROL",
+    "P1_FRAME_MINIMAL",
+    "STATE_REVERSAL"
+  ],
+  "restart_entries_present": false,
+  "per_block": [
+    {
+      "block": "P1_FULL",
+      "HIGH": 6,
+      "LOW": 6,
+      "max_run_length": 1
+    },
+    {
+      "block": "P2_FULL",
+      "HIGH": 6,
+      "LOW": 6,
+      "max_run_length": 1
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "HIGH": 6,
+      "LOW": 6,
+      "max_run_length": 2
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "HIGH": 6,
+      "LOW": 6,
+      "max_run_length": 2
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "HIGH": 6,
+      "LOW": 6,
+      "max_run_length": 2
+    }
+  ],
+  "deterministic": true,
+  "balanced": true,
+  "max_run_length": 2,
+  "frozen_max_run_bound": 2,
+  "outcome_dependency": false,
+  "replicate_ordinal_model_facing": false,
+  "generator_semantics_unchanged": true,
+  "only_the_block_list_changed": true,
+  "ordering_preserved_versus_the_invalid_schedule_per_block": {
+    "P1_FULL": true,
+    "P2_FULL": true,
+    "P3_NEGATIVE_CONTROL": true,
+    "P1_FRAME_MINIMAL": true,
+    "STATE_REVERSAL": true
+  }
+}

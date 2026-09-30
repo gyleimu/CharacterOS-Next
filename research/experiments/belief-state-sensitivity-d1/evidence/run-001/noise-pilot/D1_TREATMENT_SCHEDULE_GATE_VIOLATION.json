@@ -1,0 +1,91 @@
+{
+  "record": "D1_TREATMENT_SCHEDULE_GATE_VIOLATION",
+  "run": "BELIEF_STATE_SENSITIVITY_D1_RUN_001",
+  "phase": "schedule cardinality audit",
+  "model_calls_transmitted_this_round": 0,
+  "model_calls_transmitted_total": 6,
+  "high_low_treatment_started": false,
+
+  "case": "B — INVALID: the conditional restart block sits in the same undifferentiated executable queue as the core treatment blocks, with no conditional gate",
+
+  "evidence_from_the_frozen_artifact": {
+    "artifact": "evidence/run-001/noise-pilot/D1_EXECUTION_SCHEDULE_ACTUAL.json",
+    "schedule_hash": "sha256:11b32f96fe4d43688cadd5ca5347c2ed144b9f1954a3696be71e154e3c89729c",
+    "total_serialized_entries": 72,
+    "block_counts": {
+      "P1_FULL": { "HIGH": 6, "LOW": 6 },
+      "P2_FULL": { "HIGH": 6, "LOW": 6 },
+      "P3_NEGATIVE_CONTROL": { "HIGH": 6, "LOW": 6 },
+      "P1_FRAME_MINIMAL": { "HIGH": 6, "LOW": 6 },
+      "STATE_REVERSAL": { "HIGH": 6, "LOW": 6 },
+      "RESTART_CONTRAST": { "HIGH": 6, "LOW": 6 }
+    },
+    "restart_entries": 12,
+    "trial_object_keys": ["ordinal", "block", "arm", "replicate_ordinal"],
+    "any_trial_carries_a_conditional_enabled_executable_or_locked_flag": false,
+    "schedule_object_keys": ["amendment_version", "seed_source", "r_confirm", "blocks", "trials", "outcome_blind", "replicate_ordinal_in_request_bytes", "schedule_hash"],
+    "schedule_level_restart_gate_present": false,
+    "audit_restart_unlocked_field": "ABSENT"
+  },
+
+  "what_is_wrong": {
+    "statement": "the frozen schedule generator was invoked with the full six-block list, so the conditional RESTART_CONTRAST block was serialized into the executable queue without any gate distinguishing it from the five unconditional core blocks",
+    "consequence": "a treatment executor consuming this artifact naively would run 72 treatment trials instead of the 60 the protocol authorises at this stage, and would run the restart contrast BEFORE the frozen direct-positive gate has been evaluated",
+    "the_protocol_rule_violated": "RESTART_CONTRAST is unlocked only after the frozen direct-positive condition is met; it must not enter the currently executable queue",
+    "introduced_by": "this run's schedule invocation (D1_BLOCKS passed whole); the frozen generators themselves are unchanged"
+  },
+
+  "actions_taken": {
+    "model_calls": 0,
+    "treatment_run": false,
+    "twelve_entries_silently_deleted": false,
+    "schedule_rewritten_or_reordered": false,
+    "temporary_filter_applied_and_then_declared_correct": false,
+    "protocol_modified": false
+  },
+
+  "why_no_correction_was_applied_here": "the schedule is frozen and its hash is recorded; correcting it is a prospective schedule decision that must be handled separately, with its own amendment and its own hash, rather than by filtering at execution time and claiming the original schedule was correct",
+
+  "budget_arithmetic_check_against_the_frozen_protocol": {
+    "neutral_pilot": 6,
+    "core_treatment_formula": "10r = 5 blocks x 2 arms x r",
+    "core_treatment_at_r6": 60,
+    "core_total_at_r6": "6 + 10r = 66",
+    "conditional_restart_formula": "2r",
+    "conditional_restart_at_r6": 12,
+    "maximum_including_restart_at_r6": "6 + 12r = 78",
+    "consistent_with_contract_ts_D1_CALL_BUDGET": true,
+    "contract_budget_record": "formula '6 + (4r + 2r + 2r + 2r) = 6 + 10r'; minimum_r6 66; restart_addon_per_r 2"
+  },
+
+  "noise_rule_preservation": {
+    "pilot_decisions": "VERIFY x 6",
+    "observed_same_request_disagreement": 0.0,
+    "frozen_wilson_upper_bound_at_n6": 0.3903,
+    "delta_min": 0.5,
+    "noise_ceiling_changed_to_zero": false,
+    "treatment_threshold_lowered_because_the_pilot_was_stable": false,
+    "note": "treatment scoring must still require the between-level disagreement to exceed the frozen Wilson upper bound AND reach delta_min"
+  },
+
+  "neutral_is_not_a_treatment_arm": {
+    "neutral_credence": 0.5,
+    "role": "self-noise calibration ONLY",
+    "included_in_the_primary_estimand": false,
+    "dose_response_claim_constructed": false,
+    "primary_contrast_remains": "HIGH 0.80 vs LOW 0.20"
+  },
+
+  "required_next_step": [
+    "decide, as a prospective schedule amendment, how the conditional block is gated (for example an explicit block-level 'unlock_condition' with the frozen direct-positive predicate, and an executable flag that is false at freeze time)",
+    "re-freeze the schedule with its own new hash and record the superseded hash rather than editing it in place",
+    "only then may treatment run, and only for the currently authorised blocks"
+  ],
+
+  "final_state": {
+    "D1_TREATMENT_SCHEDULE_GATE_VIOLATION": true,
+    "HIGH_LOW_TREATMENT_NOT_STARTED": true,
+    "CORE_TREATMENT_CALLS_NOT_AUTHORISED_UNTIL_RESTRUCTURED": true,
+    "MODEL_CALLS_TRANSMITTED": 6
+  }
+}

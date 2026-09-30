@@ -1,0 +1,357 @@
+{
+  "stage": "D4_C0A_TARGET",
+  "is_the_scientific_contrast": true,
+  "planned": 12,
+  "observed": 12,
+  "scored": false,
+  "trials": [
+    {
+      "trial_id": "TARGET-001",
+      "ordinal": 1,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 911
+    },
+    {
+      "trial_id": "TARGET-002",
+      "ordinal": 2,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 461
+    },
+    {
+      "trial_id": "TARGET-003",
+      "ordinal": 3,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 647
+    },
+    {
+      "trial_id": "TARGET-004",
+      "ordinal": 4,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 706
+    },
+    {
+      "trial_id": "TARGET-005",
+      "ordinal": 5,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 630
+    },
+    {
+      "trial_id": "TARGET-006",
+      "ordinal": 6,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 390
+    },
+    {
+      "trial_id": "TARGET-007",
+      "ordinal": 7,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 408
+    },
+    {
+      "trial_id": "TARGET-008",
+      "ordinal": 8,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 656
+    },
+    {
+      "trial_id": "TARGET-009",
+      "ordinal": 9,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 742
+    },
+    {
+      "trial_id": "TARGET-010",
+      "ordinal": 10,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 732
+    },
+    {
+      "trial_id": "TARGET-011",
+      "ordinal": 11,
+      "arm": "ARM_OPPOSE",
+      "request_hash": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"OPPOSES_B\"}",
+      "parsed_token": "OPPOSES_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 556
+    },
+    {
+      "trial_id": "TARGET-012",
+      "ordinal": 12,
+      "arm": "ARM_SUPPORT",
+      "request_hash": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+      "raw_provider_response": "{\"d4_c0a_schema_version\":\"d4-c0a-stance-transfer-readout-v0\",\"stance_toward_b\":\"SUPPORTS_B\"}",
+      "parsed_token": "SUPPORTS_B",
+      "parser_status": "VALID",
+      "transport_status": "OK",
+      "invalid_reason": null,
+      "provider_response_model": "deepseek-flash",
+      "executor": {
+        "provider": "DeepSeek",
+        "model": "deepseek-flash",
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "generation_settings": {
+        "temperature": 0,
+        "max_output_tokens": 256,
+        "provider_thinking": "disabled",
+        "timeout_ms": 120000,
+        "endpoint": "https://api.deepseek.com"
+      },
+      "latency_ms": 419
+    }
+  ]
+}

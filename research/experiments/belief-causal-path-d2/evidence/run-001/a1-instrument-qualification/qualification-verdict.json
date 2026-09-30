@@ -1,0 +1,42 @@
+{
+  "verdict": "D2_A1_INSTRUMENT_QUALIFIED",
+  "d2_a1_neutral_pilot_authorised": true,
+  "d2_a1_state_experiment_not_started": true,
+  "d2_model_calls_this_round": 9,
+  "dataset_hash": "sha256:d6e446c6da48a137b3040de6261301cfb43ba49b37e1cbcbf8db5cd9fc8a5b5a",
+  "invalid_trials": 0,
+  "invalid_rule": {
+    "rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+    "counts_as_invalid": [
+      "parser rejection (output not one JSON object, unknown members, schema-version mismatch)",
+      "stance outside the frozen closed set",
+      "empty or malformed content",
+      "transport failure, including timeout"
+    ],
+    "denominator": "always the full nine planned trials (3 fixtures x 3 replicates)",
+    "retry_allowed": false,
+    "replacement_allowed": false,
+    "extra_call_allowed": false,
+    "invalid_trials_may_be_deleted": false,
+    "one_invalid_trial_is_enough_to_fail": true,
+    "verdict_if_any_invalid": "D2_INSTRUMENT_UNQUALIFIED",
+    "applies_to": [
+      "D2_A1",
+      "D2_B"
+    ],
+    "applied_retroactively_to_a0": false,
+    "rationale": "A0 qualified with 0 invalid trials, so this rule changes no past result. Fixing it now means the treatment of an invalid trial cannot be chosen after seeing one."
+  },
+  "invalid_rule_triggered": false,
+  "denominator": 9,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "scorer": "frozen REV1.1c rule (each fixture's modal equals its pre-registered expected token; no tolerance, no similarity)"
+}

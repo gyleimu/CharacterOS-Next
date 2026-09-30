@@ -1,0 +1,14 @@
+{
+  "artifact": "RUN3_PROVIDER_IDENTITY",
+  "provider": "Ollama",
+  "base_url": "http://127.0.0.1:11434",
+  "model": "qwen3.5:9b",
+  "transport": "OllamaNativeCognitionTransportV0 (production)",
+  "belief_semantic_provider": "OllamaBeliefSemanticProviderV0 (production)",
+  "num_predict_cognition": 2048,
+  "num_ctx_cognition": 8192,
+  "timeout_ms": 120000,
+  "structured_output_constraint": null,
+  "fallback_configured": false,
+  "frozen_since": "gates 1-3 and run-1"
+}

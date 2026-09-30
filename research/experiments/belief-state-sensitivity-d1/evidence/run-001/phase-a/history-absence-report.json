@@ -1,0 +1,32 @@
+{
+  "HIGH": {
+    "messages_length": 2,
+    "gated_markers_found_in_subject_data": [],
+    "production_prompt_markers_informational": [
+      "formation",
+      "summary"
+    ],
+    "prior_factual_memory_absent": true,
+    "stripped_hash": "sha256:c7a4deb9e3682f987d0f27e554f11f6ae022926712cbecfcf0143b2f669f0c43"
+  },
+  "LOW": {
+    "messages_length": 2,
+    "gated_markers_found_in_subject_data": [],
+    "production_prompt_markers_informational": [
+      "formation",
+      "summary"
+    ],
+    "prior_factual_memory_absent": true,
+    "stripped_hash": "sha256:90074ff739f25fb1981a4bfecf9b60aa3e4aa955bd8831b3af66a3415c9cfab3"
+  },
+  "NEUTRAL": {
+    "messages_length": 2,
+    "gated_markers_found_in_subject_data": [],
+    "production_prompt_markers_informational": [
+      "formation",
+      "summary"
+    ],
+    "prior_factual_memory_absent": true,
+    "stripped_hash": "sha256:18c50ae2291ed66e566248e64408516f198f20639fbe1ceb6662ad5a7291660c"
+  }
+}

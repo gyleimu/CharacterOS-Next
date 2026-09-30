@@ -1,0 +1,9 @@
+{
+  "verdict": "PRIMARY_EXECUTOR_UNAVAILABLE_FOR_D0_V1",
+  "detail": [
+    "CHARACTEROS_EXECUTOR is unset → resolution is 'auto', and under 'auto' the effective executor is credential-dependent",
+    "credential MODEL_API_KEY is ABSENT from the environment → the cloud family cannot be authenticated",
+    "under 'auto' the effective executor here is 'ollama' (the local family), not the cloud family",
+    "no fallback executor may be marked as primary; the run is not started"
+  ]
+}

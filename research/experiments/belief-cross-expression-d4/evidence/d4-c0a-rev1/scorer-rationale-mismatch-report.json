@@ -1,0 +1,49 @@
+{
+  "verdict": "D4_C0A_SCORER_RATIONALE_MISMATCH",
+  "written_rationale_tolerance": 2,
+  "old_scorer_rows": [
+    {
+      "support_arm_pattern": "six_zero_zero",
+      "non_predicted_outputs": 0,
+      "old_scorer_outcome": "POSITIVE",
+      "old_scorer_support_modal": "SUPPORTS_B",
+      "eligible_under_the_written_rationale": true
+    },
+    {
+      "support_arm_pattern": "five_one_zero",
+      "non_predicted_outputs": 1,
+      "old_scorer_outcome": "POSITIVE",
+      "old_scorer_support_modal": "SUPPORTS_B",
+      "eligible_under_the_written_rationale": true
+    },
+    {
+      "support_arm_pattern": "four_two_zero",
+      "non_predicted_outputs": 2,
+      "old_scorer_outcome": "POSITIVE",
+      "old_scorer_support_modal": "SUPPORTS_B",
+      "eligible_under_the_written_rationale": true
+    },
+    {
+      "support_arm_pattern": "three_two_one",
+      "non_predicted_outputs": 3,
+      "old_scorer_outcome": "POSITIVE",
+      "old_scorer_support_modal": "SUPPORTS_B",
+      "eligible_under_the_written_rationale": false
+    },
+    {
+      "support_arm_pattern": "three_three_zero",
+      "non_predicted_outputs": 3,
+      "old_scorer_outcome": "NULL",
+      "old_scorer_support_modal": null,
+      "eligible_under_the_written_rationale": false
+    }
+  ],
+  "rows_where_the_old_scorer_is_wider_than_the_rationale": [
+    "three_two_one"
+  ],
+  "demonstration": "the OLD scorer accepted a SUPPORT arm of 3-2-1 as POSITIVE — three non-predicted outputs, one more than the written tolerance allowed — because the predicted token was still the unique modal",
+  "qualification_outputs_seen_before_amendment": false,
+  "target_outputs_seen_before_amendment": false,
+  "any_output_of_any_kind_existed": false,
+  "resolution": "the executable scorer was narrowed to the written requirement"
+}

@@ -1,0 +1,30 @@
+{
+  "decision_probe_version": "decision-probe-v1",
+  "inherited_from": "decision-probe-v0",
+  "inherited": {
+    "decisions": [
+      "ACCEPT",
+      "VERIFY",
+      "REJECT"
+    ],
+    "definitions": {
+      "ACCEPT": "the available information is sufficient and the claim should be acted on without further checking",
+      "VERIFY": "the claim should be checked against an independent source before it is acted on",
+      "REJECT": "the claim should not be accepted and should not be acted on"
+    },
+    "source_schema_version": "decision-probe-v0",
+    "source_override_block_length": 1007
+  },
+  "qualification_rule": {
+    "measurement_mode": "SUBSTITUTION_WITH_OVERRIDE",
+    "diagnostic_mode": "PURE_SUBSTITUTION",
+    "diagnostic_vetoes": false,
+    "diagnostic_retained_claim": "SCHEMA_SUBSTITUTION_HONORED",
+    "requires_audits": [
+      "CONSTRUCT_NEUTRALITY",
+      "FIXTURE_BLINDNESS",
+      "STATE_BLINDNESS"
+    ],
+    "applies_retrospectively_to_v0": false
+  }
+}

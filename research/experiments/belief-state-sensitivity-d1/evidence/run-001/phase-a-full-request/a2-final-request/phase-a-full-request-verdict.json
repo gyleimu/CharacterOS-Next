@@ -1,0 +1,13 @@
+{
+  "phase": "A2",
+  "verdict": "D1_PHASE_A_FULL_REQUEST_CERTIFIED",
+  "model_calls_transmitted": 0,
+  "source": "a1-world-attempt-002",
+  "pristine_visual_check": "current observation non-null, scene == frozen P1, task none, exactly one P1 occurrence",
+  "pristine_normalized_equivalence": "normalised HIGH / LOW / NEUTRAL are byte-identical: the only arm-dependent model-facing facts are the frozen proposition's credence and the projection hash derived from it",
+  "decision_probe_applied_exactly_once": true,
+  "final_normalized_equivalence": "normalised HIGH / LOW / NEUTRAL are byte-identical: the only arm-dependent model-facing facts are the frozen proposition's credence and the projection hash derived from it",
+  "trace_bookkeeping_model_facing": false,
+  "instrument_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+  "next_phase": "Phase B (6-call NEUTRAL noise pilot) — NOT run in this round"
+}

@@ -1,0 +1,159 @@
+{
+  "verdict": "SCHEDULE_GENERATOR_COLLISION_RECORD_CORRECTED",
+  "the_corrected_error": {
+    "earlier_claim": "the five core block names have the same length",
+    "why_it_was_wrong": "`block.length` in the frozen generator is the literal JavaScript string length of the block name, and three of the five core block names have distinct lengths; the earlier record generalised from a coincidental pair",
+    "earlier_file": "evidence/run-001/treatment-request-freeze/schedule-generator-limitation.json",
+    "earlier_file_preserved_not_rewritten": true
+  },
+  "generator_semantics_confirmed": {
+    "expression": "(baseSeed ^ (block.length * 2654435761) ^ r_confirm) >>> 0",
+    "block_operand_type": "the block identifier, a string literal union, so `block.length` is a string length",
+    "was_it_a_string_length": true,
+    "why_the_earlier_phrasing_was_still_wrong": "it asserted all five names share a length; only two do"
+  },
+  "literal_lengths": [
+    {
+      "block": "P1_FULL",
+      "literal_length": 7
+    },
+    {
+      "block": "P2_FULL",
+      "literal_length": 7
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "literal_length": 19
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "literal_length": 16
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "literal_length": 14
+    }
+  ],
+  "per_block_arm_ordering": [
+    {
+      "block": "P1_FULL",
+      "literal_length": 7,
+      "arms": [
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH"
+      ],
+      "arm_ordering_hash": "sha256:cd26054d447c22331706126d6dca4d21030f62ae6a0fdbcf94e288b16c77b8e2"
+    },
+    {
+      "block": "P2_FULL",
+      "literal_length": 7,
+      "arms": [
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH"
+      ],
+      "arm_ordering_hash": "sha256:cd26054d447c22331706126d6dca4d21030f62ae6a0fdbcf94e288b16c77b8e2"
+    },
+    {
+      "block": "P3_NEGATIVE_CONTROL",
+      "literal_length": 19,
+      "arms": [
+        "LOW",
+        "HIGH",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH"
+      ],
+      "arm_ordering_hash": "sha256:754c21f97e73029e6a8fcdc230417d9bc36c3762221d2b245c5c1245369b92ac"
+    },
+    {
+      "block": "P1_FRAME_MINIMAL",
+      "literal_length": 16,
+      "arms": [
+        "HIGH",
+        "LOW",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW"
+      ],
+      "arm_ordering_hash": "sha256:f97725de8b3587a71b5e3e21fbaea125b12252230a9cbb51cdc39f4415a8685e"
+    },
+    {
+      "block": "STATE_REVERSAL",
+      "literal_length": 14,
+      "arms": [
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH",
+        "HIGH",
+        "LOW",
+        "LOW",
+        "HIGH",
+        "LOW",
+        "HIGH"
+      ],
+      "arm_ordering_hash": "sha256:0e2768cba36be53ee442f82c5620fa2f508744180357e41135dc80e0dd775331"
+    }
+  ],
+  "true_collision_groups": [
+    [
+      "P1_FULL",
+      "P2_FULL"
+    ]
+  ],
+  "collision_group_count": 1,
+  "blocks_in_collision_groups": [
+    "P1_FULL",
+    "P2_FULL"
+  ],
+  "derivation_method": "empirical: each block was planned ALONE through the frozen generator and the produced arm orderings were compared by hash; no generator internals were modified and no seed was guessed",
+  "regeneration_verification": {
+    "frozen_core_schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+    "regenerated_core_schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+    "exact_match": true,
+    "trials_structurally_identical": true,
+    "schedule_remains_valid": true
+  },
+  "actions_forbidden_and_not_taken": [
+    "regenerating the schedule file",
+    "reordering or re-randomising any block",
+    "modifying the frozen generator",
+    "modifying any frozen request"
+  ]
+}

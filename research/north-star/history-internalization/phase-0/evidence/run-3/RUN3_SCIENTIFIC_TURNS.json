@@ -1,0 +1,66 @@
+{
+  "planned": 10,
+  "executed": 2,
+  "all_valid": false,
+  "turns": [
+    {
+      "subject_id": "subject-r3-7p4n-2185",
+      "role": "ARM_A",
+      "arm_turn_index": 0,
+      "scientific_turn_id": "A:turn_0",
+      "scientific_turn": true,
+      "user_text": "I've told you I'll pick up the replacement key on Wednesday, so you know where I'll be.",
+      "status": "COMPLETE",
+      "failure": null,
+      "valid": true,
+      "belief_adaptation": {
+        "status": "COMPLETED",
+        "resumed": [],
+        "current": {
+          "workflow_id": "wf-belief-adapt-4aa5912d9d866e042975ddc6",
+          "terminal_kind": "COMPLETE_COMMITTED",
+          "detail": null,
+          "evidence_episode_refs": [
+            "episode:c500bba0036577b8e2deb0cd0d678321293d3e6cac90bc0e52818565f98928e1"
+          ],
+          "provider_calls": 1,
+          "proposition_id": "prop.nadia-keeps-commitments",
+          "canonical_label": "Nadia keeps the commitments she makes to me.",
+          "prior_credence": 0.55,
+          "next_credence": 0.6000000000000001
+        },
+        "failure": null
+      },
+      "relationship_familiarity": {
+        "status": "DISABLED",
+        "counterpart_ref": "entity:alice",
+        "episodes": []
+      },
+      "runtime_turn_index_before": 0,
+      "runtime_turn_index_after": 1,
+      "state_revision_before": 0,
+      "state_revision_after": 7,
+      "repository_revision_before": "R0",
+      "repository_revision_after": "R2"
+    },
+    {
+      "subject_id": "subject-r3-7p4n-2185",
+      "role": "ARM_A",
+      "arm_turn_index": 1,
+      "scientific_turn_id": "A:turn_1",
+      "scientific_turn": true,
+      "user_text": "About the key: I did it, and I did it when I said I would. And I've told you I'll bring the ladder back to the shed before the weekend.",
+      "status": "FAILED",
+      "failure": "TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance)",
+      "valid": false,
+      "belief_adaptation": null,
+      "relationship_familiarity": null,
+      "runtime_turn_index_before": 1,
+      "runtime_turn_index_after": 1,
+      "state_revision_before": 7,
+      "state_revision_after": 11,
+      "repository_revision_before": "R2",
+      "repository_revision_after": "R3"
+    }
+  ]
+}

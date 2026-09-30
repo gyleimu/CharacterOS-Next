@@ -1,0 +1,8 @@
+{
+  "note": "raw pristine requests differ in the belief credence line and the projection hash line; both are the two classes frozen by Revision 3",
+  "normalized_equivalence": {
+    "ok": true,
+    "differing_lines": [],
+    "detail": "normalised HIGH / LOW / NEUTRAL are byte-identical: the only arm-dependent model-facing facts are the frozen proposition's credence and the projection hash derived from it"
+  }
+}

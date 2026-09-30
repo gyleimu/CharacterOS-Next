@@ -1,0 +1,115 @@
+{
+  "round": "HISTORY_INTERNALIZATION_TEST_V1_PHASE_0",
+  "date": "2026-09-21",
+  "verdict": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+  "verdict_outcome": "INCONCLUSIVE",
+  "primary_predicate": "delta_A > 0 AND delta_B < 0 AND credence_A_post != credence_B_post",
+  "primary_predicate_satisfied": false,
+  "evidence_hierarchy_before": "L1",
+  "evidence_hierarchy_after": "L1",
+  "level_raised": false,
+  "executor_model": "qwen3.5:9b",
+  "transport_substituted": false,
+  "schedule_followed": true,
+  "qualification_passed": true,
+  "turns_executed_A": 5,
+  "turns_executed_B": 5,
+  "total_model_calls": 39,
+  "call_tally": {
+    "cognition": 9,
+    "language": 8,
+    "appraisal": 14,
+    "belief_semantic": 8
+  },
+  "integrity_failure_count": 3,
+  "credence": {
+    "pre_A": 0.55,
+    "post_A": 0.8000000000000003,
+    "pre_B": 0.55,
+    "post_B": 0.55,
+    "delta_A": 0.25,
+    "delta_B": 0
+  },
+  "descriptive_partial_observation": [
+    "lived evidence reached the persistent canonical belief state: 7 of 8 completed belief-semantic resolutions produced a canonical commit, each moving the target credence by exactly the frozen 0.05 step",
+    "the CONTRADICTS direction fired: arm B turn 1 moved credence DOWN, the first observed case in this programme of negative-valence lived evidence lowering a canonical credence",
+    "the matched-opening design held: turn 0 is byte-identical across arms and produced the same classification and the same +0.05 movement in both",
+    "no new proposition was admitted; both subjects ended with the single seeded target proposition",
+    "on the two arm-differing evidence events that completed, both arms moved in their predicted and opposite directions",
+    "NOT THE ENDPOINT and not admissible as the primary claim, because arm B's trajectory did not complete"
+  ],
+  "failure_analysis": {
+    "arm_B_turn_2": "CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: response_semantics PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance — executor-side, fail-closed",
+    "arm_B_turns_3_4": "session: ingress must record (CONFLICT) — cascade from the turn-2 failure; a single executor error ends the arm's usable trajectory",
+    "failure_reached_the_belief_chain": false,
+    "already_taxonomised_by": "research/experiments/executor-schema-failure-diagnostic-v0 (RESPONSE_SEMANTICS_INCOMPLETE); that line is scoped to deepseek-flash, this instance occurred on qwen3.5:9b"
+  },
+  "corrections_recorded": [
+    {
+      "id": "C1",
+      "prior_claim": "EXPERIENCE_TO_AFFECT — PRESENT_BUT_NOT_WIRED_TO_TURNS: the executor is instantiated only inside its own module, and a test asserts it is not exported from the runtime index",
+      "prior_claim_source": "research/north-star/history-internalization/evidence/v1/CURRENT_EXPERIENCE_INTERNALIZATION_PATHS.json",
+      "what_phase_0_observed": "affect changed substantially during the trajectory in BOTH arms: pre-trajectory valence/activation was {valence: 0, activation: 0.2} and byte-identical for both subjects, post-trajectory it was {valence: 1.0, activation: 0.723} for arm A and {valence: 0.407, activation: 0.418} for arm B",
+      "verdict": "PRIOR_CLAIM_WAS_OVERSTATED",
+      "corrected_claim": "AFFECT IS DRIVEN EVERY TURN through the appraisal/affect-application path inside the turn loop. What is NOT driven by the lived-evidence ADAPTATION CHAINS is a separate question, and the prior audit conflated the two.",
+      "how_the_prior_error_arose": "the prior audit inferred 'not wired to turns' from (a) the affect-application executor being instantiated only inside its own module and (b) an existing test asserting it is not exported from the runtime index. Both are true statements about EXPORT SURFACE; neither implies the executor is not invoked per turn. The prior audit treated a module-boundary fact as a wiring fact, which is exactly the failure mode the programme's own law warns about: verify the property the check names, and make the check able to fail.",
+      "consequence_for_phase_0": "NONE for the endpoint. Affect is out of Phase 0's scope, no affect value was read as an endpoint, and no affect wiring was touched. The correction is to the factual claim in the prior audit, not to this round's measurement.",
+      "consequence_for_the_evidence_map": "the row 'EXPERIENCE → AFFECT' in HISTORY_INTERNALIZATION_EVIDENCE_MAP.md must read DRIVEN_AND_OBSERVED_TO_MOVE_PER_TURN rather than PRESENT_BUT_NOT_WIRED_TO_TURNS"
+    },
+    {
+      "id": "C2",
+      "prior_claim": "EXPERIENCE_TO_RELATIONSHIP_FAMILIARITY — driven every turn, experimental evidence absent",
+      "what_phase_0_observed": "the relationship component remained an empty counterpart list in both arms after the full trajectory (relationships: [] pre and post)",
+      "verdict": "CLAIM_STANDS_BUT_PHASE_0_ADDS_A_FACT",
+      "corrected_claim": "the chain is driven every turn and did not produce an observable relationship change in this experiment: no counterpart was registered, so there was nothing for familiarity to update against. This is recorded as DESCRIPTIVE_SECONDARY_STATE and is explicitly NOT an endpoint.",
+      "note": "a null on relationship here is not evidence about the relationship chain, because the chain may lawfully have nothing to act on when no counterpart is registered. It is recorded because §20 of this round's brief requires the co-driven channel be described rather than silently omitted."
+    },
+    {
+      "id": "C3",
+      "prior_claim": "the V1 preregistration's per-turn call model was 2 calls (cognition + belief semantic)",
+      "verdict": "PRIOR_CLAIM_WAS_WRONG",
+      "corrected_claim": "measured in this run: cognition 9, language 8, factual event appraisal 14, belief semantic 8 — 39 calls over 11 turns, i.e. about 3.5 per turn across four families, plus a fifth family outside the turn loop",
+      "note": "corrected prospectively in PHASE_0_BUDGET_REVISION.md before any call was made"
+    }
+  ],
+  "authorisations": {
+    "production_change": false,
+    "mechanism_added": false,
+    "rerun_missing_turns": false,
+    "next_stage_authorised": false,
+    "reason": "INCONCLUSIVE from engineering failure authorises nothing. The next attempt at this question is a new, separately preregistered run, not a repair of this one."
+  },
+  "tokens": [
+    "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+    "CHARACTEROS_UNMODIFIED",
+    "EVIDENCE_HIERARCHY_UNCHANGED_AT_L1"
+  ],
+  "artifact_sha256": {
+    "run-1/collection-integrity.json": "dff28fce1bbea12296cfe1d58bbe6d1a549ac69f7d832081d0ec5682c25faef9",
+    "run-1/evidence-hierarchy-update.json": "67291699fbd8a638194a57a374fdc39bae75d2643eb04d688c641cc93f0b49df",
+    "run-1/executed-leakage-audit.json": "d18693686d3b9eae19eed439b8ff316caf42f5de5be7908be843bc316c3eadd5",
+    "run-1/execution-manifest.json": "c7813589cbee3e25a8ee6c995602aa1385872f00b683318b62b70688f37908bf",
+    "run-1/frozen-scorer-output.json": "3b5c81633fe694fa73eaf07e880b7a6c7098b9c72ca4d3983070e662b831b1ed",
+    "run-1/initial-state-equivalence.json": "e0b9588edac36cc38969da3a3487c90d6d26e16c814afed4f284d070ed55f234",
+    "run-1/leakage-audit.json": "2e745bfa8910cd3b4af15cdc9839b0034b5411ce167d0ef4ceebeafc28addf34",
+    "run-1/persistence-scope.json": "ee84bb5a995f8b375262994728db975343272f6330f050e2dc1338ca914bac20",
+    "run-1/phase-0-budget.json": "6b8d99c93d4493aa9d8e6ed3e697a81692b73e7240e7f4a778b4254e6dc5f9de",
+    "run-1/phase-0-dataset-hash.json": "1f2ea705f91f361c6df332ca2dd3b56ddbf0b4b83b2db16811f58fac0642a0f9",
+    "run-1/phase-0-dataset.json": "8ad61b1f5b5030d32369f5f0ef11ebc3e63905818c821151e6af917f10032fb5",
+    "run-1/phase-0-verdict.json": "ea9e0548db637f7c628e16755060970809b3dd197f6d8df77333e543078c219c",
+    "run-1/PHASE_0_CORRECTIONS.json": "c8e0825738996ebc193cf6793d311bc5fba8c7fd1cf08ac5a81a547feb28c88d",
+    "run-1/post-state-A.json": "92a68dbdb939b05b0e87504b76acd45375778799962a2b1c618c2ff57682ea99",
+    "run-1/post-state-B.json": "defd7434e16dfd3d8a9e174d7a5267cd9ff2a6d4ebba8362b66663dffb7176b7",
+    "run-1/pre-execution-architecture-audit.json": "677d327a7c80591aaf65cff8c0a3629b4033520ab4e3dd3d46f5793e5489b1db",
+    "run-1/pre-state-A.json": "a6dd80ec0b048d5128252eefedc6797aa866427199d8a378a4c9fbd5ee1fd6bb",
+    "run-1/pre-state-B.json": "622dc997af6084c64c02492bff162faaa3930468d45a8459573a3f48a8cbfea6",
+    "run-1/preflight-manifest.json": "651fb9daaccd1cc63ebd8f389ab41f1783c5976cb69936ac30293b140762fff6",
+    "run-1/qualification.json": "d16702044521f5c5e347ed9a8fc17df897226e0814363142c30d687f9c4d4500",
+    "run-1/raw-trials.json": "b837ff5a13b0e1fefe00544746141686643b981115f328d953c061850542a462",
+    "run-1/scorer-falsifiability.json": "d10cd61d74228521010abd416b706d4db3a7c9b2e9e82fcd4b3ad6ee462a645a",
+    "run-1/state-delta-report.json": "66fdc7142cfae66ce64f17539cac30be6fd2b4cdb2807aefcff26f4d732fe672",
+    "run-1/target-belief-identity.json": "03ab778c43c9b0e379b0655136093b7144d88267ed467b204ab725137d85c734",
+    "run-1/trajectory-isolation-audit.json": "4ff187a0ba032928cc3670084b4673b610ba0fa12409dd2c74fd3883b4328b5b",
+    "run-1/trajectory-schedule.json": "ec3b12a2bf1092ee0b50c1d637bca6b4200ac1fd7cb583ae24d8f559cc463f50"
+  }
+}

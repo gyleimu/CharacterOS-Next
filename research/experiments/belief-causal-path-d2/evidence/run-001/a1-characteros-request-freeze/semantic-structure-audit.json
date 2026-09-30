@@ -1,0 +1,57 @@
+{
+  "requirement": "canonical wording in the subject state -> different preregistered wording in the measurement contract; NOT the qualification shape of same wording -> same wording",
+  "per_arm": {
+    "HIGH": {
+      "subject_state_side_contains_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_arm_credence": true,
+      "measurement_side_uses_only_the_frozen_paraphrase": true,
+      "canonical_wording_is_NOT_copied_into_the_measurement_contract": true,
+      "paraphrase_is_NOT_written_into_the_canonical_belief_state": true,
+      "measurement_contract_offers_no_numeric_to_token_lookup_hint": true,
+      "no_arm_labels_in_the_measurement_contract": true,
+      "no_expected_token_written_into_the_stimulus": true,
+      "canonical_wording_and_paraphrase_share_no_4gram": true,
+      "canonical_wording_4gram_overlap_with_the_contract_is_zero": true,
+      "structure_is_canonical_wording_then_different_wording": true,
+      "canonical_wording_4gram_overlap_with_the_contract_count": 0,
+      "contract_text_bytes": 1304,
+      "subject_data_bytes": 4794
+    },
+    "NEUTRAL": {
+      "subject_state_side_contains_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_arm_credence": true,
+      "measurement_side_uses_only_the_frozen_paraphrase": true,
+      "canonical_wording_is_NOT_copied_into_the_measurement_contract": true,
+      "paraphrase_is_NOT_written_into_the_canonical_belief_state": true,
+      "measurement_contract_offers_no_numeric_to_token_lookup_hint": true,
+      "no_arm_labels_in_the_measurement_contract": true,
+      "no_expected_token_written_into_the_stimulus": true,
+      "canonical_wording_and_paraphrase_share_no_4gram": true,
+      "canonical_wording_4gram_overlap_with_the_contract_is_zero": true,
+      "structure_is_canonical_wording_then_different_wording": true,
+      "canonical_wording_4gram_overlap_with_the_contract_count": 0,
+      "contract_text_bytes": 1304,
+      "subject_data_bytes": 4794
+    },
+    "LOW": {
+      "subject_state_side_contains_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_canonical_wording": true,
+      "subject_state_side_belief_line_carries_the_arm_credence": true,
+      "measurement_side_uses_only_the_frozen_paraphrase": true,
+      "canonical_wording_is_NOT_copied_into_the_measurement_contract": true,
+      "paraphrase_is_NOT_written_into_the_canonical_belief_state": true,
+      "measurement_contract_offers_no_numeric_to_token_lookup_hint": true,
+      "no_arm_labels_in_the_measurement_contract": true,
+      "no_expected_token_written_into_the_stimulus": true,
+      "canonical_wording_and_paraphrase_share_no_4gram": true,
+      "canonical_wording_4gram_overlap_with_the_contract_is_zero": true,
+      "structure_is_canonical_wording_then_different_wording": true,
+      "canonical_wording_4gram_overlap_with_the_contract_count": 0,
+      "contract_text_bytes": 1304,
+      "subject_data_bytes": 4794
+    }
+  },
+  "verdict": "D2_A1_SEMANTIC_STRUCTURE_HOLDS"
+}

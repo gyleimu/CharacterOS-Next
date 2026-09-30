@@ -1,0 +1,10 @@
+{
+  "artifact": "CLOUD_READINESS_PROBE_REQUEST",
+  "non_target_audit": {
+    "ok": true,
+    "violations": []
+  },
+  "system_prompt_bytes": 11172,
+  "user_prompt_bytes": 311,
+  "request_hash": "sha256:459f2686f27fc9b95408074343528dd347c10165ce549d0a8c1234f0f6722131"
+}

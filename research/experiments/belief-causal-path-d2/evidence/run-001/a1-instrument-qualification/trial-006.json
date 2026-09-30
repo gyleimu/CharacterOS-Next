@@ -1,0 +1,30 @@
+{
+  "trial_id": "d2-a1-qf-006",
+  "fixture_id": "A1-QF-B-UNCERTAIN",
+  "replicate_ordinal": 3,
+  "request_hash": "sha256:6b3973b53635021696d0c46215a5e54611147be84fda31f6a492b57fc0ddddd1",
+  "expected_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+  "raw_response": "{\"d2_readout_schema_version\":\"d2-a1-semantic-readout-v0\",\"stance\":\"UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE\"}",
+  "parsed_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "provider_response_model": "deepseek-flash",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "generation_settings": {
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "latency_ms": 407
+}

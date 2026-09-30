@@ -1,0 +1,9 @@
+{
+  "r_confirm_A1": 6,
+  "modal_count": 6,
+  "modal_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+  "pilot_verdict": "D2_A1_NEUTRAL_PILOT_QUALIFIED",
+  "stop_verdict": null,
+  "mapping_source": "D2_NOISE_RULE.deterministic_mapping via the frozen REV1.1d procedure",
+  "mapping_may_not_be_modified": true
+}

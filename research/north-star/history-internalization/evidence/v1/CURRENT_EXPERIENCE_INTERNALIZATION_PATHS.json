@@ -1,0 +1,147 @@
+{
+  "question": "what can a lived Experience ACTUALLY change in current production?",
+  "method": "extracted from production source with file:line provenance; code existing is not evidence",
+  "paths": [
+    {
+      "id": "EXPERIENCE_TO_BELIEF",
+      "link": "experience -> canonical belief state",
+      "mechanism": "the turn's newly committed lived episode is offered to the frozen belief plasticity chain",
+      "wiring_status": "WIRED_AND_DRIVEN_PER_TURN",
+      "evidence_status": "PARTIAL: D1 established that an AUTHORED credence difference is lawful and isolated; whether LIVED evidence moves credence through this chain has not been measured",
+      "persistence": "durable belief-adaptation workflow store, restored with the session; write-once terminals; one deterministic workflow id per (subject, evidence set)",
+      "is_the_v1_candidate_primary_channel": true,
+      "provenance": [
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 633,
+          "text": "      // path. Both run AFTER this turn's cognition, so the event never enters\r\n      // its own retrieval context.\r\n      if (pending === null) {\r\n        const observational = await this.authority.recordObservationalExperience({\r\n          observationTransitionId: admitted.observation_transition_id,\r\n          declaredSalience: 0.5\r\n        });\r"
+        },
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 640,
+          "text": "        observationalExperienceRef = observational.episode_ref;\r\n      } else {\r\n        const replySourceId = `${pending.turn_source_id}-reply`;\r\n        const reply = await this.authority.recordReply(text, pending.delivery_id, replySourceId, pending.turn_index);\r\n        this.authority.enqueuePending({\r\n          event_ref: reply.event_ref,\r\n          observation_transition_id: reply.observation_transition_id,\r"
+        },
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 685,
+          "text": "            : [];\r\n      beliefAdaptation =\r\n        beliefEpisodeRefs.length > 0\r\n          ? await this.authority.runLivedEvidenceBeliefAdaptation(beliefEpisodeRefs)\r\n          : { status: \"EVIDENCE_UNAVAILABLE\", resumed: [], current: null, failure: \"no lived episode committed this turn\" };\r\n\r\n      // ---- PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: the SAME newly\r"
+        },
+        {
+          "file": "packages/runtime/src/session/belief-adaptation-wiring-v0.ts",
+          "line": 9,
+          "text": " * authorities after each turn's lived evidence is durably committed:\n *\n *   committed episode refs (canonical Memory)\n *   → existing BeliefAdaptationWorkflowStoreV0 (durable, restored with session)\n *   → §32 resume of non-terminal workflows (never silently abandoned)\n *   → runBeliefAdaptationWorkflowV0 (frozen: semantic resolution → plasticity\n *     → BeliefTransitionExecutor → SubjectCore canonical commit)"
+        }
+      ]
+    },
+    {
+      "id": "EXPERIENCE_TO_RELATIONSHIP_FAMILIARITY",
+      "link": "experience -> canonical relationship familiarity",
+      "mechanism": "the same newly committed lived episode is offered to the frozen familiarity chain",
+      "wiring_status": "WIRED_AND_DRIVEN_PER_TURN",
+      "evidence_status": "CODE_WITHOUT_EXPERIMENTAL_EVIDENCE",
+      "persistence": "canonical relationship state",
+      "is_the_v1_candidate_primary_channel": false,
+      "provenance": [
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 696,
+          "text": "      // completed turn: Personality remains unchanged, fail closed.\r\n      personalityAdaptation =\r\n        beliefEpisodeRefs.length > 0\r\n          ? await this.authority.runLivedEvidencePersonalityAdaptation(beliefEpisodeRefs)\r\n          : null;\r\n\r\n      // ---- RELATIONSHIP_LIVED_DEVELOPMENT_V0: the SAME newly committed lived\r"
+        },
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 707,
+          "text": "      // A changed familiarity reaches only FUTURE turns' cognition.\r\n      relationshipFamiliarity =\r\n        beliefEpisodeRefs.length > 0\r\n          ? await this.authority.runLivedEvidenceRelationshipFamiliarity(beliefEpisodeRefs)\r\n          : null;\r\n\r\n      const snapshotAfter = await this.authority.readSnapshot();\r"
+        }
+      ]
+    },
+    {
+      "id": "EXPERIENCE_TO_PERSONALITY",
+      "link": "experience -> canonical personality",
+      "mechanism": "the same episode is offered to the frozen personality plasticity chain, through an OPTIONAL composition-layer factory",
+      "wiring_status": "NOT_DRIVEN_IN_CURRENT_PRODUCTION: the factory is optional and nothing outside the runtime supplies it, so the port is null",
+      "evidence_status": "INACTIVE_IN_PRODUCTION",
+      "persistence": "would be the canonical personality dimension block",
+      "is_the_v1_candidate_primary_channel": false,
+      "provenance": [
+        {
+          "file": "packages/runtime/src/session/explicit-v4-session-authority-v0.ts",
+          "line": 597,
+          "text": "    // receives THIS session's subject-scoped authorities (same subject core,\n    // same memory repository), so evidence membership can never cross subjects.\n    const personalityAdaptation =\n      input.options.personalityAdaptationFactory === undefined\n        ? null\n        : input.options.personalityAdaptationFactory({\n            subjectCore: input.assembly.facade as never,"
+        }
+      ]
+    },
+    {
+      "id": "EXPERIENCE_TO_AFFECT",
+      "link": "experience -> canonical affect",
+      "mechanism": "an affect impulse consumed from ONE verified canonical INITIAL Appraisal for one authoritative factual event, with exactly-once accounting",
+      "wiring_status": "PRESENT_BUT_NOT_WIRED_TO_TURNS: the executor is instantiated only inside its own module, and a test asserts it is not exported from the runtime index",
+      "evidence_status": "NOT_DRIVEN_IN_PRODUCTION",
+      "persistence": "would be a canonical affect commit",
+      "is_the_v1_candidate_primary_channel": false,
+      "provenance": [
+        {
+          "file": "packages/runtime/src/transitions/affect-application/affect-application-executor-v0.ts",
+          "line": 13,
+          "text": " * Laws frozen by the slice:\n *   - EXPLICIT V4 ONLY: subject-state-v4 predecessor, canonical-affect-v0,\n *     BOUNDED_AFFECT_DYNAMICS_V0/tick profile. v3/unknown → fail closed.\n *   - DISPOSITION GATE: only APPRAISED proceeds. ABSTAINED → NOT_ELIGIBLE;\n *     PENDING → TARGET_NOT_READY; INTEGRITY_FAILURE → fail closed. Dynamics 0"
+        },
+        {
+          "file": "packages/runtime/src/transitions/affect-application/affect-application-executor-v0.ts",
+          "line": 14,
+          "text": " *   - EXPLICIT V4 ONLY: subject-state-v4 predecessor, canonical-affect-v0,\n *     BOUNDED_AFFECT_DYNAMICS_V0/tick profile. v3/unknown → fail closed.\n *   - DISPOSITION GATE: only APPRAISED proceeds. ABSTAINED → NOT_ELIGIBLE;\n *     PENDING → TARGET_NOT_READY; INTEGRITY_FAILURE → fail closed. Dynamics 0\n *     and commit 0 on every non-committed route."
+        },
+        {
+          "file": "packages/runtime/src/transitions/affect-application/affect-application-executor-v0.ts",
+          "line": 278,
+          "text": "    const profile = (mech as { affect_profile?: { profile_id?: string; timebase?: string } }).affect_profile;\n    if (profile?.profile_id !== AFFECT_APPLICATION_DYNAMICS_CONTRACT_ID_V0 || profile?.timebase !== \"tick\") {\n      throw stageFailure(STAGE, \"INVALID_SCHEMA\", \"SS-SCHEMA-001\", \"predecessor affect profile is not BOUNDED_AFFECT_DYNAMICS_V0/tick\");\n    }\n    if (!validateCanonicalAffectShape(snapshot.affect, \"predecessor.affect\").ok) {"
+        }
+      ]
+    },
+    {
+      "id": "CAUSAL_ORDERING_LAW",
+      "link": "turn boundary",
+      "mechanism": "all lived-evidence adaptation runs strictly AFTER cognition, delivery and memory admission",
+      "wiring_status": "FROZEN_PRODUCTION_LAW",
+      "evidence_status": "documented in the production source; it is what makes turn N's learned state influence only turn N+1",
+      "persistence": "n/a",
+      "is_the_v1_candidate_primary_channel": false,
+      "provenance": [
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 690,
+          "text": "      // ---- PERSONALITY_CHANGE_THROUGH_LIVED_EVIDENCE_V0: the SAME newly\r\n      // committed lived evidence is offered to the frozen Personality\r\n      // plasticity chain, strictly AFTER this turn's cognition/delivery/Memory\r\n      // and after belief, so Turn N's learned Personality can only influence\r\n      // Turn N+1 (§ no same-turn self-causation). Failure never corrupts the\r"
+        },
+        {
+          "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+          "line": 692,
+          "text": "      // plasticity chain, strictly AFTER this turn's cognition/delivery/Memory\r\n      // and after belief, so Turn N's learned Personality can only influence\r\n      // Turn N+1 (§ no same-turn self-causation). Failure never corrupts the\r\n      // completed turn: Personality remains unchanged, fail closed.\r\n      personalityAdaptation =\r"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "driven_per_turn": [
+      "EXPERIENCE_TO_BELIEF",
+      "EXPERIENCE_TO_RELATIONSHIP_FAMILIARITY"
+    ],
+    "present_but_not_driven": [
+      "EXPERIENCE_TO_PERSONALITY",
+      "EXPERIENCE_TO_AFFECT",
+      "CAUSAL_ORDERING_LAW"
+    ],
+    "the_v1_experiment_is_runnable_on": "EXPERIENCE_TO_BELIEF"
+  },
+  "provenance_lines": {
+    "evidence_write": [
+      {
+        "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+        "line": 633,
+        "text": "      // path. Both run AFTER this turn's cognition, so the event never enters\r\n      // its own retrieval context.\r\n      if (pending === null) {\r\n        const observational = await this.authority.recordObservationalExperience({\r\n          observationTransitionId: admitted.observation_transition_id,\r\n          declaredSalience: 0.5\r\n        });\r"
+      },
+      {
+        "file": "packages/runtime/src/session/interactive-subject-runtime-v0.ts",
+        "line": 640,
+        "text": "        observationalExperienceRef = observational.episode_ref;\r\n      } else {\r\n        const replySourceId = `${pending.turn_source_id}-reply`;\r\n        const reply = await this.authority.recordReply(text, pending.delivery_id, replySourceId, pending.turn_index);\r\n        this.authority.enqueuePending({\r\n          event_ref: reply.event_ref,\r\n          observation_transition_id: reply.observation_transition_id,\r"
+      }
+    ]
+  }
+}

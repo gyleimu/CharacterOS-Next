@@ -1,0 +1,25 @@
+{
+  "version": "belief-causal-path-call-ledger-v1",
+  "by_line": {
+    "D1": {
+      "total": 66,
+      "core_treatment": 60,
+      "pilot_and_design": 6
+    },
+    "D2": {
+      "total": 54,
+      "qualification": 18,
+      "noise_calibration": 12,
+      "scientific_target": 24
+    },
+    "D3": {
+      "total": 21,
+      "qualification": 9,
+      "noise_calibration": 6,
+      "scientific_target": 6
+    }
+  },
+  "grand_total": 141,
+  "accounting_rule": "these categories are NOT interchangeable: qualification calls test an instrument on state-blind fixtures, calibration calls measure self-noise, and only scientific-target calls produce evidence about the frozen causal links",
+  "forbidden_reading": "summing all calls as though each were an independent scientific observation"
+}

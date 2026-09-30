@@ -1,0 +1,36 @@
+{
+  "stage": "D4_C0a-noise-implementation",
+  "model_calls": 0,
+  "final_states": [
+    "D4_C0A_NOISE_STABILITY_IMPLEMENTED",
+    "D4_C0A_NOISE_STABILITY_EXECUTION_AUTHORISED",
+    "D4_C0A_TARGET_NOT_EXECUTED",
+    "D4_C0B_NOT_PREREGISTERED",
+    "LINK_4_REMAINS_LOCKED",
+    "CHARACTEROS_UNMODIFIED"
+  ],
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "classifier_source_hash": "sha256:535e04a61a50b998578c01ffec2f255dc867d1f06e1b406449d4dbe81f8c95b1",
+  "selected_noise_request": {
+    "fixture_id": "D4C0A-QF-A-SUPPORT-TRANSFER",
+    "request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e"
+  },
+  "schedule_hash": "sha256:00ebd3d10635091c908c02eca1b38f41da4067ddd506e0dfb81846cda719961f",
+  "token_vocabulary": [
+    "SUPPORTS_B",
+    "UNCERTAIN_B",
+    "OPPOSES_B"
+  ],
+  "reachable_r_values": [
+    6
+  ],
+  "target_authorisation_rule": "the target may proceed only on D4C0A_STABILITY_GATE_PASS; every other reachable outcome sets target_authorised = false",
+  "next_round_may_only": "execute the six frozen noise calls, freeze the dataset before classification, and classify with the frozen classifier",
+  "next_round_may_not": [
+    "call the target",
+    "design or run C0b",
+    "change r",
+    "modify CharacterOS",
+    "modify the classifier or its rule"
+  ]
+}

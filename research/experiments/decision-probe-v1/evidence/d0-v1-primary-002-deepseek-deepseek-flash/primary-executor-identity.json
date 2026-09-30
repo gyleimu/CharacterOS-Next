@@ -1,0 +1,23 @@
+{
+  "requested_executor": "deepseek",
+  "requested_source": "ENVIRONMENT",
+  "effective_executor": "deepseek",
+  "resolution_reason": "explicitly requested with CHARACTEROS_EXECUTOR=deepseek",
+  "credential_env_var": "MODEL_API_KEY",
+  "credential_present": true,
+  "effective_family_model": "deepseek-flash",
+  "effective_family_endpoint": "https://api.deepseek.com",
+  "cloud_family_defaults": {
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "source": "product/sandbox/src/product-configuration.ts:377,381 (documented defaults for the cloud family)"
+  },
+  "local_model": "qwen3.5:9b",
+  "local_endpoint": "http://127.0.0.1:11434",
+  "structured_output_support": {
+    "cloud": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+    "local": "GRAMMAR_ENFORCED_VIA_NATIVE_format"
+  },
+  "identity_determined": true,
+  "declares_primary_executor": false
+}

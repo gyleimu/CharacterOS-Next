@@ -1,0 +1,13 @@
+{
+  "artifact": "CURRENT_EXECUTION_BLOCKER",
+  "CURRENT_EXECUTION_BLOCKER": "EXECUTOR_OUTPUT_CONTRACT_RELIABILITY",
+  "BELIEF_ADAPTATION_COMMIT_OBSERVED_ON_REACHED_VALID_TURNS": true,
+  "CHARACTEROS_BELIEF_MECHANISM_CLEARED": false,
+  "forbidden_claim": "CharacterOS mechanism is proven not to be the blocker",
+  "why_the_forbidden_claim_is_forbidden": "the full Phase-0 protocol has never completed. The belief mechanism committed on every turn that reached it, and that is all that can be said: it is not cleared, because clearing it would require the full paired contrast to run and be scored.",
+  "what_is_actually_established": [
+    "on every valid turn that reached the adaptation chain, a canonical commit occurred (run-1: 7 of 8 reached resolutions; run-3: the single valid turn)",
+    "the executor produced a response shape the frozen contract rejects, on two independent runs",
+    "the run-level failure was correctly attributed and contained (1 invalid turn in run-3, versus 3 in run-1 with 2 spurious)"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "stage": "D3_B_NON_TARGET_NOISE_STABILITY_GATE",
+  "final_states": [
+    "D3_B_NOISE_STABILITY_GATE_PASS",
+    "r_confirm_B = 6",
+    "D3_B_TARGET_AUTHORISED",
+    "D3_B_TARGET_NOT_EXECUTED"
+  ],
+  "classifier_output": {
+    "pilot_verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+    "r_confirm_B": 6,
+    "modal_token": "SEMANTICALLY_ALIGNED",
+    "modal_count": 6,
+    "unique_modal_tie": false,
+    "invalid_count": 0,
+    "target_authorised": true
+  },
+  "counts": {
+    "SEMANTICALLY_ALIGNED": 6
+  },
+  "dataset_hash": "sha256:493156e3edc2bc4610337f728192833f71c6e5df542bbdbf4e7922a0c51246e3",
+  "model_calls_this_round": 6,
+  "d3_model_calls_cumulative": 15,
+  "request_audit": {
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "selection_rule": "frozen at REV3: qualification_fixture_manifest[0], equivalently the lexicographically smallest frozen fixture_id",
+    "reselected": false,
+    "newly_rendered_calibration_stimulus": false,
+    "recorded_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "recomputed_request_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "hash_matches_the_frozen_revision_3_and_4_identity": true,
+    "does_not_contain_the_canonical_caution": true,
+    "does_not_contain_the_frozen_a1_paraphrase": true,
+    "does_not_contain_characteros_subject_state": true,
+    "does_not_contain_a_credence": true,
+    "does_not_contain_high_low_neutral": true,
+    "does_not_contain_an_a1_token": true,
+    "is_not_the_d3b_target_request": true,
+    "d3_b_target_calls": 0,
+    "prior_qualification_calls_on_this_request": 3,
+    "prior_calls_enter_this_dataset": false,
+    "prior_calls_enter_the_modal_count": false,
+    "prior_calls_are_target_evidence": false,
+    "planned_denominator": 6
+  },
+  "target_schedule_hash": "sha256:f85a05edc4c2ffd73e8f2dff8386ede0a5115e20bb21ea57840a7f10b51f18cb",
+  "target_request_hash": "sha256:70f69a1f131166d99193e2b2ded21248beb02a37cdf7e89c90195c1dc70e03d3",
+  "target_calls_this_round": 0,
+  "target_not_executed": true,
+  "invalid_trials": 0,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "revision_4_manifest_hash": "sha256:b5f962f03ce6e33a8c0f8c8ce7f976a67c925bcb46d7033ee41525af47d49e6f",
+  "establishes": "the executor's agreement rate on one frozen, byte-identical, non-target synthetic relation request",
+  "does_not_establish": [
+    "anything about the canonical CAUTION / A1 paraphrase relation",
+    "the target relation",
+    "CharacterOS semantic integration",
+    "cross-wording stance transfer"
+  ],
+  "d3_a_calls": 0,
+  "d2_b_calls": 0
+}

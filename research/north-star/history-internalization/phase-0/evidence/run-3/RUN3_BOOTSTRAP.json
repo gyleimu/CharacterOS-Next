@@ -1,0 +1,8 @@
+{
+  "artifact": "RUN3_BOOTSTRAP",
+  "scientific_turn": false,
+  "subject_id": "subject-r3-2wq9-6631",
+  "status": "COMPLETE",
+  "passed": true,
+  "note": "a bootstrap/admission operation; it does NOT enter the scientific denominator"
+}

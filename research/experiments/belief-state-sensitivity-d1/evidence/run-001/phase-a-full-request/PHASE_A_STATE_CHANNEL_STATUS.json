@@ -1,0 +1,71 @@
+{
+  "record": "PHASE_A_STATE_CHANNEL_STATUS",
+  "run": "BELIEF_STATE_SENSITIVITY_D1_RUN_001",
+  "purpose": "Prevent any future script or human from reading the historical Phase A PASS as authorisation to make model calls. The historical verdict stands for what it actually verified, and for nothing more.",
+
+  "historical_verdict_file": "evidence/run-001/phase-a/phase-a-verdict.json",
+  "historical_verdict": "D1_PHASE_A_READY",
+  "interpreted_scope": "STATE_CHANNEL_ONLY",
+  "full_request_certified": false,
+  "authorizes_model_calls": false,
+  "superseded_for_execution_gate_by": "PHASE_A_FULL_REQUEST_CERTIFICATION",
+  "original_artifacts_unchanged": true,
+  "original_artifact_count": 17,
+
+  "what_the_historical_verdict_DID_verify": [
+    "the base subject is production-authored via createInteractiveSubjectSeedV0, with only the belief container authored",
+    "the proposition identity is production-derived and subject-scoped, so HIGH/LOW/NEUTRAL necessarily share one proposition_id",
+    "HIGH 0.80 / LOW 0.20 / NEUTRAL 0.50 all materialise through materializeSubjectStateV4V0 with production validation",
+    "the canonical state-channel isolation is exact: the HIGH-vs-LOW deep diff yields exactly one differing path, /beliefs/items/0/credence",
+    "the separation gate holds: 0.60, stances +0.60 / 0 / -0.60, all levels interior",
+    "the production V2 projection carries the belief line and the lexical audit passes on it",
+    "the declared arm-dependent byte set after removing the belief block is exactly one line, [projection_hash]"
+  ],
+
+  "what_it_DID_NOT_verify": [
+    "the probe observation reaches canonical context at all — the built request rendered `[current observation] (none)` and `[context] scene=\"idle\" task=(none)`",
+    "therefore the lexical and history-absence audits ran on the STATE CHANNEL, not on the request that would be sent",
+    "there is no pristine production V8 request artifact for any arm",
+    "DecisionProbeV2 has not been applied exactly once to any request",
+    "the REVISION 3 normalized-request equivalence has not been evaluated on a real final request"
+  ],
+
+  "blocking_defect_open_since_last_round": {
+    "name": "CURRENT_OBSERVATION_BINDING_MISSING",
+    "same_defect_class_as": "decision-probe-v0 D0Q_RUN_001",
+    "cause": "the D1 states come from a bare materializeSubjectStateV4V0 and have no facade, so no observation can be committed; the request builder projects the genesis state directly",
+    "required_fix": "build a minimal production world per arm (InMemoryMemoryRepository + createInMemorySubjectCoreFacadeForExplicitV4V0 + issuer + micl minter) and commit the frozen P1 observation through observationInput -> buildContextDelta -> buildObservationProposal -> reserveAndRoute -> commitReserved, exactly as research/experiments/decision-probe-v0/observation-binding.ts already does",
+    "caught_before_any_call": true
+  },
+
+  "revision_3_status": {
+    "frozen": true,
+    "amendment_hash": "sha256:1781b3458fd760a73c27adb224e29e4c9d156ac60815383ac1d65e2dd298b60c",
+    "preserved_revision_2_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b",
+    "model_calls_before_amendment": 0,
+    "artifact": "evidence/run-001/phase-a-full-request/revision-3-amendment.json"
+  },
+
+  "model_calls_transmitted": 0,
+  "treatment_calls_transmitted": 0,
+
+  "required_before_any_call": [
+    "PHASE_A_STATE_CHANNEL_STATUS.json is written (this file)",
+    "a minimal production world exists per arm, independent and not sharing mutable facade / repository / issuer sequence / reservation state",
+    "the frozen P1 observation is committed through the real production path in all three worlds, with arm-blind observation identity",
+    "post-observation state isolation is re-proved: HIGH_post vs LOW_post must still differ in exactly /beliefs/items/0/credence",
+    "a pristine production V8 request is built and hashed per arm",
+    "DecisionProbeV2 is applied exactly once, with schema_substituted = true and contract count = 1",
+    "the final request passes the history-absence, lexical and REVISION 3 normalized-equivalence audits",
+    "instrument fidelity is re-confirmed against the qualified DeepSeek contract hash",
+    "the verdict D1_PHASE_A_FULL_REQUEST_CERTIFIED is emitted"
+  ],
+
+  "standing_states": {
+    "d1": "NOT_EXECUTED",
+    "cross_transport_replication": "PENDING",
+    "history_internalization": "NOT_TESTED",
+    "phase_b_noise_pilot": "NOT_RUN",
+    "treatment_schedule": "NOT_FROZEN"
+  }
+}

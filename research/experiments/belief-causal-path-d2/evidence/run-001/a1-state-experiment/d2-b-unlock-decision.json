@@ -1,0 +1,7 @@
+{
+  "d2_b_authorised": false,
+  "decision_basis": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+  "d2_b_executed_this_round": false,
+  "reason": "the frozen scorer returned a valid null; a null treatment result does not unlock the next stage",
+  "d2_execution_stopped_at": "D2_EXECUTION_STOPPED_AT_A1"
+}

@@ -1,0 +1,21 @@
+{
+  "system_messages_identical": true,
+  "differing_user_line_count": 1,
+  "differing_lines": [
+    {
+      "index": 4,
+      "support": "SUBJECT STANCE TOWARD A: SUPPORTS",
+      "oppose": "SUBJECT STANCE TOWARD A: OPPOSES"
+    }
+  ],
+  "support_occurrences": 1,
+  "oppose_occurrences": 1,
+  "normalisation_replacements": [
+    1,
+    1
+  ],
+  "byte_identical_after_the_frozen_normalisation": true,
+  "forbidden_leakage_count": 0,
+  "target_calls_this_round": 0,
+  "verdict": "D4_C0A_SUPPORT_OPPOSE_ISOLATION_HOLDS"
+}

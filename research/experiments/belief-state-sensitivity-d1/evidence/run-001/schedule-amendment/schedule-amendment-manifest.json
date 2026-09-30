@@ -1,0 +1,11 @@
+{
+  "amendment_kind": "PRE_TREATMENT_SCHEDULE_AMENDMENT",
+  "verdict": "PRE_TREATMENT_SCHEDULE_AMENDMENT_FROZEN",
+  "core_schedule_verdict": "D1_CORE_TREATMENT_SCHEDULE_REFROZEN",
+  "core_schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "superseded_invalid_schedule_hash": "sha256:11b32f96fe4d43688cadd5ca5347c2ed144b9f1954a3696be71e154e3c89729c",
+  "core_treatment_calls_authorised": 60,
+  "restart_contrast_locked": true,
+  "high_low_treatment_started": false,
+  "model_calls_transmitted": 6
+}

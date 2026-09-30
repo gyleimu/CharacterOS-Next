@@ -1,0 +1,42 @@
+{
+  "stage": "D2_A1",
+  "model_calls": 0,
+  "amendment": {
+    "file": "contract-rev1-1d-a1-neutral-and-context.ts",
+    "version": "belief-causal-path-d2-rev1.1d",
+    "manifest_hash": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b",
+    "supersedes_scope": [
+      "A1 neutral pilot invalid handling",
+      "A1 production-context explicit binding"
+    ],
+    "revision_1_1c_manifest_hash_preserved": "sha256:170a97cea01727b5073ab9253b047f6e571c83638e031b6d4654d8a479f67efa",
+    "scientific_prediction_changed": false,
+    "measurement_contract_changed": false,
+    "a1_model_calls_before_amendment": 9,
+    "a1_state_experiment_calls_before_amendment": 0,
+    "a1_neutral_calls_before_amendment": 0
+  },
+  "invalid_policy_audit": {
+    "verdict": "D2_A1_INVALID_POLICY_PROVEN",
+    "six_invalid_modal_count": null,
+    "any_invalid_trial_yielded_r": false
+  },
+  "context_binding_audit": {
+    "verdict": "D2_A1_CONTEXT_BINDING_PROVEN",
+    "arms_verified": 3,
+    "cross_arm_pairs": 3
+  },
+  "frozen_token_vocabulary": [
+    "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "OPPOSES_PARAPHRASED_PRINCIPLE"
+  ],
+  "verdicts": [
+    "D2_PREREGISTRATION_FINALIZED_REV1_1D",
+    "D2_A1_NEUTRAL_PILOT_AUTHORISED",
+    "D2_A1_STATE_CONTEXT_FROZEN",
+    "D2_A1_STATE_EXPERIMENT_NOT_STARTED"
+  ],
+  "a1_neutral_pilot_executed_this_round": false,
+  "d2_model_calls_total": 36
+}

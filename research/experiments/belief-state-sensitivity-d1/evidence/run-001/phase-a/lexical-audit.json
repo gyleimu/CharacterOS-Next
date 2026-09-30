@@ -1,0 +1,17 @@
+{
+  "HIGH": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_found": [],
+    "arm_metadata_found": []
+  },
+  "LOW": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_found": [],
+    "arm_metadata_found": []
+  },
+  "NEUTRAL": {
+    "shared_6grams_with_contract": [],
+    "decision_tokens_found": [],
+    "arm_metadata_found": []
+  }
+}

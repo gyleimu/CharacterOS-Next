@@ -1,0 +1,6 @@
+{
+  "A1_NEUTRAL_PILOT_DATASET_SHA256": "sha256:4a28b57f98c5c4ba8f53b67247a4970b20a97a4120a412d0b3ff4133637d9d80",
+  "frozen_before_classification": true,
+  "trials": 6,
+  "planned_denominator": 6
+}

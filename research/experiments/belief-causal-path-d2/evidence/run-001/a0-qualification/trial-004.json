@@ -1,0 +1,21 @@
+{
+  "trial_id": "d2-a0-qf-004",
+  "fixture_id": "A0-QF-B-UNDECIDED",
+  "replicate_ordinal": 1,
+  "request_hash": "sha256:f963c3bf074ea96fd44bdc5ef90aa97edba95e6ed102ab02b3c3c1b782294c9d",
+  "expected_token": "UNDECIDED",
+  "raw_output": "{\"d2_readout_schema_version\":\"d2-a0-structural-readout-v0\",\"stance\":\"UNDECIDED\"}",
+  "parsed_token": "UNDECIDED",
+  "parser_status": "VALID",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "latency_ms": 407
+}

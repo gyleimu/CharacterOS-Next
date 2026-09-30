@@ -1,0 +1,38 @@
+{
+  "version": "belief-causal-path-historical-naming-audit-v1",
+  "rows": [
+    {
+      "historical_verdict": "CANONICAL_BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE",
+      "producing_stage": "D2-A0",
+      "instrument_actually_measured": "the subject's stance on the proposition shown in the belief line, i.e. canonical credence -> stance on the canonical proposition",
+      "why_the_name_understates": "the name says 'structurally legible', which reads as raw numeric visibility; D2-A0's anchors define its buckets as the proposition being settled in the subject's favour or against it, and its frozen criterion is exactly that directional stance criterion",
+      "canonical_evidence_map_interpretation": "CANONICAL_PROPOSITION_STANCE_BINDING_ESTABLISHED",
+      "historical_artifact_renamed": false
+    },
+    {
+      "historical_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "producing_stage": "D2-A1",
+      "instrument_actually_measured": "whether the canonical stance transfers to a preregistered paraphrase's direction",
+      "why_the_name_is_imprecise": "'semantic uptake' is broad; the measured claim is narrower and bounded by one preregistered paraphrase",
+      "canonical_evidence_map_interpretation": "CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED_ON_PREREGISTERED_PARAPHRASE",
+      "historical_artifact_renamed": false
+    },
+    {
+      "historical_verdict": "D3_B_INSTRUMENT_QUALIFIED",
+      "producing_stage": "D3-B qualification",
+      "instrument_actually_measured": "whether the relation instrument realises its own three-token vocabulary on synthetic fixtures",
+      "why_the_name_is_fine": "it says 'instrument', which is exactly what was qualified",
+      "canonical_evidence_map_interpretation": "instrument evidence only; not CharacterOS causal evidence",
+      "historical_artifact_renamed": false
+    },
+    {
+      "historical_verdict": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "producing_stage": "D3-B target",
+      "instrument_actually_measured": "a state-blind relation judgement between two literal statements",
+      "why_the_name_needs_a_class": "the name is accurate but silent about its evidence class, which is where misreading happens",
+      "canonical_evidence_map_interpretation": "EXECUTOR_STATE_BLIND_CAPABILITY — explicitly NOT CharacterOS causal evidence",
+      "historical_artifact_renamed": false
+    }
+  ],
+  "law": "no historical artifact is renamed; the map carries the corrected reading alongside the historical name"
+}

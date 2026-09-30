@@ -1,0 +1,122 @@
+{
+  "stage": "D3_REVISION_4",
+  "model_calls": 0,
+  "section_a_stability_gate": {
+    "classifier": "classifyD3BNoiseStabilityV0 (frozen revision 4)",
+    "called_not_reimplemented": true,
+    "cases": [
+      {
+        "case": "six_identical_legal",
+        "expected_verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+        "observed_verdict": "D3_B_NOISE_STABILITY_GATE_PASS",
+        "expected_r": 6,
+        "observed_r": 6,
+        "target_authorised": true,
+        "modal_count": 6,
+        "tie": false,
+        "pass": true
+      },
+      {
+        "case": "five_same_plus_one_different_legal",
+        "expected_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "observed_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "expected_r": null,
+        "observed_r": null,
+        "target_authorised": false,
+        "modal_count": 5,
+        "tie": false,
+        "pass": true
+      },
+      {
+        "case": "four_same_plus_two_other",
+        "expected_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "observed_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "expected_r": null,
+        "observed_r": null,
+        "target_authorised": false,
+        "modal_count": 4,
+        "tie": false,
+        "pass": true
+      },
+      {
+        "case": "unique_modal_tie",
+        "expected_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "observed_verdict": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+        "expected_r": null,
+        "observed_r": null,
+        "target_authorised": false,
+        "modal_count": 3,
+        "tie": true,
+        "pass": true
+      },
+      {
+        "case": "one_invalid",
+        "expected_verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "observed_verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "expected_r": null,
+        "observed_r": null,
+        "target_authorised": false,
+        "modal_count": null,
+        "tie": false,
+        "pass": true
+      },
+      {
+        "case": "six_invalid",
+        "expected_verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "observed_verdict": "D3_B_INCONCLUSIVE_BY_NOISE_PILOT_INVALID_OUTPUTS",
+        "expected_r": null,
+        "observed_r": null,
+        "target_authorised": false,
+        "modal_count": null,
+        "tie": false,
+        "pass": true
+      }
+    ],
+    "any_path_yields_r_14": false,
+    "only_six_mutually_agreeing_calls_authorise_the_target": true,
+    "r_values_reachable": [
+      6
+    ],
+    "superseded_classifier_on_five_plus_one": "D3_B_NEUTRAL_PILOT_QUALIFIED",
+    "superseded_classifier_r": 14,
+    "gate_classifier_on_five_plus_one": "D3_B_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE",
+    "gate_classifier_r": null,
+    "the_difference_is_the_point": "the superseded classifier funds fourteen further calls for a pilot that already fails a unanimity target; the gate declines to fund the target at all"
+  },
+  "section_b_noise_request": {
+    "artifact": "fixture-A-request.json",
+    "fixture_id": "D3B-QF-A-ALIGNED",
+    "fixture_selection_changed_by_revision_4": false,
+    "recorded_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "recomputed_hash": "sha256:82a8678e044fd802611f173ae4ae1f13702e636dcdfb3b53771c81995c46ca8a",
+    "matches_the_revision_3_frozen_identity": true
+  },
+  "section_c_prior_exposure": {
+    "same_request_was_called_during_qualification": true,
+    "prior_call_count_observed": 3,
+    "prior_call_count_frozen": 3,
+    "agrees_with_the_frozen_record": true,
+    "prior_calls_included_in_the_noise_pilot_dataset": false,
+    "prior_calls_are_target_evidence": false,
+    "new_six_calls_are_a_prospectively_frozen_independent_batch": true,
+    "limitation_stated_plainly": "the selected calibration request HAS already been observed during qualification; it must not be described as a never-before-seen calibration stimulus"
+  },
+  "target_authorised_this_round": false,
+  "target_calls": 0,
+  "budget": {
+    "qualification_completed": 9,
+    "noise_planned": 6,
+    "target_planned_if_the_gate_passes": 6,
+    "complete_success_path": 21,
+    "absolute_maximum": 21,
+    "if_the_gate_fails_total_stops_at": 15,
+    "target_calls_after_a_failed_gate": 0,
+    "superseded_maximum": 29,
+    "superseded_maximum_source": 29,
+    "superseded": true,
+    "d3a_calls": 0,
+    "d2b_calls": 0,
+    "old_29_was_superseded_by_revision_4": true
+  },
+  "verdict": "D3_REV4_STABILITY_GATE_FROZEN"
+}

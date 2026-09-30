@@ -1,0 +1,40 @@
+{
+  "noise_request_hash": "sha256:f425b1425d3258ff2d8ab841da69a4e9e06c9b64257ef6fbcef9928154956e3e",
+  "noise_request_hash_exact": true,
+  "a_deterministic_rebuild_reproduces_it": true,
+  "selected_fixture_identity": "D4C0A-QF-A-SUPPORT-TRANSFER",
+  "selected_fixture_identity_exact": true,
+  "is_not_the_support_target": true,
+  "is_not_the_oppose_target": true,
+  "contains_no_replicate_ordinal": true,
+  "contains_no_schedule_identity": true,
+  "contains_no_request_hash": true,
+  "executor_settings_equal_qualification_settings": true,
+  "frozen_qualification_executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled",
+    "timeout_ms": 120000,
+    "endpoint": "https://api.deepseek.com"
+  },
+  "classifier": "classifyD4C0ANoiseStabilityV0",
+  "classifier_source_hash": "sha256:535e04a61a50b998578c01ffec2f255dc867d1f06e1b406449d4dbe81f8c95b1",
+  "classifier_source_hash_unchanged": true,
+  "d4_c0a_target_calls": 0,
+  "schedule": {
+    "planned_trials": 6,
+    "identities_exact": true,
+    "positions_1_to_6": true,
+    "duplicate_identities": 0,
+    "missing_identities": 0,
+    "extra_identities": 0,
+    "distinct_request_hashes": 1,
+    "schedule_hash_recorded": "sha256:00ebd3d10635091c908c02eca1b38f41da4067ddd506e0dfb81846cda719961f",
+    "schedule_hash_recomputed": "sha256:00ebd3d10635091c908c02eca1b38f41da4067ddd506e0dfb81846cda719961f",
+    "schedule_hash_exact": true,
+    "rebuilt_at_runtime": false
+  },
+  "verdict": "D4_C0A_NOISE_IDENTITY_VERIFIED"
+}

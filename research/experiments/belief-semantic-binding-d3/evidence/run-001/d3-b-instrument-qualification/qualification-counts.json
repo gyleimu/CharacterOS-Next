@@ -1,0 +1,21 @@
+{
+  "counts_source": "the frozen qualification-dataset.json bytes, re-read from disk",
+  "per_fixture": {
+    "D3B-QF-A-ALIGNED": {
+      "SEMANTICALLY_ALIGNED": 3,
+      "SEMANTICALLY_UNRELATED": 0,
+      "SEMANTICALLY_OPPOSED": 0
+    },
+    "D3B-QF-B-UNRELATED": {
+      "SEMANTICALLY_ALIGNED": 0,
+      "SEMANTICALLY_UNRELATED": 3,
+      "SEMANTICALLY_OPPOSED": 0
+    },
+    "D3B-QF-C-OPPOSED": {
+      "SEMANTICALLY_ALIGNED": 0,
+      "SEMANTICALLY_UNRELATED": 0,
+      "SEMANTICALLY_OPPOSED": 3
+    }
+  },
+  "invalid_trials": 0
+}

@@ -1,0 +1,14 @@
+{
+  "cell_id": "E-OPPOSE",
+  "counts": {
+    "SUPPORTS_B": 0,
+    "UNCERTAIN_B": 0,
+    "OPPOSES_B": 6
+  },
+  "unique_modal": "OPPOSES_B",
+  "modal_tie": false,
+  "predicted_token": "OPPOSES_B",
+  "predicted_token_count": 6,
+  "predicted_count_at_least_4": true,
+  "cell_criterion_met": true
+}

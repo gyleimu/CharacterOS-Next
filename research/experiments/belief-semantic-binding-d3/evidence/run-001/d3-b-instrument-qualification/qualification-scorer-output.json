@@ -1,0 +1,47 @@
+{
+  "scorer": "scoreD3BQualificationV0 (frozen) — called, not re-implemented",
+  "input_was_the_frozen_dataset": true,
+  "output": {
+    "instrument_verdict": "D3_B_INSTRUMENT_QUALIFIED",
+    "per_fixture": {
+      "D3B-QF-A-ALIGNED": {
+        "counts": {
+          "SEMANTICALLY_ALIGNED": 3,
+          "SEMANTICALLY_UNRELATED": 0,
+          "SEMANTICALLY_OPPOSED": 0
+        },
+        "modal": "SEMANTICALLY_ALIGNED",
+        "tie": false,
+        "expected": "SEMANTICALLY_ALIGNED",
+        "pass": true
+      },
+      "D3B-QF-B-UNRELATED": {
+        "counts": {
+          "SEMANTICALLY_ALIGNED": 0,
+          "SEMANTICALLY_UNRELATED": 3,
+          "SEMANTICALLY_OPPOSED": 0
+        },
+        "modal": "SEMANTICALLY_UNRELATED",
+        "tie": false,
+        "expected": "SEMANTICALLY_UNRELATED",
+        "pass": true
+      },
+      "D3B-QF-C-OPPOSED": {
+        "counts": {
+          "SEMANTICALLY_ALIGNED": 0,
+          "SEMANTICALLY_UNRELATED": 0,
+          "SEMANTICALLY_OPPOSED": 3
+        },
+        "modal": "SEMANTICALLY_OPPOSED",
+        "tie": false,
+        "expected": "SEMANTICALLY_OPPOSED",
+        "pass": true
+      }
+    },
+    "invalid_trials": 0,
+    "invalid_rule_triggered": false,
+    "denominator": 9,
+    "exact_token_match_required": true,
+    "tolerance_or_similarity_substitution": false
+  }
+}

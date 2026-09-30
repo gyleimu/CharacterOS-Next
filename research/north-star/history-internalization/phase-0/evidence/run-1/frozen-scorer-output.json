@@ -1,0 +1,19 @@
+{
+  "scorer": "scorePhase0V0",
+  "frozen_before_any_call": true,
+  "result": {
+    "delta_A": 0.25,
+    "delta_B": 0,
+    "between_subject_divergence": 0.25,
+    "directional_match_A": true,
+    "directional_match_B": false,
+    "values_differ": true,
+    "primary_predicate": "delta_A > 0 AND delta_B < 0 AND credence_A_post != credence_B_post",
+    "primary_predicate_satisfied": false,
+    "verdict": {
+      "outcome": "INCONCLUSIVE",
+      "verdict": "HISTORY_INTERNALIZATION_V1_INCONCLUSIVE",
+      "reason": "turn B:turn_2 status=FAILED failure=TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATION_COGNITION_RESPONSE_SEMANTICS_REJECTED: SEMANTIC_COMPLETENESS_FAILED: conversation proposal.response_semantics: PRIMARY_STANCE requires an authoritative SUBJECTIVE_SELECTION stance); turn B:turn_3 status=FAILED failure=TURN_FAILED_CLOSED: session: ingress must record (CONFLICT); turn B:turn_4 status=FAILED failure=TURN_FAILED_CLOSED: session: ingress must record (CONFLICT)"
+    }
+  }
+}

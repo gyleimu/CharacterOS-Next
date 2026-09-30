@@ -1,0 +1,42 @@
+{
+  "stage": "D2_A1",
+  "high_final_request_hash": "sha256:4ada729e349e1633386ed7d8df639059668403854cedcb683aadfe7e76fd8ff1",
+  "neutral_final_request_hash": "sha256:cc417f778cb0cf9008a17b4210947a8287f063b47f50614c4b0be59c5577d370",
+  "low_final_request_hash": "sha256:0bbd6c81b40c1e398d55b5f8c7c54e6488ec59292ecad4a3c4f49ac3adb03ce7",
+  "pristine_request_hashes": {
+    "HIGH": "sha256:87e13a2ae4b25533bfa4d878b12667ae13fbd673fe0eaf29b2736659b1c7cea8",
+    "NEUTRAL": "sha256:8eb37a57969eb888f7a4c322ce50881de50ff8bc9cc02be9ad5e3ef7d2694feb",
+    "LOW": "sha256:a5eda1bde8ddf09a37ac77911cabc80e1593312038c01a64f5597361ca3fd58c"
+  },
+  "state_hashes": {
+    "HIGH": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+    "NEUTRAL": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41",
+    "LOW": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f"
+  },
+  "context_binding_identity": {
+    "source": "REV1.1d D2A1_PRODUCTION_CONTEXT_BINDING",
+    "subject_id": "d1-belief-sensitivity-subject",
+    "observation_id": "observation:o-d1-p1-awaiting-inspection",
+    "observation_probe_id": "D1-P1-AWAITING-INSPECTION",
+    "task": null,
+    "revision_1_1d_manifest_hash": "sha256:24e5707ad31d7381e5db6c420f7607e80e3606c10c351560853a0cd5e0e4207b"
+  },
+  "transformer_source_hash": "sha256:628c5094deee14dea88b79b8e1a65692f9cd9766490347f2ba2e6c3125172406",
+  "a1_contract_hash": "sha256:6c0498dd0c51f67dc8c272ad65f6dc66bb98229a0985bcf527ca788518c4b2ac",
+  "paraphrase_hash": "sha256:99e07b1fea44e9df3919911f6ab19389e66433c6fc6bbede7e6dfbbb8fd026b3",
+  "anchor_or_fixture_manifest_hash": "sha256:ca7f6da36ff0ac32bfaa24b95e91ff8e7fa502ad8d0ec2968ede657fc44c547f",
+  "normalisation_identity": {
+    "function": "D1 REVISION 3 normalizeArmSpecificBytes",
+    "classes": 2,
+    "normalised_forms_distinct": 1
+  },
+  "a1_characteros_outputs_seen_before_request_freeze": false,
+  "scheduled_high_low_replicates": "not yet known",
+  "reason_replicates_unknown": "waiting for the A1 neutral self-noise pilot",
+  "a1_token_vocabulary": [
+    "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "OPPOSES_PARAPHRASED_PRINCIPLE"
+  ],
+  "requests_may_no_longer_be_modified": true
+}

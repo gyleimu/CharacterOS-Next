@@ -1,0 +1,33 @@
+{
+  "per_arm": {
+    "HIGH": {
+      "trace_keys_structurally_present": false,
+      "trace_keys_checked": [
+        "trace_window",
+        "state_hash_before",
+        "state_hash_after",
+        "trace_id"
+      ]
+    },
+    "LOW": {
+      "trace_keys_structurally_present": false,
+      "trace_keys_checked": [
+        "trace_window",
+        "state_hash_before",
+        "state_hash_after",
+        "trace_id"
+      ]
+    },
+    "NEUTRAL": {
+      "trace_keys_structurally_present": false,
+      "trace_keys_checked": [
+        "trace_window",
+        "state_hash_before",
+        "state_hash_after",
+        "trace_id"
+      ]
+    }
+  },
+  "conclusion": "the derived trace bookkeeping proven causally inert in A1 does not appear in the model-facing production request at all, so Revision 4's normalisation stays confined to the canonical isolation gate",
+  "method": "structural key presence in the canonicalised request JSON, not a raw substring search of natural language"
+}

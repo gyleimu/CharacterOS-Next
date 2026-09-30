@@ -1,0 +1,23 @@
+{
+  "noise_gate_measures": "identical-request measurement-path self-consistency",
+  "target_scorer_measures": "checks treatment-sensitive directional composition across the two stance arms",
+  "thresholds_may_differ_because": "the gate can only certify determinism on ONE fixed input; the target's tolerance is about variation across the two TREATMENT arms, which the gate cannot observe at all. They answer different questions, so their thresholds are not in tension.",
+  "gate_can_set_r": false,
+  "r_before_the_gate": 6,
+  "r_after_the_gate": 6,
+  "target_planned_calls": {
+    "arms": 2,
+    "per_arm": 6,
+    "total": 12
+  },
+  "target_scorer_reference_row": {
+    "pattern": "perfect polar transfer",
+    "outcome": "POSITIVE",
+    "predicted_counts": {
+      "ARM_SUPPORT": 6,
+      "ARM_OPPOSE": 6
+    }
+  },
+  "budget_unchanged": true,
+  "verdict": "D4_C0A_NOISE_GATE_IS_SCORER_COMPATIBLE"
+}

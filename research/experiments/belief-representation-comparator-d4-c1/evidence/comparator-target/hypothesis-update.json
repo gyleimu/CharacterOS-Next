@@ -1,0 +1,19 @@
+{
+  "H_REPRESENTATION_FORM": {
+    "H_REPRESENTATION_FORM": "SUBSTANTIALLY_WEAKENED"
+  },
+  "H_FRAMING": {
+    "status": "raised in priority — particularly if the frozen A1 null stands",
+    "note": "C1 uses C0a's clear composition framing while A1 used its own internally tenser frozen wording"
+  },
+  "H6": {
+    "status": "REMAINS OPEN",
+    "why": "C1 deliberately does not reproduce the production belief-stances block header or its placement, so no C1 result can close the A1 framing ambiguity",
+    "record_positive": "would make the production-framing question more worth pursuing",
+    "record_null": "would not prove H6 unimportant"
+  },
+  "H_EXEC_COMPOSITION": {
+    "status": "not the main explanation unless the explicit reference failed in this run",
+    "c0a_positive_still_stands": true
+  }
+}

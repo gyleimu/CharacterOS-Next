@@ -1,0 +1,24 @@
+{
+  "global_ordinal": 14,
+  "block": "P2_FULL",
+  "arm": "HIGH",
+  "replicate_ordinal": 2,
+  "frozen_payload_hash": "sha256:8e8977596dcf3f62d3b99498d0a44fe6cca2f4063cd799557b0a16befc6ccfd3",
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "outcome": "DECIDED",
+  "parser_status": "VALID",
+  "parsed_decision": "VERIFY",
+  "raw_text": "{\"decision_probe_schema_version\":\"decision-probe-v1\",\"decision\":\"VERIFY\",\"explanation\":\"The slot change rests on a single unverified message; the booking system or the bookings person is an independent source worth checking before acting.\"}",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "latency_ms": 624,
+  "provider_request_metadata": "not exposed by the transport"
+}

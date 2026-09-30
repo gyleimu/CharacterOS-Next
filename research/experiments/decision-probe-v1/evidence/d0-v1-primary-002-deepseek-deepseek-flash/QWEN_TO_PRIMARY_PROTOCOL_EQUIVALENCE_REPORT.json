@@ -1,0 +1,41 @@
+{
+  "report_version": "qwen-to-primary-protocol-equivalence-v0",
+  "compared_against_run": "research/experiments/decision-probe-v1/evidence/d0-v1-run-001-qwen35-9b",
+  "allowed_differences": [
+    "executor identity (provider family, model identifier, digest)",
+    "provider-specific transport envelope and request framing",
+    "unavoidable transport metadata (latency, HTTP status, provider usage fields)",
+    "explicitly preregistered provider generation parameters",
+    "structured-output mechanism: the cloud family does not forward the JSON schema, so schema compliance there is model-compliance + host parser rather than provider grammar"
+  ],
+  "forbidden_differences": [
+    "fixture text, fixture ids, expected decisions",
+    "construct definitions (V1 override bytes)",
+    "C3 paraphrase wording",
+    "schema semantics (tokens, enum, const, required members)",
+    "state projection / observation binding",
+    "qualification rule, thresholds, modal and agreement rules",
+    "scoring"
+  ],
+  "protocol_hashes": {
+    "fixture_set_hash": "sha256:6b6adbea5c069377b28ec44384faec57ec94ffee18375b00338e28a5d7c59fed",
+    "v1_override_block_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+    "c3_manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157",
+    "v1_schema_hash": "sha256:c947ff711ce1145d0514f2bd95e1833581185ae341737e913dac8a7279f2bb1b",
+    "qualification_rule_hash": "sha256:6ee0807687c4beecaa416700e52a0e8ec7157fc732e9a63ca95807b8e9f1dcea"
+  },
+  "qwen_run_protocol_hashes": {
+    "fixture_set_hash": "sha256:6b6adbea5c069377b28ec44384faec57ec94ffee18375b00338e28a5d7c59fed",
+    "v1_override_block_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+    "c3_manifest_hash": "sha256:0f08be8e59f22c01fabbf24d9a2c18cdb5dad1f6ecf02d58d2030ca645f63157",
+    "v1_schema_hash": null,
+    "qualification_rule_hash": null
+  },
+  "actual_differences": [
+    "executor identity (allowed)",
+    "transport envelope (allowed)",
+    "structured-output mechanism (allowed, preregistered above)"
+  ],
+  "forbidden_differences_found": [],
+  "verdict": "QWEN_TO_PRIMARY_PROTOCOL_EQUIVALENT"
+}

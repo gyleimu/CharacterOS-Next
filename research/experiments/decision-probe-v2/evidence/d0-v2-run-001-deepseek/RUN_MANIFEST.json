@@ -1,0 +1,31 @@
+{
+  "artifact_hashes": {
+    "LOCAL_EXECUTOR_V2_DEFERRED.json": "sha256:9cc727fecaecb0b681d32e20ed2478fad6902b050ab8497b2cabca1f126c9343",
+    "preflight.json": "sha256:f806e9761d6762a687ca7af6783fa02a58a2cd3ab5f5dceae11edb8fe7c558fd",
+    "executor-manifest.json": "sha256:f3bb556f5bf23db4890e6300598a5eedb53ee6c595f6e87054e7f06234e5a15d",
+    "protocol-hashes.json": "sha256:d08e76db1b97bed49c8d73439bbc37a15e42737a7138354d4756bc4344be45d2",
+    "fixture-manifest.json": "sha256:64600ba1fe87dba448c0ec1ee7bc1cf2c59445276bbf1a43d90b35753ebae7af",
+    "binding-manifest.json": "sha256:fd4cba82460b26c15b4613287ab8874382fab1d4f9bdfc0c16d666af4294e238",
+    "transport-equivalence-report.json": "sha256:0924461bdd3a57482b755daebd348332d1fe278028226d582e934a6ae955804e",
+    "trials.json": "sha256:0e5d13d679e4683dc974346ad3db23e67d00847747b8b2a441f9b9f71aab8ce0",
+    "cells.json": "sha256:e783eda1c8ee45c91e84f372655d2194223ec227ee9aa8042cfacc149c72258c",
+    "verdict.json": "sha256:af2f48f546db11e09c5cb6a69fb9a58e69a4aac45774d644c0dc983eb638095f"
+  },
+  "protocol_version": "decision-probe-v2",
+  "semantic_contract_hash": "sha256:c484554db987d36687a46683653e882ea3580c3eac45e15cb93fa08264330c53",
+  "executor": {
+    "family": "openai",
+    "transport_class": "OpenAiCompatibleTransportV0",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "generation": {
+      "temperature": 0,
+      "max_output_tokens": 256,
+      "provider_thinking": "disabled"
+    },
+    "structured_enforcement": "PROMPT_CONTRACT_PLUS_HOST_FAIL_CLOSED_PARSER",
+    "native_schema_transmitted": false,
+    "declares_primary_executor": true
+  },
+  "overall_qualification_verdict": "DECISION_INSTRUMENT_V2_QUALIFIED"
+}

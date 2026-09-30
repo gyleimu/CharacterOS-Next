@@ -1,0 +1,12 @@
+{
+  "derivation_reproduced": "hashEnvelope('characteros-next/belief/proposition-key/v1', { canonical_label })",
+  "same_label_gives_the_same_id": true,
+  "one_trailing_space_changes_the_label_and_the_id": true,
+  "the_id_is_not_a_function_of_the_credence": true,
+  "stability_fixture_id": "belief-prop-v0-ac9a923f23c8624681eaba20eb5f54b87be4e9bc2eb2774c89cd42543b2771ce",
+  "stability_fixture_id_matches_the_frozen_expectation": true,
+  "stability_fixture_record_bytes": "{\"proposition_id\":\"belief-prop-v0-ac9a923f23c8624681eaba20eb5f54b87be4e9bc2eb2774c89cd42543b2771ce\",\"proposition_label\":\"A clamp should always be used when gluing a joint.\",\"credence\":0.95}",
+  "id_was_derived_not_written": true,
+  "no_random_uuid": true,
+  "verdict": "D4_C1_PROPOSITION_ID_DERIVATION_VERIFIED"
+}

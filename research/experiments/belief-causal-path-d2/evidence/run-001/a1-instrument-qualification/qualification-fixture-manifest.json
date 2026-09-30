@@ -1,0 +1,53 @@
+{
+  "source": "contract-rev1-1c-a1-prerequisites.ts",
+  "rewritten_at_runtime": false,
+  "fixtures": [
+    {
+      "fixture_id": "A1-QF-A-SUPPORT",
+      "kind": "obvious support of the paraphrased principle",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-a\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.95}",
+      "expected_token": "SUPPORTS_PARAPHRASED_PRINCIPLE"
+    },
+    {
+      "fixture_id": "A1-QF-B-UNCERTAIN",
+      "kind": "obvious uncertainty about it",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-b\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.49}",
+      "expected_token": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE"
+    },
+    {
+      "fixture_id": "A1-QF-C-OPPOSE",
+      "kind": "obvious opposition to it",
+      "belief_line": "showing 1 of 1 canonical belief item(s)\n  {\"proposition_id\":\"fixture:a1-qf-c\",\"proposition_label\":\"the view that a finding depending mainly on secondhand report is to be held with reserve\",\"credence\":0.06}",
+      "expected_token": "OPPOSES_PARAPHRASED_PRINCIPLE"
+    }
+  ],
+  "expected_token_map": {
+    "A1-QF-A-SUPPORT": "SUPPORTS_PARAPHRASED_PRINCIPLE",
+    "A1-QF-B-UNCERTAIN": "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE",
+    "A1-QF-C-OPPOSE": "OPPOSES_PARAPHRASED_PRINCIPLE"
+  },
+  "invalid_rule": {
+    "rule": "any_invalid_qualification_trial_fails_that_instrument_qualification",
+    "counts_as_invalid": [
+      "parser rejection (output not one JSON object, unknown members, schema-version mismatch)",
+      "stance outside the frozen closed set",
+      "empty or malformed content",
+      "transport failure, including timeout"
+    ],
+    "denominator": "always the full nine planned trials (3 fixtures x 3 replicates)",
+    "retry_allowed": false,
+    "replacement_allowed": false,
+    "extra_call_allowed": false,
+    "invalid_trials_may_be_deleted": false,
+    "one_invalid_trial_is_enough_to_fail": true,
+    "verdict_if_any_invalid": "D2_INSTRUMENT_UNQUALIFIED",
+    "applies_to": [
+      "D2_A1",
+      "D2_B"
+    ],
+    "applied_retroactively_to_a0": false,
+    "rationale": "A0 qualified with 0 invalid trials, so this rule changes no past result. Fixing it now means the treatment of an invalid trial cannot be chosen after seeing one."
+  },
+  "uses_characteros_canonical_state": false,
+  "contains_treatment": false
+}

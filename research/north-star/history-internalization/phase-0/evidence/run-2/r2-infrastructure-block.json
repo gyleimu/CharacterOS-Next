@@ -1,0 +1,91 @@
+{
+  "artifact": "R2_INFRASTRUCTURE_BLOCK",
+  "run": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN (run-2)",
+  "verdict": "HISTORY_INTERNALIZATION_V1_PHASE0_RERUN_INCONCLUSIVE",
+  "failure_class": "PROVIDER_INFRASTRUCTURE_VRAM_EXHAUSTION",
+  "scientific_turns_executed": 0,
+  "scientific_data_produced": false,
+  "where_it_stopped": "the NON-SCIENTIFIC qualification/bootstrap turn, before any subject under study existed",
+  "nothing_was_retried": true,
+  "nothing_was_swapped": true,
+  "nothing_was_reconfigured": true,
+
+  "observed_failure": {
+    "error": "MODEL_TRANSPORT_MODEL_TIMEOUT: ollama native cognition transport timed out after 120000ms",
+    "meaning": "the production transport's frozen 120s bound was reached while the model had produced only ~132 tokens",
+    "generation_rate_at_failure_tok_per_s": 1.48,
+    "sequence": "the qualification turn's cognition call exceeded its bound, the turn failed closed, and the frozen bootstrap gate (R2_QUALIFICATION_FAILED) stopped the run at zero scientific turns"
+  },
+
+  "diagnosis": {
+    "primary_cause": "GPU VRAM exhaustion — the model no longer fits alongside the desktop's GPU consumers",
+    "measurements": [
+      { "quantity": "VRAM used / total, model loaded", "value": "7729 MiB / 8188 MiB" },
+      { "quantity": "VRAM used, model unloaded", "value": "2557 MiB / 8188 MiB" },
+      { "quantity": "model resident size in VRAM", "value": "5420875774 bytes (~5.05 GiB)" },
+      { "quantity": "throughput before unload/reload", "value": "0.98 tok/s (51 tokens in 52.0s)" },
+      { "quantity": "throughput after a full unload/reload cycle", "value": "3.99 tok/s (51 tokens in 12.8s)" },
+      { "quantity": "expected throughput for a 9.7B Q4_K_M model on this GPU class", "value": "tens of tokens/second" },
+      { "quantity": "GPU temperature / SM clock / max SM clock", "value": "86 C / 1950 MHz / 3105 MHz" }
+    ],
+    "arithmetic": "5.05 GiB model + 2.50 GiB desktop = 7.55 GiB against an 8.19 GiB device, leaving no headroom for the 8192-token KV cache and compute buffers. Every token therefore pages.",
+    "why_run_1_was_fine": "when the server was started for run-1 it reported 6.9 GiB available — the desktop was holding roughly 1.1 GiB then. It now holds roughly 2.5 GiB. The experiment did not change; the machine did.",
+    "what_a_bounded_recovery_achieved": "unloading and reloading the model improved throughput from 0.98 to 3.99 tok/s — real, but still roughly an order of magnitude short, and still far below what the frozen 120s transport bound requires for a 2048-token cognition budget"
+  },
+
+  "why_no_lawful_workaround_exists": [
+    {
+      "workaround": "raise the transport timeout",
+      "why_rejected": "it would edit the executor's transport configuration in response to an environment failure, and it would NOT fix the underlying paging — it would only make each degraded call slower"
+    },
+    {
+      "workaround": "lower num_ctx",
+      "why_rejected": "that is a change of executor configuration relative to run-1; the whole point of run-2 is to hold the executor fixed"
+    },
+    {
+      "workaround": "switch to a smaller model or a different provider",
+      "why_rejected": "explicitly forbidden — a provider swap would make run-2 a different experiment, and §10 requires that an identity change STOPs the run"
+    },
+    {
+      "workaround": "change the trajectory, events, or schedule",
+      "why_rejected": "explicitly forbidden, and irrelevant: the failure is in the provider, not the design"
+    },
+    {
+      "workaround": "free VRAM by terminating the desktop's GPU consumers",
+      "why_rejected": "those are the operator's own applications (Windows shell, Edge WebView, NVIDIA overlay); terminating them is an outward-facing state change on the user's machine, not a research action"
+    },
+    {
+      "workaround": "run anyway at ~10x degraded throughput",
+      "why_rejected": "the frozen 120s transport bound cannot accommodate the frozen 2048-token cognition budget at 4 tok/s, so the run would convert a resource shortage into spurious turn failures — a synthetic INCONCLUSIVE that would be indistinguishable in the record from a real one"
+    }
+  ],
+
+  "precondition_to_resume": {
+    "requirement": "free VRAM such that the model plus its 8192-token KV cache fit alongside the desktop — approximately 6.5 GiB or more of the 8.19 GiB device free before the model loads",
+    "how_to_verify": "start the server, confirm the startup line reports an available figure near the 6.9 GiB run-1 had, then measure a short generation and require tens of tokens per second before submitting any scientific turn",
+    "must_be_re_verified_before_the_first_scientific_turn": true,
+    "what_must_NOT_change_when_resuming": [
+      "the model identity (qwen3.5:9b) and the provider (production Ollama)",
+      "the transport configuration, including num_ctx and the 120s bound",
+      "the frozen trajectory, valence table, turn count, scorer, predicate and invalid policy",
+      "the fresh-subject requirement: run-2's subjects have no state and must be reused as-is, or replaced by new fresh subjects if the app itself is restarted"
+    ]
+  },
+
+  "what_this_does_not_mean": [
+    "it is NOT a scientific null — no scientific turn was ever executed",
+    "it does NOT change HISTORY_INTERNALIZATION_V1_INCONCLUSIVE for run-1",
+    "it does NOT weaken the remediation: the host-layer recovery remains complete and verified",
+    "it does NOT authorise Phase 1, and it does NOT authorise changing the design"
+  ],
+
+  "run2_state_assessment": {
+    "artifacts_present": ["r2-preflight.json", "r2-qualification.json"],
+    "scientific_subject_turns_executed": 0,
+    "subjects_under_study_created": 0,
+    "canonical_states_frozen": 0,
+    "denominator_contamination": "none — there is no scientific data to contaminate",
+    "reusable": "the run-2 directory is a clean, empty scientific slate; the failed bootstrap may be re-attempted once the precondition is met, because no scientific turn and no subject state exists",
+    "must_be_declared_on_resume": "the failure class, the diagnosis and the recovery measurements recorded here"
+  }
+}

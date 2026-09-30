@@ -1,0 +1,20 @@
+{
+  "HIGH_vs_LOW": {
+    "differing_paths": [
+      "/beliefs/items/0/credence"
+    ],
+    "difference_count": 1
+  },
+  "HIGH_vs_NEUTRAL": {
+    "differing_paths": [
+      "/beliefs/items/0/credence"
+    ],
+    "difference_count": 1
+  },
+  "LOW_vs_NEUTRAL": {
+    "differing_paths": [
+      "/beliefs/items/0/credence"
+    ],
+    "difference_count": 1
+  }
+}

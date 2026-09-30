@@ -1,0 +1,134 @@
+{
+  "version": "belief-causal-path-evidence-map-v1",
+  "evidence_classes": [
+    "CHARACTEROS_STRUCTURAL",
+    "CHARACTEROS_PROJECTION",
+    "CHARACTEROS_STATE_READOUT",
+    "EXECUTOR_STATE_BLIND_CAPABILITY",
+    "CHARACTEROS_CAUSAL_ENDPOINT",
+    "VALID_NULL",
+    "INCONCLUSIVE"
+  ],
+  "links": [
+    {
+      "link": "LINK_1_CANONICAL_BELIEF_STATE",
+      "status": "ESTABLISHED",
+      "evidence": "D1 offline state construction and isolation",
+      "evidence_class": "CHARACTEROS_STRUCTURAL",
+      "detail": "a lawful counterfactual credence 0.80 / 0.20 materialises through production genesis authoring and is the only canonical state difference",
+      "historical_verdicts": []
+    },
+    {
+      "link": "LINK_2_PRODUCTION_PROJECTION",
+      "status": "ESTABLISHED",
+      "evidence": "D1 production projection and normalised isolation",
+      "evidence_class": "CHARACTEROS_PROJECTION",
+      "detail": "the production V2 projection carries the belief line; request isolation is byte-exact after the two frozen normalisations",
+      "historical_verdicts": []
+    },
+    {
+      "link": "LINK_3A_3B1_CANONICAL_PROPOSITION_STANCE_BINDING",
+      "status": "ESTABLISHED",
+      "evidence": "D2-A0",
+      "evidence_class": "CHARACTEROS_STATE_READOUT",
+      "observed": {
+        "HIGH_0_80": {
+          "ENDORSES_STRONGLY": 6
+        },
+        "LOW_0_20": {
+          "DOUBTS_STRONGLY": 6
+        }
+      },
+      "canonical_claim": "CANONICAL_PROPOSITION_STANCE_BINDING_ESTABLISHED",
+      "historical_verdict_name": "CANONICAL_BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE",
+      "historical_name_caveat": "historical verdict name understates actual instrument scope",
+      "instrument_actually_measured": "canonical credence -> stance on the canonical proposition"
+    },
+    {
+      "link": "LINK_3B2_CANONICAL_PARAPHRASE_RELATION_RECOGNITION",
+      "status": "ESTABLISHED",
+      "evidence": "D3-B target",
+      "evidence_class": "EXECUTOR_STATE_BLIND_CAPABILITY",
+      "observed": {
+        "trials": 6,
+        "counts": {
+          "SEMANTICALLY_ALIGNED": 6
+        }
+      },
+      "canonical_claim": "PREREGISTERED_PARAPHRASE_RELATION_RECOGNIZED",
+      "explicitly_not": "CharacterOS causal evidence",
+      "scope": "a state-blind executor capability diagnostic: no subject state, no credence, no arm"
+    },
+    {
+      "link": "LINK_3B3_CROSS_WORDING_STANCE_TRANSFER",
+      "status": "NOT_ESTABLISHED",
+      "evidence": "D2-A1 valid null",
+      "evidence_class": "VALID_NULL",
+      "observed": {
+        "HIGH_0_80": {
+          "SUPPORTS_PARAPHRASED_PRINCIPLE": 6
+        },
+        "LOW_0_20": {
+          "UNCERTAIN_ABOUT_PARAPHRASED_PRINCIPLE": 1,
+          "SUPPORTS_PARAPHRASED_PRINCIPLE": 5
+        }
+      },
+      "frozen_verdict": "BELIEF_PROJECTION_STRUCTURALLY_LEGIBLE_BUT_SEMANTIC_UPTAKE_NOT_ESTABLISHED",
+      "causal_map_wording": "CROSS_WORDING_STANCE_TRANSFER_NOT_ESTABLISHED_ON_PREREGISTERED_PARAPHRASE",
+      "scope": [
+        "the preregistered CAUTION proposition",
+        "the preregistered paraphrase",
+        "the frozen production context",
+        "the frozen executor"
+      ],
+      "forbidden_widening": "global semantic failure"
+    },
+    {
+      "link": "LINK_4_EPISTEMIC_APPRAISAL",
+      "status": "NOT_TESTED",
+      "authorised": false,
+      "reason": "D2's sequential preregistration required an A1 positive; A1 was a valid null, and a D3-B positive does not substitute for it",
+      "evidence_class": null
+    },
+    {
+      "link": "LINK_5_STRUCTURED_DECISION",
+      "status": "SENSITIVITY_NOT_ESTABLISHED",
+      "evidence": "D1 valid null",
+      "evidence_class": "VALID_NULL",
+      "precise_wording": "sensitivity of the structured decision to the manipulated canonical belief state was not established under the frozen D1 design — NOT the bare statement that link 5 is false",
+      "observed": {
+        "P1_FULL": "CONTRAST_NO_MOVEMENT",
+        "P2_FULL": "CONTRAST_NO_MOVEMENT",
+        "P1_FRAME_MINIMAL": "CONTRAST_NO_MOVEMENT",
+        "STATE_REVERSAL": "CONTRAST_NO_MOVEMENT",
+        "P3_NEGATIVE_CONTROL": "NEGATIVE_CONTROL_HELD"
+      },
+      "noise_ceiling": 0.3903,
+      "delta_min": 0.5
+    }
+  ],
+  "d1_blocks": {
+    "P1_FULL": {
+      "HIGH": 6,
+      "LOW": 6
+    },
+    "P2_FULL": {
+      "HIGH": 6,
+      "LOW": 6
+    },
+    "P3_NEGATIVE_CONTROL": {
+      "HIGH": 6,
+      "LOW": 6
+    },
+    "P1_FRAME_MINIMAL": {
+      "HIGH": 6,
+      "LOW": 6
+    },
+    "STATE_REVERSAL": {
+      "HIGH": 6,
+      "LOW": 6
+    }
+  },
+  "d1_verdict": "D1_CORE_TREATMENT_COMPLETED",
+  "d1_frozen_verdict": "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED"
+}

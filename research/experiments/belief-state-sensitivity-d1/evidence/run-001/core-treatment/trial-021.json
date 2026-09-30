@@ -1,0 +1,24 @@
+{
+  "global_ordinal": 21,
+  "block": "P2_FULL",
+  "arm": "LOW",
+  "replicate_ordinal": 9,
+  "frozen_payload_hash": "sha256:6b961b09e681105ae53cc570dca64d33490c73090e5050fff8c1aef50077ad8d",
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "executor": {
+    "provider": "DeepSeek",
+    "model": "deepseek-flash",
+    "endpoint": "https://api.deepseek.com",
+    "temperature": 0,
+    "max_output_tokens": 256,
+    "provider_thinking": "disabled"
+  },
+  "outcome": "DECIDED",
+  "parser_status": "VALID",
+  "parsed_decision": "VERIFY",
+  "raw_text": "{\"decision_probe_schema_version\":\"decision-probe-v1\",\"decision\":\"VERIFY\",\"explanation\":\"The claim rests on a single unverified message; the booking system has not been seen, so an independent check is warranted before acting.\"}",
+  "transport_status": "OK",
+  "transport_failure": null,
+  "latency_ms": 698,
+  "provider_request_metadata": "not exposed by the transport"
+}

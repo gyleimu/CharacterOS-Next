@@ -1,0 +1,12 @@
+{
+  "claim_tested": "the changed credence is a CANONICAL durable belief state, not temporary executor text, not a local prompt variable, and not an ephemeral adaptation result",
+  "evidence": [
+    "the value is read through the runtime's read-only canonical state projection (subjectStateView), which reads the canonical SubjectState and calls no provider",
+    "the same read reports state_revision and repository_revision, so the change is bound to a canonical state revision",
+    "the durable capture reports subject_head commit_ref / record_checksum / state_hash_after, so the change sits behind a committed canonical bundle",
+    "the durable belief workflow store image is captured alongside, so the workflow that produced the change is durable state"
+  ],
+  "NOT_tested_here": "process restart and reload. That is a LATER frozen phase, and §15 of this round's brief forbids adding it here. State durability across restart is therefore NOT established by Phase 0.",
+  "canonical_reads_only": true,
+  "prompt_text_used_as_evidence": false
+}

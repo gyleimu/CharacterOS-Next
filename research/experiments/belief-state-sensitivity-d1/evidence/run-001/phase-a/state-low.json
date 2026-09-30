@@ -1,0 +1,110 @@
+{
+  "level": "LOW",
+  "credence": 0.2,
+  "stance": -0.6,
+  "subject_id": "d1-belief-sensitivity-subject",
+  "state_hash": "sha256:9a2a63d917f6b6ae0664df1b5013d00d9bd8b556b8a37326c2468085865f7820",
+  "state": {
+    "schema_version": "subject-state-v4",
+    "identity": {
+      "subject_id": "d1-belief-sensitivity-subject",
+      "display_name": "D1 Subject",
+      "origin_metadata": {
+        "creation_source": null,
+        "seed_version": null
+      },
+      "identity_anchors": [
+        "characteros-next",
+        "d1-preregistration"
+      ],
+      "self_schema_seed_refs": []
+    },
+    "traits_seed": {
+      "dimensions": {}
+    },
+    "personality": {
+      "schema_version": "personality-state-v0",
+      "dimensions": []
+    },
+    "memory_state": {
+      "working_refs": [],
+      "active_episode_refs": [],
+      "autobiographical_index_revision": null,
+      "repository_revision": "R0",
+      "consolidation_cursor": null,
+      "retrieval_config": {
+        "profile_id": "RETRIEVAL_V0",
+        "affect_congruence_enabled": false,
+        "recent_trace_capacity": 64
+      },
+      "recent_retrieval_trace": [],
+      "lifecycle_metadata": {},
+      "pending_encoding_refs": [],
+      "last_retrieval_at": null
+    },
+    "beliefs": {
+      "schema_version": "belief-state-v0",
+      "items": [
+        {
+          "proposition_id": "belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae",
+          "proposition_label": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+          "credence": 0.2
+        }
+      ]
+    },
+    "relationships": {
+      "schema_version": "relationship-state-v0",
+      "counterparts": []
+    },
+    "affect": {
+      "schema_version": "canonical-affect-v0",
+      "valence": 0,
+      "activation": 0.2
+    },
+    "regulation": {
+      "energy": 1,
+      "stress": 0,
+      "arousal": 0.5,
+      "fatigue": 0,
+      "last_update": null
+    },
+    "context": {
+      "scene": "idle",
+      "task": null,
+      "focus_refs": [],
+      "active_entity_refs": [],
+      "environment_refs": [
+        "environment:room-1"
+      ],
+      "current_observation_ref": null
+    },
+    "mechanism_config": {
+      "affect_profile": {
+        "profile_id": "BOUNDED_AFFECT_DYNAMICS_V0",
+        "timebase": "tick"
+      },
+      "feature_flags": {},
+      "thresholds": {}
+    },
+    "trace_window": {
+      "trace_window_schema_version": "trace-window-v1",
+      "capacity": 64,
+      "cursor": {
+        "last_history_sequence": 0,
+        "offloaded_through_sequence": 0,
+        "offloaded_through_trace_ref": null
+      },
+      "entries": []
+    },
+    "runtime_metadata": {
+      "subject_version": "subject-v0",
+      "schema_lineage": "subject-state-v4",
+      "state_revision": 0,
+      "logical_time": 0,
+      "last_transition_time": null,
+      "last_transition_type": null,
+      "created_at": 0,
+      "updated_at": 0
+    }
+  }
+}

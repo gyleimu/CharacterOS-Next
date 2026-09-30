@@ -1,0 +1,20 @@
+{
+  "stage": "D2_A0_NEUTRAL_PILOT",
+  "is_a_correctness_test": false,
+  "required_correct_token": null,
+  "correct_token_was_never_preregistered": true,
+  "counts": {
+    "UNDECIDED": 6
+  },
+  "modal_token": "UNDECIDED",
+  "modal_count": 6,
+  "disagreement_count": 0,
+  "disagreement_rate": 0,
+  "counts_derived_from": "the frozen pilot-dataset.json bytes, re-read from disk",
+  "mapping_source": "D2_NOISE_RULE.deterministic_mapping (frozen before any call)",
+  "mapping_applied": "6",
+  "mapped_value": 6,
+  "r_confirm_A0": 6,
+  "modal_token_interpreted_as_scientific_evidence": false,
+  "verdict": "D2_A0_NEUTRAL_PILOT_COMPLETED"
+}

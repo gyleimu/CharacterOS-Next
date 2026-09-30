@@ -1,0 +1,68 @@
+{
+  "method": "each identity check was re-evaluated on a deliberately mutated request; a check that could not be made false would be a tautology",
+  "checks_audited": 15,
+  "mutations": {
+    "frozen_schema_exact": {
+      "mutated_check_false": true,
+      "note": "schema replaced by an empty one"
+    },
+    "anchors_exact": {
+      "mutated_check_false": true,
+      "note": "one anchor's meaning removed"
+    },
+    "contract_text_exact": {
+      "mutated_check_false": true,
+      "note": "contract text removed"
+    },
+    "output_vocabulary_exact": {
+      "mutated_check_false": true,
+      "note": "every occurrence of one token replaced by an A1 token"
+    },
+    "contract_rendered_exactly_once": {
+      "mutated_check_false": true,
+      "note": "the contract text appended a second time"
+    },
+    "stance_input_rendered_exactly_once": {
+      "mutated_check_false": true,
+      "note": "the stance line duplicated"
+    },
+    "statement_a_rendered_exactly_once": {
+      "mutated_check_false": true,
+      "note": "the statement A line reworded"
+    },
+    "statement_b_rendered_exactly_once": {
+      "mutated_check_false": true,
+      "note": "the statement B line reworded"
+    },
+    "semantic_relation_rendered_exactly_once": {
+      "mutated_check_false": true,
+      "note": "the relation line reworded"
+    },
+    "no_expected_output_token_leakage": {
+      "mutated_check_false": true,
+      "note": "the expected token appended to the user content"
+    },
+    "no_treatment_arm_label_leakage": {
+      "mutated_check_false": true,
+      "note": "an arm label appended"
+    },
+    "no_request_hash_leakage": {
+      "mutated_check_false": true,
+      "note": "a hash-shaped string appended"
+    },
+    "no_replicate_ordinal": {
+      "mutated_check_false": true,
+      "note": "a replicate ordinal appended"
+    },
+    "no_schedule_information": {
+      "mutated_check_false": true,
+      "note": "a schedule identity appended"
+    },
+    "system_is_the_frozen_base_plus_the_contract": {
+      "mutated_check_false": true,
+      "note": "a single trailing byte added to the system message"
+    }
+  },
+  "every_check_was_falsifiable": true,
+  "verdict": "D4_C0A_IDENTITY_CHECKS_ARE_FALSIFIABLE"
+}

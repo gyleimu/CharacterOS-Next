@@ -1,0 +1,66 @@
+{
+  "verdict": "D1_CORE_TREATMENT_COMPLETED",
+  "model_calls_this_round": 60,
+  "model_calls_total": 66,
+  "schedule_hash": "sha256:d1ee515fa295cf4290a0e68cd15128b58db01420fe06a6866bf50ab12da8e371",
+  "dataset_hash": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908",
+  "core_verdict": {
+    "collection": "D1_CORE_TREATMENT_COMPLETED",
+    "dataset_hash": "sha256:02bd7e315b434492b83663fa61d45b18f9332f8fd19f073c49663113602d5908",
+    "noise_ceiling": 0.3903,
+    "delta_min": 0.5,
+    "primary_P1_FULL": {
+      "verdict": "CONTRAST_NO_MOVEMENT",
+      "high": {
+        "n": 6,
+        "ACCEPT": 0,
+        "VERIFY": 6,
+        "REJECT": 0,
+        "invalid": 0
+      },
+      "low": {
+        "n": 6,
+        "ACCEPT": 0,
+        "VERIFY": 6,
+        "REJECT": 0,
+        "invalid": 0
+      },
+      "delta_verify": 0,
+      "delta_accept": 0,
+      "invalid_fraction": 0
+    },
+    "near_transfer_P2_FULL": {
+      "verdict": "CONTRAST_NO_MOVEMENT",
+      "label": "SCENARIO_BOUND"
+    },
+    "specificity_P3": {
+      "verdict": "NEGATIVE_CONTROL_HELD",
+      "high": {
+        "n": 6,
+        "ACCEPT": 6,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "invalid": 0
+      },
+      "low": {
+        "n": 6,
+        "ACCEPT": 6,
+        "VERIFY": 0,
+        "REJECT": 0,
+        "invalid": 0
+      }
+    },
+    "frame": {
+      "verdict": "BELIEF_STATE_DECISION_SENSITIVITY_NOT_ESTABLISHED",
+      "full": "CONTRAST_NO_MOVEMENT",
+      "minimal": "CONTRAST_NO_MOVEMENT"
+    },
+    "reconstruction_replication": {
+      "verdict": "CONTRAST_NO_MOVEMENT",
+      "tracks_belief": false
+    },
+    "notes": "the five blocks are the frozen evidence families; P1_FULL and STATE_REVERSAL are NOT pooled as independent evidence"
+  },
+  "restart_status": "RESTART_CONTRAST_LOCKED",
+  "preregistration_hash": "sha256:d0255beeed92729e7391049739ee008c2505c2c0ef7d009b2b799e3444cd4b3b"
+}

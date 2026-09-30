@@ -1,0 +1,97 @@
+{
+  "stage": "D2_A0",
+  "source_of_the_three_requests": "production V8 requests over the three real CharacterOS arm states",
+  "high_request_hash": "sha256:8c0c4ccb5fe068e2c0de803e5c33421861ee2d0dd1f89d640d4f99885d8293ac",
+  "low_request_hash": "sha256:dc6203bf73aab5e7bc95a9f67d5749070a199e59e3a6404c4e9fadab2e403e6d",
+  "neutral_request_hash": "sha256:9938d540e5a44882bae74ca7846c25987409f5a8170068e704753e5cc080dfc0",
+  "a0_contract_hash": "sha256:5778f97ec048110fe35644fca383e8b5b938a382bef8d7247fd7c78992fc2e0b",
+  "a0_schema_hash": "sha256:5dd9db982d8876ab45d941d1a3ad974d8215bacd358f462a05454a60089d0ea4",
+  "fixture_manifest_hash": "sha256:930ded2702bd10a3b81a39a19e985162f269ade12449e73a6176b960d2ce1800",
+  "protocol_revision_chain": [
+    "belief-causal-path-localization-d2",
+    "belief-causal-path-localization-d2-rev1",
+    "belief-causal-path-localization-d2-rev1.1",
+    "belief-causal-path-localization-d2-rev1.1a",
+    "belief-causal-path-localization-d2-rev1.1b"
+  ],
+  "state_hashes": {
+    "HIGH": "sha256:07a886863d9322e88808aa0ee283aa69be2320c6f1fd56127751962d40b9d988",
+    "LOW": "sha256:1ea34c169eb60b12b9fe73a0dc12a6abd14dece8ef0f8c65179daa5d212cbb5f",
+    "NEUTRAL": "sha256:198459b5ec39cce9dddc1f4980683939856e8b6f2f8b2249767e581990aaeb41"
+  },
+  "prediction_frozen_here": {
+    "directional": {
+      "is_primary_qualification_requirement": true,
+      "requirement": "the HIGH modal bucket lies in the endorsing set AND the LOW modal bucket lies in the doubting set AND the two modal buckets differ",
+      "endorsing_set": [
+        "ENDORSES_STRONGLY",
+        "ENDORSES_MILDLY"
+      ],
+      "doubting_set": [
+        "DOUBTS_STRONGLY",
+        "DOUBTS_MILDLY"
+      ],
+      "verdict_if_met": "STRUCTURAL_DIRECTION_LEGIBLE"
+    },
+    "magnitude": {
+      "is_primary_qualification_requirement": false,
+      "is_secondary_calibration_diagnostic": true,
+      "requirement": "HIGH modal = ENDORSES_STRONGLY AND LOW modal = DOUBTS_STRONGLY",
+      "verdict_if_met": "STRUCTURAL_MAGNITUDE_CALIBRATED"
+    },
+    "unlocks_a1": "STRUCTURAL_DIRECTION_LEGIBLE",
+    "both_verdicts_reported_separately": true,
+    "post_hoc_choice_between_criteria": false
+  },
+  "noise_rule_frozen_here": {
+    "each_endpoint_has_its_own_neutral_pilot": true,
+    "pilots_may_not_be_shared_between_endpoints": true,
+    "d1_pilot_result_reused_as_d2_noise_evidence": false,
+    "pilot_shape": "6 byte-identical NEUTRAL requests through that endpoint's frozen transformer",
+    "deterministic_mapping": {
+      "0": "STOP",
+      "1": "STOP",
+      "2": "STOP",
+      "3": "STOP",
+      "4": "STOP",
+      "5": 14,
+      "6": 6
+    },
+    "stop_verdict": "INCONCLUSIVE_BY_DECISION_NOISE",
+    "r_frozen_from_that_endpoints_own_pilot": true,
+    "r_may_be_chosen_after_seeing_treatment_output": false,
+    "reason_for_separate_pilots": "the three measurement contracts differ, so one endpoint's self-noise is not evidence about another's"
+  },
+  "budget_frozen_here": {
+    "instrument_qualification_calls": 27,
+    "instrument_qualification_detail": "3 instruments x 3 state-blind fixtures x 3 replicates",
+    "a0_pilot": 6,
+    "a1_pilot": 6,
+    "b_pilot": 6,
+    "d2a0_formula": "2r",
+    "d2a1_formula": "2r",
+    "d2b_formula": "4r (P1 and P2 x 2 arms)",
+    "r_candidates": {
+      "6": 6,
+      "14": 14,
+      "20": 20
+    },
+    "minimum_path_a0_fails": 27,
+    "minimum_detail_a0_fails": "27 qualification + 6 A0 pilot + 12 A0 at r=6; A1 and B never run",
+    "expected_path_a0_a1_pass": 63,
+    "expected_detail_a0_a1_pass": "A0 and A1 run and qualify; B is not reached in this projection",
+    "maximum_path_all_stages": 205,
+    "maximum_detail_all_stages": "all three instruments qualified and all three state experiments run at r = 20",
+    "minimum": 45,
+    "expected": 63,
+    "maximum": 205,
+    "sequential_stopping_counted": true,
+    "d1_calls_reused": false
+  },
+  "a0_characteros_outputs_seen_before_request_freeze": false,
+  "qualification_fixture_bytes_used": false,
+  "qualification_credences_used": false,
+  "scheduled_high_low_replicates": "not yet known",
+  "reason_replicates_unknown": "waiting for neutral self-noise pilot",
+  "requests_may_no_longer_be_modified": true
+}

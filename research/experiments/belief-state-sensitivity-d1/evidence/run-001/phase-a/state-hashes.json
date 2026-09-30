@@ -1,0 +1,17 @@
+[
+  {
+    "level": "HIGH",
+    "credence": 0.8,
+    "state_hash": "sha256:e485c3c1d7fa3e91248a02f48da1ffb3af57bac2d3cf641facf5e5dac3b29975"
+  },
+  {
+    "level": "LOW",
+    "credence": 0.2,
+    "state_hash": "sha256:9a2a63d917f6b6ae0664df1b5013d00d9bd8b556b8a37326c2468085865f7820"
+  },
+  {
+    "level": "NEUTRAL",
+    "credence": 0.5,
+    "state_hash": "sha256:2d70293c7db4676531d33c2af0ee2813dc928ab3f2fdc8869de0d4862ad1d45a"
+  }
+]

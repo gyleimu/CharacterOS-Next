@@ -1,0 +1,347 @@
+{
+  "version": "belief-representation-comparator-d4-c1",
+  "c0a_reference": {
+    "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+    "support_counts": {
+      "SUPPORTS_B": 6,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 0
+    },
+    "oppose_counts": {
+      "SUPPORTS_B": 0,
+      "UNCERTAIN_B": 0,
+      "OPPOSES_B": 6
+    },
+    "claim_scope": "PREREGISTERED POLAR STANCE COMPOSITION",
+    "dataset_hash_source": "evidence/d4-c0a-target/target-dataset-hash.json",
+    "d4_model_calls_at_c1_design": 27,
+    "h_exec_composition_strong_form": "WEAKENED"
+  },
+  "record_shape": {
+    "fields": [
+      "proposition_id",
+      "proposition_label",
+      "credence"
+    ],
+    "field_order_is_significant": true,
+    "serialisation": "JSON.stringify of the three-field object, in that order",
+    "source_of_field_order": "cognition-action-transition-executor.ts:305-311",
+    "proposition_id_construction": "belief-prop-v0-<hash> where hash = hashEnvelope(\"characteros-next/belief/proposition-key/v1\", { canonical_label })",
+    "proposition_id_source": "belief-proposition-admission.ts:190-201",
+    "proposition_id_is_the_content_address_of_the_exact_wording": true,
+    "added_for_comprehensibility": [],
+    "forbidden_additions": [
+      "a derived stance word",
+      "a semantic alias",
+      "relation metadata",
+      "an explanatory annotation",
+      "a SUPPORT or OPPOSE label",
+      "a note interpreting the credence"
+    ]
+  },
+  "cells": [
+    {
+      "cell_id": "E-SUPPORT",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "SUPPORT",
+      "predicted_token": "SUPPORTS_B"
+    },
+    {
+      "cell_id": "E-OPPOSE",
+      "representation": "EXPLICIT_STANCE",
+      "stance": "OPPOSE",
+      "predicted_token": "OPPOSES_B"
+    },
+    {
+      "cell_id": "R-SUPPORT",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "SUPPORT",
+      "predicted_token": "SUPPORTS_B"
+    },
+    {
+      "cell_id": "R-OPPOSE",
+      "representation": "CHARACTEROS_BELIEF_RECORD",
+      "stance": "OPPOSE",
+      "predicted_token": "OPPOSES_B"
+    }
+  ],
+  "allowed_differences": {
+    "stable_across_all_four_cells": [
+      "the system message, including the base research frame and the measurement contract",
+      "the schema",
+      "the anchors",
+      "the output vocabulary",
+      "the proposition A literal",
+      "the proposition B literal",
+      "the explicitly supplied semantic-alignment relation",
+      "the measurement question",
+      "the cue prefix SUBJECT STANCE TOWARD A: ",
+      "the generation settings"
+    ],
+    "allowed_to_differ": [
+      "the VALUE after the cue prefix: a stance word, or the CharacterOS belief record"
+    ],
+    "differing_line_count": 1,
+    "differing_path": "the user binding block's SUBJECT STANCE TOWARD A value",
+    "normalisation": "replace that value with the fixed sentinel __D4C1_STANCE__; the four requests must then be byte-identical",
+    "cell_count": 4,
+    "expected_distinct_request_hashes": 4,
+    "any_second_correlated_difference_blocks_the_design": true,
+    "not_byte_identical_and_that_is_expected": true,
+    "what_must_be_identical_is_stated_above": true
+  },
+  "information_equivalence": {
+    "basis": "an evidence bridge, not a new assumption",
+    "rows": [
+      {
+        "explicit_value": "SUPPORTS",
+        "record_value": "credence 0.80",
+        "bridge_source": "D2-A0 established on the REAL CharacterOS representation that 0.80 reads as an endorsing stance on the canonical proposition, 6/6",
+        "is_a_new_assumption": false
+      },
+      {
+        "explicit_value": "OPPOSES",
+        "record_value": "credence 0.20",
+        "bridge_source": "D2-A0 established that 0.20 reads as a doubting stance on the canonical proposition, 6/6",
+        "is_a_new_assumption": false
+      }
+    ],
+    "limitation": "the bridge equates an explicit word with a numeric credence on the strength of D2-A0's directional result; it does not claim the two carry identical information, only the same preregistered polarity"
+  },
+  "reference_decision": {
+    "decision": "RERUN_BOTH_CONDITIONS_CONTEMPORANEOUSLY_IN_ONE_FROZEN_SCHEDULE",
+    "audit_of_the_eight_conditions": {
+      "same_executor_identity": "nominally yes (DeepSeek deepseek-flash), but the provider does not pin a model revision",
+      "same_generation_settings": true,
+      "same_a_and_b": true,
+      "same_semantic_relation": true,
+      "same_measurement_question": true,
+      "same_anchors": true,
+      "same_output_vocabulary": true,
+      "same_surrounding_framing": true
+    },
+    "why_reuse_is_not_safe_enough": "`deepseek-flash` is a hosted model whose revision can change without notice, and the API exposes no pinned revision; a difference observed across two sessions could be provider drift rather than the representation. The eight conditions are satisfied on paper but the ninth — the same model at the same revision — cannot be verified",
+    "therefore": "the explicit condition is re-run alongside the record condition in one frozen schedule, as a CONTEMPORANEOUS CAUSAL COMPARATOR REFERENCE",
+    "this_is_not_a_repeat_confirmation_of_c0a": true,
+    "what_c0a_still_contributes": "it established that the capability exists under an explicit stance; the C1 explicit arm supplies a same-session reference for the contrast, not a second test of existence",
+    "chosen_by_cost_preference": false,
+    "cost_consequence": "the target budget doubles relative to a naive one-condition run; that price is accepted for attribution"
+  },
+  "scorer": {
+    "reused_unchanged_from": "D4-C0a revision 1",
+    "per_cell_requirement": "predicted token is the unique modal AND its count >= 4 of 6",
+    "standard_lowered": false,
+    "cells_are_scored_independently": true,
+    "polarity": "SUPPORT cells expect SUPPORTS_B; OPPOSE cells expect OPPOSES_B",
+    "a_reversed_direction_is_a_null": true,
+    "a_3_2_1_plurality_is_a_null": true,
+    "threshold_or_interval_added": false
+  },
+  "outcome_matrix": {
+    "rows": [
+      {
+        "id": "EXPLICIT_POSITIVE_RECORD_POSITIVE",
+        "condition": "both representation conditions satisfy the per-cell criterion in both stances",
+        "verdict": "CHARACTEROS_BELIEF_RECORD_SUPPORTS_STATE_BLIND_CROSS_EXPRESSION_COMPOSITION",
+        "means": "the current three-field CharacterOS belief representation, inside a matched state-blind composition framing, is enough to carry the capability",
+        "effect_on_hypotheses": {
+          "H_REPRESENTATION": "STRONGLY_WEAKENED",
+          "H_FRAMING": "RAISED_TO_LEADING",
+          "H6": "raised but still open"
+        },
+        "next_breakpoint": "production framing / placement / A1's measurement-contract ambiguity",
+        "authorises": "NOTHING about the representation; representation changes are not authorised",
+        "does_not_mean": [
+          "the projection is fine in production",
+          "A1's null is explained",
+          "H6 is closed"
+        ]
+      },
+      {
+        "id": "EXPLICIT_POSITIVE_RECORD_NULL",
+        "condition": "the explicit condition satisfies the criterion; the record condition is a valid null",
+        "verdict": "CROSS_EXPRESSION_COMPOSITION_SENSITIVE_TO_STANCE_REPRESENTATION_FORM",
+        "means": "same executor, same semantic task, same relation and same measurement framing: the explicit stance representation works, the current CharacterOS belief record does not establish composition",
+        "effect_on_hypotheses": {
+          "H_REPRESENTATION": "STRENGTHENED",
+          "H_FRAMING": "weakened as the sole account",
+          "H6": "still open"
+        },
+        "is_the_most_discriminating_row": true,
+        "authorises": "REPRESENTATION-COMPONENT LOCALIZATION RESEARCH only",
+        "does_not_authorise": [
+          "changing the production representation",
+          "claiming proposition_id is the cause",
+          "claiming credence is the cause",
+          "claiming a semantic ID is required",
+          "claiming the architecture is broken"
+        ],
+        "why_component_localisation_is_a_separate_stage": "the record differs from the explicit word in at least four ways at once — a long opaque id, a numeric credence instead of a word, an object wrapper, and a label bound to the exact wording — and one experiment cannot separate them"
+      },
+      {
+        "id": "EXPLICIT_NULL_RECORD_NULL",
+        "condition": "neither representation condition satisfies the criterion, valid data throughout",
+        "verdict": "D4_C1_COMPARATOR_REFERENCE_NOT_ESTABLISHED",
+        "means": "the reference capability did not reproduce inside the comparator run, so the comparison has no reference and nothing can be attributed to the representation",
+        "effect_on_hypotheses": {
+          "H_REPRESENTATION": "unchanged",
+          "H_FRAMING": "unchanged",
+          "H_EXEC_COMPOSITION": "REOPENED for this configuration",
+          "H6": "open"
+        },
+        "next": "stop; the design, not the architecture, is what failed to hold",
+        "authorises": "nothing",
+        "forbidden": [
+          "attributing anything to CharacterOS",
+          "weakening any hypothesis on this row"
+        ]
+      },
+      {
+        "id": "EXPLICIT_NULL_RECORD_POSITIVE",
+        "condition": "the explicit condition is a valid null while the record condition satisfies the criterion",
+        "verdict": "D4_C1_UNEXPECTED_PATTERN_RECORDED_NOT_RANKED",
+        "means": "the pattern contradicts the frozen prediction",
+        "effect_on_hypotheses": {
+          "H_REPRESENTATION": "not supported",
+          "note": "the record would appear MORE usable than an explicit word"
+        },
+        "raw": true,
+        "authorises": "nothing",
+        "forbidden": [
+          "ranking CharacterOS above an explicit representation",
+          "post-hoc architectural praise"
+        ]
+      },
+      {
+        "id": "ANY_INCONCLUSIVE",
+        "condition": "any invalid output, or a collection-integrity failure, in any cell",
+        "verdict": "D4_C1_INCONCLUSIVE",
+        "means": "nothing is localised",
+        "authorises": "nothing",
+        "forbidden": [
+          "re-running to force a verdict",
+          "reading a provider or parser failure as a representation effect"
+        ]
+      }
+    ],
+    "rows_are_frozen_before_any_call": true
+  },
+  "hypothesis_rules": {
+    "H_REPRESENTATION": "strengthened ONLY by the EXPLICIT_POSITIVE_RECORD_NULL row; strongly weakened by the both-positive row; never 'proven' by any row",
+    "H_FRAMING": "raised to the leading candidate by a record-positive row that coexists with the frozen A1 null; it can never be closed by C1, because C1 deliberately does not reproduce the production block header or placement",
+    "H6": "REMAINS OPEN in every row. C1's contract is C0a's explicitly clear composition contract, so a record-positive result makes H6 more prominent without settling it, and a record-null result does not make H6 disappear",
+    "H_EXEC_COMPOSITION": "not the main explanation unless the EXPLICIT arm itself fails to reproduce in a row of this design; the C0a result stands and the C1 explicit arm is its contemporaneous reference",
+    "a_record_null_authorises_only": "representation-component localisation research, not a change"
+  },
+  "instrument_reuse": {
+    "question": "is what changes a treatment representation or a measurement instrument?",
+    "answer": "a treatment representation only",
+    "measurement_contract_unchanged": true,
+    "anchors_unchanged": true,
+    "schema_unchanged": true,
+    "output_vocabulary_unchanged": true,
+    "base_system_framing_unchanged": true,
+    "therefore_requalification_required": false,
+    "requalification_calls": 0,
+    "why": "D4-C0a qualification established that the instrument can report the three stance tokens; C1 changes the stimulus, not the instrument, so the qualified instrument carries over unchanged",
+    "what_would_have_required_requalification": "a change to the contract, the anchors, the schema, the vocabulary or the required output form — none of which occurs here"
+  },
+  "stability": {
+    "question": "does the record INPUT FORM introduce self-noise that the explicit form did not?",
+    "answer": "that is genuinely new information, so one gate is worth its cost",
+    "new_non_target_fixture_required": true,
+    "fixture_shape": "a NON-TARGET synthetic proposition in RECORD form, with an aligned synthetic B and the frozen relation input",
+    "fixture_must_not_use": [
+      "the canonical CAUTION pair",
+      "a target cell",
+      "any arm label"
+    ],
+    "planned_calls": 6,
+    "rule": "the frozen stability rule, unchanged: all six legal and mutually agreeing, on a non-target request",
+    "on_pass": "target execution proceeds",
+    "on_stop": "the stage stops; no target call",
+    "why_not_six_gates": "only the new input form raises a new self-noise question; the explicit form's path was already certified and the transport path is unchanged",
+    "mechanical_copy_of_the_c0a_gate": false
+  },
+  "budget": {
+    "requalification": 0,
+    "stability_gate": 6,
+    "target_cells": 4,
+    "replicates_per_cell": 6,
+    "target_calls": 24,
+    "total": 30,
+    "derivation": "0 + 6 + (4 cells x 6 replicates), each term justified above rather than inherited",
+    "compared_to": {
+      "naively_copying_c0a_conventions": "9 qualification + 6 gate + 24 target = 39",
+      "saving": 9
+    },
+    "the_saving_is_the_justified_one": "no requalification, because the instrument did not change",
+    "d4_model_calls_before_this_stage": 27
+  },
+  "c0b_status": {
+    "previous": "D4_C0B_NOT_PREREGISTERED",
+    "new": "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+    "reason": "C0b was to compare an explicit stance against a CharacterOS credence-record representation; C1's RECORD condition is exactly that comparison, done with a matched measurement instrument and a contemporaneous reference, so a separate C0b would add cost without adding information",
+    "c0b_should_be_run": false,
+    "design_decision_made_this_round": true,
+    "c0b_executed": false
+  },
+  "architecture_gate": {
+    "characteros_may_be_modified": false,
+    "gate_status": "CLOSED",
+    "even_the_most_discriminating_row_authorises": "representation-component localisation research only",
+    "inherits_the_required_conditions": true,
+    "inherited_comparator_equalities": [
+      "the same executor",
+      "the same A literal",
+      "the same B literal",
+      "the same stance value",
+      "the same supplied semantic relation information",
+      "the same measurement question",
+      "the same anchors",
+      "the same output vocabulary",
+      "the same surrounding research framing",
+      "the same generation settings"
+    ],
+    "additional_requirement_from_c1": "a comparator outcome licenses localisation only if it names WHICH component of the record differs in effect; the record differs in at least four ways at once",
+    "until_then": "semantic IDs, embeddings, proposition graphs, relation propagation, extra model passes, prompt rescues and projection rewrites remain candidates only"
+  },
+  "record_rows": {
+    "proposition_id": "belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8",
+    "support": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+    "oppose": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}"
+  },
+  "d4_c0a_scorer_reused": true,
+  "unchanged_instrument_hashes": {
+    "contract_text_hash": "sha256:5d66b99d31e971a2f02130fc1e41e8785aaa6d087db0e5adf31fa81cb8c16ec6",
+    "schema_hash": "sha256:2034a688a12459f2eea8b0111a7ed453be9c27a8def816b4e6e6e37099ce1b0a",
+    "anchors_hash": "sha256:1b65129cd62d297d2f20c8bc776d51217a8828c5c0099b516376f89c09bd95d2",
+    "vocabulary_hash": "sha256:191d97afd0c075fa53499692a1d0ac578a45c1dd4f0a0080689f711858625d44",
+    "c0a_revision_0_manifest_hash": "sha256:5bac6aa45dc5c3c9f4e3daf57aa98aac5d39ed04bb54897893a477551fe3ea01"
+  },
+  "proposition_a": "Caution is warranted when the conclusion rests on information I have not seen myself.",
+  "proposition_b": "the view that a finding depending mainly on secondhand report is to be held with reserve",
+  "relation": "A and B express the same underlying view.",
+  "binding_block_reference": "[BINDING]\nPROPOSITION A: Caution is warranted when the conclusion rests on information I have not seen myself.\nPROPOSITION B: the view that a finding depending mainly on secondhand report is to be held with reserve\nRELATION(A,B): A and B express the same underlying view.\nSUBJECT STANCE TOWARD A: SUPPORTS\nWhich stance does the subject hold toward proposition B?",
+  "tests": {
+    "proposition_id_matches_the_frozen_expectation": true,
+    "record_field_order": [
+      "proposition_id",
+      "proposition_label",
+      "credence"
+    ],
+    "record_bytes_support": 223,
+    "record_bytes_oppose": 223,
+    "cells": 4,
+    "allowed_differing_lines": 1,
+    "reference_decision": "RERUN_BOTH_CONDITIONS_CONTEMPORANEOUSLY_IN_ONE_FROZEN_SCHEDULE",
+    "requalification_calls": 0,
+    "stability_calls": 6,
+    "target_calls": 24,
+    "total_calls": 30,
+    "c0b": "D4_C0B_SUPERSEDED_BY_C1_COMPARATOR_DESIGN",
+    "architecture_gate": "CLOSED",
+    "verification_cost": 0
+  },
+  "manifest_hash": "sha256:0e115f94c79b8eb8ce40357a18c9cf5904d189b747a88d8a1ae2fe99bac5b2a2"
+}

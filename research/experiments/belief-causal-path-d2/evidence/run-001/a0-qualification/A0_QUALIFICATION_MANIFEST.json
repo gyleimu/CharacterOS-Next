@@ -1,0 +1,13 @@
+{
+  "verdict": "D2_A0_INSTRUMENT_QUALIFIED",
+  "d2_a0_neutral_pilot_authorised": true,
+  "d2_a0_state_experiment_not_started": true,
+  "model_calls_this_round": 9,
+  "dataset_hash": "sha256:080b9798c67cea6b4806dd5cd65c54d94896f24a9f5b1f520c8585f6b3e4ae9d",
+  "transformer_contract_hash": "sha256:5778f97ec048110fe35644fca383e8b5b938a382bef8d7247fd7c78992fc2e0b",
+  "fixture_manifest_hash": "sha256:930ded2702bd10a3b81a39a19e985162f269ade12449e73a6176b960d2ce1800",
+  "uses_characteros_canonical_state": false,
+  "may_be_used_as_characteros_evidence": false,
+  "decision_probe_v2_used": false,
+  "d2_model_calls_total": 9
+}

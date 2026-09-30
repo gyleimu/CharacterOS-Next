@@ -1,0 +1,22 @@
+{
+  "artifact_hashes": {
+    "base-subject-manifest.json": "sha256:eb6c839cb6dbdf8aca4faf97066916b7f026f3a4e37e08852c79e47640e02792",
+    "proposition-manifest.json": "sha256:146cdf8aad85950c65a1556ee8b15337fa496b3e36071e733c676517dcc4f473",
+    "state-high.json": "sha256:4541af5c5e9208c3566bb0aef51ed5e78466aafed510e8c317a6fd0d54c45d83",
+    "state-low.json": "sha256:4fc1566dab6082325e012d1f3376a98b5a607f7a2e023b6532028b4be262c675",
+    "state-neutral.json": "sha256:9ffc07e6fe077688da542e918265d792c59761ac613db4624723bdfdecf436f1",
+    "state-hashes.json": "sha256:bf5da914798f649f8d29f4f849dbe66cf38744224eba3c73baafb6b34d67a813",
+    "state-isolation-diff.json": "sha256:6df3cb6f4c166ba8fa53b14c0d2db465b823c63eba0935b8d18de3fdfbc27ab2",
+    "state-separation-report.json": "sha256:fd7c65b3625b74a65eadca292278ef8ac58b9d833562615d1aef1142681c0835",
+    "projection-high.json": "sha256:d29b79272797af93b53388d408c5b370bb0174eb0340165595972493d1eb0ed4",
+    "projection-low.json": "sha256:bba04e1abf1915ef4a1086c9a7f69f0b8315502a9376d21e158713421e2be04f",
+    "projection-neutral.json": "sha256:b7074378f3e51df557de2732db34836a008df152a6f3c1b0b7f0a4cffd18f65f",
+    "lexical-audit.json": "sha256:7a98317a10066b15328f68ba1b0bfb00b0902a529be5a03398807672176a412f",
+    "history-absence-report.json": "sha256:11d1a213a3af232fe38a9910ae6e2bab447ba630e2b67d4f319718cfecada38e",
+    "request-equivalence-report.json": "sha256:132757da18583614256c700380e3a96693e5790652372dfffebd5ce25cf8fce1",
+    "instrument-identity-report.json": "sha256:da77caa1d047dbd7ea1f5c0050b3268307b7a4199e0cd08d7acf005426148c2c",
+    "phase-a-verdict.json": "sha256:1c3c619b48f5f31b84037738f12ef82ff00bf9151ebbbe6844bce0867131cd38"
+  },
+  "model_calls_made": 0,
+  "verdict": "D1_PHASE_A_READY"
+}

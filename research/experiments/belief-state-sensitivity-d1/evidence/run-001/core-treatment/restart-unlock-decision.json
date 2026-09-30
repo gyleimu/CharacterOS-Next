@@ -1,0 +1,8 @@
+{
+  "predicate": "the frozen direct-positive predicate on P1_FULL: contrast verdict CONTRAST_POSITIVE",
+  "predicate_satisfied": false,
+  "restart_status": "RESTART_CONTRAST_LOCKED",
+  "restart_schedule_materialized": false,
+  "restart_calls_executed": 0,
+  "note": "this round materializes no restart schedule and executes no restart call"
+}

@@ -1,0 +1,11 @@
+{
+  "competing_framings_absent": {
+    "invites_equivalence": false,
+    "binds_to_this_wording": false,
+    "copy_instruction": false
+  },
+  "states_where_the_stance_belongs": true,
+  "states_what_to_report": true,
+  "states_the_answer": false,
+  "verdict": "D4_C0A_CONTRACT_FRAMING_RESOLVED"
+}

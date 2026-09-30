@@ -1,0 +1,21 @@
+{
+  "schedule_hash_recomputed": "sha256:d85ffc134a2e2a4cada319f4843690374dfebbdf49a63c18c13139d0eb17335f",
+  "schedule_hash_exact": true,
+  "planned_trials": 12,
+  "identities_unique_exact": true,
+  "positions_1_to_12": true,
+  "support_trials": 6,
+  "oppose_trials": 6,
+  "duplicate_identities": 0,
+  "missing_identities": 0,
+  "extra_identities": 0,
+  "every_trial_references_its_arm_hash": true,
+  "support_request_hash_recomputed": "sha256:0bad19fc3cd612db457615127ff79074f0e49c3f4bceab1b4b38d53b9d61549a",
+  "support_request_hash_exact": true,
+  "oppose_request_hash_recomputed": "sha256:bd195ef5ac12da286b0e7e8d401dc05a4ea7965506f52b41e00fea350d2dafb5",
+  "oppose_request_hash_exact": true,
+  "reshuffled": false,
+  "rebuilt": false,
+  "ordering_unchanged_from_the_frozen_schedule": true,
+  "verdict": "D4_C0A_TARGET_SCHEDULE_VERIFIED"
+}

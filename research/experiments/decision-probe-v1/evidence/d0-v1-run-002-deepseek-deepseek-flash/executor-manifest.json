@@ -1,0 +1,16 @@
+{
+  "family": "openai",
+  "transport_class": "OpenAiCompatibleTransportV0",
+  "model": "deepseek-flash",
+  "model_digest": null,
+  "endpoint": "https://api.deepseek.com",
+  "generation": {
+    "temperature": 0,
+    "cognition_num_predict": 256,
+    "context_window_tokens": "NOT_APPLICABLE_CLOUD_FAMILY",
+    "think": false,
+    "provider_thinking": "disabled"
+  },
+  "structured_output_support": "SCHEMA_NOT_FORWARDED_PROMPT_CONTRACT_AND_HOST_PARSER_ONLY",
+  "declares_primary_executor": true
+}

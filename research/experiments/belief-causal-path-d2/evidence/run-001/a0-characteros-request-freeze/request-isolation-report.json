@@ -1,0 +1,72 @@
+{
+  "normalisation_used": "D1 REVISION 3 `normalizeArmSpecificBytes` — the two already-frozen classes only",
+  "normalisation_classes": [
+    "the frozen proposition's credence value inside the canonical belief projection line",
+    "the whole `[projection_hash]` value"
+  ],
+  "new_normalisation_exceptions_added": false,
+  "raw_model_facing_differences_before_normalisation": {
+    "HIGH_vs_LOW_system_lines": [],
+    "HIGH_vs_LOW_user_lines": [
+      {
+        "line": 21,
+        "high_or_first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+        "low_or_second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}"
+      },
+      {
+        "line": 46,
+        "high_or_first": "[projection_hash] sha256:bbd2f161f2f0754af1846b99233293998f173c5ab899b187384e4368cef2621f",
+        "low_or_second": "[projection_hash] sha256:00e3f8a3bace81f80a9a1c5ecd51bf70dfda46a57d59e5b0c14bd0ceb02d05f1"
+      }
+    ],
+    "HIGH_vs_NEUTRAL_system_lines": [],
+    "HIGH_vs_NEUTRAL_user_lines": [
+      {
+        "line": 21,
+        "high_or_first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+        "low_or_second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.5}"
+      },
+      {
+        "line": 46,
+        "high_or_first": "[projection_hash] sha256:bbd2f161f2f0754af1846b99233293998f173c5ab899b187384e4368cef2621f",
+        "low_or_second": "[projection_hash] sha256:f5126707e97c637330e7fe25a6f84f72bed678945d7aa0c88199da59c7ca8210"
+      }
+    ],
+    "LOW_vs_NEUTRAL_system_lines": [],
+    "LOW_vs_NEUTRAL_user_lines": [
+      {
+        "line": 21,
+        "high_or_first": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}",
+        "low_or_second": "  {\"proposition_id\":\"belief-097e59d9657c11588c52cc7a9fd9e79c408633e0adbeb579302a7fc60d3988ae\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.5}"
+      },
+      {
+        "line": 46,
+        "high_or_first": "[projection_hash] sha256:00e3f8a3bace81f80a9a1c5ecd51bf70dfda46a57d59e5b0c14bd0ceb02d05f1",
+        "low_or_second": "[projection_hash] sha256:f5126707e97c637330e7fe25a6f84f72bed678945d7aa0c88199da59c7ca8210"
+      }
+    ]
+  },
+  "normalized": {
+    "normalized_HIGH": {
+      "credence_replacements": 1,
+      "projection_hash_replacements": 1,
+      "normalized_bytes": 19448,
+      "normalized_hash": "sha256:f26f4894c64c05d316822a3c28ccd9051b4deec033f00413c0987d132745f015"
+    },
+    "normalized_LOW": {
+      "credence_replacements": 1,
+      "projection_hash_replacements": 1,
+      "normalized_bytes": 19448,
+      "normalized_hash": "sha256:f26f4894c64c05d316822a3c28ccd9051b4deec033f00413c0987d132745f015"
+    },
+    "normalized_NEUTRAL": {
+      "credence_replacements": 1,
+      "projection_hash_replacements": 1,
+      "normalized_bytes": 19448,
+      "normalized_hash": "sha256:f26f4894c64c05d316822a3c28ccd9051b4deec033f00413c0987d132745f015"
+    }
+  },
+  "distinct_normalized_forms": 1,
+  "normalize_HIGH_equals_normalize_LOW_equals_normalize_NEUTRAL": true,
+  "verdict": "D2_A0_CROSS_ARM_REQUEST_ISOLATION_HOLDS"
+}

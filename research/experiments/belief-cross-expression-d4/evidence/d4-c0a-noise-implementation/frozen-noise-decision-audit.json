@@ -1,0 +1,67 @@
+{
+  "scientific_decisions_extracted": [
+    {
+      "id": "construct",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.purpose",
+      "value": "a determinism precondition on a NON-TARGET request, not a sample-size rule"
+    },
+    {
+      "id": "request_selection_rule",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.non_target_request_source",
+      "value": "D4C0A-QF-A-SUPPORT-TRANSFER's frozen model-facing request — a synthetic qualification fixture, chosen by the frozen manifest order, never the treatment request"
+    },
+    {
+      "id": "planned_calls",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.planned_calls",
+      "value": 6
+    },
+    {
+      "id": "invalid_rule",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.invalid_verdict",
+      "value": "D4C0A_INCONCLUSIVE_BY_STABILITY_GATE_INVALID_OUTPUTS"
+    },
+    {
+      "id": "pass_rule",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.pass_condition",
+      "value": "all six trials legal AND the unique modal token's count equals 6"
+    },
+    {
+      "id": "stop_rule",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.self_noise_verdict",
+      "value": "D4C0A_INCONCLUSIVE_BY_INSTRUMENT_SELF_NOISE"
+    },
+    {
+      "id": "reachable_r_values",
+      "frozen": true,
+      "source": "contract.ts :: D4C0A_NOISE_GATE.reachable_r_values",
+      "value": [
+        6
+      ]
+    }
+  ],
+  "scientific_decisions_not_frozen": [],
+  "not_frozen_but_executable_identity": {
+    "classifier_name": {
+      "frozen": false,
+      "why_it_is_not_scientific": "a function name is an engineering fact; the rule it implements was already frozen"
+    },
+    "target_authorisation_rule": {
+      "frozen": false,
+      "classification": "PROCEDURAL, not scientific",
+      "derivation": "the frozen purpose calls the gate a precondition on a non-target request, and the frozen reachable outcomes are exactly PASS and STOP; a precondition that is not met cannot leave the next stage available",
+      "recorded_so_a_reader_can_disagree": true
+    }
+  },
+  "model_calls_before_amendment": 0,
+  "noise_outputs_seen_before_amendment": false,
+  "target_outputs_seen_before_amendment": false,
+  "scientific_rule_unchanged": true,
+  "extraction_method": "read from the frozen modules; no recollection of any earlier line's implementation",
+  "verdict": "D4_C0A_NOISE_SCIENTIFIC_DECISIONS_ALL_FROZEN"
+}

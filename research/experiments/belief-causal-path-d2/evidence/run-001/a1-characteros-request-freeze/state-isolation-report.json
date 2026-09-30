@@ -1,0 +1,57 @@
+{
+  "allowed_difference_classes": [
+    "/beliefs/items/0/credence",
+    "/trace_window/entries/0/state_hash_before",
+    "/trace_window/entries/0/state_hash_after",
+    "/trace_window/entries/0/trace_id"
+  ],
+  "new_allowed_difference_classes_added": false,
+  "per_pair": {
+    "HIGH_vs_NEUTRAL": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_is_exactly_the_frozen_allow_list": true,
+      "unexpected_paths_outside_the_frozen_allow_list": [],
+      "normalised_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalised_diff_is_exactly_the_credence": true,
+      "trace_bookkeeping_forward_recomputed": true
+    },
+    "HIGH_vs_LOW": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_is_exactly_the_frozen_allow_list": true,
+      "unexpected_paths_outside_the_frozen_allow_list": [],
+      "normalised_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalised_diff_is_exactly_the_credence": true,
+      "trace_bookkeeping_forward_recomputed": true
+    },
+    "NEUTRAL_vs_LOW": {
+      "raw_diff_paths": [
+        "/beliefs/items/0/credence",
+        "/trace_window/entries/0/state_hash_after",
+        "/trace_window/entries/0/state_hash_before",
+        "/trace_window/entries/0/trace_id"
+      ],
+      "raw_diff_is_exactly_the_frozen_allow_list": true,
+      "unexpected_paths_outside_the_frozen_allow_list": [],
+      "normalised_diff_paths": [
+        "/beliefs/items/0/credence"
+      ],
+      "normalised_diff_is_exactly_the_credence": true,
+      "trace_bookkeeping_forward_recomputed": true
+    }
+  },
+  "verdict": "D2_A1_STATE_ISOLATION_HOLDS"
+}

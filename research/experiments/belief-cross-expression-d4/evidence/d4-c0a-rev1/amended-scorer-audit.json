@@ -1,0 +1,176 @@
+{
+  "scorer": "scoreD4C0ARev1V0 (frozen revision 1) — called, not re-implemented",
+  "prior_scorer_identity": "per-arm unique modal + between-arm contrast",
+  "maximum_non_predicted_per_arm": 2,
+  "cases": [
+    {
+      "case": "perfect_6_0_0_both_arms",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "support_predicted_count": 6,
+      "oppose_predicted_count": 6,
+      "support_meets_majority": true,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "five_one_each_arm",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "support_predicted_count": 5,
+      "oppose_predicted_count": 5,
+      "support_meets_majority": true,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "four_two_each_arm",
+      "expected": "POSITIVE",
+      "observed": "POSITIVE",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_ESTABLISHED",
+      "support_predicted_count": 4,
+      "oppose_predicted_count": 4,
+      "support_meets_majority": true,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "three_two_one_predicted_plurality",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 3,
+      "oppose_predicted_count": 6,
+      "support_meets_majority": false,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "three_three_tie",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 3,
+      "oppose_predicted_count": 6,
+      "support_meets_majority": false,
+      "support_modal": null,
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "constant_support_both_arms",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 6,
+      "oppose_predicted_count": 0,
+      "support_meets_majority": true,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "constant_oppose_both_arms",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 0,
+      "oppose_predicted_count": 6,
+      "support_meets_majority": false,
+      "support_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "reversed_direction",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 0,
+      "oppose_predicted_count": 0,
+      "support_meets_majority": false,
+      "support_modal": "OPPOSES_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "only_one_arm_correct",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 6,
+      "oppose_predicted_count": 0,
+      "support_meets_majority": true,
+      "support_modal": "SUPPORTS_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "uncertain_dominates",
+      "expected": "NULL",
+      "observed": "NULL",
+      "verdict": "EXECUTOR_STATE_BLIND_CROSS_EXPRESSION_STANCE_COMPOSITION_NOT_ESTABLISHED",
+      "support_predicted_count": 0,
+      "oppose_predicted_count": 6,
+      "support_meets_majority": false,
+      "support_modal": "UNCERTAIN_B",
+      "scoring_executed": true,
+      "pass": true
+    },
+    {
+      "case": "one_invalid",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "support_predicted_count": null,
+      "oppose_predicted_count": null,
+      "support_meets_majority": null,
+      "support_modal": null,
+      "scoring_executed": false,
+      "pass": true
+    },
+    {
+      "case": "all_invalid",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "support_predicted_count": null,
+      "oppose_predicted_count": null,
+      "support_meets_majority": null,
+      "support_modal": null,
+      "scoring_executed": false,
+      "pass": true
+    },
+    {
+      "case": "out_of_vocabulary_token",
+      "expected": "INCONCLUSIVE",
+      "observed": "INCONCLUSIVE",
+      "verdict": "D4C0A_INCONCLUSIVE_BY_STATE_EXPERIMENT_INVALID_OUTPUTS",
+      "support_predicted_count": null,
+      "oppose_predicted_count": null,
+      "support_meets_majority": null,
+      "support_modal": null,
+      "scoring_executed": false,
+      "pass": true
+    }
+  ],
+  "the_decisive_row": {
+    "case": "three_two_one_predicted_plurality",
+    "support_modal": "SUPPORTS_B",
+    "note": "the predicted token IS still the unique modal here — the amendment rejects the pattern on the DIRECTIONAL MAJORITY, not on modal uniqueness, which is why the test is exercising what it claims",
+    "observed": "NULL"
+  },
+  "integrity_failure_case": {
+    "observed": "INCONCLUSIVE",
+    "verdict": "D4C0A_INCONCLUSIVE_BY_COLLECTION_INTEGRITY_FAILURE",
+    "integrity": false
+  },
+  "reversed_direction_is_a_null_not_an_effect": true,
+  "verdict": "D4_C0A_REV1_SCORER_PROVEN"
+}

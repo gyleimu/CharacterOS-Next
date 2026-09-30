@@ -1,0 +1,45 @@
+{
+  "shape": {
+    "fields": [
+      "proposition_id",
+      "proposition_label",
+      "credence"
+    ],
+    "field_order_is_significant": true,
+    "serialisation": "JSON.stringify of the three-field object, in that order",
+    "source_of_field_order": "cognition-action-transition-executor.ts:305-311",
+    "proposition_id_construction": "belief-prop-v0-<hash> where hash = hashEnvelope(\"characteros-next/belief/proposition-key/v1\", { canonical_label })",
+    "proposition_id_source": "belief-proposition-admission.ts:190-201",
+    "proposition_id_is_the_content_address_of_the_exact_wording": true,
+    "added_for_comprehensibility": [],
+    "forbidden_additions": [
+      "a derived stance word",
+      "a semantic alias",
+      "relation metadata",
+      "an explanatory annotation",
+      "a SUPPORT or OPPOSE label",
+      "a note interpreting the credence"
+    ]
+  },
+  "proposition_id_derived": "belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8",
+  "proposition_id_matches_the_frozen_expectation": true,
+  "support_record_exact_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.8}",
+  "oppose_record_exact_bytes": "{\"proposition_id\":\"belief-prop-v0-30f506ee309b7725cf4b7487ac2289a8a8f2488c7d575fc96efb2952e136faf8\",\"proposition_label\":\"Caution is warranted when the conclusion rests on information I have not seen myself.\",\"credence\":0.2}",
+  "observed_field_order": [
+    "proposition_id",
+    "proposition_label",
+    "credence"
+  ],
+  "field_order_matches_the_production_object_literal": true,
+  "support_credence_is_0_8": true,
+  "oppose_credence_is_0_2": true,
+  "the_two_records_differ_only_in_the_credence_digits": true,
+  "anything_added_for_comprehensibility": 0,
+  "source_lines": {
+    "item_definition": "packages/subject-core/src/types/subject-state.ts:90 (BeliefItemStateV0)",
+    "projection_field_copy": "packages/runtime/src/transitions/cognition-action/cognition-action-transition-executor.ts:305-311",
+    "executor_serialisation": "packages/runtime/src/providers/behavior/cognition-provider-v2.ts:213 (JSON.stringify per item)",
+    "proposition_id_construction": "packages/runtime/src/transitions/belief/belief-proposition-admission.ts:190-201"
+  },
+  "verdict": "D4_C1_RECORD_BYTES_ARE_THE_PRODUCTION_REPRESENTATION"
+}

@@ -1,0 +1,33 @@
+{
+  "run": "PHASE0_RUN3",
+  "outcome": "INCONCLUSIVE",
+  "verdict": "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_INCONCLUSIVE",
+  "tokens": [
+    "HISTORY_INTERNALIZATION_V1_PHASE0_RUN3_INCONCLUSIVE",
+    "HISTORY_INTERNALIZATION_PHASE_1_NOT_AUTHORISED"
+  ],
+  "evidence_level": "L1",
+  "reason": "a required scientific turn was invalid; the run ended at that turn",
+  "invalid_scientific_turns": 1,
+  "integrity_failures": [
+    "A:turn_1: TURN_FAILED_CLOSED: cognition/language path failed (COGNITION_FAILED): SERVICE_UNAVAILABLE/FAIL-SERVICE-001: cognition provider failed (fail closed) (CONVERSATI"
+  ],
+  "quarantined_subjects": [
+    "subject-r3-7p4n-2185"
+  ],
+  "accounting": {
+    "scientific_subject_turns_planned": 10,
+    "scientific_subject_turns_executed": 2,
+    "scientific_subject_turns_valid": 1,
+    "invalid_scientific_turns": 1,
+    "non_scientific_runtime_operations": 1,
+    "provider_attempts_total": 10,
+    "cognition_attempts": 3,
+    "language_attempts": 2,
+    "appraisal_attempts": 3,
+    "belief_semantic_attempts": 2,
+    "invalid_provider_attempts": 0,
+    "units_are_never_merged": true
+  },
+  "no_retry_no_restore_no_run4": "engineering recovery capability is NOT scientific recovery: no retry, no restore-and-continue, no run-4 in this round"
+}
