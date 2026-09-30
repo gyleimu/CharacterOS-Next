@@ -1,0 +1,93 @@
+{
+  "schema_version": "history-internalization-v1-pre-test-gate-v0",
+  "role": "PRE_TEST_GATE",
+  "model_calls": 0,
+  "read_only": true,
+  "subject": {
+    "root": "D:\\Documents\\CharacterOS-Next\\product\\sandbox\\.data\\subjects\\alice-longrun",
+    "snapshot_name": "subject-alice-longrun-869f387d.snapshot.json",
+    "snapshot_bytes": 18397757,
+    "subject_id": "alice-longrun-869f387d",
+    "next_turn_index": 216,
+    "state_revision": 1954,
+    "repository_revision": "R647",
+    "logical_time": 216,
+    "subject_head": {
+      "revision": 1954,
+      "commit_ref": "commit:331f67ed5ce4f665f46790b05cdb048297539aa62916f064558aa7ad4155665f",
+      "record_checksum": "sha256:a8aabbf58cc2536e669037c123f213a2ea5fee866790664f6c2915f92321667c",
+      "state_hash": "sha256:e30ea96e9954a1dda8a55c4f497f931b6c65f4a85c265f48aa07e1a9aaee2803",
+      "snapshot_hash": "sha256:df5ce537f5c25e01daed911afb37afa3646002a8a3bc0dc0b7aea4644d6346b3"
+    }
+  },
+  "affect_history": {
+    "applications": 634,
+    "at_bound": 354,
+    "at_bound_fraction": 0.5583596214511041
+  },
+  "dimensions": [
+    {
+      "dimension": "affect",
+      "value": {
+        "valence": 0.9933555062550344,
+        "activation": 1
+      },
+      "rule": "§7: activation NOT pinned at 1.0",
+      "passes": false,
+      "note": "activation=1 valence=0.9933555062550344"
+    },
+    {
+      "dimension": "belief",
+      "value": null,
+      "rule": "§7: 0 < credence < 1 for at least one item",
+      "passes": null,
+      "note": "REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this program refuses to guess"
+    },
+    {
+      "dimension": "relationship",
+      "value": null,
+      "rule": "§7: below the 32/32 cap",
+      "passes": null,
+      "note": "REQUIRES_PRODUCTION_READ_PROJECTION — same reason as belief"
+    },
+    {
+      "dimension": "regulation",
+      "value": null,
+      "rule": "§7: recorded to document that it is inert (NOT gated)",
+      "passes": true,
+      "note": "the durable identity carries no regulation block; §7 does not gate regulation, so this does not affect the outcome"
+    },
+    {
+      "dimension": "personality",
+      "value": "NONE",
+      "rule": "§7: reported as an absence, never as a null result",
+      "passes": true,
+      "note": "disabled by construction — reported as an absence"
+    },
+    {
+      "dimension": "memory",
+      "value": {
+        "next_turn_index": 216
+      },
+      "rule": "§7: reported, not gated",
+      "passes": true,
+      "note": "reported, not gated"
+    }
+  ],
+  "delta_state": null,
+  "delta_min": null,
+  "delta_state_note": "δ_state is the declared distance between a trajectory's state and ITS TWIN's state. It needs the twin construction, which the frozen design does not specify; this gate does not invent one.",
+  "outcome": "INCONCLUSIVE_BY_SATURATION",
+  "reasons": [
+    "affect IS AT A BOUND: activation=1 valence=0.9933555062550344",
+    "belief NOT READABLE by this path: REQUIRES_PRODUCTION_READ_PROJECTION — belief lives in the committed canonical store; §7 requires the refsBelongToRevision read path, and this program refuses to guess",
+    "relationship NOT READABLE by this path: REQUIRES_PRODUCTION_READ_PROJECTION — same reason as belief",
+    "δ_state / δ_min not yet declared or not yet measurable (needs the declared twin construction)"
+  ],
+  "meaning": "INCONCLUSIVE_BY_SATURATION is a statement about the TRAJECTORY DESIGN, not evidence against H1 (§7). The design doc's Phase-0 honesty clause requires this gate result to be published FIRST.",
+  "forbidden_reading": [
+    "this is not evidence against H1",
+    "this is not a null result",
+    "GATE_INCOMPLETE is not a pass"
+  ]
+}
