@@ -5,6 +5,10 @@ Authority: 只记录历史里程碑与未来方向；当前实现、blocker 与�
 Last verified against commit: `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`
 Purpose: 保存阶段历史并定义未来工作的准入顺序，不复制实时状态。
 
+> North Star：项目研究宪法在 [`NORTH_STAR.md`](NORTH_STAR.md)（操作者原件 `NORTH STAR.doc` 的转录件；原件为权威）。
+> 按宪法第 26 节，它的战略优先级高于本路线图；第 25 节规定偏离时执行 `RETURN TO NORTH STAR` 并回答那五个问题。
+> 由宪法派生的研究证据位于 [`research/north-star/`](research/north-star/)。
+
 ## 1. 如何阅读本路线图
 
 早期 `P0`–`P5+` 编号是仓库建立时的规划语言，不是当前实现状态机。实现已经依法越过旧文档所写的“P2.1 NOT STARTED”。本文件保留这些阶段作为历史，不用新的数字夸大进度，也不要求回退有效代码来匹配旧计划。

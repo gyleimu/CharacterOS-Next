@@ -5,6 +5,10 @@ Authority: 只定义眼前执行边界；仓库能力与成熟度以 [`CURRENT_S
 Last verified against product commit: `b367b49`（`PERSISTENCE_R2_SCALABILITY_V0`）
 Purpose: 指定 current baseline、blocker、next exact slice、禁止项与升级条件。
 
+> North Star：项目研究宪法在 [`NORTH_STAR.md`](NORTH_STAR.md)（操作者原件 `NORTH STAR.doc` 的转录件；原件为权威）。
+> 按宪法第 26 节，它的战略优先级高于临时 Roadmap、当前开发任务、模型偏好与实现惯性；与本文件冲突时须指出冲突并停下，请求 Human 决定。
+> 由宪法派生的研究证据（Q1–Q10 审计、D1–D4、HIT v1、executor 替换）位于 [`research/north-star/`](research/north-star/)。
+
 ## CURRENT BASELINE
 
 CharacterOS-Next 当前有 15 个 pnpm workspace（13 个 `packages/*` + `product/sandbox` + `product/web`）、可复用 runtime、完整工程门禁与大量冻结实验/诊断证据。

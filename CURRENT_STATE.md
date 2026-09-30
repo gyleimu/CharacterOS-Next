@@ -9,6 +9,10 @@ Verified date: 2026-09-11
 
 > 权威顺序：当前可执行代码与测试 → 已提交冻结证据 → Git 历史 → 仍与实现一致的架构契约 → 项目状态叙述。README、ROADMAP、RESEARCH_STATE 与 NEXT_ACTIONS 不再各自维护一份完整阶段状态。
 
+> North Star：项目研究宪法在 [`NORTH_STAR.md`](NORTH_STAR.md)（操作者原件 `NORTH STAR.doc` 的转录件；原件为权威）。
+> 按宪法第 26 节，它的战略优先级高于本文件所处的状态叙述层；本文件在宪法之下、在其自身声明的权威范围内生效。
+> 由宪法派生的研究证据位于 [`research/north-star/`](research/north-star/)。
+
 ## 1. CharacterOS-Next 现在是什么
 
 CharacterOS-Next 是一个 strict-ESM TypeScript/pnpm workspace，也是一套长期人工主体研究运行时。它已经包含可复用的 canonical state/commit authority、Memory、Retrieval、Appraisal、Canonical Affect、Cognition、Language、Experience/Learning、持久化恢复与 subject-session orchestration。

@@ -5,6 +5,10 @@ Authority: 汇总当前研究主张、限制、失败与开放问题；不维护
 Last verified against commit: `d4503cc6fd3f93d9e88b39d7aa365c8ef456b441`
 Purpose: 给出当前 claim taxonomy、evidence policy、methodology limits 与 open questions。
 
+> North Star：项目研究宪法在 [`NORTH_STAR.md`](NORTH_STAR.md)（操作者原件 `NORTH STAR.doc` 的转录件；原件为权威）。
+> 按宪法第 26 节，它的战略优先级高于本汇总；本文件只汇总证据，不改变研究目标。
+> Q1–Q10 的当前证据等级与缺口见 [`research/north-star/NORTH_STAR_EVIDENCE_MATRIX.md`](research/north-star/NORTH_STAR_EVIDENCE_MATRIX.md)。
+
 ## 1. Claim taxonomy
 
 当前与未来 summary 使用以下词汇，不回写历史冻结 verdict：
